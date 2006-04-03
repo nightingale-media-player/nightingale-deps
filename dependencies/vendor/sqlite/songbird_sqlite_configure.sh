@@ -1,5 +1,5 @@
 #!/bin/bash
-./configure --prefix=$HOME/_built_sqlite3 \
+./configure --prefix=$HOME/_built_sqlite3/release \
   --enable-releasemode \
   --enable-threadsafe \
   --enable-tempstore \
