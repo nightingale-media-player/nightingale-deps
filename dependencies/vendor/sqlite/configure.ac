@@ -184,7 +184,7 @@ fi
 # Locate a compiler for the build machine.  This compiler should
 # generate command-line programs that run on the build machine.
 #
-default_build_cflags="-g"
+default_build_cflags="-g -fshort-wchar"
 if test "$config_BUILD_CC" = ""; then
   AC_PROG_CC
   if test "$cross_compiling" = "yes"; then
