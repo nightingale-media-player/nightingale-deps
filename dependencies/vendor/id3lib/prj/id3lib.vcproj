@@ -131,7 +131,7 @@ copy /y $(OutDir)\*.pdb $(SolutionDir)dist\xulrunner
 				Name="VCPostBuildEventTool"
 				CommandLine="mkdir $(SolutionDir)dist\xulrunner
 copy /y $(TargetPath) $(SolutionDir)dist\xulrunner
-copy /y $(OutDir)\*.pdb $(SolutionDir)dist\xulrunner
+
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
