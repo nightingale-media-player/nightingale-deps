@@ -188,6 +188,9 @@ String io::readUnicodeText(ID3_Reader& reader, size_t len)
       unicode += ch1;
     }
   }
+  // Here's an idea!  Null terminate the fucking strings!
+  unicode += '\0';
+  unicode += '\0';
   return unicode;
 }
 
