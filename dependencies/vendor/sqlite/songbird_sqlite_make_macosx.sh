@@ -10,19 +10,14 @@ make clean
 #
 # Compile the release mode sqlite3 for x86 
 #
-CFLAGS="-arch i386" \
-CXXFLAGS="-arch i386" \
-LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,i386" \
 ./configure --prefix=${PWD}/compiled/release-intel \
-  --enable-releasemode \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
   --disable-tcl 
 make && make install
 make clean
-rm -f config.log config.status Makefile
-
+exit;
 #
 # Compile the release mode sqlite3 for ppc
 #
@@ -33,7 +28,6 @@ CXXFLAGS="-arch ppc" \
 LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,ppc" \
 ./configure --prefix=${PWD}/compiled/release-ppc \
   --target=powerpc-apple-darwin8.0.0 \
-  --enable-releasemode \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
@@ -54,8 +48,8 @@ rm -f config.log config.status Makefile
 #
 # Compile the debug mode sqlite3 for x86
 #
-CC="gcc-4.0" \
-CXX="g++-4.0" \
+CC="gcc-4.0 -arch i386" \
+CXX="g++-4.0 -arch i386" \
 CFLAGS="-arch i386" \
 CXXFLAGS="-arch i386" \
 LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,i386" \
@@ -68,7 +62,6 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,i386" \
   --disable-tcl 
 make && make install
 make clean
-rm -f config.log config.status Makefile
 
 #
 # Compile the debug mode sqlite3 for ppc
@@ -87,7 +80,6 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,ppc" \
   --disable-tcl
 make && make install
 make clean
-rm -f config.log config.status Makefile
 
 #
 # Package the debug mode sqlite3 into a universal binary
