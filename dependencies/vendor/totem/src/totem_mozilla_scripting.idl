@@ -23,7 +23,16 @@
 
 [scriptable, uuid(862af69e-16e2-4016-ad18-77fa88a1e488)]
 interface totemMozillaScript : nsISupports {
+
+  readonly attribute boolean IsPlaying;
+  readonly attribute unsigned long long StreamLength;
+  readonly attribute unsigned long long CurrentTime;
+  attribute short Volume;
+
   void Play ();
   void Rewind ();
   void Stop ();
+  void OpenUrl (in AString url);
+  void SeekTime (in unsigned long long seekTime);
 };
+

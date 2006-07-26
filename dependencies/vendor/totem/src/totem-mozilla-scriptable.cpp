@@ -20,6 +20,7 @@
  */
 
 #include "mozilla-config.h"
+#include <nsEmbedString.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -51,6 +52,92 @@ totemMozillaObject::invalidatePlugin ()
 /*
  * From here on start the javascript-callable implementations.
  */
+
+NS_IMETHODIMP
+totemMozillaObject::GetIsPlaying(PRBool *aIsPlaying)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "GetIsPlaying", &error,
+    G_TYPE_INVALID, G_TYPE_BOOLEAN, aIsPlaying, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+totemMozillaObject::GetStreamLength(PRUint64 *_retval)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "GetStreamLength", &error,
+    G_TYPE_INVALID, G_TYPE_UINT64, _retval, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+totemMozillaObject::GetCurrentTime(PRUint64 *_retval)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "GetCurrentTime", &error,
+    G_TYPE_INVALID, G_TYPE_UINT64, _retval, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+totemMozillaObject::GetVolume(PRInt16 *_retval)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "GetVolume", &error,
+    G_TYPE_INVALID, G_TYPE_INT, _retval, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+totemMozillaObject::SetVolume(PRInt16 aVolume)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "SetVolume", &error,
+    G_TYPE_INT, aVolume, G_TYPE_INVALID, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
 
 NS_IMETHODIMP
 totemMozillaObject::Play ()
@@ -90,3 +177,41 @@ totemMozillaObject::Stop ()
 
   return NS_OK;
 }
+
+NS_IMETHODIMP
+totemMozillaObject::OpenUrl (const nsAString& url)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  nsCString playUrl = NS_ConvertUTF16toUTF8(url);
+  g_message ("playurl: %s", playUrl.get());
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "OpenUrl", &error,
+     G_TYPE_STRING, playUrl.get(), G_TYPE_INVALID, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+totemMozillaObject::SeekTime(PRUint64 seekTime)
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "SeekTime", &error,
+    G_TYPE_UINT64, seekTime, G_TYPE_INVALID, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+

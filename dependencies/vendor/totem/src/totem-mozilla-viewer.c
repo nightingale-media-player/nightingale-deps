@@ -88,6 +88,13 @@ static void totem_embedded_init (TotemEmbedded *emb) { }
 gboolean totem_embedded_play (TotemEmbedded *emb, GError **err);
 gboolean totem_embedded_pause (TotemEmbedded *emb, GError **err);
 gboolean totem_embedded_stop (TotemEmbedded *emb, GError **err);
+gboolean totem_embedded_open_url (TotemEmbedded *emb, const char* url, GError **err);
+gboolean totem_embedded_get_current_time (TotemEmbedded *emb, guint64* current_time, GError **err);
+gboolean totem_embedded_get_stream_length (TotemEmbedded *emb, guint64* stream_length, GError **err);
+gboolean totem_embedded_get_volume (TotemEmbedded *emb, gint* volume, GError **err);
+gboolean totem_embedded_set_volume (TotemEmbedded *emb, gint volume, GError **err);
+gboolean totem_embedded_seek_time (TotemEmbedded *emb, guint64 seek_time, GError **err);
+gboolean totem_embedded_get_is_playing (TotemEmbedded *emb, gboolean* is_playing, GError **err);
 
 #include "totem-mozilla-interface.h"
 
@@ -210,6 +217,94 @@ totem_embedded_stop (TotemEmbedded *emb, GError **err)
 	bacon_video_widget_stop (emb->bvw);
 	totem_embedded_set_state (emb, STATE_STOPPED);
 	return TRUE;
+}
+
+gboolean
+totem_embedded_open_url (TotemEmbedded *emb, const char* url, GError **err)
+{
+	GError *bacon_err = NULL;
+	gboolean retval;
+
+    if(emb->filename != NULL)
+        g_free(emb->filename);
+    emb->filename = g_strdup(url);
+
+    g_message ("totem_embedded_play_url: %s", emb->filename);
+
+	retval = bacon_video_widget_open (emb->bvw, emb->filename, &bacon_err);
+	if (retval == FALSE)
+	{
+		//char *msg, *disp;
+
+		totem_embedded_set_state (emb, STATE_STOPPED);
+
+        // XXX: Don't really want errors to be interactive, perhaps this
+        // should be a flag
+		//FIXME if emb->filename is fd://0 or stdin:///
+		//we should use a better name than that
+		//disp = g_strdup (emb->filename);
+		//disp = gnome_vfs_unescape_string_for_display (totem->mrl);
+		//msg = g_strdup_printf(_("Totem could not play '%s'."), disp);
+		//g_free (disp);
+		if (err != NULL) {
+			g_message ("error: %s", bacon_err->message);
+			//totem_interface_error_blocking (msg, err->message,
+			//	GTK_WINDOW (emb->window));
+		}
+
+		//g_free (msg);
+		g_error_free (bacon_err);
+
+        retval = FALSE;
+	} else {
+		totem_embedded_set_state (emb, STATE_PAUSED);
+		totem_embedded_set_pp_state (emb, TRUE);
+	}
+
+	return retval;
+
+}
+
+gboolean
+totem_embedded_get_current_time (TotemEmbedded *emb, guint64* current_time, GError **err)
+{
+  *current_time = bacon_video_widget_get_current_time (emb->bvw);
+  return TRUE;
+}
+
+gboolean
+totem_embedded_get_stream_length (TotemEmbedded *emb, guint64* stream_length, GError **err)
+{
+  *stream_length = bacon_video_widget_get_stream_length (emb->bvw);
+  return TRUE;
+}
+
+gboolean
+totem_embedded_get_volume (TotemEmbedded *emb, gint* volume, GError **err)
+{
+  *volume = bacon_video_widget_get_volume (emb->bvw);
+  return TRUE;
+}
+
+gboolean
+totem_embedded_set_volume (TotemEmbedded *emb, gint volume, GError **err)
+{
+  bacon_video_widget_set_volume (emb->bvw, volume);
+  return TRUE;
+}
+
+gboolean
+totem_embedded_seek_time (TotemEmbedded *emb, guint64 seek_time, GError **err)
+{
+  bacon_video_widget_seek_time (emb->bvw, seek_time, NULL);
+  return TRUE;
+}
+
+gboolean
+totem_embedded_get_is_playing (TotemEmbedded *emb, gboolean* is_playing, GError **err)
+{
+  *is_playing = bacon_video_widget_is_playing (emb->bvw);
+  return TRUE;
 }
 
 static GdkWindow *

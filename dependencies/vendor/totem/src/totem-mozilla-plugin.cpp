@@ -92,9 +92,10 @@ totem_plugin_fork (TotemPlugin *plugin)
 
 	argv = (char **)g_new0 (char *, MAX_ARGV_LEN);
 
-	if (g_file_test ("./totem-mozilla-viewer",
+    // TODO: change this path
+	if (g_file_test ("./plugins/totem-mozilla-viewer",
 				G_FILE_TEST_EXISTS) != FALSE) {
-		argv[argc++] = g_strdup ("./totem-mozilla-viewer");
+		argv[argc++] = g_strdup ("./plugins/totem-mozilla-viewer");
 	} else {
 		argv[argc++] = g_strdup (LIBEXECDIR"/totem-mozilla-viewer");
 	}
