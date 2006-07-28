@@ -26,5 +26,6 @@
     <method name="GetIsPlaying">
       <arg type="b" name="is_playing" direction="out" />
     </method>
+    <method name="Close"/>
   </interface>
 </node>

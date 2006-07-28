@@ -95,6 +95,7 @@ gboolean totem_embedded_get_volume (TotemEmbedded *emb, gint* volume, GError **e
 gboolean totem_embedded_set_volume (TotemEmbedded *emb, gint volume, GError **err);
 gboolean totem_embedded_seek_time (TotemEmbedded *emb, guint64 seek_time, GError **err);
 gboolean totem_embedded_get_is_playing (TotemEmbedded *emb, gboolean* is_playing, GError **err);
+gboolean totem_embedded_close (TotemEmbedded *emb, GError **err);
 
 #include "totem-mozilla-interface.h"
 
@@ -220,6 +221,14 @@ totem_embedded_stop (TotemEmbedded *emb, GError **err)
 }
 
 gboolean
+totem_embedded_close (TotemEmbedded *emb, GError **err)
+{
+	bacon_video_widget_close (emb->bvw);
+	totem_embedded_set_state (emb, STATE_STOPPED);
+	return TRUE;
+}
+
+gboolean
 totem_embedded_open_url (TotemEmbedded *emb, const char* url, GError **err)
 {
 	GError *bacon_err = NULL;
@@ -268,14 +277,24 @@ totem_embedded_open_url (TotemEmbedded *emb, const char* url, GError **err)
 gboolean
 totem_embedded_get_current_time (TotemEmbedded *emb, guint64* current_time, GError **err)
 {
-  *current_time = bacon_video_widget_get_current_time (emb->bvw);
+  if(emb->filename) {
+    *current_time = bacon_video_widget_get_current_time (emb->bvw);
+  }
+  else {
+    *current_time = 0;
+  }
   return TRUE;
 }
 
 gboolean
 totem_embedded_get_stream_length (TotemEmbedded *emb, guint64* stream_length, GError **err)
 {
-  *stream_length = bacon_video_widget_get_stream_length (emb->bvw);
+  if(emb->filename) {
+    *stream_length = bacon_video_widget_get_stream_length (emb->bvw);
+  }
+  else {
+    *stream_length = 0;
+  }
   return TRUE;
 }
 
@@ -296,14 +315,21 @@ totem_embedded_set_volume (TotemEmbedded *emb, gint volume, GError **err)
 gboolean
 totem_embedded_seek_time (TotemEmbedded *emb, guint64 seek_time, GError **err)
 {
-  bacon_video_widget_seek_time (emb->bvw, seek_time, NULL);
+  if(emb->filename) {
+    bacon_video_widget_seek_time (emb->bvw, seek_time, NULL);
+  }
   return TRUE;
 }
 
 gboolean
 totem_embedded_get_is_playing (TotemEmbedded *emb, gboolean* is_playing, GError **err)
 {
-  *is_playing = bacon_video_widget_is_playing (emb->bvw);
+  if(emb->filename) {
+    *is_playing = bacon_video_widget_is_playing (emb->bvw);
+  }
+  else {
+    *is_playing = FALSE;
+  }
   return TRUE;
 }
 
@@ -712,6 +738,7 @@ int main (int argc, char **argv)
 	g_free (svcname);
 
 	emb = g_object_new (TOTEM_TYPE_EMBEDDED, NULL);
+  emb->filename = NULL;
 	emb->width = emb->height = -1;
 	emb->state = STATE_STOPPED;
 	dbus_g_connection_register_g_object (conn, "/TotemEmbedded",
@@ -799,8 +826,10 @@ int main (int argc, char **argv)
 			gtk_main_iteration ();
 	}
 
-	if (totem_embedded_open (emb) != FALSE)
-		totem_embedded_play (emb, NULL);
+  if(emb->filename) {
+    if (totem_embedded_open (emb) != FALSE)
+      totem_embedded_play (emb, NULL);
+  }
 
 	gtk_main ();
 

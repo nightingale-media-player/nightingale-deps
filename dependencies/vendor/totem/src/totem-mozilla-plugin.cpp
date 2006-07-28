@@ -92,7 +92,10 @@ totem_plugin_fork (TotemPlugin *plugin)
 
 	argv = (char **)g_new0 (char *, MAX_ARGV_LEN);
 
-    // TODO: change this path
+//  gchar* __dir = g_get_current_dir();
+//  g_message("############# current dir is %s", __dir);
+//  g_free(__dir);
+
 	if (g_file_test ("./plugins/totem-mozilla-viewer",
 				G_FILE_TEST_EXISTS) != FALSE) {
 		argv[argc++] = g_strdup ("./plugins/totem-mozilla-viewer");
@@ -651,7 +654,8 @@ static struct {
 	{ "video/x-wmv", "wmv", "video/x-ms-wmv" },
 	{ "application/ogg", "ogg", NULL },
 	{ "video/divx", "divx", "video/x-msvideo" },
-	{ "audio/wav", "wav", NULL }
+	{ "audio/wav", "wav", NULL },
+	{ "application/x-totem-gstreamer", "totem-gstreamer", NULL }
 };
 #define NUM_MIME_TYPES G_N_ELEMENTS(mime_types)
 

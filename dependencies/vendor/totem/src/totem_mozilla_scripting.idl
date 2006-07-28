@@ -34,5 +34,6 @@ interface totemMozillaScript : nsISupports {
   void Stop ();
   void OpenUrl (in AString url);
   void SeekTime (in unsigned long long seekTime);
+  void Close ();
 };
 

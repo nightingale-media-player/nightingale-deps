@@ -215,3 +215,20 @@ totemMozillaObject::SeekTime(PRUint64 seekTime)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+totemMozillaObject::Close()
+{
+  if (!this->tm)
+    return NS_ERROR_FAILURE;
+
+  GError *error = NULL;
+  if(!dbus_g_proxy_call (this->tm->proxy, "Close", &error,
+    G_TYPE_INVALID, G_TYPE_INVALID)) {
+    g_printerr("Error: %s\n", error->message);
+    g_error_free(error);
+    return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
