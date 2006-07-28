@@ -163,7 +163,13 @@ totem_interface_get_full_path (const char *name)
 		if (g_file_test (filename, G_FILE_TEST_EXISTS) == FALSE)
 		{
 			g_free (filename);
-			return NULL;
+      /* Try the plugins dir */
+      filename = g_build_filename (".", "plugins", name, NULL);
+
+      if (g_file_test (filename, G_FILE_TEST_EXISTS) == FALSE)
+      {
+        return NULL;
+      }
 		}
 	}
 
