@@ -35,8 +35,10 @@ make
 mkdir -p $DEPS/plugins/totem/$SB_CONFIGURATION/components
 mkdir -p $DEPS/plugins/totem/$SB_CONFIGURATION/plugins
 mkdir -p $DEPS/plugins/totem/$SB_CONFIGURATION/bin
+mkdir -p $DEPS/plugins/totem/$SB_CONFIGURATION/share
 
 cp src/libtotem_mozilla.xpt $DEPS/plugins/totem/$SB_CONFIGURATION/components
 cp src/.libs/libtotem_mozilla.so $DEPS/plugins/totem/$SB_CONFIGURATION/plugins
 cp src/totem-mozilla-viewer $DEPS/plugins/totem/$SB_CONFIGURATION/bin
+cp data/mozilla-viewer.glade $DEPS/plugins/totem/$SB_CONFIGURATION/share
 
