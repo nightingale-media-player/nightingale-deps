@@ -32,6 +32,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <gst/gst.h>
+
 #include "bacon-video-widget.h"
 #include "totem-interface.h"
 #include "totem-mozilla-options.h"
@@ -325,7 +327,7 @@ gboolean
 totem_embedded_get_is_playing (TotemEmbedded *emb, gboolean* is_playing, GError **err)
 {
   if(emb->filename) {
-    *is_playing = bacon_video_widget_is_playing (emb->bvw);
+    *is_playing = emb->state == STATE_PLAYING;
   }
   else {
     *is_playing = FALSE;
