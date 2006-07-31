@@ -8,7 +8,7 @@ rm -rf ./compiled
 make clean
 
 #
-# Compile the debug mode id3lib for linux
+# Compile the release mode id3lib for linux
 #
 ./configure --prefix=${PWD}/compiled/release-linux \
   --enable-debug=no \
@@ -18,7 +18,7 @@ make clean
 rm -f config.log config.status Makefile
 
 #
-# Compile the release mode id3lib for linux
+# Compile the debug mode id3lib for linux
 #
 ./configure --prefix=${PWD}/compiled/debug-linux \
   --enable-debug=yes \
