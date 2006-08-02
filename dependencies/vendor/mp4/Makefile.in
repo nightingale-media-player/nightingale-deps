@@ -1,0 +1,78 @@
+DEPTH = ../../..
+topsrcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+include $(DEPTH)/build/autodefs.mk
+
+target_name = libmp4
+
+C_SRCS = atom.c \
+         ctab.c \
+         ctts.c \
+         dimm.c \
+         dinf.c \
+         dmax.c \
+         dmed.c \
+         dref.c \
+         drep.c \
+         edts.c \
+         elst.c \
+         esds.c \
+         gmhd.c \
+         gmin.c \
+         hdlr.c \
+         hinf.c \
+         hint.c \
+         hinthnti.c \
+         hintudta.c \
+         hmhd.c \
+         hnti.c \
+         iods.c \
+         matrix.c \
+         maxr.c \
+         mdat.c \
+         mdhd.c \
+         mdia.c \
+         meta.c \
+         minf.c \
+         moov.c \
+         mvhd.c \
+         nump.c \
+         payt.c \
+         pmax.c \
+         quicktime.c \
+         rtp.c \
+         rtphint.c \
+         sdp.c \
+         smhd.c \
+         stbl.c \
+         stco.c \
+         stsc.c \
+         stsd.c \
+         stsdtable.c \
+         stss.c \
+         stsz.c \
+         stts.c \
+         tkhd.c \
+         tmax.c \
+         tmin.c \
+         tpyl.c \
+         trak.c \
+         tref.c \
+         trpy.c \
+         udta.c \
+         util.c \
+         vmhd.c \
+         $(NULL)
+
+C_INCLUDES = $(srcdir) \
+             $(srcdir)/include \
+             $(MOZSDK_INCLUDE_DIR) \
+             $(NULL)
+
+STATIC_LIB = $(target_name)$(LIB_SUFFIX)
+
+STATIC_LIB_OBJS = $(C_SRCS:.c=$(OBJ_SUFFIX))
+
+include $(topsrcdir)/build/rules.mk
