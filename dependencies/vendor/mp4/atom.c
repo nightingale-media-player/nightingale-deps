@@ -118,9 +118,12 @@ u_int64_t quicktime_atom_read_size64(char *data)
 	return result;
 }
 
+// modified by Songbird
 // MOZILLA IS BEING SPECIAL.
 int qt_isalpha(int _C)
-{return _pctype[_C] & _ALPHA; }
+{
+        return isalpha(_C);
+}
 
 int quicktime_atom_read_type(char *data, char *type)
 {
@@ -129,13 +132,18 @@ int quicktime_atom_read_type(char *data, char *type)
 	type[2] = data[6];
 	type[3] = data[7];
 
-/*printf("%c%c%c%c ", type[0], type[1], type[2], type[3]); */
-/* need this for quicktime_check_sig */
-/* uh.... lots of things start with the copyright symbol.... */
-	if((type[0] < 0 || qt_isalpha(type[0])) && qt_isalpha(type[1]) && qt_isalpha(type[2]) && qt_isalpha(type[3]))
-	return 0;
+        // modified by Songbird
+        /*printf("%c%c%c%c ", type[0], type[1], type[2], type[3]); */
+        /* need this for quicktime_check_sig */
+        /* uh.... lots of things start with the copyright symbol.... */
+	if( ( type[0] < 0 || qt_isalpha(type[0]) ) &&
+            qt_isalpha(type[1]) &&
+            qt_isalpha(type[2]) &&
+            qt_isalpha(type[3])
+          )
+	        return 0;
 	else
-	return 1;
+	        return 1;
 }
 
 int quicktime_atom_skip(quicktime_t *file, quicktime_atom_t *atom)
