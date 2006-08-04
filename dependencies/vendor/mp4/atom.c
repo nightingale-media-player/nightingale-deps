@@ -55,7 +55,7 @@ int quicktime_atom_read_header(quicktime_t *file, quicktime_atom_t *atom)
 
 
 #ifdef DEBUG
-	printf("Reading atom %.4s length %u\n", atom->type, atom->size);
+//	printf("Reading atom %.4s length %u\n", atom->type, atom->size);
 #endif
 	return result;
 }
@@ -120,9 +120,9 @@ u_int64_t quicktime_atom_read_size64(char *data)
 
 // modified by Songbird
 // MOZILLA IS BEING SPECIAL.
-int qt_isalpha(int _C)
+int qt_isalpha(char _C)
 {
-        return isalpha(_C);
+  return isalpha(_C);
 }
 
 int quicktime_atom_read_type(char *data, char *type)

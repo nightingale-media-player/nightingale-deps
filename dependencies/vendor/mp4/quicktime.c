@@ -1383,12 +1383,12 @@ int quicktime_dump_atom(quicktime_t *file, quicktime_atom_t *parent_atom, char *
   /* If we (finally) find a data node, send it to the callback. */
   if ( memcmp( parent_atom->type, "data", 4) == 0 )
   {
-    volatile char *buf;
-    buf = (char *)malloc( parent_atom->size + 1 - 8 );
+    char *buf = NULL;
+    int size = parent_atom->size - 8;
     quicktime_read_int64(file); /* Skip 8 bytes?  (sigh) */
-    quicktime_read_data(file, buf, parent_atom->size - 8);
-    buf[ parent_atom->size - 8 ] = 0; /* Null term */
-/*    printf( "MP4ATOM: %s(%d) %s\n", buffer, parent_atom->size, buf ); */
+    buf = (char *)malloc( size + 1 );
+    quicktime_read_data(file, buf, size);
+    buf[ size ] = 0; /* Null term */
     if ( callback )
       (*callback)( buffer, buf, context );
     free( buf );
