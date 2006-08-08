@@ -98,8 +98,8 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = dami::min(maxLength, size);
-    ::memcpy((void *)buffer, (void *)_text.data(), length * 2);
+    length = dami::min(maxLength * 2, size); // Songbird edit
+    ::memcpy((void *)buffer, (void *)_text.data(), length /* * 2 */ );  // Songbird edit
     if (length < maxLength)
     {
       buffer[length] = NULL_UNICODE;
