@@ -3,7 +3,6 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="id3lib"
-	ProjectGUID="{6A5C6B5D-5F9B-4E94-9512-E9DA3C5243B1}"
 	RootNamespace="id3lib"
 	SccProjectName=""
 	SccLocalPath="H/PC Ver. 2.00">
@@ -24,12 +23,12 @@
 				Optimization="0"
 				AdditionalIncludeDirectories=".\,..\,..\include,..\include\id3,..\zlib\include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\debug/id3lib.pch"
-				AssemblerListingLocation=".\debug/"
+				PrecompiledHeaderFile=".\Debug/id3lib.pch"
+				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\debug/"
+				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
@@ -45,9 +44,9 @@
 				SuppressStartupBanner="TRUE"
 				ModuleDefinitionFile=".\Id3lib.def"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\debug/id3lib.pdb"
+				ProgramDatabaseFile=".\Debug/id3lib.pdb"
 				SubSystem="2"
-				ImportLibrary="./debug/id3lib.lib"
+				ImportLibrary=".\Debug/id3lib.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -55,17 +54,10 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName="..\..\win32\id3lib\debug/id3lib.tlb"
+				TypeLibraryName=".\Debug/id3lib.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="mkdir $(SolutionDir)dist\xulrunner
-copy /y $(TargetPath) $(SolutionDir)dist\xulrunner
-copy /y $(OutDir)\*.pdb $(SolutionDir)dist\xulrunner
-copy /y $(TargetPath) $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\bin
-copy /y $(InputDir)\$(ConfigurationName)\*.lib $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\lib
-copy /y $(InputDir)\$(ConfigurationName)\*.exp $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\lib
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -99,7 +91,7 @@ copy /y $(InputDir)\$(ConfigurationName)\*.exp $(SolutionDir)dependencies\win32\
 				AdditionalIncludeDirectories=".\,..\,..\include,..\include\id3,..\zlib\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2"
 				StringPooling="TRUE"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/id3lib.pch"
@@ -131,13 +123,7 @@ copy /y $(InputDir)\$(ConfigurationName)\*.exp $(SolutionDir)dependencies\win32\
 				TypeLibraryName=".\Release/id3lib.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="mkdir $(SolutionDir)dist\xulrunner
-copy /y $(TargetPath) $(SolutionDir)dist\xulrunner
-copy /y $(TargetPath) $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\bin
-copy /y $(InputDir)\$(ConfigurationName)\*.lib $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\lib
-copy /y $(InputDir)\$(ConfigurationName)\*.exp $(SolutionDir)dependencies\win32\id3lib\$(ConfigurationName)\lib
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
