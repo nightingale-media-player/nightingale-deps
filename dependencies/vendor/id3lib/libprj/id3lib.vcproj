@@ -5,7 +5,7 @@
 	Name="id3lib"
 	RootNamespace="id3lib"
 	SccProjectName=""
-	SccLocalPath="H/PC Ver. 2.00">
+	SccLocalPath="Desktop">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -15,7 +15,7 @@
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="1">
@@ -23,14 +23,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\,..\,..\include,..\include\id3,..\zlib\include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=3"
-				StringPooling="FALSE"
-				MinimalRebuild="FALSE"
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_WINDOWS;HAVE_CONFIG_H;ID3LIB_LINKOPTION=1"
 				BasicRuntimeChecks="3"
-				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="FALSE"
-				EnableFunctionLevelLinking="FALSE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/id3lib.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -44,25 +39,11 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="..\zlib\zlibD.lib"
-				OutputFile=".\Debug/id3lib.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile=".\Id3lib.def"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/id3lib.pdb"
-				SubSystem="2"
-				ImportLibrary=".\Debug/id3lib.lib"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"
+				OutputFile=".\id3lib_d.lib"
+				SuppressStartupBanner="TRUE"/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/id3lib.tlb"
-				HeaderFileName=""/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -72,13 +53,11 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Culture="2057"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -88,7 +67,7 @@
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="1">
@@ -96,13 +75,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				FavorSizeOrSpeed="0"
 				AdditionalIncludeDirectories=".\,..\,..\include,..\include\id3,..\zlib\include"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=3"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_WINDOWS;HAVE_CONFIG_H;ID3LIB_LINKOPTION=1"
 				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="0"
-				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
@@ -112,29 +87,15 @@
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				Detect64BitPortabilityProblems="TRUE"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="..\zlib\zlib.lib"
-				OutputFile=".\Release/id3lib.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile=".\Id3lib.def"
-				ProgramDatabaseFile=".\Release/id3lib.pdb"
-				SubSystem="2"
-				ImportLibrary=".\Release/id3lib.lib"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"
+				OutputFile=".\id3lib.lib"
+				SuppressStartupBanner="TRUE"/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release/id3lib.tlb"
-				HeaderFileName=""/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -144,13 +105,11 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Culture="2057"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -161,8 +120,8 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
-			Filter="c;cpp">
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
 				RelativePath="..\src\c_wrapper.cpp">
 				<FileConfiguration
@@ -171,7 +130,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -180,7 +140,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -191,7 +151,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -200,7 +161,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -211,7 +172,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -220,7 +182,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -231,7 +193,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -240,7 +203,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -251,7 +214,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -260,7 +224,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -271,7 +235,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -280,7 +245,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -291,7 +256,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -300,7 +266,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -311,7 +277,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -320,7 +287,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -331,7 +298,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -340,7 +308,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -351,7 +319,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -360,7 +329,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -371,7 +340,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -380,7 +350,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -391,7 +361,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -400,7 +371,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -411,7 +382,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -420,7 +392,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -431,7 +403,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -440,7 +413,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -451,7 +424,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -460,7 +434,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -471,7 +445,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -480,7 +455,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -491,7 +466,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -500,7 +476,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -511,7 +487,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -520,7 +497,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -531,7 +508,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -540,7 +518,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -551,7 +529,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -560,7 +539,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -571,7 +550,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -580,7 +560,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -591,7 +571,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -600,7 +581,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -611,7 +592,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -620,7 +602,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -631,7 +613,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -640,7 +623,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -651,7 +634,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -660,7 +644,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -671,7 +655,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -680,7 +665,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -691,7 +676,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -700,7 +686,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -711,7 +697,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -720,7 +707,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -731,7 +718,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -740,7 +728,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -751,7 +739,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -760,7 +749,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -771,7 +760,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -780,7 +770,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -791,7 +781,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -800,7 +791,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -811,7 +802,8 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -820,13 +812,16 @@
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;__DLL;HAVE_CONFIG_H;ID3LIB_LINKOPTION=2;$(NoInherit)"/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
-			Name="include"
-			Filter="h;hpp">
+			Name="Include Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\config.h">
+			</File>
 			<File
 				RelativePath="..\include\id3\field.h">
 			</File>
@@ -915,31 +910,7 @@
 				RelativePath="..\include\id3\writers.h">
 			</File>
 			<File
-				RelativePath="..\zlib\include\zconf.h">
-			</File>
-			<File
-				RelativePath="..\zlib\include\zlib.h">
-			</File>
-		</Filter>
-		<Filter
-			Name="config"
-			Filter="">
-			<File
-				RelativePath="..\config.h.win32">
-			</File>
-		</Filter>
-		<Filter
-			Name="definition file"
-			Filter="def">
-			<File
-				RelativePath="Id3lib.def">
-			</File>
-		</Filter>
-		<Filter
-			Name="Resources"
-			Filter="rc">
-			<File
-				RelativePath="version.rc">
+				RelativePath="..\Zlib\Include\Zlib.h">
 			</File>
 		</Filter>
 	</Files>
