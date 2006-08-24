@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="id3lib"
+	ProjectGUID="{1A71F19B-9F42-47B7-838E-848319A5FDED}"
 	RootNamespace="id3lib"
 	SccProjectName=""
 	SccLocalPath="H/PC Ver. 2.00">
@@ -46,7 +47,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\zlib\zlibD.lib"
-				OutputFile=".\Debug/id3lib.dll"
+				OutputFile="$(SolutionDir)\dependencies\win32\id3lib\$(ConfigurationName)\bin\id3lib.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ModuleDefinitionFile=".\Id3lib.def"
@@ -119,7 +120,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\zlib\zlib.lib"
-				OutputFile=".\Release/id3lib.dll"
+				OutputFile="$(SolutionDir)\dependencies\win32\id3lib\$(ConfigurationName)\bin\id3lib.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ModuleDefinitionFile=".\Id3lib.def"
