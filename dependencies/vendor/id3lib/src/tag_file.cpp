@@ -160,7 +160,12 @@ size_t ID3_TagImpl::Link(ID3_Reader &reader, flags_t tag_types)
 
   this->ParseReader(reader);
 
+  // SONGBIRD EDIT
+#if 0
   return this->GetPrependedBytes();
+#else
+  return this->GetPrependedBytes() + this->GetAppendedBytes(); // How can you miss this?  This makes ID3V1 not work __at_all__
+#endif
 }
 
 size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
