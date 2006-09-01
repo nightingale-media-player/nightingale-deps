@@ -218,6 +218,8 @@ void ID3_TagImpl::ParseFile()
 //used for streaming media
 void ID3_TagImpl::ParseReader(ID3_Reader &reader)
 {
+  const int MAX_COUNT_BEFORE_FAIL = 4096;  // SONGBIRD EDIT:  Give up!  Give up!
+
   size_t mp3_core_size;
   size_t bytes_till_sync;
 
@@ -251,27 +253,31 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
   if (!wr.atEnd() && wr.peekChar() == '\0')
   {
     ID3D_NOTICE( "ID3_TagImpl::ParseReader(): found padding outside tag" );
+    int count = 0; // SONGBIRD EDIT:  Give up!  Give up!
     do
     {
       last = cur;
       cur = wr.getCur() + 1;
       wr.setBeg(cur);
       wr.setCur(cur);
-    } while (!wr.atEnd() &&  cur > last && wr.peekChar() == '\0');
+      ++count; // SONGBIRD EDIT:  Give up!  Give up!
+    } while (!wr.atEnd() && cur > last && count < MAX_COUNT_BEFORE_FAIL && wr.peekChar() == '\0'); // SONGBIRD EDIT:  Give up!  Give up!
   }
   if (!wr.atEnd() && _file_size - (cur - beg) > 4 && wr.peekChar() == 255)
   { //unfortunatly, this is necessary for finding an invalid padding
     wr.setCur(cur + 1); //cur is known by peekChar
     if (wr.readChar() == '\0' && wr.readChar() == '\0' && wr.peekChar() == '\0')
     { //three empty bytes found, enough for me, this is stupid padding
-      cur += 3; //those are now allready read in (excluding the peekChar, since it will be added by do{})
+      cur += 3; //those are now already read in (excluding the peekChar, since it will be added by do{})
+      int count = 0; // SONGBIRD EDIT:  Give up!  Give up!
       do
       {
         last = cur;
         cur = wr.getCur() + 1;
         wr.setBeg(cur);
         wr.setCur(cur);
-      } while (!wr.atEnd() &&  cur > last && wr.peekChar() == '\0');
+        ++count; // SONGBIRD EDIT:  Give up!  Give up!
+      } while (!wr.atEnd() && cur > last && count < MAX_COUNT_BEFORE_FAIL && wr.peekChar() == '\0'); // SONGBIRD EDIT:  Give up!  Give up!
     }
     else
       wr.setCur(cur);
@@ -298,12 +304,14 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
         // loop until first possible sync byte
         if (!wr.atEnd() && wr.peekChar() != 0xFF)
         {
+          int count = 0; // SONGBIRD EDIT:  Give up!  Give up!
           do
           {
             last = cur;
             cur = wr.getCur() + 1;
             wr.setCur(cur);
-          } while (!wr.atEnd() &&  cur > last && wr.peekChar() != 0xFF);
+            ++count; // SONGBIRD EDIT:  Give up!  Give up!
+          } while (!wr.atEnd() && cur > last && count < MAX_COUNT_BEFORE_FAIL && wr.peekChar() != 0xFF); // SONGBIRD EDIT:  Give up!  Give up!
         }
       }
       else if (strncmp((char*)buf, "fLaC", 4) == 0)
@@ -312,18 +320,20 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
       }
       else
       { //since we set the cursor 4 bytes ahead for looking for RIFF, RIFX or fLaC, better set it back
-        // but peekChar allready checked the first one, so we add one
+        // but peekChar already checked the first one, so we add one
         cur = cur + 1;
         wr.setCur(cur);
         //go looking for a sync byte
         if (!wr.atEnd() && wr.peekChar() != 0xFF) //no sync byte, we have an unknown byte
         {
+          int count = 0; // SONGBIRD EDIT:  Give up!  Give up!
           do
           {
             last = cur;
             cur = wr.getCur() + 1;
             wr.setCur(cur);
-          } while (!wr.atEnd() &&  cur > last && wr.peekChar() != 0xFF);
+            ++count; // SONGBIRD EDIT:  Give up!  Give up!
+          } while (!wr.atEnd() && cur > last && count < MAX_COUNT_BEFORE_FAIL && wr.peekChar() != 0xFF); // SONGBIRD EDIT:  Give up!  Give up!
         }
       }
     } //if ((_file_size - (cur - beg)) >= 4)
