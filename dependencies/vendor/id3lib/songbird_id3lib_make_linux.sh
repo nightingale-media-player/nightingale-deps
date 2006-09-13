@@ -10,7 +10,7 @@ make clean
 #
 # Compile the release mode id3lib for linux
 #
-./configure --prefix=${PWD}/../../linux/id3lib/release \
+./configure --prefix=${PWD}/../../${ARCH}/id3lib/release \
   --enable-debug=no \
   --enable-cxx-warnings=no
 make && make install
@@ -20,7 +20,7 @@ rm -f config.log config.status Makefile
 #
 # Compile the debug mode id3lib for linux
 #
-./configure --prefix=${PWD}/../../linux/id3lib/debug \
+./configure --prefix=${PWD}/../../${ARCH}/id3lib/debug \
   --enable-debug=yes \
   --enable-cxx-warnings=no
 make && make install
