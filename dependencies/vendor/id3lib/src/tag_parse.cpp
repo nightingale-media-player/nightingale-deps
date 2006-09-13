@@ -155,6 +155,7 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   tag.SetSpec(hdr.GetSpec());
 
   size_t dataSize = hdr.GetDataSize();
+
   ID3D_NOTICE( "ID3_TagImpl::Parse(ID3_Reader&): dataSize = " << dataSize);
 
   wr.setWindow(wr.getCur(), dataSize);
@@ -346,7 +347,21 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
   }
   bytes_till_sync = cur - beg;
 
+  if (end == ID3_Reader::pos_type(-1)) // SONGBIRD EDIT: Sometimes we don't know how big the file is.  No ID3v1 for you!
+    return;
+
+  // SONGBIRD EDIT: Try to seek to the end.  If this is remote, you have to nuke the channel from orbit.
   cur = wr.setCur(end);
+  if (cur == ID3_Reader::pos_type(-1))
+    if (_prepended_bytes > size_t(0))
+      return;
+    else 
+    {
+      _prepended_bytes = size_t(-1);
+      return;
+    }
+
+
   if (_file_size > _prepended_bytes)
   {
     do

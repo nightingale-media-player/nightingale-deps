@@ -96,12 +96,15 @@ class ID3_CPP_EXPORT ID3_Reader
    **/
   virtual size_type skipChars(size_type len)
   {
-    const size_type SIZE = 1024;
+    const size_type SIZE = 10240;
     char_type bytes[SIZE];
     size_type remaining = len;
     while (!this->atEnd() && remaining > 0)
     {
-      remaining -= this->readChars(bytes, (remaining < SIZE ? remaining : SIZE));
+      size_type read = this->readChars(bytes, (remaining < SIZE ? remaining : SIZE));
+      if (read == size_type(-1))
+        return size_type(-1);
+      remaining -= read; 
     }
     return len - remaining;
   }
