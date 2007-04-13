@@ -1,4 +1,5 @@
 browser.jar:
+%  content browser %content/browser/
 *   content/browser/preferences/advanced.xul
 *   content/browser/preferences/advanced.js
 *   content/browser/preferences/advanced-scripts.xul
@@ -36,9 +37,5 @@ browser.jar:
 *   content/browser/preferences/security.js
 *   content/browser/preferences/securityWarnings.xul
 *   content/browser/preferences/securityWarnings.js
-#ifdef MOZ_PLACES_BOOKMARKS
-*   content/browser/preferences/selectBookmark.xul
-*   content/browser/preferences/selectBookmark.js
-#endif
 *   content/browser/preferences/tabs.xul
 *   content/browser/preferences/tabs.js

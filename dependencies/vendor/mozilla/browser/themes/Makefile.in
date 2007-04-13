@@ -35,24 +35,53 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+#
+# Songbird Makefile.
+#
 
+
+DEPTH = ../../../../..
+topsrcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+include $(DEPTH)/build/autodefs.mk
+
+ifeq ($(SB_PLATFORM), macosx)
+SUBDIRS = pinstripe/browser
+else
+SUBDIRS = winstripe/browser
+endif
+
+include $(topsrcdir)/build/rules.mk
+
+
+
+
+#
+# Original Moz Makefile
+#
+
+
+#DEPTH		= ../..
+#topsrcdir	= @top_srcdir@
+#srcdir		= @srcdir@
+#VPATH		= @srcdir@
+#
+#include $(DEPTH)/config/autoconf.mk
+#
 #
 # Theme Selection
 #
 # Windows, GNOME/Linux    Winstripe
 # MacOS X                 Pinstripe
 #
-
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-DIRS = pinstripe
-else
-DIRS = winstripe
-endif
-
-include $(topsrcdir)/config/rules.mk
+#
+#ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+#DIRS = pinstripe
+#else
+#DIRS = winstripe
+#endif
+#
+#include $(topsrcdir)/config/rules.mk

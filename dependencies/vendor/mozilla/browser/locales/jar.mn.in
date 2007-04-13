@@ -1,0 +1,161 @@
+#filter substitution
+
+# *sigh* everyone gets english for now (same as before)
+browser.jar:
+% locale  browser  bg-BG  %locale/browser/
+% locale  browser  bs-BA  %locale/browser/
+% locale  browser  ca-AD  %locale/browser/
+% locale  browser  cs-CZ  %locale/browser/
+% locale  browser  da-DK  %locale/browser/
+% locale  browser  de-DE  %locale/browser/
+% locale  browser  el-GR  %locale/browser/
+% locale  browser  en-AU  %locale/browser/
+% locale  browser  en-EN  %locale/browser/
+% locale  browser  en-NZ  %locale/browser/
+% locale  browser  en-US  %locale/browser/
+% locale  browser  es-AR  %locale/browser/
+% locale  browser  es-ES  %locale/browser/
+% locale  browser  es-MX  %locale/browser/
+% locale  browser  eu-ES  %locale/browser/
+% locale  browser  fi-FI  %locale/browser/
+% locale  browser  fr-FR  %locale/browser/
+% locale  browser  gl-ES  %locale/browser/
+% locale  browser  he-IL  %locale/browser/
+% locale  browser  hr-HR  %locale/browser/
+% locale  browser  hu-HU  %locale/browser/
+% locale  browser  it-IT  %locale/browser/
+% locale  browser  ja-JP  %locale/browser/
+% locale  browser  ko-KR  %locale/browser/
+% locale  browser  lt-LT  %locale/browser/
+% locale  browser  nl-BE  %locale/browser/
+% locale  browser  nl-NL  %locale/browser/
+% locale  browser  nn-NO  %locale/browser/
+% locale  browser  nb-NO  %locale/browser/
+% locale  browser  pl-PL  %locale/browser/
+% locale  browser  pt-BR  %locale/browser/
+% locale  browser  sk-SK  %locale/browser/
+% locale  browser  sv-SE  %locale/browser/
+% locale  browser  th-TH  %locale/browser/
+% locale  browser  tr-TR  %locale/browser/
+% locale  browser  uk-UA  %locale/browser/
+% locale  browser  zh-CN  %locale/browser/
+% locale  browser  zh-TW  %locale/browser/
+% locale  browser  ru-RU  %locale/browser/
+% locale  browser  ka-GE  %locale/browser/
+% locale  browser  pt-PT  %locale/browser/
+% locale  browser  ro-RO  %locale/browser/
+% locale  browser  de-AT  %locale/browser/
+% locale  browser  bn-BD  %locale/browser/
+% locale  browser  fr-CA  %locale/browser/
+% locale  browser  es-CL  %locale/browser/
+% locale  browser  es-CO  %locale/browser/
+% locale  browser  es-DO  %locale/browser/
+% locale  browser  fy-NL  %locale/browser/
+% locale  browser  vi     %locale/browser/
+% locale  browser  ur-PK  %locale/browser/
+% locale  browser  is     %locale/browser/
+% locale  browser  ta-IN  %locale/browser/
+% locale  browser  es-UY  %locale/browser/
+% locale  browser  haw  %locale/browser/
+% locale  browser  hy  %locale/browser/
+% locale  browser  es-PR  %locale/browser/
+% locale  browser  en-CA  %locale/browser/
+% locale  browser  dsb  %locale/browser/
+% locale  browser  de-CH  %locale/browser/
+    locale/browser/aboutDialog.dtd                 (en-US/chrome/browser/aboutDialog.dtd)
+    locale/browser/credits.dtd                     (en-US/chrome/browser/credits.dtd)
+*   locale/browser/browser.dtd                     (en-US/chrome/browser/browser.dtd)
+    locale/browser/baseMenuOverlay.dtd             (en-US/chrome/browser/baseMenuOverlay.dtd)
+    locale/browser/browser.properties              (en-US/chrome/browser/browser.properties)
+    locale/browser/metaData.dtd                    (en-US/chrome/browser/metaData.dtd)
+    locale/browser/metaData.properties             (en-US/chrome/browser/metaData.properties)
+    locale/browser/openLocation.dtd                (en-US/chrome/browser/openLocation.dtd)
+    locale/browser/openLocation.properties         (en-US/chrome/browser/openLocation.properties)
+*   locale/browser/pageInfo.dtd                    (en-US/chrome/browser/pageInfo.dtd)
+    locale/browser/pageInfo.properties             (en-US/chrome/browser/pageInfo.properties)
+    locale/browser/pageReport.dtd                  (en-US/chrome/browser/pageReport.dtd)
+    locale/browser/pageReportFirstTime.dtd         (en-US/chrome/browser/pageReportFirstTime.dtd)
+*   locale/browser/safeMode.dtd                    (en-US/chrome/browser/safeMode.dtd)
+    locale/browser/sanitize.dtd                    (en-US/chrome/browser/sanitize.dtd)
+    locale/browser/search.properties               (en-US/chrome/browser/search.properties)
+    locale/browser/searchbar.dtd                   (en-US/chrome/browser/searchbar.dtd)
+    locale/browser/engineManager.dtd               (en-US/chrome/browser/engineManager.dtd)
+    locale/browser/setDesktopBackground.dtd        (en-US/chrome/browser/setDesktopBackground.dtd)
+    locale/browser/shellservice.properties         (en-US/chrome/browser/shellservice.properties)
+    locale/browser/sessionstore.properties         (en-US/chrome/browser/sessionstore.properties)
+#ifdef MOZ_PLACES
+    locale/browser/places/places.dtd               (en-US/chrome/browser/places/places.dtd)
+    locale/browser/places/places.properties        (en-US/chrome/browser/places/places.properties)
+#endif
+#ifdef MOZ_PLACES_BOOKMARKS
+    locale/browser/places/bookmarkProperties.dtd   (en-US/chrome/browser/places/bookmarkProperties.dtd)
+    locale/browser/places/bookmarkProperties.properties (en-US/chrome/browser/places/bookmarkProperties.properties)
+    locale/browser/places/default_places.html      (en-US/chrome/browser/places/default_places.html)
+    locale/browser/preferences/selectBookmark.dtd  (en-US/chrome/browser/preferences/selectBookmark.dtd)
+    locale/browser/places/moveBookmarks.dtd        (en-US/chrome/browser/places/moveBookmarks.dtd)
+#else
+*   locale/browser/bookmarks/bookmarks.dtd         (en-US/chrome/browser/bookmarks/bookmarks.dtd)
+*   locale/browser/bookmarks/addBookmark.dtd       (en-US/chrome/browser/bookmarks/addBookmark.dtd)
+*   locale/browser/bookmarks/bookmarks.properties  (en-US/chrome/browser/bookmarks/bookmarks.properties)
+*   locale/browser/bookmarks/bookmarksProperties.dtd (en-US/chrome/browser/bookmarks/bookmarksProperties.dtd)
+#endif
+#ifdef MOZ_SAFE_BROWSING
+    locale/browser/safebrowsing/phishing-afterload-warning-message.dtd (en-US/chrome/browser/safebrowsing/phishing-afterload-warning-message.dtd)
+    locale/browser/safebrowsing/report-phishing.dtd                    (en-US/chrome/browser/safebrowsing/report-phishing.dtd)
+#endif
+    locale/browser/feeds/subscribe.dtd              (en-US/chrome/browser/feeds/subscribe.dtd)
+    locale/browser/feeds/subscribe.properties       (en-US/chrome/browser/feeds/subscribe.properties)
+    locale/browser/history/history.dtd             (en-US/chrome/browser/history/history.dtd)
+    locale/browser/migration/migration.dtd         (en-US/chrome/browser/migration/migration.dtd)
+    locale/browser/migration/migration.properties  (en-US/chrome/browser/migration/migration.properties)
+    locale/browser/preferences/advanced.dtd           (en-US/chrome/browser/preferences/advanced.dtd)
+*   locale/browser/preferences/advanced-scripts.dtd   (en-US/chrome/browser/preferences/advanced-scripts.dtd)
+    locale/browser/preferences/changeaction.dtd       (en-US/chrome/browser/preferences/changeaction.dtd)
+    locale/browser/preferences/colors.dtd             (en-US/chrome/browser/preferences/colors.dtd)
+    locale/browser/preferences/cookies.dtd            (en-US/chrome/browser/preferences/cookies.dtd)
+    locale/browser/preferences/content.dtd            (en-US/chrome/browser/preferences/content.dtd)
+    locale/browser/preferences/connection.dtd         (en-US/chrome/browser/preferences/connection.dtd)
+    locale/browser/preferences/downloadactions.dtd    (en-US/chrome/browser/preferences/downloadactions.dtd)
+    locale/browser/preferences/fallbackEULA.dtd       (en-US/chrome/browser/preferences/fallbackEULA.dtd)
+    locale/browser/preferences/feeds.dtd              (en-US/chrome/browser/preferences/feeds.dtd)
+    locale/browser/preferences/feeds.properties       (en-US/chrome/browser/preferences/feeds.properties)
+    locale/browser/preferences/fonts.dtd              (en-US/chrome/browser/preferences/fonts.dtd)
+    locale/browser/preferences/main.dtd               (en-US/chrome/browser/preferences/main.dtd)
+    locale/browser/preferences/languages.dtd          (en-US/chrome/browser/preferences/languages.dtd)
+    locale/browser/preferences/permissions.dtd        (en-US/chrome/browser/preferences/permissions.dtd)
+    locale/browser/preferences/phishEULA.dtd          (en-US/chrome/browser/preferences/phishEULA.dtd)
+    locale/browser/preferences/preferences.dtd        (en-US/chrome/browser/preferences/preferences.dtd)
+    locale/browser/preferences/preferences.properties (en-US/chrome/browser/preferences/preferences.properties)
+    locale/browser/preferences/privacy.dtd            (en-US/chrome/browser/preferences/privacy.dtd)
+    locale/browser/preferences/security.dtd           (en-US/chrome/browser/preferences/security.dtd)
+    locale/browser/preferences/securityWarnings.dtd   (en-US/chrome/browser/preferences/securityWarnings.dtd)
+    locale/browser/preferences/tabs.dtd               (en-US/chrome/browser/preferences/tabs.dtd)
+    locale/browser/sidebar/sidebar.properties      (en-US/chrome/browser/sidebar/sidebar.properties)
+#% locale browser-region en-US %locale/browser-region/
+#    locale/browser-region/region.properties        (en-US/chrome/browser-region/region.properties)
+    locale/browser/help/help.rdf                      (en-US/chrome/help/firebirdhelp.rdf)
+    locale/browser/help/firebird-toc.rdf              (en-US/chrome/help/firebird-toc.rdf)
+    locale/browser/help/search-db.rdf                 (en-US/chrome/help/search-db.rdf)
+    locale/browser/help/accessibility.xhtml           (en-US/chrome/help/accessibility.xhtml)
+    locale/browser/help/cookies.xhtml                 (en-US/chrome/help/cookies.xhtml)
+    locale/browser/help/forieusers.xhtml              (en-US/chrome/help/forieusers.xhtml)
+    locale/browser/help/menu_reference.xhtml          (en-US/chrome/help/menu_reference.xhtml)
+    locale/browser/help/mouse_shortcuts.xhtml         (en-US/chrome/help/mouse_shortcuts.xhtml)
+    locale/browser/help/popup.xhtml                   (en-US/chrome/help/popup.xhtml)
+    locale/browser/help/prefs.xhtml                   (en-US/chrome/help/prefs.xhtml)
+    locale/browser/help/shortcuts.xhtml               (en-US/chrome/help/shortcuts.xhtml)
+    locale/browser/help/using_firebird.xhtml          (en-US/chrome/help/using_firebird.xhtml)
+    locale/browser/help/customization.xhtml           (en-US/chrome/help/customization.xhtml)
+    locale/browser/help/firefox_welcome.xhtml         (en-US/chrome/help/firefox_welcome.xhtml)
+    locale/browser/help/download_manager.xhtml        (en-US/chrome/help/download_manager.xhtml)
+    locale/browser/help/platformStrings.dtd           (en-US/chrome/help/platformStrings.dtd)
+    locale/browser/help/tabbed_browsing.xhtml         (en-US/chrome/help/tabbed_browsing.xhtml)
+    locale/browser/help/glossary.xhtml                (en-US/chrome/help/glossary.xhtml)
+# the following files are browser-specific overrides
+*   locale/en-US/global/netError.dtd                (en-US/chrome/overrides/netError.dtd)
+*   locale/en-US/global/appstrings.properties       (en-US/chrome/overrides/appstrings.properties)
+#ifdef MOZ_USE_GENERIC_BRANDING
+% locale branding en-US %locale/branding/
+    locale/branding/brand.dtd         (en-US/chrome/branding/brand.dtd)
+    locale/branding/brand.properties  (en-US/chrome/branding/brand.properties)
+#endif

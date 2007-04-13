@@ -1,4 +1,4 @@
-classic.jar:
+browser.jar:
 % skin browser classic/1.0 %skin/classic/browser/
   skin/classic/browser/bookmark_toolbar_background.gif
   skin/classic/browser/bookmark-open-left.png
