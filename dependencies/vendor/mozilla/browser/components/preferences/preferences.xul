@@ -104,9 +104,9 @@
     <prefpane id="paneAdvanced" label="&paneAdvanced.title;"
               src="chrome://browser/content/preferences/advanced.xul"/>
 
-#ifdef XP_MACOSX
-#include ../../base/content/browserMountPoints.inc
-#endif
+##ifdef XP_MACOSX
+##include ../../base/content/browserMountPoints.inc
+##endif
 
 </prefwindow>
 
