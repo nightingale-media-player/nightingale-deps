@@ -50,6 +50,10 @@ include $(DEPTH)/build/autodefs.mk
 
 JAR_MANIFEST = jar.mn
 
+SONGBIRD_SEARCHPLUGINS = $(srcdir)/en-US/searchplugins/google.xml \
+                         $(srcdir)/en-US/searchplugins/yahoo.xml \
+                         $(NULL)
+
 include $(topsrcdir)/build/rules.mk
 
 

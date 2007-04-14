@@ -131,8 +131,8 @@ browser.jar:
     locale/browser/preferences/securityWarnings.dtd   (en-US/chrome/browser/preferences/securityWarnings.dtd)
     locale/browser/preferences/tabs.dtd               (en-US/chrome/browser/preferences/tabs.dtd)
     locale/browser/sidebar/sidebar.properties      (en-US/chrome/browser/sidebar/sidebar.properties)
-#% locale browser-region en-US %locale/browser-region/
-#    locale/browser-region/region.properties        (en-US/chrome/browser-region/region.properties)
+% locale browser-region en-US %locale/browser-region/
+    locale/browser-region/region.properties        (en-US/chrome/browser-region/region.properties)
     locale/browser/help/help.rdf                      (en-US/chrome/help/firebirdhelp.rdf)
     locale/browser/help/firebird-toc.rdf              (en-US/chrome/help/firebird-toc.rdf)
     locale/browser/help/search-db.rdf                 (en-US/chrome/help/search-db.rdf)
