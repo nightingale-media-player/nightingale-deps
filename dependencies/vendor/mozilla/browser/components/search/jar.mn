@@ -1,4 +1,5 @@
 browser.jar:
+%  content browser %content/browser/
 *       content/browser/search/search.xml                           (content/search.xml)
         content/browser/search/searchbarBindings.css                (content/searchbarBindings.css)
 *       content/browser/search/engineManager.xul                    (content/engineManager.xul)

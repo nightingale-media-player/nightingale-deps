@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -37,7 +38,7 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
-
+*/
 const Ci = Components.interfaces;
 const Cc = Components.classes;
 const Cr = Components.results;
@@ -131,12 +132,21 @@ const BROWSER_SEARCH_PREF = "browser.search.";
 const USER_DEFINED = "{searchTerms}";
 
 // Custom search parameters
+/*
 #ifdef OFFICIAL_BUILD
 const MOZ_OFFICIAL = "official";
 #else
+*/
 const MOZ_OFFICIAL = "unofficial";
+/*
 #endif
 #expand const MOZ_DISTRIBUTION_ID = __MOZ_DISTRIBUTION_ID__;
+*/
+
+/**************************
+ XXX - What should this be?
+ **************************/
+const MOZ_DISTRIBUTION_ID = "Songbird?";
 
 const MOZ_PARAM_LOCALE         = /\{moz:locale\}/g;
 const MOZ_PARAM_DIST_ID        = /\{moz:distributionID\}/g;
@@ -851,13 +861,16 @@ EngineURL.prototype = {
       // stream and supply that as POSTDATA.
       var stringStream = Cc["@mozilla.org/io/string-input-stream;1"].
                          createInstance(Ci.nsIStringInputStream);
+/*
 #ifdef MOZILLA_1_8_BRANCH
 # bug 318193
       stringStream.setData(dataString, dataString.length);
 #else
+*/
       stringStream.data = dataString;
+/*
 #endif
-
+*/
       postData = Cc["@mozilla.org/network/mime-input-stream;1"].
                  createInstance(Ci.nsIMIMEInputStream);
       postData.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -3102,4 +3115,67 @@ function NSGetModule(componentManager, fileSpec) {
   return gModule;
 }
 
+/*
 #include ../../../toolkit/content/debug.js
+*/
+
+// Direct copy of debug.js, as apparently we aren't allowed 
+// to use the preprocessor on JS components.
+
+var gTraceOnAssert = true;
+
+/**
+ * This function provides a simple assertion function for JavaScript.
+ * If the condition is true, this function will do nothing.  If the
+ * condition is false, then the message will be printed to the console
+ * and an alert will appear showing a stack trace, so that the (alpha
+ * or nightly) user can file a bug containing it.  For future enhancements, 
+ * see bugs 330077 and 330078.
+ *
+ * To suppress the dialogs, you can run with the environment variable
+ * XUL_ASSERT_PROMPT set to 0 (if unset, this defaults to 1).
+ *
+ * @param condition represents the condition that we're asserting to be
+ *                  true when we call this function--should be
+ *                  something that can be evaluated as a boolean.
+ * @param message   a string to be displayed upon failure of the assertion
+ */
+
+function NS_ASSERT(condition, message) {
+  if (condition)
+    return;
+
+  var caller = arguments.callee.caller;
+  var assertionText = "ASSERT: " + message + "\n";
+  dump(assertionText);
+
+  var stackText = "";
+  if (gTraceOnAssert) {
+    stackText = "Stack Trace: \n";
+    var count = 0;
+    while (caller) {
+      stackText += count++ + ":" + caller.name + "(";
+      for (var i = 0; i < caller.arguments.length; ++i) {
+        var arg = caller.arguments[i];
+        stackText += arg;
+        if (i < caller.arguments.length - 1)
+          stackText += ",";
+      }
+      stackText += ")\n";
+      caller = caller.arguments.callee.caller;
+    }
+  }
+
+  var environment = Components.classes["@mozilla.org/process/environment;1"].
+                    getService(Components.interfaces.nsIEnvironment);
+  if (environment.exists("XUL_ASSERT_PROMPT") &&
+      !parseInt(environment.get("XUL_ASSERT_PROMPT")))
+    return;
+
+  var source = null;
+  if (this.window)
+    source = window;
+  var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
+           getService(Components.interfaces.nsIPromptService);
+  ps.alert(source, "Assertion Failed", assertionText + stackText);
+}

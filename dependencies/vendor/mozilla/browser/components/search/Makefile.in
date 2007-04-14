@@ -36,25 +36,61 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-DEPTH     = ../../..
+#
+# Songbird Makefile
+#
+
+DEPTH = ../../../../../..
 topsrcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-MODULE = browsersearch
-XPIDL_MODULE = browsersearch
+JAR_MANIFEST = jar.mn
 
-XPIDLSRCS = nsIBrowserSearchService.idl
+XPIDL_SRCS = nsIBrowserSearchService.idl \
+             $(NULL)
 
-EXTRA_PP_COMPONENTS = nsSearchService.js \
-	nsSearchSuggestions.js
+XPIDL_MODULE = browsersearch.xpt
+XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
-ifneq (,$(BUILD_OFFICIAL)$(MOZILLA_OFFICIAL))
-DEFINES += -DOFFICIAL_BUILD=1
-endif
+SONGBIRD_COMPONENTS = $(srcdir)/nsSearchService.js \
+                      $(srcdir)/nsSearchSuggestions.js \
+                      $(XPIDL_MODULE) \
+                      $(NULL)
 
-DEFINES += -DMOZ_DISTRIBUTION_ID=$(MOZ_DISTRIBUTION_ID)
+GARBAGE = $(XPIDL_MODULE_TYPELIBS)
 
-include $(topsrcdir)/config/rules.mk
+
+include $(topsrcdir)/build/rules.mk
+
+
+
+
+#
+# Original Moz Makefile
+#
+
+#DEPTH     = ../../..
+#topsrcdir = @top_srcdir@
+#srcdir    = @srcdir@
+#VPATH     = @srcdir@
+#
+#include $(DEPTH)/config/autoconf.mk
+#
+#MODULE = browsersearch
+#XPIDL_MODULE = browsersearch
+#
+#XPIDLSRCS = nsIBrowserSearchService.idl
+#
+#EXTRA_PP_COMPONENTS = nsSearchService.js \
+#	nsSearchSuggestions.js
+#
+#ifneq (,$(BUILD_OFFICIAL)$(MOZILLA_OFFICIAL))
+#DEFINES += -DOFFICIAL_BUILD=1
+#endif
+#
+#DEFINES += -DMOZ_DISTRIBUTION_ID=$(MOZ_DISTRIBUTION_ID)
+#
+#include $(topsrcdir)/config/rules.mk
