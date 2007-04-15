@@ -1281,6 +1281,8 @@ Engine.prototype = {
         + this.name + "\".");
     // Only accept remote icons from http[s] or ftp
     switch (uri.scheme) {
+      // Songbird: Accept chrome icons. Needed for library stub.
+      case "chrome":
       case "data":
         this._iconURI = uri;
         notifyAction(this, SEARCH_ENGINE_CHANGED);
