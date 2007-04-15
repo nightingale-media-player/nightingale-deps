@@ -517,9 +517,7 @@
           // null parameter below specifies HTML response for search
           var submission = this.currentEngine.getSubmission(aData, null);
           
-          // TODO: TEMP HACK
-          if (gBrowser) gBrowser.loadURI(submission.uri.spec);
-          //openUILinkIn(submission.uri.spec, aWhere, null, submission.postData);
+          openUILinkIn(submission.uri.spec, aWhere, null, submission.postData);
         ]]></body>
       </method>
 
