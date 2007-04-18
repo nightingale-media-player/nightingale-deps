@@ -139,7 +139,8 @@ ByteVectorList Ogg::Page::packets() const
 
   if(d->file && d->header.isValid()) {
 
-    d->file->seek(d->packetOffset);
+    if (d->file->seek(d->packetOffset) < 0)
+      return l;
 
     List<int> packetSizes = d->header.packetSizes();
 
@@ -166,7 +167,8 @@ ByteVector Ogg::Page::render() const
 
   if(d->packets.isEmpty()) {
     if(d->file) {
-      d->file->seek(d->packetOffset);
+      if (d->file->seek(d->packetOffset) < 0)
+        return data;
       data.append(d->file->readBlock(d->dataSize));
     }
     else

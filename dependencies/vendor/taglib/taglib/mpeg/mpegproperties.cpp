@@ -154,7 +154,8 @@ void MPEG::Properties::read()
     return;
   }
 
-  d->file->seek(last);
+  if (d->file->seek(last) < 0)
+    return;
   Header lastHeader(d->file->readBlock(4));
 
   long first = d->file->firstFrameOffset();
@@ -175,7 +176,8 @@ void MPEG::Properties::read()
       if(pos < 0)
         break;
 
-      d->file->seek(pos);
+      if (d->file->seek(pos) < 0)
+        return;
       Header header(d->file->readBlock(4));
 
       if(header.isValid()) {
@@ -188,7 +190,8 @@ void MPEG::Properties::read()
 
   // Now jump back to the front of the file and read what we need from there.
 
-  d->file->seek(first);
+  if (d->file->seek(first) < 0)
+    return;
   Header firstHeader(d->file->readBlock(4));
 
   if(!firstHeader.isValid() || !lastHeader.isValid()) {
@@ -202,7 +205,8 @@ void MPEG::Properties::read()
   int xingHeaderOffset = MPEG::XingHeader::xingHeaderOffset(firstHeader.version(),
 							    firstHeader.channelMode());
 
-  d->file->seek(first + xingHeaderOffset);
+  if (d->file->seek(first + xingHeaderOffset) < 0)
+    return;
   d->xingHeader = new XingHeader(d->file->readBlock(16));
 
   // Read the length and the bitrate from the Xing header.

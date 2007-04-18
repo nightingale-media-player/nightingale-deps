@@ -20,12 +20,23 @@
  ***************************************************************************/
 
 #include "tfile.h"
+#include "tlist.h"
+#include "tlocalfileio.h"
 #include "tstring.h"
 #include "tdebug.h"
 
 #include <stdio.h>
 #include <sys/stat.h>
+
+/*ZZZ do we still need unistd.h?*/
+#ifdef _MSC_VER
+// MSVC does not have unistd.h
+#include <io.h>
+#define R_OK 4
+#define W_OK 2
+#else // non msvc compilers
 #include <unistd.h>
+#endif
 
 using namespace TagLib;
 
@@ -33,9 +44,8 @@ class File::FilePrivate
 {
 public:
   FilePrivate(const char *fileName) :
-    file(0),
+    fileIO(NULL),
     name(fileName),
-    readOnly(true),
     valid(true),
     size(0)
     {}
@@ -45,13 +55,15 @@ public:
     free((void *)name);
   }
 
-  FILE *file;
+  FileIO *fileIO;
   const char *name;
-  bool readOnly;
   bool valid;
   ulong size;
   static const uint bufferSize = 1024;
+  static List<const FileIOTypeResolver *> fileIOTypeResolvers;
 };
+
+List<const File::FileIOTypeResolver *> File::FilePrivate::fileIOTypeResolvers;
 
 ////////////////////////////////////////////////////////////////////////////////
 // public members
@@ -59,26 +71,38 @@ public:
 
 File::File(const char *file)
 {
+#ifdef _MSC_VER
+  d = new FilePrivate(_strdup(file));
+#else
   d = new FilePrivate(::strdup(file));
+#endif
 
-  // First try with read/write mode, if that fails, fall back to read only.
-  // We can't use ::access() since that works in odd ways on some file systems.
+  List<const FileIOTypeResolver *>::ConstIterator it = FilePrivate::fileIOTypeResolvers.begin();
 
-  d->file = fopen(file, "rb+");
+  for(; it != FilePrivate::fileIOTypeResolvers.end(); ++it) {
+    FileIO *fileIO = (*it)->createFileIO(file);
+    if(fileIO) {
+      d->fileIO = fileIO;
+      break;
+    }
+  }
 
-  if(d->file)
-    d->readOnly = false;
-  else
-    d->file = fopen(file,"rb");
+  if (!d->fileIO)
+    d->fileIO = new LocalFileIO(file);
 
-  if(!d->file)
+  if (d->fileIO && !d->fileIO->isOpen()) {
+    delete d->fileIO;
+    d->fileIO = NULL;
+  }
+
+  if(!d->fileIO)
     debug("Could not open file " + String(file));
 }
 
 File::~File()
 {
-  if(d->file)
-    fclose(d->file);
+  if(d->fileIO)
+    delete d->fileIO;
   delete d;
 }
 
@@ -89,39 +113,25 @@ const char *File::name() const
 
 ByteVector File::readBlock(ulong length)
 {
-  if(!d->file) {
+  if(!d->fileIO) {
     debug("File::readBlock() -- Invalid File");
     return ByteVector::null;
   }
 
-  if(length > FilePrivate::bufferSize &&
-     length > ulong(File::length()))
-  {
-    length = File::length();
-  }
-
-  ByteVector v(static_cast<uint>(length));
-  const int count = fread(v.data(), sizeof(char), length, d->file);
-  v.resize(count);
-  return v;
+  return d->fileIO->readBlock(length);
 }
 
 void File::writeBlock(const ByteVector &data)
 {
-  if(!d->file)
+  if(!d->fileIO)
     return;
 
-  if(d->readOnly) {
-    debug("File::writeBlock() -- attempted to write to a file that is not writable");
-    return;
-  }
-
-  fwrite(data.data(), sizeof(char), data.size(), d->file);
+  d->fileIO->writeBlock(data);
 }
 
 long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &before)
 {
-  if(!d->file || pattern.size() > d->bufferSize)
+  if(!d->fileIO || pattern.size() > d->bufferSize)
       return -1;
 
   // The position in the file that the current buffer starts at.
@@ -142,7 +152,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
   // Start the search at the offset.
 
-  seek(fromOffset);
+  if (seek(fromOffset) < 0)
+    return -1;
 
   // This loop is the crux of the find method.  There are three cases that we
   // want to account for:
@@ -169,7 +180,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
     if(previousPartialMatch >= 0 && int(d->bufferSize) > previousPartialMatch) {
       const int patternOffset = (d->bufferSize - previousPartialMatch);
       if(buffer.containsAt(pattern, 0, patternOffset)) {
-        seek(originalPosition);
+        if (seek(originalPosition) < 0)
+          return -1;
         return bufferOffset - d->bufferSize + previousPartialMatch;
       }
     }
@@ -186,7 +198,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
     long location = buffer.find(pattern);
     if(location >= 0) {
-      seek(originalPosition);
+      if (seek(originalPosition) < 0)
+        return -1;
       return bufferOffset + location;
     }
 
@@ -217,7 +230,7 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
 long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &before)
 {
-  if(!d->file || pattern.size() > d->bufferSize)
+  if(!d->fileIO || pattern.size() > d->bufferSize)
       return -1;
 
   // The position in the file that the current buffer starts at.
@@ -241,11 +254,13 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
   long bufferOffset;
   if(fromOffset == 0) {
-    seek(-1 * int(d->bufferSize), End);
+    if (seek(-1 * int(d->bufferSize), End) < 0)
+      return -1;
     bufferOffset = tell();
   }
   else {
-    seek(fromOffset + -1 * int(d->bufferSize), Beginning);
+    if (seek(fromOffset + -1 * int(d->bufferSize), Beginning) < 0)
+      return -1;
     bufferOffset = tell();    
   }
 
@@ -259,7 +274,8 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
     long location = buffer.rfind(pattern);
     if(location >= 0) {
-      seek(originalPosition);
+      if (seek(originalPosition) < 0)
+        return -1;
       return bufferOffset + location;
     }
 
@@ -271,7 +287,8 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
     // TODO: (3) partial match
 
     bufferOffset -= d->bufferSize;
-    seek(bufferOffset);
+    if (seek(bufferOffset) < 0)
+      return -1;
   }
 
   // Since we hit the end of the file, reset the status before continuing.
@@ -285,204 +302,91 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
 void File::insert(const ByteVector &data, ulong start, ulong replace)
 {
-  if(!d->file)
+  if(!d->fileIO)
     return;
 
-  if(data.size() == replace) {
-    seek(start);
-    writeBlock(data);
-    return;
-  }
-  else if(data.size() < replace) {
-      seek(start);
-      writeBlock(data);
-      removeBlock(start + data.size(), replace - data.size());
-      return;
-  }
-
-  // Woohoo!  Faster (about 20%) than id3lib at last.  I had to get hardcore
-  // and avoid TagLib's high level API for rendering just copying parts of
-  // the file that don't contain tag data.
-  //
-  // Now I'll explain the steps in this ugliness:
-
-  // First, make sure that we're working with a buffer that is longer than
-  // the *differnce* in the tag sizes.  We want to avoid overwriting parts
-  // that aren't yet in memory, so this is necessary.
-
-  ulong bufferLength = bufferSize();
-  while(data.size() - replace > bufferLength)
-    bufferLength += bufferSize();
-
-  // Set where to start the reading and writing.
-
-  long readPosition = start + replace;
-  long writePosition = start;
-
-  ByteVector buffer;
-  ByteVector aboutToOverwrite(static_cast<uint>(bufferLength));
-
-  // This is basically a special case of the loop below.  Here we're just
-  // doing the same steps as below, but since we aren't using the same buffer
-  // size -- instead we're using the tag size -- this has to be handled as a
-  // special case.  We're also using File::writeBlock() just for the tag.
-  // That's a bit slower than using char *'s so, we're only doing it here.
-
-  seek(readPosition);
-  int bytesRead = fread(aboutToOverwrite.data(), sizeof(char), bufferLength, d->file);
-  readPosition += bufferLength;
-
-  seek(writePosition);
-  writeBlock(data);
-  writePosition += data.size();
-
-  buffer = aboutToOverwrite;
-
-  // Ok, here's the main loop.  We want to loop until the read fails, which
-  // means that we hit the end of the file.
-
-  while(bytesRead != 0) {
-
-    // Seek to the current read position and read the data that we're about
-    // to overwrite.  Appropriately increment the readPosition.
-
-    seek(readPosition);
-    bytesRead = fread(aboutToOverwrite.data(), sizeof(char), bufferLength, d->file);
-    aboutToOverwrite.resize(bytesRead);
-    readPosition += bufferLength;
-
-    // Check to see if we just read the last block.  We need to call clear()
-    // if we did so that the last write succeeds.
-
-    if(ulong(bytesRead) < bufferLength)
-      clear();
-
-    // Seek to the write position and write our buffer.  Increment the
-    // writePosition.
-
-    seek(writePosition);
-    fwrite(buffer.data(), sizeof(char), bufferLength, d->file);
-    writePosition += bufferLength;
-
-    // Make the current buffer the data that we read in the beginning.
-
-    buffer = aboutToOverwrite;
-
-    // Again, we need this for the last write.  We don't want to write garbage
-    // at the end of our file, so we need to set the buffer size to the amount
-    // that we actually read.
-
-    bufferLength = bytesRead;
-  }
+  d->fileIO->insert(data, start, replace);
 }
 
 void File::removeBlock(ulong start, ulong length)
 {
-  if(!d->file)
+  if(!d->fileIO)
     return;
 
-  ulong bufferLength = bufferSize();
-
-  long readPosition = start + length;
-  long writePosition = start;
-
-  ByteVector buffer(static_cast<uint>(bufferLength));
-
-  ulong bytesRead = true;
-
-  while(bytesRead != 0) {
-    seek(readPosition);
-    bytesRead = fread(buffer.data(), sizeof(char), bufferLength, d->file);
-    buffer.resize(bytesRead);
-    readPosition += bytesRead;
-
-    // Check to see if we just read the last block.  We need to call clear()
-    // if we did so that the last write succeeds.
-
-    if(bytesRead < bufferLength)
-      clear();
-
-    seek(writePosition);
-    fwrite(buffer.data(), sizeof(char), bytesRead, d->file);
-    writePosition += bytesRead;
-  }
-  truncate(writePosition);
+  d->fileIO->removeBlock(start, length);
 }
 
 bool File::readOnly() const
 {
-  return d->readOnly;
+  if(!d->fileIO)
+    return true;
+
+  return d->fileIO->readOnly();
 }
 
 bool File::isReadable(const char *file)
 {
-  return access(file, R_OK) == 0;
+/*zzz need to implement. */
+    return true;
 }
 
 bool File::isOpen() const
 {
-  return d->file;
+  if(!d->fileIO)
+    return false;
+
+  return d->fileIO->isOpen();
 }
 
 bool File::isValid() const
 {
-  return d->file && d->valid;
+  return isOpen() && d->valid;
 }
 
-void File::seek(long offset, Position p)
+int File::seek(long offset, Position p)
 {
-  if(!d->file) {
+  if(!d->fileIO) {
     debug("File::seek() -- trying to seek in a file that isn't opened.");
-    return;
+    return -1;
   }
 
-  switch(p) {
-  case Beginning:
-    fseek(d->file, offset, SEEK_SET);
-    break;
-  case Current:
-    fseek(d->file, offset, SEEK_CUR);
-    break;
-  case End:
-    fseek(d->file, offset, SEEK_END);
-    break;
-  }
+  return d->fileIO->seek(offset, p);
 }
 
 void File::clear()
 {
-  clearerr(d->file);
+  if(!d->fileIO)
+    return;
+
+  d->fileIO->clear();
 }
 
 long File::tell() const
 {
-  return ftell(d->file);
+  if(!d->fileIO)
+    return -1;
+
+  return d->fileIO->tell();
 }
 
 long File::length()
 {
-  // Do some caching in case we do multiple calls.
-
-  if(d->size > 0)
-    return d->size;
-
-  if(!d->file)
+  if(!d->fileIO)
     return 0;
 
-  long curpos = tell();
-  
-  seek(0, End);
-  long endpos = tell();
-  
-  seek(curpos, Beginning);
-
-  d->size = endpos;
-  return endpos;
+  return d->fileIO->length();
 }
 
 bool File::isWritable(const char *file)
 {
-  return access(file, W_OK) == 0;
+/*zzz need to implement. */
+    return false;
+}
+
+const File::FileIOTypeResolver *File::addFileIOTypeResolver(const File::FileIOTypeResolver *resolver) // static
+{
+  FilePrivate::fileIOTypeResolvers.prepend(resolver);
+  return resolver;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -496,7 +400,10 @@ void File::setValid(bool valid)
 
 void File::truncate(long length)
 {
-  ftruncate(fileno(d->file), length);
+  if(!d->fileIO)
+    return;
+
+  d->fileIO->truncate(length);
 }
 
 TagLib::uint File::bufferSize()

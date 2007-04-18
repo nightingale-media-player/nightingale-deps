@@ -117,11 +117,11 @@ undef @subs;
 open(CF, "< $ac_sacfiles") || die "can't open $ac_sacfiles: $!";
 my @ac_files = <CF>;
 close(CF);
-chomp @ac_files;
 
 
 my $ac_file;
 foreach $ac_file (@ac_files) {
+    $ac_file =~ s/\s+$//;
     next if $ac_file =~ /\.\./;
     next if $ac_file =~ /^\s*$/;
     my $ac_file_in;

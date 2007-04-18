@@ -205,14 +205,16 @@ void APE::Tag::read()
 {
   if(d->file && d->file->isValid()) {
 
-    d->file->seek(d->tagOffset);
+    if (d->file->seek(d->tagOffset) < 0)
+      return;
     d->footer.setData(d->file->readBlock(Footer::size()));
 
     if(d->footer.tagSize() == 0 ||
        d->footer.tagSize() > uint(d->file->length()))
       return;
 
-    d->file->seek(d->tagOffset + Footer::size() - d->footer.tagSize());
+    if (d->file->seek(d->tagOffset + Footer::size() - d->footer.tagSize()) < 0)
+      return;
     parse(d->file->readBlock(d->footer.tagSize() - Footer::size()));
   }
 }
