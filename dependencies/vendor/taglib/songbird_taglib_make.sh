@@ -188,6 +188,9 @@ build()
         cfg_opts="${cfg_opts} --enable-debug=no"
     fi
 
+    # Enable use of zlib.
+    export ac_cv_header_zlib_h=yes
+
     # Set up the target configuration options.
     if test -n "${cfg_tgt}"; then
         cfg_opts="${cfg_opts} --target=${cfg_tgt}"
