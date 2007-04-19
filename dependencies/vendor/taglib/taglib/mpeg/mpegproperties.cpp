@@ -217,7 +217,8 @@ void MPEG::Properties::read()
   {
       static const int blockSize[] = { 0, 384, 1152, 1152 };
 
-      double timePerFrame = blockSize[firstHeader.layer()] / firstHeader.sampleRate();
+      double timePerFrame =   double(blockSize[firstHeader.layer()])
+                            / double(firstHeader.sampleRate());
       d->length = int(timePerFrame * d->xingHeader->totalFrames());
       d->bitrate = d->length > 0 ? d->xingHeader->totalSize() * 8 / d->length / 1000 : 0;
   }
