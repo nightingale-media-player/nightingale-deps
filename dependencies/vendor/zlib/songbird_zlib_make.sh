@@ -128,7 +128,11 @@ setup_build()
     build_tgt_arch="$1"
 
     # Set up the build environment for the given target.
-    case $build_tgt_arch in
+    case "${build_tgt_arch}" in
+
+        linux-x86 | linux-x86_64)
+            export CPPFLAGS="-fPIC"
+            ;;
 
         windows-i686)
             export CPPFLAGS="-MD"
