@@ -156,9 +156,12 @@ var gEngineManagerDialog = {
                          (gEngineView.lastIndex == 0);
     var lastSelected = (gEngineView.selectedIndex == gEngineView.lastIndex);
     var firstSelected = (gEngineView.selectedIndex == 0);
+    
+    // Songbird: do not allow removal of the songbird internal search engine
+    var isSongbirdEngine = (gEngineView.selectedEngine.alias == "songbird-internal-search");
 
     document.getElementById("cmd_remove").setAttribute("disabled",
-                                                       disableButtons);
+                                             disableButtons || isSongbirdEngine);
 
     document.getElementById("cmd_moveup").setAttribute("disabled",
                                             disableButtons || firstSelected);

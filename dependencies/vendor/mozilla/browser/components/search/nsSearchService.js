@@ -974,6 +974,8 @@ Engine.prototype = {
   _name: null,
   // The engine type. See engine types (TYPE_) defined above.
   _type: null,
+  // Space delimited keyword string
+  _tags: "",
   // The name of the charset used to submit the search terms.
   _queryCharset: null,
   // A URL string pointing to the engine's search form.
@@ -1519,6 +1521,9 @@ Engine.prototype = {
         case "InputEncoding":
           this._queryCharset = child.textContent.toUpperCase();
           break;
+        case "Tags":
+          this._tags = child.textContent;
+          break;          
 
         // Non-OpenSearch elements
         case "Alias":
@@ -2074,6 +2079,10 @@ Engine.prototype = {
     return this._type;
   },
 
+  get tags() {
+    return this._tags;
+  },
+
   get searchForm() {
     if (!this._searchForm) {
       // No searchForm specified in the engine definition file, use the prePath
@@ -2219,6 +2228,15 @@ SearchService.prototype = {
 
   _addEngineToStore: function SRCH_SVC_addEngineToStore(aEngine) {
     LOG("_addEngineToStore: Adding engine: \"" + aEngine.name + "\"");
+
+    // Songbird HACK
+    // For now any engines with special songbird tags should be hidden by default
+    // This is to ensure that if an extension adds a programmatic search engine
+    // the search engine will not show up after the extension is uninstalled
+    if (aEngine.tags.indexOf("songbird") > -1) {
+      aEngine.hidden = true;
+    }
+
 
     // See if there is an existing engine with the same name. However, if this
     // engine is updating another engine, it's allowed to have the same name.
@@ -2628,6 +2646,18 @@ SearchService.prototype = {
     aCount.value = engines.length;
     return engines;
   },
+  
+  getEnginesWithTag: function SRCH_SVC_getWithTag(aTag, aCount) {
+    LOG("getEnginesWithTag: getting all engines with tag" + aTag);
+    // Find whole tag in string
+    var tagRegex = new RegExp("^(.*\s)?" + aTag + "(\s.*)?$");
+    function hasTag(engine) {
+      return tagRegex.test(engine.tags);
+    };
+    var engines = this._sortedEngines.filter(hasTag);
+    aCount.value = engines.length;
+    return engines;
+  },  
 
   getEngineByName: function SRCH_SVC_getEngineByName(aEngineName) {
     return this._engines[aEngineName] || null;
