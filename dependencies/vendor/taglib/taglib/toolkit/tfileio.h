@@ -50,6 +50,11 @@ namespace TagLib {
     };
 
     /*!
+     * Destroys this FileIO instance.
+     */
+    virtual ~FileIO() {}
+
+    /*!
      * Returns the file name in the local file system encoding.
      */
     virtual const char *name() const = 0;
