@@ -289,17 +289,6 @@ interface nsIBrowserSearchService : nsISupports
             [retval, array, size_is(engineCount)] out nsISearchEngine engines);
 
   /**
-   * Returns an array of all search engines tagged with the given keyword.
-   *
-   * @returns an array of nsISearchEngine objects.
-   */
-  void getEnginesWithTag(
-            in AString tag,
-            out unsigned long engineCount,
-            [retval, array, size_is(engineCount)] out nsISearchEngine engines);
-
-
-  /**
    * Moves a visible search engine.
    *
    * @param  engine

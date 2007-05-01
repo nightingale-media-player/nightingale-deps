@@ -56,7 +56,6 @@
   <binding id="searchbar-base">
     <resources>
       <stylesheet src="chrome://browser/content/search/searchbarBindings.css"/>
-      <!-- TODO: Migrate styles to songbird -->
       <!--<stylesheet src="chrome://browser/skin/searchbar.css"/>-->
     </resources>
   </binding>

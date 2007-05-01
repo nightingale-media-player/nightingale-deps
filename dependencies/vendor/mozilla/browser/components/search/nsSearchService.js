@@ -146,7 +146,7 @@ const MOZ_OFFICIAL = "unofficial";
 /**************************
  XXX - What should this be?
  **************************/
-const MOZ_DISTRIBUTION_ID = "Songbird?";
+const MOZ_DISTRIBUTION_ID = "Songbird";
 
 const MOZ_PARAM_LOCALE         = /\{moz:locale\}/g;
 const MOZ_PARAM_DIST_ID        = /\{moz:distributionID\}/g;
@@ -2647,18 +2647,6 @@ SearchService.prototype = {
     return engines;
   },
   
-  getEnginesWithTag: function SRCH_SVC_getWithTag(aTag, aCount) {
-    LOG("getEnginesWithTag: getting all engines with tag" + aTag);
-    // Find whole tag in string
-    var tagRegex = new RegExp("^(.*\s)?" + aTag + "(\s.*)?$");
-    function hasTag(engine) {
-      return tagRegex.test(engine.tags);
-    };
-    var engines = this._sortedEngines.filter(hasTag);
-    aCount.value = engines.length;
-    return engines;
-  },  
-
   getEngineByName: function SRCH_SVC_getEngineByName(aEngineName) {
     return this._engines[aEngineName] || null;
   },
