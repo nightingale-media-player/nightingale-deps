@@ -63,15 +63,7 @@ void MP4::Mp4MdiaBox::parse()
     if( static_cast<TagLib::uint>( fourcc ) == 0x6d696e66 /*"minf"*/ )
     {
       // cast to minf
-/*ZZZ*/
-#if 1
       Mp4MinfBox* minfbox = static_cast<Mp4MinfBox*>( curbox );
-#else
-/*ZZZ*/
-      Mp4MinfBox* minfbox = dynamic_cast<Mp4MinfBox*>( curbox );
-/*ZZZ*/
-#endif
-/*ZZZ*/
       if(!minfbox)
 	return;
       // set handler type
@@ -84,15 +76,7 @@ void MP4::Mp4MdiaBox::parse()
     if(static_cast<TagLib::uint>( fourcc ) == 0x68646c72 /*"hdlr"*/ )
     {
       // cast to hdlr box
-/*ZZZ*/
-#if 1
       Mp4HdlrBox* hdlrbox = static_cast<Mp4HdlrBox*>( curbox );
-#else
-/*ZZZ*/
-      Mp4HdlrBox* hdlrbox = dynamic_cast<Mp4HdlrBox*>( curbox );
-/*ZZZ*/
-#endif
-/*ZZZ*/
       if(!hdlrbox)
 	return;
       // get handler type

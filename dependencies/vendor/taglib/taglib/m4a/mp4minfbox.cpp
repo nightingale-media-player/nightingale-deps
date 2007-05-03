@@ -66,15 +66,7 @@ void MP4::Mp4MinfBox::parse()
     if(static_cast<TagLib::uint>( fourcc ) == 0x7374626c /*stbl*/ )
     {
       // cast to hdlr box
-/*ZZZ*/
-#if 1
       Mp4StblBox* stblbox = static_cast<Mp4StblBox*>( curbox );
-#else
-/*ZZZ*/
-      Mp4StblBox* stblbox = dynamic_cast<Mp4StblBox*>( curbox );
-/*ZZZ*/
-#endif
-/*ZZZ*/
       if(!stblbox)
 	return;
       // set handler type

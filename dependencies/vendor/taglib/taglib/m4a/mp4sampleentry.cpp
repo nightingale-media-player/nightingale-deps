@@ -24,15 +24,7 @@ MP4::Mp4SampleEntry::~Mp4SampleEntry()
 //! parse the content of the box
 void MP4::Mp4SampleEntry::parse()
 {
-/*ZZZ*/
-#if 1
   TagLib::MP4::File* mp4file = static_cast<TagLib::MP4::File*>(file());
-#else
-/*ZZZ*/
-  TagLib::MP4::File* mp4file = dynamic_cast<TagLib::MP4::File*>(file());
-/*ZZZ*/
-#endif
-/*ZZZ*/
   if(!mp4file)
     return;
 

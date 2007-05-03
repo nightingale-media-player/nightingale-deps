@@ -33,15 +33,7 @@ void MP4::Mp4StsdBox::setHandlerType( MP4::Fourcc fourcc )
 
 void MP4::Mp4StsdBox::parse()
 {
-/*ZZZ*/
-#if 1
   MP4::File* mp4file = static_cast<MP4::File*>( file() );
-#else
-/*ZZZ*/
-  MP4::File* mp4file = dynamic_cast<MP4::File*>( file() );
-/*ZZZ*/
-#endif
-/*ZZZ*/
   if(!mp4file)
     return;
 

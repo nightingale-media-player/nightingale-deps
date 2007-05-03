@@ -68,15 +68,7 @@ void MP4::Mp4StblBox::parse()
     if( static_cast<TagLib::uint>(fourcc) == 0x73747364 /*'stsd'*/ )
     {
       // cast to stsd box
-/*ZZZ*/
-#if 1
       MP4::Mp4StsdBox* stsdbox = static_cast<MP4::Mp4StsdBox*>(curbox);
-#else
-/*ZZZ*/
-      MP4::Mp4StsdBox* stsdbox = dynamic_cast<MP4::Mp4StsdBox*>(curbox);
-/*ZZZ*/
-#endif
-/*ZZZ*/
       if(!stsdbox)
 	return;
       // set the handler type

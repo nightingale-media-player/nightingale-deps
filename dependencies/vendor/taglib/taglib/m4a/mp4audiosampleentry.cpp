@@ -42,15 +42,7 @@ TagLib::uint MP4::Mp4AudioSampleEntry::bitrate() const
 
 void MP4::Mp4AudioSampleEntry::parseEntry()
 {
-/*ZZZ*/
-#if 1
   TagLib::MP4::File* mp4file = static_cast<TagLib::MP4::File*>(file());
-#else
-/*ZZZ*/
-  TagLib::MP4::File* mp4file = dynamic_cast<TagLib::MP4::File*>(file());
-/*ZZZ*/
-#endif
-/*ZZZ*/
   if(!mp4file)
     return;
 
