@@ -133,13 +133,11 @@ bool MPC::File::save()
 
   if(d->ID3v1Tag) {
     if(d->hasID3v1) {
-      if (seek(d->ID3v1Location) < 0)
-        return false;
+      seek(d->ID3v1Location);
       writeBlock(d->ID3v1Tag->render());
     }
     else {
-      if (seek(0, End) < 0)
-        return false;
+      seek(0, End);
       d->ID3v1Location = tell();
       writeBlock(d->ID3v1Tag->render());
       d->hasID3v1 = true;
@@ -168,8 +166,7 @@ bool MPC::File::save()
         d->ID3v1Location += d->APESize;
       }
       else {
-        if (seek(0, End) < 0)
-          return false;
+        seek(0, End);
         d->APELocation = tell();
         writeBlock(d->APETag->render());
         d->APESize = d->APETag->footer()->completeTagSize();
@@ -299,20 +296,16 @@ void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesSty
   d->ID3v2Location = findID3v2();
 
   if(d->ID3v2Location >= 0) {
-    if (seek(d->ID3v2Location) < 0)
-      return;
+    seek(d->ID3v2Location);
     d->ID3v2Header = new ID3v2::Header(readBlock(ID3v2::Header::size()));
     d->ID3v2Size = d->ID3v2Header->completeTagSize();
     d->hasID3v2 = true;
   }
 
-  if(d->hasID3v2) {
-    if (seek(d->ID3v2Location + d->ID3v2Size) < 0)
-      return;
-  } else {
-    if (seek(0) < 0)
-      return;
-  }
+  if(d->hasID3v2)
+    seek(d->ID3v2Location + d->ID3v2Size);
+  else
+    seek(0);
 
   // Look for MPC metadata
 
@@ -327,13 +320,10 @@ long MPC::File::findAPE()
   if(!isValid())
     return -1;
 
-  if(d->hasID3v1) {
-    if (seek(-160, End) < 0)
-      return -1;
-  } else {
-    if (seek(-32, End) < 0)
-      return -1;
-  }
+  if(d->hasID3v1)
+    seek(-160, End);
+  else
+    seek(-32, End);
 
   long p = tell();
 
@@ -348,8 +338,7 @@ long MPC::File::findID3v1()
   if(!isValid())
     return -1;
 
-  if (seek(-128, End) < 0)
-    return -1;
+  seek(-128, End);
   long p = tell();
 
   if(readBlock(3) == ID3v1::Tag::fileIdentifier())
@@ -363,8 +352,7 @@ long MPC::File::findID3v2()
   if(!isValid())
     return -1;
 
-  if (seek(0) < 0)
-    return -1;
+  seek(0);
 
   if(readBlock(3) == ID3v2::Header::fileIdentifier())
     return 0;

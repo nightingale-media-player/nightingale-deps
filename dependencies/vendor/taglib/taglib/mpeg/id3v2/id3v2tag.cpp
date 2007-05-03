@@ -352,8 +352,7 @@ void ID3v2::Tag::read()
 {
   if(d->file && d->file->isOpen()) {
 
-    if (d->file->seek(d->tagOffset) < 0)
-      return;
+    d->file->seek(d->tagOffset);
     d->header.setData(d->file->readBlock(Header::size()));
 
     // if the tag size is 0, then this is an invalid tag (tags must contain at

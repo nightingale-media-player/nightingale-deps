@@ -169,8 +169,7 @@ bool FLAC::File::save()
     bool isLastBlock = false;
 
     while(!isLastBlock) {
-      if (seek(nextBlockOffset) < 0)
-        return false;
+      seek(nextBlockOffset);
 
       ByteVector header = readBlock(4);
       char blockType = header[0] & 0x7f;
@@ -189,8 +188,7 @@ bool FLAC::File::save()
   else {
 
     const long firstBlockOffset = d->flacStart;
-    if (seek(firstBlockOffset) < 0)
-      return false;
+    seek(firstBlockOffset);
 
     ByteVector header = readBlock(4);
     bool isLastBlock = header[0] & 0x80;
@@ -203,8 +201,7 @@ bool FLAC::File::save()
       // then set the data for the block that we're about to write to mark our
       // new block as the last block.
 
-      if (seek(firstBlockOffset) < 0)
-        return false;
+      seek(firstBlockOffset);
       writeBlock(static_cast<char>(header[0] & 0x7F));
       data[0] |= 0x80;
     }
@@ -228,8 +225,7 @@ bool FLAC::File::save()
   }
 
   if(d->ID3v1Tag) {
-    if (seek(d->ID3v1Tag ? -128 : 0, End) < 0)
-      return false;
+    seek(d->ID3v1Tag ? -128 : 0, End);
     writeBlock(d->ID3v1Tag->render());
   }
 
@@ -373,8 +369,7 @@ void FLAC::File::scan()
   nextBlockOffset += 4;
   d->flacStart = nextBlockOffset;
 
-  if (seek(nextBlockOffset) < 0)
-    return;
+  seek(nextBlockOffset);
 
   ByteVector header = readBlock(4);
 
@@ -427,8 +422,7 @@ void FLAC::File::scan()
       setValid(false);
       return;
     }
-    if (seek(nextBlockOffset) < 0)
-      return;
+    seek(nextBlockOffset);
   }
 
   // End of metadata, now comes the datastream
@@ -445,8 +439,7 @@ long FLAC::File::findID3v1()
   if(!isValid())
     return -1;
 
-  if (seek(-128, End) < 0)
-    return -1;
+  seek(-128, End);
   long p = tell();
 
   if(readBlock(3) == ID3v1::Tag::fileIdentifier())
@@ -460,8 +453,7 @@ long FLAC::File::findID3v2()
   if(!isValid())
     return -1;
 
-  if (seek(0) < 0)
-    return -1;
+  seek(0);
 
   if(readBlock(3) == ID3v2::Header::fileIdentifier())
     return 0;

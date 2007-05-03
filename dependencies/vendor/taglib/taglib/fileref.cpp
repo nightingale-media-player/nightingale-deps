@@ -27,6 +27,7 @@
 #include "vorbisfile.h"
 #include "flacfile.h"
 #include "mpcfile.h"
+#include "mp4file.h"
 
 using namespace TagLib;
 
@@ -109,6 +110,8 @@ StringList FileRef::defaultFileExtensions()
   l.append("flac");
   l.append("mp3");
   l.append("mpc");
+  l.append("m4a");
+  l.append("m4p");
 
   return l;
 }
@@ -171,6 +174,10 @@ File *FileRef::create(const char *fileName, bool readAudioProperties,
       return new FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(s.substr(s.size() - 4, 4).upper() == ".MPC")
       return new MPC::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(s.substr(s.size() - 4, 4).upper() == ".M4A")
+      return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(s.substr(s.size() - 4, 4).upper() == ".M4P")
+      return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
   }  
 
   return 0;
