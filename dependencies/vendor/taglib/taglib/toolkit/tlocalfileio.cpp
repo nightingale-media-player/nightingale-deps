@@ -348,3 +348,34 @@ TagLib::uint LocalFileIO::bufferSize()
 {
   return LocalFileIOPrivate::bufferSize;
 }
+
+
+/*******************************************************************************
+ *******************************************************************************
+ *
+ * Compatibility services.
+ *zzz should move to another file.
+ *******************************************************************************
+ ******************************************************************************/
+
+extern "C"
+{
+
+/*
+ * __stack_chk_fail
+ *
+ *   This function is a stub for the glibc 2.4 __stack_chk_fail function.  This
+ * function is referenced by non-shared functions within glibc 2.4 (e.g., stat,
+ * fstat, etc.) that are linked at compiled time.  This function is provided by
+ * the glibc shared library version 2.4 but not 2.3 or earlier.  This stub is
+ * provided for compatibility with systems providing versions of the glib shared
+ * library earlier than 2.4.
+ */
+
+void __stack_chk_fail(void)
+{
+}
+
+} /* extern "C" */
+
+
