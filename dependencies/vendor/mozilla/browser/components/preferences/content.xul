@@ -42,8 +42,10 @@
 <!DOCTYPE overlay [
   <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
   <!ENTITY % contentDTD SYSTEM "chrome://browser/locale/preferences/content.dtd">
+  <!ENTITY % songbirdDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
   %brandDTD;
   %contentDTD;
+  %songbirdDTD;
 ]>
 
 <overlay id="ContentPaneOverlay"
@@ -60,6 +62,9 @@
       <preference id="permissions.default.image"      name="permissions.default.image"      type="int"/>
       <preference id="javascript.enabled"             name="javascript.enabled"             type="bool"/>
       <preference id="security.enable_java"           name="security.enable_java"           type="bool"/>
+      <!-- BEGIN SONGBIRD CHANGES -->
+      <preference id="browser.tabs.enabled"           name="browser.tabs.enabled"           type="bool" />
+      <!-- END SONGBIRD CHANGES -->
 
       <preference id="pref.advanced.images.disable_button.view_image"
                   name="pref.advanced.images.disable_button.view_image"
@@ -142,6 +147,16 @@
                         preference="security.enable_java"/>
             </vbox>
           </row>
+          <!-- BEGIN SONGBIRD CHANGES -->
+          <row id="enableTabsRow">
+            <vbox align="start">
+              <checkbox id="enableTabs"
+                        label="&tabs.enabled.label;"
+                        preference="browser.tabs.enabled"/>
+      
+            </vbox>
+          </row>
+          <!-- END SONGBIRD CHANGES -->
         </rows>
       </grid>
     </groupbox>
