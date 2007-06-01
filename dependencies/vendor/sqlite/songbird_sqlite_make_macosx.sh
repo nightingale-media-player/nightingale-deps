@@ -18,7 +18,7 @@ make clean
   LIBS=-ldl
 make && make install
 make clean
-exit;
+
 #
 # Compile the release mode sqlite3 for ppc
 #
