@@ -27,14 +27,18 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;DEBUG;SQLITE_ALLOW_XTHREAD_CONNECT=1;THREADSAFE=1;SQLITE_THREAD_OVERRIDE_LOCK=-1;SQLITE_OMIT_CURSOR"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Copying sqlite3.h"
+				CommandLine="copy /Y $(SolutionDir)..\src\generated\debug\sqlite3.h $(TargetDir)\sqlite3.h"
+				AdditionalDependencies="$(SolutionDir)..\src\generated\debug\sqlite3.h"
+				Outputs="$(TargetDir)sqlite3.h"/>
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/sqlite.lib"/>
@@ -273,6 +277,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\generated\debug\sqlite3.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine=""/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\sqlite3ext.h">
