@@ -18,7 +18,8 @@ ac_cv_visibility_pragma=no \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
-  --disable-tcl
+  --disable-tcl \
+  LIBS=-ldl
 make && make install
 make clean
 rm -f config.log config.status Makefile
@@ -35,7 +36,8 @@ ac_cv_visibility_pragma=no \
   --enable-tempstore \
   --enable-cross-thread-connections \
   --disable-tcl \
-  --enable-debug
+  --enable-debug \
+  LIBS=-ldl
 make && make install
 make clean
 rm -f config.log config.status Makefile

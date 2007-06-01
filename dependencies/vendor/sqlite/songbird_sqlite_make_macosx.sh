@@ -14,7 +14,8 @@ make clean
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
-  --disable-tcl 
+  --disable-tcl \
+  LIBS=-ldl
 make && make install
 make clean
 exit;
@@ -31,7 +32,8 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,ppc" \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
-  --disable-tcl
+  --disable-tcl \
+  LIBS=-ldl
 make && make install
 make clean
 rm -f config.log config.status Makefile
@@ -59,7 +61,8 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,i386" \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
-  --disable-tcl 
+  --disable-tcl \
+  LIBS=-ldl
 make && make install
 make clean
 
@@ -77,7 +80,8 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -Wl,-arch,ppc" \
   --enable-threadsafe \
   --enable-tempstore \
   --enable-cross-thread-connections \
-  --disable-tcl
+  --disable-tcl \
+  LIBS=-ldl
 make && make install
 make clean
 
