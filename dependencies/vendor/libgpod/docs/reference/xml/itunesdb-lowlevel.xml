@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libgpod-Low-level-functions">
+<refmeta>
+<refentrytitle role="top_of_page">Low-level functions</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGPOD Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Low-level functions</refname>
+<refpurpose>Low-level functions which shouldn't be needed in normal situations</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-control-dir">itdb_get_control_dir</link>            (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-itunes-dir">itdb_get_itunes_dir</link>             (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-music-dir">itdb_get_music_dir</link>              (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-artwork-dir">itdb_get_artwork_dir</link>            (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-device-dir">itdb_get_device_dir</link>             (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-itunesdb-path">itdb_get_itunesdb_path</link>          (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-artworkdb-path">itdb_get_artworkdb_path</link>         (const <link linkend="gchar">gchar</link> *mountpoint);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-get-path">itdb_get_path</link>                   (const <link linkend="gchar">gchar</link> *dir,
+                                             const <link linkend="gchar">gchar</link> *file);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-resolve-path">itdb_resolve_path</link>               (const <link linkend="gchar">gchar</link> *root,
+                                             const <link linkend="gchar">gchar</link> * const *components);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-shuffle-write">itdb_shuffle_write</link>              (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-shuffle-write-file">itdb_shuffle_write_file</link>         (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-cp">itdb_cp</link>                         (const <link linkend="gchar">gchar</link> *from_file,
+                                             const <link linkend="gchar">gchar</link> *to_file,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link>* <link linkend="itdb-parse-file">itdb_parse_file</link>              (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-write-file">itdb_write_file</link>                 (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);
+<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link>* <link linkend="itdb-duplicate">itdb_duplicate</link>               (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="itdb-get-control-dir" role="function"/>itdb_get_control_dir ()</title>
+<indexterm><primary>itdb_get_control_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_control_dir            (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Get the i*_Control directory. Observed values are 'iPod_Control'
+for standard iPods and 'iTunes/iTunes_Control' for mobile
+applications.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the control dir or NULL of non-existent. Must
+<link linkend="g-free"><function>g_free()</function></link> after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-itunes-dir" role="function"/>itdb_get_itunes_dir ()</title>
+<indexterm><primary>itdb_get_itunes_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_itunes_dir             (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve the iTunes directory (containing the iTunesDB) by first
+calling <link linkend="itdb-get-control-dir"><function>itdb_get_control_dir()</function></link> and then adding 'iTunes'</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the iTunes directory or NULL of non-existent.
+Must <link linkend="g-free"><function>g_free()</function></link> after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-music-dir" role="function"/>itdb_get_music_dir ()</title>
+<indexterm><primary>itdb_get_music_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_music_dir              (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve the Music directory (containing the Fnn dirs) by first
+calling <link linkend="itdb-get-control-dir"><function>itdb_get_control_dir()</function></link> and then adding 'Music'</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the Music directory or NULL of
+non-existent. Must <link linkend="g-free"><function>g_free()</function></link> after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-artwork-dir" role="function"/>itdb_get_artwork_dir ()</title>
+<indexterm><primary>itdb_get_artwork_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_artwork_dir            (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve the Artwork directory (containing the ArtworDB) by
+first calling <link linkend="itdb-get-control-dir"><function>itdb_get_control_dir()</function></link> and then adding 'Artwork'</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the Artwork directory or NULL of
+non-existent. Must <link linkend="g-free"><function>g_free()</function></link> after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-device-dir" role="function"/>itdb_get_device_dir ()</title>
+<indexterm><primary>itdb_get_device_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_device_dir             (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve the Device directory (containing the SysInfo file) by
+first calling <link linkend="itdb-get-control-dir"><function>itdb_get_control_dir()</function></link> and then adding 'Device'</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the Device directory or NULL of
+non-existent. Must <link linkend="g-free"><function>g_free()</function></link> after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-itunesdb-path" role="function"/>itdb_get_itunesdb_path ()</title>
+<indexterm><primary>itdb_get_itunesdb_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_itunesdb_path          (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve a path to the iTunesDB</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the iTunesDB or NULL if non-existent. Must <link linkend="g-free"><function>g_free()</function></link>
+after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-artworkdb-path" role="function"/>itdb_get_artworkdb_path ()</title>
+<indexterm><primary>itdb_get_artworkdb_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_artworkdb_path         (const <link linkend="gchar">gchar</link> *mountpoint);</programlisting>
+<para>
+Retrieve a path to the ArtworkDB</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mountpoint</parameter>&nbsp;:</term>
+<listitem><simpara> the iPod mountpoint
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the ArtworkDB or NULL if non-existent. Must <link linkend="g-free"><function>g_free()</function></link> 
+after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-get-path" role="function"/>itdb_get_path ()</title>
+<indexterm><primary>itdb_get_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_get_path                   (const <link linkend="gchar">gchar</link> *dir,
+                                             const <link linkend="gchar">gchar</link> *file);</programlisting>
+<para>
+Retrieve a path to the <parameter>file</parameter> in <parameter>dir</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> a directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>file</parameter>&nbsp;:</term>
+<listitem><simpara> a file
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> path to the <parameter>file</parameter> or NULL if non-existent. Must be <link linkend="g-free"><function>g_free()</function></link>'d 
+after use.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-resolve-path" role="function"/>itdb_resolve_path ()</title>
+<indexterm><primary>itdb_resolve_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_resolve_path               (const <link linkend="gchar">gchar</link> *root,
+                                             const <link linkend="gchar">gchar</link> * const *components);</programlisting>
+<para>
+We start by assuming that the ipod mount point exists.  Then, for
+each component c of track-&gt;ipod_path, we try to find an entry d in
+good_path that is case-insensitively equal to c.  If we find d, we
+append d to good_path and make the result the new good_path.
+Otherwise, we quit and return NULL.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>root</parameter>&nbsp;:</term>
+<listitem><simpara> in local encoding
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>components</parameter>&nbsp;:</term>
+<listitem><simpara> in utf8
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-shuffle-write" role="function"/>itdb_shuffle_write ()</title>
+<indexterm><primary>itdb_shuffle_write</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_shuffle_write              (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Write out an iTunesSD for the Shuffle.
+First reassigns unique IDs to all tracks.
+An existing "Play Counts" file is renamed to "Play Counts.bak" if
+the export was successful.
+An existing "OTGPlaylistInfo" file is removed if the export was
+successful.
+<parameter>itdb->mountpoint</parameter> must point to the mount point of the iPod,
+e.g. "/mnt/ipod" and be in local encoding.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> to write to disk
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link> or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE on success, FALSE on error, in which case <parameter>error</parameter> is
+set accordingly.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-shuffle-write-file" role="function"/>itdb_shuffle_write_file ()</title>
+<indexterm><primary>itdb_shuffle_write_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_shuffle_write_file         (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Do the actual writing to the iTunesSD</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> to write to disk
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> file to write to, cannot be NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link> or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE on success, FALSE on error, in which case <parameter>error</parameter> is
+set accordingly.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-cp" role="function"/>itdb_cp ()</title>
+<indexterm><primary>itdb_cp</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_cp                         (const <link linkend="gchar">gchar</link> *from_file,
+                                             const <link linkend="gchar">gchar</link> *to_file,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Copy file "from_file" to "to_file".</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>from_file</parameter>&nbsp;:</term>
+<listitem><simpara> source file
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>to_file</parameter>&nbsp;:</term>
+<listitem><simpara> destination file
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link> or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE on success, FALSE on error, in which case <parameter>error</parameter> is
+set accordingly.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-parse-file" role="function"/>itdb_parse_file ()</title>
+<indexterm><primary>itdb_parse_file</primary></indexterm><programlisting><link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link>* itdb_parse_file              (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Same as <link linkend="itunesdb-parse"><function>itunesdb_parse()</function></link>, but filename is specified directly.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> path to a file in iTunesDB format
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link> or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> struct holding the tracks and
+the playlists present on the iPod at <parameter>mp</parameter>, NULL if <parameter>mp</parameter> isn't an iPod mount
+point. If non-NULL, the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> is to be freed with <link linkend="itdb-free"><function>itdb_free()</function></link> when
+it's no longer needed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-write-file" role="function"/>itdb_write_file ()</title>
+<indexterm><primary>itdb_write_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_write_file                 (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Write the content of <parameter>itdb</parameter> to <parameter>filename</parameter>. If <parameter>filename</parameter> is NULL, it attempts
+to write to itdb-&gt;filename.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> to save
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> filename to save <parameter>itdb</parameter> to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> return location for a <link linkend="GError"><type>GError</type></link> or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if all went well, FALSE otherwise
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-duplicate" role="function"/>itdb_duplicate ()</title>
+<indexterm><primary>itdb_duplicate</primary></indexterm><programlisting><link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link>* itdb_duplicate               (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb);</programlisting>
+<para>
+Duplicate <parameter>itdb</parameter> 
+FIXME: not implemented yet</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> always return NULL since it's unimplemented
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

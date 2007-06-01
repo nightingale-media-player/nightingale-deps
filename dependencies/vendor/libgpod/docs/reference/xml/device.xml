@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libgpod-Device">
+<refmeta>
+<refentrytitle role="top_of_page">Device</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGPOD Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Device</refname>
+<refpurpose>Data structure holding information about the iPod (model, mount point, ...)</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+            <link linkend="Itdb-Device">Itdb_Device</link>;
+<link linkend="Itdb-Device">Itdb_Device</link>* <link linkend="itdb-device-new">itdb_device_new</link>                (void);
+<link linkend="void">void</link>        <link linkend="itdb-device-free">itdb_device_free</link>                (<link linkend="Itdb-Device">Itdb_Device</link> *device);
+<link linkend="void">void</link>        <link linkend="itdb-device-set-mountpoint">itdb_device_set_mountpoint</link>      (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             const <link linkend="gchar">gchar</link> *mp);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-device-read-sysinfo">itdb_device_read_sysinfo</link>        (<link linkend="Itdb-Device">Itdb_Device</link> *device);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-device-get-sysinfo">itdb_device_get_sysinfo</link>         (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             const <link linkend="gchar">gchar</link> *field);
+enum        <link linkend="Itdb-IpodModel">Itdb_IpodModel</link>;
+            <link linkend="Itdb-ArtworkFormat">Itdb_ArtworkFormat</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="Itdb-Device" role="struct"/>Itdb_Device</title>
+<indexterm><primary>Itdb_Device</primary></indexterm><programlisting>typedef struct {
+    gchar *mountpoint;    /* mountpoint of the iPod */
+    gint   musicdirs;     /* number of /iPod_Control/Music/F.. dirs */
+    guint  byte_order;    /* G_LITTLE_ENDIAN "regular" endianness 
+			   * G_BIG_ENDIAN "reversed" endianness (e.g. mobile
+			   * phone iTunesDBs)
+			   */
+    GHashTable *sysinfo;  /* hash with value/key pairs of all entries
+			   * in Device/SysInfo */
+    gboolean sysinfo_changed; /* Has the sysinfo hash been changed by
+				 the user (itdb_set_sysinfo) */
+} Itdb_Device;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="itdb-device-new" role="function"/>itdb_device_new ()</title>
+<indexterm><primary>itdb_device_new</primary></indexterm><programlisting><link linkend="Itdb-Device">Itdb_Device</link>* itdb_device_new                (void);</programlisting>
+<para>
+Creates a new <link linkend="Itdb-Device"><type>Itdb_Device</type></link> structure</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated <link linkend="Itdb-Device"><type>Itdb_Device</type></link> which must be freed with
+<link linkend="itdb-device-free"><function>itdb_device_free()</function></link> when no longer needed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-device-free" role="function"/>itdb_device_free ()</title>
+<indexterm><primary>itdb_device_free</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_device_free                (<link linkend="Itdb-Device">Itdb_Device</link> *device);</programlisting>
+<para>
+Frees memory used by <parameter>device</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-device-set-mountpoint" role="function"/>itdb_device_set_mountpoint ()</title>
+<indexterm><primary>itdb_device_set_mountpoint</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_device_set_mountpoint      (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             const <link linkend="gchar">gchar</link> *mp);</programlisting>
+<para>
+Sets the mountpoint of <parameter>device</parameter> to <parameter>mp</parameter> and update the cached device 
+information (in particular, re-read the SysInfo file)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mp</parameter>&nbsp;:</term>
+<listitem><simpara> the new mount point
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-device-read-sysinfo" role="function"/>itdb_device_read_sysinfo ()</title>
+<indexterm><primary>itdb_device_read_sysinfo</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_device_read_sysinfo        (<link linkend="Itdb-Device">Itdb_Device</link> *device);</programlisting>
+<para>
+Reads the SysInfo file and stores information in device->sysinfo for
+later use.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if file could be read, FALSE otherwise 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-device-get-sysinfo" role="function"/>itdb_device_get_sysinfo ()</title>
+<indexterm><primary>itdb_device_get_sysinfo</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_device_get_sysinfo         (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             const <link linkend="gchar">gchar</link> *field);</programlisting>
+<para>
+Retrieve specified field from the SysInfo file.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>field</parameter>&nbsp;:</term>
+<listitem><simpara> field to retrive information from
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the information associated with <parameter>field</parameter>, or NULL if <parameter>field</parameter>
+couldn't be found. <link linkend="g-free"><function>g_free()</function></link> after use
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="Itdb-IpodModel" role="enum"/>enum Itdb_IpodModel</title>
+<indexterm><primary>Itdb_IpodModel</primary></indexterm><programlisting>typedef enum {
+    ITDB_IPOD_MODEL_INVALID,
+    ITDB_IPOD_MODEL_UNKNOWN,
+    ITDB_IPOD_MODEL_COLOR,
+    ITDB_IPOD_MODEL_COLOR_U2,
+    ITDB_IPOD_MODEL_REGULAR,
+    ITDB_IPOD_MODEL_REGULAR_U2,
+    ITDB_IPOD_MODEL_MINI,
+    ITDB_IPOD_MODEL_MINI_BLUE,
+    ITDB_IPOD_MODEL_MINI_PINK,
+    ITDB_IPOD_MODEL_MINI_GREEN,
+    ITDB_IPOD_MODEL_MINI_GOLD,
+    ITDB_IPOD_MODEL_SHUFFLE,
+    ITDB_IPOD_MODEL_NANO_WHITE,
+    ITDB_IPOD_MODEL_NANO_BLACK,
+    ITDB_IPOD_MODEL_VIDEO_WHITE,
+    ITDB_IPOD_MODEL_VIDEO_BLACK,
+    ITDB_IPOD_MODEL_MOBILE_1,
+    ITDB_IPOD_MODEL_VIDEO_U2,
+    ITDB_IPOD_MODEL_NANO_SILVER,
+    ITDB_IPOD_MODEL_NANO_BLUE,
+    ITDB_IPOD_MODEL_NANO_GREEN,
+    ITDB_IPOD_MODEL_NANO_PINK
+} Itdb_IpodModel;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="Itdb-ArtworkFormat" role="struct"/>Itdb_ArtworkFormat</title>
+<indexterm><primary>Itdb_ArtworkFormat</primary></indexterm><programlisting>typedef struct {
+	ItdbThumbType type;
+	gint16 width;
+	gint16 height;
+	gint16 correlation_id;
+} Itdb_ArtworkFormat;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

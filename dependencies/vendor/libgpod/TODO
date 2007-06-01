@@ -1,0 +1,18 @@
+mremap not available under MacOS
+
+> I spoke too soon, I found a replacement rather quickly: realloc
+> 
+> So the code in the function that uses mremap now reads:
+> 
+>     //new_address = mremap (buffer->mmap->mmap_area, buffer->mmap- 
+> >size,
+>                   //buffer->mmap->size + IPOD_MMAP_SIZE, 0);
+>     new_address = realloc(buffer->mmap->mmap_area, buffer->mmap->size +
+>                           IPOD_MMAP_SIZE);
+
+I wouldn't expect that to do the right thing, ie stuff written to the
+realloc'ed zone will probably not end up being written to the on-disk
+file. Implementing mremap as a combination of munmap + mmap when it's
+not available will probably be much better
+
+Christophe

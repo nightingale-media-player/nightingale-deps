@@ -1,0 +1,1309 @@
+2006-09-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* po/es.po: updated version by Alejandro Lamas Daviña
+
+	* configure.ac: bumped to 0.4.0 for release
+
+2006-09-23  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h: explain 'checked' field in Itdb_Track declaration
+
+	* src/itdb_playlist.c (itdb_spl_update): in SPLs with 'match
+	  checked tracks only" set, all unchecked tracks were matched.
+
+2006-09-21  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: time_added and time_modified where
+	  interchanged.
+
+	* src/itdb_device.c: changed number of directories for 6G 8GB iPod
+	  Nano to 14 after user report.
+
+	* src/ithumb-writer.c: removed re-using of thumbnail data in order
+	  to avoid incompatibility with iTunes (even though our way was
+	  more efficient...)
+	
+2006-09-18  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h
+	  src/itdb_artwork.c: added itdb_artwork_add_thumbnail_from_data().
+
+	* src/itdb.h
+	  src/itdb_track.c: added itdb_track_set_thumbnails_from_data().
+
+	* src/itdb.h
+	  src/itdb_photoalbum.c: added itdb_photodb_add_photo_from_data().
+
+	* src/itdb_artwork.c (itdb_thumb_get_gdk_pixbuf): added support to
+	  retreive thumbnail from raw data instead of file.
+
+	* src/ithumb-writer.c (ithumb_writer_write_thumbnail): added
+	  support to write thumbnail from raw data instead of file.
+
+2006-09-17  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h
+	  src/itdb_device.c: added definitions for new sixth generation
+	  iPod Videos, iPod Nanos and iPod Shuffle.
+
+2006-08-21  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* tests/test-ls.c: added option to list contents of local
+	  repository and specified playlist. Thanks to Richard Hyde for
+	  the patch.
+
+2006-08-18  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-artwork-writer.c (ipod_buffer_grow_file): printf(3) type
+	  warnings caused compile error with FreeBSD 6.0-stable/GCC
+	  3.4.4. Thanks to Mike Heffner for the patch.
+
+2006-07-08  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c (itdb_write): don't crash if error ==
+          NULL (SF tracker bugs item #1519048)
+
+2006-07-02  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c (itdb_init_ipod): only write iTunesSD
+	  (shuffle database) when initializing shuffle. Thanks to
+	  James Joyce for the patch.
+
+2006-06-28  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c (wcontents_write): added g_strerror in error
+	  messages.
+
+2006-06-27  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_device.c: fixed endianness autodetection for big endian
+	  mobile phones. Thanks to Rached Ben Mustapha for the patch.
+
+2006-06-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c
+	  src/itdb.h:
+	  Added itdb_get_itunessd_path ().
+	  itdb_init_ipod() will no longer overwrite existing iTunesDB and
+	  iTunesSD.
+
+2006-06-10  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_device.c (itdb_device_get_ipod_info): compare more than
+	  4 characters of iPod model if the stored model number is more
+	  than 4 characters long.
+
+2006-06-07  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h
+	  src/itdb_device.c:
+	  Added itdb_device_write_sysinfo() and itdb_device_set_sysinfo().
+
+	* src/itdb_itunesdb.c (itdb_create_directories):
+	  Use functions introduced above.
+
+	  (itdb_write): Write SynsInfo file when writing the iTunesDB if
+	  SysInfo hash has been changed by application.
+
+	* src/itdb_device.[ch]: mark sysinfo hash as changed/unchanged.
+
+	* src/itdb_photoalbum.c (itdb_photodb_write): Write SynsInfo file
+	  when writing the iTunesDB if SysInfo hash has been changed by
+	  application.
+
+
+2006-06-05  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * src/db-artwork-parser.h
+	  src/db-artwork-parserc (ipod_supports_cover_art): made
+	  available G_GNUC_INTERNAL.
+	  Added ipod_supports_photos().
+
+	* src/itdb_itunesdb.c (itdb_create_directories):
+	  Create Photos directory.
+
+	* src/itdb.h
+	  src/itdb_device.c
+	  Rename itdb_info_get_ipod_model_name() ->
+	         itdb_info_get_ipod_model_name_string()
+		 itdb_info_get_ipod_generation_name() ->
+		 itdb_info_get_ipod_generation_string()
+
+        * src/itdb_itunesdb.c (itdb_create_directories): add space after
+	  ":" when writing SysInfo file, only write SysInfo file if
+	  model_number was given, write original model number, not
+	  abbreviated model number from info->model_number.
+
+2006-06-04  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-image-parser.c
+	  src/itdb_artwork.c
+	  src/itdb_device.c
+	  src/itdb_photoalbum.c
+	  src/itdb_track.c
+	  src/ithumb-writer.c: Phased out private
+	  IPOD_COVER_SMALL... enum in favor of identical public enum
+	  "ItdbThumbType" ITDB_THUMB_COVER_SMALL...
+
+	* src/db-image-parser.c (ipod_image_new_from_mhni):
+	  Accept all thumbnail types we know about (i.e. type != -1).
+
+	* src/db-artwork-debug.h
+	  src/db-artwork-parser.h
+	  src/db-image-parser.h
+	  src/db-parse-context.h
+	  src/glib-compat.h
+	  src/itdb_endianness.h: Added CVS "$Id:" line, added copyright
+	  notices where missing, added explanations to itdb_endianess.h
+	  ;-)
+
+	* src/itdb_itunesdb.c
+	  src/itdb_track.c
+	  src/itdb_device.c
+	  src/itdb_device.h
+	  Made naming consistent and suitable for export:
+	    Itdb_IpodModel -> Itdb_IpodInfo
+	    ipod_model_table -> ipod_info_table
+	    itdb_device_get_model_info() -> itdb_device_get_ipod_info()
+	    MODEL_TYPE_... -> ITDB_IPOD_MODEL_...
+	    nth_GENERATION -> ITDB_IPOD_GENERATION_nth
+
+	  Exported Itdb_IpodModel, Itdb_IpodGeneration, Itdb_IpodInfo,
+	  itdb_device_get_ipod_info().
+
+	* src/itdb_device.c: new API:
+	  itdb_info_get_ipod_info_table(),
+	  itdb_info_get_ipod_model_name()
+
+	* src/itdb.h
+	  src/itdb_artwork.c:
+	  Removed unused field ->type in Itdb_Artwork and corresponding
+	  enum ItdbArtworkType.
+
+2006-06-03  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_artwork.c (itdb_thumb_get_gdk_pixbuf): handle thumbnail
+	  padding correctly -- who would have thought that iTunes
+	  indicates _negative_ padding at times... Please use the
+	  test-photos program to check out whether or not your photos show
+	  up correctly without black bars or funny colors.
+
+        * src/db-artwork-writer.c
+	  src/db-image-parser.c
+	  src/itdb.h
+	  src/ithumb-writer.c: Hopefully do padding right:
+
+	   - read padding fields from mhni header and store them with
+	     each thumbnail 
+	   - calculate padding for PhotoDB only (padding for iTunesDB
+	     Artwork does not seem to be necessary)
+	   - include the padding into the total width/height
+
+	   It seems to work well on my iPod Nano -- feedback appreciated.
+
+	* tests/test-photos.c: added possibility to dump all photos into
+	  a directory:
+
+	  tests/test-photos dump <mountpoint> <output_dir>
+
+	* src/itdb_artwork.c: changed byte order for full screen iPod
+	  Nanos. 
+
+2006-06-01  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-artwork-writer.c (write_mhni): fix segfault caused by
+	  wrong access of enum inside Itdb_DB
+
+	* src/itdb.h:
+	  src/itdb_private.h:
+	  moved Itdb_DB to private part.
+
+	* src/itdb.h:
+	  src/itdb_private.h:
+	  src/itdb_itunesdb:
+	  New: db_get_itunesdb(), db_get_photodb()
+
+	* src/db-artwork-parser.c
+	  src/db-artwork-writer.c
+	  src/db-image-parser.c
+	  src/db-image-parser.h
+	  src/db-parse-context.c
+	  src/db-parse-context.h
+	  src/itdb_endianness.h
+	  src/itdb_itunesdb.c
+	  src/ithumb-writer.c:
+	  Remove all direct access to Itdb_DB->db. enum
+
+2006-05-31  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac:
+	  m4/python: check for eyeD3 (Todd Zullinger)
+
+2006-05-30  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c (itdb_create_directories): applied
+	  Christophe's cleanup-patch, 'normalized' indenting. Function
+	  made 'static'.
+
+	* src/itdb_itunesdb.c (itdb_init_ipod): fixed segfault.
+
+	* m4/python: default configure option --with_python to 'yes'
+	  (Nicholas Piper)
+
+	***** merged photo-support branch back to MAIN. branch is tagged
+	      photo-support-merged_00
+
+2006-05-29  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * tests/test-photos.c: removed unneeded #include.
+
+	* configure.ac: print configuration summary -- thanks to Todd
+	  Zullinger
+
+	* itdb.h:
+	  itdb_itunesdb.c:
+	  added itdb_init_ipod() -- thanks to P.G. Richardson.
+
+	* src/itdb_itunesdb.c (itdb_write_file): only write artwork if
+	  supported by the iPod -- thanks to P.G. Richardson.
+
+	* src/itdb_itunesdb.c:
+	  src/itdb_photoalbum.c:
+	  src/itdb_playlist.c:
+	
+	  fixed some comments so the doc subsystem won't complain.
+
+	* tests/Makefile.am:
+	  tests/test-init-ipod.c
+
+	  added new test for itdb_init_ipod(). The test also demonstrates
+	  how to 'autodetect' the iPod model number.
+
+	* src/itdb_photoalbum.c:
+	  src/ithumb-writer.c:
+	  src/itdb_artwork.c:
+	  src/itdb.h:
+	  src/db-itunes-parser.h:
+	  src/db-artwork-writer.c:
+	  src/db-artwork-parser.c:
+	  src/db-artwork-debug.c:
+
+	  Patch by Michael McLellan:
+	  
+	  Doesn't automatically make the first photoalbum the
+	  'master'. However, if a master already exists it will remain the
+	  master.
+
+	  Sets the creation date of a new image to the modification time
+	  of the image file.
+
+	  Centers new images.
+
+	  Introduces itdb_photodb_remove_photo().
+
+	
+2006-05-29  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h:
+	  src/itunesdb.c: (Itdb_Track)
+	      flag2 -> skip_when_shuffling
+	      flag3 -> remember_playback_position
+
+	* src/itunesdb.c: playlist flags 1,2,3 were not read correctly.
+
+2006-05-28  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-parse-context.c (db_parse_context_new_from_file):
+	  Detect endianess if not already set.
+
+	* src/itdb_device.c (itdb_device_autodetect_endianess): try
+	  reading the first for bytes of iTunesDB, ArtworkDB or Photos
+	  Database in order to reliably detect the endianess of the
+	  connected iPod.
+
+	* src/itdb_photoalbum.c: (itdb_photodb_parse): will fail again if
+	  no photos dir is available.
+
+	* tests/test-photos.c: takes into consideration the possibility
+	  that an iPod does not have a Photos Database and creates a new
+	  one in that case. (I think it's safer that way -- the
+	  application is forced to 'think' about the fact that no database
+	  is available and either warn the user or create one. If
+	  itdb_photodb_parse() simply returns an empty database in case
+	  none could be found, the application might not become aware of
+	  the fact.)
+
+	* renamed itdb_get_mountpoint_photo to
+	  itdb_photodb_get_mountpoint.
+
+	* tests/test-photos.c: added g_error_free()
+
+	* src/itdb_device.c
+	  src/itdb_device.h: added number of musicdirs (Fnn dirs) to the
+	  model descriptions. The exact number seems to be version
+	  dependent. Therefore, the numbers here represent a mixture of
+	  reported values and common sense.
+
+2006-05-27  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_photoalbum.c: itdb_photodb_parse() would fail if no
+	  photos dir is available. Quick fix for now (I mean, why
+	  SHOULDN'T it fail if no photos dir is available??).
+
+2006-05-26  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h:
+	  src/itdb_photoalbum.c:
+	  src/itdb_artwork.c:
+	  Added userdata/usertype fields to Itdb_PhotoDB, Itdb_PhotoAlbum,
+	  Itdb_Artwork.
+
+2006-05-25  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * Slight cleanup, make PhotoDB API more consistent with iTunesDB
+	  API:
+
+	* src/db-artwork-parser.h: declared ipod_write_photo_db() as
+	  G_GNUC_INTERNAL
+
+	* src/db-artwork-writer.c (ipod_write_photo_db for non-gdk):
+	  Itdb_iTunesDB -> Itdb_PhotoDB
+
+	* src/itdb.h:
+	  Itdb_ItunesDB: removed photoalbums and photos.
+	  renamed:
+	  	 itdb_parse_photo -> itdb_photodb_parse
+		 itdb_add_photo_to_photoalbum -> itdb_photodb_add_photo
+		 itdb_create_new_photoalbum -> itdb_photodb_photoalbum_new
+		 itdb_free_photodb -> itdb_photodb_free
+		 itdb_write_photo_db -> itdb_photodb_write
+	  new:   itdb_photodb_new()
+
+	* src/itdb_itunesdb.c (itdb_parse_photo, itdb_get_photos_dir,
+	  itdb_get_photodb_path, itdb_get_photos_thumb_dir): moved to
+	  itdb_photoalbum.c
+
+	* src/itdb_photoalbum.c:
+	  new:   error_no_photos_dir, itdb_photodb_new, itdb_photodb_write
+	  moved: itdb_get_photos_dir, itdb_get_photodb_path,
+	         itdb_get_photos_thumb_dir
+	  rewrote: 
+	         itdb_photodb_parse
+	  (itdb_photodb_free): free device struct as well.
+
+	* tests/test-photos.c: change to new API.
+
+	* src/itdb.h: applied Christophe's patch to fix compile time
+	  error.
+
+	* po/sv.po: updated Swedish translation (thanks to Stefan
+	  Asserhall)
+
+2006-05-20  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* po/POTFILES.in: updated file list -> updated .po files.
+
+2006-05-15  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-image-parser.c
+	* src/itdb_photoalbum.c
+	* src/ithumb-writer.c
+	  Michael McLellan patch for photo support on iPod Videos
+
+2006-05-11  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h
+	* src/itdb_itunesdb.c
+	* src/itdb_private.h
+	* src/db-artwork-parser.c
+	* src/db-artwork-parser.h
+	* src/db-itunes-parser.h
+	* src/db-artwork-writer.c
+	* src/itdb_photoalbum.c
+	  Make sure Photos and Photos/Thumbs directories are created. New:
+	  itdb_get_photodb_path().
+
+
+2006-05-06  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-artwork-parser.c:
+	* src/db-itunes-parser.h:
+	* src/db-artwork-writer.c:
+	* src/itdb_photoalbum.c:
+	* src/itdb.h:
+	* src/itdb_private.h:
+	* tests/test-photos.c:
+	  Applied Mikey's second patch for photo support. test-photos now
+	  comes with support for photo albums!
+
+2006-05-07  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* Created new branch "photo-support" for testing of photo
+	  support. Comes complete with a test program to add photos to
+	  your iPod. Works great for me -- thanks to Mikey!
+
+	  --- 2006-05-30: merged back to MAIN.
+
+2006-05-06  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * Applied Mikey's patch for photo support.
+
+	* src/itdb_photoalbum.c: new.
+
+	* tests/test-photo.c: test program to add photos to your iPod.
+
+	* Created branch for this patch: 'photo-support'.
+
+2006-05-05  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: avoid segfault if album field of podcasts
+	  is not set (NULL).
+
+2006-05-02  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: smart playlists: avoid assertion
+	  when writing rules with empty strings.
+
+2006-04-26  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * tests/Makefile.am: removed 'test-rebuild-db' from
+	  'noinst_PROGRAM' declaration (bug reported by Jens
+	  Taprogge). 'test-rebuild-db' is only added when the taglib is
+	  detected.
+
+2006-04-12  Christophe Fergeau  <teuf@gnome.org>
+
+	* tests/test-rebuild-db.cc: forgot to propagate a GError
+
+2006-04-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* tests/test-ls.c: new test program reading and displaying the iPod 
+	content 
+	* tests/test-rebuild-db.cc: new test program which looks for mp3 files
+	on the iPod in the Music dir and rebuild an iPod database from that
+	(it uses taglib to parse the tags, so it's conditionnally built
+	depending on taglib's availability)
+	* configure.ac:
+	* tests/Makefile.am: build system changes to accomodate the 2 new test
+	programs
+	
+2006-04-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_device.h: removed dead code
+	* src/itdb_playlist.c: make spl_update2 static, kill spl_update
+
+2006-04-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* docs/Makefile.am:
+	* docs/reference/Makefile.am:
+	* docs/reference/libgpod-docs.xml:
+	* docs/reference/libgpod-sections.txt:
+	* docs/reference/tmpl/Internal.sgml:
+	* docs/reference/tmpl/artwork.sgml:
+	* docs/reference/tmpl/device.sgml:
+	* docs/reference/tmpl/itunesdb-copying.sgml:
+	* docs/reference/tmpl/itunesdb-db.sgml:
+	* docs/reference/tmpl/itunesdb-lowlevel.sgml:
+	* docs/reference/tmpl/itunesdb-time.sgml:
+	* docs/reference/tmpl/libgpod-unused.sgml:
+	* docs/reference/tmpl/playlists.sgml:
+	* docs/reference/tmpl/smart-playlists.sgml:
+	* docs/reference/tmpl/track.sgml:
+	* docs/reference/version.xml.in: all the files below are new files
+	needed for gtk-doc support
+	* Makefile.am:
+	* configure.ac: add gtk-doc support to build system
+	* src/itdb_artwork.c:
+	* src/itdb_device.c:
+	* src/itdb_itunesdb.c:
+	* src/itdb_playlist.c:
+	* src/itdb_track.c: update inline comments in those files so that
+	gtk-doc can pick them up to build documentation
+	
+2006-04-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: generate Makefile for bindings/python/examples
+
+2006-04-03  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb.h: flag1 -> has_artwork
+
+	* itdb_track.c: (itdb_track_set_thumbnails,
+	  itdb_remove_thumbnails) set has_artwork flag correctly.
+
+2006-04-01  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb.h: unk178 -> mark_unplayed
+
+	* itdb_itunesdb.c: reset the mark_unplayed flag when playcount is
+	  detected.
+
+2006-03-31  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * po/es.po: replaced with version from Alejandro Lamas who
+	  maintains the gtkpod translation as well.
+
+2006-03-29  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * itunesdb.c: set filetype identifier when transfering track to
+	  the iPod.
+
+2006-03-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	Alpha version of reversed-endian Artwork writing. Status: iTunesDB
+	can be written and is accepted on mobile phones, ArtworkDB can be
+	read and be written as well, but newly added artwork will not yet
+	display.
+
+	* itdb.h: adjusted a couple of field lengths (4 byte -> 2 byte or
+	  even 1 byte) to address endian issues.
+
+2006-03-18  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_itunesdb.c (mk_mhod): fixed bug when writing podcast urls.
+
+	* itdb_itunesdb.c (itdb_write_file): move endianess autodetection
+	  to a place before calling ipod_write_artwork_db().
+
+2006-03-17  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_device.[ch]: rewrote ipod-device.c, removed all hal-code,
+	  removed all code irrelevant to writing the iTunesDB and
+	  ArtworkDB.
+
+	* autodetect iControl directory now also works for ArtworkDB.
+
+	* db-artwork-parser.c (ipod_db_get_artwork_db_path): create
+	  Artwork directory if not already present.
+
+	* itdb.h: Itdb_iTunesDB: moved mountpoint and musicdirs into
+	  private Itdb_Device. Use itdb_set_mountpoint() and
+	  itdb_get_mountpoint() to access the mountpoint.
+
+	* simplified some code by using itdb_get_path() instead of
+	  itdb_resolve_path().
+
+	* itdb_itunesdb.c (itdb_get_path): fixed bug.
+
+2006-03-12  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * itdb.h, itdb_itunesdb.c: added functions for autodetection of
+	  iControl directory (currently either <mp>/iPod_Control or
+	  <mp>/iTunes/iTunes_Control): itdb_get_control_dir() and
+	  itdb_get_itunes_dir()
+
+2006-02-12  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb.h: added movie_flag and lyrics_flag to Itdb_Track
+
+	* itdb.h, itdb_itunesdb.c, itdb_private.h: added support for
+	  mobile phone reversed-endian iTunesDB. Please note that you have
+	  to rename the folder iTunes_Control to iPod_Control manually. to
+	  write reversed-endian files, itdb->reversed must be set to
+	  TRUE. When reading an iTunesDB the endianess is detected
+	  automatically and itdb->reversed set appropriately.  Only the
+	  inversed iTunesDBs, 'Play Counts', and OTG playlist files are
+	  read yet. The ArtworkDB and thumbnail files cannot be parsed
+	  yet.
+
+2006-02-04  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* ipod-device.c: added entries for iPod Nano 1 GB black and white
+	  (thanks to Leonhard Gruenschlos)
+
+2006-02-04  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac: enable/disable switches for gdk and hal. Thanks to
+	  Olivier Crête
+
+2006-02-04  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac: bumped version to 0.3.3 for new CVS version.
+
+	* RELEASED libgpod 0.3.2
+
+	* configure.ac: bumped version to 0.3.2 for release.
+
+	* db-artwork-writer.c: increased IPOD_MMAP_SIZE from 2 to 16 MB as
+	  a temporary workaround until a propoer solution can be
+	  implemented.
+
+	* db-itunes-parser.h: replaced the #pragma pack(4) with an
+	  'packed' attribute on _MhiiHeader only.
+
+2006-02-28  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* ipod-device.c: (ipod_device_set_property): fixed possible
+	  segfault when hald is present.
+
+2006-02-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac, po/es.po: added Spanish translation catalog
+	  (thanks to Azael Avalos)
+
+2006-02-19  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * libgpod-1.0.pc: added gobject-2.0 to 'Requires:' list
+
+	* src/db-itunes-parser.h: add '#pragma pack(4)' to fix 64bit issue
+	  with padding (at least as a temporary fix).
+
+	* src/ipod-device.c: added HP type color photo ipod 'S492'. Thanks
+	  to David Desrosiers.
+	
+2006-02-14  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* po/ja.po: updated Japanese catalog -- thanks to Kentaro Fukuchi
+
+	* src/ipod-device.c: (ipod_device_set_property): fixed bug that
+	  caused ipod-detection to fail if hal daemon was not running. As
+	  a consequence cover art was not written to the iPod.
+
+2006-02-04  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: (itunesstats_read) Fixed error when reading
+	  the Shuffle's stat file (0x18 was used as minimal record length
+	  instead of decimal '18').
+
+2006-02-03  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c, src/itdb_playlist.c, src/ithumb-writer.c:
+	  removed nested-functions. Thanks to Brian Jackson for the patch
+	  (he was not the only to send patches -- please, nobody feel
+	  offended that I didn't act sooner).
+
+2006-01-03  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/ipod-device.c: (ipod_device_set_property) check hal_context
+	  before accessing it to avoid segfault when hald is not running.
+
+	  (ipod_device_hal_initialize) fixed memory leak: 'error' was not
+	  freed if libhal_ctx_init() failed.
+
+	  (ipod_device_get_model_index_from_table): fix warning about
+	  unused computed value (thanks to Martin Aumueller)
+	
+2005-12-18  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * src/ipod-device.c: don't ignore return value of
+	  fread/fwrite/ftell because of possible compiler warnings.
+
+2005-12-11  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_artwork.c: (itdb_thumb_get_gdk_pixbuf) allow to get
+	  pixbuf even if no iPod is present if the thumbnail points to a
+	  local filename. This way artwork support is also possible on the
+	  'Local' repository in gtkpod (or any other application).
+
+	* README: added quick HOWTO use libgpod
+
+	* bumped version to 0.3.0 for release.
+
+	* bumped version to 0.3.1 for CVS version.
+
+2005-12-10  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/ithumb-writer.c: fixed typo leading to segfault.
+
+2005-12-09  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/ithumb-writer.c: create Artwork directory when attempting to
+	  write to it.
+
+	* src/itdb_artwork.c: fix compilation problem when gdkpixbuf is
+	  not present.
+
+	* src/hal-common.c: reverse order of include statements to fix
+	  compilation error on some systems.
+
+2005-12-06  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: change g_assert to g_return_if_fail (don't
+	  terminate the application just because the iTunesDB was
+	  manipulated).
+
+	* src/db-artwork-parser.c: change g_assert to g_return_if_fail
+	  (don't terminate the application just because the ArtworkDB was
+	  manipulated).
+
+	* src/itdb_artwork.c: change g_assert to g_return_if_fail
+	  (don't terminate the application just because the ithmb file was
+	  manipulated).
+	
+2005-12-05  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/db-artwork-writer/parser.c: Create ArtworkDB when it does
+	  not exist.
+
+	* src/db-artwork-writer.c, src/itdb_itunesdb.c,
+	  src/itdb_track.c, src/ithumb-writer.c: handle artwork size and
+	  count self-consistently.
+
+	* src/itdb_track.c: take care of artwork_size/_count a little
+	  better, take care of dbid2 a little better.
+
+	* src/ithumb-writer.c: new ithumb_rearrange_thumbnail_file()
+	  taking into account multiple references to the same slot.
+	  ithumb-writer now cleans up 0 Byte files.
+
+	
+2005-11-30  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/db-artwork-parser.c: (parse_mhni): don't crash if
+	ipod_image_new_from_mhni returns NULL
+
+2005-11-28  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_artwork.c: (unpack_RGB_565), (get_pixel_data):
+	* src/itdb_itunesdb.c: (get_mhod):
+	* src/ithumb-writer.c: (pack_RGB_565),
+	(ithumb_rearrange_thumbnail_file): added some paranoia checks before
+	doing some mallocs to prevent potential int overflows in some mallocs
+	which could be triggered by using forged iTunesDB files
+
+2005-11-28  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	New API for thumbnail support: see src/itdb.h for details.
+
+	* src/itdb.h: Introduced Itdb_Artwork and ItdbThumbType and
+	changed Itdb_Image to Itdb_Thumb throughout the source.
+
+	* src/itdb_artwork.c: new file as backend for Itdb_Artwork support
+	(new, free, duplicate, get_thumb_by_type, add_thumbnail,
+	remove_thumbnail, remove_thumbnails), as well as for the
+	Itdb_Thumb support (new, free, duplicate, get_gdk_pixbuf,
+	get_filename)
+
+	* src/itdb_track.c: new functions for artwork support
+	(set_thumbnails, remove_thumbnails)
+
+	* src/ithumb-writer.c: added support to write thumbnails in
+	addition to existing thumbnails
+
+	* src/db-artwork-parcer.c: (mhod3_get_ithmb_filename)
+
+	* src/itdb_itunesdb.c: (update_artwork_info)
+
+	* tests/test-covers.c: updated to new API.
+
+	* tests/test-write-covers.c: updated to new API.
+
+	Known issues: iTunes wipes off our thumbnails.
+	
+2005-11-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* overall changes to support itdb_image_get_gdk_pixbuf(). Run
+	"tests/test-thumbnails <ipod_mount> to copy all thumbnails into
+	the current directory.
+
+	* configure.ac: bumped version to 0.2.2
+
+	
+2005-11-23  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/db-artwork-debug.c: (get_utf16_string):
+	* src/db-artwork-parser.c: (get_utf16_string), (parse_mhod_3),
+	(parse_mhni), (ipod_supports_cover_art), (ipod_parse_artwork_db):
+	* src/db-artwork-parser.h:
+	* src/db-artwork-writer.c: (get_artwork_info), (write_mhod_type_3),
+	(write_mhni), (write_mhod), (write_mhii), (write_mhif):
+	* src/db-image-parser.c: (unpack_RGB_565),
+	(image_type_from_corr_id), (ipod_image_new_from_mhni):
+	* src/db-image-parser.h:
+	* src/itdb.h:
+	* src/ithumb-writer.c: (pack_RGB_565),
+	(ithumb_writer_write_thumbnail), (ipod_image_get_ithmb_filename),
+	(ithumb_writer_new), (ithumb_writer_free), (write_thumbnail),
+	(itdb_write_ithumb_files):
+	* tests/test-covers.c: (save_song_thumbnails): rework artwork code in 
+	an attempt to properly support artwork on all the iPod models
+
+2005-11-23  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/hal-common.c:
+	* tests/test-covers.c: (ipod_image_to_gdk_pixbuf): more glib 2.4
+	changes
+
+2005-11-23  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: bumped version number
+
+==== libgpod 0.2.0 ====
+
+2005-11-23  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: set version number to 0.2.0
+
+2005-11-22  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.c: fix compilation issue when hal isn't available
+
+2005-11-22  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: fix .so versioning
+
+2005-11-22  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/glib-compat.h: include stdio.h in the glib 2.4 compat code
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* COPYING: libgpod really is LGPL
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: set version number to 0.2.0
+	* src/Makefile.am: added glib-compat.h
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac:
+	* src/Makefile.am:
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/glib-compat.h: added a missing helper file for glib 2.4
+	compilation
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/hal-common.c:
+	* src/ipod-device.c: marked some functions as static
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.c: fix g_mkdir_with_parents use (don't use it with
+	glib 2.8, and mark it static)
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/db-artwork-writer.c: (write_mhod_type_3):
+	* src/db-parse-context.c:
+	* src/ipod-device.c:
+	* src/itdb_private.h:
+	* src/itdb_track.c:
+	* src/ithumb-writer.c: (ithumb_writer_write_thumbnail): commit some
+	changes which should help compiling with glib 2.4
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* autogen.sh:
+	* gnome-autogen.sh: use autogen.sh script from gnome-common since the
+	custom libgpod one keep having issues (this doesn't add a dependency
+	on gnome-common since I imported the necessary script to our CVS)
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* INSTALL:
+	* autogen.sh:
+	* gnome-autogen.sh:
+
+2005-11-21  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/hal-common.h: mark hal stubs (for when hal isn't available) as 
+	G_GNUC_INTERNAL to avoid namespace clashes
+	* src/ipod-device.c:
+	* src/ipod-device.h: move hal header inclusion in the .c instead of
+	having it in the .h
+
+2005-11-19  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_playlist.c: simplified API for itdb_spl_update() and
+	  itdb_splr_eval()
+
+	* itdb_playlist.c: added itdb_spl_update_live() for convenience
+
+	* itdb_itunesdb.c: (itdb_rename_files) also remove "iTunesShuffle"
+	  as this file might confuse iPod Shuffles.
+	
+2005-11-17  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * configure.ac: check for version 2.4 of glib -- now we need to
+	  make sure that libgpod actually works with 2.4...
+
+2005-11-15  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_itunesdb.c: (itdb_new): initialise glib type system before
+	calling ipod_device_new (which creates a gobject)
+
+2005-11-13  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: when new rating is set on the iPod, backup
+	  the old rating to app_rating. Not sure what it's for, but iTunes
+	  seem to do it.
+
+	* src/itdb_itunesdb.c:
+	* src/itdb.h: split unk164 into flag1, flag2, flag3, and flag4.
+
+2005-11-12  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_track.c: (itdb_track_set_defaults) only change unk208
+	(audio/video) if not already set to non-zero.
+
+2005-11-11  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c: (itdb_set_mountpoint) do not call
+	  itdb_device_new() with NULL pointer (no mountpoint == local
+	  repository) to avoid critical warning.
+
+2005-11-09  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb.h src/itdb_itunesdb.c: change API for
+	  itdb_shuffle_write() to be identical to itdb_itunesdb_write()
+
+2005-11-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac: fixed hal detection, stole a bit more autoconf-fu from 
+	libipoddevice so that ipod-device.c compiles when hal is detected
+
+2005-11-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/hal-common.c:
+	* src/hal-common.h: more #if => #ifdef changes
+
+2005-11-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.c:
+	* src/ipod-device.h: update comments to reflect the fact we are using
+	#ifdef HAVE_LIBHAL instead of #if HAVE_LIBHAL now
+
+2005-11-08  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/hal-common.c:
+	* src/hal-common.h:
+	* src/ipod-device.c: (ipod_device_set_property),
+	(ipod_device_hal_initialize), (ipod_device_detect_volume_info),
+	(ipod_device_new), (ipod_device_eject): sync with libipoddevice CVS,
+	use #ifdef HAVE_LIBHAL instead of #if HAVE_LIBHAL
+
+2005-11-06  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.h:
+	* src/itdb.h: added missing G_BEGIN_DECLS and G_END_DECLS
+
+2005-11-05  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_track.c: (is_video_ipod), (itdb_track_set_defaults): deal
+	with unk208 differently on iPod video (it's used to indicate if the
+	current track must be shown in the video or audio menu or both)
+
+2005-11-05  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.c: (ipod_device_get_property),
+	(ipod_device_class_init):
+	* src/ipod-device.h: sync with libipoddevice CVS to get information
+	about artwork formats supported by the various iPod models
+	
+
+2005-11-04  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/ipod-device.c: (ipod_device_new):
+	* src/ipod-device.h:
+	* src/itdb.h:
+	* src/itdb_itunesdb.c: (itdb_free), (itdb_parse),
+	(itdb_shuffle_write), (itdb_set_mountpoint): added an IpodDevice
+	element to Itdb_iTunesDB. This makes it possible for libgpod to know
+	the type (regular/nano/mini/video/...) of the iPod it's currently 
+	dealing with (which is necessary for proper cover art support for 
+	example)
+
+2005-11-04  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/Makefile.am: db-itunes-parser.h was missing from the source file
+	list, this made "make dist" generate uncompilable tarballs
+
+2005-11-04  Christophe Fergeau  <teuf@gnome.org>
+
+	* autogen.sh: add missing call to glib-gettextize, this has the nice
+	side-effect of adding mkinstalldirs if automake didn't copy it for us.
+
+2005-11-02  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac:
+	* src/db-artwork-writer.c: (ipod_buffer_grow_mapping),
+	(ipod_buffer_maybe_grow): added fallback code for systems not having
+	mremap (pretty much all non-linux systems actually)
+
+2005-11-02  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/db-artwork-writer.c: (ipod_buffer_destroy):
+	* src/itdb_track.c: (itdb_track_set_defaults): applied patch from 
+	Uwe Hermann <uwe@hermann-uwe.de> to add video support to libgpod,
+	removed spurious g_print
+
+2005-11-01  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_itunesdb.c (get16lint): fixed bug affecting big endian
+          systems. Thanks to Martin Aumueller for spotting this.
+
+	* itdb_itunesdb.c: used GUINTxx_TO/FROM_xE() instead of "#if
+          ..." constructions.
+
+2005-10-25  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_itunesdb.c (itdb_parse): added comment, check for itdb
+	  before calling ipod_pars_artwork_db()
+
+	* db-artwork_parser.c (ipod_parse_artwork_db): added assertion
+          to avoid segfault if called NULL parameter.
+
+	* itdb_itunesdb.c (get_mhip): fixed handling for iTunesDB
+          versions 4.7 and smaller.
+
+2005-10-24  Christophe Fergeau  <teuf@gnome.org>
+
+	* (itdb_write): remove mountpoint as parameter as not used.
+
+2005-10-20  Christophe Fergeau  <teuf@gnome.org>
+
+	* tests/test-covers.c: (save_song_thumbnails): fix warning on amd64
+
+2005-10-19  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac: print warning and hint if ./mkinstalldirs is not
+	  created (incompatibility between automake > 1.8 and all gettext
+	  at least up to 0.14.4.
+
+	* TROUBLESHOOTING: added tips for missing ./mkinstalldirs and
+	  po/Makefile.in.in
+
+2005-10-17  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/db-image-parser.c: (get_pixel_data),
+	(ipod_image_new_from_mhni):
+	* src/itdb.h:
+	* src/itdb_itunesdb.c: (get_mhod): Changed type of the various fields 
+	in the ItdbImage structures so that they match what they are in the
+	database on the iPod.
+
+2005-10-15  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_itunesdb.c,itdb_private.h: fixes for 64 bit systems
+	* src/ipod-device.c: fixes for 64 bit systems (patch provided by
+	  Bodo Bauer)
+	* TROUBLESHOOTING: hint for 64 bit compilation
+
+2005-10-12  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac:
+	* src/Makefile.am:
+	* tests/Makefile.am: fix compilation when hal is available, needs to
+	be tested on systems without hal
+
+2005-10-11  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_itunesdb.c: (get_mhip): added missing parameter to
+	a g_warning call, this broke compilation on FC4
+
+	* src/itdb_track.c: (itdb_track_add/itdb_track_set_defaults): set
+	  dbid if not set (thanks to Guilherme Salgado for pointing this
+	  out)
+
+	* tests/.cvsignore: updated
+
+2005-10-09  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* bindings/python/gpod.i: applied Kelvin Lawson's patch to query
+	  integers.
+
+	* src/ipod-device.[ch],hal-common.[ch],Makefile.am: code ported
+	  from libipoddevice to retrieve information about the iPod
+	  without libhal dependence.
+
+	* tests/test-ipod-device.c: small script to show how to to query
+	  the iPod for information.
+
+	* tests/Makefile.am: initialize <LIBS> with better default
+
+	* configure.ac: add dependency for libgobject
+
+2005-10-02  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* Makefile.am: added bindings/... to EXTRA_DIST
+
+	* src/itdb.h, src/itdb_playlist.h, src/itdb_private.h: made enum
+	  ItdbPlType and enum ItdbPlFlag private and introduced
+	  itdb_playlist_set_mpl/_podcast() in addition to the existing
+	  itdb_playlist_is_mpl/_podcast() which make the public enums
+	  unecessary.
+
+	* bumped to version 107
+
+	* src/ithumb-writer.c: itdb_write_ithumb_files (): commented out
+	  g_print() statement as this produced an empty line in gtkpod's
+	  warning window.
+
+	* src/Makefile.am: GDKPIXPUF dependency solved inside source files
+	  -- db-artwork-writer-dummy.c no longer required. Now compiles
+	  with and without gdkpixbuf.
+
+	* configure.ac: fixed error in AC_DEFINE_UNQUOTED(HAVE_GDKPIXBUF). 
+	* tests/test-covers.c: attached Flavio Stanchina size-patch
+
+2005-09-29  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* applied Chrisophe's patch to make libgdk optional
+
+2005-09-27  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* src/itdb_track.c: include thumbnails into itdb_track_duplicate()
+	  (Christophe Fergeau)
+
+	* src/db-image-parser.c: support for iPod nano (Christophe
+	  Fergeau)
+
+	* configure.c: make MacOS compatible (Tristan O'Tierney)
+
+2005-09-27  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* .cvsignore: added reasonable defaults in ./ ./src/ ./tests ./po
+
+	* po/Makefile.in.in: removed, as it should be created by configure
+
+        * itdb.h, itdb_itunesdb.c, itdb_private.h: moved next_id from
+	  Itdb_iTunesDB to FExport.
+
+	* bindings/phython/examples/tag-genrr-from-audioscrobber.py: added
+	  (thanks to Nicholas Piper)
+
+2005-09-27  Christophe Fergeau  <teuf@gnome.org>
+
+	* src/itdb_itunesdb.c: (write_mhsd_tracks), (write_playlist_mhips),
+	(write_podcast_mhips): move variable declaration before code to fix 
+	compilation
+	* src/db-artwork-parser.c: (ipod_parse_artwork_db):
+	* src/db-artwork-writer.c: (ipod_write_artwork_db):
+	* src/ithumb-writer.c: (ithumb_writer_new): added some sanity checks
+	to detect better when the iPod doesn't have any artwork data
+
+2005-09-24  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * itdb.h/itdb_playlist.c: new functions: itdb_playlist_is_mpl()
+	  and itdb_playlist_is_podcasts()
+
+	* itdb_track.c: update itdb_track_duplicate()
+
+	* itdb_itunesdb.c: read/write timestamp in playlists. Set
+	  timestamp if previously unset.
+
+	* itdb_playlist.c: set timestamp when creating playlist, set
+	  timestamp when adding playlist and no timestamp was set.
+
+	* Release of version 0.1.6
+
+2005-09-23  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* bindings/: added python bindings provided by Nicholas Piper
+	  <nick at nickpiper co uk>
+
+	* itdb.h: added enum ItdbPlFlag and Itdb_Playlist->podcastflag
+	  field.
+
+	* itdb.h/itdb_itunesdb.c: added time_released field
+
+	* itdb_itunesdb.c: rewrote write_playlist() for easier
+	  maintenance. 
+
+	* itdb_itunesdb.c: read/write support for podcast playlists
+	  including chapterdata (but only in raw format)
+
+2005-09-22  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* applied Christophe Fergeau's patch which adds cover art writing
+	  support to libgpod -> bump to version 104
+
+2005-09-21  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_itunesdb.c: streamline parse_fimp() for more
+	  flexibility. Please report if formerly readable iTunesDB cannot
+	  be read any more :-/
+
+2005-09-20  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* Release of 0.1.3
+
+2005-09-19  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * added additional fields to Itdb_Track that are present since
+	  version 0x0c of the iTunesDB. Write long mhit version.
+
+	* applied patch provided by Christophe Fergeau <teuf at gnome.org>
+	  for artwork database support (read-only).
+
+	* itdb_itunesdb.c: read iTunesStats file if present (corresponds
+	  to Play Counts file on the Shuffle).
+
+	* itdb.h: implemented sortorder in playlists (new enum)
+
+2005-09-17  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+        * renamed fdesc to filetype
+
+	* po/it.po: updated (thanks to Edward Matteucci)
+
+
+2005-09-16  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb.h/itdb_itunesdb.c: changed 'static void
+	  itdb_count_musicdirs()' to 'gint itdb_musicdirs_number()'
+
+2005-09-14  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* autogen.sh: automatically call ./configure
+	* configure.ac: added supported languages de fr he it ja sv
+	* po/: added language files from gtkpod project
+
+2005-09-13  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* itdb_itunesdb: changed API for itdb_filename_on_ipod ()
+	* itdb.h: added 'gint musicdirs' to Itdb_iTunesDB (number of
+	  F.. dirs available)
+	* itdb_itunesdb: itdb_cp_track_to_ipod() will now determine the
+	  number of available F.. dirs before copying by calling new
+	  function itdb_count_musicdirs()
+
+2005-09-11  Jorg Schuler <jcsjcs at users.sourceforge.net>
+
+	* configure.ac: changed position of AC_GNU_SOURCE (caused error
+	  strange error messages) 
+        * autogen.sh: replace so it works without gnome-common
+	* src/itdb.h: replaced '//' by '/* ... */' to avoid strange error
+	  message during compile.
+	* src/itdb_playlist.c: (itdb_splr_validate)
+	  Guilherme Salgado <salgado@freeshell.org> patch to make
+	  'inthelast' SPL work.
+	* README: added some notes.
+	
+2005-09-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* configure.ac:
+	* src/itdb_itunesdb.c: (get_mhod_type), (get_mhod),
+	(get_mhod_string), (get_playlist), (get_mhit),
+	(itdb_shuffle_write_file):
+	* src/itdb_playlist.c: (itdb_spl_update_all):
+	* tests/itdb_main.c: (main): fixed compilation warnings to be able
+	to compile with -Werror
+
+2005-09-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* README: added quick description of the library purpose
+
+2005-09-10  Christophe Fergeau  <teuf@gnome.org>
+
+	* AUTHORS:
+	* COPYING:
+	* INSTALL:
+	* Makefile.am:
+	* autogen.sh:
+	* configure.ac:
+	* libgpod-1.0.pc.in:
+	* po/Makefile.in.in:
+	* po/POTFILES.in:
+	* src/Makefile.am:
+	* src/itdb.h:
+	* src/itdb_itunesdb.c: 
+	* src/itdb_playlist.c:
+	* src/itdb_private.h:
+	* src/itdb_track.c: 
+	* tests/Makefile.am:
+	* tests/itdb_main.c: initial import

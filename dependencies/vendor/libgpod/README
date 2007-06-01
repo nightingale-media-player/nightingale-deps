@@ -1,0 +1,139 @@
+libgpod is a library meant to abstract access to an iPod content. It
+provides an easy to use API to retrieve the list of files and playlist
+stored on an iPod, to modify them and to save them back to the iPod.
+
+This code was originally part of gtkpod (www.gtkpod.org). When the iPod
+content parsing code was made to be self-contained with gtkpod 0.93,
+we chose to put this code in a separate library so that other project
+can benefit from it without duplicating code.
+
+If you decide to make improvements, like support for cover art or
+photos please contact us so we can work together. Just drop a mail to
+Gtkpod-devel@lists.sourceforge.net (you may ask to be CC in the
+answer).
+
+----------------------------------------------------------------------
+Quick HOWTO use libgpod
+
+itdb_parse(): read the iTunesDB and ArtbookDB
+itdb_write(): write the iTunesDB and ArtbookDB
+
+itdb_parse() will return a Itdb_iTunesDB structure with GLists
+containing all tracks (each track is represented by a Itdb_Track
+structure) and the playlists (each playlist is represented by a
+Itdb_Playlist structure).
+
+A number of functions for adding, removing, duplicating tracks are
+available. Please see itdb.h for details (itdb_track_*()).
+
+In each Itdb_Playlist structure you can find a GList called 'members'
+with listing all member tracks. Each track referenced in a playlist
+must also be present in the tracks GList of the iTunesDB.
+
+The iPod must contain one master playlist (MPL) containing all tracks
+accessible on the iPod through the
+Music->Tracks/Albums/Artists... menu. Besides the MPL there can be a
+number of normal playlists accessible through the Music->Playlists
+menu on the iPod. Tracks that are a member of one of these normal
+playlists must also be a member of the MPL.
+
+The Podcasts playlist is just another playlist with some internal
+flags set differently. Also, member tracks in the Podcasts playlist
+are not normally members of the MPL (so on the iPod they will only
+show up under the Podcasts menu). All tracks referenced must be in the
+tracklist of the Itdb_iTunesDB, however.
+
+A number of functions to add/remove playlists, or add/remove tracks
+are available. Please see itdb.h for details (itdb_playlist_*()).
+
+Each track can have a thumbnail associated with it. You can retrieve a
+GdkPixmap of the thumbnail using itdb_thumb_get_gdk_pixbuf() (tracks
+have thumbnails of the following types associated:
+ITDB_THUMB_COVER_SMALL and _LARGE). You can remove a thumbnail with
+itdb_track_remove_thumbnails(). And finally, you can set a new
+thumbnail using itdb_track_set_thumbnails().
+
+Please note that iTunes additionally stores the artwork as tags in the
+original music file. That's also from where the data is read when
+artwork is displayed in iTunes, and there can be more than one piece
+of artwork. libgpod does not store the artwork as tags in the original
+music file. As a consequence, if you iTunes attempts to access the
+artwork, it will find none, and remove libgpod's artwork. Luckily,
+iTunes will only attempt to access the artwork if you select a track
+in Tunes. (To work around this, gtkpod keeps a list of the original
+filename of all artwork and silently adds the thumbnails if they were
+'lost'. Your application might want to do something similar, or you
+can supply patches for optionally! adding tags to the original music
+files.)
+
+The Itdb_iTunesDB, Itdb_Playlist and Itdb_Track structures each have a
+userdata and a usertype field that can be used by the application to
+store application-specific additional data. If userdata is a pointer
+to an external structure, you can supply a ItdbUserDataDuplicateFunc
+and a ItdbUserDataDestroyFunc so that this data can be duplicated
+or freed automatically with a call to the library _duplicate()/_free()
+functions.
+
+For more information I would advice to have a look at gtkpod's source
+code. You can also ask questions on the developer's mailing list:
+gtkpod-devel at lists dot sourceforge dot net
+
+
+Jörg Schuler (jcsjcs at users dot sourceforge dot net)
+
+----------------------------------------------------------------------
+Note about photo databases:
+
+First thing, there are 2 different artwork databases on the iPod
+Photo/Color, the ArtworkDB file which stores information about cover art
+(thumbnails) for the songs stored on the iPod, and the Photo Database
+which is used to store random photos not associated with songs on the
+iPod. 
+
+The main target I had in mind when writing artwork support was cover art
+thumbnails for songs. The parsing code should be reusable for generic
+Photo Database support, but there are probably some tweaks to do, and
+some stuff isn't handled, for example Photo Albums (roughtly equivalent
+to a playlist) which aren't used in the ArtworkDB (they are only
+useful/meaningful in the Photo Database)
+
+Even though the cover art data is stored in a separate file (ArtworkDB),
+it's intrisically linked with a song in the iTunesDB files through the
+'dbid' 64 bit field in the mhit iTunesDB records (it's meant to be
+displayed along when the song is being played, so it makes sense to
+associate them).
+
+What ipod_parse_photo_db is to parse this ArtworkDB file to gather info
+about the song thumbnails. It then fills the 'thumbnails' field in
+Itdb_Track which is a list of Itdb_Image. The Itdb_Image structure
+contains a few basic information about the image (I'll let you check its
+definition in itdb.h for more details), but it doesn't store the pixel
+data since this is stored separately, and I feared loading all the cover
+thumbnails automatically would be too memory hungry. So an
+itdb_image_get_rgb_data function is provided to trigger the load of the
+pixel data when it's useful.
+
+The 2 test programs I added are meant to be small samples of how this
+stuff works, one of them parses the ArtworkDB and outputs all the
+thumbnails it finds in /tmp as .png files, the other one is used to
+randomly associate images as thumbnails to all songs in the database,
+it's meant to show how to write thumbnails. If you add support for that
+to gtkpod, be aware that currently adding cover thumbnails to a few
+songs on an iPod which already has cover thumbnails assigned to some
+other songs is not something that is tranparently handled, ie you'll
+need to add code either to libgpod or to gtkpod to make that work
+properly.
+
+As for Photo Database handling (which is not dealt with currently), I
+agree it doesn't make sense to associate its parsing with an
+Itdb_ItunesDB object, and that a 'parallel' api mimicking somewhat the
+Track/Playlist stuff with Photo/Album entities would need to be
+designed, but I didn't work on that since, and I probably won't short
+term.
+
+People wanting more info can find lots of details on
+http://ipodlinux.org/ITunesDB#Artwork_Database
+
+I hope that's helpful,
+
+Christophe

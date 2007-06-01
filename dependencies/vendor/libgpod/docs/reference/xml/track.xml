@@ -1,0 +1,447 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libgpod-Tracks">
+<refmeta>
+<refentrytitle role="top_of_page">Tracks</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGPOD Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Tracks</refname>
+<refpurpose>Data structure to store metadata about an iPod track</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+            <link linkend="Itdb-Track">Itdb_Track</link>;
+<link linkend="Itdb-Track">Itdb_Track</link>* <link linkend="itdb-track-new">itdb_track_new</link>                  (void);
+<link linkend="void">void</link>        <link linkend="itdb-track-free">itdb_track_free</link>                 (<link linkend="Itdb-Track">Itdb_Track</link> *track);
+<link linkend="void">void</link>        <link linkend="itdb-track-add">itdb_track_add</link>                  (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="Itdb-Track">Itdb_Track</link> *track,
+                                             <link linkend="gint32">gint32</link> pos);
+<link linkend="void">void</link>        <link linkend="itdb-track-remove">itdb_track_remove</link>               (<link linkend="Itdb-Track">Itdb_Track</link> *track);
+<link linkend="void">void</link>        <link linkend="itdb-track-unlink">itdb_track_unlink</link>               (<link linkend="Itdb-Track">Itdb_Track</link> *track);
+<link linkend="Itdb-Track">Itdb_Track</link>* <link linkend="itdb-track-duplicate">itdb_track_duplicate</link>            (<link linkend="Itdb-Track">Itdb_Track</link> *tr);
+<link linkend="Itdb-Track">Itdb_Track</link>* <link linkend="itdb-track-by-id">itdb_track_by_id</link>                (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="guint32">guint32</link> id);
+<link linkend="GTree">GTree</link>*      <link linkend="itdb-track-id-tree-create">itdb_track_id_tree_create</link>       (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb);
+<link linkend="void">void</link>        <link linkend="itdb-track-id-tree-destroy">itdb_track_id_tree_destroy</link>      (<link linkend="GTree">GTree</link> *idtree);
+<link linkend="Itdb-Track">Itdb_Track</link>* <link linkend="itdb-track-id-tree-by-id">itdb_track_id_tree_by_id</link>        (<link linkend="GTree">GTree</link> *idtree,
+                                             <link linkend="guint32">guint32</link> id);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-track-set-thumbnails">itdb_track_set_thumbnails</link>       (<link linkend="Itdb-Track">Itdb_Track</link> *track,
+                                             const <link linkend="gchar">gchar</link> *filename);
+<link linkend="void">void</link>        <link linkend="itdb-track-remove-thumbnails">itdb_track_remove_thumbnails</link>    (<link linkend="Itdb-Track">Itdb_Track</link> *track);
+#define     <link linkend="ITDB-RATING-STEP:CAPS">ITDB_RATING_STEP</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="Itdb-Track" role="struct"/>Itdb_Track</title>
+<indexterm><primary>Itdb_Track</primary></indexterm><programlisting>typedef struct {
+  Itdb_iTunesDB *itdb;       /* pointer to iTunesDB (for convenience) */
+  gchar   *title;            /* title (utf8)           */
+  gchar   *ipod_path;        /* name of file on iPod: uses ":"
+				instead of "/"                        */
+  gchar   *album;            /* album (utf8)           */
+  gchar   *artist;           /* artist (utf8)          */
+  gchar   *genre;            /* genre (utf8)           */
+  gchar   *filetype;         /* eg. "MP3-File"...(utf8)*/
+  gchar   *comment;          /* comment (utf8)         */
+  gchar   *category;         /* Category for podcast   */
+  gchar   *composer;         /* Composer (utf8)        */
+  gchar   *grouping;         /* ? (utf8)               */
+  gchar   *description;      /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *podcasturl;       /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *podcastrss;       /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *chapterdata;      /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *subtitle;         /* see note for MHOD_ID in itdb_itunesdb.c */
+  guint32 id;                /* unique ID of track     */
+  gint32  size;              /* size of file in bytes  */
+  gint32  tracklen;          /* Length of track in ms  */
+  gint32  cd_nr;             /* CD number              */
+  gint32  cds;               /* number of CDs          */
+  gint32  track_nr;          /* track number           */
+  gint32  tracks;            /* number of tracks       */
+  gint32  bitrate;           /* bitrate                */
+  guint16 samplerate;        /* samplerate (CD: 44100) */
+  guint16 samplerate_low;    /* in the iTunesDB the samplerate is
+                                multiplied by 0x10000 -- these are the
+				lower 16 bit, which are usually 0 */
+  gint32  year;              /* year                   */
+  gint32  volume;            /* volume adjustment              */
+  guint32 soundcheck;        /* volume adjustment "soundcheck" */
+  guint32 time_added;        /* time when added (Mac type)          */
+  guint32 time_played;       /* time of last play (Mac type)        */
+  guint32 time_modified;     /* time of last modification (Mac type)*/
+  guint32 bookmark_time;     /* bookmark set for (AudioBook) in ms  */
+  guint32 rating;            /* star rating (stars * RATING_STEP (20))     */
+  guint32 playcount;         /* number of times track was played    */
+  guint32 playcount2;        /* Also stores the play count of the
+				song.  Don't know if it ever differs
+				from the above value. During sync itdb
+				sets playcount2 to the same value as
+				playcount. */
+  guint32 recent_playcount;  /* times track was played since last sync */
+  gboolean transferred;      /* has file been transferred to iPod?  */
+  gint16  BPM;               /* supposed to vary the playback speed */
+  guint8  app_rating;        /* star rating set by appl. (not
+			      * iPod). If the rating set on the iPod
+			        and the rating field above differ, the
+				original rating is copied here and the
+				new rating is stored above. */
+  guint8  type1;             /* CBR MP3s and AAC are 0x00, VBR MP3s are
+			        0x01 */
+  guint8  type2;             /* MP3s are 0x01, AAC are 0x00 */
+  guint8  compilation;
+  guint32 starttime;
+  guint32 stoptime;
+  guint8  checked;           /* 0x0: checkmark on track is set 0x1: not set */
+  guint64 dbid;              /* unique database ID */
+  guint32 drm_userid;        /* Apple Store/Audible User ID (for DRM'ed
+				files only, set to 0 otherwise). */
+  guint32 visible;           /*  If this value is 1, the song is visible
+				 on the iPod. All other values cause
+				 the file to be hidden. */
+  guint32 filetype_marker;   /* This appears to always be 0 on hard
+                                drive based iPods, but for the
+                                iTunesDB that is written to an iPod
+                                Shuffle, iTunes 4.7.1 writes out the
+                                file's type as an ANSI string(!). For
+                                example, a MP3 file has a filetype of
+                                0x4d503320 -&gt; 0x4d = 'M', 0x50 = 'P',
+                                0x33 = '3', 0x20 = &lt;space&gt;. (set to
+				the filename extension by itdb when
+				copying track to iPod)*/
+  guint16 artwork_count;     /* The number of album artwork items
+				associated with this song. libgpod
+				updates this value when syncing */
+  guint32 artwork_size;      /* The total size of artwork (in bytes)
+				attached to this song, when it is
+				converted to JPEG format. Observed in
+				iPodDB version 0x0b and with an iPod
+				Photo. libgpod updates this value when
+				syncing */
+  float samplerate2;         /* The sample rate of the song expressed
+				as an IEEE 32 bit floating point
+				number.  It's uncertain why this is
+				here.  itdb will set this when adding
+				a track */
+
+  guint16 unk126;     /* unknown, but always seems to be 0xffff for
+			 MP3/AAC songs, 0x0 for uncompressed songs
+			 (like WAVE format), 0x1 for Audible. itdb
+			 will try to set this when adding a new track */
+  guint32 unk132;     /* unknown */
+  guint32 time_released;/* date/time added to music store? definitely a
+			 timestamp, always appears to be a time of
+			 0700 GMT. For podcasts: release date as
+			 displayed next to the title in the Podcast
+			 playlist  */
+  guint16 unk144;     /* unknown, but MP3 songs appear to be always
+			 0x000c, AAC songs are always 0x0033, Audible
+			 files are 0x0029, WAV files are 0x0. itdb
+			 will attempt to set this value when adding a
+			 track. */  
+  guint16 unk146;     /* unknown, but appears to be 1 if played at
+			 least once in iTunes and 0 otherwise. */
+  guint32 unk148;     /* unknown - used for Apple Store DRM songs
+			 (always 0x01010100?), zero otherwise */
+  guint32 unk152;     /* unknown */
+  guint32 unk156, unk160;
+  guint8 has_artwork; /* 0x01: artwork is present. 0x02: no artwork is
+			 present for this track (used by the iPod to
+			 decide whether to display Artwork or not) */
+  guint8 skip_when_shuffling;/* "Skip when shuffling" when set to
+			 0x01, set to 0x00 otherwise. .m4b and .aa
+			 files always seem to be skipped when
+			 shuffling, however */
+  guint8 remember_playback_position;/* "Remember playback position"
+			 when set to 0x01, set to 0x00 otherwise. .m4b
+			 and .aa files always seem to remember the
+			 playback position, however. */
+  guint8 flag4;       /* Used for podcasts, 0x00 otherwise.  If set to
+			 0x01 the "Now Playing" page will show
+			 Title/Album, when set to 0x00 it will also
+			 show the Artist. When set to 0x02 a sub-page
+			 (middle button) with further information
+			 about the track will be shown. */
+  guint64 dbid2;      /* not clear. if not set, itdb will set this to
+			 the same value as dbid when adding a track */
+  guint8 lyrics_flag; /* set to 0x01 if lyrics are present in MP3 tag
+			 ("ULST"), 0x00 otherwise */
+  guint8 movie_flag;  /* set to 0x01 if it's a movie file, 0x00
+		         otherwise */
+  guint8 mark_unplayed; /* A value of 0x02 marks a podcast as unplayed
+			   on the iPod (bullet) once played it is set to
+			   0x01. Non-podcasts have this set to 0x01. */
+  guint8 unk179;      /* unknown (always 0x00 so far) */
+  guint32 unk180, unk184;
+  guint32 samplecount;/* Number of samples in the song. First observed
+			 in dbversion 0x0d, and only for AAC and WAV
+			 files (not MP3?!?). */
+  guint32 unk192, unk196, unk200;
+  guint32 unk204;     /*  unknown - added in dbversion 0x0c, first
+			  values observed in 0x0d. Observed to be 0x0
+			  or 0x1. */
+  guint32 unk208, unk212, unk216, unk220, unk224;
+  guint32 unk228, unk232, unk236, unk240;
+
+    /* Chapter data: defines where the chapter stops are in the track,
+       as well as what info should be displayed for each section of
+       the track. Until it can be parsed and interpreted, the
+       chapterdata will just be read as a block and written back on
+       sync. This will be changed at a later time */
+  void *chapterdata_raw;
+  guint32 chapterdata_raw_length;
+
+  /* This is for Cover Art support */
+  struct _Itdb_Artwork *artwork;
+
+  /* below is for use by application */
+  guint64 usertype;
+  gpointer userdata;
+  /* function called to duplicate userdata */
+  ItdbUserDataDuplicateFunc userdata_duplicate;
+  /* function called to free userdata */
+  ItdbUserDataDestroyFunc userdata_destroy;
+} Itdb_Track;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-new" role="function"/>itdb_track_new ()</title>
+<indexterm><primary>itdb_track_new</primary></indexterm><programlisting><link linkend="Itdb-Track">Itdb_Track</link>* itdb_track_new                  (void);</programlisting>
+<para>
+Creates an empty <link linkend="Itdb-Track"><type>Itdb_Track</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="Itdb-Track"><type>Itdb_Track</type></link>, free it with <link linkend="itdb-track-free"><function>itdb_track_free()</function></link> when no
+longer needed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-free" role="function"/>itdb_track_free ()</title>
+<indexterm><primary>itdb_track_free</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_free                 (<link linkend="Itdb-Track">Itdb_Track</link> *track);</programlisting>
+<para>
+Frees the memory used by <parameter>track</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-add" role="function"/>itdb_track_add ()</title>
+<indexterm><primary>itdb_track_add</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_add                  (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="Itdb-Track">Itdb_Track</link> *track,
+                                             <link linkend="gint32">gint32</link> pos);</programlisting>
+<para>
+Adds <parameter>track</parameter> to <parameter>itdb->tracks</parameter> at position <parameter>pos</parameter> (or at the end if pos
+is -1). The application is responsible to also add it to the master
+playlist. The <parameter>itdb</parameter> gets ownership of the <parameter>track</parameter> and will take care of 
+freeing the memory it uses when it's no longer necessary.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> position of the track to add
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-remove" role="function"/>itdb_track_remove ()</title>
+<indexterm><primary>itdb_track_remove</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_remove               (<link linkend="Itdb-Track">Itdb_Track</link> *track);</programlisting>
+<para>
+Removes <parameter>track</parameter> from the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> it's associated with, and frees the
+memory it uses. It doesn't remove the track from the playlists it may have
+been added to, in particular it won't be removed from the master playlist.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-unlink" role="function"/>itdb_track_unlink ()</title>
+<indexterm><primary>itdb_track_unlink</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_unlink               (<link linkend="Itdb-Track">Itdb_Track</link> *track);</programlisting>
+<para>
+Removes <parameter>track</parameter> from the <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link> it's associated with, but do not free
+memory. It doesn't remove the track from the playlists it may have been 
+added to, in particular it won't be removed from the master playlist.
+track->itdb is set to NULL.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-duplicate" role="function"/>itdb_track_duplicate ()</title>
+<indexterm><primary>itdb_track_duplicate</primary></indexterm><programlisting><link linkend="Itdb-Track">Itdb_Track</link>* itdb_track_duplicate            (<link linkend="Itdb-Track">Itdb_Track</link> *tr);</programlisting>
+<para>
+Duplicates an existing track</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>tr</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated <link linkend="Itdb-Track"><type>Itdb_Track</type></link> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-by-id" role="function"/>itdb_track_by_id ()</title>
+<indexterm><primary>itdb_track_by_id</primary></indexterm><programlisting><link linkend="Itdb-Track">Itdb_Track</link>* itdb_track_by_id                (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb,
+                                             <link linkend="guint32">guint32</link> id);</programlisting>
+<para>
+Looks up a track using its ID in <parameter>itdb</parameter>. 
+Looking up tracks by ID is not really a good idea because the IDs
+are created by itdb just before export. The functions are here
+because they are needed during import of the iTunesDB which is
+referencing tracks by IDs.
+This function is very slow (linear in the number of tracks contained in the 
+database). If you need to lookup many IDs use <link linkend="itdb-track-id-tree-create"><function>itdb_track_id_tree_create()</function></link>, 
+<link linkend="itdb-track-id-tree-destroy"><function>itdb_track_id_tree_destroy()</function></link>, and <link linkend="itdb-track-id-tree-by-id"><function>itdb_track_id_tree_by_id()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> ID of the track to look for
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="Itdb-Track"><type>Itdb_Track</type></link> with the ID <parameter>id</parameter> or NULL if the ID cannot be
+found. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-id-tree-create" role="function"/>itdb_track_id_tree_create ()</title>
+<indexterm><primary>itdb_track_id_tree_create</primary></indexterm><programlisting><link linkend="GTree">GTree</link>*      itdb_track_id_tree_create       (<link linkend="Itdb-iTunesDB">Itdb_iTunesDB</link> *itdb);</programlisting>
+<para>
+Creates a balanced-binary tree for quick ID lookup that is used in
+<link linkend="itdb-track-by-id-tree"><function>itdb_track_by_id_tree()</function></link> function below</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>itdb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-iTunesDB"><type>Itdb_iTunesDB</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a <link linkend="GTree"><type>GTree</type></link> indexed by track IDs to be freed with 
+<link linkend="itdb-track-id-tree-destroy"><function>itdb_track_id_tree_destroy()</function></link> when no longer used
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-id-tree-destroy" role="function"/>itdb_track_id_tree_destroy ()</title>
+<indexterm><primary>itdb_track_id_tree_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_id_tree_destroy      (<link linkend="GTree">GTree</link> *idtree);</programlisting>
+<para>
+Frees the memory used by <parameter>idtree</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>idtree</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GTree"><type>GTree</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-id-tree-by-id" role="function"/>itdb_track_id_tree_by_id ()</title>
+<indexterm><primary>itdb_track_id_tree_by_id</primary></indexterm><programlisting><link linkend="Itdb-Track">Itdb_Track</link>* itdb_track_id_tree_by_id        (<link linkend="GTree">GTree</link> *idtree,
+                                             <link linkend="guint32">guint32</link> id);</programlisting>
+<para>
+Lookup an <link linkend="Itdb-Track"><type>Itdb_Track</type></link> by <parameter>id</parameter> using <parameter>idtree</parameter> for faster lookup (compared to
+itdb_track_by_id)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>idtree</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GTree"><type>GTree</type></link> created using <link linkend="itdb-track-id-tree-create"><function>itdb_track_id_tree_create()</function></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> the ID of the track to search for
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="Itdb-Track"><type>Itdb_Track</type></link> whose ID is <parameter>id</parameter>, or NULL if such a track 
+couldn't be found
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-set-thumbnails" role="function"/>itdb_track_set_thumbnails ()</title>
+<indexterm><primary>itdb_track_set_thumbnails</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_track_set_thumbnails       (<link linkend="Itdb-Track">Itdb_Track</link> *track,
+                                             const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<para>
+Uses the image contained in <parameter>filename</parameter> to generate iPod thumbnails. The image
+can be in any format supported by gdk-pixbuf. To save memory, the thumbnails
+will only be generated when necessary, ie when <link linkend="itdb-save"><function>itdb_save()</function></link> or a similar 
+function is called.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> image file to use as a thumbnail
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the thumbnail could be added, FALSE otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-track-remove-thumbnails" role="function"/>itdb_track_remove_thumbnails ()</title>
+<indexterm><primary>itdb_track_remove_thumbnails</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_track_remove_thumbnails    (<link linkend="Itdb-Track">Itdb_Track</link> *track);</programlisting>
+<para>
+Removes the thumbnails associated with <parameter>track</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>track</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Track"><type>Itdb_Track</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="ITDB-RATING-STEP:CAPS" role="macro"/>ITDB_RATING_STEP</title>
+<indexterm><primary>ITDB_RATING_STEP</primary></indexterm><programlisting>#define ITDB_RATING_STEP 20
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

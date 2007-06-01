@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Low-level functions</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.70.1">
+<link rel="start" href="index.html" title="libgpod Reference Manual">
+<link rel="up" href="ch01.html" title="iPod database">
+<link rel="prev" href="libgpod-Time-handling.html" title="Time handling">
+<link rel="next" href="ch02.html" title="iPod database components">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="iPod database">
+<link rel="chapter" href="ch02.html" title="iPod database components">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="libgpod-Time-handling.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libgpod Reference Manual</th>
+<td><a accesskey="n" href="ch02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2563835" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2572170" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="libgpod-Low-level-functions"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2563835"></a><span class="refentrytitle">Low-level functions</span>
+</h2>
+<p>Low-level functions &#8212; Low-level functions which shouldn't be needed in normal situations</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-control-dir">itdb_get_control_dir</a>            (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-itunes-dir">itdb_get_itunes_dir</a>             (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-music-dir">itdb_get_music_dir</a>              (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-artwork-dir">itdb_get_artwork_dir</a>            (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-device-dir">itdb_get_device_dir</a>             (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-itunesdb-path">itdb_get_itunesdb_path</a>          (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-artworkdb-path">itdb_get_artworkdb_path</a>         (const gchar *mountpoint);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-get-path">itdb_get_path</a>                   (const gchar *dir,
+                                             const gchar *file);
+gchar*      <a href="libgpod-Low-level-functions.html#itdb-resolve-path">itdb_resolve_path</a>               (const gchar *root,
+                                             const gchar * const *components);
+gboolean    <a href="libgpod-Low-level-functions.html#itdb-shuffle-write">itdb_shuffle_write</a>              (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             GError **error);
+gboolean    <a href="libgpod-Low-level-functions.html#itdb-shuffle-write-file">itdb_shuffle_write_file</a>         (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             const gchar *filename,
+                                             GError **error);
+gboolean    <a href="libgpod-Low-level-functions.html#itdb-cp">itdb_cp</a>                         (const gchar *from_file,
+                                             const gchar *to_file,
+                                             GError **error);
+<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a>* <a href="libgpod-Low-level-functions.html#itdb-parse-file">itdb_parse_file</a>              (const gchar *filename,
+                                             GError **error);
+gboolean    <a href="libgpod-Low-level-functions.html#itdb-write-file">itdb_write_file</a>                 (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             const gchar *filename,
+                                             GError **error);
+<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a>* <a href="libgpod-Low-level-functions.html#itdb-duplicate">itdb_duplicate</a>               (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572170"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572186"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2572196"></a><h3>
+<a name="itdb-get-control-dir"></a>itdb_get_control_dir ()</h3>
+<a class="indexterm" name="id2572208"></a><pre class="programlisting">gchar*      itdb_get_control_dir            (const gchar *mountpoint);</pre>
+<p>
+Get the i*_Control directory. Observed values are 'iPod_Control'
+for standard iPods and 'iTunes/iTunes_Control' for mobile
+applications.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the control dir or NULL of non-existent. Must
+<code class="function">g_free()</code> after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2572280"></a><h3>
+<a name="itdb-get-itunes-dir"></a>itdb_get_itunes_dir ()</h3>
+<a class="indexterm" name="id2572292"></a><pre class="programlisting">gchar*      itdb_get_itunes_dir             (const gchar *mountpoint);</pre>
+<p>
+Retrieve the iTunes directory (containing the iTunesDB) by first
+calling <a href="libgpod-Low-level-functions.html#itdb-get-control-dir"><code class="function">itdb_get_control_dir()</code></a> and then adding 'iTunes'</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the iTunes directory or NULL of non-existent.
+Must <code class="function">g_free()</code> after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2572372"></a><h3>
+<a name="itdb-get-music-dir"></a>itdb_get_music_dir ()</h3>
+<a class="indexterm" name="id2572384"></a><pre class="programlisting">gchar*      itdb_get_music_dir              (const gchar *mountpoint);</pre>
+<p>
+Retrieve the Music directory (containing the Fnn dirs) by first
+calling <a href="libgpod-Low-level-functions.html#itdb-get-control-dir"><code class="function">itdb_get_control_dir()</code></a> and then adding 'Music'</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the Music directory or NULL of
+non-existent. Must <code class="function">g_free()</code> after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2593290"></a><h3>
+<a name="itdb-get-artwork-dir"></a>itdb_get_artwork_dir ()</h3>
+<a class="indexterm" name="id2593302"></a><pre class="programlisting">gchar*      itdb_get_artwork_dir            (const gchar *mountpoint);</pre>
+<p>
+Retrieve the Artwork directory (containing the ArtworDB) by
+first calling <a href="libgpod-Low-level-functions.html#itdb-get-control-dir"><code class="function">itdb_get_control_dir()</code></a> and then adding 'Artwork'</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the Artwork directory or NULL of
+non-existent. Must <code class="function">g_free()</code> after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2593382"></a><h3>
+<a name="itdb-get-device-dir"></a>itdb_get_device_dir ()</h3>
+<a class="indexterm" name="id2593394"></a><pre class="programlisting">gchar*      itdb_get_device_dir             (const gchar *mountpoint);</pre>
+<p>
+Retrieve the Device directory (containing the SysInfo file) by
+first calling <a href="libgpod-Low-level-functions.html#itdb-get-control-dir"><code class="function">itdb_get_control_dir()</code></a> and then adding 'Device'</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the Device directory or NULL of
+non-existent. Must <code class="function">g_free()</code> after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2593474"></a><h3>
+<a name="itdb-get-itunesdb-path"></a>itdb_get_itunesdb_path ()</h3>
+<a class="indexterm" name="id2593485"></a><pre class="programlisting">gchar*      itdb_get_itunesdb_path          (const gchar *mountpoint);</pre>
+<p>
+Retrieve a path to the iTunesDB</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the iTunesDB or NULL if non-existent. Must <code class="function">g_free()</code>
+after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601088"></a><h3>
+<a name="itdb-get-artworkdb-path"></a>itdb_get_artworkdb_path ()</h3>
+<a class="indexterm" name="id2601098"></a><pre class="programlisting">gchar*      itdb_get_artworkdb_path         (const gchar *mountpoint);</pre>
+<p>
+Retrieve a path to the ArtworkDB</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>mountpoint</code></em>&#160;:</span></td>
+<td> the iPod mountpoint
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the ArtworkDB or NULL if non-existent. Must <code class="function">g_free()</code> 
+after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601161"></a><h3>
+<a name="itdb-get-path"></a>itdb_get_path ()</h3>
+<a class="indexterm" name="id2601171"></a><pre class="programlisting">gchar*      itdb_get_path                   (const gchar *dir,
+                                             const gchar *file);</pre>
+<p>
+Retrieve a path to the <em class="parameter"><code>file</code></em> in <em class="parameter"><code>dir</code></em></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>dir</code></em>&#160;:</span></td>
+<td> a directory
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>file</code></em>&#160;:</span></td>
+<td> a file
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> path to the <em class="parameter"><code>file</code></em> or NULL if non-existent. Must be <code class="function">g_free()</code>'d 
+after use.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601249"></a><h3>
+<a name="itdb-resolve-path"></a>itdb_resolve_path ()</h3>
+<a class="indexterm" name="id2601259"></a><pre class="programlisting">gchar*      itdb_resolve_path               (const gchar *root,
+                                             const gchar * const *components);</pre>
+<p>
+We start by assuming that the ipod mount point exists.  Then, for
+each component c of track-&gt;ipod_path, we try to find an entry d in
+good_path that is case-insensitively equal to c.  If we find d, we
+append d to good_path and make the result the new good_path.
+Otherwise, we quit and return NULL.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>root</code></em>&#160;:</span></td>
+<td> in local encoding
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>components</code></em>&#160;:</span></td>
+<td> in utf8
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601337"></a><h3>
+<a name="itdb-shuffle-write"></a>itdb_shuffle_write ()</h3>
+<a class="indexterm" name="id2601347"></a><pre class="programlisting">gboolean    itdb_shuffle_write              (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             GError **error);</pre>
+<p>
+Write out an iTunesSD for the Shuffle.
+First reassigns unique IDs to all tracks.
+An existing "Play Counts" file is renamed to "Play Counts.bak" if
+the export was successful.
+An existing "OTGPlaylistInfo" file is removed if the export was
+successful.
+<em class="parameter"><code>itdb-&gt;mountpoint</code></em> must point to the mount point of the iPod,
+e.g. "/mnt/ipod" and be in local encoding.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>itdb</code></em>&#160;:</span></td>
+<td> the <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a> to write to disk
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <span class="type">GError</span> or NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE on success, FALSE on error, in which case <em class="parameter"><code>error</code></em> is
+set accordingly.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601448"></a><h3>
+<a name="itdb-shuffle-write-file"></a>itdb_shuffle_write_file ()</h3>
+<a class="indexterm" name="id2601459"></a><pre class="programlisting">gboolean    itdb_shuffle_write_file         (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             const gchar *filename,
+                                             GError **error);</pre>
+<p>
+Do the actual writing to the iTunesSD</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>itdb</code></em>&#160;:</span></td>
+<td> the <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a> to write to disk
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> file to write to, cannot be NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <span class="type">GError</span> or NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE on success, FALSE on error, in which case <em class="parameter"><code>error</code></em> is
+set accordingly.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601568"></a><h3>
+<a name="itdb-cp"></a>itdb_cp ()</h3>
+<a class="indexterm" name="id2601578"></a><pre class="programlisting">gboolean    itdb_cp                         (const gchar *from_file,
+                                             const gchar *to_file,
+                                             GError **error);</pre>
+<p>
+Copy file "from_file" to "to_file".</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>from_file</code></em>&#160;:</span></td>
+<td> source file
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>to_file</code></em>&#160;:</span></td>
+<td> destination file
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <span class="type">GError</span> or NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE on success, FALSE on error, in which case <em class="parameter"><code>error</code></em> is
+set accordingly.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601683"></a><h3>
+<a name="itdb-parse-file"></a>itdb_parse_file ()</h3>
+<a class="indexterm" name="id2601693"></a><pre class="programlisting"><a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a>* itdb_parse_file              (const gchar *filename,
+                                             GError **error);</pre>
+<p>
+Same as <code class="function">itunesdb_parse()</code>, but filename is specified directly.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> path to a file in iTunesDB format
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <span class="type">GError</span> or NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly allocated <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a> struct holding the tracks and
+the playlists present on the iPod at <em class="parameter"><code>mp</code></em>, NULL if <em class="parameter"><code>mp</code></em> isn't an iPod mount
+point. If non-NULL, the <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a> is to be freed with <a href="libgpod-The-Itdb-iTunesDB-structure.html#itdb-free"><code class="function">itdb_free()</code></a> when
+it's no longer needed
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601815"></a><h3>
+<a name="itdb-write-file"></a>itdb_write_file ()</h3>
+<a class="indexterm" name="id2601826"></a><pre class="programlisting">gboolean    itdb_write_file                 (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb,
+                                             const gchar *filename,
+                                             GError **error);</pre>
+<p>
+Write the content of <em class="parameter"><code>itdb</code></em> to <em class="parameter"><code>filename</code></em>. If <em class="parameter"><code>filename</code></em> is NULL, it attempts
+to write to itdb-&gt;filename.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>itdb</code></em>&#160;:</span></td>
+<td> the <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a> to save
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> filename to save <em class="parameter"><code>itdb</code></em> to
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <span class="type">GError</span> or NULL
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if all went well, FALSE otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2601952"></a><h3>
+<a name="itdb-duplicate"></a>itdb_duplicate ()</h3>
+<a class="indexterm" name="id2601962"></a><pre class="programlisting"><a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a>* itdb_duplicate               (<a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB">Itdb_iTunesDB</a> *itdb);</pre>
+<p>
+Duplicate <em class="parameter"><code>itdb</code></em> 
+FIXME: not implemented yet</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><em class="parameter"><code>itdb</code></em>&#160;:</span></td>
+<td> an <a href="libgpod-The-Itdb-iTunesDB-structure.html#Itdb-iTunesDB"><span class="type">Itdb_iTunesDB</span></a>
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> always return NULL since it's unimplemented
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

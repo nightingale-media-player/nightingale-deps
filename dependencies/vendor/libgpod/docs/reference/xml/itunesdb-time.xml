@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libgpod-Time-handling">
+<refmeta>
+<refentrytitle role="top_of_page">Time handling</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGPOD Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Time handling</refname>
+<refpurpose>Helper functions to convert between Epoch time and Mac (iPod) time</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="guint64">guint64</link>     <link linkend="itdb-time-get-mac-time">itdb_time_get_mac_time</link>          (void);
+<link linkend="time-t">time_t</link>      <link linkend="itdb-time-mac-to-host">itdb_time_mac_to_host</link>           (<link linkend="guint64">guint64</link> mactime);
+<link linkend="guint64">guint64</link>     <link linkend="itdb-time-host-to-mac">itdb_time_host_to_mac</link>           (<link linkend="time-t">time_t</link> time);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="itdb-time-get-mac-time" role="function"/>itdb_time_get_mac_time ()</title>
+<indexterm><primary>itdb_time_get_mac_time</primary></indexterm><programlisting><link linkend="guint64">guint64</link>     itdb_time_get_mac_time          (void);</programlisting>
+<para>
+Gets the current time expressed in 'Mac' unit (ie in number of seconds since
+1/1/1904).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> current time in 'Mac' unit.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-time-mac-to-host" role="function"/>itdb_time_mac_to_host ()</title>
+<indexterm><primary>itdb_time_mac_to_host</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      itdb_time_mac_to_host           (<link linkend="guint64">guint64</link> mactime);</programlisting>
+<para>
+Convert a Mac timestamp to host system time stamp -- modify
+this function if necessary to port to host systems with different
+start of Epoch.
+A "0" time will not be converted.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mactime</parameter>&nbsp;:</term>
+<listitem><simpara> time expressed in 'Mac' unit
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> timestamp for the host system
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-time-host-to-mac" role="function"/>itdb_time_host_to_mac ()</title>
+<indexterm><primary>itdb_time_host_to_mac</primary></indexterm><programlisting><link linkend="guint64">guint64</link>     itdb_time_host_to_mac           (<link linkend="time-t">time_t</link> time);</programlisting>
+<para>
+Convert host system timestamp to Mac time stamp -- modify
+this function if necessary to port to host systems with different
+start of Epoch</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara> time expressed in host unit
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a Mac timestamp
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

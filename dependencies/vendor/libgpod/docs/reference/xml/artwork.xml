@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libgpod-Artwork">
+<refmeta>
+<refentrytitle role="top_of_page">Artwork</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGPOD Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Artwork</refname>
+<refpurpose>Data structure to store iPod artwork (cover and photos)</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+            <link linkend="Itdb-Artwork">Itdb_Artwork</link>;
+            <link linkend="Itdb-Thumb">Itdb_Thumb</link>;
+enum        <link linkend="ItdbThumbType">ItdbThumbType</link>;
+<link linkend="Itdb-Artwork">Itdb_Artwork</link>* <link linkend="itdb-artwork-new">itdb_artwork_new</link>              (void);
+<link linkend="Itdb-Artwork">Itdb_Artwork</link>* <link linkend="itdb-artwork-duplicate">itdb_artwork_duplicate</link>        (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);
+<link linkend="void">void</link>        <link linkend="itdb-artwork-free">itdb_artwork_free</link>               (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);
+<link linkend="gboolean">gboolean</link>    <link linkend="itdb-artwork-add-thumbnail">itdb_artwork_add_thumbnail</link>      (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="ItdbThumbType">ItdbThumbType</link> type,
+                                             const <link linkend="gchar">gchar</link> *filename);
+<link linkend="void">void</link>        <link linkend="itdb-artwork-remove-thumbnail">itdb_artwork_remove_thumbnail</link>   (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);
+<link linkend="void">void</link>        <link linkend="itdb-artwork-remove-thumbnails">itdb_artwork_remove_thumbnails</link>  (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);
+<link linkend="Itdb-Thumb">Itdb_Thumb</link>* <link linkend="itdb-artwork-get-thumb-by-type">itdb_artwork_get_thumb_by_type</link>  (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="ItdbThumbType">ItdbThumbType</link> type);
+<link linkend="gpointer">gpointer</link>    <link linkend="itdb-thumb-get-gdk-pixbuf">itdb_thumb_get_gdk_pixbuf</link>       (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);
+<link linkend="Itdb-Thumb">Itdb_Thumb</link>* <link linkend="itdb-thumb-duplicate">itdb_thumb_duplicate</link>            (<link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);
+<link linkend="void">void</link>        <link linkend="itdb-thumb-free">itdb_thumb_free</link>                 (<link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);
+<link linkend="Itdb-Thumb">Itdb_Thumb</link>* <link linkend="itdb-thumb-new">itdb_thumb_new</link>                  (void);
+<link linkend="gchar">gchar</link>*      <link linkend="itdb-thumb-get-filename">itdb_thumb_get_filename</link>         (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="Itdb-Artwork" role="struct"/>Itdb_Artwork</title>
+<indexterm><primary>Itdb_Artwork</primary></indexterm><programlisting>typedef struct {
+    GList *thumbnails;    /* list of Itdb_Thumbs */
+    guint32 artwork_size; /* Size in bytes of the original source image */
+    guint32 id;           /* Artwork id used by photoalbums, starts at
+			   * 0x40... libgpod will set this on sync. */
+    gint32 creation_date; /* Date the image was created */
+    /* below is for use by application */
+    guint64 usertype;
+    gpointer userdata;
+    /* function called to duplicate userdata */
+    ItdbUserDataDuplicateFunc userdata_duplicate;
+    /* function called to free userdata */
+    ItdbUserDataDestroyFunc userdata_destroy;
+} Itdb_Artwork;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="Itdb-Thumb" role="struct"/>Itdb_Thumb</title>
+<indexterm><primary>Itdb_Thumb</primary></indexterm><programlisting>typedef struct {
+    ItdbThumbType type;
+    gchar *filename;
+    guchar *image_data;      /* holds the thumbnail data of
+				non-transfered thumbnails when
+				filename == NULL */
+    gsize  image_data_len;   /* length of data */
+    guint32 offset;
+    guint32 size;
+    gint16 width;
+    gint16 height;
+    gint16 horizontal_padding;
+    gint16 vertical_padding;
+} Itdb_Thumb;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ItdbThumbType" role="enum"/>enum ItdbThumbType</title>
+<indexterm><primary>ItdbThumbType</primary></indexterm><programlisting>typedef enum { 
+    ITDB_THUMB_COVER_SMALL,
+    ITDB_THUMB_COVER_LARGE,
+    ITDB_THUMB_PHOTO_SMALL,
+    ITDB_THUMB_PHOTO_LARGE,
+    ITDB_THUMB_PHOTO_FULL_SCREEN,
+    ITDB_THUMB_PHOTO_TV_SCREEN
+} ItdbThumbType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-new" role="function"/>itdb_artwork_new ()</title>
+<indexterm><primary>itdb_artwork_new</primary></indexterm><programlisting><link linkend="Itdb-Artwork">Itdb_Artwork</link>* itdb_artwork_new              (void);</programlisting>
+<para>
+Creates a new <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link> to be freed with <link linkend="itdb-artwork-free"><function>itdb_artwork_free()</function></link> when
+no longer needed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-duplicate" role="function"/>itdb_artwork_duplicate ()</title>
+<indexterm><primary>itdb_artwork_duplicate</primary></indexterm><programlisting><link linkend="Itdb-Artwork">Itdb_Artwork</link>* itdb_artwork_duplicate        (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);</programlisting>
+<para>
+Duplicates <parameter>artwork</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new copy of <parameter>artwork</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-free" role="function"/>itdb_artwork_free ()</title>
+<indexterm><primary>itdb_artwork_free</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_artwork_free               (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);</programlisting>
+<para>
+Frees memory used by <parameter>artwork</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-add-thumbnail" role="function"/>itdb_artwork_add_thumbnail ()</title>
+<indexterm><primary>itdb_artwork_add_thumbnail</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    itdb_artwork_add_thumbnail      (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="ItdbThumbType">ItdbThumbType</link> type,
+                                             const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<para>
+Appends a thumbnail of type <parameter>type</parameter> to existing thumbnails in <parameter>artwork</parameter>. No 
+data is read from <parameter>filename</parameter> yet, the file will be when <parameter>artwork</parameter> is saved to
+disk. <parameter>filename</parameter> must still exist when that happens.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumbnail"><type>Itdb_Thumbnail</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> thumbnail size
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> image file to use to create the thumbnail
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the thumbnail could be successfully added, FALSE
+otherwise
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-remove-thumbnail" role="function"/>itdb_artwork_remove_thumbnail ()</title>
+<indexterm><primary>itdb_artwork_remove_thumbnail</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_artwork_remove_thumbnail   (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);</programlisting>
+<para>
+Removes <parameter>thumb</parameter> from <parameter>artwork</parameter>. The memory used by <parameter>thumb</parameter> isn't freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>thumb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-remove-thumbnails" role="function"/>itdb_artwork_remove_thumbnails ()</title>
+<indexterm><primary>itdb_artwork_remove_thumbnails</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_artwork_remove_thumbnails  (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork);</programlisting>
+<para>
+Removes all thumbnails from <parameter>artwork</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-artwork-get-thumb-by-type" role="function"/>itdb_artwork_get_thumb_by_type ()</title>
+<indexterm><primary>itdb_artwork_get_thumb_by_type</primary></indexterm><programlisting><link linkend="Itdb-Thumb">Itdb_Thumb</link>* itdb_artwork_get_thumb_by_type  (<link linkend="Itdb-Artwork">Itdb_Artwork</link> *artwork,
+                                             <link linkend="ItdbThumbType">ItdbThumbType</link> type);</programlisting>
+<para>
+Searches <parameter>artwork</parameter> for an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link> of type <parameter>type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>artwork</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Artwork"><type>Itdb_Artwork</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> type of the <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link> to retrieve
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link> of type <parameter>type</parameter>, or NULL if such a thumbnail couldn't
+be found
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-thumb-get-gdk-pixbuf" role="function"/>itdb_thumb_get_gdk_pixbuf ()</title>
+<indexterm><primary>itdb_thumb_get_gdk_pixbuf</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    itdb_thumb_get_gdk_pixbuf       (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);</programlisting>
+<para>
+Converts <parameter>thumb</parameter> to a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>.
+Since we want to have gdk-pixbuf dependency optional, a generic
+gpointer is returned which you have to cast to a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> using 
+<link linkend="GDK-PIXBUF:CAPS"><function>GDK_PIXBUF()</function></link> yourself.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>thumb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> that must be unreffed with <link linkend="gdk-pixbuf-unref"><function>gdk_pixbuf_unref()</function></link>
+after use, or NULL if the creation of the gdk-pixbuf failed or if 
+libgpod was compiled without gdk-pixbuf support.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-thumb-duplicate" role="function"/>itdb_thumb_duplicate ()</title>
+<indexterm><primary>itdb_thumb_duplicate</primary></indexterm><programlisting><link linkend="Itdb-Thumb">Itdb_Thumb</link>* itdb_thumb_duplicate            (<link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);</programlisting>
+<para>
+Duplicates the data contained in <parameter>thumb</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>thumb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly allocated copy of <parameter>thumb</parameter> to be freed with 
+<link linkend="itdb-thumb-free"><function>itdb_thumb_free()</function></link> after use
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-thumb-free" role="function"/>itdb_thumb_free ()</title>
+<indexterm><primary>itdb_thumb_free</primary></indexterm><programlisting><link linkend="void">void</link>        itdb_thumb_free                 (<link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);</programlisting>
+<para>
+Frees the memory used by <parameter>thumb</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>thumb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-thumb-new" role="function"/>itdb_thumb_new ()</title>
+<indexterm><primary>itdb_thumb_new</primary></indexterm><programlisting><link linkend="Itdb-Thumb">Itdb_Thumb</link>* itdb_thumb_new                  (void);</programlisting>
+<para>
+Creates a new <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> newly allocated <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link> to be freed with <link linkend="itdb-thumb-free"><function>itdb_thumb_free()</function></link>
+after use
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="itdb-thumb-get-filename" role="function"/>itdb_thumb_get_filename ()</title>
+<indexterm><primary>itdb_thumb_get_filename</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      itdb_thumb_get_filename         (<link linkend="Itdb-Device">Itdb_Device</link> *device,
+                                             <link linkend="Itdb-Thumb">Itdb_Thumb</link> *thumb);</programlisting>
+<para>
+Get filename of thumbnail. If it's a thumbnail on the iPod, return
+the full path to the ithmb file. Otherwise return the full path to
+the original file.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>device</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Device"><type>Itdb_Device</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>thumb</parameter>&nbsp;:</term>
+<listitem><simpara> an <link linkend="Itdb-Thumb"><type>Itdb_Thumb</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> newly allocated string containing the absolute path to the 
+thumbnail file. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
