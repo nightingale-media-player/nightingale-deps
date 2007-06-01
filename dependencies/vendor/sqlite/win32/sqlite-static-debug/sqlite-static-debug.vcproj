@@ -36,7 +36,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Copying sqlite3.h"
-				CommandLine="copy /Y $(SolutionDir)..\src\generated\debug\sqlite3.h $(TargetDir)\sqlite3.h"
+				CommandLine="copy /Y $(SolutionDir)..\src\generated\debug\sqlite3.h $(TargetDir)\sqlite3.h
+"
 				AdditionalDependencies="$(SolutionDir)..\src\generated\debug\sqlite3.h"
 				Outputs="$(TargetDir)sqlite3.h"/>
 			<Tool
@@ -197,9 +198,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\select.c">
-			</File>
-			<File
-				RelativePath="..\..\src\shell.c">
 			</File>
 			<File
 				RelativePath="..\..\src\table.c">

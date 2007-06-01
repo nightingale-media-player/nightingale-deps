@@ -76,7 +76,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Copying sqlite3.h"
-				CommandLine="copy /Y $(SolutionDir)..\src\generated\release\sqlite3.h $(TargetDir)\sqlite3.h"
+				CommandLine="copy /Y $(SolutionDir)..\src\generated\release\sqlite3.h $(TargetDir)\sqlite3.h
+"
 				AdditionalDependencies="$(SolutionDir)..\src\generated\release\sqlite3.h"
 				Outputs="$(TargetDir)\sqlite3.h"/>
 			<Tool
@@ -152,9 +153,6 @@
 				RelativePath="..\..\src\insert.c">
 			</File>
 			<File
-				RelativePath="..\..\src\generated\release\keywordhash.h">
-			</File>
-			<File
 				RelativePath="..\..\src\legacy.c">
 			</File>
 			<File
@@ -165,9 +163,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\generated\release\opcodes.c">
-			</File>
-			<File
-				RelativePath="..\..\src\generated\release\opcodes.h">
 			</File>
 			<File
 				RelativePath="..\..\src\os.c">
@@ -188,9 +183,6 @@
 				RelativePath="..\..\src\generated\release\parse.c">
 			</File>
 			<File
-				RelativePath="..\..\src\generated\release\parse.h">
-			</File>
-			<File
 				RelativePath="..\..\src\pragma.c">
 			</File>
 			<File
@@ -204,12 +196,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\select.c">
-			</File>
-			<File
-				RelativePath="..\..\src\shell.c">
-			</File>
-			<File
-				RelativePath="..\..\src\generated\release\sqlite3.h">
 			</File>
 			<File
 				RelativePath="..\..\src\table.c">
@@ -265,6 +251,12 @@
 				RelativePath="..\..\src\hash.h">
 			</File>
 			<File
+				RelativePath="..\..\src\generated\release\keywordhash.h">
+			</File>
+			<File
+				RelativePath="..\..\src\generated\release\opcodes.h">
+			</File>
+			<File
 				RelativePath="..\..\src\os.h">
 			</File>
 			<File
@@ -275,6 +267,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\pager.h">
+			</File>
+			<File
+				RelativePath="..\..\src\generated\release\parse.h">
+			</File>
+			<File
+				RelativePath="..\..\src\generated\release\sqlite3.h">
 			</File>
 			<File
 				RelativePath="..\..\src\sqlite3ext.h">
