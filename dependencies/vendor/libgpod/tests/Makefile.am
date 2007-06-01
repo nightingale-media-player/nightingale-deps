@@ -1,10 +1,10 @@
 if HAVE_GDKPIXBUF
 TESTTHUMBS=test-thumbnails test-write-thumbnails test-photos
+TESTMISC=test-init-ipod
 else
 TESTTHUMBS=
+TESTMISC=
 endif
-
-TESTMISC=test-init-ipod
 
 if HAVE_TAGLIB
 TESTTAGLIB=test-rebuild-db
