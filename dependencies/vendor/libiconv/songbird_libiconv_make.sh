@@ -26,7 +26,13 @@
 #
 ################################################################################
 #
-# Script for building libgpod.
+# Script for building libiconv.
+#
+# Notes:
+#
+#   The build requires automake 1.7 for "make install" to succeed.  Newer
+# versions (e.g., 1.10) cause "make install" to fail unless the install
+# target directory is deleted first.
 #
 ################################################################################
 ################################################################################
@@ -43,7 +49,7 @@
 #   tgt_name                    Name of target to build.
 #
 
-tgt_name=libgpod
+tgt_name=libiconv
 
 
 #
@@ -139,7 +145,6 @@ setup_build()
             ;;
 
         macosx-i686 | macosx-ppc)
-            export CFLAGS="${CFLAGS} -fnested-functions"
             export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
             ;;
 
@@ -165,18 +170,6 @@ build()
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
-
-    # Set up gettext build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/gettext/${build_type}/include"
-
-    # Set up glib build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/glib/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"
-
-    # Set up iconv build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/libiconv/${build_type}/include"
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build

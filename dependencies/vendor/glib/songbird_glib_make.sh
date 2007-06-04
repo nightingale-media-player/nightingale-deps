@@ -26,7 +26,7 @@
 #
 ################################################################################
 #
-# Script for building libgpod.
+# Script for building glib.
 #
 ################################################################################
 ################################################################################
@@ -43,7 +43,7 @@
 #   tgt_name                    Name of target to build.
 #
 
-tgt_name=libgpod
+tgt_name=glib
 
 
 #
@@ -139,7 +139,6 @@ setup_build()
             ;;
 
         macosx-i686 | macosx-ppc)
-            export CFLAGS="${CFLAGS} -fnested-functions"
             export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
             ;;
 
@@ -169,14 +168,6 @@ build()
     # Set up gettext build options.
     export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/gettext/${build_type}/include"
-
-    # Set up glib build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/glib/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"
-
-    # Set up iconv build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/libiconv/${build_type}/include"
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
