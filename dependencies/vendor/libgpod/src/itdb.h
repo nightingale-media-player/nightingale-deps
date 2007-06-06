@@ -66,6 +66,7 @@ typedef struct _Itdb_Playlist Itdb_Playlist;
 typedef struct _Itdb_PhotoAlbum Itdb_PhotoAlbum;
 typedef struct _Itdb_Track Itdb_Track;
 typedef struct _Itdb_IpodInfo Itdb_IpodInfo;
+typedef struct _Itdb_Prefs Itdb_Prefs;
 
 
 /* ------------------------------------------------------------ *\
@@ -799,6 +800,56 @@ struct _Itdb_Track
 /* (gtkpod note: don't forget to add fields read from the file to
  * copy_new_info() in file.c!) */
 
+/* default iPod preferences contents */
+const static gchar default_prefs[] =
+{
+    0x66, 0x72, 0x70, 0x64, 0x01, 0x00, 0x03, 0x00,
+    0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x6e, 0x39, 0x0e, 0x70,
+    0x8f, 0xdc, 0x6f, 0x76, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x01, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x6f, 0x39, 0x0e, 0x70, 0x8f, 0xdc, 0x6f, 0x76,
+    0x02, 0x00, 0x00, 0x00, 0x6e, 0x39, 0x0e, 0x70,
+    0x8f, 0xdc, 0x6f, 0x76, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00
+};
+
+struct _Itdb_Prefs
+{
+    gchar *contents;            /* preferences file contents */
+    gint length;                /* contents length */
+    gboolean valid_file;        /* true if valid preferences file read */
+    guint8 ipod_set_up;         /* Offset 0x08: 0x00 iPod has not been set up
+                                                !0x00 iPod has been set up */
+    guint8 music_mgmt_type;     /* Offset 0x0A: 0x00 manual management
+                                                !0x00 auto update */
+    guint8 music_update_type;   /* Offset 0x0B: 0x01 update all
+                                                0x02 update playlists */
+    guint64 music_lib_link_id;  /* Offset 0x0C: ID of music library linked to
+                                                iPod */
+};
+
 
 /* ------------------------------------------------------------ *\
  *
@@ -835,6 +886,7 @@ gboolean itdb_write_file (Itdb_iTunesDB *itdb, const gchar *filename,
 gboolean itdb_shuffle_write (Itdb_iTunesDB *itdb, GError **error);
 gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
 				  const gchar *filename, GError **error);
+void itdb_shuffle_filename_ipod2fs (gchar *ipod_file);
 Itdb_iTunesDB *itdb_new (void);
 void itdb_free (Itdb_iTunesDB *itdb);
 Itdb_iTunesDB *itdb_duplicate (Itdb_iTunesDB *itdb); /* not implemented */
@@ -882,6 +934,7 @@ const Itdb_IpodInfo *itdb_device_get_ipod_info (Itdb_Device *device);
 const Itdb_IpodInfo *itdb_info_get_ipod_info_table (void);
 const gchar *itdb_info_get_ipod_model_name_string (Itdb_IpodModel model);
 const gchar *itdb_info_get_ipod_generation_string (Itdb_IpodGeneration generation);
+gboolean itdb_device_get_storage_info (Itdb_Device *device, guint64 *capacity, guint64 *free);
 
 /* track functions */
 Itdb_Track *itdb_track_new (void);
@@ -894,6 +947,7 @@ Itdb_Track *itdb_track_by_id (Itdb_iTunesDB *itdb, guint32 id);
 GTree *itdb_track_id_tree_create (Itdb_iTunesDB *itdb);
 void itdb_track_id_tree_destroy (GTree *idtree);
 Itdb_Track *itdb_track_id_tree_by_id (GTree *idtree, guint32 id);
+Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 *p_dbid);
 
 /* playlist functions */
 Itdb_Playlist *itdb_playlist_new (const gchar *title, gboolean spl);
@@ -1002,6 +1056,17 @@ gboolean itdb_init_ipod (const gchar *mountpoint,
 			 const gchar *model_number,
 			 const gchar *ipod_name,
 			 GError **error);
+
+/* prefs functions */
+Itdb_Prefs *itdb_prefs_new (void);
+void itdb_prefs_free (Itdb_Prefs *prefs);
+Itdb_Prefs *itdb_prefs_parse(Itdb_Device *device, GError **error);
+gboolean itdb_prefs_write(Itdb_Device *device, Itdb_Prefs *prefs,
+			  GError **error);
+gboolean itdb_update_playlists_read(Itdb_Device *device, guint64 **playlists,
+				    gint *num_playlists, GError **error);
+gboolean itdb_update_playlists_write(Itdb_Device *device, guint64 *playlists,
+				     gint num_playlists, GError **error);
 
 G_END_DECLS
 

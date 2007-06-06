@@ -160,7 +160,7 @@ static void itdb_track_set_defaults (Itdb_Track *tr)
 	    tr->unk144 = 0x0000;  /* default value */
 	}
     }
-    if (is_video_ipod (tr->itdb->device))
+    //XXXeps if (is_video_ipod (tr->itdb->device))
     {
 	/* The unk208 field seems to denote whether the file is a
 	   video or not.  It seems that it must be set to 0x00000002
@@ -591,6 +591,39 @@ Itdb_Track *itdb_track_id_tree_by_id (GTree *idtree, guint32 id)
     g_return_val_if_fail (idtree, NULL);
 
     return (Itdb_Track *)g_tree_lookup (idtree, &id);
+}
+
+
+/**
+ * itdb_track_by_dbid:
+ * @itdb: an #Itdb_iTunesDB
+ * @dbid: Database ID of the track to look for
+ *
+ * Looks up a track using its database ID in @itdb. 
+ * Looking up tracks by database ID is better than using plain IDs because they
+ * don't change on database export.
+ * This function is very slow (linear in the number of tracks contained in the 
+ * database). If you need to lookup many IDs use itdb_track_dbid_tree_create(), 
+ * itdb_track_dbid_tree_destroy(), and itdb_track_dbid_tree_by_dbid().
+ *zzz need to implement tree functions.
+ *zzz had an issue passing guint64 from MSVC compiled code.
+ *
+ * Return value: #Itdb_Track with the database ID @dbid or NULL if the database
+ * ID cannot be found. 
+ **/
+Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 *p_dbid)
+{
+    GList *gl;
+    guint64 dbid = *p_dbid;
+
+    g_return_val_if_fail (itdb, NULL);
+
+    for (gl=itdb->tracks; gl; gl=gl->next)
+    {
+	Itdb_Track *track = gl->data;
+	if (track->dbid == dbid)  return track;
+    }
+    return NULL;
 }
 
 

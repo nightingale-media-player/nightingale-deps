@@ -778,3 +778,40 @@ const gchar *itdb_info_get_ipod_generation_string (Itdb_IpodGeneration generatio
     }
     return NULL;
 }
+
+#include <sys/statvfs.h>
+
+/**
+ * itdb_device_get_storage_info:
+ *
+ * @device: an #Itdb_Device
+ * @capacity: returned capacity in bytes
+ * @free: returned free space in bytes
+ *
+ * Return the storage info for this iPod
+ *
+ * Return value: TRUE if storage info could be obtained, FALSE otherwise
+ **/
+gboolean itdb_device_get_storage_info (Itdb_Device *device, guint64 *capacity, guint64 *free)
+{
+    struct statvfs info;
+    guint64 block_size;
+
+    g_return_val_if_fail (device, FALSE);
+    g_return_val_if_fail (capacity, FALSE);
+    g_return_val_if_fail (free, FALSE);
+
+    if (statvfs(device->mountpoint, &info))
+	return FALSE;
+
+    if (info.f_frsize > 0)
+	block_size = info.f_frsize;
+    else
+	block_size = info.f_bsize;
+
+    *capacity = info.f_blocks * block_size;
+    *free = info.f_bfree * block_size;
+
+    return TRUE;
+}
+

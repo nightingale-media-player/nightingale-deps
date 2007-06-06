@@ -4089,7 +4089,12 @@ static gboolean wcontents_write (WContents *cts)
     g_return_val_if_fail (cts, FALSE);
     g_return_val_if_fail (cts->filename, FALSE);
 
-    fd = creat (cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
+#ifdef WIN32
+    chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
+    fd = creat (cts->filename, 0);
+    chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
+    setmode(fd, 0x8000);
+#endif /* WIN32 */
 
     if (fd == -1)
     {
@@ -4585,7 +4590,7 @@ gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
 		
 	/* shuffle uses forward slash separator, not colon */
 	path = g_strdup (tr->ipod_path);
-	itdb_filename_ipod2fs (path);
+	itdb_shuffle_filename_ipod2fs (path);
 	path_utf16 = g_utf8_to_utf16 (path, -1, NULL, NULL, NULL);
 	pathlen = utf16_strlen (path_utf16);
 	if (pathlen > 261) pathlen = 261;
@@ -4621,6 +4626,18 @@ gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
     return result;
 }
 
+/**
+ * itdb_shuffle_filename_ipod2fs:
+ * @ipod_file: a filename 'shuffle-style' (eg /iPod_Control/Music/f00/test.mp3)
+ *
+ * Convert string from from iPod iTunesDB format to iPod Shuffle file name
+ * using '/' instead of ':'.
+ * @ipod_file is modified in place.
+ **/
+void itdb_shuffle_filename_ipod2fs (gchar *ipod_file)
+{
+    g_strdelimit (ipod_file, ":", '/');
+}
 
 
 
@@ -5059,6 +5076,7 @@ gchar *itdb_filename_on_ipod (Itdb_Track *track)
 }
 
 
+/* Use open instead of fopen.  fwrite is really slow on the Mac. */
 /**
  * itdb_cp:
  * @from_file: source file
@@ -5075,8 +5093,8 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 {
     gchar *data;
     glong bread, bwrite;
-    FILE *file_in = NULL;
-    FILE *file_out = NULL;
+    int file_in = -1;
+    int file_out = -1;
 
 #if ITUNESDB_DEBUG
     fprintf(stderr, "Entered itunesdb_cp: '%s', '%s'\n", from_file, to_file);
@@ -5087,8 +5105,8 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 
     data = g_malloc (ITUNESDB_COPYBLK);
 
-    file_in = fopen (from_file, "r");
-    if (file_in == NULL)
+    file_in = open (from_file, O_RDONLY, 0);
+    if (file_in < 0)
     {
 	g_set_error (error,
 		     G_FILE_ERROR,
@@ -5097,9 +5115,13 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 		     from_file, g_strerror (errno));
 	goto err_out;
     }
+#ifdef WIN32
+    setmode (file_in, 0x8000);/*zzz set to binary, use def*/
+#endif
 
-    file_out = fopen (to_file, "w");
-    if (file_out == NULL)
+    chmod(to_file, S_IRWXU|S_IRWXG|S_IRWXO);
+    file_out = creat (to_file, 0);
+    if (file_out < 0)
     {
 	g_set_error (error,
 		     G_FILE_ERROR,
@@ -5108,27 +5130,29 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 		     to_file, g_strerror (errno));
 	goto err_out;
     }
+	chmod(to_file, S_IRWXU|S_IRWXG|S_IRWXO);
+#ifdef WIN32
+	setmode(file_out, 0x8000);/*zzz set to binary, use def*/
+#endif
 
     do {
-	bread = fread (data, 1, ITUNESDB_COPYBLK, file_in);
+	bread = read (file_in, data, ITUNESDB_COPYBLK);
 #if ITUNESDB_DEBUG
 	fprintf(stderr, "itunesdb_cp: read %ld bytes\n", bread);
 #endif
-	if (bread == 0)
+	if (bread < 0)
 	{
-	    if (feof (file_in) == 0)
-	    {   /* error -- not end of file! */
-		g_set_error (error,
-			     G_FILE_ERROR,
-			     g_file_error_from_errno (errno),
-			     _("Error while reading from '%s' (%s)."),
-			     from_file, g_strerror (errno));
-		goto err_out;
-	    }
+	    /* error -- not end of file! */
+	    g_set_error (error,
+			 G_FILE_ERROR,
+			 g_file_error_from_errno (errno),
+			 _("Error while reading from '%s' (%s)."),
+			 from_file, g_strerror (errno));
+	    goto err_out;
 	}
 	else
 	{
-	    bwrite = fwrite (data, 1, bread, file_out);
+	    bwrite = write (file_out, data, bread);
 #if ITUNESDB_DEBUG
 	    fprintf(stderr, "itunesdb_cp: wrote %ld bytes\n", bwrite);
 #endif
@@ -5144,9 +5168,9 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 	}
     } while (bread != 0);
 
-    if (fclose (file_in) != 0)
+    if (close (file_in) != 0)
     {
-	file_in = NULL;
+	file_in = -1;
 	g_set_error (error,
 		     G_FILE_ERROR,
 		     g_file_error_from_errno (errno),
@@ -5154,9 +5178,9 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 		     from_file, g_strerror (errno));
 	goto err_out;
     }
-    if (fclose (file_out) != 0)
+    if (close (file_out) != 0)
     {
-	file_out = NULL;
+	file_out = -1;
 	g_set_error (error,
 		     G_FILE_ERROR,
 		     g_file_error_from_errno (errno),
@@ -5168,8 +5192,8 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
     return TRUE;
 
   err_out:
-    if (file_in)  fclose (file_in);
-    if (file_out) fclose (file_out);
+    if (file_in >= 0)  close (file_in);
+    if (file_out >= 0) close (file_out);
     remove (to_file);
     g_free (data);
     return FALSE;
@@ -5927,3 +5951,307 @@ static gboolean itdb_create_directories (Itdb_Device *device, GError **error)
     g_free (podpath);
     return result;
 }
+
+/*zzz should put in itdb_prefs.c */
+
+/**
+ * itdb_prefs_new:
+ *
+ * Creates a new Itdb_Prefs.
+ *
+ * Return value: a newly created Itdb_Prefs to be freed with itdb_prefs_free()
+ * when it's no longer needed
+ **/
+Itdb_Prefs *itdb_prefs_new (void)
+{
+    Itdb_Prefs *prefs = g_new0 (Itdb_Prefs, 1);
+    prefs->contents = NULL;
+    prefs->valid_file = FALSE;
+
+    return prefs;
+}
+
+/** 
+ * itdb_prefs_free:
+ * @prefs: an #Itdb_Prefs
+ *
+ * Free the memory taken by @prefs. 
+ **/
+void itdb_prefs_free (Itdb_Prefs *prefs)
+{
+    if (prefs)
+    {
+	if (prefs->contents)
+	    g_free(prefs->contents);
+	g_free (prefs);
+    }
+}
+
+/**
+ * itdb_prefs_parse:
+ * @device: an #Itdb_Device
+ * @error: return location for a #GError or NULL
+ *
+ * Parse the Itdb_Prefs of the iPod device @device
+ *
+ * Return value: a newly allocated #Itdb_Prefs struct holding the preference
+ * settings of the iPod @device, NULL if the preferences file could not be read.
+ * If non-NULL, the #Itdb_Prefs is to be freed with itdb_prefs_free() when it's
+ * no longer needed
+ **/
+Itdb_Prefs *itdb_prefs_parse(Itdb_Device *device, GError **error)
+{
+    gchar *prefs_filename;
+    gchar *itunes_dir;
+    Itdb_Prefs *prefs = NULL;
+    const gchar *p_prefspath[] = {"iTunesPrefs", NULL};
+    gchar *contents = NULL;
+    gsize length = 0;
+
+    itunes_dir = itdb_get_itunes_dir (device->mountpoint);
+
+    if (!itunes_dir)
+    {
+	error_no_itunes_dir (device->mountpoint, error);
+	return NULL;
+    }
+
+    prefs = itdb_prefs_new ();
+
+    prefs_filename = itdb_resolve_path(itunes_dir, p_prefspath);
+    if (prefs_filename)
+    {
+	if (g_file_get_contents (prefs_filename, &contents, &length, error))
+            prefs->valid_file = TRUE;
+        g_free (prefs_filename);
+    }
+
+    /* if a complete, valid preferences file is not available, 
+     * fill preferences contents in with default values */
+    if (length < sizeof (default_prefs))
+    {
+        prefs->contents = g_malloc (sizeof (default_prefs));
+        prefs->length = sizeof (default_prefs);
+        bcopy (default_prefs, prefs->contents, sizeof (default_prefs));
+        bcopy (contents, prefs->contents, length);
+        g_free (contents);
+        contents = prefs->contents;
+    }
+    else
+    {
+        prefs->contents = contents;
+        prefs->length = length;
+    }
+
+    prefs->ipod_set_up = contents[0x08];
+    prefs->music_mgmt_type = contents[0x0A];
+    prefs->music_update_type = contents[0x0B];
+    bcopy (&(contents[0x0C]), &(prefs->music_lib_link_id), 8);
+
+    g_free (itunes_dir);
+    return prefs;
+}
+
+/**
+ * itdb_prefs_write:
+ * @device: an #Itdb_Device
+ * @prefs: the #Itdb_Prefs to write to the iPod
+ * @error: return location for a #GError or NULL
+ *
+ * Write out an iPod preferences file.
+ *
+ * Return value: TRUE on success, FALSE on error, in which case @error is
+ * set accordingly.
+ *zzz should be able to create file if it doesn't exist.
+ *zzz endianess?
+ **/
+gboolean itdb_prefs_write(Itdb_Device *device, Itdb_Prefs *prefs,
+			  GError **error)
+{
+    gchar *prefs_filename = NULL, *itunes_path = NULL;
+    FILE *fd;
+    gint length;
+    gchar *contents = NULL;
+    gboolean result = TRUE;
+
+    g_return_val_if_fail (device, FALSE);
+    g_return_val_if_fail (device->mountpoint, FALSE);
+    g_return_val_if_fail (prefs, FALSE);
+
+    itunes_path = itdb_get_itunes_dir (device->mountpoint);
+
+    if(!itunes_path)
+    {
+	error_no_itunes_dir (device->mountpoint, error);
+	return FALSE;
+    }
+
+    prefs_filename = g_build_filename (itunes_path, "iTunesPrefs", NULL);
+
+    /* get the preferences contents */
+    contents = prefs->contents;
+    length = prefs->length;
+
+    /* update the known preferences */
+    contents[0x08] = prefs->ipod_set_up;
+    contents[0x0A] = prefs->music_mgmt_type;
+    contents[0x0B] = prefs->music_update_type;
+    bcopy (&(prefs->music_lib_link_id), &(contents[0x0C]), 8);
+
+    /* open the preferences file for writing */
+    fd = fopen(prefs_filename, "wb");
+    if (fd == NULL)
+    {
+	g_set_error (error,
+		     G_FILE_ERROR,
+		     g_file_error_from_errno (errno),
+		     _("Error opening '%s' for writing (%s)."),
+		     prefs_filename, g_strerror (errno));
+	return FALSE;
+    }
+
+    /* write the preferences file */
+    fwrite(contents, 1, length, fd);
+    fclose(fd);
+
+    if (prefs_filename)
+	g_free (prefs_filename);
+    if (itunes_path)
+	g_free (itunes_path);
+
+    /* make sure all buffers are flushed as some people tend to
+       disconnect as soon as gtkpod returns */
+    sync ();
+
+    return result;
+}
+
+/**
+ * itdb_update_playlists_read:
+ * @device: an #Itdb_Device
+ * @playlists: returned list of update playlist IDs
+ * @num_playlists: returned number of update playlists
+ * @error: return location for a #GError or NULL
+ *
+ * Read an iPod update playlists file.
+ *
+ * Return value: TRUE on success, FALSE on error, in which case @error is
+ * set accordingly.
+ *zzz endianess?
+ **/
+gboolean itdb_update_playlists_read(Itdb_Device *device, guint64 **playlists,
+				    gint *num_playlists, GError **error)
+{
+    gchar *playlists_filename = NULL, *itunes_path = NULL;
+    gchar *itunes_dir;
+    const gchar *p_playlistspath[] = {"iTunesPlaylists", NULL};
+    gsize length;
+
+    itunes_dir = itdb_get_itunes_dir (device->mountpoint);
+
+    if (!itunes_dir)
+    {
+	error_no_itunes_dir (device->mountpoint, error);
+	return FALSE;
+    }
+
+    playlists_filename = itdb_resolve_path(itunes_dir, p_playlistspath);
+    if (playlists_filename)
+    {
+	if (g_file_get_contents (playlists_filename,
+				 (gchar **) playlists,
+				 &length,
+				 error))
+	{
+	    *num_playlists = length / sizeof (guint64);
+	}
+	else
+	{
+	    gchar *str = g_build_filename (device->mountpoint,
+					   p_playlistspath[0],
+					   NULL);
+	    g_set_error (error,
+			 ITDB_FILE_ERROR,
+			 ITDB_FILE_ERROR_NOTFOUND,
+			 _("Error reading file: '%s'."),
+			 str);
+	    g_free (str);
+	}
+
+	g_free (playlists_filename);
+    }
+    else
+    {
+        *num_playlists = 0;
+        *playlists = NULL;
+    }
+
+    g_free (itunes_dir);
+    return TRUE;
+}
+
+/**
+ * itdb_update_playlists_write:
+ * @device: an #Itdb_Device
+ * @playlists: the list of update playlists to write to the iPod
+ * @num_playlists: the number of playlists
+ * @error: return location for a #GError or NULL
+ *
+ * Write out an iPod update playlists file.
+ *
+ * Return value: TRUE on success, FALSE on error, in which case @error is
+ * set accordingly.
+ *zzz endianess?
+ **/
+gboolean itdb_update_playlists_write(Itdb_Device *device, guint64 *playlists,
+				     gint num_playlists, GError **error)
+{
+    gchar *playlists_filename = NULL, *itunes_path = NULL;
+    FILE *fd;
+    int length;
+    gboolean result = TRUE;
+
+    g_return_val_if_fail (device, FALSE);
+    g_return_val_if_fail (device->mountpoint, FALSE);
+    g_return_val_if_fail (playlists, FALSE);
+
+    itunes_path = itdb_get_itunes_dir (device->mountpoint);
+
+    if(!itunes_path)
+    {
+	error_no_itunes_dir (device->mountpoint, error);
+	return FALSE;
+    }
+
+    playlists_filename = g_build_filename (itunes_path,
+					   "iTunesPlaylists",
+					   NULL);
+
+    /* open the playlists file for writing */
+    fd = fopen(playlists_filename, "wb");
+    if (fd == NULL)
+    {
+	g_set_error (error,
+		     G_FILE_ERROR,
+		     g_file_error_from_errno (errno),
+		     _("Error opening '%s' for writing (%s)."),
+		     playlists_filename, g_strerror (errno));
+	return FALSE;
+    }
+
+    /* write the playlists file */
+    fwrite(playlists, 1, num_playlists * sizeof (guint64), fd);
+    fclose(fd);
+
+    if (playlists_filename)
+	g_free (playlists_filename);
+    if (itunes_path)
+	g_free (itunes_path);
+
+    /* make sure all buffers are flushed as some people tend to
+       disconnect as soon as gtkpod returns */
+    sync ();
+
+    return result;
+}
+
