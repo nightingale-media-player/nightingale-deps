@@ -4089,7 +4089,9 @@ static gboolean wcontents_write (WContents *cts)
     g_return_val_if_fail (cts, FALSE);
     g_return_val_if_fail (cts->filename, FALSE);
 
-#ifdef WIN32
+#ifndef WIN32
+    fd = creat (cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
+#else /* WIN32 */
     chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
     fd = creat (cts->filename, 0);
     chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
@@ -4589,17 +4591,24 @@ gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
 	put24bint (cts, 0x200);
 		
 	/* shuffle uses forward slash separator, not colon */
-	path = g_strdup (tr->ipod_path);
-	itdb_shuffle_filename_ipod2fs (path);
-	path_utf16 = g_utf8_to_utf16 (path, -1, NULL, NULL, NULL);
-	pathlen = utf16_strlen (path_utf16);
-	if (pathlen > 261) pathlen = 261;
-	fixup_little_utf16 (path_utf16);
-	put_data (cts, (gchar *)path_utf16, 2*pathlen);
+	if (tr->ipod_path)
+	{
+	    path = g_strdup (tr->ipod_path);
+	    itdb_shuffle_filename_ipod2fs (path);
+	    path_utf16 = g_utf8_to_utf16 (path, -1, NULL, NULL, NULL);
+	    pathlen = utf16_strlen (path_utf16);
+	    if (pathlen > 261) pathlen = 261;
+	    fixup_little_utf16 (path_utf16);
+	    put_data (cts, (gchar *)path_utf16, 2*pathlen);
+	    g_free(path);
+	    g_free(path_utf16);
+	}
+	else
+	{
+	    pathlen = 0;
+	}
 	/* pad to 522 bytes */
 	put16_n0 (cts, 261-pathlen);
-	g_free(path);
-	g_free(path_utf16);
 
 	/* XXX FIXME: should depend on something, not hardcoded */
 	put8int (cts, 0x1); /* song used in shuffle mode */
