@@ -947,7 +947,7 @@ Itdb_Track *itdb_track_by_id (Itdb_iTunesDB *itdb, guint32 id);
 GTree *itdb_track_id_tree_create (Itdb_iTunesDB *itdb);
 void itdb_track_id_tree_destroy (GTree *idtree);
 Itdb_Track *itdb_track_id_tree_by_id (GTree *idtree, guint32 id);
-Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 *p_dbid);
+Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 dbid);
 
 /* playlist functions */
 Itdb_Playlist *itdb_playlist_new (const gchar *title, gboolean spl);

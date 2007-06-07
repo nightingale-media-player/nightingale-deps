@@ -606,15 +606,13 @@ Itdb_Track *itdb_track_id_tree_by_id (GTree *idtree, guint32 id)
  * database). If you need to lookup many IDs use itdb_track_dbid_tree_create(), 
  * itdb_track_dbid_tree_destroy(), and itdb_track_dbid_tree_by_dbid().
  *zzz need to implement tree functions.
- *zzz had an issue passing guint64 from MSVC compiled code.
  *
  * Return value: #Itdb_Track with the database ID @dbid or NULL if the database
  * ID cannot be found. 
  **/
-Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 *p_dbid)
+Itdb_Track *itdb_track_by_dbid (Itdb_iTunesDB *itdb, guint64 dbid)
 {
     GList *gl;
-    guint64 dbid = *p_dbid;
 
     g_return_val_if_fail (itdb, NULL);
 
