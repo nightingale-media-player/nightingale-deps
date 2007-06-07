@@ -4,4 +4,16 @@
 /LICENSE/1.3/Mon Dec 11 09:45:22 2006//
 /Makefile.in/1.16/Mon Mar 12 17:25:01 2007//
 /build.mk/1.3/Thu Dec 21 21:34:05 2006//
-D
+D/app////
+D/base////
+D/branding////
+D/components////
+D/config////
+D/core////
+D/extensions////
+D/installer////
+D/locales////
+D/resources////
+D/safebrowsing////
+D/themes////
+D/fuel////
