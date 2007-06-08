@@ -685,7 +685,7 @@ var ApplicationFactory = {
   observe: function af_observe(aSubject, aTopic, aData) {
     if (aTopic == "xpcom-shutdown") {
       var os = Components.classes["@mozilla.org/observer-service;1"]
-                         .getService(Ci.nsIObserverService);
+                         .getService(Components.interfaces.nsIObserverService);
       os.removeObserver(this, "xpcom-shutdown");
       this.singleton = null;
     }
