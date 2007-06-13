@@ -105,7 +105,9 @@ radio[pane=paneAdvanced][selected="true"] {
   padding-bottom: 3px;
   -moz-padding-start: 4px;
   -moz-padding-end: 2px;
-  background-color: -moz-Dialog;
+/* Commented out to simplify the Songbird CSS  
+  background-color: -moz-Dialog; 
+*/
 }
 
 /* File Field Widget */
@@ -115,8 +117,10 @@ filefield {
 }
 
 .fileFieldContentBox {
+/* Commented out to simplify the Songbird CSS
   background-color: -moz-Dialog;
   color: -moz-DialogText;
+*/
   margin: 1px;
 }
 
