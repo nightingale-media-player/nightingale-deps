@@ -662,49 +662,25 @@ Application.prototype = {
 
 //=================================================
 // Factory - Treat Application as a singleton
+var gSingleton = null;
 var ApplicationFactory = {
-  singleton: null,
   
-  createInstance: function af_ci(aOuter, aIID)
-  {
+  createInstance: function af_ci(aOuter, aIID) {
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
       
-    if (this.singleton == null) {
-      var os = Components.classes["@mozilla.org/observer-service;1"]
-                         .getService(Components.interfaces.nsIObserverService);
-      os.addObserver(this, "xpcom-shutdown", false);    
-
-      this.singleton = new Application();
+    if (gSingleton == null) {
+      gSingleton = new Application();
     }
 
-    return this.singleton.QueryInterface(aIID);
-  },
-  
-  // for nsIObserver
-  observe: function af_observe(aSubject, aTopic, aData) {
-    if (aTopic == "xpcom-shutdown") {
-      var os = Components.classes["@mozilla.org/observer-service;1"]
-                         .getService(Components.interfaces.nsIObserverService);
-      os.removeObserver(this, "xpcom-shutdown");
-      this.singleton = null;
-    }
-  },
-  
-  QueryInterface: function af_QueryInterface(aIID) {
-    if (aIID.equals(Components.interfaces.nsIFactory) ||
-        aIID.equals(Components.interfaces.nsIObserver) ||
-        aIID.equals(Components.interfaces.nsISupports))
-      return this;
-    throw Components.results.NS_ERROR_NO_INTERFACE;
+    return gSingleton.QueryInterface(aIID);
   }
 };
 
 //=================================================
 // Module
 var ApplicationModule = {
-  registerSelf: function am_rs(aCompMgr, aFileSpec, aLocation, aType)
-  {
+  registerSelf: function am_rs(aCompMgr, aFileSpec, aLocation, aType) {
     aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
     aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
     
@@ -717,8 +693,7 @@ var ApplicationModule = {
     categoryManager.addCategoryEntry("JavaScript global property", "Application", CONTRACT_ID, true, true);
   },
 
-  unregisterSelf: function am_us(aCompMgr, aLocation, aType)
-  {
+  unregisterSelf: function am_us(aCompMgr, aLocation, aType) {
     aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
     aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
 
@@ -729,8 +704,7 @@ var ApplicationModule = {
     categoryManager.deleteCategoryEntry("JavaScript global property", CONTRACT_ID, true);
   },
   
-  getClassObject: function am_gco(aCompMgr, aCID, aIID)
-  {
+  getClassObject: function am_gco(aCompMgr, aCID, aIID) {
     if (!aIID.equals(Components.interfaces.nsIFactory))
       throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
