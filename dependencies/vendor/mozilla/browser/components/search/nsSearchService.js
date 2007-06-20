@@ -937,6 +937,7 @@ function Engine(aLocation, aSourceDataType, aIsReadOnly) {
       case "data":
       case "file":
       case "resource":
+      case "chrome":
         this._uri = aLocation;
         break;
       default:
