@@ -136,7 +136,7 @@ setup_build()
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
 
-        linux-x86 | linux-x86_64)
+        linux-i686 | linux-x86_64)
             export CPPFLAGS="-fPIC"
             ;;
 
