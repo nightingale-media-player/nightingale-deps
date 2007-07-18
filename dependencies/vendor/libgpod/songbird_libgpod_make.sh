@@ -127,11 +127,15 @@ setup_build()
     # Read the function parameters.
     build_tgt_arch="$1"
 
+    # Set up default environment.
+    use_sys_libs=false;
+
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
             export CPPFLAGS="-fPIC"
+            use_sys_libs=true
             ;;
 
         windows-i686)
@@ -166,17 +170,23 @@ build()
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
 
-    # Set up gettext build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/gettext/${build_type}/include"
+    # If not using system libraries, set up build options for local versions.
+    if ! $use_sys_libs; then
+        # Set up gettext build options.
+        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
+        _CPPFLAGS="-I${dep_arch_dir}/gettext/${build_type}/include"
+        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
 
-    # Set up glib build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/glib/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"
+        # Set up glib build options.
+        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/glib/${build_type}/lib"
+        _CPPFLAGS="-I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"
+        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
 
-    # Set up iconv build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/libiconv/${build_type}/include"
+        # Set up iconv build options.
+        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
+        _CPPFLAGS="-I${dep_arch_dir}/libiconv/${build_type}/include"
+        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
+    fi
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
@@ -202,6 +212,7 @@ build()
     ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
                 --disable-libsuffix                                            \
+                --disable-gdk-pixbuf                                           \
                 --enable-cxx-warnings=no
     make && make install
 
