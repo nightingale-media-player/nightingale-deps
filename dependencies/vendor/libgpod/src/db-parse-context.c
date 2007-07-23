@@ -29,7 +29,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #include <glib.h>
 #include "glib-compat.h"

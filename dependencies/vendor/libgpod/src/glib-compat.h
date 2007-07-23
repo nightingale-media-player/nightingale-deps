@@ -39,7 +39,9 @@
 
 /* g_stat */
 #include <stdio.h>
+#ifndef WIN32
 #include<unistd.h>
+#endif
 #include<sys/types.h>
 #include<sys/stat.h>
 #define g_stat stat

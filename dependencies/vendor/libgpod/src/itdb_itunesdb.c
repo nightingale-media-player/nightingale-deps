@@ -125,7 +125,9 @@
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <time.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #define ITUNESDB_DEBUG 0
 #define ITUNESDB_MHIT_DEBUG 0

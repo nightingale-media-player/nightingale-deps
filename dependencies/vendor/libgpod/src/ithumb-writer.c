@@ -36,7 +36,9 @@
 #include <string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

@@ -38,7 +38,9 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <glib/gi18n-lib.h>
 
 static const Itdb_IpodInfo ipod_info_table [] = {

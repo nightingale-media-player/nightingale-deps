@@ -216,7 +216,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = src bindings tests m4 docs
+SUBDIRS = src bindings m4 docs
 
 # build documentation when doing a distcheck.
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc

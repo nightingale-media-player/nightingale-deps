@@ -2077,6 +2077,23 @@ ac_config_sub="$SHELL $ac_aux_dir/config.sub"  # Please don't use this var.
 ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 
+# Check for the file magic utility.
+{ echo "$as_me:$LINENO: checking for \"file\" file magic utility" >&5
+echo $ECHO_N "checking for \"file\" file magic utility... $ECHO_C" >&6; }
+
+which_file=`which file 2> /dev/null`
+
+if test -n "$which_file"; then
+  { echo "$as_me:$LINENO: result: $which_file" >&5
+    echo "${ECHO_T}$which_file" >&6; }
+else
+  { { echo "$as_me:$LINENO: result: no" >&5
+      echo "${ECHO_T}no" >&6; }
+    { echo "$as_me:$LINENO: error: \"file\" file magic utility must be installed" >&5
+      echo "${ECHO_T} error: \"file\" file magic utility must be installed" >&6; }
+    { (exit 1); exit 1; }; }
+fi
+
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
 # incompatible versions:
@@ -8510,7 +8527,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       # Tell ltmain to make .dll files, not .so files.
       shrext_cmds=".dll"
       # FIXME: Setting linknames here is a bad hack.
-      archive_cmds='$CC -o $lib $libobjs $compiler_flags `echo "$deplibs" | $SED -e '\''s/ -lc$//'\''` -link -dll~linknames='
+      archive_cmds='$CC -o $lib $libobjs $compiler_flags `echo "$deplibs" | $SED -e '\''s/ -lc$//'\''` -shared -dll~linknames='
       # The linker will automatically build a .lib file if we build a DLL.
       old_archive_From_new_cmds='true'
       # FIXME: Should let the user specify the lib program.
@@ -9130,6 +9147,7 @@ cygwin* | mingw* | pw32*)
     mingw*)
       # MinGW DLLs use traditional 'lib' prefix
       soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+      library_names_spec="${soname_spec} "'${libname}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
         # It is most probably a Windows format PATH printed by

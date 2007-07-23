@@ -101,15 +101,33 @@ build_all()
     # Build for each of the target architectures.
     for tgt_arch in ${tgt_arch_list}
     do
-        # Set up the build environment.
-        setup_build ${tgt_arch}
-
         # Build release target.
         build release
 
         # Build debug target.
-        build debug
+        #ZZZbuild debug
     done
+}
+
+
+#
+# export_append
+#
+#   --> export_name             Name of export variable to which to append.
+#   --> args...                 Values to append to export variable.
+#
+#   This function appends the values specified by args... to the export variable
+# specified by export_name.
+#
+
+export_append()
+{
+    # Get the export variable name.
+    export_name=$1;
+    shift
+
+    # Append the parameters to the export variable.
+    eval "${export_name}=\"\${${export_name}} $*\"";
 }
 
 
@@ -134,12 +152,27 @@ setup_build()
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
-            export CPPFLAGS="-fPIC"
+            export CPPFLAGS="${CPPFLAGS} -fPIC"
             use_sys_libs=true
             ;;
 
         windows-i686)
-            export CPPFLAGS="-MD"
+            export CPPFLAGS="${CPPFLAGS} -MD"
+            export_append                                                      \
+                    "LIBGPOD_CFLAGS"                                           \
+                    "-D __NO_CTYPE"                                            \
+                    "-I${dep_arch_dir}/libgw32c/include/glibc"                 \
+                    "-I${dep_arch_dir}/mingw/include"                          \
+                    "-include"                                                 \
+                        "${dep_dir}/vendor/libgpod/win32/include/libgpod_port.h"
+            export_append "LIBGPOD_LIBS"                                       \
+                          "-L${dep_arch_dir}/libgw32c/lib"                     \
+                          "-lgw32c"                                            \
+                          "-lole32"                                            \
+                          "-luuid"
+            export CC="${dep_arch_dir}/mingw/bin/gcc"
+            cl_process="${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper"
+            cfg_tgt=i686-pc-mingw32
             ;;
 
         macosx-i686 | macosx-ppc)
@@ -167,25 +200,50 @@ build()
     # Get starting directory.
     start_dir=${PWD}
 
+    # Initialize some variables.
+    export LIBGPOD_LIBS=
+    export LIBGPOD_CFLAGS=
+    export CPPFLAGS=
+    export CFLAGS=
+    export LDFLAGS=
+
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
+
+    # Set up the build environment.
+    setup_build ${tgt_arch}
 
     # If not using system libraries, set up build options for local versions.
     if ! $use_sys_libs; then
         # Set up gettext build options.
-        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
-        _CPPFLAGS="-I${dep_arch_dir}/gettext/${build_type}/include"
-        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
+        export_append "LIBGPOD_LIBS"                                           \
+                      "-L${dep_arch_dir}/gettext/${build_type}/lib"            \
+                      "-lintl"
+        export_append "LIBGPOD_CFLAGS"                                         \
+                      "-I${dep_arch_dir}/gettext/${build_type}/include"
 
         # Set up glib build options.
-        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/glib/${build_type}/lib"
-        _CPPFLAGS="-I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"
-        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
+        export_append "LIBGPOD_LIBS"                                           \
+                      "-L${dep_arch_dir}/glib/${build_type}/lib"               \
+                      "-lglib-2.0"                                             \
+                      "-lgobject-2.0"
+        export_append                                                          \
+                    "LIBGPOD_CFLAGS"                                           \
+                    "-I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"    \
+                    "-I${dep_arch_dir}/glib/${build_type}/lib/glib-2.0/include"
 
         # Set up iconv build options.
-        export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
-        _CPPFLAGS="-I${dep_arch_dir}/libiconv/${build_type}/include"
-        export CPPFLAGS="${CPPFLAGS} ${_CPPFLAGS}"
+        export_append "LIBGPOD_LIBS"                                           \
+                      "-L${dep_arch_dir}/libiconv/${build_type}/lib"           \
+                      "-liconv"
+        export_append "LIBGPOD_CFLAGS"                                         \
+                      "-I${dep_arch_dir}/libiconv/${build_type}/include"
+    fi
+
+    # Apply command line options pre-processing.
+    if test -n "${cl_process}"; then
+        export LIBGPOD_CFLAGS=`${cl_process} echo ${LIBGPOD_CFLAGS}`
+        export LIBGPOD_LIBS=`${cl_process} echo ${LIBGPOD_LIBS}`
     fi
 
     # Set up to build within a clean build directory.
@@ -213,6 +271,7 @@ build()
                 ${cfg_opts}                                                    \
                 --disable-libsuffix                                            \
                 --disable-gdk-pixbuf                                           \
+                --disable-dependency-tracking                                  \
                 --enable-cxx-warnings=no
     make && make install
 
@@ -220,7 +279,7 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    rm -Rf ${build_dir}
+    #ZZZrm -Rf ${build_dir}
 }
 
 
