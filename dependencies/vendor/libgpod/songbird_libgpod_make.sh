@@ -105,7 +105,7 @@ build_all()
         build release
 
         # Build debug target.
-        #ZZZbuild debug
+        build debug
     done
 }
 
@@ -279,7 +279,7 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    #ZZZrm -Rf ${build_dir}
+    rm -Rf ${build_dir}
 }
 
 
