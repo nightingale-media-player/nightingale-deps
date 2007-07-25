@@ -290,6 +290,19 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+
+ifeq ($(OS),Windows_NT)
+    MSVC_LINK = link /dll /machine:I386 /out:$@
+    MSVC_LIBS := $(LIBS)
+    MSVC_LIBS := $(patsubst -l%,%.lib,$(MSVC_LIBS))
+    MSVC_LIBS := $(patsubst -L%,/libpath:%,$(MSVC_LIBS))
+    MSVC_libgpod_la_OBJECTS := $(libgpod_la_OBJECTS)
+    MSVC_libgpod_la_OBJECTS :=                                                 \
+                        $(patsubst %.lo,.libs/%.o,$(MSVC_libgpod_la_OBJECTS))
+    MSVC_libgpod_la_OBJECTS += .libs/msvc_stub.msvc_o
+    LINK = echo
+endif
+
 DIST_SOURCES = $(libgpod_la_SOURCES)
 HEADERS = $(libgpodinclude_HEADERS)
 
@@ -336,6 +349,18 @@ clean-libLTLIBRARIES:
 	done
 libgpod.la: $(libgpod_la_OBJECTS) $(libgpod_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(libgpod_la_LDFLAGS) $(libgpod_la_OBJECTS) $(libgpod_la_LIBADD) $(LIBS)
+
+ifeq ($(OS),Windows_NT)
+
+.libs/msvc_stub.msvc_o: msvc_stub.c
+	cl /MT /TP /RTC1 /Gm /ZI -c /Fo$@ /Tp$<
+
+libgpod.la: .libs/libgpod.dll
+
+.libs/libgpod.dll: $(MSVC_libgpod_la_OBJECTS) $(libgpod_la_DEPENDENCIES) 
+	dlltool --export-all-symbols -z .libs/libgpod.def $(MSVC_libgpod_la_OBJECTS)
+	$(MSVC_LINK) /DEF:.libs/libgpod.def $(MSVC_libgpod_la_OBJECTS) $(MSVC_LIBS)
+endif
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core

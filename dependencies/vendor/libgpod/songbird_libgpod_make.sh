@@ -166,9 +166,17 @@ setup_build()
                     "-include"                                                 \
                         "${dep_dir}/vendor/libgpod/win32/include/libgpod_port.h"
             export_append "LIBGPOD_LIBS"                                       \
-                          "-L${dep_arch_dir}/libgw32c/lib"                     \
-                          "-lgw32c"                                            \
+                          "${dep_arch_dir}/libgw32c/lib/libgw32c.a"            \
+                          "-L${dep_arch_dir}/mingw/lib"                        \
+                          "${dep_arch_dir}/mingw/lib/gcc/mingw32/3.4.2/libgcc.a"\
+                          "/NODEFAULTLIB:msvcrt.Lib"                           \
+                          "/IMPLIB:gpod.lib"                           \
+                          "-ladvapi32"                                         \
+                          "-lgdi32"                                            \
+                          "-lkernel32"                                         \
                           "-lole32"                                            \
+                          "-lshell32"                                          \
+                          "-luser32"                                           \
                           "-luuid"
             export CC="${dep_arch_dir}/mingw/bin/gcc"
             cl_process="${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper"
@@ -272,8 +280,17 @@ build()
                 --disable-libsuffix                                            \
                 --disable-gdk-pixbuf                                           \
                 --disable-dependency-tracking                                  \
+                --disable-static                                               \
                 --enable-cxx-warnings=no
     make && make install
+
+    # Rename import library on windows.
+    if [ "${build_tgt_arch}" = "windows-i686" ]; then
+        cp ${build_dir}/${tgt_name}/src/gpod.lib                               \
+           ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gpod.lib
+        cp ${build_dir}/${tgt_name}/src/.libs/libgpod.dll                      \
+           ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dll
+    fi
 
     # Move back to starting directory.
     cd ${start_dir}
