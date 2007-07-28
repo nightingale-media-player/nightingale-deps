@@ -151,7 +151,7 @@ for $i (qw'autoconf autoheader autom4te automake aclocal')
 {
     unless(${$i})
     {
-	print "# Unable to find $i!!\n";
+	print "echo Unable to find $i!!\n";
 	exit 1;
     }
 }

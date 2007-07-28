@@ -347,9 +347,9 @@ done
 rm -f configure.files
 touch configure.files
 if test -f configure.in.in && head -n 2 configure.in.in | grep "^#MIN_CONFIG" > /dev/null; then
-	echo $admindir/configure.in.min >> configure.files
+	echo $admindir/configure.in.min | cat >> configure.files
 fi
-test -f configure.in.in && echo configure.in.in >> configure.files
+test -f configure.in.in && echo configure.in.in | cat >> configure.files
 # we collect files in the subdirs and do some sorting tricks, so subsubdirs come after subdirs
 if test -f inst-apps; then
    inst=`cat inst-apps`
@@ -363,10 +363,10 @@ else
 		sed -e "s,/configure,/aaaconfigure," | sort | sed -e "s,/aaaconfigure,/configure,"`
 fi
 for i in $list; do if test -f $i && test `dirname $i` != "." ; then
-  echo $i >> configure.files
+  echo $i | cat >> configure.files
 fi; done
-test -f configure.in.mid && echo configure.in.mid >> configure.files
-test -f configure.in.bot && echo configure.in.bot >> configure.files
+test -f configure.in.mid && echo configure.in.mid | cat >> configure.files
+test -f configure.in.bot && echo configure.in.bot | cat >> configure.files
 if test ! -s configure.files; then
    echo "There are no files to build a configure. Please check your checkout."
    exit 1
