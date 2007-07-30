@@ -157,7 +157,7 @@ setup_build()
             ;;
 
         windows-i686)
-            export CPPFLAGS="${CPPFLAGS} -MD"
+            export CPPFLAGS="${CPPFLAGS} -MD -DWIN32"
             export_append                                                      \
                     "LIBGPOD_CFLAGS"                                           \
                     "-D __NO_CTYPE"                                            \
@@ -165,20 +165,20 @@ setup_build()
                     "-I${dep_arch_dir}/mingw/include"                          \
                     "-include"                                                 \
                         "${dep_dir}/vendor/libgpod/win32/include/libgpod_port.h"
-            export_append "LIBGPOD_LIBS"                                       \
-                          "${dep_arch_dir}/libgw32c/lib/libgw32c.a"            \
-                          "-L${dep_arch_dir}/mingw/lib"                        \
-                          "${dep_arch_dir}/mingw/lib/gcc/mingw32/3.4.2/libgcc.a"\
-                          "/NODEFAULTLIB:msvcrt.Lib"                           \
-                          "/IMPLIB:gpod.lib"                           \
-                          "-ladvapi32"                                         \
-                          "-lgdi32"                                            \
-                          "-lkernel32"                                         \
-                          "-lole32"                                            \
-                          "-lshell32"                                          \
-                          "-luser32"                                           \
-                          "-luuid"
-            export CC="${dep_arch_dir}/mingw/bin/gcc"
+            export_append                                                      \
+                        "LIBGPOD_LIBS"                                         \
+                        "${dep_arch_dir}/libgw32c/lib/libgw32c.a"              \
+                        "-L${dep_arch_dir}/mingw/lib"                          \
+                        "${dep_arch_dir}/mingw/lib/gcc/mingw32/3.4.2/libgcc.a" \
+                        "/NODEFAULTLIB:msvcrt.Lib"                             \
+                        "/IMPLIB:gpod.lib"                                     \
+                        "-ladvapi32"                                           \
+                        "-lgdi32"                                              \
+                        "-lkernel32"                                           \
+                        "-lole32"                                              \
+                        "-lshell32"                                            \
+                        "-luser32"                                             \
+                        "-luuid"
             cl_process="${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper"
             cfg_tgt=i686-pc-mingw32
             ;;
