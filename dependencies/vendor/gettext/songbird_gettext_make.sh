@@ -114,6 +114,27 @@ build_all()
 
 
 #
+# export_append
+#
+#   --> export_name             Name of export variable to which to append.
+#   --> args...                 Values to append to export variable.
+#
+#   This function appends the values specified by args... to the export variable
+# specified by export_name.
+#
+
+export_append()
+{
+    # Get the export variable name.
+    export_name=$1;
+    shift
+
+    # Append the parameters to the export variable.
+    eval "${export_name}=\"\${${export_name}} $*\"";
+}
+
+
+#
 # setup_build
 #
 #   --> build_tgt_arch          Target build architecture.
@@ -165,13 +186,16 @@ build()
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
 
-    # Set up gettext build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/gettext/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/gettext/${build_type}/include"
-
     # Set up iconv build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/libiconv/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/libiconv/${build_type}/include"
+    tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
+    export LDFLAGS="${LDFLAGS} -L${tgt_dep_dir}/lib"
+    export CPPFLAGS="${CPPFLAGS} -I${tgt_dep_dir}/include"
+    if [ "$sys_name" = "Darwin" ]; then
+        export_append "LDFLAGS"                                                \
+                      "-dylib_file"                                            \
+                      "libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
+        export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+    fi
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
@@ -199,6 +223,13 @@ build()
                 --disable-libsuffix                                            \
                 --enable-cxx-warnings=no
     make && make install
+
+    # Post-process libraries on Mac.
+    if [ "$sys_name" = "Darwin" ]; then
+        install_name_tool                                                      \
+            -id libintl.dylib                                                  \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libintl.dylib
+    fi
 
     # Move back to starting directory.
     cd ${start_dir}

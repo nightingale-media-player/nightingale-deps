@@ -198,6 +198,13 @@ build()
                 --enable-cxx-warnings=no
     make && make install
 
+    # Post-process libraries on Mac.
+    if [ "$sys_name" = "Darwin" ]; then
+        install_name_tool                                                      \
+            -id libiconv.dylib                                                 \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libiconv.dylib
+    fi
+
     # Move back to starting directory.
     cd ${start_dir}
 

@@ -224,28 +224,47 @@ build()
     # If not using system libraries, set up build options for local versions.
     if ! $use_sys_libs; then
         # Set up gettext build options.
-        export_append "LIBGPOD_LIBS"                                           \
-                      "-L${dep_arch_dir}/gettext/${build_type}/lib"            \
-                      "-lintl"
-        export_append "LIBGPOD_CFLAGS"                                         \
-                      "-I${dep_arch_dir}/gettext/${build_type}/include"
+        tgt_dep_dir="${dep_arch_dir}/gettext/${build_type}"
+        export_append "LIBGPOD_LIBS" "-L${tgt_dep_dir}/lib" "-lintl"
+        export_append "LIBGPOD_CFLAGS" "-I${tgt_dep_dir}/include"
+        if [ "$sys_name" = "Darwin" ]; then
+            export_append "LD_FLAGS"                                           \
+                          "-dylib_file"                                        \
+                          "libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
+            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+        fi
 
         # Set up glib build options.
+        tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
         export_append "LIBGPOD_LIBS"                                           \
-                      "-L${dep_arch_dir}/glib/${build_type}/lib"               \
+                      "-L${tgt_dep_dir}/lib"                                   \
                       "-lglib-2.0"                                             \
                       "-lgobject-2.0"
-        export_append                                                          \
-                    "LIBGPOD_CFLAGS"                                           \
-                    "-I${dep_arch_dir}/glib/${build_type}/include/glib-2.0"    \
-                    "-I${dep_arch_dir}/glib/${build_type}/lib/glib-2.0/include"
+        export_append "LIBGPOD_CFLAGS"                                         \
+                      "-I${tgt_dep_dir}/include/glib-2.0"                      \
+                      "-I${tgt_dep_dir}/lib/glib-2.0/include"
+        if [ "$sys_name" = "Darwin" ]; then
+            export_append                                                      \
+                        "LDFLAGS"                                              \
+                        "-dylib_file"                                          \
+                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
+            export_append                                                      \
+                "LDFLAGS"                                                      \
+                "-dylib_file"                                                  \
+                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
+            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+        fi
 
         # Set up iconv build options.
-        export_append "LIBGPOD_LIBS"                                           \
-                      "-L${dep_arch_dir}/libiconv/${build_type}/lib"           \
-                      "-liconv"
-        export_append "LIBGPOD_CFLAGS"                                         \
-                      "-I${dep_arch_dir}/libiconv/${build_type}/include"
+        tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
+        export_append "LIBGPOD_LIBS" "-L${tgt_dep_dir}/lib" "-liconv"
+        export_append "LIBGPOD_CFLAGS" "-I${tgt_dep_dir}/include"
+        if [ "$sys_name" = "Darwin" ]; then
+            export_append "LD_FLAGS"                                           \
+                          "-dylib_file"                                        \
+                          "libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
+            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+        fi
     fi
 
     # Apply command line options pre-processing.
@@ -290,6 +309,13 @@ build()
            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gpod.lib
         cp ${build_dir}/${tgt_name}/src/.libs/libgpod.dll                      \
            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dll
+    fi
+
+    # Post-process libraries on Mac.
+    if [ "$sys_name" = "Darwin" ]; then
+        install_name_tool                                                      \
+            -id libgpod.dylib                                                  \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dylib
     fi
 
     # Move back to starting directory.
