@@ -135,7 +135,7 @@ setup_build()
             ;;
 
         windows-i686)
-            export CPPFLAGS="-MD"
+            export CPPFLAGS="-MT"
             export CC="cl"
             export CXX="cl"
             export LD="link"

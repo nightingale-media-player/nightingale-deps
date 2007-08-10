@@ -67,7 +67,7 @@
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\src&quot;;&quot;$(SolutionDir)..\src\generated\release&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;SQLITE_ALLOW_XTHREAD_CONNECT=1;THREADSAFE=1;SQLITE_THREAD_OVERRIDE_LOCK=-1"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
 				WarningLevel="3"
