@@ -1,0 +1,67 @@
+################################################################################
+#
+# Notes on merging changes between taglib revision 649037 and 701586 into
+# Songbird.
+#
+
+# Set up the merge directories.
+mkdir merge_taglib
+cd merge_taglib
+export MERGE_ROOT=`pwd`
+mkdir songbird_svn
+mkdir taglib_svn
+
+
+# Examine changes between old and new revisions.
+cd $MERGE_ROOT/taglib_svn
+svn checkout -r 649037  svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib
+svn update -r 701586 taglib > taglib_update.log
+
+# If the update actions are all "A"'s and "U"'s, the source can simply be
+# exported over.  If there are any "D"'s, files may have been deleted or moved.
+# If there are any "C"'s or "G"'s, there was likely some error in the checkout
+# or update.
+
+
+# Checkout Songbird current version and export new version over it.
+cd $MERGE_ROOT/songbird_svn
+mkdir vendor
+cd vendor
+svn checkout https://svn.songbirdnest.com/songbird/client/vendor/taglib
+svn export --force -r 701586 svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib taglib/current
+
+# Files that have been added need to be added with "svn add".  Files that have
+# been deleted need to be deleted with "svn delete".
+
+
+# Verify that new Songbird current version is the same as the new external
+# version.
+diff -r -x .svn $MERGE_ROOT/songbird_svn/vendor/taglib/current $MERGE_ROOT/taglib_svn/taglib
+
+# Resolve any differences.  The output from diff should be empty before
+# proceeding.
+
+
+# Verify that the new Songbird current version is ready for checkin.
+svn status $MERGE_ROOT/songbird_svn/vendor/taglib/current | grep -v -E "^A|^M|^D"
+
+# The output should be empty.
+
+
+# Commit the new Songbird current version and tag it.
+svn commit -m "Updated taglib/current to svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib revision 701586." $MERGE_ROOT/songbird_svn/vendor/taglib/current
+
+svn copy -m "Tagged taglib revision 701586" https://svn.songbirdnest.com/songbird/client/vendor/taglib/current https://svn.songbirdnest.com/songbird/client/vendor/taglib/701586
+
+
+# Checkout Songbird trunk version and merge changes into it.
+cd $MERGE_ROOT/songbird_svn
+svn checkout https://svn.songbirdnest.com/songbird/client/trunk/dependencies/vendor/taglib trunk/dependencies/vendor/taglib
+svn merge https://svn.songbirdnest.com/songbird/client/vendor/taglib/649037 https://svn.songbirdnest.com/songbird/client/vendor/taglib/current trunk/dependencies/vendor/taglib
+
+# Resolve any merge conflicts.
+
+
+# Commit new changes into Songbird trunk version.
+svn commit -m "Merged changes between svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib revisions 649037 and 701586." trunk/dependencies/vendor/taglib
+

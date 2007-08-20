@@ -46,6 +46,8 @@ sub findBest
 
 	    ($version) = $file =~ /$prefix\/$program-?(.*)$/;
 	    $version =~ s/-|\.//g;
+	    # Don't check the -wrapper ones
+	    next if $version eq "wrapper";
 
 	    # Special case some programs to make sure it has a minimum version.
 	    if (not $version and exists $minimumVersions{$program})

@@ -304,6 +304,18 @@ bool MPEG::File::save(int tags, bool stripOthers)
         d->ID3v2Location = 0;
 
       insert(d->ID3v2Tag->render(), d->ID3v2Location, d->ID3v2OriginalSize);
+
+      d->hasID3v2 = true;
+
+      // v1 tag location has changed, update if it exists
+
+      if(d->ID3v1Tag)
+        d->ID3v1Location = findID3v1();
+
+      // APE tag location has changed, update if it exists
+
+      if(d->APETag)
+        d->APELocation = findAPE();
     }
     else if(stripOthers)
       success = strip(ID3v2, false) && success;
@@ -316,6 +328,8 @@ bool MPEG::File::save(int tags, bool stripOthers)
       int offset = d->hasID3v1 ? -128 : 0;
       seek(offset, End);
       writeBlock(d->ID3v1Tag->render());
+      d->hasID3v1 = true;
+      d->ID3v1Location = findID3v1();
     }
     else if(stripOthers)
       success = strip(ID3v1) && success;
@@ -407,8 +421,14 @@ bool MPEG::File::strip(int tags, bool freeMemory)
     }
 
     // v1 tag location has changed, update if it exists
+
     if(d->ID3v1Tag)
       d->ID3v1Location = findID3v1();
+
+    // APE tag location has changed, update if it exists
+ 
+   if(d->APETag)
+      d->APELocation = findAPE();
   }
 
   if((tags & ID3v1) && d->hasID3v1) {
@@ -453,7 +473,7 @@ long MPEG::File::nextFrameOffset(long position)
     seek(position);
     buffer = readBlock(bufferSize());
 
-    for(int i = 0; i < ((int) buffer.size()) - 1; i++) {
+    for(int i = 0; i < int(buffer.size()) - 1; i++) {
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
         return position + i;
     }

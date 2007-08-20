@@ -246,7 +246,7 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
   }
   else {
     seek(fromOffset + -1 * int(d->bufferSize), Beginning);
-    bufferOffset = tell();    
+    bufferOffset = tell();
   }
 
   // See the notes in find() for an explanation of this algorithm.
