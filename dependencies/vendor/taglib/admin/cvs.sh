@@ -634,6 +634,12 @@ fi
 # Call script to find autoconf and friends.  Uses eval since the script outputs
 # sh-compatible code.
 eval `$admindir/detect-autoconf.pl`
+if test -z "$AUTOCONF"; then
+  echo Failed to detect autoconf!
+  echo Check previous error messages for specifics on which autoconf tool
+  echo could not be found.
+  exit 1
+fi
 
 ###
 ### Main
