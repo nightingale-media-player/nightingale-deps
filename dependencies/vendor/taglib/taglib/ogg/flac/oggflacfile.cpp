@@ -64,6 +64,11 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+Ogg::FLAC::File::File() : Ogg::File()
+{
+  d = new FilePrivate;
+}
+
 Ogg::FLAC::File::File(const char *file, bool readProperties,
                       Properties::ReadStyle propertiesStyle) : Ogg::File(file)
 {
@@ -86,36 +91,6 @@ Properties *Ogg::FLAC::File::audioProperties() const
   return d->properties;
 }
 
-
-bool Ogg::FLAC::File::save()
-{
-  d->xiphCommentData = d->comment->render();
-
-  // Create FLAC metadata-block:
-
-  // Put the size in the first 32 bit (I assume no more than 24 bit are used)
-
-  ByteVector v = ByteVector::fromUInt(d->xiphCommentData.size());
-
-  // Set the type of the metadata-block to be a Xiph / Vorbis comment
-
-  v[0] = 4;
-
-  // Append the comment-data after the 32 bit header
-
-  v.append(d->xiphCommentData);
-
-  // Save the packet at the old spot
-  // FIXME: Use padding if size is increasing
-
-  setPacket(d->commentPacket, v);
-
-  return Ogg::File::save();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// private members
-////////////////////////////////////////////////////////////////////////////////
 
 void Ogg::FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
@@ -149,6 +124,36 @@ void Ogg::FLAC::File::read(bool readProperties, Properties::ReadStyle properties
   if(readProperties)
     d->properties = new Properties(streamInfoData(), streamLength(), propertiesStyle);
 }
+
+bool Ogg::FLAC::File::save()
+{
+  d->xiphCommentData = d->comment->render();
+
+  // Create FLAC metadata-block:
+
+  // Put the size in the first 32 bit (I assume no more than 24 bit are used)
+
+  ByteVector v = ByteVector::fromUInt(d->xiphCommentData.size());
+
+  // Set the type of the metadata-block to be a Xiph / Vorbis comment
+
+  v[0] = 4;
+
+  // Append the comment-data after the 32 bit header
+
+  v.append(d->xiphCommentData);
+
+  // Save the packet at the old spot
+  // FIXME: Use padding if size is increasing
+
+  setPacket(d->commentPacket, v);
+
+  return Ogg::File::save();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// private members
+////////////////////////////////////////////////////////////////////////////////
 
 ByteVector Ogg::FLAC::File::streamInfoData()
 {

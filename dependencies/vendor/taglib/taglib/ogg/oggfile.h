@@ -78,6 +78,12 @@ namespace TagLib {
 
     protected:
       /*!
+       * Contructs an Ogg file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
+
+      /*!
        * Contructs an Ogg file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.

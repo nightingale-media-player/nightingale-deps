@@ -61,6 +61,12 @@ namespace TagLib {
     {
     public:
       /*!
+       * Contructs a FLAC file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File(ID3v2::FrameFactory *frameFactory = NULL);
+
+      /*!
        * Contructs a FLAC file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -104,6 +110,14 @@ namespace TagLib {
        * were read then this will return a null pointer.
        */
       virtual Properties *audioProperties() const;
+
+      /*!
+       * Reads from FLAC file.  If \a readProperties is true the file's audio
+       * properties will also be read using \a propertiesStyle.  If false,
+       * \a propertiesStyle is ignored.
+       */
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
        * Save the file.  This will primarily save the XiphComment, but
@@ -182,7 +196,6 @@ namespace TagLib {
       File(const File &);
       File &operator=(const File &);
 
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
       void scan();
       long findID3v2();
       long findID3v1();

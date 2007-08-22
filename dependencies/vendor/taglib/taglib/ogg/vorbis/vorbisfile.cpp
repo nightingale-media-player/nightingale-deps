@@ -57,6 +57,11 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+Vorbis::File::File() : Ogg::File()
+{
+  d = new FilePrivate;
+}
+
 Vorbis::File::File(const char *file, bool readProperties,
                    Properties::ReadStyle propertiesStyle) : Ogg::File(file)
 {
@@ -79,23 +84,6 @@ Vorbis::Properties *Vorbis::File::audioProperties() const
   return d->properties;
 }
 
-bool Vorbis::File::save()
-{
-  ByteVector v(vorbisCommentHeaderID);
-
-  if(!d->comment)
-    d->comment = new Ogg::XiphComment;
-  v.append(d->comment->render());
-
-  setPacket(1, v);
-
-  return Ogg::File::save();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// private members
-////////////////////////////////////////////////////////////////////////////////
-
 void Vorbis::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
   ByteVector commentHeaderData = packet(1);
@@ -111,3 +99,17 @@ void Vorbis::File::read(bool readProperties, Properties::ReadStyle propertiesSty
   if(readProperties)
     d->properties = new Properties(this, propertiesStyle);
 }
+
+bool Vorbis::File::save()
+{
+  ByteVector v(vorbisCommentHeaderID);
+
+  if(!d->comment)
+    d->comment = new Ogg::XiphComment;
+  v.append(d->comment->render());
+
+  setPacket(1, v);
+
+  return Ogg::File::save();
+}
+

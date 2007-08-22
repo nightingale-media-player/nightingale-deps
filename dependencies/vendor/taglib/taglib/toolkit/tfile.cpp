@@ -36,6 +36,7 @@ public:
   FilePrivate(const char *fileName) :
     fileIO(NULL),
     name(fileName),
+    maxScanBytes(0),
     valid(true),
     size(0)
     {}
@@ -47,6 +48,7 @@ public:
 
   FileIO *fileIO;
   const char *name;
+  long maxScanBytes;
   bool valid;
   ulong size;
   static const uint bufferSize = 1024;
@@ -59,12 +61,30 @@ List<const File::FileIOTypeResolver *> File::FilePrivate::fileIOTypeResolvers;
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+File::File()
+{
+  d = new FilePrivate(NULL);
+}
+
 File::File(const char *file)
 {
+  d = new FilePrivate(NULL);
+  open(file);
+}
+
+File::~File()
+{
+  if(d->fileIO)
+    delete d->fileIO;
+  delete d;
+}
+
+void File::open(const char *file)
+{
 #ifdef _MSC_VER
-  d = new FilePrivate(_strdup(file));
+  d->name = _strdup(file);
 #else
-  d = new FilePrivate(::strdup(file));
+  d->name = ::strdup(file);
 #endif
 
   List<const FileIOTypeResolver *>::ConstIterator it = FilePrivate::fileIOTypeResolvers.begin();
@@ -89,16 +109,19 @@ File::File(const char *file)
     debug("Could not open file " + String(file));
 }
 
-File::~File()
-{
-  if(d->fileIO)
-    delete d->fileIO;
-  delete d;
-}
-
 const char *File::name() const
 {
   return d->name;
+}
+
+long File::getMaxScanBytes()
+{
+  return d->maxScanBytes;
+}
+
+void File::setMaxScanBytes(long maxScanBytes)
+{
+  d->maxScanBytes = maxScanBytes;
 }
 
 ByteVector File::readBlock(ulong length)
@@ -126,7 +149,9 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
   // The position in the file that the current buffer starts at.
 
+  long maxScanBytes = d->maxScanBytes;
   long bufferOffset = fromOffset;
+  long endBufferOffset;
   ByteVector buffer;
 
   // These variables are used to keep track of a partial match that happens at
@@ -139,6 +164,13 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
   // position using seek() before all returns.
 
   long originalPosition = tell();
+
+  // Determine where to end search.
+
+  if (maxScanBytes > 0)
+    endBufferOffset = bufferOffset + maxScanBytes;
+  else
+    endBufferOffset = 0;
 
   // Start the search at the offset.
 
@@ -203,6 +235,9 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
       beforePreviousPartialMatch = buffer.endsWithPartialMatch(before);
 
     bufferOffset += d->bufferSize;
+
+    if (endBufferOffset && (bufferOffset >= endBufferOffset))
+      break;
   }
 
   // Since we hit the end of the file, reset the status before continuing.
@@ -239,7 +274,9 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
   // Start the search at the offset.
 
+  long maxScanBytes = d->maxScanBytes;
   long bufferOffset;
+  long endBufferOffset;
   if(fromOffset == 0) {
     seek(-1 * int(d->bufferSize), End);
     bufferOffset = tell();
@@ -248,6 +285,13 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
     seek(fromOffset + -1 * int(d->bufferSize), Beginning);
     bufferOffset = tell();
   }
+
+  // Determine where to end search.
+
+  if ((maxScanBytes > 0) && (bufferOffset > maxScanBytes))
+    endBufferOffset = bufferOffset - maxScanBytes;
+  else
+    endBufferOffset = 0;
 
   // See the notes in find() for an explanation of this algorithm.
 
@@ -272,6 +316,9 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
     bufferOffset -= d->bufferSize;
     seek(bufferOffset);
+
+    if (endBufferOffset && (bufferOffset <= endBufferOffset))
+      break;
   }
 
   // Since we hit the end of the file, reset the status before continuing.

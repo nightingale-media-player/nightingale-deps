@@ -51,6 +51,12 @@ namespace TagLib {
     {
     public:
       /*!
+       * Contructs an mp4 itunes file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
+
+      /*!
        * Contructs an mp4 itunes file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -74,6 +80,14 @@ namespace TagLib {
        * were read then this will return a null pointer.
        */
       virtual AudioProperties *audioProperties() const;
+
+      /*!
+       * Reads from mp4 itunes file.  If \a readProperties is true the file's
+       * audio properties will also be read using \a propertiesStyle.  If false,
+       * \a propertiesStyle is ignored.
+       */
+      void read(bool readProperties = true,
+                TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average);
 
       /*!
        * Saves the file.

@@ -94,9 +94,30 @@ namespace TagLib {
     virtual ~File();
 
     /*!
+     * Opens the \a file.  \a file should be a be a C-string in the local file
+     * system encoding.
+     *
+     * \note Constructor is protected since this class should only be
+     * instantiated through subclasses.
+     */
+    void open(const char *file);
+
+    /*!
      * Returns the file name in the local file system encoding.
      */
     const char *name() const;
+
+    /*!
+     * Returns the maximum number of bytes to scan when scanning for frames or
+     * tags.
+     */
+    long getMaxScanBytes();
+
+    /*!
+     * Sets the maximum number of bytes to scan when scanning for frames or
+     * tags to \a maxScanBytes.
+     */
+    void setMaxScanBytes(long maxScanBytes);
 
     /*!
      * Returns a pointer to this file's tag.  This should be reimplemented in
@@ -259,6 +280,15 @@ namespace TagLib {
     static const FileIOTypeResolver *addFileIOTypeResolver(const FileIOTypeResolver *resolver);
 
   protected:
+    /*!
+     * Construct a File object without opening a file.  Allows object fields to
+     * be set up before opening file.
+     *
+     * \note Constructor is protected since this class should only be
+     * instantiated through subclasses.
+     */
+    File();
+
     /*!
      * Construct a File object and opens the \a file.  \a file should be a
      * be a C-string in the local file system encoding.

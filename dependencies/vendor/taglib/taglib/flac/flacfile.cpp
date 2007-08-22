@@ -98,6 +98,13 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+FLAC::File::File(ID3v2::FrameFactory *frameFactory) : TagLib::File()
+{
+  d = new FilePrivate;
+  if (frameFactory)
+    d->ID3v2FrameFactory = frameFactory;
+}
+
 FLAC::File::File(const char *file, bool readProperties,
                  Properties::ReadStyle propertiesStyle) :
   TagLib::File(file)
@@ -130,6 +137,52 @@ FLAC::Properties *FLAC::File::audioProperties() const
   return d->properties;
 }
 
+void FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+{
+  // Look for an ID3v2 tag
+
+  d->ID3v2Location = findID3v2();
+
+  if(d->ID3v2Location >= 0) {
+
+    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
+
+    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
+
+    if(d->ID3v2Tag->header()->tagSize() <= 0) {
+      delete d->ID3v2Tag;
+      d->ID3v2Tag = 0;
+    }
+    else
+      d->hasID3v2 = true;
+  }
+
+  // Look for an ID3v1 tag
+
+  d->ID3v1Location = findID3v1();
+
+  if(d->ID3v1Location >= 0) {
+    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
+    d->hasID3v1 = true;
+  }
+
+  // Look for FLAC metadata, including vorbis comments
+
+  scan();
+
+  if (!isValid()) return;
+
+  if(d->hasXiphComment)
+    d->comment = new Ogg::XiphComment(xiphCommentData());
+
+  if(d->hasXiphComment || d->hasID3v2 || d->hasID3v1)
+    d->tag = new FLAC::Tag(d->comment, d->ID3v2Tag, d->ID3v1Tag);
+  else
+    d->tag = new FLAC::Tag(new Ogg::XiphComment);
+
+  if(readProperties)
+    d->properties = new Properties(streamInfoData(), streamLength(), propertiesStyle);
+}
 
 bool FLAC::File::save()
 {
@@ -274,53 +327,6 @@ void FLAC::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
 ////////////////////////////////////////////////////////////////////////////////
 // private members
 ////////////////////////////////////////////////////////////////////////////////
-
-void FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
-{
-  // Look for an ID3v2 tag
-
-  d->ID3v2Location = findID3v2();
-
-  if(d->ID3v2Location >= 0) {
-
-    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
-
-    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
-
-    if(d->ID3v2Tag->header()->tagSize() <= 0) {
-      delete d->ID3v2Tag;
-      d->ID3v2Tag = 0;
-    }
-    else
-      d->hasID3v2 = true;
-  }
-
-  // Look for an ID3v1 tag
-
-  d->ID3v1Location = findID3v1();
-
-  if(d->ID3v1Location >= 0) {
-    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
-    d->hasID3v1 = true;
-  }
-
-  // Look for FLAC metadata, including vorbis comments
-
-  scan();
-
-  if (!isValid()) return;
-
-  if(d->hasXiphComment)
-    d->comment = new Ogg::XiphComment(xiphCommentData());
-
-  if(d->hasXiphComment || d->hasID3v2 || d->hasID3v1)
-    d->tag = new FLAC::Tag(d->comment, d->ID3v2Tag, d->ID3v1Tag);
-  else
-    d->tag = new FLAC::Tag(new Ogg::XiphComment);
-
-  if(readProperties)
-    d->properties = new Properties(streamInfoData(), streamLength(), propertiesStyle);
-}
 
 ByteVector FLAC::File::streamInfoData()
 {

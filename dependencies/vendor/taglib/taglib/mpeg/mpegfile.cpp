@@ -221,14 +221,19 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+MPEG::File::File(ID3v2::FrameFactory *frameFactory) : TagLib::File()
+{
+  if (frameFactory)
+    d = new FilePrivate(frameFactory);
+  else
+    d = new FilePrivate;
+}
+
 MPEG::File::File(const char *file, bool readProperties,
                  Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
   d = new FilePrivate;
-  if(isOpen()) {
-    d->tag = new MPEGTag(this);
-    read(readProperties, propertiesStyle);
-  }
+  read(readProperties, propertiesStyle);
 }
 
 MPEG::File::File(const char *file, ID3v2::FrameFactory *frameFactory,
@@ -236,10 +241,7 @@ MPEG::File::File(const char *file, ID3v2::FrameFactory *frameFactory,
   TagLib::File(file)
 {
   d = new FilePrivate(frameFactory);
-  if(isOpen()) {
-    d->tag = new MPEGTag(this);
-    read(readProperties, propertiesStyle);
-  }
+  read(readProperties, propertiesStyle);
 }
 
 MPEG::File::~File()
@@ -255,6 +257,59 @@ TagLib::Tag *MPEG::File::tag() const
 MPEG::Properties *MPEG::File::audioProperties() const
 {
   return d->properties;
+}
+
+void MPEG::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+{
+  if (!isOpen())
+    return;
+
+  d->tag = new MPEGTag(this);
+
+  // Look for an ID3v2 tag
+
+  d->ID3v2Location = findID3v2();
+
+  if(d->ID3v2Location >= 0) {
+
+    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
+
+    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
+
+    if(d->ID3v2Tag->header()->tagSize() <= 0) {
+      delete d->ID3v2Tag;
+      d->ID3v2Tag = 0;
+    }
+    else
+      d->hasID3v2 = true;
+  }
+
+  // Look for an ID3v1 tag
+
+  d->ID3v1Location = findID3v1();
+
+  if(d->ID3v1Location >= 0) {
+    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
+    d->hasID3v1 = true;
+  }
+
+  // Look for an APE tag
+
+  d->APELocation = findAPE();
+
+  if(d->APELocation >= 0) {
+
+    d->APETag = new APE::Tag(this, d->APELocation);
+
+    d->APEOriginalSize = d->APETag->footer()->completeTagSize();
+
+    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APEOriginalSize;
+
+    d->hasAPE = true;
+  }
+
+  if(readProperties)
+    d->properties = new Properties(this, propertiesStyle);
 }
 
 bool MPEG::File::save()
@@ -465,10 +520,14 @@ void MPEG::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
 
 long MPEG::File::nextFrameOffset(long position)
 {
-  // TODO: This will miss syncs spanning buffer read boundaries.
-
   ByteVector buffer;
+  long endPosition;
+  long maxScanBytes = getMaxScanBytes();
 
+  if (maxScanBytes > 0)
+    endPosition = position + maxScanBytes;
+  else
+    endPosition = 0;
   do {
     seek(position);
     buffer = readBlock(bufferSize());
@@ -477,7 +536,10 @@ long MPEG::File::nextFrameOffset(long position)
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
         return position + i;
     }
-    position += bufferSize();
+    position += bufferSize() - 1;
+
+    if (endPosition && (position >= endPosition))
+      break;
   } while(buffer.size() > 0);
 
   return -1;
@@ -485,10 +547,15 @@ long MPEG::File::nextFrameOffset(long position)
 
 long MPEG::File::previousFrameOffset(long position)
 {
-  // TODO: This will miss syncs spanning buffer read boundaries.
+  long endPosition;
+  long maxScanBytes = getMaxScanBytes();
 
+  if ((maxScanBytes > 0) && (position > maxScanBytes))
+    endPosition = position - maxScanBytes;
+  else
+    endPosition = 0;
   while(int(position - bufferSize()) > int(bufferSize())) {
-    position -= bufferSize();
+    position -= bufferSize() - 1;
     seek(position);
     ByteVector buffer = readBlock(bufferSize());
 
@@ -502,6 +569,9 @@ long MPEG::File::previousFrameOffset(long position)
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
         return position + i;
     }
+
+    if (endPosition && (position <= endPosition))
+      break;
   }
 
   return -1;
@@ -526,54 +596,6 @@ long MPEG::File::lastFrameOffset()
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void MPEG::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
-{
-  // Look for an ID3v2 tag
-
-  d->ID3v2Location = findID3v2();
-
-  if(d->ID3v2Location >= 0) {
-
-    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
-
-    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
-
-    if(d->ID3v2Tag->header()->tagSize() <= 0) {
-      delete d->ID3v2Tag;
-      d->ID3v2Tag = 0;
-    }
-    else
-      d->hasID3v2 = true;
-  }
-
-  // Look for an ID3v1 tag
-
-  d->ID3v1Location = findID3v1();
-
-  if(d->ID3v1Location >= 0) {
-    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
-    d->hasID3v1 = true;
-  }
-
-  // Look for an APE tag
-
-  d->APELocation = findAPE();
-
-  if(d->APELocation >= 0) {
-
-    d->APETag = new APE::Tag(this, d->APELocation);
-
-    d->APEOriginalSize = d->APETag->footer()->completeTagSize();
-
-    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APEOriginalSize;
-
-    d->hasAPE = true;
-  }
-
-  if(readProperties)
-    d->properties = new Properties(this, propertiesStyle);
-}
-
 long MPEG::File::findID3v2()
 {
   // This method is based on the contents of TagLib::File::find(), but because
@@ -584,7 +606,9 @@ long MPEG::File::findID3v2()
 
     // The position in the file that the current buffer starts at.
 
+    long maxScanBytes = getMaxScanBytes();
     long bufferOffset = 0;
+    long endBufferOffset;
     ByteVector buffer;
 
     // These variables are used to keep track of a partial match that happens at
@@ -597,6 +621,13 @@ long MPEG::File::findID3v2()
     // position using seek() before all returns.
 
     long originalPosition = tell();
+
+    // Determine where to end search.
+
+    if (maxScanBytes > 0)
+      endBufferOffset = bufferOffset + maxScanBytes;
+    else
+      endBufferOffset = 0;
 
     // Start the search at the beginning of the file.
 
@@ -673,6 +704,9 @@ long MPEG::File::findID3v2()
       previousPartialMatch = buffer.endsWithPartialMatch(ID3v2::Header::fileIdentifier());
 
       bufferOffset += bufferSize();
+
+      if (endBufferOffset && (bufferOffset >= endBufferOffset))
+        break;
     }
 
     // Since we hit the end of the file, reset the status before continuing.
