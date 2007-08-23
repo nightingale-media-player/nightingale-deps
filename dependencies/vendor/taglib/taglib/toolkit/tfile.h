@@ -266,7 +266,7 @@ namespace TagLib {
     static bool isWritable(const char *name);
 
     /*!
-     * Adds a FileIOTypeResolver to the list of those used by TagLib.  Each
+     * Adds \a resolver to the list of FileIOTypeResolvers used by TagLib.  Each
      * additional FileIOTypeResolver is added to the front of a list of
      * resolvers that are tried.  If the FileIOTypeResolver returns zero the
      * next resolver is tried.
@@ -278,6 +278,11 @@ namespace TagLib {
      * \see FileIOTypeResolver
      */
     static const FileIOTypeResolver *addFileIOTypeResolver(const FileIOTypeResolver *resolver);
+
+    /*!
+     * Removes \a resolver from the list of FileIOTypeResolvers used by TagLib.
+     */
+    static void removeFileIOTypeResolver(const FileIOTypeResolver *resolver);
 
   protected:
     /*!

@@ -419,6 +419,15 @@ const File::FileIOTypeResolver *File::addFileIOTypeResolver(const File::FileIOTy
   return resolver;
 }
 
+void File::removeFileIOTypeResolver(const File::FileIOTypeResolver *resolver) // static
+{
+  List<const FileIOTypeResolver *>::Iterator it;
+
+  it = FilePrivate::fileIOTypeResolvers.find(resolver);
+  if (it != FilePrivate::fileIOTypeResolvers.end())
+    FilePrivate::fileIOTypeResolvers.erase(it);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // protected members
 ////////////////////////////////////////////////////////////////////////////////
