@@ -131,7 +131,7 @@ setup_build()
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
-            export CPPFLAGS="-fPIC"
+            export CPPFLAGS="-fPIC -fno-stack-protector"
             ;;
 
         windows-i686)
