@@ -19,7 +19,7 @@
  *
  * Contributor(s):
  *   Myk Melez <myk@mozilla.org>
- *   Simon BŸnzli <zeniko@gmail.com>
+ *   Simon BÃ¼nzli <zeniko@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,8 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 /**** folder menulist ****/
-.folder-icon > .menulist-label-box > .menulist-icon,
-.folder-icon > .menu-iconic-left > .menu-iconic-icon {
+.folder-icon > .menulist-label-box > .menulist-icon {
   width: 16px;
   height: 16px;
 }
@@ -49,6 +48,27 @@
 .folder-icon {
   list-style-image: url("chrome://global/skin/icons/folder-item.png") !important;
   -moz-image-region: rect(0px, 32px, 16px, 16px) !important;
+}
+
+/**** expander ****/
+#expander {
+  min-width: 0;
+}
+
+.up {
+  list-style-image: url("chrome://global/skin/arrow/arrow-up.gif");
+}
+
+.up:hover {
+  list-style-image: url("chrome://global/skin/arrow/arrow-up-hov.gif");
+}
+
+.down {
+  list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
+}
+
+.down:hover {
+  list-style-image: url("chrome://global/skin/arrow/arrow-dn-hov.gif");
 }
 
 /**** name picker ****/

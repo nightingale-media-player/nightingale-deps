@@ -61,6 +61,7 @@ const nsIWindowWatcher       = Components.interfaces.nsIWindowWatcher;
 const nsICategoryManager     = Components.interfaces.nsICategoryManager;
 const nsIWebNavigationInfo   = Components.interfaces.nsIWebNavigationInfo;
 const nsIBrowserSearchService = Components.interfaces.nsIBrowserSearchService;
+const nsICommandLineValidator = Components.interfaces.nsICommandLineValidator;
 
 const NS_BINDING_ABORTED = 0x804b0002;
 const NS_ERROR_WONT_HANDLE_CONTENT = 0x805d0001;
@@ -137,6 +138,40 @@ function needHomepageOverride(prefb) {
   return OVERRIDE_NONE;
 }
 
+// Copies a pref override file into the user's profile pref-override folder,
+// and then tells the pref service to reload it's default prefs.
+function copyPrefOverride() {
+  try {
+    var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
+                                .getService(Components.interfaces.nsIProperties);
+    const NS_APP_EXISTING_PREF_OVERRIDE = "ExistingPrefOverride";
+    var prefOverride = fileLocator.get(NS_APP_EXISTING_PREF_OVERRIDE,
+                                       Components.interfaces.nsIFile);
+    if (!prefOverride.exists())
+      return; // nothing to do
+
+    const NS_APP_PREFS_OVERRIDE_DIR     = "PrefDOverride";
+    var prefOverridesDir = fileLocator.get(NS_APP_PREFS_OVERRIDE_DIR,
+                                           Components.interfaces.nsIFile);
+
+    // Check for any existing pref overrides, and remove them if present
+    var existingPrefOverridesFile = prefOverridesDir.clone();
+    existingPrefOverridesFile.append(prefOverride.leafName);
+    if (existingPrefOverridesFile.exists())
+      existingPrefOverridesFile.remove(false);
+
+    prefOverride.copyTo(prefOverridesDir, null);
+
+    // Now that we've installed the new-profile pref override file,
+    // re-read the default prefs.
+    var prefSvcObs = Components.classes["@mozilla.org/preferences-service;1"]
+                               .getService(Components.interfaces.nsIObserver);
+    prefSvcObs.observe(null, "reload-default-prefs", null);
+  } catch (ex) {
+    Components.utils.reportError(ex);
+  }
+}
+
 function openWindow(parent, url, target, features, args) {
   var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
                          .getService(nsIWindowWatcher);
@@ -186,12 +221,12 @@ function getMostRecentBrowserWindow() {
   var win = wm.getMostRecentWindow("navigator:browser", true);
 
   // if we're lucky, this isn't a popup, and we can just return this
-  if (win && !win.toolbar.visible) {
+  if (win && win.document.documentElement.getAttribute("chromehidden")) {
     var windowList = wm.getEnumerator("navigator:browser", true);
     // this is oldest to newest, so this gets a bit ugly
     while (windowList.hasMoreElements()) {
       var nextWin = windowList.getNext();
-      if (nextWin.toolbar.visible)
+      if (!nextWin.document.documentElement.getAttribute("chromehidden"))
         win = nextWin;
     }
   }
@@ -201,7 +236,7 @@ function getMostRecentBrowserWindow() {
     return null;
 
   var win = windowList.getNext();
-  while (!win.toolbar.visible) {
+  while (win.document.documentElement.getAttribute("chromehidden")) {
     if (!windowList.hasMoreElements()) 
       return null;
 
@@ -267,6 +302,7 @@ var nsBrowserContentHandler = {
         !iid.equals(nsICommandLineHandler) &&
         !iid.equals(nsIBrowserHandler) &&
         !iid.equals(nsIContentHandler) &&
+        !iid.equals(nsICommandLineValidator) &&
         !iid.equals(nsIFactory))
       throw Components.results.NS_ERROR_NO_INTERFACE;
 
@@ -444,9 +480,13 @@ var nsBrowserContentHandler = {
     try {
       switch (needHomepageOverride(prefb)) {
         case OVERRIDE_NEW_PROFILE:
+          // New profile
           overridePage = formatter.formatURLPref("startup.homepage_welcome_url");
           break;
         case OVERRIDE_NEW_MSTONE:
+          // Existing profile, new build
+          copyPrefOverride();
+
           // Check whether we have a session to restore. If we do, we assume
           // that this is an "update" session.
           var ss = Components.classes["@mozilla.org/browser/sessionstartup;1"]
@@ -553,17 +593,25 @@ var nsBrowserContentHandler = {
       throw NS_ERROR_WONT_HANDLE_CONTENT;
     }
 
-    var parentWin;
-    try {
-      parentWin = context.getInterface(nsIDOMWindow);
-    }
-    catch (e) {
-    }
-
     request.QueryInterface(nsIChannel);
-    
-    openWindow(parentWin, request.URI, "_blank", null, null);
+    handURIToExistingBrowser(request.URI,
+      nsIBrowserDOMWindow.OPEN_DEFAULTWINDOW, null);
     request.cancel(NS_BINDING_ABORTED);
+  },
+
+  /* nsICommandLineValidator */
+  validate : function bch_validate(cmdLine) {
+    // Other handlers may use osint so only handle the osint flag if the url
+    // flag is also present and the command line is valid.
+    var osintFlagIdx = cmdLine.findFlag("osint", false);
+    var urlFlagIdx = cmdLine.findFlag("url", false);
+    if (urlFlagIdx > -1 && (osintFlagIdx > -1 ||
+        cmdLine.state == nsICommandLine.STATE_REMOTE_EXPLICIT)) {
+      var urlParam = cmdLine.getArgument(urlFlagIdx + 1);
+      if (cmdLine.length != urlFlagIdx + 2 || /firefoxurl:/.test(urlParam))
+        throw NS_ERROR_ABORT;
+      cmdLine.handleFlag("osint", false)
+    }
   },
 
   /* nsIFactory */
@@ -828,6 +876,9 @@ var Module = {
     catMan.addCategoryEntry("command-line-handler",
                             "x-default",
                             dch_contractID, true, true);
+    catMan.addCategoryEntry("command-line-validator",
+                            "b-browser",
+                            bch_contractID, true, true);
   },
     
   unregisterSelf : function mod_unregself(compMgr, location, type) {
@@ -842,6 +893,8 @@ var Module = {
                                "m-browser", true);
     catMan.deleteCategoryEntry("command-line-handler",
                                "x-default", true);
+    catMan.deleteCategoryEntry("command-line-validator",
+                               "b-browser", true);
   },
 
   canUnload: function(compMgr) {

@@ -24,6 +24,7 @@
  *   Pierre Chanial (chanial@noos.fr)
  *   Kevin Gerich (webmail@kmgerich.com)
  *   Pamela Greene (pamg.bugs@gmail.com)
+ *   Dao Gottwald (dao@design-noir.de)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -43,10 +44,6 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
-
-#toolbar-menubar {
-	display: none;
-}
 
 #main-window {
 	-moz-appearance: none;
@@ -158,34 +155,6 @@ toolbarbutton.bookmark-item .toolbarbutton-text {
   padding-top: 1px;
 }
 
-%ifndef MOZ_PLACES_BOOKMARKS
-.bookmark-item > .toolbarbutton-menu-dropmarker {
-  list-style-image: url("chrome://browser/skin/bookmarks/folderarrow.png");
-  height: 16px !important;
-  padding: 5px 5px 4px 3px;
-}
-
-.bookmark-item:hover > .toolbarbutton-menu-dropmarker, .bookmark-item[open] > .toolbarbutton-menu-dropmarker  {
-  list-style-image: url("chrome://browser/skin/bookmarks/folderarrow-hover.png");
-}
-
-.bookmark-item[livemark] > .toolbarbutton-menu-dropmarker {
-  list-style-image: url("chrome://browser/skin/bookmarks/livemark-folder.png");
-  padding: 4px 4px 3px 2px;
-}
-
-.bookmark-item[livemark]:hover > .toolbarbutton-menu-dropmarker, .bookmark-item[livemark][open] > .toolbarbutton-menu-dropmarker {
-  list-style-image: url("chrome://browser/skin/bookmarks/livemark-folder-hover.png");
-}
-
-.bookmark-item[livemark] {
-  list-style-image: url("chrome://browser/skin/page-livemarks.png");
-}
-
-.bookmark-item[livemark] .menuitem-iconic {
-  list-style-image: url("chrome://browser/skin/bookmarks/livemark-item.png");
-}
-%else
 .bookmark-item > .toolbarbutton-menu-dropmarker {
   list-style-image: url("chrome://browser/skin/places/folderDropArrow.png");
   height: 16px !important;
@@ -217,7 +186,6 @@ toolbarbutton.bookmark-item .toolbarbutton-text {
 .bookmark-item menuitem[siteURI] {
   list-style-image: none;
 }
-%endif
 
 .toolbarpaletteitem-box[type="bookmarks-toolbar"][place="palette"] {
   background: url("chrome://browser/skin/bookmarks/Toolbar-bookmarks.png") no-repeat;
@@ -240,11 +208,9 @@ toolbarpaletteitem[place="toolbar"] .bookmarks-toolbar-items {
   visibility: hidden;
 }
 
-%ifdef MOZ_PLACES_BOOKMARKS
 toolbarpaletteitem[place="toolbar"] .places-toolbar-items {
   display: none;
 }
-%endif
 
 /* ----- BOOKMARK MENUS ----- */	
 
@@ -869,6 +835,33 @@ toolbar[iconsize="small"] #paste-button:hover:active {
   font: icon !important;
 }
 
+.formatted-url {
+  -moz-box-align: center;
+  margin: 0 3px;
+  /*XXX Gecko 1.9 quirk*/
+  -moz-padding-start: 1px;
+  color: -moz-fieldtext;
+}
+
+#urlbar[level="high"] .formatted-url ,
+#urlbar[level="low"] .formatted-url {
+  color: black;
+}
+
+.formatted-url * {
+  margin: 0;
+  padding: 0;
+  cursor: text;
+}
+
+.formatted-url-ellipsis {
+  -moz-margin-start: 1px;
+}
+
+.formatted-url-prePath {
+  -moz-box-pack: center;
+}
+
 #urlbar[level="high"] > .autocomplete-textbox-container,
 #urlbar[level="low"] > .autocomplete-textbox-container
  {
@@ -959,7 +952,7 @@ toolbar[iconsize="small"] #paste-button:hover:active {
 }
 
 #page-proxy-button {
-  list-style-image: url("chrome://browser/skin/bookmarks/bookmark-item.png");
+  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
 }
 
 #page-proxy-button[pageproxystate="invalid"] {
@@ -973,6 +966,16 @@ statusbarpanel#statusbar-display {
 }
 
 /* ----- AUTOCOMPLETE ----- */
+
+.autocomplete-treebody::-moz-tree-image(favicon, treecolAutoCompleteValue) {
+  width: 16px;
+  height: 16px;
+}
+
+.autocomplete-treebody::-moz-tree-image(bookmark, treecolAutoCompleteValue) {
+  width: 16px;
+  height: 16px;
+}
 
 .autocomplete-treebody::-moz-tree-cell-text(treecolAutoCompleteComment) {
   color: #555566;
@@ -992,16 +995,11 @@ statusbarpanel#statusbar-display {
 /* ----- GO BUTTON ----- */
 
 #go-button {
-  -moz-appearance: toolbarbutton;
-  height: 24px;
-}
-
-#go-button,
-#go-container {
   -moz-appearance: none;
   background-color: transparent;
   margin: 0;
   padding: 0;
+  height: 24px;
   border-left: 0 !important;
   min-width: 0;
   list-style-image: url("chrome://browser/skin/Go.png");
@@ -1121,7 +1119,8 @@ sidebarheader > .tabs-closebutton > .toolbarbutton-text {
 #feed-button {
   -moz-binding: url("chrome://global/content/bindings/button.xml#menu");
   -moz-appearance: none; 
-  min-width: 0px; 
+  min-width: 0;
+  min-height: 0;
   margin-right: 1px !important;
 }
 
@@ -1188,18 +1187,409 @@ toolbarbutton.chevron > .toolbarbutton-menu-dropmarker {
 }
 
 .bookmark-item {
-	  list-style-image: url("chrome://browser/skin/bookmarks/bookmark-item.png");
+  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
 }
 
 .openintabs-menuitem {
   list-style-image: none;
 }
 
+/* ::::: tabbrowser ::::: */
+
 .tabs-left {
 	display: none !important;
 }
 
-/* ::::: close button ::::: */
+.tabbrowser-tab:not([selected="true"]):hover {
+  background: url("chrome://browser/skin/tabbrowser/tabbrowser-tabs-bkgnd.png") repeat-x;
+}
+
+.tabbrowser-tab:hover > .tab-image-middle > .tab-icon > .tab-extra-status {
+  background: none;
+}
+
+.tab-icon-image {
+  width: 16px;
+  height: 16px;
+  list-style-image: url("chrome://global/skin/icons/small-globe-sunken.png");
+}
+
+.tab-icon {
+  padding-top: 1px;
+  margin: 2px 0px 1px 0px;
+}
+
+.tab-text {
+  font: icon;
+  padding-top: 1px;
+  margin-top: 2px !important;
+}
+
+.tabbrowser-tab[busy] > .tab-icon-image,
+.tabbrowser-tab[busy] > .tab-image-middle > .tab-icon > .tab-icon-image {
+ list-style-image: url("chrome://global/skin/icons/loading_16_grey.gif") !important; 
+}
+
+.tabbrowser-tab {
+  -moz-binding: url("chrome://browser/skin/tabbrowser/tabbrowserBindings.xml#tabbrowser-tab") !important;
+  -moz-appearance: none;
+  color: #383838;
+  -moz-box-pack: center;
+  margin: 2px 0px 3px 0px;
+  padding: 0px;
+  border: none !important;
+  height: 22px !important;
+  min-width: 1px !important;
+  text-align: center;
+}
+
+.tabbrowser-tab[selected="true"] {
+  -moz-user-focus: normal;
+}
+
+.tabbrowser-tab[selected="true"] > .tab-image-middle > .tab-icon {
+  cursor: -moz-grab;
+}
+
+.tabbrowser-tab > .tab-image-middle > .tab-text {
+  border: 1.4pt solid transparent;
+}
+
+.tabbrowser-tab:focus > .tab-image-middle > .tab-text {
+  border: 1.4pt solid -moz-mac-focusring;
+}
+
+.tabbrowser-tab[selected="true"], .tabbrowser-tab:hover {
+  color: #000000;
+}
+
+.tabbrowser-tab[first-tab="true"] > .tab-image-left {
+  margin-left: 3px !important;
+}
+
+.tab-image-left, .tab-image-right {
+  width: 8px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.tabbrowser-tab > .tab-image-right {
+  background: url("chrome://browser/skin/tabbrowser/tab-right.png") no-repeat;
+}
+
+.tabbrowser-tab:not([selected="true"]) > .tab-image-right {
+  background: url("chrome://browser/skin/tabbrowser/tab-right-bkgnd.png") no-repeat;
+  margin-bottom: 1px;
+}
+
+.tabbrowser-tab:hover:not([selected="true"]) > .tab-image-right {
+  background: url("chrome://browser/skin/tabbrowser/tab-right-hover.png") no-repeat;
+}
+
+.tabbrowser-tab > .tab-image-left {
+  background: url("chrome://browser/skin/tabbrowser/tab-left.png") no-repeat;
+}
+
+.tabbrowser-tab:not([selected="true"]) > .tab-image-left {
+  background: url("chrome://browser/skin/tabbrowser/tab-left-bkgnd.png") no-repeat;
+  margin-bottom: 1px;
+}
+
+.tabbrowser-tab:hover:not([selected="true"]) > .tab-image-left {
+  background: url("chrome://browser/skin/tabbrowser/tab-left-hover.png") no-repeat;
+}
+
+.tabbrowser-tab > .tab-image-middle {
+  background: url("chrome://browser/skin/tabbrowser/tab-middle.png") repeat-x;
+  -moz-box-flex: 0 !important;
+}
+
+.tabbrowser-tab:not([selected="true"]) > .tab-image-middle {
+  background: url("chrome://browser/skin/tabbrowser/tab-middle-bkgnd.png");
+  margin-bottom: 1px;
+}
+
+.tabbrowser-tab:hover:not([selected="true"]) > .tab-image-middle {
+  background: url("chrome://browser/skin/tabbrowser/tab-middle-hover.png");
+}
+
+.tabbrowser-tab:not([selected="true"]) > .tab-image-middle > .tab-icon > .tab-icon-image  {
+  list-style-image: url("chrome://global/skin/icons/small-globe-sunken-grey.png");
+}
+
+.tabs-closebutton {
+  padding: 0px 4px 2px 0px;
+  margin: 0px;
+  list-style-image: url("chrome://global/skin/icons/closetab.png") !important;
+  border: none !important;
+}
+
+.tabs-closebutton:hover {
+  list-style-image: url("chrome://global/skin/icons/closetab-hover.png") !important;
+  border: none !important;
+}
+
+.tabs-closebutton:hover:active {
+  list-style-image: url("chrome://global/skin/icons/closetab-active.png") !important;
+  border: none !important;
+}
+
+.tabbrowser-strip {
+  -moz-box-orient: vertical !important;
+  -moz-appearance: dialog;
+}
+
+.tabbrowser-tabs {
+  -moz-binding: url("chrome://browser/skin/tabbrowser/tabbrowserBindings.xml#tabbrowser-tabs");
+  border: none;
+  padding: 0;
+  margin: 0;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  background: url("chrome://browser/skin/tabbrowser/tabbrowser-tabs-bkgnd.png") repeat-x;
+}
+
+.tab-image-right, .tab-image-left {
+  height: 18px !important;
+}
+
+.tabs-bottom {
+  border: none;
+  height: 4px !important;
+  background: url("chrome://browser/skin/tabbrowser/tabs-bottom-bg.png") repeat !important;
+  margin: 0px !important;
+}
+
+tabbrowser > tabbox > tabpanels {
+  -moz-appearance: none !important;
+}
+
+.tab-drop-indicator-bar {
+   visibility: hidden;
+   height: 9px;
+   margin-top: -9px;
+   position: relative;
+}
+
+.tab-drop-indicator {
+   height: 9px;
+   width: 9px;
+   margin-bottom: -5px;
+   position: relative;
+   background: url('chrome://browser/skin/tabbrowser/tabDragIndicator.png') 50% 50% no-repeat;
+}
+
+.tab-drop-indicator-bar[dragging="true"] {
+   visibility: visible;
+}
+
+/**
+ * In-tab close button
+ */
+.tab-close-button > .toolbarbutton-icon {
+  -moz-margin-end: 0px !important;
+  margin-top: 2px;
+}
+
+.tab-close-button {
+  list-style-image: url("chrome://global/skin/icons/closetab.png");
+  -moz-appearance: none;
+  border: none !important;
+  padding: 0px;
+  background: inherit;
+  cursor: default;
+}
+
+.tab-close-button:hover,
+.tabbrowser-tab[selected="true"] > .tab-close-button:hover {
+  list-style-image: url("chrome://global/skin/icons/closetab-hover.png");
+}
+
+.tab-close-button:hover:active,
+.tabbrowser-tab[selected="true"] > .tab-close-button:hover:active {
+  list-style-image: url("chrome://global/skin/icons/closetab-active.png");
+}
+
+.tabbrowser-tab > .tab-close-button {
+  background-image: url("chrome://browser/skin/tabbrowser/tab-middle.png");
+  background-repeat: repeat-x;
+  -moz-margin-start: -5px;
+  -moz-margin-end: -1px;
+  -moz-padding-end: 0px;
+}
+
+.tabbrowser-tab[selected="true"] > .tab-close-button {
+  /* Make this button focusable so clicking on it will not focus the tab while
+     it's getting closed */
+  -moz-user-focus: normal;
+}
+
+.tabbrowser-tab:not([selected="true"]) > .tab-close-button {
+  background-image: url("chrome://browser/skin/tabbrowser/tab-middle-bkgnd.png");
+  margin-bottom: 1px;
+}
+
+.tabbrowser-tab:not([selected="true"]):hover > .tab-close-button {
+  background-image: url("chrome://browser/skin/tabbrowser/tab-middle-hover.png");
+}
+
+/**
+ * Tab Scrollbox Arrow Buttons
+ */
+
+.tabbrowser-arrowscrollbox > .scrollbutton-up {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0px 3px 0px;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
+  list-style-image: url("chrome://browser/skin/tabbrowser/tab-arrow-start.png");
+  background-image: url("chrome://browser/skin/tabbrowser/tab-arrow-start-bkgnd.png");
+  background-repeat: no-repeat;
+  -moz-image-region: rect(0, 11px, 14px, 0);
+  opacity: 0.65;
+}
+
+.tabbrowser-arrowscrollbox > .scrollbutton-up[disabled="true"] {
+  -moz-image-region: rect(0, 33px, 14px, 22px);
+}
+
+.tabbrowser-arrowscrollbox > .scrollbutton-up:not([disabled="true"]):hover {
+  -moz-image-region: rect(0, 22px, 14px, 11px);
+  opacity: 1.0;
+}
+ 
+.tabbrowser-arrowscrollbox > .scrollbutton-up:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(0, 44px, 14px, 33px);
+}
+
+.tabbrowser-arrowscrollbox > .scrollbutton-up > .toolbarbutton-icon {
+  margin-top: 4px;
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down-box {
+  margin: 2px 0px 3px 0px;
+  width: 18px;
+  height: 18px;
+  background-image: url("chrome://browser/skin/tabbrowser/tab-arrow-end-bkgnd.png") !important;
+  background-repeat: no-repeat;
+  opacity: 0.65;
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down-box-animate {
+  margin: 2px 0px 3px 0px;
+  width: 18px;
+  height: 18px;
+  background-image: url("chrome://browser/skin/tabbrowser/tab-arrow-end-bkgnd-animate.png") !important;
+  background-repeat: no-repeat;
+  opacity: 0.0;
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down {
+  margin: 2px 0px 3px 0px;
+  width: 18px;
+  height: 18px;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
+  list-style-image: url("chrome://browser/skin/tabbrowser/tab-arrow-end.png") !important;
+  -moz-image-region: rect(0, 11px, 14px, 0);
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down[disabled="true"] {
+  -moz-image-region: rect(0, 33px, 14px, 22px);
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down:not([disabled="true"]):hover {
+  background-image: url("chrome://browser/skin/tabbrowser/tab-arrow-end-bkgnd.png") !important;
+  background-repeat: no-repeat;
+  -moz-image-region: rect(0, 22px, 14px, 11px);
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(0, 44px, 14px, 33px);
+}
+
+.tabbrowser-arrowscrollbox > stack > .scrollbutton-down > .toolbarbutton-icon {
+  margin-top: 4px;
+  -moz-margin-start: 1px;
+}
+
+/**
+ * All Tabs Button
+ */
+
+.tabs-alltabs-box {
+  margin: 2px 0px 3px 0px;
+  width: 16px;
+  height: 18px;
+  background-image: url("chrome://browser/skin/tabbrowser/alltabs-box-bkgnd.png");
+  background-repeat: no-repeat;
+  opacity: 0.65;
+}
+
+.tabbrowser-tabs[overflow="true"] .tabs-alltabs-box {
+  background-image: url("chrome://browser/skin/tabbrowser/alltabs-box-overflow-bkgnd.png");
+}
+
+.tabs-alltabs-button {
+  margin: 2px 0px 3px 0px;
+  width: 16px;
+  height: 18px;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
+}
+
+.tabs-alltabs-button  > .toolbarbutton-menu-dropmarker {
+  margin-right: 2px;
+  margin-top: 4px;
+}
+
+.tabs-alltabs-button  > .toolbarbutton-text {
+  display: none;
+}
+
+.tabs-alltabs-button > .toolbarbutton-icon {
+  -moz-margin-end: 2px;
+}
+
+.tabs-alltabs-button:hover {
+  margin: 2px 0px 3px 0px;
+  background-image: url("chrome://browser/skin/tabbrowser/alltabs-box-bkgnd.png");
+  background-repeat: no-repeat;
+  opacity: 1.0;
+}
+
+.tabbrowser-tabs[overflow="true"] .tabs-alltabs-button:hover {
+  background-image: url("chrome://browser/skin/tabbrowser/alltabs-box-overflow-bkgnd.png");
+}
+
+.tabs-alltabs-box-animate {
+  margin: 2px 0px 3px 0px;
+  width: 16px;
+  height: 18px;
+  background-image: url("chrome://browser/skin/tabbrowser/alltabs-box-overflow-bkgnd-animate.png");
+  background-repeat: no-repeat;
+  opacity: 0.0;
+}
+
+/**
+ * All Tabs Menupopup 
+ */
+
+.alltabs-item > .menu-iconic-left > .menu-iconic-icon {
+  list-style-image: url("chrome://global/skin/icons/small-globe-sunken.png");
+}
+
+.alltabs-item[selected="true"] {
+  font-weight: bold;
+}
+
+.alltabs-item[busy] > .menu-iconic-left > .menu-iconic-icon {
+  list-style-image: url("chrome://global/skin/icons/loading_16_grey.gif") !important;
+}
 
 .tabs-closebutton {
   padding-right: 4px;
@@ -1224,7 +1614,6 @@ tabpanels.plain {
 	background-color: #fff !important;
 }
 
-%ifdef MOZ_PLACES_BOOKMARKS
 /* Personal toolbar */
 .toolbar-drop-indicator {
   height: 16px;
@@ -1235,7 +1624,7 @@ tabpanels.plain {
 }
 
 .toolbar-drop-indicator-bar {
-  display: none;
+  visibility: hidden;
   height: 16px;
   margin-bottom: -16px;
   margin-left: 4px;
@@ -1243,7 +1632,7 @@ tabpanels.plain {
 }
 
 .toolbar-drop-indicator-bar[dragging="true"] {
-  display: -moz-box;
+  visibility: visible;
 }
 
 toolbarbutton.bookmark-item[dragover="true"][open="true"] {
@@ -1266,7 +1655,6 @@ toolbarbutton.bookmark-item[dragover="true"][open="true"] {
 .bookmark-item[dragover-bottom="true"] {
   -moz-border-bottom-colors: #000000;
 }
-%endif
 
 #CustomizeToolbarSheet > #main-box {
   border-top: none !important;
@@ -1276,4 +1664,15 @@ toolbarbutton.bookmark-item[dragover="true"][open="true"] {
   -moz-border-right-colors: -moz-mac-menushadow ThreeDLightShadow  !important;
   -moz-border-bottom-colors: -moz-mac-menushadow -moz-mac-menushadow ThreeDShadow  !important;
   -moz-border-left-colors: ThreeDLightShadow ThreeDHighlight !important;
+}
+
+/* star icon */
+#star-icon {
+  list-style-image: url("chrome://browser/skin/places/starPage.png");
+  width: 16px;
+  height: 16px;
+}
+
+#star-icon[starred="true"] {
+  list-style-image: url("chrome://browser/skin/places/pageStarred.png");
 }

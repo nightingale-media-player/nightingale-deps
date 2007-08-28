@@ -1,7 +1,34 @@
-/.cvsignore/1.1/Fri Apr  5 00:11:13 2002//
-/Makefile.in/1.59/Sat Nov  4 04:48:03 2006//
-/nsBrowserContentHandler.js/1.39/Mon Mar 26 21:20:28 2007//
-/nsBrowserGlue.js/1.21/Wed Sep 13 07:55:52 2006//
-/nsIBrowserGlue.idl/1.3/Sun Dec  4 21:02:36 2005//
-/nsIBrowserHandler.idl/1.3/Sun Apr 10 23:32:51 2005//
-D
+D/bookmarks////
+D/build////
+D/console////
+D/cookies////
+D/cookieviewer////
+D/dirprovider////
+D/download-manager////
+D/downloads////
+D/feeds////
+D/feedview////
+D/find////
+D/help////
+D/history////
+D/microsummaries////
+D/migration////
+D/pageInfo////
+D/places////
+D/policy////
+D/preferences////
+D/prefwindow////
+D/safebrowsing////
+D/search////
+D/security////
+D/sessionrestore////
+D/sessionstore////
+D/shell////
+D/sidebar////
+D/winhooks////
+/.cvsignore/1.1/Thu Aug 16 04:13:52 2007//
+/Makefile.in/1.60/Mon Aug 27 23:07:02 2007//
+/nsBrowserContentHandler.js/1.43/Mon Aug 27 23:07:02 2007//
+/nsBrowserGlue.js/1.33/Mon Aug 27 23:07:02 2007//
+/nsIBrowserGlue.idl/1.3/Thu Aug 16 04:13:52 2007//
+/nsIBrowserHandler.idl/1.3/Thu Aug 16 04:13:52 2007//

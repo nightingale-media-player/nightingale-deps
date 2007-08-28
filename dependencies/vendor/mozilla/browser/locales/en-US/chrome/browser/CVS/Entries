@@ -1,22 +1,35 @@
-/aboutDialog.dtd/1.8/Wed Mar 28 04:37:32 2007//
-/baseMenuOverlay.dtd/1.8/Fri Feb 10 01:25:28 2006//
-/browser.dtd/1.60/Wed Mar 28 04:37:32 2007//
-/browser.properties/1.35/Wed Mar 28 04:37:32 2007//
-/credits.dtd/1.6/Tue Feb 27 16:03:23 2007//
-/engineManager.dtd/1.4/Mon Aug  7 23:26:27 2006//
-/metaData.dtd/1.4/Sun Nov  5 19:50:59 2006//
-/metaData.properties/1.5/Thu Apr 12 01:18:39 2007//
-/openLocation.dtd/1.3/Wed Mar 28 04:37:32 2007//
-/openLocation.properties/1.2/Mon Jul 12 17:15:07 2004//
-/pageInfo.dtd/1.9/Wed Mar 28 04:37:32 2007//
-/pageInfo.properties/1.5/Wed Jan 18 03:33:16 2006//
-/pageReport.dtd/1.2/Mon Jul 12 17:15:07 2004//
-/pageReportFirstTime.dtd/1.3/Tue Nov 30 08:22:50 2004//
-/safeMode.dtd/1.3/Wed Jul  5 19:09:38 2006//
-/sanitize.dtd/1.9/Fri Dec  1 12:44:40 2006//
-/search.properties/1.14/Mon Jul 24 18:41:25 2006//
-/searchbar.dtd/1.2/Fri Sep 22 00:47:10 2006//
-/sessionstore.properties/1.4/Tue Aug  1 21:52:38 2006//
-/setDesktopBackground.dtd/1.1/Thu Jun 23 02:25:06 2005//
-/shellservice.properties/1.6/Wed Dec 28 05:48:57 2005//
-D
+D/bookmarks////
+D/cookieviewer////
+D/feeds////
+D/history////
+D/migration////
+D/places////
+D/pref////
+D/preferences////
+D/safebrowsing////
+D/sidebar////
+/aboutDialog.dtd/1.9/Mon Aug 27 23:07:03 2007//
+/baseMenuOverlay.dtd/1.8/Thu Aug 16 04:13:41 2007//
+/browser.dtd/1.63/Mon Aug 27 23:07:03 2007//
+/browser.properties/1.36/Mon Aug 27 23:07:03 2007//
+/credits.dtd/1.6/Thu Aug 16 04:13:41 2007//
+/engineManager.dtd/1.5/Mon Aug 27 23:07:03 2007//
+/engineManager.properties/1.2/Wed Jun 27 22:58:47 2007//
+/metaData.dtd/1.4/Thu Aug 16 04:13:41 2007//
+/metaData.properties/1.5/Thu Aug 16 04:13:41 2007//
+/openLocation.dtd/1.3/Thu Aug 16 04:13:41 2007//
+/openLocation.properties/1.2/Thu Aug 16 04:13:41 2007//
+/pageInfo.dtd/1.17/Mon Aug 27 23:07:03 2007//
+/pageInfo.properties/1.10/Mon Aug 27 23:07:03 2007//
+/pageReport.dtd/1.2/Thu Aug 16 04:13:41 2007//
+/pageReportFirstTime.dtd/1.3/Thu Aug 16 04:13:41 2007//
+/quitDialog.properties/1.2/Wed Jul 25 21:43:17 2007//
+/safeMode.dtd/1.3/Thu Aug 16 04:13:41 2007//
+/sanitize.dtd/1.9/Thu Aug 16 04:13:41 2007//
+/search.properties/1.14/Thu Aug 16 04:13:41 2007//
+/searchbar.dtd/1.2/Thu Aug 16 04:13:41 2007//
+/sessionstore.properties/1.5/Mon Aug 27 23:07:03 2007//
+/setDesktopBackground.dtd/1.1/Thu Aug 16 04:13:41 2007//
+/shellservice.properties/1.7/Mon Aug 27 23:07:03 2007//
+/tabbrowser.dtd/1.4/Wed Aug 22 05:02:44 2007//
+/tabbrowser.properties/1.4/Thu Aug 23 17:16:43 2007//

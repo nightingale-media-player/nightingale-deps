@@ -83,6 +83,8 @@ browser.jar:
     locale/browser/setDesktopBackground.dtd        (en-US/chrome/browser/setDesktopBackground.dtd)
     locale/browser/shellservice.properties         (en-US/chrome/browser/shellservice.properties)
     locale/browser/sessionstore.properties         (en-US/chrome/browser/sessionstore.properties)
+    locale/browser/tabbrowser.dtd                  (en-US/chrome/browser/tabbrowser.dtd)
+    locale/browser/tabbrowser.properties           (en-US/chrome/browser/tabbrowser.properties)
 #ifdef MOZ_PLACES
     locale/browser/places/places.dtd               (en-US/chrome/browser/places/places.dtd)
     locale/browser/places/places.properties        (en-US/chrome/browser/places/places.properties)

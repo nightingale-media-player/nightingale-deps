@@ -46,6 +46,8 @@
 %searchBarDTD;
 <!ENTITY % globalDTD SYSTEM "chrome://global/locale/global.dtd">
 %globalDTD;
+<!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+%browserDTD;
 ]>
 
 <bindings id="SearchBindings"
@@ -550,7 +552,7 @@
 
   <binding id="searchbar-textbox"
       extends="chrome://global/content/bindings/autocomplete.xml#autocomplete">
-    <implementation implements="nsIObserver">
+    <implementation implements="nsIObserver nsIDOMXULLabeledControlElement">
       <constructor><![CDATA[
         if (this._getParentSearchbar().parentNode.parentNode.localName ==
             "toolbarpaletteitem")
@@ -570,6 +572,9 @@
         } catch (ex) { }
       ]]></destructor>
 
+      <property name="label" readonly="true"
+                onget="return '&searchItem.title; ' + 
+                      this._getParentSearchbar().currentEngine.name;"/>
       <field name="_stringBundle"/>
       <field name="_formHistSvc"/>
       <field name="_prefBranch"/>
@@ -578,8 +583,13 @@
 
       <method name="initialize">
         <body><![CDATA[
+<<<<<<< search.xml
           const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
         
+=======
+          const kXULNS =
+            "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+>>>>>>> 1.98
           // Initialize fields
           this._stringBundle = this._getParentSearchbar()._stringBundle;
           this._formHistSvc =
@@ -600,9 +610,9 @@
           var cxmenu = document.getAnonymousElementByAttribute(textBox,
                                             "anonid", "input-box-contextmenu");
 
-          var element = document.createElementNS(XUL_NS, "menuseparator");
+          var element = document.createElementNS(kXULNS, "menuseparator");
           cxmenu.appendChild(element);
-          element = document.createElementNS(XUL_NS, "menuitem");
+          element = document.createElementNS(kXULNS, "menuitem");
           var label = this._stringBundle.getString("cmd_clearHistory");
           var akey = this._stringBundle.getString("cmd_clearHistory_accesskey");
           element.setAttribute("label", label);
@@ -611,7 +621,7 @@
 
           cxmenu.appendChild(element);
 
-          element = document.createElementNS(XUL_NS, "menuitem");
+          element = document.createElementNS(kXULNS, "menuitem");
           label = this._stringBundle.getString("cmd_showSuggestions");
           akey = this._stringBundle.getString("cmd_showSuggestions_accesskey");
           element.setAttribute("anonid", "toggle-suggest-item");

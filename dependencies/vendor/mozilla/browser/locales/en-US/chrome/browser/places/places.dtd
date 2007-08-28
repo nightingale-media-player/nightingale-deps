@@ -1,4 +1,4 @@
-<!ENTITY places.title
+<!ENTITY places.bm.title
   "Bookmarks Manager">
 <!ENTITY file.label
   "File">
@@ -51,9 +51,9 @@
 <!ENTITY help.advancedTips.accesskey
   "T">
 
-<!ENTITY cmd.find.label 
+<!ENTITY cmd.findInBookmarks.label 
   "Find in Bookmarks...">
-<!ENTITY cmd.find.accesskey
+<!ENTITY cmd.findInBookmarks.accesskey
   "F">
 <!ENTITY cmd.findCurrent.label
   "Find in Current Collection...">
@@ -123,14 +123,10 @@
   "Open All in Tabs">
 <!ENTITY cmd.open_all_in_tabs.accesskey
   "O">
-<!ENTITY cmd.show_infoWin.label
+<!ENTITY cmd.properties.label
   "Properties">
-<!ENTITY cmd.show_infoWin.accesskey
+<!ENTITY cmd.properties.accesskey
   "i">
-<!ENTITY cmd.show_infoMac.label
-  "Get Info">
-<!ENTITY cmd.show_infoMac.accesskey
-  "I">
 <!ENTITY cmd.show_info.key
   "i">
 <!ENTITY cmd.rename.label
@@ -165,6 +161,10 @@
   "Reload Live Bookmark">
 <!ENTITY cmd.reloadLivebookmark.accesskey
   "R">
+<!ENTITY cmd.reloadMicrosummary.label
+  "Reload Live Title">
+<!ENTITY cmd.reloadMicrosummary.accesskey
+  "R">
 <!ENTITY cmd.groupby_site.label
   "Group by Site">
 <!ENTITY cmd.groupby_site.accesskey
@@ -196,13 +196,24 @@
          "b">
 
 <!ENTITY col.title.label
-  "Title">
+  "Name">
+<!ENTITY col.tags.label
+  "Tags">
 <!ENTITY col.url.label
   "Location">
 <!ENTITY col.lastvisit.label
   "Visit Date">
 <!ENTITY col.visitcount.label
   "Visit Count">
+<!ENTITY col.keyword.label
+  "Keyword">
+<!ENTITY col.description.label
+  "Description">
+<!ENTITY col.dateadded.label
+  "Added">
+<!ENTITY col.lastmodified.label
+  "Last Modified">
+
 <!ENTITY search.label
   "Search:">
 <!ENTITY search.accesskey
@@ -211,9 +222,9 @@
   "Current Collection Only">
 <!ENTITY search.collection.accesskey
   "C">
-<!ENTITY search.all.label
+<!ENTITY search.allBookmarks.label
   "All Bookmarks">
-<!ENTITY search.all.accesskey
+<!ENTITY search.allBookmarks.accesskey
   "A">
 <!ENTITY saveSearch.label
   "Save">
