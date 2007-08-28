@@ -198,8 +198,10 @@ var gMainPane = {
    *         browser.download.dir.
    * browser.download.downloadDir
    *   depreciated.
-   * browser.download.defaultFolder
-   *   depreciated.
+   * browser.download.defaultFolder
+
+   *   depreciated.
+
    */
 
   /**
@@ -298,17 +300,28 @@ var gMainPane = {
     var downloadFolder = document.getElementById("downloadFolder");
     var currentDirPref = document.getElementById("browser.download.dir");
 
-    // The user's download folder is based on the preferences listed above.
-    // However, if the system does not support a download folder, the
-    // actual path returned will be the system's desktop or home folder.
-    // If this is the case, skip off displaying the Download label and
-    // display Desktop, even though folderList might be 1.
-    var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
-                                .getService(Components.interfaces.nsIProperties);
-    var desk = fileLocator.get("Desk", Components.interfaces.nsILocalFile);
-    var dnldMgr = Components.classes["@mozilla.org/download-manager;1"]
-                            .getService(Components.interfaces.nsIDownloadManager);
-    var supportDownloadLabel = !dnldMgr.defaultDownloadsDirectory.equals(desk);
+    // The user's download folder is based on the preferences listed above.
+
+    // However, if the system does not support a download folder, the
+
+    // actual path returned will be the system's desktop or home folder.
+
+    // If this is the case, skip off displaying the Download label and
+
+    // display Desktop, even though folderList might be 1.
+
+    var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
+
+                                .getService(Components.interfaces.nsIProperties);
+
+    var desk = fileLocator.get("Desk", Components.interfaces.nsILocalFile);
+
+    var dnldMgr = Components.classes["@mozilla.org/download-manager;1"]
+
+                            .getService(Components.interfaces.nsIDownloadManager);
+
+    var supportDownloadLabel = !dnldMgr.defaultDownloadsDirectory.equals(desk);
+
 
     // Used in defining the correct path to the folder icon.
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
