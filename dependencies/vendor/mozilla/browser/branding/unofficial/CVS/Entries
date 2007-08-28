@@ -1,6 +1,3 @@
-D/content////
-D/locales////
-D/pref////
 /Header.bmp/1.1/Thu Aug 16 04:13:50 2007/-kb/
 /Makefile.in/1.3/Mon Aug 27 23:07:01 2007//
 /Watermrk.bmp/1.1/Thu Aug 16 04:13:50 2007/-kb/
@@ -26,3 +23,6 @@ D/pref////
 /wizHeader.bmp/1.1/Thu Aug 16 04:13:50 2007/-kb/
 /wizHeaderRTL.bmp/1.1/Thu Aug 16 04:13:50 2007/-kb/
 /wizWatermark.bmp/1.1/Thu Aug 16 04:13:50 2007/-kb/
+D/content////
+D/locales////
+D/pref////

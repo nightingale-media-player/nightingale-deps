@@ -34,6 +34,7 @@ SUBDIRS = browser/components/preferences \
           browser/locales \
           browser/themes \
           browser/components/search \
+          browser/components/places \
           $(NULL)
 
 include $(topsrcdir)/build/rules.mk

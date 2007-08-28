@@ -583,13 +583,8 @@
 
       <method name="initialize">
         <body><![CDATA[
-<<<<<<< search.xml
-          const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-        
-=======
           const kXULNS =
             "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
->>>>>>> 1.98
           // Initialize fields
           this._stringBundle = this._getParentSearchbar()._stringBundle;
           this._formHistSvc =

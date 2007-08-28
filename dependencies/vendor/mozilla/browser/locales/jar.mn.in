@@ -80,15 +80,14 @@ browser.jar:
     locale/browser/search.properties               (en-US/chrome/browser/search.properties)
     locale/browser/searchbar.dtd                   (en-US/chrome/browser/searchbar.dtd)
     locale/browser/engineManager.dtd               (en-US/chrome/browser/engineManager.dtd)
+    locale/browser/engineManager.properties        (en-US/chrome/browser/engineManager.properties)
     locale/browser/setDesktopBackground.dtd        (en-US/chrome/browser/setDesktopBackground.dtd)
     locale/browser/shellservice.properties         (en-US/chrome/browser/shellservice.properties)
     locale/browser/sessionstore.properties         (en-US/chrome/browser/sessionstore.properties)
     locale/browser/tabbrowser.dtd                  (en-US/chrome/browser/tabbrowser.dtd)
     locale/browser/tabbrowser.properties           (en-US/chrome/browser/tabbrowser.properties)
-#ifdef MOZ_PLACES
     locale/browser/places/places.dtd               (en-US/chrome/browser/places/places.dtd)
     locale/browser/places/places.properties        (en-US/chrome/browser/places/places.properties)
-#endif
 #ifdef MOZ_PLACES_BOOKMARKS
     locale/browser/places/bookmarkProperties.dtd   (en-US/chrome/browser/places/bookmarkProperties.dtd)
     locale/browser/places/bookmarkProperties.properties (en-US/chrome/browser/places/bookmarkProperties.properties)
@@ -131,6 +130,7 @@ browser.jar:
     locale/browser/preferences/privacy.dtd            (en-US/chrome/browser/preferences/privacy.dtd)
     locale/browser/preferences/security.dtd           (en-US/chrome/browser/preferences/security.dtd)
     locale/browser/preferences/securityWarnings.dtd   (en-US/chrome/browser/preferences/securityWarnings.dtd)
+    locale/browser/preferences/selectBookmark.dtd   (en-US/chrome/browser/preferences/selectBookmark.dtd)
     locale/browser/preferences/tabs.dtd               (en-US/chrome/browser/preferences/tabs.dtd)
     locale/browser/sidebar/sidebar.properties      (en-US/chrome/browser/sidebar/sidebar.properties)
 % locale browser-region en-US %locale/browser-region/

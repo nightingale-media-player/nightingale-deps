@@ -3,7 +3,6 @@
 /preferences.xul/1.11/Mon Oct  9 23:57:39 2006//
 /advanced-scripts.xul/1.2/Thu Aug 16 04:13:50 2007//
 /advanced.js/1.26/Thu Aug 16 04:13:50 2007//
-/advanced.xul/1.37/Mon Aug 27 23:07:02 2007//
 /changeaction.js/1.4/Thu Aug 16 04:13:50 2007//
 /changeaction.xul/1.10/Thu Aug 16 04:13:50 2007//
 /colors.xul/1.6/Thu Aug 16 04:13:50 2007//
@@ -22,23 +21,24 @@
 /jar.mn/1.18/Result of merge+Mon Aug 27 23:07:02 2007//
 /languages.js/1.10/Thu Aug 16 04:13:50 2007//
 /languages.xul/1.7/Thu Aug 16 04:13:50 2007//
-/main.js/1.10/Mon Aug 27 23:07:02 2007//
-/main.xul/1.12/Mon Aug 27 23:07:02 2007//
 /permissions.js/1.10/Thu Aug 16 04:13:50 2007//
 /permissions.xul/1.7/Thu Aug 16 04:13:50 2007//
 /permissionsutils.js/1.5/Thu Aug 16 04:13:50 2007//
-/phishEULA.js/1.5/Mon Aug 27 23:07:02 2007//
 /phishEULA.xhtml/1.2/Thu Aug 16 04:13:50 2007//
 /phishEULA.xul/1.2/Thu Aug 16 04:13:50 2007//
 /privacy.js/1.18/Thu Aug 16 04:13:50 2007//
-/privacy.xul/1.20/Mon Aug 27 23:07:02 2007//
 /sanitize.xul/1.15/Thu Aug 16 04:13:50 2007//
-/security.js/1.13/Mon Aug 27 23:07:02 2007//
-/security.xul/1.18/Mon Aug 27 23:07:02 2007//
 /securityWarnings.js/1.1/Thu Aug 16 04:13:50 2007//
 /securityWarnings.xul/1.1/Thu Aug 16 04:13:50 2007//
-/selectBookmark.js/1.7/Mon Aug 27 23:07:02 2007//
-/selectBookmark.xul/1.6/Mon Aug 27 23:07:02 2007//
 /tabs.js/1.5/Thu Aug 16 04:13:50 2007//
 /tabs.xul/1.16/Thu Aug 16 04:13:50 2007//
+/advanced.xul/1.37/Tue Aug 28 00:47:11 2007//
+/main.js/1.11/Result of merge//
+/main.xul/1.13/Tue Aug 28 21:53:20 2007//
+/phishEULA.js/1.5/Tue Aug 28 00:49:27 2007//
+/privacy.xul/1.20/Tue Aug 28 00:49:27 2007//
+/security.js/1.13/Tue Aug 28 00:49:27 2007//
+/security.xul/1.18/Tue Aug 28 00:49:27 2007//
+/selectBookmark.js/1.7/Tue Aug 28 00:49:27 2007//
+/selectBookmark.xul/1.6/Tue Aug 28 21:05:50 2007//
 D
