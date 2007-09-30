@@ -191,9 +191,6 @@ build()
     export LDFLAGS="${LDFLAGS} -L${tgt_dep_dir}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${tgt_dep_dir}/include"
     if [ "$sys_name" = "Darwin" ]; then
-        export_append "LDFLAGS"                                                \
-                      "-dylib_file"                                            \
-                      "libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
         export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
     fi
 
@@ -202,13 +199,6 @@ build()
     export LDFLAGS="${LDFLAGS} -L${tgt_dep_dir}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${tgt_dep_dir}/include"
     if [ "$sys_name" = "Darwin" ]; then
-        export_append "LDFLAGS"                                                \
-                      "-dylib_file"                                            \
-                      "libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
-        export_append                                                          \
-                "LDFLAGS"                                                      \
-                "-dylib_file"                                                  \
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
         export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
     fi
 
@@ -244,6 +234,11 @@ build()
         install_name_tool                                                      \
             -id libglib-2.0.dylib                                              \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libglib-2.0.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libglib-2.0.0.dylib\
+              libglib-2.0.dylib                                                \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgobject-2.0.dylib
         install_name_tool                                                      \
             -id libgobject-2.0.dylib                                           \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgobject-2.0.dylib
