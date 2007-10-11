@@ -79,9 +79,13 @@ fi
 # Build configuration
 #
 #   dep_dir                     Directory containing dependencies.
+#   tgt_src_dir                 Target source directory.
+#   tools_dir                   Songbird tools directory.
 #
 
 dep_dir=${PWD}/../..
+tgt_src_dir=${dep_dir}/vendor/${tgt_name}
+tools_dir=${dep_dir}/../tools
 
 
 ################################################################################
@@ -101,9 +105,6 @@ build_all()
     # Build for each of the target architectures.
     for tgt_arch in ${tgt_arch_list}
     do
-        # Set up the build environment.
-        setup_build ${tgt_arch}
-
         # Build release target.
         build release
 
@@ -148,22 +149,135 @@ setup_build()
     # Read the function parameters.
     build_tgt_arch="$1"
 
+    # Get the target source version.
+    tgt_ver=`svn info ${tgt_src_dir} | grep ^Revision: | sed 's/^Revision: //'`
+
+    # Set up the mozilla directory structure.
+    mozsdk_dir=${dep_arch_dir}/mozilla/${build_type}
+    mozsdk_bin_dir=${mozsdk_dir}/bin
+    mozsdk_scripts_dir=${mozsdk_dir}/scripts
+
+    # Set up tool defs.
+    python=python
+
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
             export CPPFLAGS="-fPIC"
+            export CPPFLAGS="${CPPFLAGS} -freorder-blocks"
+            export CPPFLAGS="${CPPFLAGS} -fno-reorder-functions -gstabs+"
             ;;
 
         windows-i686)
-            export CPPFLAGS="-MD"
+            export CPPFLAGS="-MD -gstabs+"
+
+            # Determine MSVC version.
+            tmp='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+            _MSVC_VER_FILTER=${tmp}
+            CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+            _CC_MAJOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $1 }'`
+            _CC_MINOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $2 }'`
+            _MSC_VER=${_CC_MAJOR_VERSION}${_CC_MINOR_VERSION}
+
             ;;
 
         macosx-i686 | macosx-ppc)
+            export CFLAGS="${CFLAGS} -gstabs+"
             export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
             ;;
 
     esac
+}
+
+
+#
+# buildsymbols
+#
+#   This function builds the breakpad symbol files for the target.
+#
+
+buildsymbols()
+{
+    # Set up breakpad file structure.
+    breakpad_dir=${dep_arch_dir}/${tgt_name}/breakpad/${build_type}
+    breakpad_symbol_path=${breakpad_dir}/breakpad-symbols
+    breakpad_archive_path=${breakpad_dir}
+    tmp=${breakpad_dir}/${tgt_name}-symbols-${tgt_ver}-${tgt_arch}.zip
+    breakpad_archive_filepath=${tmp}
+    breakpad_store_path=./
+
+    # Set up breakpad options.
+    breakpad_sym_store_args=--vcs-info
+    if [ "$sys_name" = "Darwin" ]; then
+        if [ "$mach_name" = "i386" ]; then
+            breakpad_sym_store_args="${breakpad_sym_store_args} -a i386"
+        else
+            breakpad_sym_store_args="${breakpad_sym_store_args} -a ppc"
+        fi
+        dump_syms_bin=${mozsdk_bin_dir}/dump_syms
+    elif [ "$sys_name" = "Linux" ]; then
+        dump_syms_bin=${mozsdk_bin_dir}/dump_syms
+    else
+        if [ "${_MSC_VER}" = "1400" ]; then
+            dump_syms_bin=${mozsdk_bin_dir}/dump_syms.exe
+        else
+            dump_syms_bin=${tools_dir}/win32/breakpad/dump_syms-vc71.exe
+        fi
+    fi
+
+    # Generate the breakpad symbols.
+    mkdir -p ${breakpad_symbol_path}
+    ${python} ${mozsdk_scripts_dir}/symbolstore.py                             \
+              ${breakpad_sym_store_args}                                       \
+              -s ${dep_arch_dir}/${tgt_name}/${build_type}/lib                 \
+              ${dump_syms_bin}                                                 \
+              ${breakpad_symbol_path}                                          \
+              ${breakpad_store_path}                                           \
+              > ${breakpad_symbol_path}/${tgt_name}-symbols.txt
+
+    # Package symbols into a zip file.
+    cd ${breakpad_symbol_path}
+    zip -r9D ${breakpad_archive_filepath} .
+}
+
+
+#
+# strip
+#
+#   --> strip_dir               Directory containing the compiled files to
+#                               strip.
+#
+#   This function strips symbol information from the compiled files residing in
+# the directory specified by strip_dir.
+#
+
+strip()
+{
+    # Get the directory in which to strip.
+    strip_dir=$1;
+    shift
+
+    # Set up the strip options.
+    if [ "$sys_name" = "Darwin" ]; then
+        strip="strip -x -S"
+    elif [ "$sys_name" = "Linux" ]; then
+        strip="strip -v"
+    else
+        # Strip not needed for Windows.
+        return
+    fi
+
+    # Strip all of the compiled files.
+    find -L                                                                    \
+         ${strip_dir}                                                          \
+         ! -type d                                                             \
+         -and \(    -name "*.dylib"                                            \
+                -or -name "*.so"                                               \
+                -or -name "*.dll"                                              \
+                -or -name "*.lib"                                              \
+              \)                                                               \
+         -and -exec ${strip} {} \;
 }
 
 
@@ -185,6 +299,9 @@ build()
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
+
+    # Set up the build environment.
+    setup_build ${tgt_arch}
 
     # Set up iconv build options.
     tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
@@ -243,6 +360,12 @@ build()
             -id libgobject-2.0.dylib                                           \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgobject-2.0.dylib
     fi
+
+    # Build the symbols.
+    buildsymbols
+
+    # Strip symbols from compiled files.
+    strip ${dep_arch_dir}/${tgt_name}/${build_type}
 
     # Move back to starting directory.
     cd ${start_dir}
