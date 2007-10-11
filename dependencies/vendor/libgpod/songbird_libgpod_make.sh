@@ -174,7 +174,7 @@ setup_build()
             ;;
 
         windows-i686)
-            export CPPFLAGS="${CPPFLAGS} -MD -DWIN32"
+            export CPPFLAGS="${CPPFLAGS} -MD -DWIN32 -gstabs+"
             export_append                                                      \
                     "LIBGPOD_CFLAGS"                                           \
                     "-D __NO_CTYPE"                                            \
@@ -203,9 +203,9 @@ setup_build()
             tmp='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
             _MSVC_VER_FILTER=${tmp}
 
-            CC_VERSION=`"${CC}" -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
-            _CC_MAJOR_VERSION=`echo ${CC_VERSION} | $AWK -F\. '{ print $1 }'`
-            _CC_MINOR_VERSION=`echo ${CC_VERSION} | $AWK -F\. '{ print $2 }'`
+            CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+            _CC_MAJOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $1 }'`
+            _CC_MINOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $2 }'`
             _MSC_VER=${_CC_MAJOR_VERSION}${_CC_MINOR_VERSION}
             ;;
 
