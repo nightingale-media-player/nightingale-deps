@@ -7,7 +7,7 @@
 rm -rf ./compiled
 make clean
 
-FLAGS="-fshort-wchar -DSQLITE_OMIT_LOAD_EXTENSION=1 -fPIC"
+FLAGS="-fno-stack-protector -fshort-wchar -DSQLITE_OMIT_LOAD_EXTENSION=1 -fPIC"
 #
 # Compile the release mode sqlite3 for linux-i386
 #

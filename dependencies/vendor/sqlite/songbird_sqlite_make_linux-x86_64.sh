@@ -10,7 +10,7 @@ make clean
 #
 # Compile the release mode sqlite3 for linux-x86_64
 #
-CFLAGS="-fshort-wchar -fPIC" \
+CFLAGS="-fno-stack-protector -fshort-wchar -fPIC" \
 CXXFLAGS=-fshort-wchar \
 ac_cv_visibility_pragma=no \
 ./configure --prefix=${PWD}/compiled/release-linux-x86_64 \
