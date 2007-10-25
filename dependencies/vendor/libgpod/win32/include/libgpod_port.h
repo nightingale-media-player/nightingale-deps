@@ -29,14 +29,12 @@
  ******************************************************************************/
 
 /*
- * Map errno to _errno.
- *
- *   Using mingw and libgw32c, errno is used but not available.  Not sure why.
- * Should figure out what's going on and do a real fix.
+ * Take errno definition from mingw errno.h.  The libgw32c errno.h overrides the
+ * mingw errno.h.  However, errno is not provided by the libgw32c library.
  */
 
-extern int _errno;
-#define errno _errno
+int* _errno(void);
+#define errno (*_errno())
 
 
 /*
