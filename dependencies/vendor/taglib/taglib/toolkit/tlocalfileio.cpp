@@ -30,6 +30,7 @@
 #ifdef _WIN32
 # include <io.h>
 # define ftruncate _chsize
+# include <windows.h>
 #else
  #include <unistd.h>
 #endif
@@ -80,7 +81,16 @@ LocalFileIO::LocalFileIO(const char *file)
 #endif
 
   d->readOnly = !isWritable(file);
+#ifdef _WIN32
+  // XXX Mook: hack for songbird bug 5300
+  wchar_t buffer[0x10000];
+  int rv = ::MultiByteToWideChar(CP_UTF8, 0, file, -1, buffer, sizeof(buffer)/sizeof(buffer[0]));
+  if (rv) {
+    d->file = _wfopen(buffer, d->readOnly ? L"rb" : L"rb+");
+  }
+#else
   d->file = fopen(file, d->readOnly ? "rb" : "rb+");
+#endif
 
   // On Mac, fopen for write can sometimes still fail even if isWritable is
   // true (e.g., when file is on an SMB share).
