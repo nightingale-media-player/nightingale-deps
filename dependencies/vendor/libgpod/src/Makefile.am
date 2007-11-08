@@ -35,3 +35,39 @@ libgpodinclude_HEADERS = $(libgpod_la_headers)
 
 INCLUDES=$(LIBGPOD_CFLAGS)
 LIBS=$(LIBGPOD_LIBS)
+
+# Special rules for building with the MSVC linker.
+if USE_MSVC_LINK
+
+# Set up link command for MSVC link.
+MSVC_libgpod_la_LINK = link /dll /machine:I386 /out:$@
+
+# Convert LIBS variable to MSVC format.
+MSVC_LIBS1 = $(LIBS)
+MSVC_LIBS2 = $(patsubst -l%,%.lib,$(MSVC_LIBS1))
+MSVC_LIBS = $(patsubst -L%,/libpath:%,$(MSVC_LIBS2))
+
+# Convert libgpod_la_OBJECTS to MSVC format.
+MSVC_libgpod_la_OBJECTS1 = $(libgpod_la_OBJECTS)
+MSVC_libgpod_la_OBJECTS =                                                      \
+                        $(patsubst %.lo,.libs/%.o,$(MSVC_libgpod_la_OBJECTS1))
+
+# Add MSVC stub to objects.
+MSVC_libgpod_la_OBJECTS += .libs/msvc_stub.msvc_o
+
+# Build rule for MSVC stub.
+.libs/msvc_stub.msvc_o: msvc_stub.c
+	cl /MT /TP /RTC1 /Gm /ZI -c /Fo$@ /Tp$<
+
+# Build MSVC dll in place of libtool la.
+libgpod.la: .libs/libgpod.dll
+.libs/libgpod.dll: $(libgpod_la_OBJECTS)                                       \
+                   .libs/msvc_stub.msvc_o                                      \
+                   $(libgpod_la_DEPENDENCIES) 
+	dlltool --export-all-symbols -z .libs/libgpod.def                      \
+                $(MSVC_libgpod_la_OBJECTS)
+	$(MSVC_libgpod_la_LINK) /DEF:.libs/libgpod.def                         \
+                           $(MSVC_libgpod_la_OBJECTS)                          \
+                           $(MSVC_LIBS)
+
+endif

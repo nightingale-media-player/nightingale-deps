@@ -48,7 +48,6 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_INTLTOOL([0.21])
 AC_CHECK_FUNCS(mremap)
 
 PKG_CHECK_MODULES(LIBGPOD, glib-2.0 >= 2.4.0 gobject-2.0)
@@ -88,21 +87,13 @@ fi
 AM_CONDITIONAL(HAVE_GDKPIXBUF, test x"$have_gdkpixbuf" = xyes)
 
 dnl **************************************************
-dnl * internationalization support
+dnl * stubbed internationalization support
 dnl **************************************************
-ALL_LINGUAS="de es fr he it ja sv"
 
 GETTEXT_PACKAGE=libgpod
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
-AM_GLIB_GNU_GETTEXT
-
-
-dnl **************************************************
-dnl * gtk-doc
-dnl **************************************************
-GTK_DOC_CHECK(1.0)
 
 dnl **************************************************
 dnl * optional python bindings
@@ -113,6 +104,20 @@ PYTHON_EYED3_MIN_VERSION=0.6.6
 SWIG_MIN_VERSION=1.3.24
 LIBGPOD_CHECK_PYTHON($PYTHON_MIN_VERSION)
 
+
+dnl **************************************************
+dnl * check for MSVC linking
+dnl **************************************************
+
+AC_CANONICAL_HOST
+case $host_os in
+  cygwin* | mingw* | pw32*)
+    AM_CONDITIONAL(USE_MSVC_LINK, test x"$LD" = xlink)
+    ;;
+  *)
+    AM_CONDITIONAL(USE_MSVC_LINK, false)
+    ;;
+esac
 
 dnl warnings bits, copied from gnome-keyring configure.in
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
@@ -164,16 +169,7 @@ AC_SUBST(LIBGPOD_LIBS)
 
 AC_OUTPUT([
 Makefile
-bindings/Makefile
-bindings/python/Makefile
-bindings/python/examples/Makefile
-docs/Makefile
-docs/reference/Makefile
-docs/reference/version.xml
-m4/Makefile
-po/Makefile.in
 src/Makefile
-tests/Makefile
 libgpod-1.0.pc
 ])
 

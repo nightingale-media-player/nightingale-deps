@@ -207,6 +207,10 @@ setup_build()
             _CC_MAJOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $1 }'`
             _CC_MINOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $2 }'`
             _MSC_VER=${_CC_MAJOR_VERSION}${_CC_MINOR_VERSION}
+
+            # Set up to use the MSVC linker.
+            export LD=link
+
             ;;
 
         macosx-i686 | macosx-ppc)
@@ -331,6 +335,7 @@ build()
     export CPPFLAGS=
     export CFLAGS=
     export LDFLAGS=
+    export ACLOCAL_FLAGS=
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
@@ -384,6 +389,11 @@ build()
         fi
     fi
 
+    # Set up libtool.
+    export PATH="${dep_arch_dir}/libtool/release/bin:${PATH}"
+    export_append "ACLOCAL_FLAGS"                                              \
+                  "-I ${dep_arch_dir}/libtool/release/share/aclocal"
+
     # Apply command line options pre-processing.
     if test -n "${cl_process}"; then
         export LIBGPOD_CFLAGS=`${cl_process} echo ${LIBGPOD_CFLAGS}`
@@ -410,8 +420,8 @@ build()
         cfg_opts="${cfg_opts} --host=${cfg_tgt}"
     fi
 
-    # Configure, build, and install.
-    ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
+    # Generate, build, and install.
+    ./autogen.sh --prefix=${dep_arch_dir}/${tgt_name}/${build_type}            \
                 ${cfg_opts}                                                    \
                 --disable-libsuffix                                            \
                 --disable-gdk-pixbuf                                           \
