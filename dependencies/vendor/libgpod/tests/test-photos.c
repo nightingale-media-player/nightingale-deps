@@ -18,7 +18,7 @@
  *
  * This product is not supported/written/published by Apple!
  *
- * $Id: test-photos.c,v 1.4 2006/06/02 18:08:14 jcsjcs Exp $
+ * $Id: test-photos.c 1298 2006-06-02 18:08:14Z jcsjcs $
  *
  */
 

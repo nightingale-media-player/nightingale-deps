@@ -24,7 +24,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_track.c,v 1.21 2006/09/17 17:14:21 jcsjcs Exp $
+|  $Id: itdb_track.c 1313 2006-09-17 17:14:21Z jcsjcs $
 */
 
 #include <config.h>

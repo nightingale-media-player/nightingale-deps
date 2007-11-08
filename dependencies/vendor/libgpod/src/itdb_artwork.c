@@ -24,7 +24,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_artwork.c,v 1.15 2006/09/17 17:27:21 jcsjcs Exp $
+|  $Id: itdb_artwork.c 1314 2006-09-17 17:27:21Z jcsjcs $
 */
 
 #include <config.h>

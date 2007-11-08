@@ -20,7 +20,7 @@
 ##  License along with this code; if not, write to the Free Software
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##  $Id: toy_around.py,v 1.1 2006/04/07 14:51:40 nicholas Exp $
+##  $Id: toy_around.py 1228 2006-04-07 14:51:40Z nicholas $
 
 
 # this file is just a little example I use for testing, it doesn't

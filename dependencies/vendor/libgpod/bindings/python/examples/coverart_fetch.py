@@ -20,7 +20,7 @@
 ##  License along with this code; if not, write to the Free Software
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##  $Id: coverart_fetch.py,v 1.7 2006/04/08 08:23:14 nicholas Exp $
+##  $Id: coverart_fetch.py 1233 2006-04-08 08:23:14Z nicholas $
 
 import os, os.path
 import gpod

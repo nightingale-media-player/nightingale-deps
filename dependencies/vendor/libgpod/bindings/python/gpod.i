@@ -21,7 +21,7 @@
  License along with this code; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
- $Id: gpod.i,v 1.15 2006/05/17 08:26:11 nicholas Exp $
+ $Id: gpod.i 1268 2006-05-17 08:26:11Z nicholas $
 
 Please send any fixes, improvements or suggestions to
 <nick-gtkpod at nickpiper co uk>.

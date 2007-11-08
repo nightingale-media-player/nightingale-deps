@@ -19,7 +19,7 @@
  *
  * This product is not supported/written/published by Apple!
  *
- * $Id: test-init-ipod.c,v 1.2 2006/05/30 14:09:44 jcsjcs Exp $
+ * $Id: test-init-ipod.c 1292 2006-05-30 14:09:44Z jcsjcs $
  *
  */
 

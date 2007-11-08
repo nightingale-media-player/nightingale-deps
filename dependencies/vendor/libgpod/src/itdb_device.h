@@ -30,7 +30,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_device.h,v 1.6 2006/06/07 15:41:50 jcsjcs Exp $
+|  $Id: itdb_device.h 1302 2006-06-07 15:41:50Z jcsjcs $
 */
 
 #ifndef __ITDB_DEVICE_H__

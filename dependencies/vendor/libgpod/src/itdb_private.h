@@ -24,7 +24,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_private.h,v 1.14 2006/06/01 15:45:28 jcsjcs Exp $
+|  $Id: itdb_private.h 1296 2006-06-01 15:45:28Z jcsjcs $
 */
 
 #ifndef __ITDB_PRIVATE_H__

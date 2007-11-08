@@ -30,7 +30,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb.h,v 1.43 2006/09/23 12:28:23 jcsjcs Exp $
+|  $Id: itdb.h 1318 2006-09-23 12:28:23Z jcsjcs $
 */
 
 #ifndef __ITUNESDB_H__

@@ -24,7 +24,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_playlist.c,v 1.19 2006/09/23 12:28:23 jcsjcs Exp $
+|  $Id: itdb_playlist.c 1318 2006-09-23 12:28:23Z jcsjcs $
 */
 
 #include "itdb_private.h"

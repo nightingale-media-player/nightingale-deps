@@ -20,7 +20,7 @@
 ##  License along with this code; if not, write to the Free Software
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##  $Id: tag_genre_from_audioscrobber.py,v 1.1 2006/04/07 14:51:40 nicholas Exp $
+##  $Id: tag_genre_from_audioscrobber.py 1228 2006-04-07 14:51:40Z nicholas $
 
 
 import os, os.path

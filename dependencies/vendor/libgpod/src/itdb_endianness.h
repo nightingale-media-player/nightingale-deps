@@ -21,7 +21,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: itdb_endianness.h,v 1.4 2006/06/04 16:24:45 jcsjcs Exp $
+ *  $Id: itdb_endianness.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 
 #ifndef __ITDB_ENDIANNESS_H__

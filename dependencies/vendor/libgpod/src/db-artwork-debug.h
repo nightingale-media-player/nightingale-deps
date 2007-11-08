@@ -20,7 +20,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: db-artwork-debug.h,v 1.4 2006/06/04 16:24:44 jcsjcs Exp $
+ *  $Id: db-artwork-debug.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 #ifndef DB_ARTWORK_DEBUG_H
 #define DB_ARTWORK_DEBUG_H

@@ -21,7 +21,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: glib-compat.h,v 1.3 2006/06/04 16:24:44 jcsjcs Exp $
+ *  $Id: glib-compat.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 
 #ifndef GLIB_COMPAT_H

@@ -31,7 +31,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_itunesdb.c,v 1.68 2006/09/21 11:39:05 jcsjcs Exp $
+|  $Id: itdb_itunesdb.c 1316 2006-09-21 11:39:05Z jcsjcs $
 */
 
 /* Some notes on how to use the functions in this file:

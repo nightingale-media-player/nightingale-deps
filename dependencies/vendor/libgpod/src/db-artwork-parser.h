@@ -20,7 +20,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: db-artwork-parser.h,v 1.8 2006/06/04 16:24:44 jcsjcs Exp $
+ *  $Id: db-artwork-parser.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 
 

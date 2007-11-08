@@ -21,7 +21,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: db-parse-context.h,v 1.6 2006/06/04 16:24:44 jcsjcs Exp $
+ *  $Id: db-parse-context.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 /*
  *  Copyright (C) 2005 Christophe Fergeau
@@ -46,7 +46,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: db-parse-context.h,v 1.6 2006/06/04 16:24:44 jcsjcs Exp $
+ *  $Id: db-parse-context.h 1299 2006-06-04 16:24:45Z jcsjcs $
  */
 
 
