@@ -6,7 +6,8 @@ Data structure to store metadata about an iPod track
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+These functions and structures are for storing and retrieving
+information about an iPod track.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -38,6 +39,17 @@ Data structure to store metadata about an iPod track
 @podcastrss: 
 @chapterdata: 
 @subtitle: 
+@tvshow: 
+@tvepisode: 
+@tvnetwork: 
+@albumartist: 
+@keywords: 
+@sort_artist: 
+@sort_title: 
+@sort_album: 
+@sort_albumartist: 
+@sort_composer: 
+@sort_tvshow: 
 @id: 
 @size: 
 @tracklen: 
@@ -52,8 +64,8 @@ Data structure to store metadata about an iPod track
 @volume: 
 @soundcheck: 
 @time_added: 
-@time_played: 
 @time_modified: 
+@time_played: 
 @bookmark_time: 
 @rating: 
 @playcount: 
@@ -82,8 +94,9 @@ Data structure to store metadata about an iPod track
 @unk146: 
 @unk148: 
 @unk152: 
-@unk156: 
-@unk160: 
+@skipcount: 
+@recent_skipcount: 
+@last_skipped: 
 @has_artwork: 
 @skip_when_shuffling: 
 @remember_playback_position: 
@@ -94,28 +107,63 @@ Data structure to store metadata about an iPod track
 @mark_unplayed: 
 @unk179: 
 @unk180: 
-@unk184: 
+@pregap: 
 @samplecount: 
-@unk192: 
 @unk196: 
-@unk200: 
+@postgap: 
 @unk204: 
-@unk208: 
-@unk212: 
-@unk216: 
+@mediatype: 
+@season_nr: 
+@episode_nr: 
 @unk220: 
 @unk224: 
 @unk228: 
 @unk232: 
 @unk236: 
 @unk240: 
+@unk244: 
+@gapless_data: 
+@unk252: 
+@gapless_track_flag: 
+@gapless_album_flag: 
 @chapterdata_raw: 
 @chapterdata_raw_length: 
 @artwork: 
+@reserved_int1: 
+@reserved_int2: 
+@reserved_int3: 
+@reserved_int4: 
+@reserved_int5: 
+@reserved_int6: 
+@reserved1: 
+@reserved2: 
+@reserved3: 
+@reserved4: 
+@reserved5: 
+@reserved6: 
 @usertype: 
 @userdata: 
 @userdata_duplicate: 
 @userdata_destroy: 
+
+<!-- ##### ENUM Itdb_Mediatype ##### -->
+<para>
+
+</para>
+
+@ITDB_MEDIATYPE_AUDIO: 
+@ITDB_MEDIATYPE_MOVIE: 
+@ITDB_MEDIATYPE_PODCAST: 
+@ITDB_MEDIATYPE_AUDIOBOOK: 
+@ITDB_MEDIATYPE_MUSICVIDEO: 
+@ITDB_MEDIATYPE_TVSHOW: 
+
+<!-- ##### MACRO ITDB_RATING_STEP ##### -->
+<para>
+
+</para>
+
+
 
 <!-- ##### FUNCTION itdb_track_new ##### -->
 <para>
@@ -215,18 +263,32 @@ Data structure to store metadata about an iPod track
 @Returns: 
 
 
+<!-- ##### FUNCTION itdb_track_set_thumbnails_from_data ##### -->
+<para>
+
+</para>
+
+@track: 
+@image_data: 
+@image_data_len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_track_set_thumbnails_from_pixbuf ##### -->
+<para>
+
+</para>
+
+@track: 
+@pixbuf: 
+@Returns: 
+
+
 <!-- ##### FUNCTION itdb_track_remove_thumbnails ##### -->
 <para>
 
 </para>
 
 @track: 
-
-
-<!-- ##### MACRO ITDB_RATING_STEP ##### -->
-<para>
-
-</para>
-
 
 

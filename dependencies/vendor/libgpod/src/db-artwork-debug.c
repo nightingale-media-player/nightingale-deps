@@ -102,7 +102,7 @@ dump_mhod_type_3 (ArtworkDB_MhodHeaderArtworkType3 *mhod3)
 	g_print ("\tString length: %u\n", GINT_FROM_LE (mhod3->string_len));
 	g_print ("\tMHOD version: %u\n", GINT_FROM_LE (mhod3->mhod_version));
 	g_print ("\tUnknown4: %08x\n", GINT_FROM_LE (mhod3->unknown4));
-	str = get_utf16_string (mhod3->string, mhod3->string_len);
+	str = get_utf16_string (mhod3->string, GINT_FROM_LE (mhod3->string_len));
 	g_print ("\tString: %s\n", str);
 	g_free (str);
 }
@@ -122,8 +122,8 @@ dump_mhni (MhniHeader *mhni)
 		 GINT_FROM_LE (mhni->correlation_id));
 	g_print ("\tithmb offset: %u bytes\n", GINT_FROM_LE (mhni->ithmb_offset));
 	g_print ("\tImage size: %u bytes\n", GINT_FROM_LE (mhni->image_size));
-	g_print ("\tVertical padding: %d\n", GINT_FROM_LE (mhni->vertical_padding));
-	g_print ("\tHorizontal padding: %d\n", GINT_FROM_LE (mhni->horizontal_padding));
+	g_print ("\tVertical padding: %d\n", GINT16_FROM_LE (mhni->vertical_padding));
+	g_print ("\tHorizontal padding: %d\n", GINT16_FROM_LE (mhni->horizontal_padding));
 	g_print ("\tImage dimensions: %ux%u\n", width, height);
 }
 
@@ -148,10 +148,10 @@ dump_mhii (MhiiHeader *mhii)
 	g_print ("\tImage ID: %08x\n", GINT_FROM_LE (mhii->image_id));
 	g_print ("\tSong ID: %016llx\n", GINT64_FROM_LE (mhii->song_id));
 	g_print ("\tUnknown4: %08x\n", GINT_FROM_LE (mhii->unknown4));
-	g_print ("\tUnknown5: %08x\n", GINT_FROM_LE (mhii->unknown5));
+	g_print ("\tRating: %08x\n", GINT_FROM_LE (mhii->rating));
 	g_print ("\tUnknown6: %08x\n", GINT_FROM_LE (mhii->unknown6));
 	g_print ("\tOrig Date: %08x\n", GINT_FROM_LE (mhii->orig_date));
-	g_print ("\tDigitised Date: %08x\n", GINT_FROM_LE (mhii->digitised_date));
+	g_print ("\tDigitised Date: %08x\n", GINT_FROM_LE (mhii->digitized_date));
 	g_print ("\tImage size: %d bytes\n", GINT_FROM_LE (mhii->orig_img_size));
 }
 
@@ -220,15 +220,21 @@ dump_mhba (MhbaHeader *mhba)
 	g_print ("\tTotal length: %d\n", GINT_FROM_LE (mhba->total_len));
 	g_print ("\tNumber of Data Objects: %d\n", GINT_FROM_LE (mhba->num_mhods));
 	g_print ("\tNumber of pictures in the album: %d\n", GINT_FROM_LE (mhba->num_mhias));
-	g_print ("\tPlaylist ID: %08x\n", GINT_FROM_LE (mhba->playlist_id));
-	g_print ("\tUnknown2: %08x\n", GINT_FROM_LE (mhba->unknown2));
-	g_print ("\tUnknown3: %04x\n", GINT_FROM_LE (mhba->unknown3));
-	g_print ("\tMaster playlist: %02x\n", GINT_FROM_LE (mhba->master));
-	g_print ("\tRepeat: %02x\n", GINT_FROM_LE (mhba->repeat));
-	g_print ("\tRandom: %02x\n", GINT_FROM_LE (mhba->random));
-	g_print ("\tTransition direction: %02x\n", GINT_FROM_LE (mhba->transition_direction));
+	g_print ("\tAlbum ID: %08x\n", GINT_FROM_LE (mhba->album_id));
+	g_print ("\tUnk024: %04x\n", GINT_FROM_LE (mhba->unk024));
+	g_print ("\tUnk028: %04x\n", GINT16_FROM_LE (mhba->unk028));
+	g_print ("\tAlbum type: %02x\n", GUINT_FROM_LE (mhba->album_type));
+	g_print ("\tPlay music: %02x\n", GUINT_FROM_LE (mhba->playmusic));
+	g_print ("\tRepeat: %02x\n", GUINT_FROM_LE (mhba->repeat));
+	g_print ("\tRandom: %02x\n", GUINT_FROM_LE (mhba->random));
+	g_print ("\tShow titles: %02x\n", GUINT_FROM_LE (mhba->show_titles));
+	g_print ("\tTransition direction: %02x\n", GUINT_FROM_LE (mhba->transition_direction));
 	g_print ("\tSlide duration: %08x\n", GINT_FROM_LE (mhba->slide_duration));
-	g_print ("\tPrev playlist ID: %08x\n", GINT_FROM_LE (mhba->prev_playlist_id));
+	g_print ("\tTransition duration: %08x\n", GINT_FROM_LE (mhba->transition_duration));
+	g_print ("\tUnk044: %02x\n", GINT_FROM_LE (mhba->unk044));
+	g_print ("\tUnk048: %02x\n", GINT_FROM_LE (mhba->unk048));
+	g_print ("\tSong ID: %08x\n", GINT_FROM_LE (mhba->song_id));
+	g_print ("\tPrevious album ID: %08x\n", GINT_FROM_LE (mhba->prev_album_id));
 }
 
 #endif

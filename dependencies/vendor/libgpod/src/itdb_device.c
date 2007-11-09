@@ -1,6 +1,5 @@
-/* Time-stamp: <2006-09-21 20:37:09 jcs>
-|
-|  Copyright (C) 2002-2005 Jorg Schuler <jcsjcs at users sourceforge net>
+/*
+|  Copyright (C) 2002-2007 Jorg Schuler <jcsjcs at users sourceforge net>
 |  Part of the gtkpod project.
 | 
 |  URL: http://www.gtkpod.org/
@@ -28,10 +27,11 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_device.c 1316 2006-09-21 11:39:05Z jcsjcs $
+|  $Id: itdb_device.c 1764 2007-11-08 09:16:25Z teuf $
 */
 
 #include "itdb_device.h"
+#include "itdb_private.h"
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -82,86 +82,120 @@ static const Itdb_IpodInfo ipod_info_table [] = {
     {"9282", 20, ITDB_IPOD_MODEL_REGULAR,     ITDB_IPOD_GENERATION_FOURTH, 50},
     {"9787", 25, ITDB_IPOD_MODEL_REGULAR_U2,  ITDB_IPOD_GENERATION_FOURTH, 50},
     {"9268", 40, ITDB_IPOD_MODEL_REGULAR,     ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"A079", 20, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"A127", 20, ITDB_IPOD_MODEL_COLOR_U2,    ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"9830", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
 
     /* First Generation Mini */
-    {"9160",  4, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_FIRST,   6},
-    {"9436",  4, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_FIRST,   6},
-    {"9435",  4, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_FIRST,   6},
-    {"9434",  4, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_FIRST,   6},
-    {"9437",  4, ITDB_IPOD_MODEL_MINI_GOLD,   ITDB_IPOD_GENERATION_FIRST,   6},	
+    {"9160",  4, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_MINI_1,  6},
+    {"9436",  4, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_MINI_1,  6},
+    {"9435",  4, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_MINI_1,  6},
+    {"9434",  4, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_MINI_1,  6},
+    {"9437",  4, ITDB_IPOD_MODEL_MINI_GOLD,   ITDB_IPOD_GENERATION_MINI_1,  6},	
 
     /* Second Generation Mini */
-    {"9800",  4, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_SECOND,  6},
-    {"9802",  4, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_SECOND,  6},
-    {"9804",  4, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_SECOND,  6},
-    {"9806",  4, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_SECOND,  6},
-    {"9801",  6, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_SECOND, 20},
-    {"9803",  6, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_SECOND, 20},
-    {"9805",  6, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_SECOND, 20},
-    {"9807",  6, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_SECOND, 20},	
+    {"9800",  4, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_MINI_2,  6},
+    {"9802",  4, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_MINI_2,  6},
+    {"9804",  4, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_MINI_2,  6},
+    {"9806",  4, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_MINI_2,  6},
+    {"9801",  6, ITDB_IPOD_MODEL_MINI,        ITDB_IPOD_GENERATION_MINI_2, 20},
+    {"9803",  6, ITDB_IPOD_MODEL_MINI_BLUE,   ITDB_IPOD_GENERATION_MINI_2, 20},
+    {"9805",  6, ITDB_IPOD_MODEL_MINI_PINK,   ITDB_IPOD_GENERATION_MINI_2, 20},
+    {"9807",  6, ITDB_IPOD_MODEL_MINI_GREEN,  ITDB_IPOD_GENERATION_MINI_2, 20},	
 
     /* Photo / Fourth Generation */
     /* Buttons are integrated into the "touch wheel". */
-    {"9829", 30, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"9585", 40, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"9586", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"9830", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
+    {"A079", 20, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"A127", 20, ITDB_IPOD_MODEL_COLOR_U2,    ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"9829", 30, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"9585", 40, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"9830", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"9586", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+    {"9830", 60, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
 
     /* Shuffle / Fourth Generation */
-    {"9724", 0.5,ITDB_IPOD_MODEL_SHUFFLE,     ITDB_IPOD_GENERATION_FOURTH,  3},
-    {"9725", 1,  ITDB_IPOD_MODEL_SHUFFLE,     ITDB_IPOD_GENERATION_FOURTH,  3},
+    {"9724", 0.5,ITDB_IPOD_MODEL_SHUFFLE,     ITDB_IPOD_GENERATION_SHUFFLE_1, 3},
+    {"9725", 1,  ITDB_IPOD_MODEL_SHUFFLE,     ITDB_IPOD_GENERATION_SHUFFLE_1, 3},
     /* Shuffle / Sixth Generation */
     /* Square, connected to computer via cable */
-    {"A564", 1,  ITDB_IPOD_MODEL_SHUFFLE,     ITDB_IPOD_GENERATION_SIXTH,  3},
+    {"A564", 1,  ITDB_IPOD_MODEL_SHUFFLE_SILVER, ITDB_IPOD_GENERATION_SHUFFLE_2, 3},
+    {"A947", 1,  ITDB_IPOD_MODEL_SHUFFLE_PINK,   ITDB_IPOD_GENERATION_SHUFFLE_2, 3},
+    {"A949", 1,  ITDB_IPOD_MODEL_SHUFFLE_BLUE,   ITDB_IPOD_GENERATION_SHUFFLE_2, 3},
+    {"A951", 1,  ITDB_IPOD_MODEL_SHUFFLE_GREEN,  ITDB_IPOD_GENERATION_SHUFFLE_2, 3},
+    {"A953", 1,  ITDB_IPOD_MODEL_SHUFFLE_ORANGE, ITDB_IPOD_GENERATION_SHUFFLE_2, 3},
+    /* Shuffle / Seventh Generation */
+    /* Square, connected to computer via cable -- look identicaly to
+     * Sixth Generation*/
+    {"B225", 1,  ITDB_IPOD_MODEL_SHUFFLE_SILVER, ITDB_IPOD_GENERATION_SHUFFLE_3, 3},
+    {"B233", 1,  ITDB_IPOD_MODEL_SHUFFLE_PURPLE, ITDB_IPOD_GENERATION_SHUFFLE_3, 3},
+    {"B227", 1,  ITDB_IPOD_MODEL_SHUFFLE_BLUE,   ITDB_IPOD_GENERATION_SHUFFLE_3, 3},
+    {"B229", 1,  ITDB_IPOD_MODEL_SHUFFLE_GREEN,  ITDB_IPOD_GENERATION_SHUFFLE_3, 3},
 
-    /* Nano / Fifth Generation */
+    /* Nano / Fifth Generation (first nano generation) */
     /* Buttons are integrated into the "touch wheel". */
-    {"A350",  1, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_FIFTH,   3},
-    {"A352",  1, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_FIFTH,   3},
-    {"A004",  2, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_FIFTH,   3},
-    {"A099",  2, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_FIFTH,   3},
-    {"A005",  4, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_FIFTH,   6},
-    {"A107",  4, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_FIFTH,   6},
+    {"A350",  1, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_NANO_1,   3},
+    {"A352",  1, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_NANO_1,   3},
+    {"A004",  2, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_NANO_1,   3},
+    {"A099",  2, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_NANO_1,   3},
+    {"A005",  4, ITDB_IPOD_MODEL_NANO_WHITE,  ITDB_IPOD_GENERATION_NANO_1,   6},
+    {"A107",  4, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_NANO_1,   6},
 
     /* Video / Fifth Generation */
     /* Buttons are integrated into the "touch wheel". */
-    {"A002", 30, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_FIFTH,  50},
-    {"A146", 30, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_FIFTH,  50},
-    {"A003", 60, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_FIFTH,  50},
-    {"A147", 60, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_FIFTH,  50},
+    {"A002", 30, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_VIDEO_1,  50},
+    {"A146", 30, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_VIDEO_1,  50},
+    {"A003", 60, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_VIDEO_1,  50},
+    {"A147", 60, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_VIDEO_1,  50},
 
     /* Video / Sixth Generation */
     /* Pretty much identical to fifth generation with better display,
      * extended battery operation time and gap-free playback */
-    {"A444", 30, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_SIXTH,  50},
-    {"A446", 30, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_SIXTH,  50},
-    {"A664", 30, ITDB_IPOD_MODEL_VIDEO_U2,    ITDB_IPOD_GENERATION_SIXTH,  50},
-    {"A448", 80, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_SIXTH,  50},
-    {"A450", 80, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_SIXTH,  50},
+    {"A444", 30, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_VIDEO_2,  50},
+    {"A446", 30, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_VIDEO_2,  50},
+    {"A664", 30, ITDB_IPOD_MODEL_VIDEO_U2,    ITDB_IPOD_GENERATION_VIDEO_2,  50},
+    {"A448", 80, ITDB_IPOD_MODEL_VIDEO_WHITE, ITDB_IPOD_GENERATION_VIDEO_2,  50},
+    {"A450", 80, ITDB_IPOD_MODEL_VIDEO_BLACK, ITDB_IPOD_GENERATION_VIDEO_2,  50},
 
-    /* Nano / Sixth Generation */
+    /* Nano / Sixth Generation (second nano generation) */
     /* Pretty much identical to fifth generation with better display,
      * extended battery operation time and gap-free playback */
-    {"A477",  2, ITDB_IPOD_MODEL_NANO_SILVER, ITDB_IPOD_GENERATION_SIXTH,   3},
-    {"A426",  4, ITDB_IPOD_MODEL_NANO_SILVER, ITDB_IPOD_GENERATION_SIXTH,   6},
-    {"A428",  4, ITDB_IPOD_MODEL_NANO_BLUE,   ITDB_IPOD_GENERATION_SIXTH,   6},
-    {"A487",  4, ITDB_IPOD_MODEL_NANO_GREEN,  ITDB_IPOD_GENERATION_SIXTH,   6},
-    {"A489",  4, ITDB_IPOD_MODEL_NANO_PINK,   ITDB_IPOD_GENERATION_SIXTH,   6},
-    {"A497",  8, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_SIXTH,  14},
+    {"A477",  2, ITDB_IPOD_MODEL_NANO_SILVER, ITDB_IPOD_GENERATION_NANO_2,   3},
+    {"A426",  4, ITDB_IPOD_MODEL_NANO_SILVER, ITDB_IPOD_GENERATION_NANO_2,   6},
+    {"A428",  4, ITDB_IPOD_MODEL_NANO_BLUE,   ITDB_IPOD_GENERATION_NANO_2,   6},
+    {"A487",  4, ITDB_IPOD_MODEL_NANO_GREEN,  ITDB_IPOD_GENERATION_NANO_2,   6},
+    {"A489",  4, ITDB_IPOD_MODEL_NANO_PINK,   ITDB_IPOD_GENERATION_NANO_2,   6},
+    {"A497",  8, ITDB_IPOD_MODEL_NANO_BLACK,  ITDB_IPOD_GENERATION_NANO_2,  14},
 
     /* HP iPods, need contributions for this table */
     /* Buttons are integrated into the "touch wheel". */
     {"E436", 40, ITDB_IPOD_MODEL_REGULAR,     ITDB_IPOD_GENERATION_FOURTH, 50},
-    {"S492", 30, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_FOURTH, 50},
+    {"S492", 30, ITDB_IPOD_MODEL_COLOR,       ITDB_IPOD_GENERATION_PHOTO,  50},
+
+    /* iPod Classic G1 */
+    /* First generation with "cover flow" */
+    {"B029",  80, ITDB_IPOD_MODEL_CLASSIC_SILVER, ITDB_IPOD_GENERATION_CLASSIC_1, 50},
+    {"B147",  80, ITDB_IPOD_MODEL_CLASSIC_BLACK,  ITDB_IPOD_GENERATION_CLASSIC_1, 50},
+    {"B145", 160, ITDB_IPOD_MODEL_CLASSIC_SILVER, ITDB_IPOD_GENERATION_CLASSIC_1, 50},
+    {"B150", 160, ITDB_IPOD_MODEL_CLASSIC_BLACK,  ITDB_IPOD_GENERATION_CLASSIC_1, 50},
+
+    /* iPod nano video G1 (Third Nano Generation) */
+    /* First generation of video support for nano */
+    {"A978",   4, ITDB_IPOD_MODEL_NANO_SILVER,    ITDB_IPOD_GENERATION_NANO_3,  6},
+    {"A980",   8, ITDB_IPOD_MODEL_NANO_SILVER,    ITDB_IPOD_GENERATION_NANO_3, 14},
+    {"B261",   8, ITDB_IPOD_MODEL_NANO_BLACK,     ITDB_IPOD_GENERATION_NANO_3, 14},
+    {"B249",   8, ITDB_IPOD_MODEL_NANO_BLUE,      ITDB_IPOD_GENERATION_NANO_3, 14},
+    {"B253",   8, ITDB_IPOD_MODEL_NANO_GREEN,     ITDB_IPOD_GENERATION_NANO_3, 14},
+    {"B257",   8, ITDB_IPOD_MODEL_NANO_RED,       ITDB_IPOD_GENERATION_NANO_3, 14},
+
+    /* iPod touch G1 */
+    /* With touch screen */
+    {"A623",   8, ITDB_IPOD_MODEL_TOUCH_BLACK,    ITDB_IPOD_GENERATION_TOUCH_1, 14},
+    {"A627",  16, ITDB_IPOD_MODEL_NANO_SILVER,    ITDB_IPOD_GENERATION_TOUCH_1, 28},
+
 
     /* No known model number -- create a Device/SysInfo file with
      * one entry, e.g.:
        ModelNumStr: Mmobile1
     */
-    {"mobile1", -1, ITDB_IPOD_MODEL_MOBILE_1, ITDB_IPOD_GENERATION_MOBILE},
+    {"mobile1", -1, ITDB_IPOD_MODEL_MOBILE_1, ITDB_IPOD_GENERATION_MOBILE,  6},
+    {"iPhone1", -1, ITDB_IPOD_MODEL_IPHONE_1, ITDB_IPOD_GENERATION_MOBILE, 14},
 
     {NULL, 0, 0, 0, 0}
 };
@@ -191,84 +225,110 @@ static const gchar *ipod_model_name_table [] = {
 	N_("Nano (Blue)"),
 	N_("Nano (Green)"),
 	N_("Nano (Pink)"),
+	N_("Nano (Red)"),
+	N_("iPhone (1)"),
+	N_("Shuffle (Silver)"),
+	N_("Shuffle (Pink)"),
+	N_("Shuffle (Blue)"),
+	N_("Shuffle (Green)"),
+	N_("Shuffle (Orange)"),
+	N_("Shuffle (Purple)"),
+	N_("Classic (Silver)"),
+	N_("Classic (Black)"),
+	N_("Touch (Black)"),
 	NULL
 };
 
 /* One entry for each of Itdb_IpodGeneration (itdb.h) */
 static const gchar *ipod_generation_name_table [] = {
 	N_("Unknown"),
-	N_("First Generation"),
-	N_("Second Generation"),
-	N_("Third Generation"),
-	N_("Fourth Generation"),
-	N_("Fifth Generation"),
-	N_("Sixth Generation"),
-	N_("Mobile Phone"),
+	N_("Regular (1st Gen.)"),
+	N_("Regular (2nd Gen.)"),
+	N_("Regular (3rd Gen.)"),
+	N_("Regular (4th Gen.)"),
+	N_("Photo"),
+	N_("Mobile Phones"),
+	N_("Mini (1st Gen.)"),
+	N_("Mini (2nd Gen.)"),
+	N_("Shuffle (1st Gen.)"),
+	N_("Shuffle (2nd Gen.)"),
+	N_("Shuffle (3rd Gen.)"),
+	N_("Nano (1st Gen.)"),
+	N_("Nano (2nd Gen.)"),
+	N_("Nano Video (3rd Gen.)"),
+	N_("Video (1st Gen.)"),
+	N_("Video (2nd Gen.)"),
+	N_("Classic"),
+	N_("Touch (Read-Only)"),
+	N_("Unused"),
+	N_("Unused"),
 	NULL
 };
 
-static const Itdb_ArtworkFormat ipod_color_artwork_info[] = {
-	{ITDB_THUMB_COVER_SMALL,        56,  56, 1017},
-	{ITDB_THUMB_COVER_LARGE,       140, 140, 1016},
-	{ITDB_THUMB_PHOTO_SMALL,        42,  30, 1009},
-	{ITDB_THUMB_PHOTO_LARGE,       130,  88, 1015},
-	{ITDB_THUMB_PHOTO_FULL_SCREEN, 220, 176, 1013},
-	{ITDB_THUMB_PHOTO_TV_SCREEN,   720, 480, 1019},
-	{-1,                            -1,  -1,   -1}
+static const Itdb_ArtworkFormat ipod_photo_artwork_info[] = {
+    {ITDB_THUMB_COVER_SMALL,       56,  56, 1017, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_LARGE,      140, 140, 1016, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_SMALL,       42,  30, 1009, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_LARGE,      130,  88, 1015, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_FULL_SCREEN,220, 176, 1013, THUMB_FORMAT_RGB565_BE_90},
+    {ITDB_THUMB_PHOTO_TV_SCREEN,  720, 480, 1019, THUMB_FORMAT_UYVY_BE},
+    {-1,                           -1,  -1,   -1, -1}
 };
 
 static const Itdb_ArtworkFormat ipod_nano_artwork_info[] = {
-	{ITDB_THUMB_COVER_SMALL,        42,  42, 1031},
-	{ITDB_THUMB_COVER_LARGE,       100, 100, 1027},
-	{ITDB_THUMB_PHOTO_LARGE,        42,  37, 1032},
-	{ITDB_THUMB_PHOTO_FULL_SCREEN, 176, 132, 1023},
-	{-1,                            -1,  -1,   -1}
+    {ITDB_THUMB_COVER_SMALL,       42,  42, 1031, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_LARGE,      100, 100, 1027, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_LARGE,       42,  37, 1032, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_FULL_SCREEN,176, 132, 1023, THUMB_FORMAT_RGB565_BE},
+    {-1,                           -1,  -1,   -1, -1}
 };
 
 static const Itdb_ArtworkFormat ipod_video_artwork_info[] = {
-	{ITDB_THUMB_COVER_SMALL,       100, 100, 1028},
-	{ITDB_THUMB_COVER_LARGE,       200, 200, 1029},
-	{ITDB_THUMB_PHOTO_SMALL,        50,  41, 1036},
-	{ITDB_THUMB_PHOTO_LARGE,       130,  88, 1015},
-	{ITDB_THUMB_PHOTO_FULL_SCREEN, 320, 240, 1024},
-	{ITDB_THUMB_PHOTO_TV_SCREEN,   720, 480, 1019},
-	{-1,                            -1,  -1,   -1}
+    {ITDB_THUMB_COVER_SMALL,      100, 100, 1028, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_LARGE,      200, 200, 1029, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_SMALL,       50,  41, 1036, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_LARGE,      130,  88, 1015, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_FULL_SCREEN,320, 240, 1024, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_TV_SCREEN,  720, 480, 1019, THUMB_FORMAT_UYVY_BE},
+    {-1,                           -1,  -1,   -1, -1}
 };
 
 static const Itdb_ArtworkFormat ipod_mobile_1_artwork_info[] = {
-	{ITDB_THUMB_COVER_SMALL,        50,  50, 2002},
-	{ITDB_THUMB_COVER_LARGE,       150, 150, 2003},
-	{-1,                            -1,  -1,   -1}
+    {ITDB_THUMB_COVER_SMALL,       50,  50, 2002, THUMB_FORMAT_RGB565_BE},
+    {ITDB_THUMB_COVER_LARGE,      150, 150, 2003, THUMB_FORMAT_RGB565_BE},
+    {-1,                           -1,  -1,   -1, -1}
 };
 
-
-/* This will be indexed using a value from the ITDB_IPOD_MODEL enum */
-static const Itdb_ArtworkFormat *ipod_artwork_info_table[] = {
-        NULL,                      /* Invalid       */
-	NULL,                      /* Unknown       */
-	ipod_color_artwork_info,   /* Color         */
-	ipod_color_artwork_info,   /* Color U2      */
-	NULL,                      /* Grayscale     */ 
-	NULL,                      /* Grayscale U2  */
-	NULL,                      /* Mini (Silver) */
-	NULL,                      /* Mini (Blue)   */
-	NULL,                      /* Mini (Pink)   */
-	NULL,                      /* Mini (Green)  */
-	NULL,                      /* Mini (Gold)   */
-	NULL,                      /* Shuffle       */
-	ipod_nano_artwork_info,    /* Nano (White)  */
-	ipod_nano_artwork_info,    /* Nano (Black)  */
-	ipod_video_artwork_info,   /* Video (White) */
-	ipod_video_artwork_info,   /* Video (Black) */
-	ipod_mobile_1_artwork_info,/* Mobile (1)    */
-	ipod_video_artwork_info,   /* Video U2      */
-	ipod_nano_artwork_info,    /* Nano (Silver) */
-	ipod_nano_artwork_info,    /* Nano (Blue)   */
-	ipod_nano_artwork_info,    /* Nano (Green)  */
-	ipod_nano_artwork_info,    /* Nano (Pink)   */
-	NULL
+static const Itdb_ArtworkFormat ipod_iphone_1_artwork_info[] = {
+    {ITDB_THUMB_COVER_LARGE,      256, 256, 3001, THUMB_FORMAT_REC_RGB555_LE},
+    {ITDB_THUMB_COVER_MEDIUM,     128, 128, 3002, THUMB_FORMAT_REC_RGB555_LE},
+    {ITDB_THUMB_COVER_SMALL,       64,  64, 3003, THUMB_FORMAT_REC_RGB555_LE},
+    {ITDB_THUMB_COVER_XLARGE,     320, 320, 3005, THUMB_FORMAT_RGB555_LE},
+    {ITDB_THUMB_COVER_XSMALL,      56,  56, 3006, THUMB_FORMAT_RGB555_LE,  8192}, /*pad data to  8192 bytes */
+    {ITDB_THUMB_COVER_SMEDIUM,     88,  88, 3007, THUMB_FORMAT_RGB555_LE, 16364}, /*pad data to 16384 bytes */
+    {-1,                           -1,  -1,   -1, -1}
 };
 
+static const Itdb_ArtworkFormat ipod_classic_1_artwork_info[] = {
+    /* officially 55x55 -- verify! */
+    {ITDB_THUMB_COVER_XSMALL,      56,  56, 1061, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_MEDIUM,     128, 128, 1055, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_XLARGE,     320, 320, 1060, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_PHOTO_TV_SCREEN,  720, 480, 1067, THUMB_FORMAT_I420_LE},
+    {ITDB_THUMB_PHOTO_FULL_SCREEN,320, 240, 1064, THUMB_FORMAT_RGB888_LE},
+    {ITDB_THUMB_PHOTO_SMALL,       64,  64, 1066, THUMB_FORMAT_RGB565_LE},
+/*  These are the same as for the iPod video... -- labeled by the iPod as
+    "chapter images" */
+    {ITDB_THUMB_COVER_SMALL,      100, 100, 1028, THUMB_FORMAT_RGB565_LE},
+    {ITDB_THUMB_COVER_LARGE,      200, 200, 1029, THUMB_FORMAT_RGB565_LE},
+    {-1,                           -1,  -1,   -1, -1}
+};
+
+/* these seem to be identical... */
+#define ipod_nano3_artwork_info ipod_classic_1_artwork_info
+
+
+static void itdb_device_set_timezone_info (Itdb_Device *device);
 
 /* Reset or create the SysInfo hash table */
 static void itdb_device_reset_sysinfo (Itdb_Device *device)
@@ -330,8 +390,26 @@ void itdb_device_set_mountpoint (Itdb_Device *device, const gchar *mp)
 
     g_free (device->mountpoint);
     device->mountpoint = g_strdup (mp);
-    if (mp)
+    if (mp) {
 	itdb_device_read_sysinfo (device);
+        itdb_device_set_timezone_info (device);
+    }
+}
+
+
+G_GNUC_INTERNAL time_t device_time_mac_to_time_t (Itdb_Device *device, guint64 mactime)
+{
+    g_return_val_if_fail (device, 0);
+    if (mactime != 0)  return (time_t)(mactime - 2082844800 - device->timezone_shift);
+    else               return (time_t)mactime;
+}
+
+G_GNUC_INTERNAL guint64 device_time_time_t_to_mac (Itdb_Device *device, time_t timet)
+{
+    g_return_val_if_fail (device, 0);
+    if (timet != 0)
+	return ((guint64)timet) + 2082844800 + device->timezone_shift;
+    else return 0;
 }
 
 
@@ -395,12 +473,13 @@ gboolean itdb_device_read_sysinfo (Itdb_Device *device)
 	g_free (sysinfo_path);
     }
     g_free (dev_path);
+
+    itdb_device_read_sysinfo_xml (device, NULL);
+
     /* indicate that sysinfo is identical to what is on the iPod */
     device->sysinfo_changed = FALSE;
     return result;
 }
-
-
 
 /* used by itdb_device_write_sysinfo() */
 static void write_sysinfo_entry (const gchar *key,
@@ -415,6 +494,7 @@ static void write_sysinfo_entry (const gchar *key,
 /** 
  * itdb_device_write_sysinfo:
  * @device: an #Itdb_Device
+ * @error: return location for a #GError or NULL
  *
  * Fills the SysInfo file with information in device->sysinfo. Note:
  * no directories are created if not already existent.
@@ -493,7 +573,7 @@ gchar *itdb_device_get_sysinfo (Itdb_Device *device, const gchar *field)
  * @value: value to set (or NULL to remove the field).
  *
  * Set specified field. It can later be written to the iPod using
- * itdb_device_read_sysinfo
+ * itdb_device_write_sysinfo()
  *
  **/
 void itdb_device_set_sysinfo (Itdb_Device *device,
@@ -567,7 +647,79 @@ itdb_device_get_artwork_formats (Itdb_Device *device)
 
     g_return_val_if_fail (info, NULL);
 
-    return ipod_artwork_info_table[info->ipod_model];
+    switch (info->ipod_generation)
+    {
+    case ITDB_IPOD_GENERATION_UNKNOWN:
+    case ITDB_IPOD_GENERATION_FIRST:
+    case ITDB_IPOD_GENERATION_SECOND:
+    case ITDB_IPOD_GENERATION_THIRD:
+    case ITDB_IPOD_GENERATION_FOURTH:
+	return NULL;
+    case ITDB_IPOD_GENERATION_PHOTO:
+	return ipod_photo_artwork_info;
+    case ITDB_IPOD_GENERATION_MOBILE:
+	switch (info->ipod_model)
+	{
+	case ITDB_IPOD_MODEL_MOBILE_1:
+	    return ipod_mobile_1_artwork_info;
+	case ITDB_IPOD_MODEL_IPHONE_1:
+	    return ipod_iphone_1_artwork_info;
+	default:
+	    g_return_val_if_reached (NULL);
+	}
+    case ITDB_IPOD_GENERATION_MINI_1:
+    case ITDB_IPOD_GENERATION_MINI_2:
+    case ITDB_IPOD_GENERATION_SHUFFLE_1:
+    case ITDB_IPOD_GENERATION_SHUFFLE_2:
+    case ITDB_IPOD_GENERATION_SHUFFLE_3:
+	return NULL;
+    case ITDB_IPOD_GENERATION_NANO_1:
+    case ITDB_IPOD_GENERATION_NANO_2:
+	return ipod_nano_artwork_info;
+    case ITDB_IPOD_GENERATION_NANO_3:
+	return ipod_nano3_artwork_info;
+    case ITDB_IPOD_GENERATION_VIDEO_1:
+    case ITDB_IPOD_GENERATION_VIDEO_2:
+	return ipod_video_artwork_info;
+    case ITDB_IPOD_GENERATION_CLASSIC_1:
+	return ipod_classic_1_artwork_info;
+    case ITDB_IPOD_GENERATION_TOUCH_1:
+	return ipod_iphone_1_artwork_info;
+    case ITDB_IPOD_GENERATION_FIFTH:
+    case ITDB_IPOD_GENERATION_SIXTH:
+	return NULL;
+    }
+    g_return_val_if_reached (NULL);
+}
+
+
+
+/* Determine the number of F.. directories in iPod_Control/Music.*/
+G_GNUC_INTERNAL gint
+itdb_musicdirs_number_by_mountpoint (const gchar *mountpoint)
+{
+    gint dir_num;
+    gchar *music_dir = itdb_get_music_dir (mountpoint);
+
+    if (!music_dir) return 0;
+
+    /* count number of dirs */
+    for (dir_num=0; ;++dir_num)
+    {
+	gchar *dir_filename;
+	gchar dir_num_str[6];
+
+	g_snprintf (dir_num_str, 6, "F%02d", dir_num);
+  
+	dir_filename = itdb_get_path (music_dir, dir_num_str);
+
+	g_free (dir_filename);
+	if (!dir_filename)  break;
+    }
+
+    g_free (music_dir);
+
+    return dir_num;
 }
 
 
@@ -579,29 +731,11 @@ itdb_device_get_artwork_formats (Itdb_Device *device)
 G_GNUC_INTERNAL gint
 itdb_device_musicdirs_number (Itdb_Device *device)
 {
-    gchar *dir_filename = NULL;
-    gint dir_num;
-
     g_return_val_if_fail (device, 0);
 
     if (device->musicdirs <= 0)
     {
-	gchar *music_dir = itdb_get_music_dir (device->mountpoint);
-	if (!music_dir) return 0;
-	/* count number of dirs */
-	for (dir_num=0; ;++dir_num)
-	{
-	    gchar dir_num_str[5];
-
-	    g_snprintf (dir_num_str, 5, "F%02d", dir_num);
-  
-	    dir_filename = itdb_get_path (music_dir, dir_num_str);
-
-	    if (!dir_filename)  break;
-	    g_free (dir_filename);
-	}
-	device->musicdirs = dir_num;
-	g_free (music_dir);
+	device->musicdirs = itdb_musicdirs_number_by_mountpoint (device->mountpoint);
     }
     return device->musicdirs;
 }
@@ -735,7 +869,8 @@ const Itdb_IpodInfo *itdb_info_get_ipod_info_table (void)
 
 
 /**
- * itdb_info_get_ipod_model_string:
+ * itdb_info_get_ipod_model_name_string:
+ * @model: an #Itdb_IpodModel
  *
  * Return the iPod's generic model name, like "Color", "Nano"...
  *
@@ -759,6 +894,7 @@ const gchar *itdb_info_get_ipod_model_name_string (Itdb_IpodModel model)
 
 /**
  * itdb_info_get_ipod_generation_string:
+ * @generation: an #Itdb_IpodGeneration
  *
  * Return the iPod's generic generation name, like "First Generation",
  * "Mobile Phone"...
@@ -779,6 +915,192 @@ const gchar *itdb_info_get_ipod_generation_string (Itdb_IpodGeneration generatio
 	++i;
     }
     return NULL;
+}
+
+
+/**
+ * itdb_device_supports_artwork:
+ * @device: an #Itdb_Device
+ *
+ * Indicates whether @device can display artwork or not. When dealing
+ * with a non-art capable ipod, no artwork data will be written to the
+ * iPod so you can spare calls to the artwork handling methods.
+ *
+ * Return value: true if @device can display artwork.
+ */
+gboolean itdb_device_supports_artwork (Itdb_Device *device)
+{
+    if (device == NULL) {
+        return FALSE;
+    }
+
+    return (itdb_device_get_artwork_formats (device) != NULL);
+}
+
+
+/**
+ * itdb_device_supports_photo:
+ * @device: an #Itdb_Device
+ *
+ * Indicates whether @device can display photos or not.
+ *
+ * Return value: true if @device can display photos.
+ */
+
+gboolean itdb_device_supports_photo (Itdb_Device *device)
+{
+    const Itdb_ArtworkFormat *formats;
+    const Itdb_ArtworkFormat *it;
+
+    if (device == NULL) {
+        return FALSE;
+    }
+
+    formats = itdb_device_get_artwork_formats (device);
+    if (formats == NULL) {
+	return FALSE;
+    }
+
+    it = formats;
+    while ((it->type != -1) && (it->type != ITDB_THUMB_PHOTO_FULL_SCREEN)) {
+	it++;
+    }
+    
+    return (it->type != -1);
+}
+
+
+/* This function reads the timezone information from the iPod and sets it in
+ * the Itdb_Device structure. If an error occurs, the function returns silently
+ * and the timezone shift is set to 0
+ */
+static void itdb_device_set_timezone_info (Itdb_Device *device)
+{
+    const gchar *p_preferences[] = {"Preferences", NULL};
+    char *dev_path;
+    char *prefs_filename;
+    FILE *f;
+    gint32 timezone;
+    const int GMT_OFFSET = 0x19;
+    int result;
+
+    device->timezone_shift = 0;
+
+    if (device->mountpoint == NULL) {
+        /* Assumes the iPod is in the UTC timezone for those cases */
+        return;
+    }
+
+    dev_path = itdb_get_device_dir (device->mountpoint);
+
+    if (dev_path == NULL) {
+        return ;
+    }
+
+    prefs_filename = itdb_resolve_path (dev_path, p_preferences);
+    g_free (dev_path);
+
+    f = fopen (prefs_filename, "r");
+    if (f == NULL) {
+        g_free (prefs_filename);
+        return;
+    }
+
+    result = fseek (f, 0xB10, SEEK_SET);
+    if (result != 0) {
+        fclose (f);
+        g_free (prefs_filename);
+        return;
+    }
+
+    result = fread (&timezone, sizeof (timezone), 1, f);
+    if (result != 1) {
+        fclose (f);
+        g_free (prefs_filename);
+        return;
+    }
+
+    fclose (f);
+    g_free (prefs_filename);
+
+    timezone = GINT32_FROM_LE (timezone);
+    if ((timezone < 0) || (timezone > (2*12) << 1)) {
+        /* invalid timezone */
+        return;
+    }
+
+    timezone -= GMT_OFFSET;
+
+    device->timezone_shift = (timezone >> 1) * 3600;
+    if (timezone & 1) {
+        /* Adjust for DST */
+        device->timezone_shift += 3600;
+    }
+}
+
+/**
+ * itdb_device_get_firewire_id
+ * @device: an #Itdb_Device
+ *
+ * Returns the Firewire ID for @device, this is useful to calculate the 
+ * iTunesDB checksum which is expected by newer iPod models
+ * (iPod classic/fat nanos)
+ *
+ * Return value: the guint64 firewire id, or 0 if we don't know it
+ **/
+guint64 itdb_device_get_firewire_id (Itdb_Device *device)
+{
+    gchar *fwid;
+
+    g_assert (device->sysinfo != NULL);
+
+    fwid = g_hash_table_lookup (device->sysinfo, "FirewireGuid");
+    if (fwid == NULL) {
+	return 0;
+    }
+    return g_ascii_strtoull (fwid, NULL, 16);
+}
+
+G_GNUC_INTERNAL gboolean itdb_device_requires_checksum (Itdb_Device *device) 
+{
+    const Itdb_IpodInfo *info;
+
+    if (device == NULL) {
+        return FALSE;
+    }
+
+    info = itdb_device_get_ipod_info (device);
+    if (info == NULL) {
+        return FALSE;
+    }
+    switch (info->ipod_generation) {
+    case ITDB_IPOD_GENERATION_CLASSIC_1: 
+    case ITDB_IPOD_GENERATION_NANO_3:
+    case ITDB_IPOD_GENERATION_TOUCH_1:
+      return TRUE;
+
+    case ITDB_IPOD_GENERATION_UNKNOWN:
+    case ITDB_IPOD_GENERATION_FIRST:
+    case ITDB_IPOD_GENERATION_SECOND:
+    case ITDB_IPOD_GENERATION_THIRD:
+    case ITDB_IPOD_GENERATION_FOURTH:
+    case ITDB_IPOD_GENERATION_PHOTO:
+    case ITDB_IPOD_GENERATION_MOBILE:
+    case ITDB_IPOD_GENERATION_MINI_1:
+    case ITDB_IPOD_GENERATION_MINI_2:
+    case ITDB_IPOD_GENERATION_SHUFFLE_1:
+    case ITDB_IPOD_GENERATION_SHUFFLE_2:
+    case ITDB_IPOD_GENERATION_SHUFFLE_3:
+    case ITDB_IPOD_GENERATION_NANO_1:
+    case ITDB_IPOD_GENERATION_NANO_2:
+    case ITDB_IPOD_GENERATION_VIDEO_1:
+    case ITDB_IPOD_GENERATION_VIDEO_2:
+    case ITDB_IPOD_GENERATION_FIFTH:
+    case ITDB_IPOD_GENERATION_SIXTH:
+            return FALSE;
+    }
+
+    return FALSE;
 }
 
 #include <sys/statvfs.h>

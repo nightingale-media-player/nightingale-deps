@@ -1,6 +1,5 @@
-/* Time-stamp: <2006-06-07 23:48:37 jcs>
-|
-|  Copyright (C) 2002-2005 Jorg Schuler <jcsjcs at users sourceforge net>
+/*
+|  Copyright (C) 2002-2007 Jorg Schuler <jcsjcs at users sourceforge net>
 |  Part of the gtkpod project.
 | 
 |  URL: http://www.gtkpod.org/
@@ -30,7 +29,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_device.h 1302 2006-06-07 15:41:50Z jcsjcs $
+|  $Id: itdb_device.h 1746 2007-10-29 21:52:44Z teuf $
 */
 
 #ifndef __ITDB_DEVICE_H__
@@ -47,6 +46,34 @@
 G_BEGIN_DECLS
 
 typedef struct _Itdb_ArtworkFormat Itdb_ArtworkFormat;
+typedef enum _ItdbThumbFormat ItdbThumbFormat;
+
+enum _ItdbThumbFormat
+{
+    THUMB_FORMAT_UYVY_LE,
+    THUMB_FORMAT_UYVY_BE,
+	THUMB_FORMAT_I420_LE,
+	THUMB_FORMAT_I420_BE,
+    THUMB_FORMAT_RGB565_LE,
+    THUMB_FORMAT_RGB565_LE_90,
+    THUMB_FORMAT_RGB565_BE,
+    THUMB_FORMAT_RGB565_BE_90,
+    THUMB_FORMAT_RGB555_LE,
+    THUMB_FORMAT_RGB555_LE_90,
+    THUMB_FORMAT_RGB555_BE,
+    THUMB_FORMAT_RGB555_BE_90,
+    THUMB_FORMAT_REC_RGB555_LE,
+    THUMB_FORMAT_REC_RGB555_LE_90,
+    THUMB_FORMAT_REC_RGB555_BE,
+    THUMB_FORMAT_REC_RGB555_BE_90,
+    THUMB_FORMAT_RGB888_LE,
+    THUMB_FORMAT_RGB888_LE_90,
+    THUMB_FORMAT_RGB888_BE,
+    THUMB_FORMAT_RGB888_BE_90,
+    THUMB_FORMAT_EXPERIMENTAL_LE,
+    THUMB_FORMAT_EXPERIMENTAL_BE,
+};
+
 
 struct _Itdb_Device
 {
@@ -60,6 +87,10 @@ struct _Itdb_Device
 			   * in Device/SysInfo */
     gboolean sysinfo_changed; /* Has the sysinfo hash been changed by
 				 the user (itdb_set_sysinfo) */
+    gint timezone_shift;  /* difference in seconds between the current
+                           * timezone and UTC
+                           */
+
 };
 
 struct _Itdb_ArtworkFormat
@@ -68,11 +99,17 @@ struct _Itdb_ArtworkFormat
 	gint16 width;
 	gint16 height;
 	gint16 correlation_id;
+        ItdbThumbFormat format;
+        gint32 padding;
 };
 
 G_GNUC_INTERNAL const Itdb_ArtworkFormat *itdb_device_get_artwork_formats (Itdb_Device *device);
 G_GNUC_INTERNAL gint itdb_device_musicdirs_number (Itdb_Device *device);
 G_GNUC_INTERNAL void itdb_device_autodetect_endianess (Itdb_Device *device);
+G_GNUC_INTERNAL gboolean itdb_device_read_sysinfo_xml (Itdb_Device *device, 
+						       GError **error);
+G_GNUC_INTERNAL guint64 itdb_device_get_firewire_id (Itdb_Device *device);
+
 G_END_DECLS
 
 #endif

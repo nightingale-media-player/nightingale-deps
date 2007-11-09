@@ -26,7 +26,6 @@ CPPFLAGS="$save_CPPFLAGS"
 ])
 
 dnl copied and modified from gnome-python
-dnl http://cvs.gnome.org/viewcvs/*checkout*/gnome-python/pygtk/m4/python.m4
 dnl
 dnl AM_CHECK_PYMOD(MODNAME [,VERSION, VERSION_MATCHER [,ACTION-IF-FOUND [,ACTION-IF-NOT-FOUND]]])
 dnl Check if a module of a particular version is visible to python.
@@ -47,10 +46,13 @@ sys.exit(0)"], [prog="
 import sys, string, $1
 curverstr = $3
 # use method from AM_PYTHON_CHECK_VERSION
-minver = map(int, string.split('$2', '.')) + [[0, 0, 0]]
+minver = map(int, string.split('$2', '.'))
+length = len[(minver)]
+minver += [[0, 0, 0]]
 minverhex = 0
 for i in xrange(0, 4): minverhex = (minverhex << 8) + minver[[i]]
-curver = map(int, string.split(curverstr, '.')) + [[0, 0, 0]]
+curver = map(int, string.split(curverstr, '.')[[:length]])
+curver += [[0, 0, 0]]
 curverhex = 0
 for i in xrange(0, 4): curverhex = (curverhex << 8) + curver[[i]]
 if (curverhex >= minverhex):
@@ -121,8 +123,14 @@ AC_DEFUN([LIBGPOD_CHECK_PYTHON],
                 fi
                 AC_SUBST(PYTHON_LDFLAGS)
 
-                dnl check for eyeD3 module >= $PYTHON_EYED3_MIN_VERSION
-                AM_CHECK_PYMOD(eyeD3,$PYTHON_EYED3_MIN_VERSION,eyeD3.eyeD3Version,,with_python=no)
+                dnl check for mutagen module >= $PYTHON_MUTAGEN_MIN_VERSION
+                AM_CHECK_PYMOD(mutagen,$PYTHON_MUTAGEN_MIN_VERSION,mutagen.version_string,,with_python=no)
+
+                dnl this test should perhaps be re-enabled, but only produce a warning -- tmz
+                dnl if test "X$have_gdkpixbuf" == "Xyes" -a "X$have_pygobject" == "Xyes"; then
+                dnl     dnl check for gtk module >= $PYTHON_GTK_MIN_VERSION
+                dnl     AM_CHECK_PYMOD(gtk,$PYTHON_GTK_MIN_VERSION,'.'.join(map(str, gtk.ver)),,with_python=no)
+                dnl fi
 
                 dnl check for swig
                 if test "X$with_python" == Xyes; then

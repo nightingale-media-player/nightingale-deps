@@ -1,6 +1,9 @@
-/*
+/*  Time-stamp: <2007-11-04 09:46:51 jcs>
+ *
  *  Copyright (C) 2005 Christophe Fergeau
  *
+ *  URL: http://www.gtkpod.org/libgpod.html
+ *  URL: http://gtkpod.sourceforge.net/
  * 
  *  The code contained in this file is free software; you can redistribute
  *  it and/or modify it under the terms of the GNU Lesser General Public
@@ -20,6 +23,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
+ *  $Id: ithumb-writer.c 1753 2007-11-04 00:48:12Z jcsjcs $
  */
 
 #include <config.h>
@@ -30,11 +34,11 @@
 
 #include "itdb_private.h"
 #include "itdb_endianness.h"
+#include "pixmaps.h"
 
 #include <errno.h>
 #include <locale.h>
 #include <string.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -43,25 +47,31 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <glib/gstdio.h>
+
+/* Maximum size for .ithmb files. Reduced from 500 MB to 256 MB after
+   reports of slow iPod interface behavior */
+#define ITHUMB_MAX_SIZE (256L*1000L*1000L)
+/* for testing: */
+/*#define ITHUMB_MAX_SIZE (1L*1000L*1000L)*/
 
 struct _iThumbWriter {
 	off_t cur_offset;
 	FILE *f;
+        gchar *mountpoint;
         gchar *filename;
-	Itdb_ArtworkFormat *img_info;
+        gint current_file_index;
+	const Itdb_ArtworkFormat *img_info;
         DbType db_type;
         guint byte_order;
 };
 typedef struct _iThumbWriter iThumbWriter;
 
-/* The iPod expect square thumbnails with 2 specific side sizes (0x38 and 0x8c
- * respectively for small and fullscreen thumbnails), the 'size' parameter is
- * here to specify which size we are interested in in case the pixbuf is non
- * square
- */
+
 static guint16 *
-pack_RGB_565 (GdkPixbuf *pixbuf, iThumbWriter *writer,
-	      gint horizontal_padding, gint vertical_padding)
+pack_RGB_565 (GdkPixbuf *pixbuf, const Itdb_ArtworkFormat *img_info,
+	      gint horizontal_padding, gint vertical_padding,
+	      guint32 *thumb_size)
 {
 	guchar *pixels;
 	guint16 *result;
@@ -77,24 +87,18 @@ pack_RGB_565 (GdkPixbuf *pixbuf, iThumbWriter *writer,
 		      "rowstride", &row_stride, "n-channels", &channels,
 		      "height", &height, "width", &width,
 		      "pixels", &pixels, NULL);
-	g_return_val_if_fail ((width <= writer->img_info->width) && (height <= writer->img_info->height), NULL);
+	g_return_val_if_fail ((width <= img_info->width) && (height <= img_info->height), NULL);
 	/* dst_width and dst_height come from a width/height database 
 	 * hardcoded in libipoddevice code, so dst_width * dst_height * 2 can't
 	 * overflow, even on an iPod containing malicious data
 	 */
-	result = g_malloc0 (writer->img_info->width * writer->img_info->height * 2);
+	*thumb_size = img_info->width * img_info->height * 2;
+	result = g_malloc0 (*thumb_size);
 
-	/* Swap the byte order on full screen nano photos */
-	byte_order = writer->byte_order;
-	if ( writer->img_info->correlation_id == 1023) {
-		if (byte_order == G_LITTLE_ENDIAN)
-			byte_order = G_BIG_ENDIAN;
-		else
-			byte_order = G_LITTLE_ENDIAN; 
-	}
+	byte_order = itdb_thumb_get_byteorder (img_info->format);
 
 	for (h = 0; h < height; h++) {
-	        gint line = (h+vertical_padding)*writer->img_info->width;
+	        gint line = (h+vertical_padding)*img_info->width;
 		for (w = 0; w < width; w++) {
 			gint r;
 			gint g;
@@ -104,18 +108,380 @@ pack_RGB_565 (GdkPixbuf *pixbuf, iThumbWriter *writer,
 			g = pixels[h*row_stride + w*channels + 1]; 
 			b = pixels[h*row_stride + w*channels + 2]; 
 
-			r >>= (8 - RED_BITS);
-			g >>= (8 - GREEN_BITS);
-			b >>= (8 - BLUE_BITS);
-			r = (r << RED_SHIFT) & RED_MASK;
-			g = (g << GREEN_SHIFT) & GREEN_MASK;
-			b = (b << BLUE_SHIFT) & BLUE_MASK;
+			r >>= (8 - RED_BITS_565);
+			g >>= (8 - GREEN_BITS_565);
+			b >>= (8 - BLUE_BITS_565);
+			r = (r << RED_SHIFT_565) & RED_MASK_565;
+			g = (g << GREEN_SHIFT_565) & GREEN_MASK_565;
+			b = (b << BLUE_SHIFT_565) & BLUE_MASK_565;
 			result[line + w + horizontal_padding] =
 			    get_gint16 (r | g | b, byte_order);
 		}
 	}
 	return result;
 }
+
+static guint16 *
+pack_RGB_555 (GdkPixbuf *pixbuf, const Itdb_ArtworkFormat *img_info,
+	      gint horizontal_padding, gint vertical_padding,
+	      guint32 *thumb_size)
+{
+	guchar *pixels;
+	guint16 *result;
+	gint row_stride;
+	gint channels;
+	gint width;
+	gint height;
+	gint w;
+	gint h;
+	gint byte_order;
+
+	g_object_get (G_OBJECT (pixbuf), 
+		      "rowstride", &row_stride, "n-channels", &channels,
+		      "height", &height, "width", &width,
+		      "pixels", &pixels, NULL);
+	g_return_val_if_fail ((width <= img_info->width) && (height <= img_info->height), NULL);
+	/* dst_width and dst_height come from a width/height database 
+	 * hardcoded in libipoddevice code, so dst_width * dst_height * 2 can't
+	 * overflow, even on an iPod containing malicious data
+	 */
+
+	*thumb_size = img_info->width * img_info->height * 2;
+	result = g_malloc0 (*thumb_size);
+
+	byte_order = itdb_thumb_get_byteorder (img_info->format);
+
+	for (h = 0; h < height; h++) {
+	        gint line = (h+vertical_padding)*img_info->width;
+		for (w = 0; w < width; w++) {
+			gint r;
+			gint g;
+			gint b;
+			gint a;
+
+			r = pixels[h*row_stride + w*channels];
+			g = pixels[h*row_stride + w*channels + 1]; 
+			b = pixels[h*row_stride + w*channels + 2]; 
+
+			r >>= (8 - RED_BITS_555);
+			g >>= (8 - GREEN_BITS_555);
+			b >>= (8 - BLUE_BITS_555);
+			a = (1 << ALPHA_SHIFT_555) & ALPHA_MASK_555;
+			r = (r << RED_SHIFT_555) & RED_MASK_555;
+			g = (g << GREEN_SHIFT_555) & GREEN_MASK_555;
+			b = (b << BLUE_SHIFT_555) & BLUE_MASK_555;
+			result[line + w + horizontal_padding] =
+			    get_gint16 (a | r | g | b, byte_order);
+			/* I'm not sure if the highest bit really is
+			   the alpha channel. For now I'm just setting
+			   this bit because that's what I have seen. */
+		}
+	}
+	return result;
+}
+
+
+static guint16 *
+pack_RGB_888 (GdkPixbuf *pixbuf, const Itdb_ArtworkFormat *img_info,
+	      gint horizontal_padding, gint vertical_padding,
+	      guint32 *thumb_size)
+{
+	guchar *pixels;
+	guint32 *result;
+	gint row_stride;
+	gint channels;
+	gint width;
+	gint height;
+	gint w;
+	gint h;
+	gint byte_order;
+
+	g_object_get (G_OBJECT (pixbuf), 
+		      "rowstride", &row_stride, "n-channels", &channels,
+		      "height", &height, "width", &width,
+		      "pixels", &pixels, NULL);
+	g_return_val_if_fail ((width <= img_info->width) && (height <= img_info->height), NULL);
+	/* dst_width and dst_height come from a width/height database 
+	 * hardcoded in libipoddevice code, so dst_width * dst_height * 2 can't
+	 * overflow, even on an iPod containing malicious data
+	 */
+	*thumb_size = img_info->width * img_info->height * 4;
+	result = g_malloc0 (*thumb_size);
+
+	byte_order = itdb_thumb_get_byteorder (img_info->format);
+
+	for (h = 0; h < height; h++) {
+	        gint line = (h+vertical_padding)*img_info->width;
+		for (w = 0; w < width; w++) {
+			guint32 r;
+			guint32 g;
+			guint32 b;
+			guint32 a;
+
+			r = pixels[h*row_stride + w*channels];
+			g = pixels[h*row_stride + w*channels + 1]; 
+			b = pixels[h*row_stride + w*channels + 2]; 
+
+			r >>= (8 - RED_BITS_888);
+			g >>= (8 - GREEN_BITS_888);
+			b >>= (8 - BLUE_BITS_888);
+			a = (0xff << ALPHA_SHIFT_888) & ALPHA_MASK_888;
+			r = (r << RED_SHIFT_888) & RED_MASK_888;
+			g = (g << GREEN_SHIFT_888) & GREEN_MASK_888;
+			b = (b << BLUE_SHIFT_888) & BLUE_MASK_888;
+			result[line + w + horizontal_padding] =
+			    get_gint32 (a | r | g | b, byte_order);
+			/* I'm not sure if the highest bit really is
+			   the alpha channel. For now I'm just setting
+			   these bits because that's what I have seen. */
+		}
+	}
+	return (guint16 *)result;
+}
+
+
+static guint16 *derange_pixels (guint16 *pixels_s, guint16 *pixels_d,
+				gint width, gint height, gint row_stride)
+{
+    g_return_val_if_fail (width == height, pixels_s);
+
+    if (pixels_s == NULL)
+    {
+	pixels_s = g_malloc0 (sizeof (guint16)*width*height);
+    }
+
+    if (width == 1)
+    {
+	*pixels_s = *pixels_d;
+    }
+    else
+    {
+	derange_pixels (pixels_s + 0,
+			pixels_d + 0 + 0,
+			width/2, height/2,
+			row_stride);
+	derange_pixels (pixels_s + (width/2)*(height/2),
+			pixels_d + (height/2)*row_stride + 0,
+			width/2, height/2,
+			row_stride);
+	derange_pixels (pixels_s + 2*(width/2)*(height/2),
+			pixels_d + width/2,
+			width/2, height/2,
+			row_stride);
+	derange_pixels (pixels_s + 3*(width/2)*(height/2),
+			pixels_d + (height/2)*row_stride + width/2,
+			width/2, height/2,
+			row_stride);
+    }
+    
+    return pixels_s;
+}
+
+static guint16 *
+pack_rec_RGB_555 (GdkPixbuf *pixbuf, const Itdb_ArtworkFormat *img_info,
+		  gint horizontal_padding, gint vertical_padding,
+		  guint32 *thumb_size)
+{
+    guint16 *pixels;
+    guint16 *deranged_pixels = NULL;
+
+    pixels = pack_RGB_555 (pixbuf, img_info,
+			   horizontal_padding, vertical_padding,
+			   thumb_size);
+
+    if (pixels)
+    {
+	deranged_pixels = derange_pixels (NULL, pixels,
+					  img_info->width, img_info->height,
+					  img_info->width);
+	g_free (pixels);
+    }
+
+    return deranged_pixels;
+}
+
+static guchar *
+pack_I420 (GdkPixbuf *orig_pixbuf, const Itdb_ArtworkFormat *img_info,
+	   gint horizontal_padding, gint vertical_padding,
+	   guint32 *thumb_size)
+{
+    GdkPixbuf *pixbuf;
+    gint width, height;
+    gint orig_height, orig_width;
+    gint rowstride;
+    gint h, z;
+    guchar *pixels, *yuvdata;
+    gint yuvsize, halfyuv;
+    gint ustart, vstart;
+
+    g_return_val_if_fail (img_info, NULL);
+
+    width = img_info->width;
+    height = img_info->height;
+
+    g_object_get (G_OBJECT (orig_pixbuf), 
+		  "height", &orig_height, "width", &orig_width, NULL);
+
+    /* copy into new pixmap with padding applied */
+    pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+			     gdk_pixbuf_get_has_alpha (orig_pixbuf),
+			     8,
+			     width, height);
+    gdk_pixbuf_copy_area (orig_pixbuf, 0, 0, orig_width, orig_height,
+			  pixbuf, horizontal_padding, vertical_padding);
+
+    g_object_get (G_OBJECT (pixbuf), 
+		  "rowstride", &rowstride,
+		  "pixels", &pixels, NULL);
+
+    halfyuv = width*height;
+
+    yuvsize = 2*halfyuv;
+    *thumb_size = yuvsize;
+
+    yuvdata = g_malloc (yuvsize);
+
+    ustart = halfyuv;
+    vstart = ustart + halfyuv/4;
+
+    /* FIXME: consider rowstride -- currently we assume rowstride==width */
+    for (z=0,h=0; h < halfyuv; ++h)
+    {
+	gint r,g,b;
+	gint u, v, y;
+	gint row, col;
+
+	r = pixels[z];
+	g = pixels[z+1];
+	b = pixels[z+2];
+
+	y = (( 66*r + 129*g +  25*b + 128) >> 8) + 16;
+	u = ((-38*r -  74*g + 112*b + 128) >> 8) + 128;
+	v = ((112*r -  94*g -  18*b + 128) >> 8) + 128;
+
+	row = h / width;
+	col = h % width;
+
+	yuvdata[h] = y;
+	yuvdata[ustart + (row/2)*(width/2) + col/2] = u;
+	yuvdata[vstart + (row/2)*(width/2) + col/2] = v;
+
+	if (gdk_pixbuf_get_has_alpha(pixbuf))
+	    z+=4;
+	else
+	    z+=3;
+    }
+
+    return yuvdata;
+}
+
+/* pack_UYVY() is adapted from imgconvert.c from the GPixPod project
+ * (www.gpixpod.org) */
+static guchar *
+pack_UYVY (GdkPixbuf *orig_pixbuf, const Itdb_ArtworkFormat *img_info,
+	   gint horizontal_padding, gint vertical_padding,
+	   guint32 *thumb_size)
+{
+    GdkPixbuf *pixbuf;
+    guchar *pixels, *yuvdata;
+    gint width;
+    gint height;
+    gint orig_height, orig_width;
+    gint x = 0;
+    gint z = 0;
+    gint z2 = 0;
+    gint h = 0;
+    gint r0, g0, b0, r1, g1, b1, r2, g2, b2, r3, g3, b3;
+    gint rowstride;
+    gint yuvsize, halfyuv;
+    gint alphabit, rgbpx;
+    gint exc;
+
+    g_return_val_if_fail (img_info, NULL);
+
+    width = img_info->width;
+    height = img_info->height;
+    *thumb_size = 2*width*height;
+
+    g_object_get (G_OBJECT (orig_pixbuf), 
+		  "height", &orig_height, "width", &orig_width, NULL);
+
+    /* copy into new pixmap with padding applied */
+    pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+			     gdk_pixbuf_get_has_alpha (orig_pixbuf),
+			     8,
+			     width, height);
+    gdk_pixbuf_copy_area (orig_pixbuf, 0, 0, orig_width, orig_height,
+			  pixbuf, horizontal_padding, vertical_padding);
+
+    g_object_get (G_OBJECT (pixbuf), 
+		  "rowstride", &rowstride,
+		  "pixels", &pixels, NULL);
+
+    yuvsize = width*2*height;
+
+    yuvdata = g_malloc (yuvsize);
+    halfyuv = yuvsize/2;
+    if (gdk_pixbuf_get_has_alpha(pixbuf))
+    {
+	alphabit = 1;
+	rgbpx = 4;
+    }
+    else
+    {
+	alphabit = 0;
+	rgbpx = 3;
+    }
+    exc = rowstride - width*rgbpx;
+
+    while(h < height)
+    {
+	gint w = 0;
+	if((h % 2) == 0)
+	{
+	    while(w < width)
+	    {
+		r0 = pixels[x];
+		g0 = pixels[x+1];
+		b0 = pixels[x+2];
+		r1 = pixels[x+3+alphabit];
+		g1 = pixels[x+4+alphabit];
+		b1 = pixels[x+5+alphabit];
+		yuvdata[z] = ((r0*-38 + g0*-74 + b0*112 + 128) >> 8) + 128;/*U0*/
+		yuvdata[z+1] = ((r0*66 + g0*129 + b0*25 + 128) >> 8) + 16;/*Y0*/
+		yuvdata[z+2] = ((r0*112 + g0*-94 + b0*-18 + 128) >> 8) + 128;/*V0*/
+		yuvdata[z+3] = ((r1*66 + g1*129 + b1*25 + 128) >> 8) + 16;/*Y1*/
+		w += 2;
+		z += 4;
+		x += rgbpx*2;
+	    }
+	}
+	else
+	{
+	    while(w < width)
+	    {
+		r2 = pixels[x];
+		g2 = pixels[x+1];
+		b2 = pixels[x+2];
+		r3 = pixels[x+3+alphabit];
+		g3 = pixels[x+4+alphabit];
+		b3 = pixels[x+5+alphabit];
+		yuvdata[halfyuv+z2] = ((r2*-38 + g2*-74 + b2*112 + 128) >> 8) + 128;/*U1*/
+		yuvdata[halfyuv+z2+1] = ((r2*66 + g2*129 + b2*25 + 128) >> 8) + 16;/*Y2*/
+		yuvdata[halfyuv+z2+2] = ((r2*112 + g2*-94 + b2*-18 + 128) >> 8) + 128;/*V1*/
+		yuvdata[halfyuv+z2+3] = ((r3*66 + g3*129 + b3*25 + 128) >> 8) + 16;/*Y3*/
+		w += 2;
+		z2 += 4;
+		x += rgbpx*2;
+	    }
+	}
+	x += exc;
+	h++;
+    }
+    g_object_unref (pixbuf);
+    return yuvdata;
+}
+
 
 
 static char *
@@ -174,7 +540,7 @@ ipod_image_get_ithmb_filename (const char *mount_point, gint correlation_id, gin
 	}
 	}
 
-	buf = g_strdup_printf ("F%04u_%d.ithmb", correlation_id, index);
+	buf = g_strdup_printf ("F%d_%d.ithmb", correlation_id, index);
 
 	filename = itdb_get_path (artwork_dir, buf);
 
@@ -186,7 +552,7 @@ ipod_image_get_ithmb_filename (const char *mount_point, gint correlation_id, gin
 /*	printf ("%s %s\n", buf, filename);*/
 
 	g_free (buf);
-
+        g_free (artwork_dir);
 	return filename;
 }
 
@@ -197,44 +563,106 @@ ithumb_writer_write_thumbnail (iThumbWriter *writer,
 			       Itdb_Thumb *thumb)
 {
     GdkPixbuf *pixbuf = NULL;
-    guint16 *pixels;
-    gint width, height;
+    void *pixels = NULL;
+    gint width, height; /* must be gint -- see comment below */
 
     g_return_val_if_fail (writer, FALSE);
+    g_return_val_if_fail (writer->img_info, FALSE);
     g_return_val_if_fail (thumb, FALSE);
+
+    /* Make sure @rotation is valid (0, 90, 180, 270) */
+    thumb->rotation = thumb->rotation % 360;
+    thumb->rotation /= 90;
+    thumb->rotation *= 90;
+
+    /* If we rotate by 90 or 270 degrees interchange the width and
+     * height */
+
+    if ((thumb->rotation == 0) || (thumb->rotation == 180))
+    {
+	width = writer->img_info->width;
+	height = writer->img_info->height;
+    }
+    else
+    {
+	width = writer->img_info->height;
+	height = writer->img_info->width;
+    }
 
     if (thumb->filename)
     {   /* read image from filename */
 	pixbuf = gdk_pixbuf_new_from_file_at_size (thumb->filename, 
-						   writer->img_info->width, 
-						   writer->img_info->height,
+						   width, height,
 						   NULL);
 
+	g_free (thumb->filename);
+	thumb->filename = NULL;
     }
     else if (thumb->image_data)
     {   /* image data is stored in image_data and image_data_len */
 	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
 	g_return_val_if_fail (loader, FALSE);
 	gdk_pixbuf_loader_set_size (loader,
-				    writer->img_info->width, 
-				    writer->img_info->height);
+				    width, height);
 	gdk_pixbuf_loader_write (loader,
 				 thumb->image_data,
 				 thumb->image_data_len,
 				 NULL);
 	gdk_pixbuf_loader_close (loader, NULL);
 	pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
-	g_object_ref (pixbuf);
+	if (pixbuf)
+	    g_object_ref (pixbuf);
 	g_object_unref (loader);
 
 	g_free (thumb->image_data);
 	thumb->image_data = NULL;
 	thumb->image_data_len = 0;
     }
+    else if (thumb->pixbuf)
+    {
+        pixbuf = gdk_pixbuf_scale_simple (GDK_PIXBUF(thumb->pixbuf),
+                                          width, height,
+                                          GDK_INTERP_BILINEAR);
+        g_object_unref (thumb->pixbuf);
+        thumb->pixbuf = NULL;
+    }
 
     if (pixbuf == NULL)
     {
-	return FALSE;
+	/* This is quite bad... if we just return FALSE the ArtworkDB
+	   gets messed up. */
+	pixbuf = gdk_pixbuf_from_pixdata (&questionmark_pixdata, FALSE, NULL);
+
+	if (pixbuf)
+	{
+	    GdkPixbuf *pixbuf2;
+	    pixbuf2 = gdk_pixbuf_scale_simple (pixbuf,
+					       writer->img_info->width,
+					       writer->img_info->height,
+					       GDK_INTERP_BILINEAR);
+	    g_object_unref (pixbuf);
+	    pixbuf = pixbuf2;
+	}
+	else
+	{
+	    /* Somethin went wrong. let's insert a red thumbnail */
+	    pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
+				     writer->img_info->width,
+				     writer->img_info->height);
+	    gdk_pixbuf_fill (pixbuf, 0xff000000);
+	}
+	/* avoid rotation */
+	thumb->rotation = 0;
+    }
+
+    /* Rotate if necessary */
+    if (thumb->rotation != 0)
+    {
+	GdkPixbuf *new_pixbuf = gdk_pixbuf_rotate_simple (pixbuf, thumb->rotation);
+	g_object_unref (pixbuf);
+	pixbuf = new_pixbuf;
+	/* Clean up */
+	thumb->rotation = 0;
     }
 
     /* !! cannot write directly to &thumb->width/height because
@@ -245,23 +673,26 @@ ithumb_writer_write_thumbnail (iThumbWriter *writer,
 		  "height", &height,
 		  NULL);
 
-    g_free (thumb->filename);
-    thumb->filename = NULL;
-
-    /* FIXME: under certain conditions (probably related to
-     * writer->offset getting too big), this should be :F%04u_2.ithmb
-     * and so on
-     */
-    if( thumb->type == ITDB_THUMB_PHOTO_LARGE ||
-	thumb->type == ITDB_THUMB_PHOTO_SMALL ||
-	thumb->type == ITDB_THUMB_PHOTO_FULL_SCREEN )
+    switch (thumb->type)
     {
-	thumb->filename = g_strdup_printf (":Thumbs:F%04u_1.ithmb", 
-					   writer->img_info->correlation_id);
-	
-    } else {
-	thumb->filename = g_strdup_printf (":F%04u_1.ithmb", 
-					   writer->img_info->correlation_id);
+    case ITDB_THUMB_PHOTO_LARGE:
+    case ITDB_THUMB_PHOTO_SMALL:
+    case ITDB_THUMB_PHOTO_FULL_SCREEN:
+    case ITDB_THUMB_PHOTO_TV_SCREEN:
+	thumb->filename = g_strdup_printf (":Thumbs:F%d_%d.ithmb", 
+					   writer->img_info->correlation_id,
+					   writer->current_file_index);
+	break;
+    case ITDB_THUMB_COVER_LARGE:
+    case ITDB_THUMB_COVER_SMALL:
+    case ITDB_THUMB_COVER_XLARGE:
+    case ITDB_THUMB_COVER_MEDIUM:
+    case ITDB_THUMB_COVER_SMEDIUM:
+    case ITDB_THUMB_COVER_XSMALL:
+	thumb->filename = g_strdup_printf (":F%d_%d.ithmb", 
+					   writer->img_info->correlation_id,
+					   writer->current_file_index);
+	break;
     }
 
     switch (writer->db_type)
@@ -287,17 +718,84 @@ ithumb_writer_write_thumbnail (iThumbWriter *writer,
     thumb->width = thumb->horizontal_padding + width;
     thumb->height = thumb->vertical_padding + height;
     thumb->offset = writer->cur_offset;
-    thumb->size = writer->img_info->width * writer->img_info->height * 2;
 
-    pixels = pack_RGB_565 (pixbuf, writer,
-			   thumb->horizontal_padding,
-			   thumb->vertical_padding);
+    switch (writer->img_info->format)
+    {
+    case THUMB_FORMAT_RGB565_LE_90:
+    case THUMB_FORMAT_RGB565_BE_90:
+	/* FIXME: actually the previous two might require
+	   different treatment (used on iPod Photo for the full
+	   screen photo thumbnail) */
+    case THUMB_FORMAT_RGB565_LE:
+    case THUMB_FORMAT_RGB565_BE:
+	pixels = pack_RGB_565 (pixbuf, writer->img_info,
+			       thumb->horizontal_padding,
+			       thumb->vertical_padding,
+			       &thumb->size);
+	break;
+    case THUMB_FORMAT_RGB555_LE_90:
+    case THUMB_FORMAT_RGB555_BE_90:
+	/* FIXME: actually the previous two might require
+	   different treatment (used on iPod Photo for the full
+	   screen photo thumbnail) */
+    case THUMB_FORMAT_RGB555_LE:
+    case THUMB_FORMAT_RGB555_BE:
+	pixels = pack_RGB_555 (pixbuf, writer->img_info,
+			       thumb->horizontal_padding,
+			       thumb->vertical_padding,
+			       &thumb->size);
+	break;
+    case THUMB_FORMAT_RGB888_LE_90:
+    case THUMB_FORMAT_RGB888_BE_90:
+	/* FIXME: actually the previous two might require
+	   different treatment (used on iPod Photo for the full
+	   screen photo thumbnail) */
+    case THUMB_FORMAT_RGB888_LE:
+    case THUMB_FORMAT_RGB888_BE:
+	pixels = pack_RGB_888 (pixbuf, writer->img_info,
+			       thumb->horizontal_padding,
+			       thumb->vertical_padding,
+			       &thumb->size);
+	break;
+    case THUMB_FORMAT_REC_RGB555_LE_90:
+    case THUMB_FORMAT_REC_RGB555_BE_90:
+	/* FIXME: actually the previous two might require
+	   different treatment (used on iPod Photo for the full
+	   screen photo thumbnail) */
+    case THUMB_FORMAT_REC_RGB555_LE:
+    case THUMB_FORMAT_REC_RGB555_BE:
+	pixels = pack_rec_RGB_555 (pixbuf, writer->img_info,
+				   thumb->horizontal_padding,
+				   thumb->vertical_padding,
+				   &thumb->size);
+	break;
+    case THUMB_FORMAT_EXPERIMENTAL_LE:
+    case THUMB_FORMAT_EXPERIMENTAL_BE:
+	break;
+    case THUMB_FORMAT_UYVY_BE:
+    case THUMB_FORMAT_UYVY_LE:
+	pixels = pack_UYVY (pixbuf, writer->img_info,
+			    thumb->horizontal_padding,
+			    thumb->vertical_padding,
+	                    &thumb->size);
+	break;
+    case THUMB_FORMAT_I420_BE:
+    case THUMB_FORMAT_I420_LE:
+	pixels = pack_I420 (pixbuf, writer->img_info,
+			    thumb->horizontal_padding,
+			    thumb->vertical_padding,
+	                    &thumb->size);
+	break;
+    }
+
+
     g_object_unref (G_OBJECT (pixbuf));
 
     if (pixels == NULL)
     {
 	return FALSE;
     }
+
     if (fwrite (pixels, thumb->size, 1, writer->f) != 1) {
 	g_free (pixels);
 	g_print ("Error writing to file: %s\n", strerror (errno));
@@ -306,8 +804,66 @@ ithumb_writer_write_thumbnail (iThumbWriter *writer,
     g_free (pixels);
     writer->cur_offset += thumb->size;
 
+    if (writer->img_info->padding != 0)
+    {
+	gint padding = writer->img_info->padding - thumb->size;
+	g_return_val_if_fail (padding >= 0, TRUE);
+	if (padding != 0)
+	{
+            /* FIXME: check if a simple fseek() will do the same */
+	    gchar *pad_bytes = g_malloc0 (padding);
+	    if (fwrite (pad_bytes, padding, 1, writer->f) != 1) {
+		g_free (pad_bytes);
+		g_print ("Error writing to file: %s\n", strerror (errno));
+		return FALSE;
+	    }
+	    g_free (pad_bytes);
+	    writer->cur_offset += padding;
+	}
+    }
     return TRUE;
 }
+
+static gboolean
+ithumb_writer_update (iThumbWriter *writer)
+{
+    while ((writer->f == NULL) || (writer->cur_offset >= ITHUMB_MAX_SIZE))
+    {
+	if (writer->f)
+	{
+	    fclose (writer->f);
+	    writer->f = NULL;
+	}
+	g_free (writer->filename);
+	writer->filename = NULL;
+
+	/* increment index for filename */
+	++writer->current_file_index;
+
+	writer->filename =
+	    ipod_image_get_ithmb_filename (writer->mountpoint, 
+					   writer->img_info->correlation_id,
+					   writer->current_file_index, 
+					   writer->db_type);
+	if (writer->filename == NULL)
+	{
+	    return FALSE;
+	}
+	writer->f = fopen (writer->filename, "ab");
+	if (writer->f == NULL)
+	{
+	    g_print ("Error opening %s: %s\n", writer->filename, strerror (errno));
+	    g_free (writer->filename);
+	    writer->filename = NULL;
+	    return FALSE;
+	}
+	writer->cur_offset = ftell (writer->f);
+    }
+
+    return TRUE;
+}
+
+
 
 static void
 write_thumbnail (gpointer _writer, gpointer _artwork)
@@ -323,9 +879,30 @@ write_thumbnail (gpointer _writer, gpointer _artwork)
 	   thumbnail file */
 	if (thumb && (thumb->size == 0))
 	{
-	    ithumb_writer_write_thumbnail (writer, thumb);
+	    /* check if new thumbnail file has to be started */
+	    if (ithumb_writer_update (writer))
+		ithumb_writer_write_thumbnail (writer, thumb);
 	}
 }
+
+
+static void
+ithumb_writer_free (iThumbWriter *writer)
+{
+	g_return_if_fail (writer != NULL);
+	if (writer->f)
+	{
+	    fclose (writer->f);
+	    if (writer->filename && (writer->cur_offset == 0))
+	    {   /* Remove empty file */
+		unlink (writer->filename);
+	    }
+	}
+	g_free (writer->filename);
+	g_free (writer->mountpoint);
+	g_free (writer);
+}
+
 
 static iThumbWriter *
 ithumb_writer_new (const char *mount_point,
@@ -333,53 +910,25 @@ ithumb_writer_new (const char *mount_point,
 		   DbType db_type,
 		   guint byte_order)
 {
-	char *filename;
 	iThumbWriter *writer;
 
 	writer = g_new0 (iThumbWriter, 1);
 
-	writer->img_info = g_memdup (info, sizeof (Itdb_ArtworkFormat));
+	writer->img_info = info;
 
 	writer->byte_order = byte_order;
 	writer->db_type = db_type;
+	writer->mountpoint = g_strdup (mount_point);
+	writer->current_file_index = 0;
 
-	filename = ipod_image_get_ithmb_filename (mount_point, 
-						  info->correlation_id,
-						  1, 
-						  db_type);
-	if (filename == NULL) {
-		g_free (writer->img_info);
-		g_free (writer);
-		return NULL;
+	if (!ithumb_writer_update (writer))
+	{
+	    ithumb_writer_free (writer);
+	    return NULL;
 	}
-	writer->f = fopen (filename, "ab");
-	if (writer->f == NULL) {
-		g_print ("Error opening %s: %s\n", filename, strerror (errno));
-		g_free (filename);
-		g_free (writer->img_info);
-		g_free (writer);
-		return NULL;
-	}
-	writer->cur_offset = ftell (writer->f);
-	writer->filename=filename;
-	
+
 	return writer;
 }
-
-static void
-ithumb_writer_free (iThumbWriter *writer)
-{
-	g_return_if_fail (writer != NULL);
-	fclose (writer->f);
-	if (writer->cur_offset == 0)
-	{   /* Remove empty file */
-	    unlink (writer->filename);
-	}
-	g_free (writer->img_info);
-	g_free (writer->filename);
-	g_free (writer);
-}
-
 
 gint offset_sort (gconstpointer a, gconstpointer b);
 gint offset_sort (gconstpointer a, gconstpointer b)
@@ -611,7 +1160,7 @@ ithmb_rearrange_existing_thumbnails (Itdb_DB *db,
 					  g_free, NULL);
 
     /* Create a hash with all filenames used for thumbnails.
-       This will usually be a number of "F%04d_%d.ithmb" files. A
+       This will usually be a number of "F%d_%d.ithmb" files. A
        GList is kept with pointers to all images in a given file which
        allows to adjust the offset pointers */
 	switch (db->db_type) {
@@ -667,7 +1216,7 @@ ithmb_rearrange_existing_thumbnails (Itdb_DB *db,
     /* Check for files present on the iPod but no longer referenced by
        thumbs */
 
-    for (i=0; i<10; ++i)
+    for (i=0; i<50; ++i)
     {
 	filename = ipod_image_get_ithmb_filename (mountpoint,
 						  info->correlation_id,
@@ -684,6 +1233,15 @@ ithmb_rearrange_existing_thumbnails (Itdb_DB *db,
 	g_free (filename);
     }
 
+    /* I'm using the _foreach_remove variant here because the
+       thumbnail GList may get changed while calling
+       ithumb_rearrange_thumbnail_file but cannot be written back into
+       the hash table. Using the _foreach_remove variant here will
+       ensure that it will not be possible to access the invalid
+       thumbnail GList. The only proper operation after the
+       _foreach_remove is a call to g_hash_table_destroy().
+       For the same reasons the thumb GList gets free'd in
+       ithumb_rearrange_thumbnail_file() */
     g_hash_table_foreach_remove (filenamehash,
 				 ithumb_rearrange_thumbnail_file, &result);
     g_hash_table_destroy (filenamehash);
@@ -721,24 +1279,16 @@ itdb_write_ithumb_files (Itdb_DB *db)
 	while (format->type != -1) {
 		iThumbWriter *writer;
 
-		switch (format->type) {
-		case ITDB_THUMB_COVER_SMALL:
-		case ITDB_THUMB_COVER_LARGE:
-		case ITDB_THUMB_PHOTO_SMALL:
-		case ITDB_THUMB_PHOTO_LARGE:
-		case ITDB_THUMB_PHOTO_FULL_SCREEN:
-		    ithmb_rearrange_existing_thumbnails (db,
-							     format );
-			writer = ithumb_writer_new (mount_point, 
-						    format,
-						    db->db_type, 
-						    device->byte_order);
-			if (writer != NULL) {
-				writers = g_list_prepend (writers, writer);
-			}
-			break;
-		default:
-			break;
+		if (itdb_thumb_type_is_valid_for_db (format->type, db->db_type))
+		{
+		    ithmb_rearrange_existing_thumbnails (db, format );
+		    writer = ithumb_writer_new (mount_point, 
+						format,
+						db->db_type, 
+						device->byte_order);
+		    if (writer != NULL) {
+			writers = g_list_prepend (writers, writer);
+		    }
 		}
 		format++;
 	}

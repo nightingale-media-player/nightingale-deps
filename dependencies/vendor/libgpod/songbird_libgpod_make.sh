@@ -420,8 +420,10 @@ build()
         cfg_opts="${cfg_opts} --host=${cfg_tgt}"
     fi
 
-    # Generate, build, and install.
-    ./autogen.sh --prefix=${dep_arch_dir}/${tgt_name}/${build_type}            \
+    # Generate, configure, build, and install.
+    export NOCONFIGURE="yes"
+    ./autogen.sh
+    ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
                 --disable-libsuffix                                            \
                 --disable-gdk-pixbuf                                           \

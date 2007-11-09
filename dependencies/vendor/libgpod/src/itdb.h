@@ -1,6 +1,5 @@
-/* Time-stamp: <2006-09-23 21:25:40 jcs>
-|
-|  Copyright (C) 2002-2005 Jorg Schuler <jcsjcs at users sourceforge net>
+/*
+|  Copyright (C) 2002-2007 Jorg Schuler <jcsjcs at users sourceforge net>
 |  Part of the gtkpod project.
 | 
 |  URL: http://www.gtkpod.org/
@@ -30,7 +29,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb.h 1318 2006-09-23 12:28:23Z jcsjcs $
+|  $Id: itdb.h 1753 2007-11-04 00:48:12Z jcsjcs $
 */
 
 #ifndef __ITUNESDB_H__
@@ -54,87 +53,20 @@ G_BEGIN_DECLS
 typedef void (* ItdbUserDataDestroyFunc) (gpointer userdata);
 typedef gpointer (* ItdbUserDataDuplicateFunc) (gpointer userdata);
 
+/* public structures */
 typedef struct _Itdb_Device Itdb_Device;
+typedef struct _Itdb_IpodInfo Itdb_IpodInfo;
 typedef struct _Itdb_Artwork Itdb_Artwork;
 typedef struct _Itdb_Thumb Itdb_Thumb;
-typedef struct _SPLPref SPLPref;
-typedef struct _SPLRule SPLRule;
-typedef struct _SPLRules SPLRules;
+typedef struct _Itdb_SPLPref Itdb_SPLPref;
+typedef struct _Itdb_SPLRule Itdb_SPLRule;
+typedef struct _Itdb_SPLRules Itdb_SPLRules;
 typedef struct _Itdb_iTunesDB Itdb_iTunesDB;
 typedef struct _Itdb_PhotoDB Itdb_PhotoDB;
 typedef struct _Itdb_Playlist Itdb_Playlist;
 typedef struct _Itdb_PhotoAlbum Itdb_PhotoAlbum;
 typedef struct _Itdb_Track Itdb_Track;
-typedef struct _Itdb_IpodInfo Itdb_IpodInfo;
 typedef struct _Itdb_Prefs Itdb_Prefs;
-
-
-/* ------------------------------------------------------------ *\
- *
- * Thumbnail-relevant definitions
- *
-\* ------------------------------------------------------------ */
-
-/* Types of thumbnails in Itdb_Image */
-typedef enum { 
-    ITDB_THUMB_COVER_SMALL,
-    ITDB_THUMB_COVER_LARGE,
-    ITDB_THUMB_PHOTO_SMALL,
-    ITDB_THUMB_PHOTO_LARGE,
-    ITDB_THUMB_PHOTO_FULL_SCREEN,
-    ITDB_THUMB_PHOTO_TV_SCREEN
-} ItdbThumbType;
-
-
-/* The Itdb_Thumb structure can represent two slightly different
-   thumbnails:
-
-  a) a thumbnail before it's transferred to the iPod.
-
-     offset and size are 0
-
-     width and height, if unequal 0, will indicate the size on the
-     iPod. width and height are set the first time a pixbuf is
-     requested for this thumbnail.
-
-     type is set according to the type this thumbnail represents
-
-     filename point to a 'real' image file OR image_data and
-     image_data_len are set.
- 
-  b) a thumbnail (big or small) stored on a database in the iPod.  In
-     these cases, id corresponds to the ID originally used in the
-     database, filename points to a .ithmb file on the iPod
- */
-struct _Itdb_Thumb {
-    ItdbThumbType type;
-    gchar *filename;
-    guchar *image_data;      /* holds the thumbnail data of
-				non-transfered thumbnails when
-				filename == NULL */
-    gsize  image_data_len;   /* length of data */
-    guint32 offset;
-    guint32 size;
-    gint16 width;
-    gint16 height;
-    gint16 horizontal_padding;
-    gint16 vertical_padding;
-};
-
-struct _Itdb_Artwork {
-    GList *thumbnails;    /* list of Itdb_Thumbs */
-    guint32 artwork_size; /* Size in bytes of the original source image */
-    guint32 id;           /* Artwork id used by photoalbums, starts at
-			   * 0x40... libgpod will set this on sync. */
-    gint32 creation_date; /* Date the image was created */
-    /* below is for use by application */
-    guint64 usertype;
-    gpointer userdata;
-    /* function called to duplicate userdata */
-    ItdbUserDataDuplicateFunc userdata_duplicate;
-    /* function called to free userdata */
-    ItdbUserDataDestroyFunc userdata_destroy;
-};
 
 
 /* ------------------------------------------------------------ *\
@@ -149,9 +81,23 @@ typedef enum {
     ITDB_IPOD_GENERATION_SECOND,
     ITDB_IPOD_GENERATION_THIRD,
     ITDB_IPOD_GENERATION_FOURTH,
+    ITDB_IPOD_GENERATION_PHOTO,
+    ITDB_IPOD_GENERATION_MOBILE,
+    ITDB_IPOD_GENERATION_MINI_1,
+    ITDB_IPOD_GENERATION_MINI_2,
+    ITDB_IPOD_GENERATION_SHUFFLE_1,
+    ITDB_IPOD_GENERATION_SHUFFLE_2,
+    ITDB_IPOD_GENERATION_SHUFFLE_3,
+    ITDB_IPOD_GENERATION_NANO_1,
+    ITDB_IPOD_GENERATION_NANO_2,
+    ITDB_IPOD_GENERATION_NANO_3,
+    ITDB_IPOD_GENERATION_VIDEO_1,
+    ITDB_IPOD_GENERATION_VIDEO_2,
+    ITDB_IPOD_GENERATION_CLASSIC_1,
+    ITDB_IPOD_GENERATION_TOUCH_1,
+    /* The following 2 are no longer in use and should be removed */
     ITDB_IPOD_GENERATION_FIFTH,
     ITDB_IPOD_GENERATION_SIXTH,
-    ITDB_IPOD_GENERATION_MOBILE
 } Itdb_IpodGeneration;
 
 typedef enum {
@@ -176,24 +122,39 @@ typedef enum {
     ITDB_IPOD_MODEL_NANO_SILVER,
     ITDB_IPOD_MODEL_NANO_BLUE,
     ITDB_IPOD_MODEL_NANO_GREEN,
-    ITDB_IPOD_MODEL_NANO_PINK
+    ITDB_IPOD_MODEL_NANO_PINK,
+    ITDB_IPOD_MODEL_NANO_RED,
+    ITDB_IPOD_MODEL_IPHONE_1,
+    ITDB_IPOD_MODEL_SHUFFLE_SILVER,
+    ITDB_IPOD_MODEL_SHUFFLE_PINK,
+    ITDB_IPOD_MODEL_SHUFFLE_BLUE,
+    ITDB_IPOD_MODEL_SHUFFLE_GREEN,
+    ITDB_IPOD_MODEL_SHUFFLE_ORANGE,
+    ITDB_IPOD_MODEL_SHUFFLE_PURPLE,
+    ITDB_IPOD_MODEL_CLASSIC_SILVER,
+    ITDB_IPOD_MODEL_CLASSIC_BLACK,
+    ITDB_IPOD_MODEL_TOUCH_BLACK,
 } Itdb_IpodModel;
 
 struct _Itdb_IpodInfo {
-       /* model_number is abbreviated: if the first character is not
-	  numeric, it is ommited. e.g. "MA350 -> A350", "M9829 -> 9829" */
-	const gchar *model_number;
-        const double capacity;  /* in GB */
-	const Itdb_IpodModel ipod_model;
-	const Itdb_IpodGeneration ipod_generation;
-        /* Number of music (Fnn) dirs created by iTunes. The exact
-	   number seems to be version dependent. Therefore, the
-	   numbers here represent a mixture of reported values and
-	   common sense. Note: this number does not necessarily
-	   represent the number of dirs present on a particular
-	   iPod. It is used when setting up a new iPod from
-	   scratch. */
-        const guint musicdirs;
+    /* model_number is abbreviated: if the first character is not
+       numeric, it is ommited. e.g. "MA350 -> A350", "M9829 -> 9829" */
+    const gchar *model_number;
+    const double capacity;  /* in GB */
+    const Itdb_IpodModel ipod_model;
+    const Itdb_IpodGeneration ipod_generation;
+    /* Number of music (Fnn) dirs created by iTunes. The exact number
+       seems to be version dependent. Therefore, the numbers here
+       represent a mixture of reported values and common sense. Note:
+       this number does not necessarily represent the number of dirs
+       present on a particular iPod. It is used when setting up a new
+       iPod from scratch. */
+    const guint musicdirs;
+    /* reserved for future use */
+    const gint32 reserved_int1;
+    const gint32 reserved_int2;
+    gconstpointer reserved1;
+    gconstpointer reserved2;
 };
 
 
@@ -207,33 +168,34 @@ struct _Itdb_IpodInfo {
 /* Most of the knowledge about smart playlists has been provided by
    Samuel "Otto" Wood (sam dot wood at gmail dot com) who let me dig
    in his impressive C++ class. Contact him for a complete
-   copy. Further, all enums and #defines below, SPLRule, SPLRules, and
-   SPLPref may also be used under a FreeBSD license. */
+   copy. Further, all enums and #defines below, Itdb_SPLRule, Itdb_SPLRules, and
+   Itdb_SPLPref may also be used under a FreeBSD license. */
 
-#define SPL_STRING_MAXLEN 255
+#define ITDB_SPL_STRING_MAXLEN 255
+#define ITDB_SPL_DATE_IDENTIFIER (G_GINT64_CONSTANT (0x2dae2dae2dae2daeU))
 
 /* Definitions for smart playlists */
-enum { /* types for match_operator */
-    SPLMATCH_AND = 0, /* AND rule - all of the rules must be true in
+typedef enum { /* types for match_operator */
+    ITDB_SPLMATCH_AND = 0, /* AND rule - all of the rules must be true in
 			 order for the combined rule to be applied */
-    SPLMATCH_OR = 1   /* OR rule */
-};
+    ITDB_SPLMATCH_OR = 1   /* OR rule */
+} ItdbSPLMatch;
 
 /* Limit Types.. like limit playlist to 100 minutes or to 100 songs */
-enum {
-    LIMITTYPE_MINUTES = 0x01,
-    LIMITTYPE_MB      = 0x02,
-    LIMITTYPE_SONGS   = 0x03,
-    LIMITTYPE_HOURS   = 0x04,
-    LIMITTYPE_GB      = 0x05
-};
+typedef enum {
+    ITDB_LIMITTYPE_MINUTES = 0x01,
+    ITDB_LIMITTYPE_MB      = 0x02,
+    ITDB_LIMITTYPE_SONGS   = 0x03,
+    ITDB_LIMITTYPE_HOURS   = 0x04,
+    ITDB_LIMITTYPE_GB      = 0x05
+} ItdbLimitType;
 
 /* Limit Sorts.. Like which songs to pick when using a limit type
-   Special note: the values for LIMITSORT_LEAST_RECENTLY_ADDED,
-   LIMITSORT_LEAST_OFTEN_PLAYED, LIMITSORT_LEAST_RECENTLY_PLAYED, and
-   LIMITSORT_LOWEST_RATING are really 0x10, 0x14, 0x15, 0x17, with the
+   Special note: the values for ITDB_LIMITSORT_LEAST_RECENTLY_ADDED,
+   ITDB_LIMITSORT_LEAST_OFTEN_PLAYED, ITDB_LIMITSORT_LEAST_RECENTLY_PLAYED, and
+   ITDB_LIMITSORT_LOWEST_RATING are really 0x10, 0x14, 0x15, 0x17, with the
    'limitsort_opposite' flag set.  This is the same value as the
-   "positive" value (i.e. LIMITSORT_LEAST_RECENTLY_ADDED), and is
+   "positive" value (i.e. ITDB_LIMITSORT_LEAST_RECENTLY_ADDED), and is
    really very terribly awfully weird, so we map the values to iPodDB
    specific values with the high bit set.
 
@@ -241,21 +203,21 @@ enum {
    from that. That way, we don't have to deal with programs using the
    class needing to set the wrong limit and then make it into the
    "opposite", which would be frickin' annoying. */
-enum {
-    LIMITSORT_RANDOM = 0x02,
-    LIMITSORT_SONG_NAME = 0x03,
-    LIMITSORT_ALBUM = 0x04,
-    LIMITSORT_ARTIST = 0x05,
-    LIMITSORT_GENRE = 0x07,
-    LIMITSORT_MOST_RECENTLY_ADDED = 0x10,
-    LIMITSORT_LEAST_RECENTLY_ADDED = 0x80000010, /* See note above */
-    LIMITSORT_MOST_OFTEN_PLAYED = 0x14,
-    LIMITSORT_LEAST_OFTEN_PLAYED = 0x80000014,   /* See note above */
-    LIMITSORT_MOST_RECENTLY_PLAYED = 0x15,
-    LIMITSORT_LEAST_RECENTLY_PLAYED = 0x80000015,/* See note above */
-    LIMITSORT_HIGHEST_RATING = 0x17,
-    LIMITSORT_LOWEST_RATING = 0x80000017,        /* See note above */
-};
+typedef enum {
+    ITDB_LIMITSORT_RANDOM = 0x02,
+    ITDB_LIMITSORT_SONG_NAME = 0x03,
+    ITDB_LIMITSORT_ALBUM = 0x04,
+    ITDB_LIMITSORT_ARTIST = 0x05,
+    ITDB_LIMITSORT_GENRE = 0x07,
+    ITDB_LIMITSORT_MOST_RECENTLY_ADDED = 0x10,
+    ITDB_LIMITSORT_LEAST_RECENTLY_ADDED = 0x80000010, /* See note above */
+    ITDB_LIMITSORT_MOST_OFTEN_PLAYED = 0x14,
+    ITDB_LIMITSORT_LEAST_OFTEN_PLAYED = 0x80000014,   /* See note above */
+    ITDB_LIMITSORT_MOST_RECENTLY_PLAYED = 0x15,
+    ITDB_LIMITSORT_LEAST_RECENTLY_PLAYED = 0x80000015,/* See note above */
+    ITDB_LIMITSORT_HIGHEST_RATING = 0x17,
+    ITDB_LIMITSORT_LOWEST_RATING = 0x80000017,        /* See note above */
+} ItdbLimitSort;
 
 /* Smartlist Actions - Used in the rules.
 Note by Otto (Samuel Wood):
@@ -276,136 +238,139 @@ Note by Otto (Samuel Wood):
  bit 9 = "in the last"
 */
 typedef enum {
-    SPLACTION_IS_INT = 0x00000001,          /* "Is Set" in iTunes */
-    SPLACTION_IS_GREATER_THAN = 0x00000010, /* "Is After" in iTunes */
-    SPLACTION_IS_LESS_THAN = 0x00000040,    /* "Is Before" in iTunes */
-    SPLACTION_IS_IN_THE_RANGE = 0x00000100,
-    SPLACTION_IS_IN_THE_LAST = 0x00000200,
+    ITDB_SPLACTION_IS_INT = 0x00000001,          /* "Is Set" in iTunes */
+    ITDB_SPLACTION_IS_GREATER_THAN = 0x00000010, /* "Is After" in iTunes */
+    ITDB_SPLACTION_IS_LESS_THAN = 0x00000040,    /* "Is Before" in iTunes */
+    ITDB_SPLACTION_IS_IN_THE_RANGE = 0x00000100,
+    ITDB_SPLACTION_IS_IN_THE_LAST = 0x00000200,
+    ITDB_SPLACTION_BINARY_AND = 0x00000400,
 
-    SPLACTION_IS_STRING = 0x01000001,
-    SPLACTION_CONTAINS = 0x01000002,
-    SPLACTION_STARTS_WITH = 0x01000004,
-    SPLACTION_ENDS_WITH = 0x01000008,
+    ITDB_SPLACTION_IS_STRING = 0x01000001,
+    ITDB_SPLACTION_CONTAINS = 0x01000002,
+    ITDB_SPLACTION_STARTS_WITH = 0x01000004,
+    ITDB_SPLACTION_ENDS_WITH = 0x01000008,
 
-    SPLACTION_IS_NOT_INT = 0x02000001,     /* "Is Not Set" in iTunes */
+    ITDB_SPLACTION_IS_NOT_INT = 0x02000001,     /* "Is Not Set" in iTunes */
 
     /* Note: Not available in iTunes 4.5 (untested on iPod) */
-    SPLACTION_IS_NOT_GREATER_THAN = 0x02000010,
+    ITDB_SPLACTION_IS_NOT_GREATER_THAN = 0x02000010,
     /* Note: Not available in iTunes 4.5 (untested on iPod) */
-    SPLACTION_IS_NOT_LESS_THAN = 0x02000040,
+    ITDB_SPLACTION_IS_NOT_LESS_THAN = 0x02000040,
     /* Note: Not available in iTunes 4.5 (seems to work on iPod) */
-    SPLACTION_IS_NOT_IN_THE_RANGE = 0x02000100,
+    ITDB_SPLACTION_IS_NOT_IN_THE_RANGE = 0x02000100,
 
-    SPLACTION_IS_NOT_IN_THE_LAST = 0x02000200,
-    SPLACTION_IS_NOT = 0x03000001,
-    SPLACTION_DOES_NOT_CONTAIN = 0x03000002,
+    ITDB_SPLACTION_IS_NOT_IN_THE_LAST = 0x02000200,
+    ITDB_SPLACTION_IS_NOT = 0x03000001,
+    ITDB_SPLACTION_DOES_NOT_CONTAIN = 0x03000002,
 
     /* Note: Not available in iTunes 4.5 (seems to work on iPod) */
-    SPLACTION_DOES_NOT_START_WITH = 0x03000004,
+    ITDB_SPLACTION_DOES_NOT_START_WITH = 0x03000004,
     /* Note: Not available in iTunes 4.5 (seems to work on iPod) */
-    SPLACTION_DOES_NOT_END_WITH = 0x03000008,
-} SPLAction;
+    ITDB_SPLACTION_DOES_NOT_END_WITH = 0x03000008,
+} ItdbSPLAction;
 
 typedef enum
 {
-    splft_string = 1,
-    splft_int,
-    splft_boolean,
-    splft_date,
-    splft_playlist,
-    splft_unknown
-} SPLFieldType;
+    ITDB_SPLFT_STRING = 1,
+    ITDB_SPLFT_INT,
+    ITDB_SPLFT_BOOLEAN,
+    ITDB_SPLFT_DATE,
+    ITDB_SPLFT_PLAYLIST,
+    ITDB_SPLFT_UNKNOWN,
+    ITDB_SPLFT_BINARY_AND
+} ItdbSPLFieldType;
 
 typedef enum
 {
-    splat_string = 1,
-    splat_int,
-    splat_date,
-    splat_range_int,
-    splat_range_date,
-    splat_inthelast,
-    splat_playlist,
-    splat_none,
-    splat_invalid,
-    splat_unknown
-} SPLActionType;
+    ITDB_SPLAT_STRING = 1,
+    ITDB_SPLAT_INT,
+    ITDB_SPLAT_DATE,
+    ITDB_SPLAT_RANGE_INT,
+    ITDB_SPLAT_RANGE_DATE,
+    ITDB_SPLAT_INTHELAST,
+    ITDB_SPLAT_PLAYLIST,
+    ITDB_SPLAT_NONE,
+    ITDB_SPLAT_INVALID,
+    ITDB_SPLAT_UNKNOWN,
+    ITDB_SPLAT_BINARY_AND
+} ItdbSPLActionType;
 
 
 /* These are to pass to AddRule() when you need a unit for the two "in
    the last" action types Or, in theory, you can use any time
    range... iTunes might not like it, but the iPod shouldn't care. */
-enum {
-    SPLACTION_LAST_DAYS_VALUE = 86400,    /* nr of secs in 24 hours */
-    SPLACTION_LAST_WEEKS_VALUE = 604800,  /* nr of secs in 7 days   */
-    SPLACTION_LAST_MONTHS_VALUE = 2628000,/* nr of secs in 30.4167
+typedef enum {
+    ITDB_SPLACTION_LAST_DAYS_VALUE = 86400,    /* nr of secs in 24 hours */
+    ITDB_SPLACTION_LAST_WEEKS_VALUE = 604800,  /* nr of secs in 7 days   */
+    ITDB_SPLACTION_LAST_MONTHS_VALUE = 2628000,/* nr of secs in 30.4167
 					     days ~= 1 month */
-} ;
+} ItdbSPLActionLast;
 
 #if 0
 // Hey, why limit ourselves to what iTunes can do? If the iPod can deal with it, excellent!
-#define SPLACTION_LAST_HOURS_VALUE		3600		// number of seconds in 1 hour
-#define SPLACTION_LAST_MINUTES_VALUE	60			// number of seconds in 1 minute
-#define SPLACTION_LAST_YEARS_VALUE		31536000 	// number of seconds in 365 days
+#define ITDB_SPLACTION_LAST_HOURS_VALUE		3600		// number of seconds in 1 hour
+#define ITDB_SPLACTION_LAST_MINUTES_VALUE	60			// number of seconds in 1 minute
+#define ITDB_SPLACTION_LAST_YEARS_VALUE		31536000 	// number of seconds in 365 days
 
 /* fun ones.. Near as I can tell, all of these work. It's open like that. :)*/
-#define SPLACTION_LAST_LUNARCYCLE_VALUE	2551443		// a "lunar cycle" is the time it takes the moon to circle the earth
-#define SPLACTION_LAST_SIDEREAL_DAY		86164		// a "sidereal day" is time in one revolution of earth on its axis
-#define SPLACTION_LAST_SWATCH_BEAT		86			// a "swatch beat" is 1/1000th of a day.. search for "internet time" on google
-#define SPLACTION_LAST_MOMENT			90			// a "moment" is 1/40th of an hour, or 1.5 minutes
-#define SPLACTION_LAST_OSTENT			600			// an "ostent" is 1/10th of an hour, or 6 minutes
-#define SPLACTION_LAST_FORTNIGHT		1209600 	// a "fortnight" is 14 days
-#define SPLACTION_LAST_VINAL			1728000 	// a "vinal" is 20 days
-#define SPLACTION_LAST_QUARTER			7889231		// a "quarter" is a quarter year
-#define SPLACTION_LAST_SOLAR_YEAR       31556926 	// a "solar year" is the time it takes the earth to go around the sun
-#define SPLACTION_LAST_SIDEREAL_YEAR 	31558150	// a "sidereal year" is the time it takes the earth to reach the same point in space again, compared to the stars
+#define ITDB_SPLACTION_LAST_LUNARCYCLE_VALUE	2551443		// a "lunar cycle" is the time it takes the moon to circle the earth
+#define ITDB_SPLACTION_LAST_SIDEREAL_DAY		86164		// a "sidereal day" is time in one revolution of earth on its axis
+#define ITDB_SPLACTION_LAST_SWATCH_BEAT		86			// a "swatch beat" is 1/1000th of a day.. search for "internet time" on google
+#define ITDB_SPLACTION_LAST_MOMENT			90			// a "moment" is 1/40th of an hour, or 1.5 minutes
+#define ITDB_SPLACTION_LAST_OSTENT			600			// an "ostent" is 1/10th of an hour, or 6 minutes
+#define ITDB_SPLACTION_LAST_FORTNIGHT		1209600 	// a "fortnight" is 14 days
+#define ITDB_SPLACTION_LAST_VINAL			1728000 	// a "vinal" is 20 days
+#define ITDB_SPLACTION_LAST_QUARTER			7889231		// a "quarter" is a quarter year
+#define ITDB_SPLACTION_LAST_SOLAR_YEAR       31556926 	// a "solar year" is the time it takes the earth to go around the sun
+#define ITDB_SPLACTION_LAST_SIDEREAL_YEAR 	31558150	// a "sidereal year" is the time it takes the earth to reach the same point in space again, compared to the stars
 #endif
 
 /* Smartlist fields - Used for rules. */
 typedef enum {
-    SPLFIELD_SONG_NAME = 0x02,    /* String */
-    SPLFIELD_ALBUM = 0x03,        /* String */
-    SPLFIELD_ARTIST = 0x04,       /* String */
-    SPLFIELD_BITRATE = 0x05,      /* Int (e.g. from/to = 128) */
-    SPLFIELD_SAMPLE_RATE = 0x06,  /* Int  (e.g. from/to = 44100) */
-    SPLFIELD_YEAR = 0x07,         /* Int  (e.g. from/to = 2004) */
-    SPLFIELD_GENRE = 0x08,        /* String */
-    SPLFIELD_KIND = 0x09,         /* String */
-    SPLFIELD_DATE_MODIFIED = 0x0a,/* Int/Mac Timestamp (e.g. from/to =
-                                     bcf93280 == is before 6/19/2004)*/
-    SPLFIELD_TRACKNUMBER = 0x0b,  /* Int (e.g. from = 1, to = 2) */
-    SPLFIELD_SIZE = 0x0c,         /* Int (e.g. from/to = 0x00600000
+    ITDB_SPLFIELD_SONG_NAME = 0x02,    /* String */
+    ITDB_SPLFIELD_ALBUM = 0x03,        /* String */
+    ITDB_SPLFIELD_ARTIST = 0x04,       /* String */
+    ITDB_SPLFIELD_BITRATE = 0x05,      /* Int (e.g. from/to = 128) */
+    ITDB_SPLFIELD_SAMPLE_RATE = 0x06,  /* Int  (e.g. from/to = 44100) */
+    ITDB_SPLFIELD_YEAR = 0x07,         /* Int  (e.g. from/to = 2004) */
+    ITDB_SPLFIELD_GENRE = 0x08,        /* String */
+    ITDB_SPLFIELD_KIND = 0x09,         /* String */
+    ITDB_SPLFIELD_DATE_MODIFIED = 0x0a,/* Int (e.g. from/to = bcf93280 ==
+				     is before 6/19/2004)*/
+    ITDB_SPLFIELD_TRACKNUMBER = 0x0b,  /* Int (e.g. from = 1, to = 2) */
+    ITDB_SPLFIELD_SIZE = 0x0c,         /* Int (e.g. from/to = 0x00600000
 				     for 6MB) */
-    SPLFIELD_TIME = 0x0d,         /* Int (e.g. from/to = 83999 for
+    ITDB_SPLFIELD_TIME = 0x0d,         /* Int (e.g. from/to = 83999 for
 				     1:23/83 seconds) */
-    SPLFIELD_COMMENT = 0x0e,      /* String */
-    SPLFIELD_DATE_ADDED = 0x10,   /* Int/Mac Timestamp (e.g. from/to =
-                                     bcfa83ff == is after 6/19/2004) */
-    SPLFIELD_COMPOSER = 0x12,     /* String */
-    SPLFIELD_PLAYCOUNT = 0x16,    /* Int  (e.g. from/to = 1) */
-    SPLFIELD_LAST_PLAYED = 0x17,  /* Int/Mac Timestamp (e.g. from =
-                                     bcfa83ff (6/19/2004) to =
-                                     0xbcfbd57f (6/20/2004)) */
-    SPLFIELD_DISC_NUMBER = 0x18,  /* Int  (e.g. from/to = 1) */
-    SPLFIELD_RATING = 0x19,       /* Int/Stars Rating (e.g. from/to =
+    ITDB_SPLFIELD_COMMENT = 0x0e,      /* String */
+    ITDB_SPLFIELD_DATE_ADDED = 0x10,   /* Int (e.g. from/to = bcfa83ff ==
+				     is after 6/19/2004) */
+    ITDB_SPLFIELD_COMPOSER = 0x12,     /* String */
+    ITDB_SPLFIELD_PLAYCOUNT = 0x16,    /* Int  (e.g. from/to = 1) */
+    ITDB_SPLFIELD_LAST_PLAYED = 0x17,  /* Int/ (e.g. from = bcfa83ff (6/19/2004)
+				     to = 0xbcfbd57f (6/20/2004)) */
+    ITDB_SPLFIELD_DISC_NUMBER = 0x18,  /* Int  (e.g. from/to = 1) */
+    ITDB_SPLFIELD_RATING = 0x19,       /* Int/Stars Rating (e.g. from/to =
                                      60 (3 stars)) */
-    SPLFIELD_COMPILATION = 0x1f,  /* Int (e.g. is set ->
-				     SPLACTION_IS_INT/from=1,
+    ITDB_SPLFIELD_COMPILATION = 0x1f,  /* Int (e.g. is set ->
+				     ITDB_SPLACTION_IS_INT/from=1,
 				     is not set ->
-				     SPLACTION_IS_NOT_INT/from=1) */
-    SPLFIELD_BPM = 0x23,          /* Int  (e.g. from/to = 60) */
-    SPLFIELD_GROUPING = 0x27,     /* String */
-    SPLFIELD_PLAYLIST = 0x28,     /* XXX - Unknown...not parsed
+				     ITDB_SPLACTION_IS_NOT_INT/from=1) */
+    ITDB_SPLFIELD_BPM = 0x23,          /* Int  (e.g. from/to = 60) */
+    ITDB_SPLFIELD_GROUPING = 0x27,     /* String */
+    ITDB_SPLFIELD_PLAYLIST = 0x28,     /* FIXME - Unknown...not parsed
 				     correctly...from/to = 0xb6fbad5f
-				     for * "Purchased Music".  Extra
-				     data after * "to"... */
-} SPLField;
+				     for "Purchased Music".  Extra
+				     data after "to"... */
+    ITDB_SPLFIELD_VIDEO_KIND = 0x3c,   /* Logic Int */
+    ITDB_SPLFIELD_TVSHOW = 0x3e,       /* String */
+    ITDB_SPLFIELD_SEASON_NR = 0x3f,    /* Int */
+    ITDB_SPLFIELD_SKIPCOUNT = 0x44,    /* Int */
+    ITDB_SPLFIELD_LAST_SKIPPED = 0x45, /* Int */
+    ITDB_SPLFIELD_ALBUMARTIST = 0x47   /* String */
+} ItdbSPLField;
 
-#define SPLDATE_IDENTIFIER (G_GINT64_CONSTANT (0x2dae2dae2dae2daeU))
-
-/* Maximum string length that iTunes writes to the database */
-#define SPL_MAXSTRINGLENGTH 255
-
-struct _SPLPref
+struct _Itdb_SPLPref
 {
     guint8  liveupdate;        /* "live Updating" check box */
     guint8  checkrules;        /* "Match X of the following
@@ -415,11 +380,15 @@ struct _SPLPref
     guint32 limitsort;         /* See types defined above */
     guint32 limitvalue;        /* The value typed next to "Limit
 				  type" */
-    guint8  matchcheckedonly;  /* "Match only checked songs" check
-				  box */
+    guint8  matchcheckedonly;  /* "Match only checked songs" check box */
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
 };
 
-struct _SPLRule
+struct _Itdb_SPLRule
 {
     guint32 field;
     guint32 action;
@@ -445,39 +414,138 @@ struct _SPLRule
     guint32 unk060;
     guint32 unk064;
     guint32 unk068;
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
 };
 
 
-struct _SPLRules
+struct _Itdb_SPLRules
 {
     guint32 unk004;
-    guint32 match_operator;  /* "All" (logical AND): SPLMATCH_AND,
-				"Any" (logical OR): SPLMATCH_OR */
+    guint32 match_operator;  /* "All" (logical AND): Itdb_SPLMATCH_AND,
+				"Any" (logical OR): Itdb_SPLMATCH_OR */
     GList *rules;
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
 };
 
 
 
 /* ------------------------------------------------------------ *\
  *
- * iTunesDB, Playlists, Tracks
+ * iTunesDB, Playlists, Tracks, PhotoDB, Artwork, Thumbnails
  *
 \* ------------------------------------------------------------ */
 
 /* one star is how much (track->rating) */
 #define ITDB_RATING_STEP 20
 
-struct _Itdb_PhotoDB
-{
-    GList *photos;
-    GList *photoalbums;
-    Itdb_Device *device;/* iPod device info     */
+/* Types of thumbnails in Itdb_Image */
+typedef enum { 
+    ITDB_THUMB_COVER_SMALL = 0,
+    ITDB_THUMB_COVER_LARGE,
+    ITDB_THUMB_PHOTO_SMALL,
+    ITDB_THUMB_PHOTO_LARGE,
+    ITDB_THUMB_PHOTO_FULL_SCREEN,
+    ITDB_THUMB_PHOTO_TV_SCREEN,
+    ITDB_THUMB_COVER_XLARGE,      /* iPhone: cover flow */
+    ITDB_THUMB_COVER_MEDIUM,      /* iPhone: cover view */
+    ITDB_THUMB_COVER_SMEDIUM,     /* iPhone: ??         */
+    ITDB_THUMB_COVER_XSMALL,      /* iPhone: ??         */
+} ItdbThumbType;
+
+
+/* The Itdb_Thumb structure can represent two slightly different
+   thumbnails:
+
+  a) a thumbnail before it's transferred to the iPod.
+
+     offset and size are 0
+
+     width and height, if unequal 0, will indicate the size on the
+     iPod. width and height are set the first time a pixbuf is
+     requested for this thumbnail.
+
+     type is set according to the type this thumbnail represents
+
+     filename point to a 'real' image file OR image_data and
+     image_data_len are set.
+ 
+  b) a thumbnail (big or small) stored on a database in the iPod.  In
+     these cases, id corresponds to the ID originally used in the
+     database, filename points to a .ithmb file on the iPod
+ */
+struct _Itdb_Thumb {
+    ItdbThumbType type;
+    gchar   *filename;
+    guchar  *image_data;      /* holds the thumbnail data of
+				 non-transfered thumbnails when
+				 filename == NULL */
+    gsize   image_data_len;   /* length of data */
+    gpointer pixbuf;
+    gint    rotation;         /* angle (0, 90, 180, 270) to rotate the image */
+    guint32 offset;
+    guint32 size;
+    gint16  width;
+    gint16  height;
+    gint16  horizontal_padding;
+    gint16  vertical_padding;
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
+};
+
+struct _Itdb_Artwork {
+    GList *thumbnails;     /* list of Itdb_Thumbs */
+    guint32 id;            /* Artwork id used by photoalbums, starts at
+			    * 0x40... libgpod will set this on sync. */
+    gint32  unk028;
+    guint32 rating;        /* Rating from iPhoto * 20 (PhotoDB only) */
+    gint32  unk036;
+    time_t  creation_date;  /* Date the image file was created
+			      (creation date of image file (PhotoDB only) */
+    time_t  digitized_date;/* Date the image was taken (EXIF information,
+			      PhotoDB only) */
+    guint32 artwork_size;  /* Size in bytes of the original source
+			      image (PhotoDB only -- don't touch in
+			      case of ArtworkDB!) */
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
     /* below is for use by application */
     guint64 usertype;
     gpointer userdata;
-    /* function called to duplicate userdata */
+    /* functions called to duplicate/free userdata */
     ItdbUserDataDuplicateFunc userdata_duplicate;
-    /* function called to free userdata */
+    ItdbUserDataDestroyFunc userdata_destroy;
+};
+
+
+struct _Itdb_PhotoDB
+{
+    GList *photos;      /* (Itdb_Artwork *)     */
+    GList *photoalbums; /* (Itdb_PhotoAlbum *)  */
+    Itdb_Device *device;/* iPod device info     */
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
+    /* below is for use by application */
+    guint64 usertype;
+    gpointer userdata;
+    /* functions called to duplicate/free userdata */
+    ItdbUserDataDuplicateFunc userdata_duplicate;
     ItdbUserDataDestroyFunc userdata_destroy;
 };
 
@@ -489,29 +557,57 @@ struct _Itdb_iTunesDB
     Itdb_Device *device;/* iPod device info     */
     guint32 version;
     guint64 id;
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
     /* below is for use by application */
     guint64 usertype;
     gpointer userdata;
-    /* function called to duplicate userdata */
+    /* functions called to duplicate/free userdata */
     ItdbUserDataDuplicateFunc userdata_duplicate;
-    /* function called to free userdata */
     ItdbUserDataDestroyFunc userdata_destroy;
 };
 
 struct _Itdb_PhotoAlbum
 {
-    gchar *name;          /* name of photoalbum in UTF8            */
-    GList *members;       /* photos in album (Track *)             */
-    gint  num_images;     /* number of photos in album             */
-    gint  master;         /* 0x01 for master, 0x00 otherwise       */
-    gint  album_id;
-    gint  prev_album_id;
+    gchar *name;                 /* name of photoalbum in UTF8            */
+    GList *members;              /* photos in album (Itdb_Artwork *)      */
+    guint8 album_type;           /* 0x01 for master (Photo Library),
+				    0x02 otherwise (sometimes 4 and 5)    */
+    guint8 playmusic;            /* play music during slideshow (from
+				    iPhoto setting)                       */
+    guint8 repeat;               /* repeat the slideshow (from iPhoto
+				    setting)                              */
+    guint8 random;               /* show the slides in random order
+			            (from iPhoto setting)                 */
+    guint8 show_titles;          /* show slide captions (from iPhoto
+				    setting)                              */
+    guint8 transition_direction; /* 0=none, 1=left-to-right,
+				    2=right-to-left, 3=top-to-bottom,
+				    4=bottom-to-top (from iPhoto setting) */
+    gint32 slide_duration;       /* in seconds (from iPhoto setting)      */
+    gint32 transition_duration;  /* in milliseconds (from iPhoto setting) */
+    gint64 song_id;              /* dbid2 of track in iTunesDB to play
+				    during slideshow (from iPhoto setting)*/
+    gint32 unk024;               /* unknown, seems to be always 0         */
+    gint16 unk028;               /* unknown, seems to be always 0         */
+    gint32 unk044;               /* unknown, seems to always be 0         */
+    gint32 unk048;               /* unknown, seems to always be 0         */
+    /* set automatically at time of writing the PhotoDB */
+    gint32  album_id;
+    gint32  prev_album_id;
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
     /* below is for use by application */
     guint64 usertype;
     gpointer userdata;
-    /* function called to duplicate userdata */
+    /* functions called to duplicate/free userdata */
     ItdbUserDataDuplicateFunc userdata_duplicate;
-    /* function called to free userdata */
     ItdbUserDataDestroyFunc userdata_destroy;
 };
 
@@ -526,34 +622,24 @@ struct _Itdb_Playlist
     gint  num;            /* number of tracks in playlist          */
     GList *members;       /* tracks in playlist (Track *)          */
     gboolean is_spl;      /* smart playlist?                       */
-    guint32 timestamp;    /* some timestamp                        */
+    time_t timestamp;     /* timestamp of playlist creation        */
     guint64 id;           /* playlist ID                           */
-    guint32 mhodcount;    /* This appears to be the number of string
-			     MHODs (type < 50) associated with this
-			     playlist (typically 0x01). Doesn't seem
-			     to be signficant unless you include Type
-			     52 MHODs. libgpod sets this to 1 when
-			     syncing */
-    guint16 libmhodcount; /* The number of Type 52 MHODs associated
-			     with this playlist. If you don't create
-			     Type 52 MHODs, this can be
-			     zero. Otherwise, if you have Type 52
-			     MHODs associated with this playlist and
-			     set this to zero, no songs appear on the
-			     iPod. jcsjcs: with iTunes 4.9 this seems
-			     to be set to 1 even without any Type 52
-			     MHODs present. libgpod sets this to 1
-			     when syncing */
     guint32 sortorder;    /* How to sort playlist -- see below     */
     guint32 podcastflag;  /* ITDB_PL_FLAG_NORM/_PODCAST            */
-    SPLPref splpref;      /* smart playlist prefs                  */
-    SPLRules splrules;    /* rules for smart playlists             */
+    Itdb_SPLPref splpref;      /* smart playlist prefs                  */
+    Itdb_SPLRules splrules;    /* rules for smart playlists             */
+    gpointer reserved100; /* reserved for MHOD100 implementation   */
+    gpointer reserved101; /* reserved for MHOD100 implementation   */
+    /* reserved for future use */
+    gint32 reserved_int1;
+    gint32 reserved_int2;
+    gpointer reserved1;
+    gpointer reserved2;
     /* below is for use by application */
     guint64 usertype;
     gpointer userdata;
-    /* function called to duplicate userdata */
+    /* functions called to duplicate/free userdata */
     ItdbUserDataDuplicateFunc userdata_duplicate;
-    /* function called to free userdata */
     ItdbUserDataDestroyFunc userdata_destroy;
 };
 
@@ -624,76 +710,114 @@ typedef enum
 } ItdbPlaylistSortOrder;
 
 
+/* Mediatype definitions */
+typedef enum
+{
+    ITDB_MEDIATYPE_AUDIO      = 0x0001,
+    ITDB_MEDIATYPE_MOVIE      = 0x0002,
+    ITDB_MEDIATYPE_PODCAST    = 0x0004,
+    ITDB_MEDIATYPE_AUDIOBOOK  = 0x0008,
+    ITDB_MEDIATYPE_MUSICVIDEO = 0x0020,
+    ITDB_MEDIATYPE_TVSHOW     = 0x0040,
+} Itdb_Mediatype;
+
 /* some of the descriptive comments below are copied verbatim from
    http://ipodlinux.org/ITunesDB. 
    http://ipodlinux.org/ITunesDB is the best source for information
    about the iTunesDB and related files. */
 struct _Itdb_Track
 {
-  Itdb_iTunesDB *itdb;       /* pointer to iTunesDB (for convenience) */
-  gchar   *title;            /* title (utf8)           */
-  gchar   *ipod_path;        /* name of file on iPod: uses ":"
-				instead of "/"                        */
-  gchar   *album;            /* album (utf8)           */
-  gchar   *artist;           /* artist (utf8)          */
-  gchar   *genre;            /* genre (utf8)           */
-  gchar   *filetype;         /* eg. "MP3-File"...(utf8)*/
-  gchar   *comment;          /* comment (utf8)         */
-  gchar   *category;         /* Category for podcast   */
-  gchar   *composer;         /* Composer (utf8)        */
-  gchar   *grouping;         /* ? (utf8)               */
+  Itdb_iTunesDB *itdb;       /* pointer to iTunesDB (for convenience)   */
+  gchar   *title;            /* title (utf8)                            */
+  gchar   *ipod_path;        /* name of file on iPod: uses ":" instead
+				of "/" and is relative to mountpoint    */
+  gchar   *album;            /* album (utf8)                            */
+  gchar   *artist;           /* artist (utf8)                           */
+  gchar   *genre;            /* genre (utf8)                            */
+  gchar   *filetype;         /* eg. "MP3-File"...(utf8)                 */
+  gchar   *comment;          /* comment (utf8)                          */
+  gchar   *category;         /* Category for podcast                    */
+  gchar   *composer;         /* Composer (utf8)                         */
+  gchar   *grouping;         /* ? (utf8)                                */
   gchar   *description;      /* see note for MHOD_ID in itdb_itunesdb.c */
   gchar   *podcasturl;       /* see note for MHOD_ID in itdb_itunesdb.c */
   gchar   *podcastrss;       /* see note for MHOD_ID in itdb_itunesdb.c */
-  gchar   *chapterdata;      /* see note for MHOD_ID in itdb_itunesdb.c */
+  gpointer chapterdata;      /* not yet supported. Help welcome.        */
   gchar   *subtitle;         /* see note for MHOD_ID in itdb_itunesdb.c */
-  guint32 id;                /* unique ID of track     */
-  gint32  size;              /* size of file in bytes  */
-  gint32  tracklen;          /* Length of track in ms  */
-  gint32  cd_nr;             /* CD number              */
-  gint32  cds;               /* number of CDs          */
-  gint32  track_nr;          /* track number           */
-  gint32  tracks;            /* number of tracks       */
-  gint32  bitrate;           /* bitrate                */
-  guint16 samplerate;        /* samplerate (CD: 44100) */
+/* the following 6 are new in libgpod 0.4.2... */
+  gchar   *tvshow;           /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *tvepisode;        /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *tvnetwork;        /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *albumartist;      /* see note for MHOD_ID in itdb_itunesdb.c */
+  gchar   *keywords;         /* see note for MHOD_ID in itdb_itunesdb.c */
+/* the following 6 are new in libgpod 0.5.0... */
+  /* You can set these strings to override the standard
+     sortorder. When set they take precedence over the default
+     'artist', 'album'... fields.
+
+     For example, in the case of an artist name like "The Artist",
+     iTunes will set sort_artist to "Artist, The" followed by five
+     0x01 characters. Why five 0x01 characters are added is not
+     completely understood.
+
+     If you do not set the sort_artist field, libgpod will pre-sort
+     the lists displayed by the iPod according to "Artist, The",
+     without setting the field.
+  */
+  gchar   *sort_artist;      /* artist (for sorting)                    */
+  gchar   *sort_title;       /* title (for sorting)                     */
+  gchar   *sort_album;       /* album (for sorting)                     */
+  gchar   *sort_albumartist; /* album artist (for sorting)              */
+  gchar   *sort_composer;    /* composer (for sorting)                  */
+  gchar   *sort_tvshow;      /* tv show (for sorting)                   */
+/* new fields in libgpod 0.5.0 up to here */
+  guint32 id;                /* unique ID of track                      */
+  gint32  size;              /* size of file in bytes                   */
+  gint32  tracklen;          /* Length of track in ms                   */
+  gint32  cd_nr;             /* CD number                               */
+  gint32  cds;               /* number of CDs                           */
+  gint32  track_nr;          /* track number                            */
+  gint32  tracks;            /* number of tracks                        */
+  gint32  bitrate;           /* bitrate                                 */
+  guint16 samplerate;        /* samplerate (CD: 44100)                  */
   guint16 samplerate_low;    /* in the iTunesDB the samplerate is
                                 multiplied by 0x10000 -- these are the
-				lower 16 bit, which are usually 0 */
-  gint32  year;              /* year                   */
-  gint32  volume;            /* volume adjustment              */
-  guint32 soundcheck;        /* volume adjustment "soundcheck" */
-  guint32 time_added;        /* time when added (Mac type)          */
-  guint32 time_played;       /* time of last play (Mac type)        */
-  guint32 time_modified;     /* time of last modification (Mac type)*/
-  guint32 bookmark_time;     /* bookmark set for (AudioBook) in ms  */
-  guint32 rating;            /* star rating (stars * RATING_STEP (20))     */
-  guint32 playcount;         /* number of times track was played    */
+				lower 16 bit, which are usually 0       */
+  gint32  year;              /* year                                    */
+  gint32  volume;            /* volume adjustment                       */
+  guint32 soundcheck;        /* volume adjustment "soundcheck"          */
+  time_t  time_added;        /* time when added                         */
+  time_t  time_modified;     /* time of last modification               */
+  time_t  time_played;       /* time of last play                       */
+  guint32 bookmark_time;     /* bookmark set for (AudioBook) in ms      */
+  guint32 rating;            /* star rating (stars * RATING_STEP (20))  */
+  guint32 playcount;         /* number of times track was played        */
   guint32 playcount2;        /* Also stores the play count of the
 				song.  Don't know if it ever differs
 				from the above value. During sync itdb
 				sets playcount2 to the same value as
-				playcount. */
-  guint32 recent_playcount;  /* times track was played since last sync */
-  gboolean transferred;      /* has file been transferred to iPod?  */
-  gint16  BPM;               /* supposed to vary the playback speed */
+				playcount.                              */
+  guint32 recent_playcount;  /* times track was played since last sync  */
+  gboolean transferred;      /* has file been transferred to iPod?      */
+  gint16  BPM;               /* BPM (beats per minute) of this track    */
   guint8  app_rating;        /* star rating set by appl. (not
 			      * iPod). If the rating set on the iPod
 			        and the rating field above differ, the
 				original rating is copied here and the
 				new rating is stored above. */
   guint8  type1;             /* CBR MP3s and AAC are 0x00, VBR MP3s are
-			        0x01 */
-  guint8  type2;             /* MP3s are 0x01, AAC are 0x00 */
+			        0x01                                    */
+  guint8  type2;             /* MP3s are 0x01, AAC are 0x00             */
   guint8  compilation;
   guint32 starttime;
   guint32 stoptime;
   guint8  checked;           /* 0x0: checkmark on track is set 0x1: not set */
-  guint64 dbid;              /* unique database ID */
+  guint64 dbid;              /* unique database ID                      */
   guint32 drm_userid;        /* Apple Store/Audible User ID (for DRM'ed
-				files only, set to 0 otherwise). */
+				files only, set to 0 otherwise).        */
   guint32 visible;           /*  If this value is 1, the song is visible
 				 on the iPod. All other values cause
-				 the file to be hidden. */
+				 the file to be hidden.                 */
   guint32 filetype_marker;   /* This appears to always be 0 on hard
                                 drive based iPods, but for the
                                 iTunesDB that is written to an iPod
@@ -703,7 +827,7 @@ struct _Itdb_Track
                                 0x4d503320 -> 0x4d = 'M', 0x50 = 'P',
                                 0x33 = '3', 0x20 = <space>. (set to
 				the filename extension by itdb when
-				copying track to iPod)*/
+				copying track to iPod)                  */
   guint16 artwork_count;     /* The number of album artwork items
 				associated with this song. libgpod
 				updates this value when syncing */
@@ -712,34 +836,37 @@ struct _Itdb_Track
 				converted to JPEG format. Observed in
 				iPodDB version 0x0b and with an iPod
 				Photo. libgpod updates this value when
-				syncing */
+				syncing                                 */
   float samplerate2;         /* The sample rate of the song expressed
 				as an IEEE 32 bit floating point
 				number.  It's uncertain why this is
 				here.  itdb will set this when adding
-				a track */
+				a track                                 */
 
   guint16 unk126;     /* unknown, but always seems to be 0xffff for
 			 MP3/AAC songs, 0x0 for uncompressed songs
 			 (like WAVE format), 0x1 for Audible. itdb
 			 will try to set this when adding a new track */
   guint32 unk132;     /* unknown */
-  guint32 time_released;/* date/time added to music store? definitely a
-			 timestamp, always appears to be a time of
-			 0700 GMT. For podcasts: release date as
-			 displayed next to the title in the Podcast
-			 playlist  */
+  time_t  time_released;/* date/time added to music store? 
+			   For podcasts: release date as displayed next to the 
+			   title in the Podcast playlist */
   guint16 unk144;     /* unknown, but MP3 songs appear to be always
 			 0x000c, AAC songs are always 0x0033, Audible
 			 files are 0x0029, WAV files are 0x0. itdb
 			 will attempt to set this value when adding a
-			 track. */  
+			 track. */ 
   guint16 unk146;     /* unknown, but appears to be 1 if played at
 			 least once in iTunes and 0 otherwise. */
   guint32 unk148;     /* unknown - used for Apple Store DRM songs
 			 (always 0x01010100?), zero otherwise */
   guint32 unk152;     /* unknown */
-  guint32 unk156, unk160;
+  guint32 skipcount;  /* Number of times the track has been skipped.
+			 Formerly unk156 (added in dbversion 0x0c) */
+  guint32 recent_skipcount; /* number of times track was skipped since
+			       last sync */
+  guint32 last_skipped;/* Date/time last skipped. Formerly unk160
+			 (added in dbversion 0x0c) */
   guint8 has_artwork; /* 0x01: artwork is present. 0x02: no artwork is
 			 present for this track (used by the iPod to
 			 decide whether to display Artwork or not) */
@@ -758,7 +885,9 @@ struct _Itdb_Track
 			 (middle button) with further information
 			 about the track will be shown. */
   guint64 dbid2;      /* not clear. if not set, itdb will set this to
-			 the same value as dbid when adding a track */
+			 the same value as dbid when adding a
+			 track. (With iTunes, since V0x12, this field
+			 value differs from the dbid one.) */
   guint8 lyrics_flag; /* set to 0x01 if lyrics are present in MP3 tag
 			 ("ULST"), 0x00 otherwise */
   guint8 movie_flag;  /* set to 0x01 if it's a movie file, 0x00
@@ -767,16 +896,61 @@ struct _Itdb_Track
 			   on the iPod (bullet) once played it is set to
 			   0x01. Non-podcasts have this set to 0x01. */
   guint8 unk179;      /* unknown (always 0x00 so far) */
-  guint32 unk180, unk184;
-  guint32 samplecount;/* Number of samples in the song. First observed
+  guint32 unk180;
+  guint32 pregap;     /* Number of samples of silence before the songs
+			 starts (for gapless playback). */
+  guint64 samplecount;/* Number of samples in the song. First observed
 			 in dbversion 0x0d, and only for AAC and WAV
-			 files (not MP3?!?). */
-  guint32 unk192, unk196, unk200;
-  guint32 unk204;     /*  unknown - added in dbversion 0x0c, first
-			  values observed in 0x0d. Observed to be 0x0
-			  or 0x1. */
-  guint32 unk208, unk212, unk216, unk220, unk224;
-  guint32 unk228, unk232, unk236, unk240;
+			 files (for gapless playback). */
+  guint32 unk196;
+  guint32 postgap;    /* Number of samples of silence at the end of
+			 the song (for gapless playback). */
+  guint32 unk204;     /* unknown - added in dbversion 0x0c, first
+			 values observed in 0x0d. Observed to be 0x0
+			 or 0x1. */
+  guint32 mediatype;  /* It seems that this field denotes the type of
+		         the file on (e.g.) the 5g video iPod. It must
+			 be set to 0x00000001 for audio files, and set
+			 to 0x00000002 for video files. If set to
+			 0x00, the files show up in both, the audio
+			 menus ("Songs", "Artists", etc.) and the
+			 video menus ("Movies", "Music Videos",
+			 etc.). It appears to be set to 0x20 for music
+			 videos, and if set to 0x60 the file shows up
+			 in "TV Shows" rather than "Movies". 
+
+			 The following list summarizes all observed types:
+
+			 * 0x00 00 00 00 - Audio/Video
+			 * 0x00 00 00 01 - Audio
+			 * 0x00 00 00 02 - Video
+			 * 0x00 00 00 04 - Podcast
+			 * 0x00 00 00 06 - Video Podcast
+			 * 0x00 00 00 08 - Audiobook
+			 * 0x00 00 00 20 - Music Video
+			 * 0x00 00 00 40 - TV Show (shows up ONLY in TV Shows
+			 * 0x00 00 00 60 - TV Show (shows up in the
+			                            Music lists as well) */
+  guint32 season_nr;  /* the season number of the track, for TV shows only. */
+  guint32 episode_nr; /* the episode number of the track, for TV shows
+			 only - although not displayed on the iPod,
+			 the episodes are sorted by episode number. */
+  guint32 unk220;     /* Has something to do with protected files -
+			 set to 0x0 for non-protected files. */
+  guint32 unk224;
+  guint32 unk228, unk232, unk236, unk240, unk244;
+  guint32 gapless_data;/* some magic number needed for gapless playback
+			  (added in dbversion 0x13) It has been observed
+			  that gapless playback does not work if this is
+			  set to zero. This number is related to the the
+			  filesize in bytes, but it is a couple of bytes
+			  less than the filesize. Maybe ID3 tags
+			  etc... taken off? */
+  guint32 unk252;
+  guint16 gapless_track_flag; /* if 1, this track has gapless playback data
+			         (added in dbversion 0x13) */
+  guint16 gapless_album_flag; /* if 1, this track does not use crossfading
+			         in iTunes (added in dbversion 0x13) */
 
     /* Chapter data: defines where the chapter stops are in the track,
        as well as what info should be displayed for each section of
@@ -789,12 +963,30 @@ struct _Itdb_Track
   /* This is for Cover Art support */
   struct _Itdb_Artwork *artwork;
 
+  /* reserved for future use */
+  gint32 reserved_int1;
+  gint32 reserved_int2;
+  gint32 reserved_int3;
+  gint32 reserved_int4;
+  gint32 reserved_int5;
+  gint32 reserved_int6;
+  gpointer reserved1;
+  gpointer reserved2;
+  gpointer reserved3;
+  gpointer reserved4;
+  gpointer reserved5;
+  gpointer reserved6;
+
+  /* +++***+++***+++***+++***+++***+++***+++***+++***+++***+++***
+     When adding string fields don't forget to add them in
+     itdb_track_duplicate as well
+     +++***+++***+++***+++***+++***+++***+++***+++***+++***+++*** */
+
   /* below is for use by application */
   guint64 usertype;
   gpointer userdata;
-  /* function called to duplicate userdata */
+  /* functions called to duplicate/free userdata */
   ItdbUserDataDuplicateFunc userdata_duplicate;
-  /* function called to free userdata */
   ItdbUserDataDestroyFunc userdata_destroy;
 };
 /* (gtkpod note: don't forget to add fields read from the file to
@@ -858,11 +1050,11 @@ struct _Itdb_Prefs
 \* ------------------------------------------------------------ */
 typedef enum
 {
-    ITDB_FILE_ERROR_SEEK,      /* file corrupt: illegal seek occured */
-    ITDB_FILE_ERROR_CORRUPT,   /* file corrupt   */
-    ITDB_FILE_ERROR_NOTFOUND,  /* file not found */
-    ITDB_FILE_ERROR_RENAME,    /* file could not be renamed    */
-    ITDB_FILE_ERROR_ITDB_CORRUPT /* iTunesDB in memory corrupt */
+    ITDB_FILE_ERROR_SEEK,        /* file corrupt: illegal seek occured */
+    ITDB_FILE_ERROR_CORRUPT,     /* file corrupt                       */
+    ITDB_FILE_ERROR_NOTFOUND,    /* file not found                     */
+    ITDB_FILE_ERROR_RENAME,      /* file could not be renamed          */
+    ITDB_FILE_ERROR_ITDB_CORRUPT /* iTunesDB in memory corrupt         */
 } ItdbFileError;
 
 
@@ -880,7 +1072,7 @@ GQuark     itdb_file_error_quark      (void);
 /* functions for reading/writing database, general itdb functions */
 Itdb_iTunesDB *itdb_parse (const gchar *mp, GError **error);
 Itdb_iTunesDB *itdb_parse_file (const gchar *filename, GError **error);
-gboolean itdb_write (Itdb_iTunesDB *db, GError **error);
+gboolean itdb_write (Itdb_iTunesDB *itdb, GError **error);
 gboolean itdb_write_file (Itdb_iTunesDB *itdb, const gchar *filename,
 			  GError **error);
 gboolean itdb_shuffle_write (Itdb_iTunesDB *itdb, GError **error);
@@ -899,10 +1091,18 @@ gint itdb_musicdirs_number (Itdb_iTunesDB *itdb);
 gchar *itdb_resolve_path (const gchar *root,
 			  const gchar * const * components);
 gboolean itdb_rename_files (const gchar *mp, GError **error);
-gboolean itdb_cp_track_to_ipod (Itdb_Track *track,
-				gchar *filename, GError **error);
+gchar *itdb_cp_get_dest_filename (Itdb_Track *track,
+                                  const gchar *mountpoint,
+				  const gchar *filename,
+				  GError **error);
 gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 		  GError **error);
+Itdb_Track *itdb_cp_finalize (Itdb_Track *track,
+			      const gchar *mountpoint,
+			      const gchar *dest_filename,
+			      GError **error);
+gboolean itdb_cp_track_to_ipod (Itdb_Track *track,
+				const gchar *filename, GError **error);
 void itdb_filename_fs2ipod (gchar *filename);
 void itdb_filename_ipod2fs (gchar *ipod_file);
 gchar *itdb_filename_on_ipod (Itdb_Track *track);
@@ -932,6 +1132,8 @@ void itdb_device_set_sysinfo (Itdb_Device *device,
 			      const gchar *field, const gchar *value);
 const Itdb_IpodInfo *itdb_device_get_ipod_info (Itdb_Device *device);
 const Itdb_IpodInfo *itdb_info_get_ipod_info_table (void);
+gboolean itdb_device_supports_artwork (Itdb_Device *device);
+gboolean itdb_device_supports_photo (Itdb_Device *device);
 const gchar *itdb_info_get_ipod_model_name_string (Itdb_IpodModel model);
 const gchar *itdb_info_get_ipod_generation_string (Itdb_IpodGeneration generation);
 gboolean itdb_device_get_storage_info (Itdb_Device *device, guint64 *capacity, guint64 *free);
@@ -980,47 +1182,72 @@ gboolean itdb_playlist_is_podcasts (Itdb_Playlist *pl);
 void itdb_playlist_set_podcasts (Itdb_Playlist *pl);
 
 /* smart playlist functions */
-SPLFieldType itdb_splr_get_field_type (const SPLRule *splr);
-SPLActionType itdb_splr_get_action_type (const SPLRule *splr);
-void itdb_splr_validate (SPLRule *splr);
-void itdb_splr_remove (Itdb_Playlist *pl, SPLRule *splr);
-SPLRule *itdb_splr_new (void);
-void itdb_splr_add (Itdb_Playlist *pl, SPLRule *splr, gint pos);
-SPLRule *itdb_splr_add_new (Itdb_Playlist *pl, gint pos);
+ItdbSPLFieldType itdb_splr_get_field_type (const Itdb_SPLRule *splr);
+ItdbSPLActionType itdb_splr_get_action_type (const Itdb_SPLRule *splr);
+void itdb_splr_validate (Itdb_SPLRule *splr);
+void itdb_splr_remove (Itdb_Playlist *pl, Itdb_SPLRule *splr);
+Itdb_SPLRule *itdb_splr_new (void);
+void itdb_splr_add (Itdb_Playlist *pl, Itdb_SPLRule *splr, gint pos);
+Itdb_SPLRule *itdb_splr_add_new (Itdb_Playlist *pl, gint pos);
 void itdb_spl_copy_rules (Itdb_Playlist *dest, Itdb_Playlist *src);
-gboolean itdb_splr_eval (SPLRule *splr, Itdb_Track *track);
+gboolean itdb_splr_eval (Itdb_SPLRule *splr, Itdb_Track *track);
 void itdb_spl_update (Itdb_Playlist *spl);
 void itdb_spl_update_all (Itdb_iTunesDB *itdb);
 void itdb_spl_update_live (Itdb_iTunesDB *itdb);
 
-/* thumbnails functions */
+/* thumbnails functions for coverart */
 /* itdb_track_... */
 gboolean itdb_track_set_thumbnails (Itdb_Track *track,
 				    const gchar *filename);
 gboolean itdb_track_set_thumbnails_from_data (Itdb_Track *track,
 					      const guchar *image_data,
 					      gsize image_data_len);
+gboolean itdb_track_set_thumbnails_from_pixbuf (Itdb_Track *track,
+                                                gpointer pixbuf);
+
 void itdb_track_remove_thumbnails (Itdb_Track *track);
 
-/* photoalbum functions */
+/* photoalbum functions -- see itdb_photoalbum.c for instructions on
+ * how to use. */
 Itdb_PhotoDB *itdb_photodb_parse (const gchar *mp, GError **error);
-gboolean itdb_photodb_add_photo (Itdb_PhotoDB *db,
-				 const gchar *albumname,
-				 const gchar *filename);
-gboolean itdb_photodb_add_photo_from_data (Itdb_PhotoDB *db,
-					   const gchar *albumname,
-					   const guchar *image_data,
-					   gsize image_data_len);
-Itdb_PhotoAlbum *itdb_photodb_photoalbum_new (Itdb_PhotoDB *db,
-					      const gchar *album_name);
-Itdb_PhotoDB *itdb_photodb_new (void);
+Itdb_Artwork *itdb_photodb_add_photo (Itdb_PhotoDB *db, const gchar *filename,
+				      gint position, gint rotation,
+				      GError **error);
+Itdb_Artwork *itdb_photodb_add_photo_from_data (Itdb_PhotoDB *db,
+						const guchar *image_data,
+						gsize image_data_len,
+						gint position,
+						gint rotation,
+						GError **error);
+Itdb_Artwork *itdb_photodb_add_photo_from_pixbuf (Itdb_PhotoDB *db,
+						  gpointer pixbuf,
+						  gint position,
+						  gint rotation,
+						  GError **error);
+void itdb_photodb_photoalbum_add_photo (Itdb_PhotoDB *db,
+					Itdb_PhotoAlbum *album,
+					Itdb_Artwork *photo,
+					gint position);
+Itdb_PhotoAlbum *itdb_photodb_photoalbum_create (Itdb_PhotoDB *db,
+						 const gchar *albumname,
+						 gint pos);
+Itdb_PhotoDB *itdb_photodb_create (const gchar *mountpoint);
 void itdb_photodb_free (Itdb_PhotoDB *photodb);
-gboolean itdb_photodb_write (Itdb_PhotoDB *db, GError **error);
-void itdb_photodb_photoalbum_free (Itdb_PhotoAlbum *pa);
-gboolean itdb_photodb_remove_photo (Itdb_PhotoDB *db,
-        const gint photo_id );
+gboolean itdb_photodb_write (Itdb_PhotoDB *photodb, GError **error);
+void itdb_photodb_remove_photo (Itdb_PhotoDB *db,
+				Itdb_PhotoAlbum *album,
+				Itdb_Artwork *photo);
+void itdb_photodb_photoalbum_remove (Itdb_PhotoDB *db,
+				     Itdb_PhotoAlbum *album,
+				     gboolean remove_pics);
+Itdb_PhotoAlbum *itdb_photodb_photoalbum_by_name(Itdb_PhotoDB *db,
+						 const gchar *albumname );
 
-/* itdb_artwork_... */
+/* itdb_artwork_... -- you probably won't need many of these (probably
+ * with the exception of itdb_artwork_get_thumb_by_type() and
+ * itdb_thumb_get_gdk_pixbuf() probably). Use the itdb_photodb_...()
+ * functions when adding photos, and the itdb_track_...() functions
+ * when adding coverart to audio. */
 Itdb_Artwork *itdb_artwork_new (void);
 Itdb_Artwork *itdb_artwork_duplicate (Itdb_Artwork *artwork);
 void itdb_artwork_free (Itdb_Artwork *artwork);
@@ -1028,16 +1255,23 @@ Itdb_Thumb *itdb_artwork_get_thumb_by_type (Itdb_Artwork *artwork,
 					    ItdbThumbType type);
 gboolean itdb_artwork_add_thumbnail (Itdb_Artwork *artwork,
 				     ItdbThumbType type,
-				     const gchar *filename);
+				     const gchar *filename,
+				     gint rotation, GError **error);
 gboolean itdb_artwork_add_thumbnail_from_data (Itdb_Artwork *artwork,
 					       ItdbThumbType type,
 					       const guchar *image_data,
-					       gsize image_data_len);
+					       gsize image_data_len,
+					       gint rotation, GError **error);
+gboolean itdb_artwork_add_thumbnail_from_pixbuf (Itdb_Artwork *artwork,
+                                                 ItdbThumbType type,
+                                                 gpointer pixbuf,
+                                                 gint rotation,
+                                                 GError **error);
 void itdb_artwork_remove_thumbnail (Itdb_Artwork *artwork,
 				    Itdb_Thumb *thumb);
 void itdb_artwork_remove_thumbnails (Itdb_Artwork *artwork);
 /* itdb_thumb_... */
-/* the following funciton returns a pointer to a GdkPixbuf if
+/* the following function returns a pointer to a GdkPixbuf if
    gdk-pixbuf is installed -- a NULL pointer otherwise. */
 gpointer itdb_thumb_get_gdk_pixbuf (Itdb_Device *device,
 				    Itdb_Thumb *thumb);
@@ -1046,12 +1280,14 @@ void itdb_thumb_free (Itdb_Thumb *thumb);
 Itdb_Thumb *itdb_thumb_new (void);
 gchar *itdb_thumb_get_filename (Itdb_Device *device, Itdb_Thumb *thumb);
 
+#ifndef LIBGPOD_DISABLE_DEPRECATED
 /* time functions */
-guint64 itdb_time_get_mac_time (void);
-time_t itdb_time_mac_to_host (guint64 mactime);
-guint64 itdb_time_host_to_mac (time_t time);
+time_t itdb_time_get_mac_time (void);
+time_t itdb_time_mac_to_host (time_t time);
+time_t itdb_time_host_to_mac (time_t time);
+#endif
 
-/* Initialise a blank ipod */
+/* Initialize a blank ipod */
 gboolean itdb_init_ipod (const gchar *mountpoint,
 			 const gchar *model_number,
 			 const gchar *ipod_name,

@@ -20,7 +20,7 @@
  * 
  *  This product is not supported/written/published by Apple!
  *
- *  $Id: db-image-parser.h 1299 2006-06-04 16:24:45Z jcsjcs $
+ *  $Id: db-image-parser.h 1753 2007-11-04 00:48:12Z jcsjcs $
  */
 
 #ifndef IMAGE_PARSER_H
@@ -31,22 +31,59 @@
 #include "itdb_private.h"
 #include "itdb.h"
 
-#define RED_BITS   5
-#define RED_SHIFT 11
-#define RED_MASK  (((1 << RED_BITS)-1) << RED_SHIFT)
+#define DEBUG_ARTWORK 0
 
-#define GREEN_BITS 6
-#define GREEN_SHIFT 5
-#define GREEN_MASK (((1 << GREEN_BITS)-1) << GREEN_SHIFT)
+#define RED_BITS_565   5
+#define RED_SHIFT_565 11
+#define RED_MASK_565  (((1 << RED_BITS_565)-1) << RED_SHIFT_565)
 
-#define BLUE_BITS 5
-#define BLUE_SHIFT 0
-#define BLUE_MASK (((1 << BLUE_BITS)-1) << BLUE_SHIFT)
+#define GREEN_BITS_565 6
+#define GREEN_SHIFT_565 5
+#define GREEN_MASK_565 (((1 << GREEN_BITS_565)-1) << GREEN_SHIFT_565)
+
+#define BLUE_BITS_565 5
+#define BLUE_SHIFT_565 0
+#define BLUE_MASK_565 (((1 << BLUE_BITS_565)-1) << BLUE_SHIFT_565)
+
+#define ALPHA_BITS_555 1
+#define ALPHA_SHIFT_555 15
+#define ALPHA_MASK_555  (((1 << ALPHA_BITS_555)-1) << ALPHA_SHIFT_555)
+
+#define RED_BITS_555   5
+#define RED_SHIFT_555 10
+#define RED_MASK_555  (((1 << RED_BITS_555)-1) << RED_SHIFT_555)
+
+#define GREEN_BITS_555 5
+#define GREEN_SHIFT_555 5
+#define GREEN_MASK_555 (((1 << GREEN_BITS_555)-1) << GREEN_SHIFT_555)
+
+#define BLUE_BITS_555 5
+#define BLUE_SHIFT_555 0
+#define BLUE_MASK_555 (((1 << BLUE_BITS_555)-1) << BLUE_SHIFT_555)
+
+#define ALPHA_BITS_888 8
+#define ALPHA_SHIFT_888 24
+#define ALPHA_MASK_888  (((1 << ALPHA_BITS_888)-1) << ALPHA_SHIFT_888)
+
+#define RED_BITS_888   8
+#define RED_SHIFT_888 16
+#define RED_MASK_888  (((1 << RED_BITS_888)-1) << RED_SHIFT_888)
+
+#define GREEN_BITS_888 8
+#define GREEN_SHIFT_888 8
+#define GREEN_MASK_888 (((1 << GREEN_BITS_888)-1) << GREEN_SHIFT_888)
+
+#define BLUE_BITS_888 8
+#define BLUE_SHIFT_888 0
+#define BLUE_MASK_888 (((1 << BLUE_BITS_888)-1) << BLUE_SHIFT_888)
 
 G_GNUC_INTERNAL Itdb_Thumb *ipod_image_new_from_mhni (MhniHeader *mhni, 
 						      Itdb_DB *db);
 
 G_GNUC_INTERNAL int itdb_write_ithumb_files (Itdb_DB *db);
+
+G_GNUC_INTERNAL gboolean
+itdb_thumb_type_is_valid_for_db (const ItdbThumbType thumb_type, DbType db_type);
 
 G_GNUC_INTERNAL
 const Itdb_ArtworkFormat *itdb_get_artwork_info_from_type (

@@ -1,6 +1,5 @@
-/* Time-stamp: <2006-09-18 01:33:31 jcs>
-|
-|  Copyright (C) 2002-2005 Jorg Schuler <jcsjcs at users sourceforge net>
+/*
+|  Copyright (C) 2002-2007 Jorg Schuler <jcsjcs at users sourceforge net>
 |  Part of the gtkpod project.
 | 
 |  URL: http://www.gtkpod.org/
@@ -24,7 +23,7 @@
 |
 |  This product is not supported/written/published by Apple!
 |
-|  $Id: itdb_track.c 1313 2006-09-17 17:14:21Z jcsjcs $
+|  $Id: itdb_track.c 1718 2007-10-05 19:20:01Z teuf $
 */
 
 #include <config.h>
@@ -161,7 +160,7 @@ static void itdb_track_set_defaults (Itdb_Track *tr)
 	    tr->unk144 = 0x0000;  /* default value */
 	}
     }
-    //XXXeps if (is_video_ipod (tr->itdb->device))
+    if (is_video_ipod (tr->itdb->device) || 1/*XXXeps*/)
     {
 	/* The unk208 field seems to denote whether the file is a
 	   video or not.  It seems that it must be set to 0x00000002
@@ -170,18 +169,18 @@ static void itdb_track_set_defaults (Itdb_Track *tr)
 	 * proven that setting unk208 to non-0 doesn't upset older
 	 * ipod models
 	 */
-	if (tr->unk208 == 0)
+	if (tr->mediatype == 0)
 	{
 	    if (haystack (tr->filetype, m4v_desc) ||
 		haystack (tr->filetype, mov_desc))
 	    {
 		/* set type to video (0x00000002) */
-		tr->unk208 = 0x00000002;
+		tr->mediatype = 0x00000002;
 	    }
 	    else
 	    {
 		/* set type to audio */
-		tr->unk208 = 0x00000001;
+		tr->mediatype = 0x00000001;
 	    }
 	}
     }
@@ -236,8 +235,7 @@ void itdb_track_add (Itdb_iTunesDB *itdb, Itdb_Track *track, gint32 pos)
 
     itdb_track_set_defaults (track);
 
-    if (pos == -1)  itdb->tracks = g_list_append (itdb->tracks, track);
-    else  itdb->tracks = g_list_insert (itdb->tracks, track, pos);
+    itdb->tracks = g_list_insert (itdb->tracks, track, pos);
 }
 
 /**
@@ -251,24 +249,38 @@ void itdb_track_free (Itdb_Track *track)
     g_return_if_fail (track);
 
     g_free (track->title);
-    g_free (track->artist);
+    g_free (track->ipod_path);
     g_free (track->album);
+    g_free (track->artist);
     g_free (track->genre);
-    g_free (track->composer);
-    g_free (track->comment);
     g_free (track->filetype);
-    g_free (track->grouping);
+    g_free (track->comment);
     g_free (track->category);
+    g_free (track->composer);
+    g_free (track->grouping);
     g_free (track->description);
     g_free (track->podcasturl);
     g_free (track->podcastrss);
     g_free (track->subtitle);
-    g_free (track->ipod_path);
+    g_free (track->tvshow);
+    g_free (track->tvepisode);
+    g_free (track->tvnetwork);
+    g_free (track->albumartist);
+    g_free (track->keywords);
+    g_free (track->sort_artist);
+    g_free (track->sort_title);
+    g_free (track->sort_album);
+    g_free (track->sort_albumartist);
+    g_free (track->sort_composer);
+    g_free (track->sort_tvshow);
+
     g_free (track->chapterdata_raw);
-    itdb_artwork_remove_thumbnails (track->artwork);
-    g_free (track->artwork);
+
+    itdb_artwork_free (track->artwork);
+
     if (track->userdata && track->userdata_destroy)
 	(*track->userdata_destroy) (track->userdata);
+
     g_free (track);
 }
 
@@ -335,19 +347,31 @@ Itdb_Track *itdb_track_duplicate (Itdb_Track *tr)
 
     /* copy strings */
     tr_dup->title = g_strdup (tr->title);
-    tr_dup->artist = g_strdup (tr->artist);
     tr_dup->album = g_strdup (tr->album);
+    tr_dup->artist = g_strdup (tr->artist);
     tr_dup->genre = g_strdup (tr->genre);
-    tr_dup->composer = g_strdup (tr->composer);
-    tr_dup->comment = g_strdup (tr->comment);
     tr_dup->filetype = g_strdup (tr->filetype);
-    tr_dup->grouping = g_strdup (tr->grouping);
+    tr_dup->comment = g_strdup (tr->comment);
     tr_dup->category = g_strdup (tr->category);
+    tr_dup->composer = g_strdup (tr->composer);
+    tr_dup->grouping = g_strdup (tr->grouping);
     tr_dup->description = g_strdup (tr->description);
     tr_dup->podcasturl = g_strdup (tr->podcasturl);
     tr_dup->podcastrss = g_strdup (tr->podcastrss);
     tr_dup->subtitle = g_strdup (tr->subtitle);
+    tr_dup->tvshow = g_strdup (tr->tvshow);
+    tr_dup->tvepisode = g_strdup (tr->tvepisode);
+    tr_dup->tvnetwork = g_strdup (tr->tvnetwork);
+    tr_dup->albumartist = g_strdup (tr->albumartist);
+    tr_dup->keywords = g_strdup (tr->keywords);
     tr_dup->ipod_path = g_strdup (tr->ipod_path);
+    tr_dup->sort_artist = g_strdup (tr->sort_artist);
+    tr_dup->sort_title = g_strdup (tr->sort_title);
+    tr_dup->sort_album = g_strdup (tr->sort_album);
+    tr_dup->sort_albumartist = g_strdup (tr->sort_albumartist);
+    tr_dup->sort_composer = g_strdup (tr->sort_composer);
+    tr_dup->sort_tvshow = g_strdup (tr->sort_tvshow);
+
 
     /* Copy chapterdata */
     if (tr->chapterdata_raw)
@@ -373,35 +397,69 @@ Itdb_Track *itdb_track_duplicate (Itdb_Track *tr)
 static gboolean itdb_track_set_thumbnails_internal (Itdb_Track *track,
 						    const gchar *filename,
 						    const guchar *image_data,
-						    gsize image_data_len)
+						    gsize image_data_len,
+                                                    gpointer *pixbuf,
+						    gint rotation,
+						    GError **error)
 {					     
+    /* FIXME: this looks like it would work, but the problem is that
+     * gtkpod calls this function mostly with tracks that are not yet
+     * part of an iTunesDB. This means only the SMALL and LARGE thumbs
+     * are being added.
+     *
+     * One solution would be to add all kinds of cover thumbs and weed
+     * out the ones not supported when the ArtworkDB is written.
+     *
+     * Suggestions welcome!
+     */
+
     gboolean result = FALSE;
+    ItdbThumbType thumbtypes[] =
+	{ ITDB_THUMB_COVER_SMALL,
+	  ITDB_THUMB_COVER_LARGE,
+	  ITDB_THUMB_COVER_XLARGE,
+	  ITDB_THUMB_COVER_MEDIUM,
+	  ITDB_THUMB_COVER_SMEDIUM,
+	  ITDB_THUMB_COVER_XSMALL,
+	  -1 };
+    ItdbThumbType *thumbtype;
+    const Itdb_ArtworkFormat *formats=NULL;
 
     g_return_val_if_fail (track, FALSE);
+    g_return_val_if_fail (filename || image_data || pixbuf, FALSE);
+
+    if (track->itdb && track->itdb->device)
+    {
+	formats = itdb_device_get_artwork_formats (track->itdb->device);
+    }
 
     itdb_artwork_remove_thumbnails (track->artwork);
 
-    if (filename)
+    for (thumbtype=thumbtypes; *thumbtype!=-1; ++thumbtype)
     {
-	result = itdb_artwork_add_thumbnail (track->artwork,
-					     ITDB_THUMB_COVER_SMALL,
-					     filename);
-	if (result == TRUE)
+	if (filename)
+	{
 	    result = itdb_artwork_add_thumbnail (track->artwork,
-						 ITDB_THUMB_COVER_LARGE,
-						 filename);
-    }
-    if (image_data)
-    {
-	result = itdb_artwork_add_thumbnail_from_data (track->artwork,
-						       ITDB_THUMB_COVER_SMALL,
-						       image_data,
-						       image_data_len);
-	if (result == TRUE)
+						 *thumbtype,
+						 filename, rotation, error);
+	}
+	if (image_data)
+	{
 	    result = itdb_artwork_add_thumbnail_from_data (track->artwork,
-							   ITDB_THUMB_COVER_LARGE,
+							   *thumbtype,
 							   image_data,
-							   image_data_len);
+							   image_data_len,
+							   rotation, error);
+	}
+	if (pixbuf)
+	{
+	    result = itdb_artwork_add_thumbnail_from_pixbuf (track->artwork,
+							     *thumbtype,
+							     pixbuf, rotation,
+							     error);
+        }
+	if (result == FALSE)
+	    break;  /* for (thumbtype=...) */
     }
 
     if (result == TRUE)
@@ -446,7 +504,8 @@ gboolean itdb_track_set_thumbnails (Itdb_Track *track,
     g_return_val_if_fail (track, FALSE);
     g_return_val_if_fail (filename, FALSE);
 
-    return itdb_track_set_thumbnails_internal (track, filename, NULL, 0);
+    return itdb_track_set_thumbnails_internal (track, filename, NULL, 0, NULL,
+					       0, NULL);
 }
 
 
@@ -474,7 +533,29 @@ gboolean itdb_track_set_thumbnails_from_data (Itdb_Track *track,
     g_return_val_if_fail (image_data, FALSE);
 
     return itdb_track_set_thumbnails_internal (track, NULL,
-					       image_data, image_data_len);
+					       image_data, image_data_len,
+                                               NULL, 0, NULL);
+}
+
+/**
+ * itdb_track_set_thumbnails_from_pixbuf:
+ * @track: an #Itdb_Track
+ * @pixbuf: a #GdkPixbuf used to generate the thumbnail
+ *
+ * Uses @pixbuf to generate iPod thumbnails. To save memory, the thumbnails
+ * will only be generated when necessary, ie when itdb_save() or a
+ * similar function is called.
+ *
+ * Return value: TRUE if the thumbnail could be added, FALSE otherwise.
+ **/
+gboolean itdb_track_set_thumbnails_from_pixbuf (Itdb_Track *track,
+                                                gpointer pixbuf)
+{
+    g_return_val_if_fail (track, FALSE);
+    g_return_val_if_fail (pixbuf, FALSE);
+
+    return itdb_track_set_thumbnails_internal (track, NULL, NULL, 0,
+                                               pixbuf, 0, NULL);
 }
 
 

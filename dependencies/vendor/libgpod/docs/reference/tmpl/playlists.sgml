@@ -6,7 +6,9 @@ Data structure to represent an iPod playlist
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+These functions and structures allow for adding and removing playlists,
+adding and removing tracks from playlists, sorting playlists, finding tracks in
+a playlist, etc.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -33,12 +35,16 @@ Data structure to represent an iPod playlist
 @is_spl: 
 @timestamp: 
 @id: 
-@mhodcount: 
-@libmhodcount: 
 @sortorder: 
 @podcastflag: 
 @splpref: 
 @splrules: 
+@reserved100: 
+@reserved101: 
+@reserved_int1: 
+@reserved_int2: 
+@reserved1: 
+@reserved2: 
 @usertype: 
 @userdata: 
 @userdata_duplicate: 

@@ -25,7 +25,7 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED" 
-SCAN_OPTIONS=
+SCAN_OPTIONS=--deprecated-guards="LIBGPOD_DISABLE_DEPRECATED"
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -74,5 +74,8 @@ GTKDOC_LIBS=
 include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
-# e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += 
+EXTRA_DIST += version.xml.in
+
+# Build the documentation when creating tarballs
+dist-hook-local:
+	$(MAKE) all

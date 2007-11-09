@@ -1,0 +1,92 @@
+There are two ways to use the python libgpod bindings.  Both methods use the
+same namespace (gpod) for convenience.  Just "import gpod" to get started using
+either of them.
+
+The first method provides a 'Pythonic' API.  Most uses of this API will start by
+opening the database with gpod.Database() and then calling methods on the
+returned object.  For example, to read an iTunesDB from an iPod at /mnt/ipod
+and print the title for the tracks in the database:
+
+    import gpod
+    db = gpod.Database('/mnt/ipod')
+    for track in db:
+        print track['title']
+
+Please see ipod.py for the implementation details and the scripts in the
+examples directory for some ideas on how to use the bindings.
+
+
+The second method uses the same API as the C implementation.  Prefix the C
+function names with gpod.  For example, to read an iTunesDB from an iPod at
+/mnt/ipod and display the titles for each track:
+
+    import gpod
+    db = gpod.itdb_parse('/mnt/ipod', None)
+    tracks = gpod.sw_get_tracks(db)
+    for track in tracks:
+        print track.title
+
+See the libgpod C API documentation for the details and available functions.
+
+Note: The C API is translated to Python using SWIG (Simplified Wrapper and
+Interface Generator).  This automated translation sometimes exposes functions
+which return data types that are not useful in Python and require helper
+functions in the bindings.  An example is listing playlists; the C API would
+return a GList which means nothing to Python, so a helper function is provided
+that returns a Python list.  These helper functions are prefixed with sw_ to
+denote that they are not native libgpod functions.
+
+The current helper functions are:
+
+@WRAPPER_LIST@
+
+Please see the example scripts for ideas on how to use these functions.
+
+
+The time_t mapping has changed recently:
+
++------------------------+-------------+-------------+
+|Version                 | Reading     | Writing     |
+|                        |             |             |
++------------------------+-------------+-------------+
+|libgpod >= 0.5.4        |C style API: |C style API: |
+|(SVN >= r1672)          |As a unix    |As a unix    |
+|                        |timestamp    |timestamp    |
+|                        |integer      |integer or a |
+|                        |             |Python       |
+|                        |OO style API:|datetime     |
+|                        |As a Python  |instance     |
+|                        |datetime     |             |
+|                        |             |OO style API:|
+|                        |             |As a unix    |
+|                        |             |timestamp    |
+|                        |             |integer or a |
+|                        |             |Python       |
+|                        |             |datetime     |
+|                        |             |instance     |
+|                        |             |             |
++------------------------+-------------+-------------+
+|libgpod 0.5.0 - 0.5.2   |As a unix    |As a unix    |
+|(SVN r1433 - r1669)     |timestamp    |timestamp    |
+|                        |integer      |integer      |
+|                        |             |             |
++------------------------+-------------+-------------+
+|libgpod <= 0.4.2        |As an integer|As an integer|
+|(SVN < r1417)           |with a       |with a       |
+|                        |2082844800   |2082844800   |
+|                        |offset       |offset       |
++------------------------+-------------+-------------+
+
+This table means that as a user of the Python bindings, you likely
+want to detect libgpod < 0.5.0. One way would be to test for the
+presence of some of the renamed constants in libgpod >= 0.5.0:
+
+    # libgpod >= 0.5.0 doesn't use mac-type timestamps anymore.  check
+    # if we're using a newer version by looking for a renamed constant.
+    if hasattr(gpod, 'ITDB_SPL_STRING_MAXLEN'):
+        track.time_released = int(time.mktime(ipod_date)
+    else:
+        track.time_release = int(time.mktime(ipod_date) + 2082844800
+
+(Since libgpod 0.5.4 (SVN r1633) there exists a gpod.version_info
+tuple, which will make such things easier to cope with in the future.)

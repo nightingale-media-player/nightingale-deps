@@ -1,6 +1,16 @@
 Possible problems:
 ------------------
 
+* Compilation of applications that compiled fine with libgpod 0.4.2
+  fail with libgpod 0.5.0 or later because of unknown symbols.
+
+With version 0.5.0 of libgpod the namespace has been cleaned up. All
+exported symbols now start with either ITDB or Itdb. Applications
+using the old symbols will have to be adapted. Please see the
+ChangeLog entry from 27 April 2007 for details on the renaming.
+
+------------------------------------------------------------
+
 * If you get an error stating
 
 "possibly undefined macro: AC_PROG_INTLTOOL"
@@ -32,7 +42,8 @@ will do that for you.
 
 If you get this error, you are probably using automake >= 1.8.
 Automake 1.8 does no longer install the mkinstalldirs file, and
-gettext 0.14.4 does still depend on it...
+gettext 0.14.4 does still depend on it... (automake 1.9.6 seems
+to work fine, btw.)
 
 Do a 'locate gettext/mkinstalldirs' and copy it over, then run
 ./autogen.sh again for good measure.
@@ -42,6 +53,15 @@ Do a 'locate gettext/mkinstalldirs' and copy it over, then run
 * "config.status: error: cannot find input file: po/Makefile.in.in"
 
 Upgrade intltool. 0.33 seems to work.
+
+------------------------------------------------------------
+
+* "array size missing in `padding'"
+
+Older versions of gcc don't seem to understand the construct. You can
+either change the 'padding[]' strings to 'padding[0]' (not tested) or
+upgrade your gcc to a more recent version (gcc-3.2 has been reported
+to work) fine.
 
 ------------------------------------------------------------
 
@@ -57,5 +77,21 @@ installation prefix is '/opt/gnome' use the following:
 
 If you use a diferent prefix, replace '/opt/gnome' accordingly.
 
-Can someone send a patch how to automate all this?
-(gtkpod-devel@lists.sourceforge.net)
+Added on 2007/1/15: Note that I don't have any problems on my Debian
+4.1.1-13 system and won't have to do any of this.
+
+------------------------------------------------------------
+
+* Packages required to build python bindings
+
+On Debian the following packages are required:
+
+python (e.g. python2.4)
+python-dev (e.g. python2.4-dev)
+python-mutagen
+
+These are needed for full photo/thumbnail support:
+python-gtk2-dev (and python-gobject-dev, if using python-gtk2-dev >= 2.10)
+
+------------------------------------------------------------
+

@@ -1,46 +1,63 @@
-SUBDIRS = examples
+SUBDIRS = examples tests
 
-EXTRA_DIST =		\
-	gpod.i 		\
-	ipod.py 	\
-	__init__.py	\
-	gtkpod.py
+EXTRA_DIST =                \
+        README.in           \
+        __init__.py         \
+        gpod.i.in           \
+        gpod_doc.i.in       \
+        gtkdoc-to-swig.xsl  \
+        gtkpod.py           \
+        ipod.py
 
-CLEANFILES =		\
-	*.pyc		\
-	*.pyo		\
-	_gpod.so	\
-	gpod.py		\
-	gpod_wrap.c	\
-	gpod_wrap.o
+CLEANFILES =                \
+        *.pyc               \
+        *.pyo               \
+        _gpod.so            \
+        gpod.py             \
+        gpod_doc.i          \
+        gpod_wrap.*
+
+DISTCLEANFILES =            \
+        README              \
+        gpod.i
+
+README: README.in gpod.i
+	WRAPPER_LIST=`grep 'PyObject\* sw_[^_].*;' gpod.i | awk -F "[ (]" '{ print $$2 }' | sort -u | tr '\n' ' '`; \
+	sed \
+	    -e "s/@WRAPPER_LIST@/$${WRAPPER_LIST}/" \
+	    -e "/^sw_/ s/ $$//" \
+	    -e "/^sw_/ s/ /\n/g" \
+	    $< > $@
 
 if HAVE_PYTHON
-MODULE_CFLAGS	= `$(PKG_CONFIG) --cflags $(top_srcdir)/libgpod-1.0.pc` $(PYTHON_INCLUDES)
-MODULE_LIBS	= `$(PKG_CONFIG) --libs $(top_srcdir)/libgpod-1.0.pc` -L$(top_srcdir)/src/.libs
-python_DATA	= gpod.py _gpod.so
+BUILT_SOURCES = gpod_wrap.c
+SWIG_INTERFACES = gpod.i gpod_doc.i
+LIBGPOD_CFLAGS += -fno-strict-aliasing
+INCLUDES = -I$(top_srcdir)/src
 
-gpod_wrap.c: gpod.i
-	$(SWIG) -python gpod.i
+gpoddir = $(pyexecdir)/gpod
+gpod_PYTHON =  __init__.py gtkpod.py ipod.py
+nodist_gpod_PYTHON = gpod.py
+gpod_LTLIBRARIES = _gpod.la
+nodist__gpod_la_SOURCES = gpod_wrap.c
+_gpod_la_CPPFLAGS = $(PYTHON_INCLUDES) $(LIBGPOD_CFLAGS) $(INCLUDES)
+_gpod_la_LDFLAGS = -module -avoid-version
+_gpod_la_LIBADD = $(LIBGPOD_LIBS) $(top_builddir)/src/libgpod.la
 
-gpod.py: gpod.i
-	$(SWIG) -python gpod.i
+gpod_doc.i: $(srcdir)/gpod_doc.i.in $(srcdir)/gtkdoc-to-swig.xsl
+	cat $< > $@
+	-if test -x "`which xsltproc 2>/dev/null`"; then \
+	    for xml in $(top_srcdir)/docs/reference/xml/*.xml; do \
+		xsltproc $(srcdir)/gtkdoc-to-swig.xsl $$xml; \
+	    done >> $@; \
+	fi
 
-gpod_wrap.o: gpod_wrap.c
-	$(CC) $(MODULE_CFLAGS) -c -fpic gpod_wrap.c
+gpod_wrap.c: $(SWIG_INTERFACES) $(nodist_gpod_PYTHON)
+	$(SWIG) -python $(INCLUDES) -o $@ $<
 
-_gpod.so: gpod_wrap.o
-	$(CC) $(MODULE_LIBS) @PYTHON_LDFLAGS@ gpod_wrap.o -o $@
-
-install-pythonDATA: $(python_DATA)
-	$(mkinstalldirs) $(DESTDIR)$(pythondir)/gpod
-	$(INSTALL_PROGRAM) _gpod.so  $(DESTDIR)$(pythondir)/gpod/_gpod.so
-	$(INSTALL_DATA) *.py         $(DESTDIR)$(pythondir)/gpod/
-	$(PYTHON) -c 'from compileall import compile_dir; compile_dir("$(DESTDIR)$(pythondir)/gpod/", ddir="$(pythondir)/gpod/")'
-	$(PYTHON) -O -c 'from compileall import compile_dir; compile_dir("$(DESTDIR)$(pythondir)/gpod/", ddir="$(pythondir)/gpod/")'
-
-uninstall-pythonDATA: $(python_DATA)
-	rm -rf $(DESTDIR)$(pythondir)/gpod
+gpod.py: $(SWIG_INTERFACES)
+	$(SWIG) -python -o $@ $<
 
 test:
-	cd tests && python tests.py
+	$(MAKE) -C tests test
 endif

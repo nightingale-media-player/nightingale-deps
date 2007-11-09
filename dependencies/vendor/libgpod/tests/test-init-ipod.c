@@ -19,15 +19,15 @@
  *
  * This product is not supported/written/published by Apple!
  *
- * $Id: test-init-ipod.c 1292 2006-05-30 14:09:44Z jcsjcs $
+ * $Id: test-init-ipod.c 1326 2006-10-02 13:17:58Z jcsjcs $
  *
  */
 
 #include "itdb.h"
 
 #include <locale.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <glib/gi18n-lib.h>
+#include <glib-object.h>
+#include <glib/gi18n.h>
 
 
 static void usage (const char *argv0)

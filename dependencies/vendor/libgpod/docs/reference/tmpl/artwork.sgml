@@ -2,16 +2,18 @@
 Artwork
 
 <!-- ##### SECTION Short_Description ##### -->
-Data structure to store iPod artwork (cover and photos)
+Data structure to store iPod artwork (album covers)
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+These functions and structures are for adding, changing, and removing
+album/track artwork.  For working with photos, see the
+<link linkend="photodb">Photo database</link> section.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+<link linkend="photodb">Photo database</link>
 </para>
 
 <!-- ##### SECTION Stability_Level ##### -->
@@ -23,9 +25,17 @@ Data structure to store iPod artwork (cover and photos)
 </para>
 
 @thumbnails: 
-@artwork_size: 
 @id: 
+@unk028: 
+@rating: 
+@unk036: 
 @creation_date: 
+@digitized_date: 
+@artwork_size: 
+@reserved_int1: 
+@reserved_int2: 
+@reserved1: 
+@reserved2: 
 @usertype: 
 @userdata: 
 @userdata_duplicate: 
@@ -40,12 +50,18 @@ Data structure to store iPod artwork (cover and photos)
 @filename: 
 @image_data: 
 @image_data_len: 
+@pixbuf: 
+@rotation: 
 @offset: 
 @size: 
 @width: 
 @height: 
 @horizontal_padding: 
 @vertical_padding: 
+@reserved_int1: 
+@reserved_int2: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### ENUM ItdbThumbType ##### -->
 <para>
@@ -58,6 +74,10 @@ Data structure to store iPod artwork (cover and photos)
 @ITDB_THUMB_PHOTO_LARGE: 
 @ITDB_THUMB_PHOTO_FULL_SCREEN: 
 @ITDB_THUMB_PHOTO_TV_SCREEN: 
+@ITDB_THUMB_COVER_XLARGE: 
+@ITDB_THUMB_COVER_MEDIUM: 
+@ITDB_THUMB_COVER_SMEDIUM: 
+@ITDB_THUMB_COVER_XSMALL: 
 
 <!-- ##### FUNCTION itdb_artwork_new ##### -->
 <para>
@@ -92,6 +112,35 @@ Data structure to store iPod artwork (cover and photos)
 @artwork: 
 @type: 
 @filename: 
+@rotation: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_artwork_add_thumbnail_from_data ##### -->
+<para>
+
+</para>
+
+@artwork: 
+@type: 
+@image_data: 
+@image_data_len: 
+@rotation: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_artwork_add_thumbnail_from_pixbuf ##### -->
+<para>
+
+</para>
+
+@artwork: 
+@type: 
+@pixbuf: 
+@rotation: 
+@error: 
 @Returns: 
 
 

@@ -2,11 +2,11 @@
 Device
 
 <!-- ##### SECTION Short_Description ##### -->
-Data structure holding information about the iPod (model, mount point, ...)
+Data structure holding information about the iPod (model, mount point, etc.)
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+These functions are for reading and setting information about the iPod.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -27,6 +27,7 @@ Data structure holding information about the iPod (model, mount point, ...)
 @byte_order: 
 @sysinfo: 
 @sysinfo_changed: 
+@timezone_shift: 
 
 <!-- ##### FUNCTION itdb_device_new ##### -->
 <para>
@@ -72,6 +73,133 @@ Data structure holding information about the iPod (model, mount point, ...)
 @Returns: 
 
 
+<!-- ##### FUNCTION itdb_device_set_sysinfo ##### -->
+<para>
+
+</para>
+
+@device: 
+@field: 
+@value: 
+
+
+<!-- ##### FUNCTION itdb_device_write_sysinfo ##### -->
+<para>
+
+</para>
+
+@device: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_device_get_ipod_info ##### -->
+<para>
+
+</para>
+
+@device: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_device_supports_artwork ##### -->
+<para>
+
+</para>
+
+@device: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_device_supports_photo ##### -->
+<para>
+
+</para>
+
+@device: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_info_get_ipod_info_table ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_info_get_ipod_generation_string ##### -->
+<para>
+
+</para>
+
+@generation: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_info_get_ipod_model_name_string ##### -->
+<para>
+
+</para>
+
+@model: 
+@Returns: 
+
+
+<!-- ##### FUNCTION itdb_init_ipod ##### -->
+<para>
+
+</para>
+
+@mountpoint: 
+@model_number: 
+@ipod_name: 
+@error: 
+@Returns: 
+
+
+<!-- ##### ENUM Itdb_IpodGeneration ##### -->
+<para>
+
+</para>
+
+@ITDB_IPOD_GENERATION_UNKNOWN: 
+@ITDB_IPOD_GENERATION_FIRST: 
+@ITDB_IPOD_GENERATION_SECOND: 
+@ITDB_IPOD_GENERATION_THIRD: 
+@ITDB_IPOD_GENERATION_FOURTH: 
+@ITDB_IPOD_GENERATION_PHOTO: 
+@ITDB_IPOD_GENERATION_MOBILE: 
+@ITDB_IPOD_GENERATION_MINI_1: 
+@ITDB_IPOD_GENERATION_MINI_2: 
+@ITDB_IPOD_GENERATION_SHUFFLE_1: 
+@ITDB_IPOD_GENERATION_SHUFFLE_2: 
+@ITDB_IPOD_GENERATION_SHUFFLE_3: 
+@ITDB_IPOD_GENERATION_NANO_1: 
+@ITDB_IPOD_GENERATION_NANO_2: 
+@ITDB_IPOD_GENERATION_NANO_3: 
+@ITDB_IPOD_GENERATION_VIDEO_1: 
+@ITDB_IPOD_GENERATION_VIDEO_2: 
+@ITDB_IPOD_GENERATION_CLASSIC_1: 
+@ITDB_IPOD_GENERATION_TOUCH_1: 
+@ITDB_IPOD_GENERATION_FIFTH: 
+@ITDB_IPOD_GENERATION_SIXTH: 
+
+<!-- ##### STRUCT Itdb_IpodInfo ##### -->
+<para>
+
+</para>
+
+@model_number: 
+@capacity: 
+@ipod_model: 
+@ipod_generation: 
+@musicdirs: 
+@reserved_int1: 
+@reserved_int2: 
+@reserved1: 
+@reserved2: 
+
 <!-- ##### ENUM Itdb_IpodModel ##### -->
 <para>
 
@@ -99,6 +227,17 @@ Data structure holding information about the iPod (model, mount point, ...)
 @ITDB_IPOD_MODEL_NANO_BLUE: 
 @ITDB_IPOD_MODEL_NANO_GREEN: 
 @ITDB_IPOD_MODEL_NANO_PINK: 
+@ITDB_IPOD_MODEL_NANO_RED: 
+@ITDB_IPOD_MODEL_IPHONE_1: 
+@ITDB_IPOD_MODEL_SHUFFLE_SILVER: 
+@ITDB_IPOD_MODEL_SHUFFLE_PINK: 
+@ITDB_IPOD_MODEL_SHUFFLE_BLUE: 
+@ITDB_IPOD_MODEL_SHUFFLE_GREEN: 
+@ITDB_IPOD_MODEL_SHUFFLE_ORANGE: 
+@ITDB_IPOD_MODEL_SHUFFLE_PURPLE: 
+@ITDB_IPOD_MODEL_CLASSIC_SILVER: 
+@ITDB_IPOD_MODEL_CLASSIC_BLACK: 
+@ITDB_IPOD_MODEL_TOUCH_BLACK: 
 
 <!-- ##### STRUCT Itdb_ArtworkFormat ##### -->
 <para>
@@ -109,4 +248,6 @@ Data structure holding information about the iPod (model, mount point, ...)
 @width: 
 @height: 
 @correlation_id: 
+@format: 
+@padding: 
 
