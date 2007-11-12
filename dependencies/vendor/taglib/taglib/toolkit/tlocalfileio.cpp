@@ -65,7 +65,7 @@ public:
   bool readOnly;
   bool valid;
   ulong size;
-  static const uint bufferSize = 1024;
+  static const uint bufferSize = 16384;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
