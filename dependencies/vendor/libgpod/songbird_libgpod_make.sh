@@ -429,6 +429,7 @@ build()
                 --disable-gdk-pixbuf                                           \
                 --disable-dependency-tracking                                  \
                 --disable-static                                               \
+                --disable-more-warnings                                        \
                 --enable-cxx-warnings=no
     make && make install
 
