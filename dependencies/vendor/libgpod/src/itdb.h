@@ -1078,7 +1078,7 @@ gboolean itdb_write_file (Itdb_iTunesDB *itdb, const gchar *filename,
 gboolean itdb_shuffle_write (Itdb_iTunesDB *itdb, GError **error);
 gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
 				  const gchar *filename, GError **error);
-void itdb_shuffle_filename_ipod2fs (gchar *ipod_file);
+void itdb_filename_ipod2shuffle (gchar *ipod_file);
 Itdb_iTunesDB *itdb_new (void);
 void itdb_free (Itdb_iTunesDB *itdb);
 Itdb_iTunesDB *itdb_duplicate (Itdb_iTunesDB *itdb); /* not implemented */
