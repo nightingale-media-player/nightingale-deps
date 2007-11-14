@@ -9,11 +9,11 @@ test_write_thumbnails_CFLAGS = $(AM_CFLAGS)
 
 test_photos_SOURCES = test-photos.c
 test_photos_CFLAGS = $(AM_CFLAGS)
-TESTMISC=test-init-ipod
 else
 TESTTHUMBS=
-TESTMISC=
 endif
+
+TESTMISC=test-init-ipod
 
 if HAVE_TAGLIB
 TESTTAGLIB=test-rebuild-db
