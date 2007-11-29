@@ -63,7 +63,7 @@
                   type="int"/>
       <preference id="browser.startup.homepage"
                   name="browser.startup.homepage"
-                  type="wstring"/>
+                  type="string"/>
 
       <preference id="pref.browser.homepage.disable_button.current_page"
                   name="pref.browser.homepage.disable_button.current_page"
