@@ -43,8 +43,10 @@
 <!DOCTYPE overlay [
   <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
   <!ENTITY % mainDTD SYSTEM "chrome://browser/locale/preferences/main.dtd">
+  <!ENTITY % songbirdDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
   %brandDTD;
   %mainDTD;
+  %songbirdDTD;
 ]>
 
 <overlay id="MainPaneOverlay"
@@ -58,9 +60,11 @@
       <!-- XXX Button preferences -->
 
       <!-- Startup -->
+      <!-- SONGBIRD: we always open your previous tabs, don't handle this pref
       <preference id="browser.startup.page"
                   name="browser.startup.page"
                   type="int"/>
+      -->
       <preference id="browser.startup.homepage"
                   name="browser.startup.homepage"
                   type="string"/>
@@ -111,8 +115,9 @@
 
     <!-- Startup -->
     <groupbox id="startupGroup">
-      <caption label="&startup.label;"/>
+      <caption label="&prefs.homepage.label;"/>
 
+      <!-- SONGBIRD: we always open your previous tabs, don't show this ui
       <hbox align="center">
         <label value="&startupPage.label;" accesskey="&startupPage.accesskey;"
                control="browserStartupPage"/>
@@ -125,8 +130,9 @@
         </menulist>
       </hbox>
       <separator class="thin"/>
+      -->
       <hbox align="center">
-        <label value="&location.label;" accesskey="&location.accesskey;" control="browserHomePage"/>
+        <label value="&prefs.homepage.url.label;" accesskey="&prefs.homepage.url.accesskey;" control="browserHomePage"/>
         <textbox id="browserHomePage" class="padded" flex="1"
                  type="autocomplete" autocompletesearch="history"
                  preference="browser.startup.homepage"/>
@@ -138,10 +144,12 @@
                 oncommand="gMainPane.setHomePageToCurrent();"
                 id="useCurrent"
                 preference="pref.browser.homepage.disable_button.current_page"/>
+      <!-- SONGBIRD: we don't want this feature anyway
         <button label="&useBookmark.label;" accesskey="&useBookmark.accesskey;"
                 oncommand="gMainPane.setHomePageToBookmark();"
                 id="useBookmark"
                 preference="pref.browser.homepage.disable_button.bookmark_page"/>
+      -->
         <button label="&restoreDefault.label;" accesskey="&restoreDefault.accesskey;"
                 oncommand="gMainPane.restoreDefaultHomePage();"
                 id="restoreDefaultHomePage"
