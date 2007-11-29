@@ -134,6 +134,11 @@ BrowserGlue.prototype = {
     } catch(ex) {
     }
 
+/*
+ * Songbird handles its own EULA so we don't want to try and show this
+ * one. The browser.EULA* preferences do not exist in songbird either.
+ */
+    mustDisplayEULA = false;
     if (mustDisplayEULA) {
       var ww2 = Cc["@mozilla.org/embedcomp/window-watcher;1"].
                 getService(Ci.nsIWindowWatcher);
