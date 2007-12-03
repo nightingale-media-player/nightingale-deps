@@ -40,8 +40,10 @@
 <!DOCTYPE overlay [
   <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
   <!ENTITY % securityDTD SYSTEM "chrome://browser/locale/preferences/security.dtd">
+  <!ENTITY % songbirdDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
   %brandDTD;
   %securityDTD;
+  %songbirdDTD;
 ]>
 
 <overlay id="SecurityPaneOverlay"
@@ -84,7 +86,8 @@
 
     <!-- addons, forgery (phishing) UI -->
     <groupbox id="addonsPhishingGroup"
-              xmlns:aaa="http://www.w3.org/2005/07/aaa">
+        xmlns:aaa="http://www.w3.org/2005/07/aaa">
+      <caption label="&prefs.security.addons.label;" />
       <hbox id="addonInstallBox">
         <checkbox id="warnAddonInstall" flex="1"
                   label="&warnAddonInstall.label;"
@@ -96,7 +99,7 @@
                 accesskey="&addonExceptions.accesskey;"
                 oncommand="gSecurityPane.showAddonExceptions();"/>
       </hbox>
-
+      <!-- SONGBIRD: we don't support phishing protection right now
       <separator class="thin"/>
 
       <checkbox id="tellMaybeForgery"
@@ -123,6 +126,7 @@
           <label id="onloadAfter">&askThirdPartyAfter.label;</label>
         </hbox>
       </radiogroup>
+      -->
 
     </groupbox>
 
