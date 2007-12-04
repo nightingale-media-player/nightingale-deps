@@ -53,8 +53,7 @@
             style="width: &window.width; !important;">
 #endif
 
-  <prefpane id="ConnectionsDialogPane"
-            helpTopic="prefs-connection-settings" helpURI="chrome://browser/locale/help/help.rdf">
+  <prefpane id="ConnectionsDialogPane">
 
     <preferences>
       <preference id="network.proxy.type"         name="network.proxy.type"         type="int" onchange="gConnectionsDialog.proxyTypeChanged();"/>
@@ -74,7 +73,7 @@
       <preference id="network.proxy.share_proxy_settings"
                   name="network.proxy.share_proxy_settings"
                   type="bool"/>
-      
+
       <preference id="pref.advanced.proxies.disable_button.reload"
                   name="pref.advanced.proxies.disable_button.reload"
                   type="bool"/>
@@ -88,7 +87,7 @@
       <preference id="network.proxy.backup.gopher"       name="network.proxy.backup.gopher"       type="string"/>
       <preference id="network.proxy.backup.gopher_port"  name="network.proxy.backup.gopher_port"  type="int"/>
     </preferences>
-    
+
     <script type="application/x-javascript" src="chrome://browser/content/preferences/connection.js"/>
 
     <stringbundle id="preferencesBundle" src="chrome://browser/locale/preferences/preferences.properties"/>
@@ -184,7 +183,7 @@
               </radiogroup>
             </row>
 
-            <row align="center"> 
+            <row align="center">
               <hbox align="center" pack="end">
                 <label value="&noproxy.label;" accesskey="&noproxy.accesskey;" control="networkProxyNone"/>
               </hbox>
@@ -202,11 +201,10 @@
                    oninput="gConnectionsDialog.updateReloadButton();"/>
           <button id="autoReload" icon="refresh"
                   label="&reload.label;" accesskey="&reload.accesskey;"
-                  oncommand="gConnectionsDialog.reloadPAC();" 
+                  oncommand="gConnectionsDialog.reloadPAC();"
                   preference="pref.advanced.proxies.disable_button.reload"/>
         </hbox>
       </radiogroup>
     </groupbox>
   </prefpane>
 </prefwindow>
-

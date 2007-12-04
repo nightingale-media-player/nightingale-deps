@@ -59,9 +59,8 @@
             style="width: &window.width; !important;">
 #endif
 
-  <prefpane id="FontsDialogPane"
-            helpTopic="prefs-fonts-and-colors" helpURI="chrome://browser/locale/help/help.rdf">
-  
+  <prefpane id="FontsDialogPane">
+
     <preferences id="fontPreferences">
       <preference id="font.language.group"  name="font.language.group"  type="wstring"/>
       <preference id="browser.display.use_document_fonts"
@@ -69,7 +68,7 @@
                   type="int"/>
       <preference id="intl.charset.default" name="intl.charset.default" type="wstring"/>
     </preferences>
-    
+
     <stringbundle id="bundlePreferences" src="chrome://browser/locale/preferences/preferences.properties"/>
     <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
     <script type="application/x-javascript" src="chrome://browser/content/preferences/fonts.js"/>
@@ -113,7 +112,7 @@
           </menupopup>
         </menulist>
       </caption>
-      
+
       <grid>
         <columns>
           <column/>
@@ -121,7 +120,7 @@
           <column/>
           <column/>
         </columns>
-        
+
         <rows>
           <row>
             <separator class="thin"/>
@@ -141,7 +140,7 @@
               <label value="&size.label;"
                      accesskey="&sizeProportional.accesskey;"
                      control="sizeVar"/>
-            </hbox>  
+            </hbox>
             <menulist id="sizeVar" class="small-margin">
               <menupopup>
                 <menuitem value="9" label="9"/>
@@ -198,7 +197,7 @@
               <label value="&size.label;"
                      accesskey="&sizeMonospace.accesskey;"
                      control="sizeMono"/>
-            </hbox>  
+            </hbox>
             <menulist id="sizeMono">
               <menupopup>
                 <menuitem value="9" label="9"/>
@@ -259,7 +258,7 @@
       <separator/>
       <separator class="groove"/>
       <hbox>
-        <checkbox id="useDocumentFonts" 
+        <checkbox id="useDocumentFonts"
                   label="&allowPagesToUse.label;" accesskey="&allowPagesToUse.accesskey;"
                   preference="browser.display.use_document_fonts"
                   onsyncfrompreference="return gFontsDialog.readUseDocumentFonts();"
@@ -275,7 +274,7 @@
                accesskey="&languages.customize.DefaultCharset.accesskey;"
                control="DefaultCharsetList"/>
         <menulist id="DefaultCharsetList" ref="NC:DecodersRoot" datasources="rdf:charset-menu"
-                  preference="intl.charset.default" 
+                  preference="intl.charset.default"
                   onsyncfrompreference="return gFontsDialog.readDefaultCharset();">
           <template>
             <menupopup>

@@ -113,17 +113,17 @@
                   name="security.disable_button.openDeviceManager"
                   type="bool"/>
     </preferences>
-    
+
     <script type="application/x-javascript" src="chrome://browser/content/preferences/advanced.js"/>
 
     <tabbox id="advancedPrefs" flex="1"
             onselect="gAdvancedPane.tabSelectionChanged();">
 
       <tabs id="tabsElement">
-        <tab id="generalTab" label="&generalTab.label;" helpTopic="prefs-advanced-general"/>
-        <tab id="networkTab" label="&networkTab.label;" helpTopic="prefs-advanced-network"/>
-        <tab id="updateTab" label="&updateTab.label;"  helpTopic="prefs-advanced-update"/>
-        <tab id="encryptionTab" label="&encryptionTab.label;" helpTopic="prefs-advanced-encryption"/>
+        <tab id="generalTab" label="&generalTab.label;"/>
+        <tab id="networkTab" label="&networkTab.label;"/>
+        <tab id="updateTab" label="&updateTab.label;"/>
+        <tab id="encryptionTab" label="&encryptionTab.label;"/>
       </tabs>
 
       <tabpanels flex="1">
@@ -249,7 +249,7 @@
                    label="&modeAutomatic.label;"
                    accesskey="&modeAutomatic.accesskey;"/>
             <hbox class="indent">
-              <checkbox id="warnIncompatible" 
+              <checkbox id="warnIncompatible"
                         label="&modeAutoAddonWarn.label;" accesskey="&modeAutoAddonWarn.accesskey;"
                         preference="app.update.mode"
                         onsyncfrompreference="return gAdvancedPane.readAddonWarn();"
@@ -260,7 +260,7 @@
           <separator id="updateSeparator2"/>
 
           <hbox>
-            <button id="showUpdateHistory" 
+            <button id="showUpdateHistory"
                     label="&updateHistory.label;" accesskey="&updateHistory.accesskey;"
                     preference="app.update.disable_button.showUpdateHistory"
                     oncommand="gAdvancedPane.showUpdates();"/>
@@ -307,11 +307,11 @@
               they're not - this preference uses *those strings* as its values.
               I KID YOU NOT.
             -->
-            <radiogroup id="certSelection" orient="horizontal" preftype="string" 
+            <radiogroup id="certSelection" orient="horizontal" preftype="string"
 	                      preference="security.default_personal_cert">
-              <radio label="&certs.auto;" accesskey="&certs.auto.accesskey;" 
+              <radio label="&certs.auto;" accesskey="&certs.auto.accesskey;"
                      value="Select Automatically"/>
-              <radio label="&certs.ask;" accesskey="&certs.ask.accesskey;" 
+              <radio label="&certs.ask;" accesskey="&certs.ask.accesskey;"
                      value="Ask Every Time"/>
             </radiogroup>
 
@@ -322,15 +322,15 @@
 #endif
             <hbox>
               <button id="viewCertificatesButton"
-                      label="&viewCerts.label;" accesskey="&viewCerts.accesskey;" 
+                      label="&viewCerts.label;" accesskey="&viewCerts.accesskey;"
                       oncommand="gAdvancedPane.showCertificates();"
                       preference="security.disable_button.openCertManager"/>
               <button id="viewCRLButton"
-                      label="&viewCRLs.label;" accesskey="&viewCRLs.accesskey;" 
+                      label="&viewCRLs.label;" accesskey="&viewCRLs.accesskey;"
                       oncommand="gAdvancedPane.showCRLs();"
                       preference="security.OCSP.disable_button.managecrl"/>
               <button id="verificationButton"
-                      label="&verify2.label;" accesskey="&verify2.accesskey;" 
+                      label="&verify2.label;" accesskey="&verify2.accesskey;"
                       oncommand="gAdvancedPane.showOCSP();"/>
 #ifdef XP_MACOSX
             </hbox>

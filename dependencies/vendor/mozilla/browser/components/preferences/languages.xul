@@ -49,8 +49,7 @@
             dlgbuttons="accept,cancel,help"
             style="width: &window.width;;">
 
-  <prefpane id="LanguagesDialogPane" onpaneload="gLanguagesDialog.init();"
-            helpTopic="prefs-languages" helpURI="chrome://browser/locale/help/help.rdf">
+  <prefpane id="LanguagesDialogPane" onpaneload="gLanguagesDialog.init();">
 
     <preferences>
       <preference id="intl.accept_languages" name="intl.accept_languages" type="wstring"/>
@@ -122,4 +121,3 @@
     <separator/>
   </prefpane>
 </prefwindow>
-

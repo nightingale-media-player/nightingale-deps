@@ -49,7 +49,7 @@
 <overlay id="TabsPaneOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <prefpane id="paneTabs" helpTopic="prefs-tabs" helpURI="chrome://browser/locale/help/help.rdf" flex="1">
+  <prefpane id="paneTabs" flex="1">
 
     <preferences id="tabsPreferences">
       <preference id="browser.link.open_external"      name="browser.link.open_external"      type="int"/>
@@ -59,7 +59,7 @@
       <preference id="browser.tabs.warnOnClose"        name="browser.tabs.warnOnClose"        type="bool"/>
       <preference id="browser.tabs.warnOnOpen"         name="browser.tabs.warnOnOpen"         type="bool"/>
     </preferences>
-    
+
     <script type="application/x-javascript" src="chrome://browser/content/preferences/tabs.js"/>
 <!--
     <vbox id="linksOpenInBox">

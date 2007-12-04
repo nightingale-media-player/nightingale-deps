@@ -48,9 +48,7 @@
          xmlns:aaa="http://www.w3.org/2005/07/aaa">
 
   <prefpane id="paneFeeds"
-            onpaneload="gFeedsPane.init();"
-            helpTopic="prefs-feeds"
-            helpURI="chrome://browser/locale/help/help.rdf">
+            onpaneload="gFeedsPane.init();">
 
     <preferences id="feedsPreferences">
       <preference id="browser.feeds.handler"
@@ -69,7 +67,7 @@
                   onchange="gFeedsPane.updateSelectedReader();"
                   type="string"/>
     </preferences>
-    
+
     <script type="application/x-javascript" src="chrome://browser/content/preferences/feeds.js"/>
 
     <filefield class="indent" id="selectedAppFilefield" disabled="true" hidden="true"/>

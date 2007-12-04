@@ -52,8 +52,7 @@
             dlgbuttons="accept,cancel,help"
             title="&sanitizeDialog.title;">
 
-  <prefpane id="SanitizeDialogPane"
-            helpTopic="prefs-clear-private-data" helpURI="chrome://browser/locale/help/help.rdf">
+  <prefpane id="SanitizeDialogPane">
 
     <preferences>
       <preference id="privacy.item.history"               name="privacy.item.history"               type="bool"/>

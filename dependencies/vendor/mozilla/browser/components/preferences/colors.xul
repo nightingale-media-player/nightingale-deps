@@ -52,9 +52,8 @@
             style="width: &window.width; !important;">
 #endif
 
-  <prefpane id="ColorsDialogPane"
-            helpTopic="prefs-fonts-and-colors" helpURI="chrome://browser/locale/help/help.rdf">
-  
+  <prefpane id="ColorsDialogPane">
+
     <preferences>
       <preference id="browser.display.use_document_colors"  name="browser.display.use_document_colors"  type="bool"/>
       <preference id="browser.anchor_color"                 name="browser.anchor_color"                 type="string"/>
@@ -64,7 +63,7 @@
       <preference id="browser.display.background_color"     name="browser.display.background_color"     type="string"/>
       <preference id="browser.display.use_system_colors"    name="browser.display.use_system_colors"    type="bool"/>
     </preferences>
-    
+
     <hbox>
       <groupbox flex="1">
         <caption label="&color;"/>
@@ -86,7 +85,7 @@
                     preference="browser.display.use_system_colors"/>
         </hbox>
       </groupbox>
-        
+
       <groupbox flex="1">
         <caption label="&links;"/>
         <hbox align="center">
@@ -109,7 +108,7 @@
       </groupbox>
     </hbox>
     <hbox>
-      <checkbox id="useDocumentColors" 
+      <checkbox id="useDocumentColors"
                 label="&allowPagesToUse.label;" accesskey="&allowPagesToUse.accesskey;"
                 preference="browser.display.use_document_colors"/>
     </hbox>
