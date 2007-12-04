@@ -42,10 +42,8 @@
 <!DOCTYPE overlay [
   <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
   <!ENTITY % contentDTD SYSTEM "chrome://browser/locale/preferences/content.dtd">
-  <!ENTITY % songbirdDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
   %brandDTD;
   %contentDTD;
-  %songbirdDTD;
 ]>
 
 <overlay id="ContentPaneOverlay"
@@ -61,9 +59,6 @@
       <preference id="permissions.default.image"      name="permissions.default.image"      type="int"/>
       <preference id="javascript.enabled"             name="javascript.enabled"             type="bool"/>
       <preference id="security.enable_java"           name="security.enable_java"           type="bool"/>
-      <!-- BEGIN SONGBIRD CHANGES -->
-      <preference id="browser.tabs.enabled"           name="browser.tabs.enabled"           type="bool" />
-      <!-- END SONGBIRD CHANGES -->
 
       <preference id="pref.advanced.images.disable_button.view_image"
                   name="pref.advanced.images.disable_button.view_image"
@@ -83,7 +78,7 @@
                   name="pref.downloads.disable_button.edit_actions"
                   type="bool"/>
     </preferences>
-    
+
     <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
     <script type="application/x-javascript" src="chrome://browser/content/preferences/content.js"/>
 
@@ -101,7 +96,7 @@
             <vbox align="start">
               <checkbox id="popupPolicy" preference="dom.disable_open_during_load"
                         label="&blockPopups.label;" accesskey="&blockPopups.accesskey;"
-                        onsyncfrompreference="return gContentPane.updateButtons('popupPolicyButton', 
+                        onsyncfrompreference="return gContentPane.updateButtons('popupPolicyButton',
                                                                             'dom.disable_open_during_load');"/>
             </vbox>
             <button id="popupPolicyButton" label="&popupExceptions.label;"
@@ -128,7 +123,7 @@
             <vbox align="start">
               <checkbox id="enableJavaScript" preference="javascript.enabled"
                         label="&enableJavaScript.label;" accesskey="&enableJavaScript.accesskey;"
-                        onsyncfrompreference="return gContentPane.updateButtons('advancedJSButton', 
+                        onsyncfrompreference="return gContentPane.updateButtons('advancedJSButton',
                                                                             'javascript.enabled');"/>
             </vbox>
             <vbox>
@@ -146,16 +141,6 @@
                         preference="security.enable_java"/>
             </vbox>
           </row>
-          <!-- BEGIN SONGBIRD CHANGES -->
-          <row id="enableTabsRow">
-            <vbox align="start">
-              <checkbox id="enableTabs"
-                        label="&tabs.enabled.label;"
-                        preference="browser.tabs.enabled"/>
-      
-            </vbox>
-          </row>
-          <!-- END SONGBIRD CHANGES -->
         </rows>
       </grid>
     </groupbox>
