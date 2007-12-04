@@ -16,6 +16,20 @@ int* _errno(void);
 
 
 /*
+ *   Rename functions that use structure arguments containing time fields so
+ * that the 32 bit time field function variants are used.
+ *  On Vista, calling stat would pass a structure with 32-bit time fields, but
+ * the CRT stat would fill it with 64-bit time fields, resulting in memory
+ * corruption.  Normally, this would be handled transparently or by defining
+ * _USE_32BIT_TIME_T.  However, it's not properly handled with the mixed mingw
+ * compile and MSVC linking.
+ */
+
+#define stat _stat
+#define fstat _fstat
+
+
+/*
  * Remap gettext macros.
  *
  *   gettext is not properly set up.  To avoid crashes in ligbpod when using
