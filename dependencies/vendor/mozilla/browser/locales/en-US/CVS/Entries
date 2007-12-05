@@ -1,7 +1,3 @@
-/README.txt/1.2/Thu Aug 16 04:13:42 2007//
-/defines.inc/1.3/Thu Aug 16 04:13:42 2007//
-/extra-jar.mn/1.2/Thu Aug 16 04:13:42 2007//
-/firefox-l10n.js/1.2/Thu Aug 16 04:13:42 2007//
 D/chrome////
 D/installer////
 D/microsummary-generators////
@@ -9,3 +5,7 @@ D/os2////
 D/profile////
 D/searchplugins////
 D/updater////
+/README.txt/1.2/Wed Oct 31 20:12:39 2007//
+/defines.inc/1.3/Wed Oct 31 20:12:39 2007//
+/extra-jar.mn/1.2/Wed Oct 31 20:12:39 2007//
+/firefox-l10n.js/1.2/Wed Oct 31 20:12:39 2007//

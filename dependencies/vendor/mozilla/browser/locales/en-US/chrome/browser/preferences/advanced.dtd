@@ -1,5 +1,4 @@
-<!-- Note: due to bug 143065, the only remaining accesskeys available to be used
-     in the Advanced pane are: "j", "q", "z" -->
+<!-- Note: each tab panel must contain unique accesskeys -->
 
 <!ENTITY generalTab.label                "General">
 
@@ -21,19 +20,18 @@
 <!ENTITY checkSpelling.label             "Check my spelling as I type">
 <!ENTITY checkSpelling.accesskey         "t">
 
-<!ENTITY languages.label                 "Languages">
-
-<!ENTITY chooseLanguage.label            "Choose your preferred language for displaying pages">
-<!ENTITY chooseButton.label              "Choose...">
-<!ENTITY chooseButton.accesskey          "o">
-
+<!ENTITY systemDefaults.label            "System Defaults">
+<!ENTITY alwaysCheckDefault.label        "Always check to see if &brandShortName; is the default browser on startup"><!--XXX-->
+<!ENTITY alwaysCheckDefault.accesskey    "w">
+<!ENTITY checkNow.label                  "Check Now">
+<!ENTITY checkNow.accesskey              "N">
 
 <!ENTITY networkTab.label                "Network">
 
 <!ENTITY connection.label                "Connection">
 
 <!ENTITY connectionDesc.label            "Configure how &brandShortName; connects to the Internet">
-<!ENTITY connectionSettings.label        "Settings...">
+<!ENTITY connectionSettings.label        "Settings…">
 <!ENTITY connectionSettings.accesskey    "e">
 
 <!ENTITY cache.label "Cache">
@@ -47,7 +45,8 @@
 <!ENTITY useCacheBefore.label            "Use up to">
 <!ENTITY useCacheBefore.accesskey        "U">
 <!ENTITY useCacheAfter.label             "MB of space for the cache">
-
+<!ENTITY clearCacheNow.label             "Clear Now">
+<!ENTITY clearCacheNow.accesskey         "C">
 
 <!ENTITY updateTab.label                 "Update">
 

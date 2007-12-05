@@ -38,12 +38,23 @@
 #
 # ***** END LICENSE BLOCK *****
 */
+
+ menulist > menupopup > menuitem {
+   font: -moz-pull-down-menu;
+ }
+
 .prefWindow-dlgbuttons {
   margin: 0 12px 8px 12px;
 }
 
 #BrowserPreferences .prefWindow-dlgbuttons {
   padding-top: 0 !important;
+}
+
+#FontsDialog > .prefWindow-dlgbuttons,
+#ColorsDialog > .prefWindow-dlgbuttons,
+#LanguagesDialog > .prefWindow-dlgbuttons {
+  margin: 0;
 }
 
 .windowDialog {
@@ -82,10 +93,10 @@ radio[pane=paneGeneral],
 radio[pane=paneMain] {
 	-moz-image-region: rect(0px, 32px, 32px, 0px)
 }
-radio[pane=paneGeneral]:hover, 
+radio[pane=paneGeneral]:hover,
 radio[pane=paneGeneral]:active,
 radio[pane=paneGeneral][selected="true"],
-radio[pane=paneMain]:hover, 
+radio[pane=paneMain]:hover,
 radio[pane=paneMain]:active,
 radio[pane=paneMain][selected="true"]  {
 	-moz-image-region: rect(32px, 32px, 64px, 0px)
@@ -114,14 +125,14 @@ radio[pane=paneContent][selected="true"] {
 	-moz-image-region: rect(32px, 96px, 64px, 64px);
 }
 
-/* ----- FEEDS BUTTON ----- */
+/* ----- APPLICATIONS BUTTON ----- */
 
-radio[pane=paneFeeds] {
+radio[pane=paneApplications] {
 	-moz-image-region: rect(0px, 128px, 32px, 96px);
 }
-radio[pane=paneFeeds]:hover,
-radio[pane=paneFeeds]:active,
-radio[pane=paneFeeds][selected="true"] {
+radio[pane=paneApplications]:hover,
+radio[pane=paneApplications]:active,
+radio[pane=paneApplications][selected="true"] {
 	-moz-image-region: rect(32px, 128px, 64px, 96px);
 }
 
@@ -159,6 +170,15 @@ radio[pane=paneAdvanced][selected="true"] {
 }
 
 
+
+/* ----- APPLICATIONS PREFPANE ----- */
+#BrowserPreferences[animated="true"] #handlersView {
+  height: 25em;
+}
+
+#BrowserPreferences[animated="false"] #handlersView {
+  -moz-box-flex: 1;
+}
 
 .content-box > separator {
   border: 1px solid red;
@@ -275,12 +295,4 @@ caption {
 
 .updateControls {
   -moz-margin-start: 10px;
-}
-
-
-/**
- * Feeds pane
- */
-#chooseClientAppCell {
-  -moz-padding-end: 12px;
 }

@@ -117,7 +117,7 @@ var gMainPane = {
   {
     var rv = { urls: null, names: null };
     document.documentElement.openSubDialog("chrome://browser/content/preferences/selectBookmark.xul",
-                                           "resizable", rv);  
+                                           "resizable", rv);
     if (rv.urls && rv.names) {
       var homePage = document.getElementById("browser.startup.homepage");
 
@@ -175,7 +175,7 @@ var gMainPane = {
 
   /*
    * Preferences:
-   * 
+   *
    * browser.download.showWhenStarting - bool
    *   True if the Download Manager should be opened when a download is
    *   started, false if it shouldn't be opened.
@@ -183,8 +183,10 @@ var gMainPane = {
    *   True if the Download Manager should be closed when all downloads
    *   complete, false if it should be left open.
    * browser.download.useDownloadDir - bool
-   *   True if downloads are saved with no save-as UI shown, false if
-   *   the user should always be asked where to save a file.
+   *   True - Save files directly to the folder configured via the
+   *   browser.download.folderList preference.
+   *   False - Always ask the user where to save a file and default to
+   *   browser.download.lastDir when displaying a folder picker dialog.
    * browser.download.dir - local file handle
    *   A local folder the user may have selected for downloaded files to be
    *   saved. Migration of other browser settings may also set this path.
@@ -204,9 +206,7 @@ var gMainPane = {
    * browser.download.downloadDir
    *   depreciated.
    * browser.download.defaultFolder
-
    *   depreciated.
-
    */
 
   /**
@@ -248,7 +248,7 @@ var gMainPane = {
     // don't override the preference's value in UI
     return undefined;
   },
-  
+
   /**
    * Displays a file picker in which the user can choose the location where
    * downloads are automatically saved, updating preferences and UI in
@@ -295,7 +295,7 @@ var gMainPane = {
   },
 
   /**
-   * Initializes the download folder display settings based on the user's 
+   * Initializes the download folder display settings based on the user's
    * preferences.
    */
   displayDownloadDirPref: function ()
@@ -306,27 +306,16 @@ var gMainPane = {
     var currentDirPref = document.getElementById("browser.download.dir");
 
     // The user's download folder is based on the preferences listed above.
-
     // However, if the system does not support a download folder, the
-
     // actual path returned will be the system's desktop or home folder.
-
     // If this is the case, skip off displaying the Download label and
-
     // display Desktop, even though folderList might be 1.
-
     var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
-
                                 .getService(Components.interfaces.nsIProperties);
-
     var desk = fileLocator.get("Desk", Components.interfaces.nsILocalFile);
-
     var dnldMgr = Components.classes["@mozilla.org/download-manager;1"]
-
                             .getService(Components.interfaces.nsIDownloadManager);
-
     var supportDownloadLabel = !dnldMgr.defaultDownloadsDirectory.equals(desk);
-
 
     // Used in defining the correct path to the folder icon.
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
@@ -334,7 +323,7 @@ var gMainPane = {
     var fph = ios.getProtocolHandler("file")
                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);
     var iconUrlSpec;
-      
+
     // Display a 'pretty' label or the path in the UI.
     if (folderListPref.value == 2) {
       // Custom path selected and is configured
@@ -350,7 +339,7 @@ var gMainPane = {
       // not exposed it was rarely used.
       // With 3.0, a new desktop folder - 'Downloads' was introduced for
       // platforms and versions that don't support a default system downloads
-      // folder. See nsDownloadManager for details. 
+      // folder. See nsDownloadManager for details.
       downloadFolder.label = bundlePreferences.getString("downloadsFolderName");
       iconUrlSpec = fph.getURLSpecFromFile(this._indexToFolder(1));
     } else {
@@ -359,7 +348,7 @@ var gMainPane = {
       iconUrlSpec = fph.getURLSpecFromFile(desk);
     }
     downloadFolder.image = "moz-icon://" + iconUrlSpec + "?size=16";
-    
+
     // don't override the preference's value in UI
     return undefined;
   },
@@ -378,7 +367,7 @@ var gMainPane = {
    * Returns the Downloads folder.  If aFolder is "Desktop", then the Downloads
    * folder returned is the desktop folder; otherwise, it is a folder whose name
    * indicates that it is a download folder and whose path is as determined by
-   * the XPCOM directory service via the download manager's attribute 
+   * the XPCOM directory service via the download manager's attribute
    * defaultDownloadsDirectory.
    *
    * @throws if aFolder is not "Desktop" or "Downloads"
@@ -462,53 +451,24 @@ var gMainPane = {
         return 0;
       break;
     }
-  }
-
-#ifdef HAVE_SHELL_SERVICE
-  ,
-
-  // SYSTEM DEFAULTS
-
-  /*
-   * Preferences:
-   *
-   * browser.shell.checkDefault
-   * - true if a default-browser check (and prompt to make it so if necessary)
-   *   occurs at startup, false otherwise
-   */
+  },
 
   /**
-   * Checks whether the browser is currently registered with the operating
-   * system as the default browser.  If the browser is not currently the
-   * default browser, the user is given the option of making it the default;
-   * otherwise, the user is informed that this browser already is the browser.
+   * Displays the Add-ons Manager.
    */
-  checkNow: function ()
+  showAddonsMgr: function ()
   {
-    var shellSvc = Components.classes["@mozilla.org/browser/shell-service;1"]
-                             .getService(Components.interfaces.nsIShellService);
-    var brandBundle = document.getElementById("bundleBrand");
-    var shellBundle = document.getElementById("bundleShell");
-    var brandShortName = brandBundle.getString("brandShortName");
-    var promptTitle = shellBundle.getString("setDefaultBrowserTitle");
-    var promptMessage;
-    const IPS = Components.interfaces.nsIPromptService;
-    var psvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                         .getService(IPS);
-    if (!shellSvc.isDefaultBrowser(false)) {
-      promptMessage = shellBundle.getFormattedString("setDefaultBrowserMessage", 
-                                                     [brandShortName]);
-      var rv = psvc.confirmEx(window, promptTitle, promptMessage, 
-                              IPS.STD_YES_NO_BUTTONS,
-                              null, null, null, null, { });
-      if (rv == 0)
-        shellSvc.setDefaultBrowser(true, false);
+    const EMTYPE = "Extension:Manager";
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                       .getService(Components.interfaces.nsIWindowMediator);
+    var theEM = wm.getMostRecentWindow(EMTYPE);
+    if (theEM) {
+      theEM.focus();
+      return;
     }
-    else {
-      promptMessage = shellBundle.getFormattedString("alreadyDefaultBrowser",
-                                                     [brandShortName]);
-      psvc.alert(window, promptTitle, promptMessage);
-    }
+
+    const EMURL = "chrome://mozapps/content/extensions/extensions.xul";
+    const EMFEATURES = "chrome,menubar,extra-chrome,toolbar,dialog=no,resizable";
+    window.openDialog(EMURL, "", EMFEATURES);
   }
-#endif
 };

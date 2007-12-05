@@ -111,6 +111,7 @@ browser.jar:
     locale/browser/migration/migration.properties  (en-US/chrome/browser/migration/migration.properties)
     locale/browser/preferences/advanced.dtd           (en-US/chrome/browser/preferences/advanced.dtd)
 *   locale/browser/preferences/advanced-scripts.dtd   (en-US/chrome/browser/preferences/advanced-scripts.dtd)
+    locale/browser/preferences/applications.dtd       (en-US/chrome/browser/preferences/applications.dtd)
     locale/browser/preferences/changeaction.dtd       (en-US/chrome/browser/preferences/changeaction.dtd)
     locale/browser/preferences/colors.dtd             (en-US/chrome/browser/preferences/colors.dtd)
     locale/browser/preferences/cookies.dtd            (en-US/chrome/browser/preferences/cookies.dtd)

@@ -1,44 +1,43 @@
 /Makefile.in/1.5/Thu Jan 25 13:43:51 2007//
-/content.xul/1.21/Fri Dec  1 03:42:12 2006//
-/preferences.xul/1.11/Mon Oct  9 23:57:39 2006//
 /advanced-scripts.xul/1.2/Thu Aug 16 04:13:50 2007//
-/advanced.js/1.26/Thu Aug 16 04:13:50 2007//
-/changeaction.js/1.4/Thu Aug 16 04:13:50 2007//
-/changeaction.xul/1.10/Thu Aug 16 04:13:50 2007//
-/colors.xul/1.6/Thu Aug 16 04:13:50 2007//
-/connection.js/1.8/Thu Aug 16 04:13:50 2007//
-/connection.xul/1.10/Thu Aug 16 04:13:50 2007//
-/content.js/1.14/Thu Aug 16 04:13:50 2007//
-/cookies.js/1.15/Thu Aug 16 04:13:50 2007//
-/cookies.xul/1.8/Thu Aug 16 04:13:50 2007//
-/downloadactions.js/1.12/Thu Aug 16 04:13:50 2007//
-/downloadactions.xul/1.9/Thu Aug 16 04:13:50 2007//
-/fallbackEULA.xhtml/1.1/Thu Aug 16 04:13:50 2007//
-/feeds.js/1.10/Thu Aug 16 04:13:50 2007//
 /feeds.xul/1.6/Thu Aug 16 04:13:50 2007//
-/fonts.js/1.8/Thu Aug 16 04:13:50 2007//
-/fonts.xul/1.18/Thu Aug 16 04:13:50 2007//
-/jar.mn/1.18/Result of merge+Mon Aug 27 23:07:02 2007//
-/languages.js/1.10/Thu Aug 16 04:13:50 2007//
-/languages.xul/1.7/Thu Aug 16 04:13:50 2007//
-/permissions.js/1.10/Thu Aug 16 04:13:50 2007//
-/permissions.xul/1.7/Thu Aug 16 04:13:50 2007//
-/permissionsutils.js/1.5/Thu Aug 16 04:13:50 2007//
-/phishEULA.xhtml/1.2/Thu Aug 16 04:13:50 2007//
-/phishEULA.xul/1.2/Thu Aug 16 04:13:50 2007//
-/privacy.js/1.18/Thu Aug 16 04:13:50 2007//
 /sanitize.xul/1.15/Thu Aug 16 04:13:50 2007//
-/securityWarnings.js/1.1/Thu Aug 16 04:13:50 2007//
-/securityWarnings.xul/1.1/Thu Aug 16 04:13:50 2007//
-/tabs.js/1.5/Thu Aug 16 04:13:50 2007//
-/tabs.xul/1.16/Thu Aug 16 04:13:50 2007//
-/advanced.xul/1.37/Tue Aug 28 00:47:11 2007//
-/main.js/1.11/Result of merge//
-/main.xul/1.13/Tue Aug 28 21:53:20 2007//
-/phishEULA.js/1.5/Tue Aug 28 00:49:27 2007//
-/privacy.xul/1.20/Tue Aug 28 00:49:27 2007//
-/security.js/1.13/Tue Aug 28 00:49:27 2007//
-/security.xul/1.18/Tue Aug 28 00:49:27 2007//
-/selectBookmark.js/1.7/Tue Aug 28 00:49:27 2007//
-/selectBookmark.xul/1.6/Tue Aug 28 21:05:50 2007//
+/advanced.js/1.28/Tue Dec  4 19:48:37 2007//
+/advanced.xul/1.43/Result of merge+Tue Dec  4 19:48:37 2007//
+/applications.js/1.29/Wed Nov 21 21:15:39 2007//
+/applications.xul/1.6/Tue Nov 13 08:39:20 2007//
+/colors.xul/1.7/Result of merge//
+/connection.js/1.8/Wed Oct 31 20:12:42 2007//
+/connection.xul/1.11/Result of merge//
+/content.js/1.16/Tue Dec  4 19:48:37 2007//
+/content.xul/1.23/Result of merge//
+/cookies.js/1.16/Tue Dec  4 19:48:37 2007//
+/cookies.xul/1.8/Wed Oct 31 20:12:42 2007//
+/fallbackEULA.xhtml/1.1/Wed Oct 31 20:12:42 2007//
+/fonts.js/1.8/Wed Oct 31 20:12:42 2007//
+/fonts.xul/1.19/Result of merge//
+/handlers.css/1.2/Tue Dec  4 01:45:52 2007//
+/handlers.xml/1.4/Tue Dec  4 01:45:52 2007//
+/jar.mn/1.19/Result of merge//
+/languages.js/1.10/Wed Oct 31 20:12:42 2007//
+/languages.xul/1.8/Result of merge//
+/main.js/1.15/Result of merge+Tue Dec  4 19:48:37 2007//
+/main.xul/1.16/Result of merge//
+/permissions.js/1.10/Wed Oct 31 20:12:42 2007//
+/permissions.xul/1.7/Wed Oct 31 20:12:42 2007//
+/permissionsutils.js/1.5/Wed Oct 31 20:12:42 2007//
+/phishEULA.js/1.5/Wed Oct 31 20:12:42 2007//
+/phishEULA.xhtml/1.2/Wed Oct 31 20:12:42 2007//
+/phishEULA.xul/1.2/Wed Oct 31 20:12:42 2007//
+/preferences.xul/1.17/Result of merge+Tue Dec  4 19:48:37 2007//
+/privacy.js/1.20/Tue Dec  4 19:48:37 2007//
+/privacy.xul/1.21/Result of merge//
+/security.js/1.14/Tue Dec  4 19:48:37 2007//
+/security.xul/1.20/Result of merge//
+/securityWarnings.js/1.1/Wed Oct 31 20:12:42 2007//
+/securityWarnings.xul/1.1/Wed Oct 31 20:12:42 2007//
+/selectBookmark.js/1.7/Wed Oct 31 20:12:42 2007//
+/selectBookmark.xul/1.7/Tue Dec  4 19:48:37 2007//
+/tabs.js/1.5/Wed Oct 31 20:12:42 2007//
+/tabs.xul/1.17/Result of merge+Tue Dec  4 19:48:37 2007//
 D
