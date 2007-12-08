@@ -19,7 +19,6 @@ D/history////
 D/microsummaries////
 D/migration////
 D/pageInfo////
-D/places////
 D/policy////
 D/preferences////
 D/prefwindow////
@@ -33,3 +32,4 @@ D/sidebar////
 D/winhooks////
 /Makefile.in/1.60/Tue Aug 28 00:49:27 2007//
 D/mozilla////
+D/places////
