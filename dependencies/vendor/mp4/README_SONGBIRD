@@ -4,7 +4,7 @@ Small modifications were made to the quicktime.h and quicktime.c files, and thos
 
 For the most part, we rely on this library for atom parsing and handle the rest ourselves.
 
-All modifications are Copyright(c) 2005-2007, POTI, Inc. and released under the GPL:
+All modifications are Copyright(c) 2005-2007 POTI, Inc. and released under the GPL:
 
 //
 // BEGIN SONGBIRD GPL
