@@ -150,6 +150,7 @@ filefield[disabled="true"] .fileFieldIcon {
   -moz-margin-end: 4px;
 }
 
+/* Commented out to simplify the Songbird CSS
 .fileFieldLabel {
   -moz-appearance: none;
   background-color: transparent;
@@ -157,6 +158,7 @@ filefield[disabled="true"] .fileFieldIcon {
   padding: 1px 0px 0px 0px;
   margin: 0px;
 }
+*/
 
 /* Modeless Window Dialogs */
 .windowDialog,
