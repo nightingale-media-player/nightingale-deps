@@ -792,11 +792,8 @@ struct _Itdb_Track
   guint32 bookmark_time;     /* bookmark set for (AudioBook) in ms      */
   guint32 rating;            /* star rating (stars * RATING_STEP (20))  */
   guint32 playcount;         /* number of times track was played        */
-  guint32 playcount2;        /* Also stores the play count of the
-				song.  Don't know if it ever differs
-				from the above value. During sync itdb
-				sets playcount2 to the same value as
-				playcount.                              */
+  guint32 playcount2;        /* number of times track was played since
+				the last time the iPod was synced */
   guint32 recent_playcount;  /* times track was played since last sync  */
   gboolean transferred;      /* has file been transferred to iPod?      */
   gint16  BPM;               /* BPM (beats per minute) of this track    */

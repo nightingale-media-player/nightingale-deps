@@ -2441,6 +2441,7 @@ static glong get_mhit (FImport *fimp, glong mhit_seek)
 	  track->bookmark_time = playcount->bookmark_time;
 
       track->playcount += playcount->playcount;
+      track->playcount2 += playcount->playcount;
       if (playcount->playcount != 0)
       {   /* unmark the 'unplayed' flag */
 	  track->mark_unplayed = 0x01;
@@ -3527,7 +3528,6 @@ static void mk_mhit (WContents *cts, Itdb_Track *track)
   put32lint (cts, track->stoptime);
   put32lint (cts, track->soundcheck);
   put32lint (cts, track->playcount);/* playcount                 */
-  track->playcount2 = track->playcount;
   put32lint (cts, track->playcount2);
   mac_time = device_time_time_t_to_mac (track->itdb->device, track->time_played);
   put32lint (cts, mac_time); /* last time played       */
