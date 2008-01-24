@@ -630,6 +630,7 @@ struct _Itdb_Playlist
     Itdb_SPLRules splrules;    /* rules for smart playlists             */
     gpointer reserved100; /* reserved for MHOD100 implementation   */
     gpointer reserved101; /* reserved for MHOD100 implementation   */
+    gboolean is_otg;      /* playlist generated from an on-the-go playlist */
     /* reserved for future use */
     gint32 reserved_int1;
     gint32 reserved_int2;

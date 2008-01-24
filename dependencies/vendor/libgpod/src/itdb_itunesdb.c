@@ -2532,6 +2532,9 @@ static gboolean process_OTG_file (FImport *fimp, FContents *cts,
 	/* Add new playlist */
 	itdb_playlist_add (fimp->itdb, pl, -1);
 
+        /* Mark playlist as being generated from an on-the-go playlist */
+	pl->is_otg = TRUE;
+
 	/* Add items */
 	for (i=0; i<entry_num; ++i)
 	{
