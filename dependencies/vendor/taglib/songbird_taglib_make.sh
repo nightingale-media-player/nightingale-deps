@@ -211,7 +211,7 @@ build()
 
     # Determine the debug options.
     if [ "${build_type}" = "debug" ]; then
-        cfg_opts="${cfg_opts} --enable-debug=yes"
+        cfg_opts="${cfg_opts} --enable-debug=full"
     else
         cfg_opts="${cfg_opts} --enable-debug=no"
     fi
