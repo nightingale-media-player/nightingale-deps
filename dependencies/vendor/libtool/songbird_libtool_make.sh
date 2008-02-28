@@ -71,7 +71,16 @@ elif [ "$sys_name" = "Linux" ]; then
     fi
 else
     build_sys_type=Cygwin
-    tgt_arch_list=windows-i686
+    _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+    CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+    case "$CC_VERSION" in
+        13.*)
+            tgt_arch_list=windows-i686
+            ;;
+        *)
+            tgt_arch_list=windows-i686-msvc8
+            ;;
+    esac
 fi
 
 
