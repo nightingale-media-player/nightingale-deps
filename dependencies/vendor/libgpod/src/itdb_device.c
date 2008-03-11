@@ -999,6 +999,9 @@ static void itdb_device_set_timezone_info (Itdb_Device *device)
 
     prefs_filename = itdb_resolve_path (dev_path, p_preferences);
     g_free (dev_path);
+    if (prefs_filename == NULL) {
+        return ;
+    }
 
     f = fopen (prefs_filename, "r");
     if (f == NULL) {
