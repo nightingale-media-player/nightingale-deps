@@ -259,59 +259,6 @@ MPEG::Properties *MPEG::File::audioProperties() const
   return d->properties;
 }
 
-void MPEG::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
-{
-  if (!isOpen())
-    return;
-
-  d->tag = new MPEGTag(this);
-
-  // Look for an ID3v2 tag
-
-  d->ID3v2Location = findID3v2();
-
-  if(d->ID3v2Location >= 0) {
-
-    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
-
-    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
-
-    if(d->ID3v2Tag->header()->tagSize() <= 0) {
-      delete d->ID3v2Tag;
-      d->ID3v2Tag = 0;
-    }
-    else
-      d->hasID3v2 = true;
-  }
-
-  // Look for an ID3v1 tag
-
-  d->ID3v1Location = findID3v1();
-
-  if(d->ID3v1Location >= 0) {
-    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
-    d->hasID3v1 = true;
-  }
-
-  // Look for an APE tag
-
-  d->APELocation = findAPE();
-
-  if(d->APELocation >= 0) {
-
-    d->APETag = new APE::Tag(this, d->APELocation);
-
-    d->APEOriginalSize = d->APETag->footer()->completeTagSize();
-
-    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APEOriginalSize;
-
-    d->hasAPE = true;
-  }
-
-  if(readProperties)
-    d->properties = new Properties(this, propertiesStyle);
-}
-
 bool MPEG::File::save()
 {
   return save(AllTags);
@@ -595,6 +542,60 @@ long MPEG::File::lastFrameOffset()
 ////////////////////////////////////////////////////////////////////////////////
 // private members
 ////////////////////////////////////////////////////////////////////////////////
+
+/*XXXeps public method but kept here to ease merging. */
+void MPEG::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+{
+  if (!isOpen())
+    return;
+
+  d->tag = new MPEGTag(this);
+
+  // Look for an ID3v2 tag
+
+  d->ID3v2Location = findID3v2();
+
+  if(d->ID3v2Location >= 0) {
+
+    d->ID3v2Tag = new ID3v2::Tag(this, d->ID3v2Location, d->ID3v2FrameFactory);
+
+    d->ID3v2OriginalSize = d->ID3v2Tag->header()->completeTagSize();
+
+    if(d->ID3v2Tag->header()->tagSize() <= 0) {
+      delete d->ID3v2Tag;
+      d->ID3v2Tag = 0;
+    }
+    else
+      d->hasID3v2 = true;
+  }
+
+  // Look for an ID3v1 tag
+
+  d->ID3v1Location = findID3v1();
+
+  if(d->ID3v1Location >= 0) {
+    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
+    d->hasID3v1 = true;
+  }
+
+  // Look for an APE tag
+
+  d->APELocation = findAPE();
+
+  if(d->APELocation >= 0) {
+
+    d->APETag = new APE::Tag(this, d->APELocation);
+
+    d->APEOriginalSize = d->APETag->footer()->completeTagSize();
+
+    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APEOriginalSize;
+
+    d->hasAPE = true;
+  }
+
+  if(readProperties)
+    d->properties = new Properties(this, propertiesStyle);
+}
 
 long MPEG::File::findID3v2()
 {
