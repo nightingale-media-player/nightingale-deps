@@ -116,67 +116,6 @@ MPC::Properties *MPC::File::audioProperties() const
   return d->properties;
 }
 
-void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesStyle */)
-{
-  // Look for an ID3v1 tag
-
-  d->ID3v1Location = findID3v1();
-
-  if(d->ID3v1Location >= 0) {
-    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
-    d->hasID3v1 = true;
-  }
-
-  // Look for an APE tag
-
-  findAPE();
-
-  d->APELocation = findAPE();
-
-  if(d->APELocation >= 0) {
-    d->APETag = new APE::Tag(this, d->APELocation);
-    d->APESize = d->APETag->footer()->completeTagSize();
-    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APESize;
-    d->hasAPE = true;
-  }
-
-  if(d->hasID3v1 && d->hasAPE)
-    d->tag = new CombinedTag(d->APETag, d->ID3v1Tag);
-  else {
-    if(d->hasID3v1)
-      d->tag = d->ID3v1Tag;
-    else {
-      if(d->hasAPE)
-        d->tag = d->APETag;
-      else
-        d->tag = d->APETag = new APE::Tag;
-    }
-  }
-
-  // Look for and skip an ID3v2 tag
-
-  d->ID3v2Location = findID3v2();
-
-  if(d->ID3v2Location >= 0) {
-    seek(d->ID3v2Location);
-    d->ID3v2Header = new ID3v2::Header(readBlock(ID3v2::Header::size()));
-    d->ID3v2Size = d->ID3v2Header->completeTagSize();
-    d->hasID3v2 = true;
-  }
-
-  if(d->hasID3v2)
-    seek(d->ID3v2Location + d->ID3v2Size);
-  else
-    seek(0);
-
-  // Look for MPC metadata
-
-  if(readProperties) {
-    d->properties = new Properties(readBlock(MPC::HeaderSize),
-                                   length() - d->ID3v2Size - d->APESize);
-  }
-}
-
 bool MPC::File::save()
 {
   if(readOnly()) {
@@ -319,6 +258,68 @@ void MPC::File::remove(int tags)
 ////////////////////////////////////////////////////////////////////////////////
 // private members
 ////////////////////////////////////////////////////////////////////////////////
+
+/*XXXeps public method but kept here to ease merging. */
+void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesStyle */)
+{
+  // Look for an ID3v1 tag
+
+  d->ID3v1Location = findID3v1();
+
+  if(d->ID3v1Location >= 0) {
+    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
+    d->hasID3v1 = true;
+  }
+
+  // Look for an APE tag
+
+  findAPE();
+
+  d->APELocation = findAPE();
+
+  if(d->APELocation >= 0) {
+    d->APETag = new APE::Tag(this, d->APELocation);
+    d->APESize = d->APETag->footer()->completeTagSize();
+    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APESize;
+    d->hasAPE = true;
+  }
+
+  if(d->hasID3v1 && d->hasAPE)
+    d->tag = new CombinedTag(d->APETag, d->ID3v1Tag);
+  else {
+    if(d->hasID3v1)
+      d->tag = d->ID3v1Tag;
+    else {
+      if(d->hasAPE)
+        d->tag = d->APETag;
+      else
+        d->tag = d->APETag = new APE::Tag;
+    }
+  }
+
+  // Look for and skip an ID3v2 tag
+
+  d->ID3v2Location = findID3v2();
+
+  if(d->ID3v2Location >= 0) {
+    seek(d->ID3v2Location);
+    d->ID3v2Header = new ID3v2::Header(readBlock(ID3v2::Header::size()));
+    d->ID3v2Size = d->ID3v2Header->completeTagSize();
+    d->hasID3v2 = true;
+  }
+
+  if(d->hasID3v2)
+    seek(d->ID3v2Location + d->ID3v2Size);
+  else
+    seek(0);
+
+  // Look for MPC metadata
+
+  if(readProperties) {
+    d->properties = new Properties(readBlock(MPC::HeaderSize),
+                                   length() - d->ID3v2Size - d->APESize);
+  }
+}
 
 long MPC::File::findAPE()
 {
