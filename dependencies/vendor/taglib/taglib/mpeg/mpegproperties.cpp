@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tdebug.h>
@@ -225,7 +229,7 @@ void MPEG::Properties::read()
   // VBR stream.
 
   int xingHeaderOffset = MPEG::XingHeader::xingHeaderOffset(firstHeader.version(),
-							    firstHeader.channelMode());
+                                                            firstHeader.channelMode());
 
   d->file->seek(first + xingHeaderOffset);
   d->xingHeader = new XingHeader(d->file->readBlock(16));
@@ -236,9 +240,9 @@ void MPEG::Properties::read()
      firstHeader.sampleRate() > 0 &&
      d->xingHeader->totalFrames() > 0)
   {
-      static const int blockSize[] = { 0, 384, 1152, 1152 };
+      double timePerFrame =
+        double(firstHeader.samplesPerFrame()) / firstHeader.sampleRate();
 
-      double timePerFrame = double(blockSize[firstHeader.layer()]) / firstHeader.sampleRate();
       d->length = int(timePerFrame * d->xingHeader->totalFrames());
       d->bitrate = d->length > 0 ? d->xingHeader->totalSize() * 8 / d->length / 1000 : 0;
   }

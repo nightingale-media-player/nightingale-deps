@@ -1,8 +1,9 @@
 project(taglib)
 
-find_package(ZLIB)
+OPTION(BUILD_TESTS "Build the test suite"  OFF)
+OPTION(BUILD_EXAMPLES "Build the examples"  OFF)
 
-OPTION(BUILD_TESTS "Create tests and examples"  OFF)
+OPTION(NO_ITUNES_HACKS "Disable workarounds for iTunes bugs"  OFF)
 
 #add some KDE specific stuff
 set(LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
@@ -16,22 +17,29 @@ set(INCLUDE_INSTALL_DIR      "${CMAKE_INSTALL_PREFIX}/include"             CACHE
 if (CMAKE_COMPILER_IS_GNUCXX)
    if (CMAKE_SYSTEM_NAME MATCHES Linux)
      set ( CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Wno-long-long -ansi -Wundef -Wcast-align -Werror-implicit-function-declaration -Wchar-subscripts -Wall -W -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute -fno-common")
-     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wwrite-strings -Wformat-security -fno-exceptions -fno-check-new -fno-common")
+     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wwrite-strings -Wformat-security -fno-check-new -fno-common")
    endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 if(MSVC)
   add_definitions( -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE )
 endif(MSVC)
+if (WIN32)
+  set(CMAKE_DEBUG_POSTFIX "d")
+endif (WIN32)
+
+SET(TAGLIB_LIB_MAJOR_VERSION "1")
+SET(TAGLIB_LIB_MINOR_VERSION "5")
+SET(TAGLIB_LIB_PATCH_VERSION "0")
+
+SET(TAGLIB_LIB_VERSION_STRING "${TAGLIB_LIB_MAJOR_VERSION}.${TAGLIB_LIB_MINOR_VERSION}.${TAGLIB_LIB_PATCH_VERSION}")
+
 
 include(ConfigureChecks.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib-config )
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib.pc )
 
-if(NOT WIN32)
-  #For the future rename it as config-taglib.h
-  configure_file(config-taglib.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-endif(NOT WIN32)
+configure_file(config-taglib.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 ADD_SUBDIRECTORY( taglib ) 
 

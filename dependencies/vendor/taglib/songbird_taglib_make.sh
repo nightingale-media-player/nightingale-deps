@@ -110,13 +110,12 @@ build_all()
     # Build for each of the target architectures.
     for tgt_arch in ${tgt_arch_list}
     do
-        # Set up the build environment.
-        setup_build ${tgt_arch}
-
         # Build release target.
-        build release
+        setup_build ${tgt_arch} release
+        #ZZZbuild release
 
         # Build debug target.
+        setup_build ${tgt_arch} debug
         build debug
     done
 }
@@ -126,9 +125,10 @@ build_all()
 # setup_build
 #
 #   --> build_tgt_arch          Target build architecture.
+#   --> build_type              Type of build (release or debug).
 #
 #   This function sets up a build for the target architecture specified by
-# build_tgt_arch.
+# build_tgt_arch and of the type specified by build_type.
 #
 
 setup_build()
@@ -144,14 +144,22 @@ setup_build()
             ;;
 
         windows-i686)
-            export CPPFLAGS="-MT"
+            if [ "${build_type}" = "debug" ]; then
+                export CPPFLAGS="-MTd -Zc:wchar_t-"
+            else
+                export CPPFLAGS="-MT -Zc:wchar_t-"
+            fi
             export CC="cl"
             export CXX="cl"
             export LD="link"
             ;;
 
         windows-i686-msvc8)
-            export CPPFLAGS="-MT -Zc:wchar_t-"
+            if [ "${build_type}" = "debug" ]; then
+                export CPPFLAGS="-MTd -Zc:wchar_t-"
+            else
+                export CPPFLAGS="-MT -Zc:wchar_t-"
+            fi
             export CC="cl"
             export CXX="cl"
             export LD="link"

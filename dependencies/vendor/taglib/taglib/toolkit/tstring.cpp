@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include "tstring.h"
@@ -243,7 +247,7 @@ std::string String::to8Bit(bool unicode) const
   return s;
 }
 
-TagLib::wstring String::to32Bit() const
+TagLib::wstring String::toWString() const
 {
   return d->data;
 }
@@ -455,6 +459,24 @@ String String::stripWhiteSpace() const
           *end == '\f' || *end == '\r' || *end == ' ');
 
   return String(wstring(begin, end + 1));
+}
+
+bool String::isLatin1() const
+{
+  for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++) {
+    if(*it >= 256)
+      return false;
+  }
+  return true;
+}
+
+bool String::isAscii() const
+{
+  for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++) {
+    if(*it >= 128)
+      return false;
+  }
+  return true;
 }
 
 String String::number(int n) // static
@@ -673,7 +695,7 @@ void String::prepare(Type t)
   switch(t) {
   case UTF16:
   {
-    if(d->data.size() > 1) {
+    if(d->data.size() >= 1 && (d->data[0] == 0xfeff || d->data[0] == 0xfffe)) {
       bool swap = d->data[0] != 0xfeff;
       d->data.erase(d->data.begin(), d->data.begin() + 1);
       if(swap) {

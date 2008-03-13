@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_ID3V1TAG_H
@@ -24,6 +28,7 @@
 
 #include "tag.h"
 #include "tbytevector.h"
+#include "taglib_export.h"
 
 namespace TagLib {
 
@@ -52,9 +57,11 @@ namespace TagLib {
      * \see ID3v1::Tag::setStringHandler()
      */
 
-    class StringHandler
+    class TAGLIB_EXPORT StringHandler
     {
     public:
+      // BIC: Add virtual destructor.
+
       /*!
        * Decode a string from \a data.  The default implementation assumes that
        * \a data is an ISO-8859-1 (Latin1) character array.
@@ -63,7 +70,8 @@ namespace TagLib {
 
       /*!
        * Encode a ByteVector with the data from \a s.  The default implementation
-       * assumes that \a s is an ISO-8859-1 (Latin1) string.
+       * assumes that \a s is an ISO-8859-1 (Latin1) string.  If the string is
+       * does not conform to ISO-8859-1, no value is written.
        *
        * \warning It is recommended that you <b>not</b> override this method, but
        * instead do not write an ID3v1 tag in the case that the data is not
@@ -92,7 +100,7 @@ namespace TagLib {
      * truncation happens automatically when the tag is rendered.
      */
 
-    class Tag : public TagLib::Tag
+    class TAGLIB_EXPORT Tag : public TagLib::Tag
     {
     public:
       /*!

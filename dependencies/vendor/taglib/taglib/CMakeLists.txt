@@ -4,16 +4,22 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/toolkit
     ${CMAKE_CURRENT_SOURCE_DIR}/mpeg
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg
+    ${CMAKE_CURRENT_SOURCE_DIR}/ogg/flac
     ${CMAKE_CURRENT_SOURCE_DIR}/flac
     ${CMAKE_CURRENT_SOURCE_DIR}/mpc
     ${CMAKE_CURRENT_SOURCE_DIR}/ogg/vorbis
+    ${CMAKE_CURRENT_SOURCE_DIR}/ogg/speex
     ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v2
     ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v1
     ${CMAKE_CURRENT_SOURCE_DIR}/ape
+    ${CMAKE_CURRENT_SOURCE_DIR}/wavpack
+    ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio
     ${CMAKE_CURRENT_BINARY_DIR}/taglib
     ${CMAKE_CURRENT_BINARY_DIR}/..
-    ${ZLIB_INCLUDE_DIR}
 )
+if(ZLIB_FOUND)
+    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
+endif(ZLIB_FOUND)
 
 ADD_SUBDIRECTORY( toolkit )
 ADD_SUBDIRECTORY( mpeg )
@@ -21,6 +27,8 @@ ADD_SUBDIRECTORY( ogg )
 ADD_SUBDIRECTORY( flac )
 ADD_SUBDIRECTORY( ape )
 ADD_SUBDIRECTORY( mpc )
+ADD_SUBDIRECTORY( wavpack )
+ADD_SUBDIRECTORY( trueaudio )
 
 
 
@@ -58,6 +66,8 @@ mpeg/id3v2/frames/relativevolumeframe.cpp
 mpeg/id3v2/frames/textidentificationframe.cpp
 mpeg/id3v2/frames/uniquefileidentifierframe.cpp
 mpeg/id3v2/frames/unknownframe.cpp
+mpeg/id3v2/frames/unsynchronizedlyricsframe.cpp
+mpeg/id3v2/frames/urllinkframe.cpp
 )
 
 SET(ogg_SRCS
@@ -93,6 +103,21 @@ ape/apefooter.cpp
 ape/apeitem.cpp
 )
 
+SET(wavpack_SRCS
+wavpack/wavpackfile.cpp
+wavpack/wavpackproperties.cpp
+)
+
+SET(speex_SRCS
+ogg/speex/speexfile.cpp
+ogg/speex/speexproperties.cpp
+)
+
+SET(trueaudio_SRCS
+trueaudio/trueaudiofile.cpp
+trueaudio/trueaudioproperties.cpp
+)
+
 SET(toolkit_SRCS
 toolkit/tstring.cpp
 toolkit/tstringlist.cpp
@@ -105,7 +130,9 @@ toolkit/unicode.cpp
 
 SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_SRCS}
 		 ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS} ${toolkit_SRCS} ${flacs_SRCS}
+		 ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS}
 		 tag.cpp
+		 tagunion.cpp
 		 fileref.cpp
 		 audioproperties.cpp
 )
@@ -119,11 +146,15 @@ if(ZLIB_FOUND)
 endif(ZLIB_FOUND)
 
 SET_TARGET_PROPERTIES(tag PROPERTIES
-        VERSION 1.4.0
-        SOVERSION 1
+        VERSION ${TAGLIB_LIB_MAJOR_VERSION}.${TAGLIB_LIB_MINOR_VERSION}.${TAGLIB_LIB_PATCH_VERSION}
+        SOVERSION ${TAGLIB_LIB_MAJOR_VERSION}
         INSTALL_NAME_DIR ${LIB_INSTALL_DIR}
         DEFINE_SYMBOL MAKE_TAGLIB_LIB
 )
-INSTALL(TARGETS tag DESTINATION ${LIB_INSTALL_DIR} )
+INSTALL(TARGETS tag
+	LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION  ${LIB_INSTALL_DIR}
+)
 
 INSTALL( FILES  tag.h fileref.h audioproperties.h taglib_export.h DESTINATION ${INCLUDE_INSTALL_DIR}/taglib)

@@ -1,11 +1,11 @@
  /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_ID3V2FRAMEFACTORY_H
@@ -25,14 +29,15 @@
 #include "taglib_export.h"
 #include "tbytevector.h"
 #include "id3v2frame.h"
+#include "id3v2header.h"
 
 namespace TagLib {
 
   namespace ID3v2 {
 
-    class TextIdentificationFrame;
+    class TAGLIB_EXPORT TextIdentificationFrame;
 
-    //! A factory for creating ID3v2 frames
+    //! A factory for creating ID3v2 frames during parsing
 
     /*!
      * This factory abstracts away the frame creation process and instantiates
@@ -49,6 +54,12 @@ namespace TagLib {
      * This implements both <i>abstract factory</i> and <i>singleton</i> patterns
      * of which more information is available on the web and in software design
      * textbooks (Notably <i>Design Patters</i>).
+     *
+     * \note You do not need to use this factory to create new frames to add to
+     * an ID3v2::Tag.  You can instantiate frame subclasses directly (with new)
+     * and add them to a tag using ID3v2::Tag::addFrame()
+     *
+     * \see ID3v2::Tag::addFrame()
      */
 
     class TAGLIB_EXPORT FrameFactory
@@ -60,8 +71,8 @@ namespace TagLib {
        * false if we are parsing an old tag (v2.3 or older) that does not support
        * synchsafe ints.
        *
-       * \deprecated Please use the method below that accepts an ID3 version
-       * number in new code.
+       * \deprecated Please use the method below that accepts a ID3v2::Header
+       * instance in new code.
        */
       Frame *createFrame(const ByteVector &data, bool synchSafeInts) const;
 
@@ -69,9 +80,18 @@ namespace TagLib {
        * Create a frame based on \a data.  \a version should indicate the ID3v2
        * version of the tag.  As ID3v2.4 is the most current version of the
        * standard 4 is the default.
+       *
+       * \deprecated Please use the method below that accepts a ID3v2::Header
+       * instance in new code.
+       */
+      Frame *createFrame(const ByteVector &data, uint version = 4) const;
+
+      /*!
+       * Create a frame based on \a data.  \a tagHeader should be a valid
+       * ID3v2::Header instance.
        */
       // BIC: make virtual
-      Frame *createFrame(const ByteVector &data, uint version = 4) const;
+      Frame *createFrame(const ByteVector &data, Header *tagHeader) const;
 
       /*!
        * Returns the default text encoding for text frames.  If setTextEncoding()

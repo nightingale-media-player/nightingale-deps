@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2004 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tdebug.h>
@@ -158,20 +162,28 @@ void RelativeVolumeFrame::setPeakVolume(const PeakVolume &peak)
   setPeakVolume(peak, MasterVolume);
 }
 
+String RelativeVolumeFrame::identification() const
+{
+  return d->identification;
+}
+
+void RelativeVolumeFrame::setIdentification(const String &s)
+{
+  d->identification = s;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // protected members
 ////////////////////////////////////////////////////////////////////////////////
 
 void RelativeVolumeFrame::parseFields(const ByteVector &data)
 {
-  ByteVector delimiter = textDelimiter(String::Latin1);
-  uint pos = data.find(delimiter);
-  d->identification = String(data.mid(0, pos), String::Latin1);
-  pos += delimiter.size();
+  int pos = 0;
+  d->identification = readStringField(data, String::Latin1, &pos);
 
   // Each channel is at least 4 bytes.
 
-  while(pos <= data.size() - 4) {
+  while(pos <= (int)data.size() - 4) {
 
 
     ChannelType type = ChannelType(data[pos]);
@@ -199,7 +211,7 @@ ByteVector RelativeVolumeFrame::renderFields() const
   data.append(textDelimiter(String::Latin1));
 
   Map<ChannelType, ChannelData>::ConstIterator it = d->channels.begin();
-  
+
   for(; it != d->channels.end(); ++it) {
     ChannelType type = (*it).first;
     const ChannelData &channel = (*it).second;

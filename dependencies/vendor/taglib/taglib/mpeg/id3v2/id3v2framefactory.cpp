@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,13 +17,20 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
+#ifndef HAVE_ZLIB
 #include <config.h>
+#endif
 
 #include <tdebug.h>
 
 #include "id3v2framefactory.h"
+#include "id3v2synchdata.h"
 
 #include "frames/attachedpictureframe.h"
 #include "frames/commentsframe.h"
@@ -32,6 +39,8 @@
 #include "frames/uniquefileidentifierframe.h"
 #include "frames/unknownframe.h"
 #include "frames/generalencapsulatedobjectframe.h"
+#include "frames/urllinkframe.h"
+#include "frames/unsynchronizedlyricsframe.h"
 
 using namespace TagLib;
 using namespace ID3v2;
@@ -45,6 +54,12 @@ public:
 
   String::Type defaultEncoding;
   bool useDefaultEncoding;
+
+  template <class T> void setTextEncoding(T *frame)
+  {
+    if(useDefaultEncoding)
+      frame->setTextEncoding(defaultEncoding);
+  }
 };
 
 FrameFactory *FrameFactory::factory = 0;
@@ -67,6 +82,15 @@ Frame *FrameFactory::createFrame(const ByteVector &data, bool synchSafeInts) con
 
 Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
 {
+  Header tagHeader;
+  tagHeader.setMajorVersion(version);
+  return createFrame(data, &tagHeader);
+}
+
+Frame *FrameFactory::createFrame(const ByteVector &origData, Header *tagHeader) const
+{
+  ByteVector data = origData;
+  uint version = tagHeader->majorVersion();
   Frame::Header *header = new Frame::Header(data, version);
   ByteVector frameID = header->frameID();
 
@@ -74,7 +98,7 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
   // characters.  Also make sure that there is data in the frame.
 
   if(!frameID.size() == (version < 3 ? 3 : 4) ||
-     header->frameSize() <= 0 ||
+     header->frameSize() <= uint(header->dataLengthIndicator() ? 4 : 0) ||
      header->frameSize() > data.size())
   {
     delete header;
@@ -86,6 +110,14 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
       delete header;
       return 0;
     }
+  }
+
+  if(version > 3 && (tagHeader->unsynchronisation() || header->unsynchronisation())) {
+    // Data lengths are not part of the encoded data, but since they are synch-safe
+    // integers they will be never actually encoded.
+    ByteVector frameData = data.mid(Frame::Header::size(version), header->frameSize());
+    frameData = SynchData::decode(frameData);
+    data = data.mid(0, Frame::Header::size(version)) + frameData;
   }
 
   // TagLib doesn't mess with encrypted frames, so just treat them
@@ -119,12 +151,12 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
   // Text Identification (frames 4.2)
 
   if(frameID.startsWith("T")) {
+
     TextIdentificationFrame *f = frameID != "TXXX"
       ? new TextIdentificationFrame(data, header)
       : new UserTextIdentificationFrame(data, header);
 
-    if(d->useDefaultEncoding)
-      f->setTextEncoding(d->defaultEncoding);
+    d->setTextEncoding(f);
 
     if(frameID == "TCON")
       updateGenre(f);
@@ -136,8 +168,7 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
 
   if(frameID == "COMM") {
     CommentsFrame *f = new CommentsFrame(data, header);
-    if(d->useDefaultEncoding)
-      f->setTextEncoding(d->defaultEncoding);
+    d->setTextEncoding(f);
     return f;
   }
 
@@ -145,8 +176,7 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
 
   if(frameID == "APIC") {
     AttachedPictureFrame *f = new AttachedPictureFrame(data, header);
-    if(d->useDefaultEncoding)
-      f->setTextEncoding(d->defaultEncoding);
+    d->setTextEncoding(f);
     return f;
   }
 
@@ -162,8 +192,33 @@ Frame *FrameFactory::createFrame(const ByteVector &data, uint version) const
 
   // General Encapsulated Object (frames 4.15)
 
-  if(frameID == "GEOB")
-    return new GeneralEncapsulatedObjectFrame(data, header);
+  if(frameID == "GEOB") {
+    GeneralEncapsulatedObjectFrame *f = new GeneralEncapsulatedObjectFrame(data, header);
+    d->setTextEncoding(f);
+    return f;
+  }
+
+  // URL link (frames 4.3)
+
+  if(frameID.startsWith("W")) {
+    if(frameID != "WXXX") {
+      return new UrlLinkFrame(data, header);
+    }
+    else {
+      UserUrlLinkFrame *f = new UserUrlLinkFrame(data, header);
+      d->setTextEncoding(f);
+      return f;
+    }
+  }
+
+  // Unsynchronized lyric/text transcription (frames 4.8)
+
+  if(frameID == "USLT") {
+    UnsynchronizedLyricsFrame *f = new UnsynchronizedLyricsFrame(data, header);
+    if(d->useDefaultEncoding)
+      f->setTextEncoding(d->defaultEncoding);
+    return f;
+  }
 
   return new UnknownFrame(data, header);
 }

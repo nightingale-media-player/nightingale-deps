@@ -5,7 +5,7 @@
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,10 +17,15 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tbytevector.h>
 #include <tstring.h>
+#include <tagunion.h>
 #include <tdebug.h>
 
 #include "mpcfile.h"
@@ -28,23 +33,24 @@
 #include "id3v2header.h"
 #include "apetag.h"
 #include "apefooter.h"
-#include "combinedtag.h"
 
 using namespace TagLib;
+
+namespace
+{
+  enum { APEIndex, ID3v1Index };
+}
 
 class MPC::File::FilePrivate
 {
 public:
   FilePrivate() :
-    APETag(0),
     APELocation(-1),
     APESize(0),
-    ID3v1Tag(0),
     ID3v1Location(-1),
     ID3v2Header(0),
     ID3v2Location(-1),
     ID3v2Size(0),
-    tag(0),
     properties(0),
     scanned(false),
     hasAPE(false),
@@ -53,26 +59,20 @@ public:
 
   ~FilePrivate()
   {
-    if (tag != ID3v1Tag && tag != APETag) delete tag;
-    delete ID3v1Tag;
-    delete APETag;
     delete ID3v2Header;
     delete properties;
   }
 
-  APE::Tag *APETag;
-  // long APEFooter;
   long APELocation;
   uint APESize;
 
-  ID3v1::Tag *ID3v1Tag;
   long ID3v1Location;
 
   ID3v2::Header *ID3v2Header;
   long ID3v2Location;
   uint ID3v2Size;
 
-  Tag *tag;
+  TagUnion tag;
 
   Properties *properties;
   bool scanned;
@@ -94,7 +94,7 @@ MPC::File::File() : TagLib::File()
   d = new FilePrivate;
 }
 
-MPC::File::File(const char *file, bool readProperties,
+MPC::File::File(FileName file, bool readProperties,
                 Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
   d = new FilePrivate;
@@ -108,7 +108,7 @@ MPC::File::~File()
 
 TagLib::Tag *MPC::File::tag() const
 {
-  return d->tag;
+  return &d->tag;
 }
 
 MPC::Properties *MPC::File::audioProperties() const
@@ -136,15 +136,15 @@ bool MPC::File::save()
 
   // Update ID3v1 tag
 
-  if(d->ID3v1Tag) {
+  if(ID3v1Tag()) {
     if(d->hasID3v1) {
       seek(d->ID3v1Location);
-      writeBlock(d->ID3v1Tag->render());
+      writeBlock(ID3v1Tag()->render());
     }
     else {
       seek(0, End);
       d->ID3v1Location = tell();
-      writeBlock(d->ID3v1Tag->render());
+      writeBlock(ID3v1Tag()->render());
       d->hasID3v1 = true;
     }
   } else
@@ -159,13 +159,13 @@ bool MPC::File::save()
 
   // Update APE tag
 
-  if(d->APETag) {
+  if(APETag()) {
     if(d->hasAPE)
-      insert(d->APETag->render(), d->APELocation, d->APESize);
+      insert(APETag()->render(), d->APELocation, d->APESize);
     else {
       if(d->hasID3v1)  {
-        insert(d->APETag->render(), d->ID3v1Location, 0);
-        d->APESize = d->APETag->footer()->completeTagSize();
+        insert(APETag()->render(), d->ID3v1Location, 0);
+        d->APESize = APETag()->footer()->completeTagSize();
         d->hasAPE = true;
         d->APELocation = d->ID3v1Location;
         d->ID3v1Location += d->APESize;
@@ -173,8 +173,8 @@ bool MPC::File::save()
       else {
         seek(0, End);
         d->APELocation = tell();
-        writeBlock(d->APETag->render());
-        d->APESize = d->APETag->footer()->completeTagSize();
+        writeBlock(APETag()->render());
+        d->APESize = APETag()->footer()->completeTagSize();
         d->hasAPE = true;
       }
     }
@@ -184,7 +184,7 @@ bool MPC::File::save()
       removeBlock(d->APELocation, d->APESize);
       d->hasAPE = false;
       if(d->hasID3v1) {
-        if (d->ID3v1Location > d->APELocation)
+        if(d->ID3v1Location > d->APELocation)
           d->ID3v1Location -= d->APESize;
       }
     }
@@ -194,48 +194,19 @@ bool MPC::File::save()
 
 ID3v1::Tag *MPC::File::ID3v1Tag(bool create)
 {
-  if(!create || d->ID3v1Tag)
-    return d->ID3v1Tag;
-
-  // no ID3v1 tag exists and we've been asked to create one
-
-  d->ID3v1Tag = new ID3v1::Tag;
-
-  if(d->APETag)
-    d->tag = new CombinedTag(d->APETag, d->ID3v1Tag);
-  else
-    d->tag = d->ID3v1Tag;
-
-  return d->ID3v1Tag;
+  return d->tag.access<ID3v1::Tag>(ID3v1Index, create);
 }
 
 APE::Tag *MPC::File::APETag(bool create)
 {
-  if(!create || d->APETag)
-    return d->APETag;
-
-  // no APE tag exists and we've been asked to create one
-
-  d->APETag = new APE::Tag;
-
-  if(d->ID3v1Tag)
-    d->tag = new CombinedTag(d->APETag, d->ID3v1Tag);
-  else
-    d->tag = d->APETag;
-
-  return d->APETag;
+  return d->tag.access<APE::Tag>(APEIndex, create);
 }
 
-void MPC::File::remove(int tags)
+void MPC::File::strip(int tags)
 {
   if(tags & ID3v1) {
-    delete d->ID3v1Tag;
-    d->ID3v1Tag = 0;
-
-    if(d->APETag)
-      d->tag = d->APETag;
-    else
-      d->tag = d->APETag = new APE::Tag;
+    d->tag.set(ID3v1Index, 0);
+    APETag(true);
   }
 
   if(tags & ID3v2) {
@@ -244,14 +215,16 @@ void MPC::File::remove(int tags)
   }
 
   if(tags & APE) {
-    delete d->APETag;
-    d->APETag = 0;
+    d->tag.set(APEIndex, 0);
 
-    if(d->ID3v1Tag)
-      d->tag = d->ID3v1Tag;
-    else
-      d->tag = d->APETag = new APE::Tag;
+    if(!ID3v1Tag())
+      APETag(true);
   }
+}
+
+void MPC::File::remove(int tags)
+{
+  strip(tags);
 }
 
 
@@ -267,7 +240,7 @@ void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesSty
   d->ID3v1Location = findID3v1();
 
   if(d->ID3v1Location >= 0) {
-    d->ID3v1Tag = new ID3v1::Tag(this, d->ID3v1Location);
+    d->tag.set(ID3v1Index, new ID3v1::Tag(this, d->ID3v1Location));
     d->hasID3v1 = true;
   }
 
@@ -278,24 +251,15 @@ void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesSty
   d->APELocation = findAPE();
 
   if(d->APELocation >= 0) {
-    d->APETag = new APE::Tag(this, d->APELocation);
-    d->APESize = d->APETag->footer()->completeTagSize();
-    d->APELocation = d->APELocation + d->APETag->footer()->size() - d->APESize;
+    d->tag.set(APEIndex, new APE::Tag(this, d->APELocation));
+
+    d->APESize = APETag()->footer()->completeTagSize();
+    d->APELocation = d->APELocation + APETag()->footer()->size() - d->APESize;
     d->hasAPE = true;
   }
 
-  if(d->hasID3v1 && d->hasAPE)
-    d->tag = new CombinedTag(d->APETag, d->ID3v1Tag);
-  else {
-    if(d->hasID3v1)
-      d->tag = d->ID3v1Tag;
-    else {
-      if(d->hasAPE)
-        d->tag = d->APETag;
-      else
-        d->tag = d->APETag = new APE::Tag;
-    }
-  }
+  if(!d->hasID3v1)
+    APETag(true);
 
   // Look for and skip an ID3v2 tag
 

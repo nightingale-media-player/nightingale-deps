@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <iostream>
@@ -97,6 +101,11 @@ TagLib::uint Header::majorVersion() const
   return d->majorVersion;
 }
 
+void Header::setMajorVersion(TagLib::uint version)
+{
+  d->majorVersion = version;
+}
+
 TagLib::uint Header::revisionNumber() const
 {
   return d->revisionNumber;
@@ -158,11 +167,12 @@ ByteVector Header::render() const
   v.append(char(4));
   v.append(char(0));
 
-  // Currently we don't actually support writing extended headers or footers, so
-  // make sure that the flags are set accordingly.
+  // Currently we don't actually support writing extended headers, footers or
+  // unsynchronized tags, make sure that the flags are set accordingly.
 
   d->extendedHeader = false;
   d->footerPresent = false;
+  d->unsynchronisation = false;
 
   // render and add the flags
   std::bitset<8> flags;

@@ -5,7 +5,7 @@
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tstring.h>
@@ -64,7 +68,7 @@ FLAC::Properties::Properties(File *file, ReadStyle style) : AudioProperties(styl
 {
   d = new PropertiesPrivate(file->streamInfoData(), file->streamLength(), style);
   read();
-}	
+}
 
 FLAC::Properties::~Properties()
 {
@@ -137,10 +141,10 @@ void FLAC::Properties::read()
   pos += 4;
 
   // Uncompressed bitrate:
-  
+
   //d->bitrate = ((d->sampleRate * d->channels) / 1000) * d->sampleWidth;
-  
+
   // Real bitrate:
-  
+
   d->bitrate = d->length > 0 ? ((d->streamLength * 8L) / d->length) / 1000 : 0;
 }

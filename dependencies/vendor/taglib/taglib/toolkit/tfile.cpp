@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include "tfile.h"
@@ -33,21 +37,15 @@ using namespace TagLib;
 class File::FilePrivate
 {
 public:
-  FilePrivate(const char *fileName) :
+  FilePrivate() :
     fileIO(NULL),
-    name(fileName),
     maxScanBytes(0),
     valid(true),
     size(0)
     {}
 
-  ~FilePrivate()
-  {
-    free((void *)name);
-  }
-
   FileIO *fileIO;
-  const char *name;
+
   long maxScanBytes;
   bool valid;
   ulong size;
@@ -63,12 +61,12 @@ List<const File::FileIOTypeResolver *> File::FilePrivate::fileIOTypeResolvers;
 
 File::File()
 {
-  d = new FilePrivate(NULL);
+  d = new FilePrivate();
 }
 
-File::File(const char *file)
+File::File(FileName file)
 {
-  d = new FilePrivate(NULL);
+  d = new FilePrivate();
   open(file);
 }
 
@@ -79,14 +77,8 @@ File::~File()
   delete d;
 }
 
-void File::open(const char *file)
+void File::open(FileName file)
 {
-#ifdef _MSC_VER
-  d->name = _strdup(file);
-#else
-  d->name = ::strdup(file);
-#endif
-
   List<const FileIOTypeResolver *>::ConstIterator it = FilePrivate::fileIOTypeResolvers.begin();
 
   for(; it != FilePrivate::fileIOTypeResolvers.end(); ++it) {
@@ -106,12 +98,17 @@ void File::open(const char *file)
   }
 
   if(!d->fileIO)
-    debug("Could not open file " + String(file));
+    debug("Could not open file " + String((const char *) file));
 }
 
-const char *File::name() const
+FileName File::name() const
 {
-  return d->name;
+  if(!d->fileIO) {
+    debug("File::name() -- Invalid File");
+    return (char *) NULL;
+  }
+
+  return d->fileIO->name();
 }
 
 long File::getMaxScanBytes()
@@ -130,6 +127,9 @@ ByteVector File::readBlock(ulong length)
     debug("File::readBlock() -- Invalid File");
     return ByteVector::null;
   }
+
+  if(length == 0)
+    return ByteVector::null;
 
   return d->fileIO->readBlock(length);
 }
@@ -354,7 +354,7 @@ bool File::readOnly() const
   return d->fileIO->readOnly();
 }
 
-bool File::isReadable(const char *file)
+bool File::isReadable(FileName file)
 {
 /*zzz need to implement. */
     return true;
@@ -407,7 +407,7 @@ long File::length()
   return d->fileIO->length();
 }
 
-bool File::isWritable(const char *file)
+bool File::isWritable(FileName file)
 {
 /*zzz need to implement. */
     return false;

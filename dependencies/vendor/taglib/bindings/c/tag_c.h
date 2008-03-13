@@ -29,6 +29,16 @@
 extern "C" {
 #endif
 
+#if defined(_WIN32) || defined(_WIN64)
+#ifdef MAKE_TAGLIB_C_LIB
+#define TAGLIB_C_EXPORT __declspec(dllexport)
+#else
+#define TAGLIB_C_EXPORT __declspec(dllimport)
+#endif
+#else
+#define TAGLIB_C_EXPORT
+#endif
+
 #ifndef BOOL
 #define BOOL int
 #endif
@@ -57,7 +67,7 @@ typedef struct { int dummy; } TagLib_AudioProperties;
  * However, it may be desirable for TagLib to operate on Latin1 (ISO-8859-1)
  * strings in which case this should be set to FALSE.
  */
-void taglib_set_strings_unicode(BOOL unicode);
+TAGLIB_C_EXPORT void taglib_set_strings_unicode(BOOL unicode);
 
 /*!
  * TagLib can keep track of strings that are created when outputting tag values
@@ -65,7 +75,7 @@ void taglib_set_strings_unicode(BOOL unicode);
  * However if you wish to do more fine grained management of strings, you can do
  * so by setting \a management to FALSE.
  */
-void taglib_set_string_management_enabled(BOOL management);
+TAGLIB_C_EXPORT void taglib_set_string_management_enabled(BOOL management);
 
 /*******************************************************************************
  * File API
@@ -76,7 +86,10 @@ typedef enum {
   TagLib_File_OggVorbis,
   TagLib_File_FLAC,
   TagLib_File_MPC,
-  TagLib_File_OggFlac
+  TagLib_File_OggFlac,
+  TagLib_File_WavPack,
+  TagLib_File_Speex,
+  TagLib_File_TrueAudio
 } TagLib_File_Type;
 
 /*!
@@ -86,35 +99,42 @@ typedef enum {
  * \returns NULL if the file type cannot be determined or the file cannot
  * be opened.
  */
-TagLib_File *taglib_file_new(const char *filename);
+TAGLIB_C_EXPORT TagLib_File *taglib_file_new(const char *filename);
 
 /*!
  * Creates a TagLib file based on \a filename.  Rather than attempting to guess
  * the type, it will use the one specified by \a type.
  */
-TagLib_File *taglib_file_new_type(const char *filename, TagLib_File_Type type);
+TAGLIB_C_EXPORT TagLib_File *taglib_file_new_type(const char *filename, TagLib_File_Type type);
 
 /*!
  * Frees and closes the file.
  */
-void taglib_file_free(TagLib_File *file);
+TAGLIB_C_EXPORT void taglib_file_free(TagLib_File *file);
+
+/*!
+ * Returns true if the file is open and readble and valid information for
+ * the Tag and / or AudioProperties was found.
+ */
+
+TAGLIB_C_EXPORT BOOL taglib_file_is_valid(const TagLib_File *file);
 
 /*!
  * Returns a pointer to the tag associated with this file.  This will be freed
  * automatically when the file is freed.
  */
-TagLib_Tag *taglib_file_tag(const TagLib_File *file);
+TAGLIB_C_EXPORT TagLib_Tag *taglib_file_tag(const TagLib_File *file);
 
 /*!
  * Returns a pointer to the the audio properties associated with this file.  This
  * will be freed automatically when the file is freed.
  */
-const TagLib_AudioProperties *taglib_file_audioproperties(const TagLib_File *file);
+TAGLIB_C_EXPORT const TagLib_AudioProperties *taglib_file_audioproperties(const TagLib_File *file);
 
 /*!
  * Saves the \a file to disk.
  */
-BOOL taglib_file_save(TagLib_File *file);
+TAGLIB_C_EXPORT BOOL taglib_file_save(TagLib_File *file);
 
 /******************************************************************************
  * Tag API
@@ -126,7 +146,7 @@ BOOL taglib_file_save(TagLib_File *file);
  * \note By default this string should be UTF8 encoded and its memory should be
  * freed using taglib_tag_free_strings().
  */
-char *taglib_tag_title(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT char *taglib_tag_title(const TagLib_Tag *tag);
 
 /*!
  * Returns a string with this tag's artist.
@@ -134,7 +154,7 @@ char *taglib_tag_title(const TagLib_Tag *tag);
  * \note By default this string should be UTF8 encoded and its memory should be
  * freed using taglib_tag_free_strings().
  */
-char *taglib_tag_artist(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT char *taglib_tag_artist(const TagLib_Tag *tag);
 
 /*!
  * Returns a string with this tag's album name.
@@ -142,7 +162,7 @@ char *taglib_tag_artist(const TagLib_Tag *tag);
  * \note By default this string should be UTF8 encoded and its memory should be
  * freed using taglib_tag_free_strings().
  */
-char *taglib_tag_album(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT char *taglib_tag_album(const TagLib_Tag *tag);
 
 /*!
  * Returns a string with this tag's comment.
@@ -150,7 +170,7 @@ char *taglib_tag_album(const TagLib_Tag *tag);
  * \note By default this string should be UTF8 encoded and its memory should be
  * freed using taglib_tag_free_strings().
  */
-char *taglib_tag_comment(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT char *taglib_tag_comment(const TagLib_Tag *tag);
 
 /*!
  * Returns a string with this tag's genre.
@@ -158,67 +178,67 @@ char *taglib_tag_comment(const TagLib_Tag *tag);
  * \note By default this string should be UTF8 encoded and its memory should be
  * freed using taglib_tag_free_strings().
  */
-char *taglib_tag_genre(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT char *taglib_tag_genre(const TagLib_Tag *tag);
 
 /*!
  * Returns the tag's year or 0 if year is not set.
  */
-unsigned int taglib_tag_year(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT unsigned int taglib_tag_year(const TagLib_Tag *tag);
 
 /*!
  * Returns the tag's track number or 0 if track number is not set.
  */
-unsigned int taglib_tag_track(const TagLib_Tag *tag);
+TAGLIB_C_EXPORT unsigned int taglib_tag_track(const TagLib_Tag *tag);
 
 /*!
  * Sets the tag's title.
  *
  * \note By default this string should be UTF8 encoded.
  */
-void taglib_tag_set_title(TagLib_Tag *tag, const char *title);
+TAGLIB_C_EXPORT void taglib_tag_set_title(TagLib_Tag *tag, const char *title);
 
 /*!
  * Sets the tag's artist.
  *
  * \note By default this string should be UTF8 encoded.
  */
-void taglib_tag_set_artist(TagLib_Tag *tag, const char *artist);
+TAGLIB_C_EXPORT void taglib_tag_set_artist(TagLib_Tag *tag, const char *artist);
 
 /*!
  * Sets the tag's album.
  *
  * \note By default this string should be UTF8 encoded.
  */
-void taglib_tag_set_album(TagLib_Tag *tag, const char *album);
+TAGLIB_C_EXPORT void taglib_tag_set_album(TagLib_Tag *tag, const char *album);
 
 /*!
  * Sets the tag's comment.
  *
  * \note By default this string should be UTF8 encoded.
  */
-void taglib_tag_set_comment(TagLib_Tag *tag, const char *comment);
+TAGLIB_C_EXPORT void taglib_tag_set_comment(TagLib_Tag *tag, const char *comment);
 
 /*!
  * Sets the tag's genre.
  *
  * \note By default this string should be UTF8 encoded.
  */
-void taglib_tag_set_genre(TagLib_Tag *tag, const char *genre);
+TAGLIB_C_EXPORT void taglib_tag_set_genre(TagLib_Tag *tag, const char *genre);
 
 /*!
  * Sets the tag's year.  0 indicates that this field should be cleared.
  */
-void taglib_tag_set_year(TagLib_Tag *tag, unsigned int year);
+TAGLIB_C_EXPORT void taglib_tag_set_year(TagLib_Tag *tag, unsigned int year);
 
 /*!
  * Sets the tag's track number.  0 indicates that this field should be cleared.
  */
-void taglib_tag_set_track(TagLib_Tag *tag, unsigned int track);
+TAGLIB_C_EXPORT void taglib_tag_set_track(TagLib_Tag *tag, unsigned int track);
 
 /*!
  * Frees all of the strings that have been created by the tag.
  */
-void taglib_tag_free_strings(void);
+TAGLIB_C_EXPORT void taglib_tag_free_strings(void);
 
 /******************************************************************************
  * Audio Properties API
@@ -227,22 +247,22 @@ void taglib_tag_free_strings(void);
 /*!
  * Returns the length of the file in seconds.
  */
-int taglib_audioproperties_length(const TagLib_AudioProperties *audioProperties);
+TAGLIB_C_EXPORT int taglib_audioproperties_length(const TagLib_AudioProperties *audioProperties);
 
 /*!
  * Returns the bitrate of the file in kb/s.
  */
-int taglib_audioproperties_bitrate(const TagLib_AudioProperties *audioProperties);
+TAGLIB_C_EXPORT int taglib_audioproperties_bitrate(const TagLib_AudioProperties *audioProperties);
 
 /*!
  * Returns the sample rate of the file in Hz.
  */
-int taglib_audioproperties_samplerate(const TagLib_AudioProperties *audioProperties);
+TAGLIB_C_EXPORT int taglib_audioproperties_samplerate(const TagLib_AudioProperties *audioProperties);
 
 /*!
  * Returns the number of channels in the audio stream.
  */
-int taglib_audioproperties_channels(const TagLib_AudioProperties *audioProperties);
+TAGLIB_C_EXPORT int taglib_audioproperties_channels(const TagLib_AudioProperties *audioProperties);
 
 /*******************************************************************************
  * Special convenience ID3v2 functions
@@ -259,7 +279,7 @@ typedef enum {
  * This sets the default encoding for ID3v2 frames that are written to tags.
  */
 
-void taglib_id3v2_set_default_text_encoding(TagLib_ID3v2_Encoding encoding);
+TAGLIB_C_EXPORT void taglib_id3v2_set_default_text_encoding(TagLib_ID3v2_Encoding encoding);
 
 #ifdef __cplusplus
 }

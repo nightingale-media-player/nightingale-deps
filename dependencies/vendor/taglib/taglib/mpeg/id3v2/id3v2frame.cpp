@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,17 +17,24 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
+#ifndef HAVE_ZLIB
 #include <config.h>
-
-#include <bitset>
+#endif
 
 #if HAVE_ZLIB
 #include <zlib.h>
 #endif
 
+#include <bitset>
+
 #include <tdebug.h>
+#include <tstringlist.h>
 
 #include "id3v2frame.h"
 #include "id3v2synchdata.h"
@@ -50,6 +57,22 @@ public:
   Frame::Header *header;
 };
 
+namespace
+{
+  bool isValidFrameID(const ByteVector &frameID)
+  {
+    if(frameID.size() != 4)
+      return false;
+
+    for(ByteVector::ConstIterator it = frameID.begin(); it != frameID.end(); it++) {
+      if( (*it < 'A' || *it > 'Z') && (*it < '1' || *it > '9') ) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // static methods
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +90,7 @@ TagLib::uint Frame::headerSize(uint version)
 ByteVector Frame::textDelimiter(String::Type t)
 {
   ByteVector d = char(0);
-  if(t == String::UTF16 || t == String::UTF16BE)
+  if(t == String::UTF16 || t == String::UTF16BE || t == String::UTF16LE)
     d.append(char(0));
   return d;
 }
@@ -205,6 +228,20 @@ String Frame::readStringField(const ByteVector &data, String::Type encoding, int
   return str;
 }
 
+String::Type Frame::checkEncoding(const StringList &fields, String::Type encoding) // static
+{
+  if(encoding != String::Latin1)
+    return encoding;
+
+  for(StringList::ConstIterator it = fields.begin(); it != fields.end(); ++it) {
+    if(!(*it).isLatin1()) {
+      debug("Frame::checkEncoding() -- Rendering using UTF8.");
+      return String::UTF8;
+    }
+  }
+
+  return String::Latin1;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Frame::Header class
@@ -390,6 +427,17 @@ void Frame::Header::setData(const ByteVector &data, uint version)
     // the frame header (structure 4)
 
     d->frameSize = SynchData::toUInt(data.mid(4, 4));
+#ifndef NO_ITUNES_HACKS
+    // iTunes writes v2.4 tags with v2.3-like frame sizes
+    if(d->frameSize > 127) {
+      if(!isValidFrameID(data.mid(d->frameSize + 10, 4))) {
+        unsigned int uintSize = data.mid(4, 4).toUInt();
+        if(isValidFrameID(data.mid(uintSize + 10, 4))) {
+          d->frameSize = uintSize;
+        }
+      }
+    }
+#endif
 
     { // read the first byte of flags
       std::bitset<8> flags(data[8]);
@@ -495,7 +543,7 @@ ByteVector Frame::Header::render() const
   return v;
 }
 
-bool Frame::Header::frameAlterPreservation() const // deprecated
+bool Frame::Header::frameAlterPreservation() const
 {
   return fileAlterPreservation();
 }

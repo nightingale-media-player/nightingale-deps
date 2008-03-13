@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_FILE_H
@@ -57,7 +61,7 @@ namespace TagLib {
    *
    * class MyFileIOTypeResolver : FileIOTypeResolver
    * {
-   *   TagLib::FileIO *createFileIO(const char *fileName)
+   *   TagLib::FileIO *createFileIO(FileName fileName)
    *   {
    *     if(someCheckForAnHTTPFile(fileName))
    *       return new MyHTTPFileIO(fileName);
@@ -85,7 +89,7 @@ namespace TagLib {
        * deleted.  Deletion will happen automatically when the File passes out
        * of scope.
        */
-      virtual FileIO *createFileIO(const char *fileName) const = 0;
+      virtual FileIO *createFileIO(FileName fileName) const = 0;
     };
 
     /*!
@@ -100,12 +104,12 @@ namespace TagLib {
      * \note Constructor is protected since this class should only be
      * instantiated through subclasses.
      */
-    void open(const char *file);
+    void open(FileName file);
 
     /*!
      * Returns the file name in the local file system encoding.
      */
-    const char *name() const;
+    FileName name() const;
 
     /*!
      * Returns the maximum number of bytes to scan when scanning for frames or
@@ -256,14 +260,14 @@ namespace TagLib {
      *
      * \deprecated
      */
-    static bool isReadable(const char *file);
+    static bool isReadable(FileName file);
 
     /*!
      * Returns true if \a file can be opened for writing.
      *
      * \deprecated
      */
-    static bool isWritable(const char *name);
+    static bool isWritable(FileName name);
 
     /*!
      * Adds \a resolver to the list of FileIOTypeResolvers used by TagLib.  Each
@@ -301,7 +305,7 @@ namespace TagLib {
      * \note Constructor is protected since this class should only be
      * instantiated through subclasses.
      */
-    File(const char *file);
+    File(FileName file);
 
     /*!
      * Marks the file as valid or invalid.

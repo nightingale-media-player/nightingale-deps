@@ -5,7 +5,7 @@
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,11 +17,16 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_FLACPROPERTIES_H
 #define TAGLIB_FLACPROPERTIES_H
 
+#include "taglib_export.h"
 #include "audioproperties.h"
 
 namespace TagLib {
@@ -37,7 +42,7 @@ namespace TagLib {
      * API.
      */
 
-    class Properties : public AudioProperties
+    class TAGLIB_EXPORT Properties : public AudioProperties
     {
     public:
       /*!
@@ -73,6 +78,9 @@ namespace TagLib {
       int sampleWidth() const;
 
     private:
+      Properties(const Properties &);
+      Properties &operator=(const Properties &);
+
       void read();
 
       class PropertiesPrivate;

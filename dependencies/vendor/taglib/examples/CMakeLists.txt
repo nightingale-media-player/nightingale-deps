@@ -1,6 +1,7 @@
-if(BUILD_TESTS)
+if(BUILD_EXAMPLES)
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../taglib
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/toolkit
+		     ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/ape
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mpeg
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mpeg/id3v1
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../taglib/mpeg/id3v2
@@ -73,5 +74,5 @@ TARGET_LINK_LIBRARIES(strip-id3v1  tag )
 
 #INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/strip-id3v1 DESTINATION ${BIN_INSTALL_DIR})
 
-endif(BUILD_TESTS)
+endif(BUILD_EXAMPLES)
 

@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002 - 2004 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,14 +17,20 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_BYTEVECTOR_H
 #define TAGLIB_BYTEVECTOR_H
 
 #include "taglib.h"
+#include "taglib_export.h"
 
 #include <vector>
+#include <ostream>
 
 namespace TagLib {
 
@@ -36,7 +42,7 @@ namespace TagLib {
    * useful for finding tag related paterns in a data array.
    */
 
-  class ByteVector
+  class TAGLIB_EXPORT ByteVector
   {
   public:
 #ifndef DO_NOT_DOCUMENT
@@ -155,6 +161,12 @@ namespace TagLib {
      * Returns true if the vector ends with \a pattern.
      */
     bool endsWith(const ByteVector &pattern) const;
+
+    /*!
+     * Replaces \a pattern with \a with and returns a reference to the ByteVector
+     * after the operation.  This \e does modify the vector.
+     */
+    ByteVector &replace(const ByteVector &pattern, const ByteVector &with);
 
     /*!
      * Checks for a partial match of \a pattern at the end of the vector.  It
@@ -392,6 +404,6 @@ namespace TagLib {
  * \relates TagLib::ByteVector
  * Streams the ByteVector \a v to the output stream \a s.
  */
-std::ostream &operator<<(std::ostream &s, const TagLib::ByteVector &v);
+TAGLIB_EXPORT std::ostream &operator<<(std::ostream &s, const TagLib::ByteVector &v);
 
 #endif

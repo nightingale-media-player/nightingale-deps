@@ -5,7 +5,7 @@
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_APEITEM_H
@@ -35,7 +39,7 @@ namespace TagLib {
     /*!
      * This class provides the features of items in the APEv2 standard.
      */
-    class Item
+    class TAGLIB_EXPORT Item
     {
     public:
       /*!
@@ -57,6 +61,7 @@ namespace TagLib {
       /*!
        * Constructs an item with \a key and \a value.
        */
+      // BIC: Remove this, StringList has a constructor from a single string
       Item(const String &key, const String &value);
 
       /*!
@@ -139,9 +144,15 @@ namespace TagLib {
       String toString() const;
 
       /*!
-       * Returns the value as a string list.
+       * \deprecated
+       * \see values
        */
       StringList toStringList() const;
+
+      /*!
+       * Returns the list of values.
+       */
+      StringList values() const;
 
       /*!
        * Render the item to a ByteVector.

@@ -28,11 +28,12 @@
 #include <sys/stat.h>
 
 #ifdef _WIN32
+# include <wchar.h>
+# include <windows.h>
 # include <io.h>
 # define ftruncate _chsize
-# include <windows.h>
 #else
- #include <unistd.h>
+# include <unistd.h>
 #endif
 
 #ifndef R_OK
@@ -44,24 +45,35 @@
 
 using namespace TagLib;
 
+#ifdef _WIN32
+
+typedef FileName FileNameHandle;
+
+#else
+
+struct FileNameHandle : public std::string
+{
+  FileNameHandle(FileName name) : std::string(name) {}
+  operator FileName () const { return c_str(); }
+};
+
+#endif
+
 class LocalFileIO::LocalFileIOPrivate
 {
 public:
-  LocalFileIOPrivate(const char *fileName) :
-    file(0),
+  LocalFileIOPrivate(FileName fileName) :
+    file(NULL),
     name(fileName),
     readOnly(true),
     valid(true),
     size(0)
     {}
 
-  ~LocalFileIOPrivate()
-  {
-    free((void *)name);
-  }
-
   FILE *file;
-  const char *name;
+
+  FileNameHandle name;
+
   bool readOnly;
   bool valid;
   ulong size;
@@ -72,25 +84,19 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-LocalFileIO::LocalFileIO(const char *file)
+LocalFileIO::LocalFileIO(FileName file)
 {
-#ifdef _MSC_VER
-  d = new LocalFileIOPrivate(_strdup(file));
-#else
-  d = new LocalFileIOPrivate(::strdup(file));
-#endif
+  d = new LocalFileIOPrivate(file);
 
   d->readOnly = !isWritable(file);
+
 #ifdef _WIN32
-  // XXX Mook: hack for songbird bug 5300
-  wchar_t buffer[0x10000];
-  int rv = ::MultiByteToWideChar(CP_UTF8, 0, file, -1, buffer, sizeof(buffer)/sizeof(buffer[0]));
-  if (rv) {
-    d->file = _wfopen(buffer, d->readOnly ? L"rb" : L"rb+");
+  if(wcslen((const wchar_t *) file) > 0) {
+    d->file = _wfopen(file, d->readOnly ? L"rb" : L"rb+");
   }
-#else
-  d->file = fopen(file, d->readOnly ? "rb" : "rb+");
 #endif
+  if (!d->file)
+    d->file = fopen(file, d->readOnly ? "rb" : "rb+");
 
   // On Mac, fopen for write can sometimes still fail even if isWritable is
   // true (e.g., when file is on an SMB share).
@@ -100,7 +106,7 @@ LocalFileIO::LocalFileIO(const char *file)
   }
 
   if(!d->file)
-    debug("Could not open file " + String(file));
+    debug("Could not open file " + String((const char *) file));
 }
 
 LocalFileIO::~LocalFileIO()
@@ -110,7 +116,7 @@ LocalFileIO::~LocalFileIO()
   delete d;
 }
 
-const char *LocalFileIO::name() const
+FileName LocalFileIO::name() const
 {
   return d->name;
 }
@@ -282,7 +288,7 @@ bool LocalFileIO::readOnly() const
   return d->readOnly;
 }
 
-bool LocalFileIO::isReadable(const char *file)
+bool LocalFileIO::isReadable(FileName file)
 {
 #ifdef _MSC_VER
   return _access(file, R_OK) == 0;
@@ -339,19 +345,22 @@ long LocalFileIO::length()
     return 0;
 
   long curpos = tell();
-  
+
   seek(0, End);
   long endpos = tell();
-  
+
   seek(curpos, Beginning);
 
   d->size = endpos;
   return endpos;
 }
 
-bool LocalFileIO::isWritable(const char *file)
+bool LocalFileIO::isWritable(FileName file)
 {
 #ifdef _MSC_VER
+  if(wcslen((const wchar_t *) file) > 0) {
+    return _waccess(file, W_OK) == 0;
+  }
   return _access(file, W_OK) == 0;
 #else
   return access(file, W_OK) == 0;

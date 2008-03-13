@@ -43,7 +43,7 @@ namespace TagLib {
      * Construct a File I/O object and opens the \a file.  \a file should be a
      * be a C-string in the local file system encoding.
      */
-    LocalFileIO(const char *file);
+    LocalFileIO(FileName file);
 
     /*!
      * Destroys this File instance.
@@ -53,7 +53,7 @@ namespace TagLib {
     /*!
      * Returns the file name in the local file system encoding.
      */
-    virtual const char *name() const;
+    virtual FileName name() const;
 
     /*!
      * Reads a block of size \a length at the current get pointer.
@@ -127,12 +127,12 @@ namespace TagLib {
      * Returns true if \a file can be opened for reading.  If the file does not
      * exist, this will return false.
      */
-    static bool isReadable(const char *file);
+    static bool isReadable(FileName file);
 
     /*!
      * Returns true if \a file can be opened for writing.
      */
-    static bool isWritable(const char *name);
+    static bool isWritable(FileName name);
 
   protected:
     /*!

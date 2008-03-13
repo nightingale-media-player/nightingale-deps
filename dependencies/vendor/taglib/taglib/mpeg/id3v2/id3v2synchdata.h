@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_ID3V2SYNCHDATA_H
@@ -47,12 +51,17 @@ namespace TagLib {
        * <a href="id3v2-structure.html#6.2">6.2</a>).  The default \a length of
        * 4 is used if another value is not specified.
        */
-      uint toUInt(const ByteVector &data);
+      TAGLIB_EXPORT uint toUInt(const ByteVector &data);
 
       /*!
        * Returns a 4 byte (32 bit) synchsafe integer based on \a value.
        */
-      ByteVector fromUInt(uint value);
+      TAGLIB_EXPORT ByteVector fromUInt(uint value);
+
+      /*!
+       * Convert the data from unsynchronized data to its original format.
+       */
+      TAGLIB_EXPORT ByteVector decode(const ByteVector &input);
     }
 
   }

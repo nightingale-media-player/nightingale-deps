@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,6 +17,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #ifndef TAGLIB_ID3V1GENRE_H
@@ -24,6 +28,7 @@
 
 #include "tmap.h"
 #include "tstringlist.h"
+#include "taglib_export.h"
 
 namespace TagLib {
   namespace ID3v1 {
@@ -34,7 +39,7 @@ namespace TagLib {
      * Returns the list of canonical ID3v1 genre names in the order that they
      * are listed in the standard.
      */
-    StringList genreList();
+    StringList TAGLIB_EXPORT genreList();
 
     /*!
      * A "reverse mapping" that goes from the canonical ID3v1 genre name to the

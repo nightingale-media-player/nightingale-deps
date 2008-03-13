@@ -27,7 +27,21 @@
 
 namespace TagLib {
 
-  //! A file I/O class supporting local files
+#ifdef _WIN32
+  class TAGLIB_EXPORT FileName
+  {
+  public:
+    FileName(const wchar_t *name) : m_wname(name) {}
+    FileName(const char *name) : m_name(name) {}
+    operator const wchar_t *() const { return m_wname.c_str(); }
+    operator const char *() const { return m_name.c_str(); }
+  private:
+    std::string m_name;
+    std::wstring m_wname;
+  };
+#else
+  typedef const char *FileName;
+#endif
 
   /*!
    * This class is a basic file I/O interface class providing support for
@@ -57,7 +71,7 @@ namespace TagLib {
     /*!
      * Returns the file name in the local file system encoding.
      */
-    virtual const char *name() const = 0;
+    virtual FileName name() const = 0;
 
     /*!
      * Reads a block of size \a length at the current get pointer.

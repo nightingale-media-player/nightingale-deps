@@ -1,11 +1,11 @@
 /***************************************************************************
-    copyright            : (C) 2002, 2003 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
  ***************************************************************************/
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -17,11 +17,16 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tbytevectorlist.h>
 #include <id3v2tag.h>
 #include <tdebug.h>
+#include <tstringlist.h>
 
 #include "commentsframe.h"
 
@@ -94,7 +99,6 @@ void CommentsFrame::setText(const String &s)
   d->text = s;
 }
 
-
 String::Type CommentsFrame::textEncoding() const
 {
   return d->textEncoding;
@@ -149,11 +153,16 @@ ByteVector CommentsFrame::renderFields() const
 {
   ByteVector v;
 
-  v.append(char(d->textEncoding));
-  v.append(d->language.size() == 3 ? d->language : "   ");
-  v.append(d->description.data(d->textEncoding));
-  v.append(textDelimiter(d->textEncoding));
-  v.append(d->text.data(d->textEncoding));
+  String::Type encoding = d->textEncoding;
+
+  encoding = checkEncoding(d->description, encoding);
+  encoding = checkEncoding(d->text, encoding);
+
+  v.append(char(encoding));
+  v.append(d->language.size() == 3 ? d->language : "XXX");
+  v.append(d->description.data(encoding));
+  v.append(textDelimiter(encoding));
+  v.append(d->text.data(encoding));
 
   return v;
 }

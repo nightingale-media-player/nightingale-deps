@@ -21,6 +21,7 @@
 
 #include "tag_c.h"
 
+#include <stdlib.h>
 #include <fileref.h>
 #include <tfile.h>
 #include <vorbisfile.h>
@@ -28,6 +29,9 @@
 #include <flacfile.h>
 #include <oggflacfile.h>
 #include <mpcfile.h>
+#include <wavpackfile.h>
+#include <speexfile.h>
+#include <trueaudiofile.h>
 #include <tag.h>
 #include <string.h>
 #include <id3v2framefactory.h>
@@ -63,13 +67,19 @@ TagLib_File *taglib_file_new_type(const char *filename, TagLib_File_Type type)
   case TagLib_File_MPEG:
     return reinterpret_cast<TagLib_File *>(new MPEG::File(filename));
   case TagLib_File_OggVorbis:
-    return reinterpret_cast<TagLib_File *>(new Vorbis::File(filename));
+    return reinterpret_cast<TagLib_File *>(new Ogg::Vorbis::File(filename));
   case TagLib_File_FLAC:
     return reinterpret_cast<TagLib_File *>(new FLAC::File(filename));
   case TagLib_File_MPC:
     return reinterpret_cast<TagLib_File *>(new MPC::File(filename));
   case TagLib_File_OggFlac:
     return reinterpret_cast<TagLib_File *>(new Ogg::FLAC::File(filename));
+  case TagLib_File_WavPack:
+    return reinterpret_cast<TagLib_File *>(new WavPack::File(filename));
+  case TagLib_File_Speex:
+    return reinterpret_cast<TagLib_File *>(new Ogg::Speex::File(filename));
+  case TagLib_File_TrueAudio:
+    return reinterpret_cast<TagLib_File *>(new TrueAudio::File(filename));
   }
 
   return 0;
@@ -78,6 +88,11 @@ TagLib_File *taglib_file_new_type(const char *filename, TagLib_File_Type type)
 void taglib_file_free(TagLib_File *file)
 {
   delete reinterpret_cast<File *>(file);
+}
+
+BOOL taglib_file_is_valid(const TagLib_File *file)
+{
+	return reinterpret_cast<const File *>(file)->isValid();
 }
 
 TagLib_Tag *taglib_file_tag(const TagLib_File *file)

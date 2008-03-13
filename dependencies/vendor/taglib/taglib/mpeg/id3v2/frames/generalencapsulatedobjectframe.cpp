@@ -1,5 +1,5 @@
 /***************************************************************************
-    copyright            : (C) 2004 by Scott Wheeler
+    copyright            : (C) 2002 - 2008 by Scott Wheeler
     email                : wheeler@kde.org
     copyright            : (C) 2006 by Aaron VonderHaar
     email                : avh4@users.sourceforge.net
@@ -7,7 +7,7 @@
 
 /***************************************************************************
  *   This library is free software; you can redistribute it and/or modify  *
- *   it  under the terms of the GNU Lesser General Public License version  *
+ *   it under the terms of the GNU Lesser General Public License version   *
  *   2.1 as published by the Free Software Foundation.                     *
  *                                                                         *
  *   This library is distributed in the hope that it will be useful, but   *
@@ -19,6 +19,10 @@
  *   License along with this library; if not, write to the Free Software   *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
+ *                                                                         *
+ *   Alternatively, this file is available under the Mozilla Public        *
+ *   License Version 1.1.  You may obtain a copy of the License at         *
+ *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
 #include <tdebug.h>
@@ -51,8 +55,8 @@ GeneralEncapsulatedObjectFrame::GeneralEncapsulatedObjectFrame() : Frame("GEOB")
 
 GeneralEncapsulatedObjectFrame::GeneralEncapsulatedObjectFrame(const ByteVector &data) : Frame(data)
 {
-  setData(data);
   d = new GeneralEncapsulatedObjectFramePrivate;
+  setData(data);
 }
 
 GeneralEncapsulatedObjectFrame::~GeneralEncapsulatedObjectFrame()
@@ -136,7 +140,7 @@ void GeneralEncapsulatedObjectFrame::parseFields(const ByteVector &data)
 
   d->textEncoding = String::Type(data[0]);
 
-	int pos = 1;
+  int pos = 1;
 
   d->mimeType = readStringField(data, String::Latin1, &pos);
   d->fileName = readStringField(data, d->textEncoding, &pos);
