@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class BoxFactory
+    class TAGLIB_EXPORT BoxFactory
     {
     public:
       BoxFactory();

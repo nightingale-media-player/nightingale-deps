@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4IsoFullBox : public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4IsoFullBox : public Mp4IsoBox
     {
     public:
       //! constructor for full box

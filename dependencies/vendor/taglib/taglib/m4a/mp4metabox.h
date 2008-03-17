@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4MetaBox: public Mp4IsoFullBox
+    class TAGLIB_EXPORT Mp4MetaBox: public Mp4IsoFullBox
     {
     public:
       Mp4MetaBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );

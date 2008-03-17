@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4SkipBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4SkipBox: public Mp4IsoBox
     {
     public:
       Mp4SkipBox( File* file, MP4::Fourcc fourcc, uint size, long offset );

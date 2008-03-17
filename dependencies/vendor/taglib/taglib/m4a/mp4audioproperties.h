@@ -9,7 +9,7 @@ namespace TagLib
   {
     class Mp4PropsProxy;
 
-    class AudioProperties : public TagLib::AudioProperties
+    class TAGLIB_EXPORT AudioProperties : public TagLib::AudioProperties
     {
     public:
       //! constructor

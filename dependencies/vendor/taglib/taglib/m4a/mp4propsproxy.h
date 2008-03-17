@@ -11,7 +11,7 @@ namespace TagLib
     /*! this class works as a shortcut to avoid stepping through all parent boxes
      *  to access the boxes in question
      */
-    class Mp4PropsProxy
+    class TAGLIB_EXPORT Mp4PropsProxy
     {
     public:
       //! constructor for properties proxy

@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4AudioSampleEntry: public Mp4SampleEntry
+    class TAGLIB_EXPORT Mp4AudioSampleEntry: public Mp4SampleEntry
     {
     public:
       Mp4AudioSampleEntry( File* file, MP4::Fourcc fourcc, uint size, long offset );

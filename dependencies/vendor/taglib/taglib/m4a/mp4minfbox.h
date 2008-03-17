@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4MinfBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4MinfBox: public Mp4IsoBox
     {
     public:
       Mp4MinfBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );

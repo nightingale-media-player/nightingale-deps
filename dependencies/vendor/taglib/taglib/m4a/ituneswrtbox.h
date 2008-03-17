@@ -8,7 +8,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class ITunesWrtBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesWrtBox: public Mp4IsoBox
     {
     public:
       ITunesWrtBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
