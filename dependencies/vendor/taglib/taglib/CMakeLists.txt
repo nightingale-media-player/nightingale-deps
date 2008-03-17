@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/wavpack
     ${CMAKE_CURRENT_SOURCE_DIR}/trueaudio
     ${CMAKE_CURRENT_BINARY_DIR}/taglib
+    ${CMAKE_CURRENT_BINARY_DIR}/m4a
     ${CMAKE_CURRENT_BINARY_DIR}/..
 )
 if(ZLIB_FOUND)
@@ -29,6 +30,7 @@ ADD_SUBDIRECTORY( ape )
 ADD_SUBDIRECTORY( mpc )
 ADD_SUBDIRECTORY( wavpack )
 ADD_SUBDIRECTORY( trueaudio )
+ADD_SUBDIRECTORY( m4a )
 
 
 
@@ -118,6 +120,45 @@ trueaudio/trueaudiofile.cpp
 trueaudio/trueaudioproperties.cpp
 )
 
+SET(m4a_SRCS
+m4a/mp4file.cpp
+m4a/mp4itunestag.cpp
+m4a/mp4isobox.cpp
+m4a/mp4isofullbox.cpp
+m4a/mp4skipbox.cpp
+m4a/mp4moovbox.cpp
+m4a/mp4mvhdbox.cpp
+m4a/mp4trakbox.cpp
+m4a/mp4mdiabox.cpp
+m4a/mp4minfbox.cpp
+m4a/mp4stblbox.cpp
+m4a/mp4stsdbox.cpp
+m4a/mp4sampleentry.cpp
+m4a/mp4audiosampleentry.cpp
+m4a/mp4hdlrbox.cpp
+m4a/mp4ilstbox.cpp
+m4a/boxfactory.cpp
+m4a/mp4fourcc.cpp
+m4a/mp4udtabox.cpp
+m4a/mp4metabox.cpp
+m4a/mp4tagsproxy.cpp
+m4a/mp4propsproxy.cpp
+m4a/mp4audioproperties.cpp
+m4a/itunesnambox.cpp
+m4a/itunesartbox.cpp
+m4a/itunesalbbox.cpp
+m4a/itunesgenbox.cpp
+m4a/itunestrknbox.cpp
+m4a/itunesdaybox.cpp
+m4a/itunescmtbox.cpp
+m4a/itunesgrpbox.cpp
+m4a/ituneswrtbox.cpp
+m4a/itunesdiskbox.cpp
+m4a/itunestmpobox.cpp
+m4a/itunescvrbox.cpp
+m4a/itunesdatabox.cpp
+)
+
 SET(toolkit_SRCS
 toolkit/tstring.cpp
 toolkit/tstringlist.cpp
@@ -125,12 +166,13 @@ toolkit/tbytevector.cpp
 toolkit/tbytevectorlist.cpp
 toolkit/tfile.cpp
 toolkit/tdebug.cpp
+toolkit/tlocalfileio.cpp
 toolkit/unicode.cpp
 )
 
 SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_SRCS}
 		 ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS} ${toolkit_SRCS} ${flacs_SRCS}
-		 ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS}
+		 ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS} ${m4a_SRCS}
 		 tag.cpp
 		 tagunion.cpp
 		 fileref.cpp
