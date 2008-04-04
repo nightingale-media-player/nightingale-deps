@@ -1,0 +1,43 @@
+<!-- ##### SECTION Title ##### -->
+GstNetTimeProvider
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstNetTimeProvider ##### -->
+<para>
+
+</para>
+
+@parent: 
+@address: 
+@port: 
+@sock: 
+@control_sock: 
+@thread: 
+@clock: 
+
+<!-- ##### FUNCTION gst_net_time_provider_new ##### -->
+<para>
+
+</para>
+
+@clock: 
+@address: 
+@port: 
+@Returns: 
+
+

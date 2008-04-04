@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>cdparanoiasrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-audiotestsrc.html" title="audiotestsrc">
+<link rel="next" href="gst-plugins-base-plugins-clockoverlay.html" title="clockoverlay">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-audiotestsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-clockoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2596469" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2601140" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2568936" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2571407" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2578246" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id2601108" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-cdparanoiasrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2596469"></a><span class="refentrytitle">cdparanoiasrc</span>
+</h2>
+<p>cdparanoiasrc &#8212; Read audio from CD in paranoid mode</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstCdParanoiaSrc"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc-struct">GstCdParanoiaSrc</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2568936"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSrc
+                     +----GstPushSrc
+                           +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc"
+>GstCddaBaseSrc</a>
+                                 +----GstCdParanoiaSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2571407"></a><h2>Implemented Interfaces</h2>
+<p>
+GstCdParanoiaSrc implements
+ GstURIHandler.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2578246"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc--generic-device">generic-device</a>"           gchar*                : Read / Write
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc--paranoia-mode">paranoia-mode</a>"            GstCdParanoiaMode     : Read / Write
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc--read-speed">read-speed</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc--search-overlap">search-overlap</a>"           gint                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2601108"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc-transport-error">transport-error</a>"                                : Run Last
+  "<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc-uncorrected-error">uncorrected-error</a>"                              : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2601140"></a><h2>Description</h2>
+<div class="refsect2" lang="en">
+<a name="id2601151"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-base-plugins-plugin-cdparanoia.html#plugin-cdparanoia">cdparanoia</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Source/File</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)44100, channels=(int)2</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2562870"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2562881"></a><h3>
+<a name="GstCdParanoiaSrc-struct"></a>GstCdParanoiaSrc</h3>
+<a class="indexterm" name="id2562893"></a><pre class="programlisting">typedef struct _GstCdParanoiaSrc GstCdParanoiaSrc;</pre>
+<p>
+The cdparanoia object structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2562914"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2570349"></a><h3>
+<a name="GstCdParanoiaSrc--generic-device"></a>The "<code class="literal">generic-device</code>" property</h3>
+<a class="indexterm" name="id2570365"></a><pre class="programlisting">  "generic-device"           gchar*                : Read / Write</pre>
+<p>Use specified generic scsi device.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570391"></a><h3>
+<a name="GstCdParanoiaSrc--paranoia-mode"></a>The "<code class="literal">paranoia-mode</code>" property</h3>
+<a class="indexterm" name="id2570407"></a><pre class="programlisting">  "paranoia-mode"            GstCdParanoiaMode     : Read / Write</pre>
+<p>Type of checking to perform.</p>
+<p>Default value: PARANOIA_MODE_FRAGMENT</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570433"></a><h3>
+<a name="GstCdParanoiaSrc--read-speed"></a>The "<code class="literal">read-speed</code>" property</h3>
+<a class="indexterm" name="id2570449"></a><pre class="programlisting">  "read-speed"               gint                  : Read / Write</pre>
+<p>Read from device at specified speed.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2570478"></a><h3>
+<a name="GstCdParanoiaSrc--search-overlap"></a>The "<code class="literal">search-overlap</code>" property</h3>
+<a class="indexterm" name="id2570494"></a><pre class="programlisting">  "search-overlap"           gint                  : Read / Write</pre>
+<p>Force minimum overlap search during verification to n sectors.</p>
+<p>Allowed values: [-1,75]</p>
+<p>Default value: -1</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2570525"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2570536"></a><h3>
+<a name="GstCdParanoiaSrc-transport-error"></a>The "transport-error" signal</h3>
+<a class="indexterm" name="id2570546"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc">GstCdParanoiaSrc</a> *gstcdparanoiasrc,
+                                                        gint              arg1,
+                                                        gpointer          user_data)             : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstcdparanoiasrc</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591219"></a><h3>
+<a name="GstCdParanoiaSrc-uncorrected-error"></a>The "uncorrected-error" signal</h3>
+<a class="indexterm" name="id2591228"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-cdparanoiasrc.html#GstCdParanoiaSrc">GstCdParanoiaSrc</a> *gstcdparanoiasrc,
+                                                        gint              arg1,
+                                                        gpointer          user_data)             : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstcdparanoiasrc</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

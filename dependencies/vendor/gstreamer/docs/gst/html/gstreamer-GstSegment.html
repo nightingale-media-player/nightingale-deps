@@ -1,0 +1,811 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstSegment</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstRegistry.html" title="GstRegistry">
+<link rel="next" href="gstreamer-GstStructure.html" title="GstStructure">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstRegistry.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-GstStructure.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2814379" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2814919" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-GstSegment"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2814379"></a><span class="refentrytitle">GstSegment</span>
+</h2>
+<p>GstSegment &#8212; Structure describing the configured region of interest
+                    in a media file.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+                    <a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a>;
+gboolean            <a href="gstreamer-GstSegment.html#gst-segment-clip">gst_segment_clip</a>                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 *clip_start,
+                                                         gint64 *clip_stop);
+void                <a href="gstreamer-GstSegment.html#gst-segment-init">gst_segment_init</a>                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
+<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a>*         <a href="gstreamer-GstSegment.html#gst-segment-new">gst_segment_new</a>                     (void);
+void                <a href="gstreamer-GstSegment.html#gst-segment-free">gst_segment_free</a>                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment);
+void                <a href="gstreamer-GstSegment.html#gst-segment-set-duration">gst_segment_set_duration</a>            (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 duration);
+void                <a href="gstreamer-GstSegment.html#gst-segment-set-last-stop">gst_segment_set_last_stop</a>           (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);
+void                <a href="gstreamer-GstSegment.html#gst-segment-set-newsegment">gst_segment_set_newsegment</a>          (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gboolean update,
+                                                         gdouble rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 time);
+void                <a href="gstreamer-GstSegment.html#gst-segment-set-newsegment-full">gst_segment_set_newsegment_full</a>     (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gboolean update,
+                                                         gdouble rate,
+                                                         gdouble applied_rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 time);
+void                <a href="gstreamer-GstSegment.html#gst-segment-set-seek">gst_segment_set_seek</a>                (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gdouble rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekFlags">GstSeekFlags</a> flags,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> start_type,
+                                                         gint64 start,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> stop_type,
+                                                         gint64 stop,
+                                                         gboolean *update);
+gint64              <a href="gstreamer-GstSegment.html#gst-segment-to-running-time">gst_segment_to_running_time</a>         (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);
+gint64              <a href="gstreamer-GstSegment.html#gst-segment-to-stream-time">gst_segment_to_stream_time</a>          (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2814919"></a><h2>Description</h2>
+<p>
+This helper structure holds the relevant values for tracking the region of
+interest in a media file, called a segment. 
+</p>
+<p>
+The structure can be used for two purposes:
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li><p>performing seeks (handling seek events)</p></li>
+<li><p>tracking playback regions (handling newsegment events)</p></li>
+</ul></div>
+<p>
+</p>
+<p>
+The segment is usually configured by the application with a seek event which 
+is propagated upstream and eventually handled by an element that performs the seek.
+</p>
+<p>
+The configured segment is then propagated back downstream with a newsegment event.
+This information is then used to clip media to the segment boundaries.
+</p>
+<p>
+A segment structure is initialized with <a href="gstreamer-GstSegment.html#gst-segment-init"><code class="function">gst_segment_init()</code></a>, which takes a <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a>
+that will be used as the format of the segment values. The segment will be configured
+with a start value of 0 and a stop/duration of -1, which is undefined. The default
+rate and applied_rate is 1.0.
+</p>
+<p>
+If the segment is used for managing seeks, the segment duration should be set with
+<a href="gstreamer-GstSegment.html#gst-segment-set-duration"><code class="function">gst_segment_set_duration()</code></a>. The public duration field contains the duration of the
+segment. When using the segment for seeking, the start and time members should 
+normally be left to their default 0 value. The stop position is left to -1 unless
+explicitly configured to a different value after a seek event.
+</p>
+<p>
+The current position in the segment should be set with the <a href="gstreamer-GstSegment.html#gst-segment-set-last-stop"><code class="function">gst_segment_set_last_stop()</code></a>.
+The public last_stop field contains the last set stop position in the segment.
+</p>
+<p>
+For elements that perform seeks, the current segment should be updated with the
+<a href="gstreamer-GstSegment.html#gst-segment-set-seek"><code class="function">gst_segment_set_seek()</code></a> and the values from the seek event. This method will update
+all the segment fields. The last_stop field will contain the new playback position.
+If the cur_type was different from GST_SEEK_TYPE_NONE, playback continues from
+the last_stop position, possibly with updated flags or rate.
+</p>
+<p>
+For elements that want to use <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> to track the playback region, use
+<a href="gstreamer-GstSegment.html#gst-segment-set-newsegment"><code class="function">gst_segment_set_newsegment()</code></a> to update the segment fields with the information from
+the newsegment event. The <a href="gstreamer-GstSegment.html#gst-segment-clip"><code class="function">gst_segment_clip()</code></a> method can be used to check and clip
+the media data to the segment boundaries.
+</p>
+<p>
+For elements that want to synchronize to the pipeline clock, <a href="gstreamer-GstSegment.html#gst-segment-to-running-time"><code class="function">gst_segment_to_running_time()</code></a>
+can be used to convert a timestamp to a value that can be used to synchronize
+to the clock. This function takes into account all accumulated segments as well as
+any rate or applied_rate conversions.
+</p>
+<p>
+For elements that need to perform operations on media data in stream_time, 
+<a href="gstreamer-GstSegment.html#gst-segment-to-stream-time"><code class="function">gst_segment_to_stream_time()</code></a> can be used to convert a timestamp and the segment
+info to stream time (which is always between 0 and the duration of the stream).
+</p>
+<p>
+Last reviewed on 2007-05-17 (0.10.13)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2815134"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2815145"></a><h3>
+<a name="GstSegment"></a>GstSegment</h3>
+<a class="indexterm" name="id2815156"></a><pre class="programlisting">typedef struct {
+  gdouble        rate;
+  gdouble        abs_rate;
+  GstFormat      format;
+  GstSeekFlags   flags;
+  gint64         start;
+  gint64         stop;
+  gint64         time;
+  gint64         accum;
+
+  gint64         last_stop;
+  gint64         duration;
+
+  /* API added 0.10.6 */
+  gdouble        applied_rate;
+} GstSegment;
+</pre>
+<p>
+A helper structure that holds the configured region of
+interest in a media file.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gdouble&#160;<em class="structfield"><code>rate</code></em>;</span></td>
+<td> the rate of the segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gdouble&#160;<em class="structfield"><code>abs_rate</code></em>;</span></td>
+<td> absolute value of <em class="parameter"><code>rate</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>&#160;<em class="structfield"><code>format</code></em>;</span></td>
+<td> the format of the segment values
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gstreamer-GstEvent.html#GstSeekFlags">GstSeekFlags</a>&#160;<em class="structfield"><code>flags</code></em>;</span></td>
+<td> flags for this segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>start</code></em>;</span></td>
+<td> the start of the segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>stop</code></em>;</span></td>
+<td> the stop of the segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>time</code></em>;</span></td>
+<td> the stream time of the segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>accum</code></em>;</span></td>
+<td> accumulated segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>last_stop</code></em>;</span></td>
+<td> last known stop time
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>duration</code></em>;</span></td>
+<td> total duration of segment
+</td>
+</tr>
+<tr>
+<td><span class="term">gdouble&#160;<em class="structfield"><code>applied_rate</code></em>;</span></td>
+<td> the already applied rate to the segment
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2815418"></a><h3>
+<a name="gst-segment-clip"></a>gst_segment_clip ()</h3>
+<a class="indexterm" name="id2815430"></a><pre class="programlisting">gboolean            gst_segment_clip                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 *clip_start,
+                                                         gint64 *clip_stop);</pre>
+<p>
+Clip the given <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> values to the segment boundaries given
+in <em class="parameter"><code>segment</code></em>. <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> are compared and clipped to <em class="parameter"><code>segment</code></em> 
+start and stop values.
+</p>
+<p>
+If the function returns FALSE, <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> are known to fall
+outside of <em class="parameter"><code>segment</code></em> and <em class="parameter"><code>clip_start</code></em> and <em class="parameter"><code>clip_stop</code></em> are not updated.
+</p>
+<p>
+When the function returns TRUE, <em class="parameter"><code>clip_start</code></em> and <em class="parameter"><code>clip_stop</code></em> will be
+updated. If <em class="parameter"><code>clip_start</code></em> or <em class="parameter"><code>clip_stop</code></em> are different from <em class="parameter"><code>start</code></em> or <em class="parameter"><code>stop</code></em>
+respectively, the region fell partially in the segment.
+</p>
+<p>
+Note that when <em class="parameter"><code>stop</code></em> is -1, <em class="parameter"><code>clip_stop</code></em> will be set to the end of the
+segment. Depending on the use case, this may or may not be what you want.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td> the start position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop</code></em>&#160;:</span></td>
+<td> the stop position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clip_start</code></em>&#160;:</span></td>
+<td> the clipped start position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clip_stop</code></em>&#160;:</span></td>
+<td> the clipped stop position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the given <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> times fall partially or 
+    completely in <em class="parameter"><code>segment</code></em>, FALSE if the values are completely outside 
+    of the segment.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2815759"></a><h3>
+<a name="gst-segment-init"></a>gst_segment_init ()</h3>
+<a class="indexterm" name="id2815771"></a><pre class="programlisting">void                gst_segment_init                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<p>
+The start/last_stop positions are set to 0 and the stop/duration
+fields are set to -1 (unknown). The default rate of 1.0 and no
+flags are set.
+</p>
+<p>
+Initialize <em class="parameter"><code>segment</code></em> to its default values.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2815863"></a><h3>
+<a name="gst-segment-new"></a>gst_segment_new ()</h3>
+<a class="indexterm" name="id2815876"></a><pre class="programlisting"><a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a>*         gst_segment_new                     (void);</pre>
+<p>
+Allocate a new <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure and initialize it using 
+<a href="gstreamer-GstSegment.html#gst-segment-init"><code class="function">gst_segment_init()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a>, free with <a href="gstreamer-GstSegment.html#gst-segment-free"><code class="function">gst_segment_free()</code></a>.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2815953"></a><h3>
+<a name="gst-segment-free"></a>gst_segment_free ()</h3>
+<a class="indexterm" name="id2815966"></a><pre class="programlisting">void                gst_segment_free                    (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment);</pre>
+<p>
+Free the allocated segment <em class="parameter"><code>segment</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2816030"></a><h3>
+<a name="gst-segment-set-duration"></a>gst_segment_set_duration ()</h3>
+<a class="indexterm" name="id2816042"></a><pre class="programlisting">void                gst_segment_set_duration            (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 duration);</pre>
+<p>
+Set the duration of the segment to <em class="parameter"><code>duration</code></em>. This function is mainly
+used by elements that perform seeking and know the total duration of the
+segment. 
+</p>
+<p>
+This field should be set to allow seeking requests relative to the
+duration.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>duration</code></em>&#160;:</span></td>
+<td> the duration of the segment info or -1 if unknown.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2816158"></a><h3>
+<a name="gst-segment-set-last-stop"></a>gst_segment_set_last_stop ()</h3>
+<a class="indexterm" name="id2816172"></a><pre class="programlisting">void                gst_segment_set_last_stop           (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);</pre>
+<p>
+Set the last observed stop position in the segment to <em class="parameter"><code>position</code></em>.
+</p>
+<p>
+This field should be set to allow seeking requests relative to the
+current playing position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the position 
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2816284"></a><h3>
+<a name="gst-segment-set-newsegment"></a>gst_segment_set_newsegment ()</h3>
+<a class="indexterm" name="id2816301"></a><pre class="programlisting">void                gst_segment_set_newsegment          (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gboolean update,
+                                                         gdouble rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 time);</pre>
+<p>
+Update the segment structure with the field values of a new segment event and
+with a default applied_rate of 1.0.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>update</code></em>&#160;:</span></td>
+<td> flag indicating a new segment is started or updated
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>rate</code></em>&#160;:</span></td>
+<td> the rate of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td> the new start value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop</code></em>&#160;:</span></td>
+<td> the new stop value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>time</code></em>&#160;:</span></td>
+<td> the new stream time
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2816499"></a><h3>
+<a name="gst-segment-set-newsegment-full"></a>gst_segment_set_newsegment_full ()</h3>
+<a class="indexterm" name="id2816512"></a><pre class="programlisting">void                gst_segment_set_newsegment_full     (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gboolean update,
+                                                         gdouble rate,
+                                                         gdouble applied_rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 start,
+                                                         gint64 stop,
+                                                         gint64 time);</pre>
+<p>
+Update the segment structure with the field values of a new segment event.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>update</code></em>&#160;:</span></td>
+<td> flag indicating a new segment is started or updated
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>rate</code></em>&#160;:</span></td>
+<td> the rate of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>applied_rate</code></em>&#160;:</span></td>
+<td> the applied rate of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td> the new start value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop</code></em>&#160;:</span></td>
+<td> the new stop value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>time</code></em>&#160;:</span></td>
+<td> the new stream time
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2816726"></a><h3>
+<a name="gst-segment-set-seek"></a>gst_segment_set_seek ()</h3>
+<a class="indexterm" name="id2816738"></a><pre class="programlisting">void                gst_segment_set_seek                (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         gdouble rate,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekFlags">GstSeekFlags</a> flags,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> start_type,
+                                                         gint64 start,
+                                                         <a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> stop_type,
+                                                         gint64 stop,
+                                                         gboolean *update);</pre>
+<p>
+Update the segment structure with the field values of a seek event (see
+<a href="gstreamer-GstEvent.html#gst-event-new-seek"><code class="function">gst_event_new_seek()</code></a>).
+</p>
+<p>
+After calling this method, the segment field last_stop and time will
+contain the requested new position in the segment. The new requested
+position in the segment depends on <em class="parameter"><code>rate</code></em> and <em class="parameter"><code>start_type</code></em> and <em class="parameter"><code>stop_type</code></em>. 
+</p>
+<p>
+For positive <em class="parameter"><code>rate</code></em>, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
+start field when it was updated with a <em class="parameter"><code>start_type</code></em> different from
+<a href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no update was performed on <em class="parameter"><code>segment</code></em> start position
+(<a href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>), <em class="parameter"><code>start</code></em> is ignored and <em class="parameter"><code>segment</code></em> last_stop is
+unmodified.
+</p>
+<p>
+For negative <em class="parameter"><code>rate</code></em>, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
+stop field when it was updated with a <em class="parameter"><code>stop_type</code></em> different from
+<a href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no stop was previously configured in the segment, the
+duration of the segment will be used to update the stop position.
+If no update was performed on <em class="parameter"><code>segment</code></em> stop position (<a href="gstreamer-GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>),
+<em class="parameter"><code>stop</code></em> is ignored and <em class="parameter"><code>segment</code></em> last_stop is unmodified.
+</p>
+<p>
+The applied rate of the segment will be set to 1.0 by default.
+If the caller can apply a rate change, it should update <em class="parameter"><code>segment</code></em>
+rate and applied_rate after calling this function.
+</p>
+<p>
+<em class="parameter"><code>update</code></em> will be set to TRUE if a seek should be performed to the segment 
+last_stop field. This field can be FALSE if, for example, only the <em class="parameter"><code>rate</code></em>
+has been changed but not the playback position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>rate</code></em>&#160;:</span></td>
+<td> the rate of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> the seek flags for the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start_type</code></em>&#160;:</span></td>
+<td> the seek method
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td> the seek start value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop_type</code></em>&#160;:</span></td>
+<td> the seek method
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop</code></em>&#160;:</span></td>
+<td> the seek stop value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>update</code></em>&#160;:</span></td>
+<td> boolean holding whether last_stop was updated.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2817158"></a><h3>
+<a name="gst-segment-to-running-time"></a>gst_segment_to_running_time ()</h3>
+<a class="indexterm" name="id2817171"></a><pre class="programlisting">gint64              gst_segment_to_running_time         (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);</pre>
+<p>
+Translate <em class="parameter"><code>position</code></em> to the total running time using the currently configured 
+and previously accumulated segments. Position is a value between <em class="parameter"><code>segment</code></em>
+start and stop time.
+</p>
+<p>
+This function is typically used by elements that need to synchronize to the
+global clock in a pipeline. The runnning time is a constantly increasing value
+starting from 0. When <a href="gstreamer-GstSegment.html#gst-segment-init"><code class="function">gst_segment_init()</code></a> is called, this value will reset to
+0.
+</p>
+<p>
+This function returns -1 if the position is outside of <em class="parameter"><code>segment</code></em> start and stop.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the position as the total running time or -1 when an invalid position
+was given.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2817326"></a><h3>
+<a name="gst-segment-to-stream-time"></a>gst_segment_to_stream_time ()</h3>
+<a class="indexterm" name="id2817340"></a><pre class="programlisting">gint64              gst_segment_to_stream_time          (<a href="gstreamer-GstSegment.html#GstSegment">GstSegment</a> *segment,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);</pre>
+<p>
+Translate <em class="parameter"><code>position</code></em> to stream time using the currently configured 
+segment. The <em class="parameter"><code>position</code></em> value must be between <em class="parameter"><code>segment</code></em> start and
+stop value. 
+</p>
+<p>
+This function is typically used by elements that need to operate on
+the stream time of the buffers it receives, such as effect plugins.
+In those use cases, <em class="parameter"><code>position</code></em> is typically the buffer timestamp or 
+clock time that one wants to convert to the stream time.
+The stream time is always between 0 and the total duration of the 
+media stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>segment</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstSegment.html#GstSegment"><span class="type">GstSegment</span></a> structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the segment.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the position in the segment
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the position in stream_time or -1 when an invalid position
+was given.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2817489"></a><h2>See Also</h2>
+<a href="gstreamer-GstEvent.html#GstEvent"><span class="type">GstEvent</span></a>
+</div>
+</div>
+</body>
+</html>

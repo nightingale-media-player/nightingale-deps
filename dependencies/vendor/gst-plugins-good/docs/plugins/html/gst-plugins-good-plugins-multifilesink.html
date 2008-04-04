@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>multifilesink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-monoscope.html" title="monoscope">
+<link rel="next" href="gst-plugins-good-plugins-multifilesrc.html" title="multifilesrc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-monoscope.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-multifilesrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2619166" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2620222" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2590253" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2559736" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-multifilesink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2619166"></a><span class="refentrytitle">multifilesink</span>
+</h2>
+<p>multifilesink &#8212; Writes buffers to sequentially-named files</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstMultiFileSink"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink-struct">GstMultiFileSink</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2590253"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----GstMultiFileSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2559736"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--location">location</a>"                 gchar*                : Read / Write
+  "<a href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--index">index</a>"                    gint                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2620222"></a><h2>Description</h2>
+<p>
+</p>
+<p>
+Write incoming data to a series of sequentially-named files.
+</p>
+<div class="refsect2" lang="en">
+<a name="id2620240"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-multifile.html#plugin-multifile">multifile</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>David Schleef &lt;ds@schleef.org&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Sink/File</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2617031"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2617042"></a><h3>
+<a name="GstMultiFileSink-struct"></a>GstMultiFileSink</h3>
+<a class="indexterm" name="id2617054"></a><pre class="programlisting">typedef struct _GstMultiFileSink GstMultiFileSink;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2617071"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2617082"></a><h3>
+<a name="GstMultiFileSink--location"></a>The "<code class="literal">location</code>" property</h3>
+<a class="indexterm" name="id2617096"></a><pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<p>Location of the file to write.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2617120"></a><h3>
+<a name="GstMultiFileSink--index"></a>The "<code class="literal">index</code>" property</h3>
+<a class="indexterm" name="id2617134"></a><pre class="programlisting">  "index"                    gint                  : Read / Write</pre>
+<p>Index to use with location property to create file names.  The index is incremented by one for each buffer read.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2617165"></a><h2>See Also</h2>
+<span class="type">GstFileSrc</span>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+apedemux
+
+<!-- ##### SECTION Short_Description ##### -->
+Read and output APE tags while demuxing the contents
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-apedemux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstApeDemux ##### -->
+<para>
+
+</para>
+
+

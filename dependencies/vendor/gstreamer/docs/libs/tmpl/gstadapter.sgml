@@ -1,0 +1,118 @@
+<!-- ##### SECTION Title ##### -->
+GstAdapter
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAdapter ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_adapter_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_adapter_clear ##### -->
+<para>
+
+</para>
+
+@adapter: 
+
+
+<!-- ##### FUNCTION gst_adapter_push ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@buf: 
+
+
+<!-- ##### FUNCTION gst_adapter_peek ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_adapter_copy ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@dest: 
+@offset: 
+@size: 
+
+
+<!-- ##### FUNCTION gst_adapter_flush ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@flush: 
+
+
+<!-- ##### FUNCTION gst_adapter_available ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_adapter_available_fast ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_adapter_take ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@nbytes: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_adapter_take_buffer ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@nbytes: 
+@Returns: 
+
+

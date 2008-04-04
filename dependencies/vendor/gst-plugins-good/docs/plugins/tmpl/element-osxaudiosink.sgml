@@ -1,0 +1,28 @@
+<!-- ##### SECTION Title ##### -->
+osxaudiosink
+
+<!-- ##### SECTION Short_Description ##### -->
+Output to a sound card in OS X
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-osxaudiosink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstOsxAudioSink ##### -->
+<para>
+
+</para>
+
+@sink: 
+@ringbuffer: 
+

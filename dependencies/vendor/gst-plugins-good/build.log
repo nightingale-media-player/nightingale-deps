@@ -1,0 +1,1686 @@
+-I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+-L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi
+cfg_opts
+configure: WARNING: If you wanted to set the --build type, don't use --host.
+    If a cross compiler is detected then cross compile mode will be used.
+configure: loading cache config.cache
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for i686-pc-mingw32-strip... no
+checking for strip... strip
+checking nano version... 0 (release)
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for style of include used by make... GNU
+checking for i686-pc-mingw32-gcc... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+checking for C compiler default output file name... conftest.exe
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... .exe
+checking for suffix of object files... obj
+checking whether we are using the GNU C compiler... no
+checking whether /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py accepts -g... yes
+checking for /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py option to accept ISO C89... none needed
+checking dependency style of /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py... none
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for non-GNU ld... link
+checking if the linker (link) is GNU ld... no
+checking for BSD- or MS-compatible name lister (nm)... /bin/nm
+checking the name lister (/bin/nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... no
+checking for link option to reload object files... -r
+checking how to recognize dependent libraries... file_magic file format pei*-i386(.*architecture: i386)?
+checking for i686-pc-mingw32-ar... no
+checking for i686-pc-mingw32-lib... no
+checking for i686-pc-mingw32-link... no
+checking for ar... ar
+checking the archiver (ar) interface... ar
+checking for i686-pc-mingw32-strip... strip
+checking for i686-pc-mingw32-ranlib... no
+checking for ranlib... ranlib
+checking command to parse /bin/nm output from /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py object... ok
+checking how to run the C preprocessor... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... no
+checking for inttypes.h... no
+checking for stdint.h... no
+checking for unistd.h... no
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking for /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py option to produce PIC... -DDLL_EXPORT -DPIC
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py static flag  works... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py supports -c -o file.obj... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py supports -c -o file.obj... (cached) yes
+checking whether the /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py linker (link) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 link.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking for msgfmt... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/bin/msgfmt
+checking for gmsgfmt... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/bin/msgfmt
+checking for xgettext... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/bin/xgettext
+checking for msgmerge... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/bin/msgmerge
+checking for non-GNU ld... link
+checking if the linker (link) is GNU ld... no
+checking for shared library run path origin... done
+checking whether NLS is requested... yes
+checking for GNU gettext in libc... no
+checking for iconv... yes
+checking for GNU gettext in libintl... no
+checking for i686-pc-mingw32-pkg-config... no
+checking for pkg-config... /bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for VALGRIND... no
+configure: Using GStreamer Good Plug-ins source release as package name
+configure: Using Unknown package origin as package origin
+plug-in directsound not recognized, ignoring...
+checking sys/socket.h usability... no
+checking sys/socket.h presence... no
+checking for sys/socket.h... no
+checking winsock2.h usability... yes
+checking winsock2.h presence... yes
+checking for winsock2.h... yes
+
+configure: *** checking feature: enable building of plug-ins with external deps ***
+configure: building external plug-ins
+
+configure: *** checking feature: building of experimental plug-ins ***
+configure: not building experimental plug-ins
+checking whether byte ordering is bigendian... no
+checking whether byte ordering is bigendian... (cached) no
+checking for i686-pc-mingw32-gcc... (cached) /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+checking whether we are using the GNU C compiler... (cached) no
+checking whether /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py accepts -g... (cached) yes
+checking for /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py option to accept ISO C89... (cached) none needed
+checking dependency style of /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py... (cached) none
+checking whether we are using the GNU C++ compiler... no
+checking whether /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py accepts -g... yes
+checking dependency style of /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py... none
+checking whether we are using the GNU C++ compiler... (cached) no
+checking whether /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py accepts -g... (cached) yes
+checking dependency style of /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py... (cached) none
+checking how to run the C++ preprocessor... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -E
+checking whether the /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py linker (link) supports shared libraries... yes
+checking for /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py option to produce PIC...  -DPIC
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py PIC flag  -DPIC works... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py static flag  works... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py supports -c -o file.obj... yes
+checking if /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py supports -c -o file.obj... (cached) yes
+checking whether the /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py linker (link) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 link.exe
+checking how to hardcode library paths into programs... immediate
+checking for /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py... no
+checking how to run the C++ preprocessor... /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -E
+checking for i686-pc-mingw32-objcc... no
+checking for i686-pc-mingw32-objc... no
+checking for i686-pc-mingw32-gcc... no
+checking for i686-pc-mingw32-cc... no
+checking for i686-pc-mingw32-CC... no
+checking for objcc... no
+checking for objc... no
+checking for gcc... no
+checking for cc... no
+checking for CC... no
+checking whether /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py and cc understand -c and -o together... yes
+checking for valgrind... no
+./configure: gconftool-2: command not found
+Using config source  for schema installation
+Using $(sysconfdir)/gconf/schemas as install directory for schema files
+checking for gtkdoc-check... no
+configure: Looking for Python version >= 2.1
+checking for python... /c/mozilla-build//python25/python
+checking "/c/mozilla-build//python25/python":... okay
+checking local Python configuration... looks good
+checking whether to build plugin documentation... no (gtk-doc disabled or not available)
+checking for cos in -lm... no
+checking for ANSI C header files... (cached) yes
+checking for stdint types... (putting them into _stdint.h)... no
+checking for stdint uintptr_t... (..)
+checking for uintptr_t... no
+checking for uintptr_t... no
+checking for uintptr_t... no
+checking for stdint uintptr_t... 
+checking for stdint uint32_t... (..)
+checking for uint32_t... no
+checking for uint32_t... no
+checking for uint32_t... no
+checking for stdint uint32_t... 
+checking for stdint u_int32_t... (..)
+checking for u_int32_t... no
+checking for u_int32_t... no
+checking for u_int32_t... no
+checking for stdint u_int32_t... 
+checking for stdint datatype model... (..)
+checking for char... yes
+checking size of char... 1
+checking for short... yes
+checking size of short... 2
+checking for int... yes
+checking size of int... 4
+checking for long... yes
+checking size of long... 4
+checking for void*... yes
+checking size of void*... 4
+combined for stdint datatype model...  444, ILP32 (standard 32bit unixish)
+checking for extra inttypes in chosen header... (stddef.h)
+checking for int_least32_t... no
+checking for int_fast32_t... no
+checking for intmax_t... no
+make use of stddef.h in _stdint.h (no helpful system typedefs seen)
+checking netinet/in.h usability... no
+checking netinet/in.h presence... no
+checking for netinet/in.h... no
+checking for winsock2.h... (cached) yes
+checking sys/time.h usability... no
+checking sys/time.h presence... no
+checking for sys/time.h... no
+checking for FIONREAD in sys/ioctl.h... no
+checking for FIONREAD in sys/filio.h... no
+checking for lrint... no
+checking for lrintf... no
+checking for rint... no
+checking for stdlib.h... (cached) yes
+checking for unistd.h... (cached) no
+checking for getpagesize... no
+checking for working mmap... no
+checking for GLIB... yes
+checking for LIBOIL... yes
+checking for GST... yes
+configure: using GStreamer tools in /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/bin
+configure: using GStreamer plug-ins in /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10
+checking for GST_BASE... yes
+checking for GST_GDP... yes
+checking for GST_CONTROLLER... yes
+checking for GST_CHECK... no
+configure: Package gstreamer-check-0.10 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `gstreamer-check-0.10.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'gstreamer-check-0.10' found
+configure: no gstreamer-check-0.10 >= 0.10.17 (GStreamer Check unittest Library) found
+checking for GST_PLUGINS_BASE... yes
+configure: using GStreamer Base Plug-ins in /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstreamer-0.10
+configure: Using GStreamer Core Plugins in /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10
+configure: Using GStreamer Base Plugins in /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstreamer-0.10
+checking for GTK2... checking for GTK2... 
+configure: *** checking feature: GConf schemas ***
+checking for gconftool-2... no
+configure: WARNING: Not installing GConf schemas
+configure: Using /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10 as the plugin install location
+checking to see if compiler understands -Wall... yes
+configure: set ERROR_CFLAGS to -Wall
+
+configure: Checking libraries for plugins in sys/
+
+
+configure: *** checking feature: DirectDraw plug-in ***
+configure: *** for plug-ins: directdrawsink ***
+checking for DirectDraw LDFLAGS... yes
+configure: *** These plugins will be built: directdrawsink
+
+configure: *** checking feature: DirectSound plug-in ***
+configure: *** for plug-ins: directsoundsink ***
+checking for DirectSound LDFLAGS... yes
+configure: *** These plugins will be built: directsoundsink
+
+configure: *** checking feature: OSS audio ***
+configure: *** for plug-ins: ossaudio ***
+checking sys/soundcard.h usability... no
+checking sys/soundcard.h presence... no
+checking for sys/soundcard.h... no
+checking soundcard.h usability... no
+checking soundcard.h presence... no
+checking for soundcard.h... no
+checking machine/soundcard.h usability... no
+checking machine/soundcard.h presence... no
+checking for machine/soundcard.h... no
+configure: *** These plugins will not be built: ossaudio
+
+configure: *** checking feature: Sun Audio ***
+configure: *** for plug-ins: sunaudio ***
+checking sys/audioio.h usability... no
+checking sys/audioio.h presence... no
+checking for sys/audioio.h... no
+configure: *** These plugins will not be built: sunaudio
+
+configure: *** checking feature: OSX audio ***
+configure: *** for plug-ins: osxaudio ***
+checking CoreAudio/CoreAudio.h usability... no
+checking CoreAudio/CoreAudio.h presence... no
+checking for CoreAudio/CoreAudio.h... no
+configure: *** These plugins will not be built: osxaudio
+
+configure: *** checking feature: OSX video ***
+configure: *** for plug-ins: osxvideosink ***
+checking OpenGL/gl.h usability... no
+checking OpenGL/gl.h presence... no
+checking for OpenGL/gl.h... no
+configure: *** These plugins will not be built: osxvideosink
+
+configure: *** checking feature: Video 4 Linux 2 ***
+configure: *** for plug-ins: v4l2src ***
+configure: WARNING: *** v4l2src pre-configured not to be built
+configure: *** These plugins will not be built: v4l2src
+checking for X... no
+
+configure: *** checking feature: X libraries and plugins ***
+configure: *** for plug-ins: ximagesrc ***
+checking X11/Xlib.h usability... no
+checking X11/Xlib.h presence... no
+checking for X11/Xlib.h... no
+configure: cannot find X11 development files
+configure: *** These plugins will not be built: ximagesrc
+
+configure: *** checking feature: X Shared Memory extension ***
+
+configure: *** checking feature: X11 XVideo extensions ***
+
+configure: Checking libraries for plugins in ext/
+
+
+configure: *** checking feature: aalib ASCII Art library ***
+configure: *** for plug-ins: aasink ***
+checking for aalib-config... no
+checking for AALIB - version >= 0.11.0... no
+*** The aalib-config script installed by AALIB could not be found
+*** If AALIB was installed in PREFIX, make sure PREFIX/bin is in
+*** your path, or set the AALIB_CONFIG environment variable to the
+*** full path to aalib-config.
+configure: *** These plugins will not be built: aasink
+
+configure: *** checking feature: XML library ***
+configure: *** for plug-ins: annodex ***
+checking for ANNODEX... no
+configure: Package libxml-2.0 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libxml-2.0.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libxml-2.0' found
+configure: *** These plugins will not be built: annodex
+
+configure: *** checking feature: Cairo graphics rendering ***
+configure: *** for plug-ins: cairo ***
+checking for CAIRO... no
+configure: Package cairo was not found in the pkg-config search path.
+Perhaps you should add the directory containing `cairo.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'cairo' found
+configure: *** These plugins will not be built: cairo
+
+configure: *** checking feature: cdio library ***
+configure: *** for plug-ins: cdio ***
+checking for CDIO... no
+configure: Package libcdio was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libcdio.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libcdio' found
+configure: *** These plugins will not be built: cdio
+
+configure: *** checking feature: ESounD sound daemon ***
+configure: *** for plug-ins: esdsink ***
+checking for ESD... no
+configure: Package esound was not found in the pkg-config search path.
+Perhaps you should add the directory containing `esound.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'esound' found
+checking for esd-config... no
+checking for ESD - version >= 0.2.12... no
+*** The esd-config script installed by ESD could not be found
+*** If ESD was installed in PREFIX, make sure PREFIX/bin is in
+*** your path, or set the ESD_CONFIG environment variable to the
+*** full path to esd-config.
+configure: *** These plugins will not be built: esdsink
+
+configure: *** checking feature: FLAC lossless audio ***
+configure: *** for plug-ins: flac ***
+checking for FLAC__seekable_stream_encoder_new in -lFLAC... no
+configure: *** These plugins will not be built: flac
+
+configure: *** checking feature: GConf libraries ***
+configure: *** for plug-ins: gconfelements ***
+checking for GCONF... no
+configure: Package gconf-2.0 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `gconf-2.0.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'gconf-2.0' found
+configure: *** These plugins will not be built: gconfelements
+
+configure: *** checking feature: GDK pixbuf ***
+configure: *** for plug-ins: gdkpixbuf ***
+configure: *** These plugins will not be built: gdkpixbuf
+
+configure: *** checking feature: HAL libraries ***
+configure: *** for plug-ins: halelements ***
+checking for HAL... no
+configure: Package hal was not found in the pkg-config search path.
+Perhaps you should add the directory containing `hal.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'hal' found
+Package dbus-1 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `dbus-1.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'dbus-1' found
+configure: *** These plugins will not be built: halelements
+
+configure: *** checking feature: jpeg library ***
+configure: *** for plug-ins: jpeg ***
+checking for jpeg_set_defaults in -ljpeg-mmx... no
+checking for jpeg_set_defaults in -ljpeg... no
+configure: *** These plugins will not be built: jpeg
+
+configure: *** checking feature: ladspa ***
+configure: *** for plug-ins: ladspa ***
+configure: *** These plugins will not be built: ladspa
+
+configure: *** checking feature: libcaca coloured ASCII art ***
+configure: *** for plug-ins: cacasink ***
+checking for LIBCACA... no
+configure: Package caca was not found in the pkg-config search path.
+Perhaps you should add the directory containing `caca.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'caca' found
+checking for caca-config... no
+configure: *** These plugins will not be built: cacasink
+
+configure: *** checking feature: libdv DV demuxer/decoder ***
+configure: *** for plug-ins: dv ***
+checking for LIBDV... no
+configure: Package libdv was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libdv.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libdv' found
+configure: *** These plugins will not be built: dv
+
+configure: *** checking feature: Portable Network Graphics library ***
+configure: *** for plug-ins: png ***
+checking for LIBPNG... no
+configure: Package libpng12 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libpng12.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libpng12' found
+configure: *** These plugins will not be built: png
+
+configure: *** checking feature: raw1394 and avc1394 library ***
+configure: *** for plug-ins: 1394 ***
+checking for RAW1394... no
+configure: Package libraw1394 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libraw1394.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libraw1394' found
+checking for LIBIEC61883... no
+configure: Package libiec61883 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libiec61883.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libiec61883' found
+checking for RAW1394... no
+configure: Package libraw1394 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libraw1394.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libraw1394' found
+checking for avc1394_send_command in -lavc1394... no
+checking for rom1394_free_directory in -lrom1394... no
+configure: *** These plugins will not be built: 1394
+
+configure: *** checking feature: Shoutcast/Icecast client library ***
+configure: *** for plug-ins: shout2 ***
+checking for SHOUT2... no
+configure: Package shout was not found in the pkg-config search path.
+Perhaps you should add the directory containing `shout.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'shout' found
+checking for shout2... no
+*** Could not run Shout2 test program, checking why...
+*** The test program failed to compile or link. See the file config.log for the
+*** exact error that occured. This usually means Shout2 was incorrectly installed
+*** or that you have moved Shout2 since it was installed. In the latter case, you
+*** may want to edit the shout-config script: 
+configure: *** These plugins will not be built: shout2
+
+configure: *** checking feature: speex speech codec ***
+configure: *** for plug-ins: speex ***
+checking for SPEEX... no
+configure: Package speex was not found in the pkg-config search path.
+Perhaps you should add the directory containing `speex.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'speex' found
+checking for speex_bits_init in -lspeex... no
+configure: *** These plugins will not be built: speex
+
+configure: *** checking feature: taglib tagging library ***
+configure: *** for plug-ins: taglib ***
+checking for TAGLIB... no
+configure: Package taglib was not found in the pkg-config search path.
+Perhaps you should add the directory containing `taglib.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'taglib' found
+configure: Not building taglib plugin: no C++ compiler found
+configure: *** These plugins will not be built: taglib
+
+configure: *** checking feature: wavpack plug-in ***
+configure: *** for plug-ins: wavpack ***
+checking for WAVPACK... checking for WAVPACK... no
+configure: *** These plugins will not be built: wavpack
+
+configure: *** checking feature: zlib support for id3demux/qtdemux ***
+checking for uncompress in -lz... no
+configure: updating cache config.cache
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating gst/Makefile
+config.status: creating gst/alpha/Makefile
+config.status: creating gst/apetag/Makefile
+config.status: creating gst/audiofx/Makefile
+config.status: creating gst/auparse/Makefile
+config.status: creating gst/autodetect/Makefile
+config.status: creating gst/avi/Makefile
+config.status: creating gst/cutter/Makefile
+config.status: creating gst/debug/Makefile
+config.status: creating gst/effectv/Makefile
+config.status: creating gst/equalizer/Makefile
+config.status: creating gst/id3demux/Makefile
+config.status: creating gst/icydemux/Makefile
+config.status: creating gst/goom/Makefile
+config.status: creating gst/law/Makefile
+config.status: creating gst/level/Makefile
+config.status: creating gst/matroska/Makefile
+config.status: creating gst/monoscope/Makefile
+config.status: creating gst/multifile/Makefile
+config.status: creating gst/multipart/Makefile
+config.status: creating gst/qtdemux/Makefile
+config.status: creating gst/rtp/Makefile
+config.status: creating gst/rtsp/Makefile
+config.status: creating gst/smpte/Makefile
+config.status: creating gst/spectrum/Makefile
+config.status: creating gst/udp/Makefile
+config.status: creating gst/videobox/Makefile
+config.status: creating gst/videocrop/Makefile
+config.status: creating gst/videofilter/Makefile
+config.status: creating gst/videomixer/Makefile
+config.status: creating gst/wavenc/Makefile
+config.status: creating gst/wavparse/Makefile
+config.status: creating gst/flx/Makefile
+config.status: creating ext/jpeg/Makefile
+config.status: creating ext/Makefile
+config.status: creating ext/aalib/Makefile
+config.status: creating ext/annodex/Makefile
+config.status: creating ext/cairo/Makefile
+config.status: creating ext/cdio/Makefile
+config.status: creating ext/dv/Makefile
+config.status: creating ext/esd/Makefile
+config.status: creating ext/flac/Makefile
+config.status: creating ext/gconf/Makefile
+config.status: creating ext/gdk_pixbuf/Makefile
+config.status: creating ext/hal/Makefile
+config.status: creating ext/ladspa/Makefile
+config.status: creating ext/libcaca/Makefile
+config.status: creating ext/libpng/Makefile
+config.status: creating ext/raw1394/Makefile
+config.status: creating ext/shout2/Makefile
+config.status: creating ext/speex/Makefile
+config.status: creating ext/taglib/Makefile
+config.status: creating ext/wavpack/Makefile
+config.status: creating sys/Makefile
+config.status: creating sys/directdraw/Makefile
+config.status: creating sys/directsound/Makefile
+config.status: creating sys/oss/Makefile
+config.status: creating sys/sunaudio/Makefile
+config.status: creating sys/osxaudio/Makefile
+config.status: creating sys/osxvideo/Makefile
+config.status: creating sys/v4l2/Makefile
+config.status: creating sys/waveform/Makefile
+config.status: creating sys/ximage/Makefile
+config.status: creating po/Makefile.in
+config.status: WARNING:  po/Makefile.in.in seems to ignore the --datarootdir setting
+config.status: creating tests/Makefile
+config.status: creating tests/check/Makefile
+config.status: creating tests/examples/Makefile
+config.status: creating tests/examples/equalizer/Makefile
+config.status: creating tests/examples/level/Makefile
+config.status: creating tests/examples/rtp/Makefile
+config.status: creating tests/examples/spectrum/Makefile
+config.status: creating tests/files/Makefile
+config.status: creating tests/icles/Makefile
+config.status: creating gconf/Makefile
+config.status: creating gconf/gstreamer.schemas
+config.status: creating common/Makefile
+config.status: creating common/m4/Makefile
+config.status: creating m4/Makefile
+config.status: creating docs/Makefile
+config.status: creating docs/plugins/Makefile
+config.status: creating docs/version.entities
+config.status: creating win32/common/config.h
+config.status: creating pkgconfig/Makefile
+config.status: creating pkgconfig/gstreamer-plugins-good-uninstalled.pc
+config.status: creating gst-plugins-good.spec
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing default-1 commands
+config.status: creating po/POTFILES
+config.status: creating po/Makefile
+config.status: executing _stdint.h commands
+config.status: creating _stdint.h : _GST_PLUGINS_GOOD__STDINT_H
+configure: *** Plug-ins without external dependencies that will be built:
+
+configure: *** Plug-ins without external dependencies that will NOT be built:
+	alpha
+	apetag
+	audiofx
+	auparse
+	autodetect
+	avi
+	cutter
+	debug
+	effectv
+	equalizer
+	flx
+	goom
+	icydemux
+	id3demux
+	law
+	level
+	matroska
+	monoscope
+	multifile
+	multipart
+	qtdemux
+	rtp
+	rtsp
+	smpte
+	spectrum
+	udp
+	videobox
+	videocrop
+	videofilter
+	videomixer
+	wavenc
+	wavparse
+
+configure: *** Plug-ins with dependencies that will be built:
+	directdrawsink
+	directsoundsink
+
+configure: *** Plug-ins with dependencies that will NOT be built:
+	1394
+	aasink
+	annodex
+	cacasink
+	cairo
+	cdio
+	dv
+	esdsink
+	flac
+	gconfelements
+	gdkpixbuf
+	halelements
+	jpeg
+	ladspa
+	ossaudio
+	osxaudio
+	osxvideosink
+	png
+	shout2
+	speex
+	sunaudio
+	taglib
+	v4l2src
+	wavpack
+	ximagesrc
+
+make  all-recursive
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+Making all in gst
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+Making all in sys
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+Making all in directdraw
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+source='gstdirectdrawsink.c' object='libgstdirectdrawsink_la-gstdirectdrawsink.lo' libtool=yes \
+	DEPDIR=.deps depmode=none /bin/sh ../../depcomp \
+	/bin/sh ../../libtool --tag=CC --mode=compile /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../..    -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall  -g    -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include  -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -o libgstdirectdrawsink_la-gstdirectdrawsink.lo `test -f 'gstdirectdrawsink.c' || echo './'`gstdirectdrawsink.c
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectdrawsink.c  -DDLL_EXPORT -DPIC -o .libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-DHAVE_CONFIG_H
+	-I.
+	-I.
+	-I../..
+	-I../../gst-libs
+	-I../../gst-libs
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Wall
+	-g
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-c
+	-TC
+	gstdirectdrawsink.c
+	-DDLL_EXPORT
+	-DPIC
+	-o
+	.libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj
+Calling  ['cl', '-DHAVE_CONFIG_H', '-I.', '-I.', '-I../..', '-I../../gst-libs', '-I../../gst-libs', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Wall', '-g', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+cl : Command line warning D9002 : ignoring unknown option '-g'
+gstdirectdrawsink.c
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(286) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(292) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(301) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(307) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(314) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(355) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(370) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(717) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(726) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(739) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(746) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(754) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(773) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(779) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2234) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2241) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2266) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2271) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2278) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2286) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2294) : warning C4201: nonstandard extension used : nameless struct/union
+gstdirectdrawsink.c(621) : warning C4057: 'function' : 'gint *' differs in indirection to slightly different base types from 'guint *'
+gstdirectdrawsink.c(637) : warning C4389: '!=' : signed/unsigned mismatch
+gstdirectdrawsink.c(655) : warning C4057: 'function' : 'gint *' differs in indirection to slightly different base types from 'guint *'
+gstdirectdrawsink.c(983) : warning C4057: 'function' : 'guint32 *' differs in indirection to slightly different base types from 'gint *'
+libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-c', '-TC', 'gstdirectdrawsink.c', '-DDLL_EXPORT', '-DPIC', '-Fo.libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj']
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectdrawsink.c -o libgstdirectdrawsink_la-gstdirectdrawsink.obj >/dev/null 2>&1
+source='gstdirectdrawplugin.c' object='libgstdirectdrawsink_la-gstdirectdrawplugin.lo' libtool=yes \
+	DEPDIR=.deps depmode=none /bin/sh ../../depcomp \
+	/bin/sh ../../libtool --tag=CC --mode=compile /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../..    -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall  -g    -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include  -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -o libgstdirectdrawsink_la-gstdirectdrawplugin.lo `test -f 'gstdirectdrawplugin.c' || echo './'`gstdirectdrawplugin.c
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectdrawplugin.c  -DDLL_EXPORT -DPIC -o .libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-DHAVE_CONFIG_H
+	-I.
+	-I.
+	-I../..
+	-I../../gst-libs
+	-I../../gst-libs
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Wall
+	-g
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-c
+	-TC
+	gstdirectdrawplugin.c
+	-DDLL_EXPORT
+	-DPIC
+	-o
+	.libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj
+Calling  ['cl', '-DHAVE_CONFIG_H', '-I.', '-I.', '-I../..', '-I../../gst-libs', '-I../../gst-libs', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Wall', '-g', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msMicrosoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+cl : Command line warning D9002 : ignoring unknown option '-g'
+gstdirectdrawplugin.c
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(286) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(292) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(301) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(307) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(314) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(355) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(370) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(717) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(726) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(739) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(746) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(754) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(773) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(779) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2234) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2241) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2266) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2271) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2278) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2286) : warning C4201: nonstandard extension used : nameless struct/union
+C:\Program Files\Microsoft SDKs\Windows\v6.0\include\ddraw.h(2294) : warning C4201: nonstandard extension used : nameless struct/union
+vc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-c', '-TC', 'gstdirectdrawplugin.c', '-DDLL_EXPORT', '-DPIC', '-Fo.libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj']
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectdrawplugin.c -o libgstdirectdrawsink_la-gstdirectdrawplugin.obj >/dev/null 2>&1
+/bin/sh ../../libtool --tag=CC --mode=link /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py  -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H   -o libgstdirectdrawsink.la -rpath /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10 -module -avoid-version -export-symbols-regex '^_*gst_plugin_desc$' -no-undefined -L/c/progra~1/mi5889~1/Lib/x86 -luser32 libgstdirectdrawsink_la-gstdirectdrawsink.lo libgstdirectdrawsink_la-gstdirectdrawplugin.lo -lddraw -ldxguid -lgdi32 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstbase-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -lgstvideo-0.10 -lgstinterfaces-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -lintl -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib -liconv
+libtool: link: /bin/nm  .libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj .libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj   | sed -n -e 's/^.*[	 ]\([ABCDGIRSTW][ABCDGIRSTW]*\)[	 ][	 ]*_\([_A-Za-z][_A-Za-z0-9]*\)\{0,1\}$/\1 _\2 \2/p' | /bin/sed -e '/^[BCDGRS][ ]/s/.*[ ]\([^ ]*\)/\1,DATA/' | /bin/sed -e '/^[AITW][ ]/s/.*[ ]//' | sort | uniq > .libs/gstdirectdrawsink.exp
+libtool: link: /bin/grep -E -e "^_*gst_plugin_desc$" ".libs/gstdirectdrawsink.exp" > ".libs/gstdirectdrawsink.expT"
+libtool: link: mv -f ".libs/gstdirectdrawsink.expT" ".libs/gstdirectdrawsink.exp"
+libtool: link: if test "x`/bin/sed 1q .libs/gstdirectdrawsink.exp`" = xEXPORTS; then sed -n -e s/\\\(.*\\\)/-link\ -EXPORT:\\\1/ -e 1\!p < .libs/gstdirectdrawsink.exp > .libs/gstdirectdrawsink.dll.exp; else sed -e s/\\\(.*\\\)/-link\ -EXPORT:\\\1/ < .libs/gstdirectdrawsink.exp > .libs/gstdirectdrawsink.dll.exp; fi
+libtool: link:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -o .libs/gstdirectdrawsink.dll  .libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj .libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj   -Zi -Zi -Zi -Zi -Zi -Zi    user32.lib ddraw.lib dxguid.lib gdi32.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstvideo-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gthread-2.0.lib intl.lib iconv.lib @.libs/gstdirectdrawsink.dll.exp -link -DLL
+Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Microsoft (R) Incremental Linker Version 8.00.50727.762
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+-LIBPATH:c:/progra~1/mi5889~1/Lib/x86 -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib 
+/out:libgstdirectdrawsink_la-gstdirectdrawsink.exe 
+/debug 
+-DLL 
+-out:.libs/gstdirectdrawsink.dll 
+.libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj 
+.libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj 
+user32.lib 
+ddraw.lib 
+dxguid.lib 
+gdi32.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstvideo-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib 
+glib-2.0.lib 
+gobject-2.0.lib 
+gmodule-2.0.lib 
+gthread-2.0.lib 
+intl.lib 
+iconv.lib 
+   Creating library .libs/gstdirectdrawsink.lib and object .libs/gstdirectdrawsink.exp
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-o
+	.libs/gstdirectdrawsink.dll
+	.libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj
+	.libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	user32.lib
+	ddraw.lib
+	dxguid.lib
+	gdi32.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstvideo-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib
+	glib-2.0.lib
+	gobject-2.0.lib
+	gmodule-2.0.lib
+	gthread-2.0.lib
+	intl.lib
+	iconv.lib
+	@.libs/gstdirectdrawsink.dll.exp
+	-link
+	-DLL
+Calling  ['cl', '.libs/libgstdirectdrawsink_la-gstdirectdrawsink.obj', '.libs/libgstdirectdrawsink_la-gstdirectdrawplugin.obj', '-Zi', '-Zi', '-Zi', '-Zi', '-Zi', '-Zi', 'user32.lib', 'ddraw.lib', 'dxguid.lib', 'gdi32.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstvideo-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib', 'glib-2.0.lib', 'gobject-2.0.lib', 'gmodule-2.0.lib', 'gthread-2.0.lib', 'intl.lib', 'iconv.lib', '@.libs/gstdirectdrawsink.dll.exp', '-link', '-DLL', '-out:.libs/gstdirectdrawsink.dll']
+libtool: link:  linknames=
+libtool: link: LINK=
+libtool: link: ar cru .libs/gstdirectdrawsink.lib  libgstdirectdrawsink_la-gstdirectdrawsink.obj libgstdirectdrawsink_la-gstdirectdrawplugin.obj
+libtool: link: ranlib .libs/gstdirectdrawsink.lib
+libtool: link: ( cd ".libs" && rm -f "libgstdirectdrawsink.la" && ln -s "../libgstdirectdrawsink.la" "libgstdirectdrawsink.la" )
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+Making all in directsound
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+source='gstdirectsoundsink.c' object='libgstdirectsoundsink_la-gstdirectsoundsink.lo' libtool=yes \
+	DEPDIR=.deps depmode=none /bin/sh ../../depcomp \
+	/bin/sh ../../libtool --tag=CC --mode=compile /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../..    -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall  -g    -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/progra~1/mi5889~1/Include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -o libgstdirectsoundsink_la-gstdirectsoundsink.lo `test -f 'gstdirectsoundsink.c' || echo './'`gstdirectsoundsink.c
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include "-I/c/progra~1/mi5889~1/Include" -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectsoundsink.c  -DDLL_EXPORT -DPIC -o .libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-DHAVE_CONFIG_H
+	-I.
+	-I.
+	-I../..
+	-I../../gst-libs
+	-I../../gst-libs
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Wall
+	-g
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/progra~1/mi5889~1/Include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-c
+	-TC
+	gstdirectsoundsink.c
+	-DDLL_EXPORT
+	-DPIC
+	-o
+	.libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj
+Calling  ['cl', '-DHAVE_CONFIG_H', '-I.', '-I.', '-I../..', '-I../../gst-libs', '-I../../gst-libs', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Wall', '-g', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/progra~1/mi5889~1/Include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbirdMicrosoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+cl : Command line warning D9002 : ignoring unknown option '-g'
+gstdirectsoundsink.c
+gstdirectsoundsink.c(355) : warning C4242: '=' : conversion from 'gint' to 'WORD', possible loss of data
+gstdirectsoundsink.c(357) : warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+gstdirectsoundsink.c(358) : warning C4242: '=' : conversion from 'gint' to 'WORD', possible loss of data
+/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-c', '-TC', 'gstdirectsoundsink.c', '-DDLL_EXPORT', '-DPIC', '-Fo.libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj']
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include "-I/c/progra~1/mi5889~1/Include" -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectsoundsink.c -o libgstdirectsoundsink_la-gstdirectsoundsink.obj >/dev/null 2>&1
+source='gstdirectsoundplugin.c' object='libgstdirectsoundsink_la-gstdirectsoundplugin.lo' libtool=yes \
+	DEPDIR=.deps depmode=none /bin/sh ../../depcomp \
+	/bin/sh ../../libtool --tag=CC --mode=compile /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../..    -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall  -g    -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/progra~1/mi5889~1/Include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -o libgstdirectsoundsink_la-gstdirectsoundplugin.lo `test -f 'gstdirectsoundplugin.c' || echo './'`gstdirectsoundplugin.c
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include "-I/c/progra~1/mi5889~1/Include" -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectsoundplugin.c  -DDLL_EXPORT -DPIC -o .libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-DHAVE_CONFIG_H
+	-I.
+	-I.
+	-I../..
+	-I../../gst-libs
+	-I../../gst-libs
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Wall
+	-g
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Ic:/progra~1/mi5889~1/Include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-c
+	-TC
+	gstdirectsoundplugin.c
+	-DDLL_EXPORT
+	-DPIC
+	-o
+	.libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj
+Calling  ['cl', '-DHAVE_CONFIG_H', '-I.', '-I.', '-I../..', '-I../../gst-libs', '-I../../gst-libs', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Wall', '-g', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Ic:/progra~1/mi5889~1/Include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sMicrosoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+cl : Command line warning D9002 : ignoring unknown option '-g'
+gstdirectsoundplugin.c
+bird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-c', '-TC', 'gstdirectsoundplugin.c', '-DDLL_EXPORT', '-DPIC', '-Fo.libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj']
+libtool: compile:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../.. -I../../gst-libs -I../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall -g -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include "-I/c/progra~1/mi5889~1/Include" -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -TC gstdirectsoundplugin.c -o libgstdirectsoundsink_la-gstdirectsoundplugin.obj >/dev/null 2>&1
+/bin/sh ../../libtool --tag=CC --mode=link /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py  -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H   -o libgstdirectsoundsink.la -rpath /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10 -module -avoid-version -export-symbols-regex '^_*gst_plugin_desc$' -no-undefined -L/c/progra~1/mi5889~1/Lib/x86 -luser32 libgstdirectsoundsink_la-gstdirectsoundsink.lo libgstdirectsoundsink_la-gstdirectsoundplugin.lo -ldsound -ldxerr9 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstbase-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi -lgstaudio-0.10 -lgstinterfaces-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -lintl -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib -liconv
+libtool: link: /bin/nm  .libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj .libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj   | sed -n -e 's/^.*[	 ]\([ABCDGIRSTW][ABCDGIRSTW]*\)[	 ][	 ]*_\([_A-Za-z][_A-Za-z0-9]*\)\{0,1\}$/\1 _\2 \2/p' | /bin/sed -e '/^[BCDGRS][ ]/s/.*[ ]\([^ ]*\)/\1,DATA/' | /bin/sed -e '/^[AITW][ ]/s/.*[ ]//' | sort | uniq > .libs/gstdirectsoundsink.exp
+libtool: link: /bin/grep -E -e "^_*gst_plugin_desc$" ".libs/gstdirectsoundsink.exp" > ".libs/gstdirectsoundsink.expT"
+libtool: link: mv -f ".libs/gstdirectsoundsink.expT" ".libs/gstdirectsoundsink.exp"
+libtool: link: if test "x`/bin/sed 1q .libs/gstdirectsoundsink.exp`" = xEXPORTS; then sed -n -e s/\\\(.*\\\)/-link\ -EXPORT:\\\1/ -e 1\!p < .libs/gstdirectsoundsink.exp > .libs/gstdirectsoundsink.dll.exp; else sed -e s/\\\(.*\\\)/-link\ -EXPORT:\\\1/ < .libs/gstdirectsoundsink.exp > .libs/gstdirectsoundsink.dll.exp; fi
+libtool: link:  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -o .libs/gstdirectsoundsink.dll  .libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj .libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj   -Zi -Zi -Zi -Zi -Zi -Zi    user32.lib dsound.lib dxerr9.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstaudio-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gthread-2.0.lib intl.lib iconv.lib @.libs/gstdirectsoundsink.dll.exp -link -DLL
+Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Microsoft (R) Incremental Linker Version 8.00.50727.762
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+-LIBPATH:c:/progra~1/mi5889~1/Lib/x86 -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-base/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib 
+/out:libgstdirectsoundsink_la-gstdirectsoundsink.exe 
+/debug 
+-DLL 
+-out:.libs/gstdirectsoundsink.dll 
+.libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj 
+.libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj 
+user32.lib 
+dsound.lib 
+dxerr9.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstaudio-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib 
+glib-2.0.lib 
+gobject-2.0.lib 
+gmodule-2.0.lib 
+gthread-2.0.lib 
+intl.lib 
+iconv.lib 
+   Creating library .libs/gstdirectsoundsink.lib and object .libs/gstdirectsoundsink.exp
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-o
+	.libs/gstdirectsoundsink.dll
+	.libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj
+	.libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	-Zi
+	user32.lib
+	dsound.lib
+	dxerr9.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstaudio-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib
+	glib-2.0.lib
+	gobject-2.0.lib
+	gmodule-2.0.lib
+	gthread-2.0.lib
+	intl.lib
+	iconv.lib
+	@.libs/gstdirectsoundsink.dll.exp
+	-link
+	-DLL
+Calling  ['cl', '.libs/libgstdirectsoundsink_la-gstdirectsoundsink.obj', '.libs/libgstdirectsoundsink_la-gstdirectsoundplugin.obj', '-Zi', '-Zi', '-Zi', '-Zi', '-Zi', '-Zi', 'user32.lib', 'dsound.lib', 'dxerr9.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstaudio-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstbase-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/../../windows-i686-msvc8/gst-plugins-base/debug/lib/gstinterfaces-0.10-0.lib', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib', 'glib-2.0.lib', 'gobject-2.0.lib', 'gmodule-2.0.lib', 'gthread-2.0.lib', 'intl.lib', 'iconv.lib', '@.libs/gstdirectsoundsink.dll.exp', '-link', '-DLL', '-out:.libs/gstdirectsoundsink.dll']
+libtool: link:  linknames=
+libtool: link: LINK=
+libtool: link: ar cru .libs/gstdirectsoundsink.lib  libgstdirectsoundsink_la-gstdirectsoundsink.obj libgstdirectsoundsink_la-gstdirectsoundplugin.obj
+libtool: link: ranlib .libs/gstdirectsoundsink.lib
+libtool: link: ( cd ".libs" && rm -f "libgstdirectsoundsink.la" && ln -s "../libgstdirectsoundsink.la" "libgstdirectsoundsink.la" )
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+Making all in ext
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+Making all in tests
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+Making all in examples
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+Making all in equalizer
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+Making all in level
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+source='level-example.c' object='level_example-level-example.obj' libtool=no \
+	DEPDIR=.deps depmode=none /bin/sh ../../../depcomp \
+	/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -DHAVE_CONFIG_H -I. -I. -I../../..    -I../../../gst-libs -I../../../gst-libs -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0 -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include -Wall  -g    -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -c -o level_example-level-example.obj `if test -f 'level-example.c'; then echo 'level-example.c'; else echo './level-example.c'; fi`
+Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+cl : Command line warning D9002 : ignoring unknown option '-g'
+level-example.c
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-DHAVE_CONFIG_H
+	-I.
+	-I.
+	-I../../..
+	-I../../../gst-libs
+	-I../../../gst-libs
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include
+	-Wall
+	-g
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-c
+	-o
+	level_example-level-example.obj
+	level-example.c
+Calling  ['cl', '-DHAVE_CONFIG_H', '-I.', '-I.', '-I../../..', '-I../../../gst-libs', '-I../../../gst-libs', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/include/gstreamer-0.10', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/include/glib-2.0', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib/glib-2.0/include', '-Wall', '-g', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-c', '-Folevel_example-level-example.obj', 'level-example.c']
+/bin/sh ../../../libtool --tag=CC --mode=link /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py  -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H   -o level-example.exe  level_example-level-example.obj -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -lgstreamer-0.10 -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -Wl,-Zi -Wl,-Zi  -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -lintl -L/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib -liconv
+libtool: link: LINK=" -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib" /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -I/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include -D_MSC_VER=1400 -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -MTd -Zi -DYY_NO_UNISTD_H -o .libs/level-example.exe level_example-level-example.obj -Zi -Zi  /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gthread-2.0.lib intl.lib iconv.lib  
+Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Microsoft (R) Incremental Linker Version 8.00.50727.762
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+-LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gstreamer/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/release/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/libiconv/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/glib/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/lib -LIBPATH:c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/lib 
+/out:.libs/level-example.exe 
+/debug 
+level_example-level-example.obj 
+c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib 
+glib-2.0.lib 
+gobject-2.0.lib 
+gmodule-2.0.lib 
+gthread-2.0.lib 
+intl.lib 
+iconv.lib 
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-o
+	.libs/level-example.exe
+	level_example-level-example.obj
+	-Zi
+	-Zi
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib
+	glib-2.0.lib
+	gobject-2.0.lib
+	gmodule-2.0.lib
+	gthread-2.0.lib
+	intl.lib
+	iconv.lib
+Calling  ['cl', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-Fe.libs/level-example.exe', 'level_example-level-example.obj', '-Zi', '-Zi', 'c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gstreamer/../../windows-i686-msvc8/gstreamer/debug/lib/gstreamer-0.10-0.lib', 'glib-2.0.lib', 'gobject-2.0.lib', 'gmodule-2.0.lib', 'gthread-2.0.lib', 'intl.lib', 'iconv.lib', '-link']
+Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 14.00.50727.762 for 80x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+lt-level-example.c
+Microsoft (R) Incremental Linker Version 8.00.50727.762
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/debug 
+/out:./level-example.exe 
+lt-level-example.obj 
+	c:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../vendor/wintools/clwrapper.py
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include
+	-D_MSC_VER=1400
+	-DWIN32
+	-D__NO_CTYPE
+	-D_CRT_SECURE_NO_WARNINGS
+	-DHAVE_WIN32
+	-D_WINDOWS
+	-wd4820
+	-wd4668
+	-wd4100
+	-wd4706
+	-wd4127
+	-wd4255
+	-wd4710
+	-wd4055
+	-MTd
+	-Zi
+	-DYY_NO_UNISTD_H
+	-o
+	./level-example.exe
+	./.libs/lt-level-example.c
+Calling  ['cl', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gettext/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-Ic:/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/libiconv/debug/include', '-D_MSC_VER=1400', '-DWIN32', '-D__NO_CTYPE', '-D_CRT_SECURE_NO_WARNINGS', '-DHAVE_WIN32', '-D_WINDOWS', '-wd4820', '-wd4668', '-wd4100', '-wd4706', '-wd4127', '-wd4255', '-wd4710', '-wd4055', '-MTd', '-Zi', '-DYY_NO_UNISTD_H', '-Fe./level-example.exe', './.libs/lt-level-example.c', '-link']
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+Making all in rtp
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+Making all in spectrum
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[4]: Nothing to be done for `all-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+Making all in files
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+Making all in docs
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+Making all in po
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/po'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/po'
+Making all in common
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+Making all in m4
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+Making all in m4
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+Making all in pkgconfig
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+cp gstreamer-plugins-good-uninstalled.pc gstreamer-plugins-good-0.10-uninstalled.pc
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+Making install in gst
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/gst'
+Making install in sys
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+Making install in directdraw
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10" || mkdir -p -- "/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10"
+ /bin/sh ../../libtool --mode=install /bin/install -c  'libgstdirectdrawsink.la' '/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/libgstdirectdrawsink.la'
+libtool: install: /bin/install -c .libs/gstdirectdrawsink.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectdrawsink.lib
+libtool: install: base_file=`basename libgstdirectdrawsink.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgstdirectdrawsink.la'i; echo gstdirectdrawsink.dll'`
+libtool: install:  dldir=/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/`dirname gstdirectdrawsink.dll`
+libtool: install:  test -d /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/. || mkdir -p /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/.
+libtool: install:  /bin/install -c .libs/gstdirectdrawsink.dll /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/./gstdirectdrawsink.dll
+libtool: install: /bin/install -c .libs/libgstdirectdrawsink.lai /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/libgstdirectdrawsink.la
+libtool: install: /bin/install -c .libs/gstdirectdrawsink.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectdrawsink.lib
+libtool: install: chmod 644 /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectdrawsink.lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - use the ` ' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directdraw'
+Making install in directsound
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10" || mkdir -p -- "/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10"
+ /bin/sh ../../libtool --mode=install /bin/install -c  'libgstdirectsoundsink.la' '/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/libgstdirectsoundsink.la'
+libtool: install: /bin/install -c .libs/gstdirectsoundsink.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectsoundsink.lib
+libtool: install: base_file=`basename libgstdirectsoundsink.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgstdirectsoundsink.la'i; echo gstdirectsoundsink.dll'`
+libtool: install:  dldir=/c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/`dirname gstdirectsoundsink.dll`
+libtool: install:  test -d /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/. || mkdir -p /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/.
+libtool: install:  /bin/install -c .libs/gstdirectsoundsink.dll /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/./gstdirectsoundsink.dll
+libtool: install: /bin/install -c .libs/libgstdirectsoundsink.lai /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/libgstdirectsoundsink.la
+libtool: install: /bin/install -c .libs/gstdirectsoundsink.lib /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectsoundsink.lib
+libtool: install: chmod 644 /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10/gstdirectsoundsink.lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/lib/gstreamer-0.10
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - use the ` ' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys/directsound'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/sys'
+Making install in ext
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/ext'
+Making install in tests
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+Making install in examples
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+Making install in equalizer
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/equalizer'
+Making install in level
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/level'
+Making install in rtp
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/rtp'
+Making install in spectrum
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples/spectrum'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[4]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/examples'
+Making install in files
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests/files'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/tests'
+Making install in docs
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/docs'
+Making install in po
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/po'
+if test "gst-plugins-good" = "gettext"; then \
+	  /bin/sh `case "./mkinstalldirs" in /*) echo "./mkinstalldirs" ;; *) echo ".././mkinstalldirs" ;; esac` /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/share/gettext/po; \
+	  for file in Makefile.in.in Makevars remove-potcdate.sin quot.sed boldquot.sed en@quot.header en@boldquot.header insert-header.sin Rules-quot  ; do \
+	    /bin/install -c -m 644 ./$file \
+			    /c/mozilla-build/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/../../windows-i686-msvc8/gst-plugins-good/debug/share/gettext/po/$file; \
+	  done; \
+	else \
+	  : ; \
+	fi
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/po'
+Making install in common
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+Making install in m4
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common/m4'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[3]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/common'
+Making install in m4
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/m4'
+Making install in pkgconfig
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good/pkgconfig'
+make[1]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+make[2]: Entering directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+make[1]: Leaving directory `/c/mozilla-build/gst-sbird/trunk/dependencies/windows-i686-msvc8/gst-plugins-good/build/gst-plugins-good'
+updating: gst-plugins-good-symbols.txt (188 bytes security) (deflated 43%)
+updating: gstalpha.pdb/385F4AA2A6AA44148544589D0E5F47721/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/12B3451BA3B5436BBB7F3CD45C6C94271/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/B9D30E02D7B544E987B2D89B93B3BED91/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstgamma.pdb/9A04B4C87DD74D8B9859536510A550FA1/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstvideobalance.pdb/E3DC273214854C23BE48FB34CC0E63C01/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/8E4C45FC396641CCB053B282D9C62DCD1/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/3329BD63623A49D8B71C5EB751DAE6771/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/0762DDA91C094CCF850EEA70DAF49A561/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/5198C93C4733415D9312662678E302351/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/ADE30FDE2D1647838F7CAEB8637151A41/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/AD17A4EFC51047F2AC3F14458B5339451/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/C3AA723B4B114024B7EDA55662E529E61/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/F0EF18D277BC40B2A60D5FF17B682AA01/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/5F61E2332C0C4DBDAACFBFEF299C4C111/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/488A949ED8C64D978B2DDA83893CE0AF1/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gstgamma.pdb/7AE8272ABDC8464594FE7BA6362E8A551/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstvideobalance.pdb/1F5A6770CD914494AEBA7EE171F501801/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/783640B56B0F4B2F917E32373D92E6081/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/DE7D9ED953BE400DAB87445B55C5B9971/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/6EEA5C5EF7D94DA09896012D65E1B73E1/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/E1E40E07827C4D49A738D5428FE046101/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/582F8F1C4F674935BE31895A05FD79671/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/0A81A632CE03421786DDF5D32BC083761/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/651FFCA73434450DA5CABC7FF5906B371/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/CC627568081B4152B0CF31BFE293A9371/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/429B3BC3D7E54879BE6D922BA7EBCD901/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/2BA4B95A056F4405A321AC0981AD02DB1/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gstgamma.pdb/E442802869604205AC6B4E1F95EAF4D71/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstvideobalance.pdb/B682E1F896494FC4B6A47C0746B463FF1/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/62361551AA9D4EA7BB6EF9A469BC7B761/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstalaw.pdb/926E72FC5C134923BFB01C713B15FAB91/gstalaw.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/634083D33C1D4B628DB92D4D1C8082F61/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/65F2682E53CC4D04B8DE5B65698872E01/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/1A49DA6D8AFB4C56AEDD9FB38056EA231/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/F551855E2D4C469D846AC839E1863CC71/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/7ECA3FF0A06E4AEDB797497E5D2377091/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/FEDF34A9F35C478BBCDB1989FFF6E34E1/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/16B5FF9F6FB24D1AB4632EAB87AC361D1/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstaudiofx.pdb/554C6F6CF0074E9E82D5B6B51AF454671/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/384906A04BC343D58C8733C686616B631/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstauparse.pdb/96981A0079694E56922C6C96FAFCDF4A1/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/3AD0A0D1D91F4AC3862F5937EAECDB0C1/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/EAF2FBF2FF374FCA82F7DE97B48CB91E1/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/A981E89FB9EB4119AD64BFDBEBE0EC821/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/FCCF4A7B0101405CA76BA25C4A2CAAE61/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/75566B9E9F1D456E98294DF698AE4CD61/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/DD83DE38A91C418D86B3D885C378475F1/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/3B542A358B2C4696A5C4AC51A47FFF6A1/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gstdebug.pdb/DA857D26F14942BAB8309D213B9B53111/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gsteffectv.pdb/1FAC9B620A824EE89C8752C86A6516541/gsteffectv.sym (188 bytes security) (deflated 85%)
+updating: gsteffectv.pdb/3574FF0301094FA093261E1C256907BF1/gsteffectv.sym (188 bytes security) (deflated 85%)
+updating: gstequalizer.pdb/4D31363C3ACF4EAFAF3EDDC74477B4931/gstequalizer.sym (188 bytes security) (deflated 84%)
+updating: gstequalizer.pdb/F6CC07A1337E476BA2DE4111D90B2D111/gstequalizer.sym (188 bytes security) (deflated 84%)
+updating: gstflxdec.pdb/667D905EAC0E49CEAB134191074D25361/gstflxdec.sym (188 bytes security) (deflated 83%)
+updating: gstflxdec.pdb/A322FBA023734A19B6071F4B0E0E59641/gstflxdec.sym (188 bytes security) (deflated 83%)
+updating: gstgamma.pdb/CBD26DD2EF264601A5782C1C3291D0881/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstgoom.pdb/DD63DD745E834606BBB79D1EB4703E971/gstgoom.sym (188 bytes security) (deflated 84%)
+updating: gstgoom.pdb/E4A8949E3EAA4315B9E84085F5254FA81/gstgoom.sym (188 bytes security) (deflated 81%)
+updating: gsticydemux.pdb/AD2288DD3F3A4DA4AF1E8C152CAA8B2C1/gsticydemux.sym (188 bytes security) (deflated 83%)
+updating: gstid3demux.pdb/EB3A8A97CA6640C28DFF59B51E447DCE1/gstid3demux.sym (188 bytes security) (deflated 83%)
+updating: gstlevel.pdb/A7B8818BEAC64443A7A7AD64D41241031/gstlevel.sym (188 bytes security) (deflated 83%)
+updating: gstmatroska.pdb/4D86EC86C2024121888F456DA14C31521/gstmatroska.sym (188 bytes security) (deflated 83%)
+updating: gstmulaw.pdb/5EE927157DF04B8D89D49412063749B11/gstmulaw.sym (188 bytes security) (deflated 84%)
+updating: gstmultifile.pdb/E82A12515D9B4A2393A181DE24B933511/gstmultifile.sym (188 bytes security) (deflated 83%)
+updating: gstmultipart.pdb/68F2F867A42E48C795AF5E54047886EE1/gstmultipart.sym (188 bytes security) (deflated 84%)
+updating: gstnavigationtest.pdb/0AD73C1AEFAE42D48ECFEFEE870766411/gstnavigationtest.sym (188 bytes security) (deflated 83%)
+updating: gstnavigationtest.pdb/37B5787427DF4E78B6279D6D3F42C49C1/gstnavigationtest.sym (188 bytes security) (deflated 83%)
+updating: gstqtdemux.pdb/89FBA637C6D54041876FBCE87CB179291/gstqtdemux.sym (188 bytes security) (deflated 83%)
+updating: gstrtp.pdb/591DB166B00849E68148D957B6567FF01/gstrtp.sym (188 bytes security) (deflated 89%)
+updating: gstrtsp.pdb/7B8270CCA073451BAFA00E26FF80EE761/gstrtsp.sym (188 bytes security) (deflated 83%)
+updating: gstsmpte.pdb/555606619E0449A5A3A2DA8D16DEF6781/gstsmpte.sym (188 bytes security) (deflated 84%)
+updating: gstspectrum.pdb/DC6035AE19324E9282179DF66E2572FA1/gstspectrum.sym (188 bytes security) (deflated 83%)
+updating: gstudp.pdb/CFC34A348F99466DA4F69C1E553601351/gstudp.sym (188 bytes security) (deflated 85%)
+updating: gstvideobalance.pdb/4041F025A5254EE6B21B2B4865BC74721/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideobox.pdb/EE5D692C73A34660A04C825211396DEB1/gstvideobox.sym (188 bytes security) (deflated 83%)
+updating: gstvideocrop.pdb/C47D71B371CE4BFA8F96566D7F097ECB1/gstvideocrop.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/21235628F9F640C691DED2054129E55A1/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstvideomixer.pdb/2FA2854A687D4A57811A597C6E42515F1/gstvideomixer.sym (188 bytes security) (deflated 83%)
+updating: gstwavenc.pdb/5061A08CDD49419D91F77E5B86CBDDAB1/gstwavenc.sym (188 bytes security) (deflated 83%)
+updating: gstwavparse.pdb/F3122A74F04F4DDBBEE1C22BD880D71E1/gstwavparse.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/9FC7A3940BB441A1A09E5786787EB3F51/level-example.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/A17E6CF89BF844FD94E32455F5BEE80E1/level-example.sym (188 bytes security) (deflated 83%)
+updating: gstalaw.pdb/681E2D751C7C422C86B1B759A6A8D0161/gstalaw.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/B563422FE73E4E5D87DEA760807D03061/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/0B16B9AEF4304E4C8DC23475623FF8F51/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/852E1EC22FCA4198930CC120E9BB9B781/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/D50B47DFD5E7443B97706671010C9B691/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/6C90E73CD734421295271BA9F0F851EA1/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/BA2E361E560F4E82AAE51141C2507D861/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/E97C07F65331463FA5300339C8D9AD101/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/95FBDA5B742C450D86DE9E6B2ED9E1A21/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/80692BDE3F0542B29CB9B9FF6DB2F1EF1/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gsteffectv.pdb/DD07771FEDBB48F2998EA619CD17259B1/gsteffectv.sym (188 bytes security) (deflated 85%)
+updating: gstequalizer.pdb/C288741C9C8C4143AAA1632E8A80C9B21/gstequalizer.sym (188 bytes security) (deflated 84%)
+updating: gstflxdec.pdb/9F212FD7762F4B349035CED5887F03401/gstflxdec.sym (188 bytes security) (deflated 83%)
+updating: gstgamma.pdb/50407B9E5A21420E9C9E7B5030D5E7421/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstgoom.pdb/1F5B140D61E64334A7E076A97D8EB5DB1/gstgoom.sym (188 bytes security) (deflated 84%)
+updating: gsticydemux.pdb/9D8A4C58CFBE497C991B6062D63B54F11/gsticydemux.sym (188 bytes security) (deflated 83%)
+updating: gstid3demux.pdb/7B79D7478CE64FB0B2CE792499D7EEF61/gstid3demux.sym (188 bytes security) (deflated 83%)
+updating: gstlevel.pdb/51EA4A06BFCB412E96B50F6B1E382E401/gstlevel.sym (188 bytes security) (deflated 83%)
+updating: gstmatroska.pdb/9412FEF98DF4490781299AC98BF5ACE31/gstmatroska.sym (188 bytes security) (deflated 83%)
+updating: gstmulaw.pdb/80519FDAF8634CE384332D9EF04ACE2A1/gstmulaw.sym (188 bytes security) (deflated 84%)
+updating: gstmultifile.pdb/952E648A689345D6B680F5F0A98C16381/gstmultifile.sym (188 bytes security) (deflated 83%)
+updating: gstmultipart.pdb/B4F1B2E85F4F4EC5A91A48FA0B2710441/gstmultipart.sym (188 bytes security) (deflated 84%)
+updating: gstnavigationtest.pdb/39DC540F7B43467DB85999103C2547D31/gstnavigationtest.sym (188 bytes security) (deflated 83%)
+updating: gstqtdemux.pdb/95BD83B3636947FC9C9BA400E61C80E81/gstqtdemux.sym (188 bytes security) (deflated 83%)
+updating: gstrtp.pdb/4DFA62C77E954732B78013363656DE041/gstrtp.sym (188 bytes security) (deflated 89%)
+updating: gstrtsp.pdb/9CB8CBD0299A452CB157EFCA1A20E3691/gstrtsp.sym (188 bytes security) (deflated 83%)
+updating: gstsmpte.pdb/DB910B2E415A437D895E9A23D9C99BF91/gstsmpte.sym (188 bytes security) (deflated 84%)
+updating: gstspectrum.pdb/06D4EB74E091460DA9D909E4448E50C41/gstspectrum.sym (188 bytes security) (deflated 83%)
+updating: gstudp.pdb/C1631AFFCA7A48BEAFFDC5FBFD50DF371/gstudp.sym (188 bytes security) (deflated 85%)
+updating: gstvideobalance.pdb/7FD869813F434431BE4CDCB8F0DAC60F1/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideobox.pdb/1F835C8C28F846C7BE265F263E6DFD661/gstvideobox.sym (188 bytes security) (deflated 83%)
+updating: gstvideocrop.pdb/A4028A82494842908FC3EFC4FD6A4C091/gstvideocrop.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/FA9F25D528BB43D5B211B82A03AE24A31/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstvideomixer.pdb/DED9AA5B469949EDBD81981A974B124A1/gstvideomixer.sym (188 bytes security) (deflated 83%)
+updating: gstwavenc.pdb/007BDE11B18A43A3B9D46EBAA7EB30B91/gstwavenc.sym (188 bytes security) (deflated 83%)
+updating: gstwavparse.pdb/E8A9331AB523491AB313FB136929F6E11/gstwavparse.sym (188 bytes security) (deflated 83%)
+updating: gstalaw.pdb/AB874536D0644ABA85B2FAEF8A23359C1/gstalaw.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/A5F0EC6206484FCC82A4D64FA39C1BE11/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/82A780F44DB44A18AA35F4B9A9C13AE61/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/06930BD63A294771BD84A3E99F73DDC41/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/A9F58F2BF7F94AA0BFB031D7F56817951/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/A5933D0A178144BF9B0FC6C56E321A861/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/D2DA321AE6B045A3A66EC31E59C4F8491/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/4D9E645831CF46E9AB266BE51F59CA5B1/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/FF8AB0C627D94B1B8DCBCA21EA33198E1/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/72E9DD1C2AB44B05B47F83CBA19623B21/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gsteffectv.pdb/6CA4066943584B4AB9DB25334C88EDF61/gsteffectv.sym (188 bytes security) (deflated 85%)
+updating: gstequalizer.pdb/A929F508E99947A8A3C5005B0890C9F81/gstequalizer.sym (188 bytes security) (deflated 84%)
+updating: gstflxdec.pdb/728D94F7DAB8482F8B866844705B34E11/gstflxdec.sym (188 bytes security) (deflated 83%)
+updating: gstgamma.pdb/153A2ED9C3FF4E2CB0EFF8F65F0ABCEA1/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstgoom.pdb/A70DFE8BC3624F8D9D9CBEBF5EF0D02A1/gstgoom.sym (188 bytes security) (deflated 84%)
+updating: gsticydemux.pdb/44FF0DF6F01541F29CB5FD1FAF62C4CA1/gsticydemux.sym (188 bytes security) (deflated 83%)
+updating: gstid3demux.pdb/72B570AC0044421C8C823C8DE42C10181/gstid3demux.sym (188 bytes security) (deflated 83%)
+updating: gstlevel.pdb/E217AC3A5F7649F9B691C159FB5EC8781/gstlevel.sym (188 bytes security) (deflated 83%)
+updating: gstmatroska.pdb/4F88836AC25144ED97057D3097923F281/gstmatroska.sym (188 bytes security) (deflated 83%)
+updating: gstmulaw.pdb/31D6D65E67B4414BBEF509AD32899C2E1/gstmulaw.sym (188 bytes security) (deflated 84%)
+updating: gstmultifile.pdb/F50F0E45F089448AACB0B23CAAFF1DB11/gstmultifile.sym (188 bytes security) (deflated 83%)
+updating: gstmultipart.pdb/38CCEA617A9A42359B034E6B58E12B1F1/gstmultipart.sym (188 bytes security) (deflated 84%)
+updating: gstnavigationtest.pdb/0B01BAC07D44424783A3781A3D05BBBE1/gstnavigationtest.sym (188 bytes security) (deflated 83%)
+updating: gstqtdemux.pdb/54C66B93CA6742B4953E2A298EBB6CE11/gstqtdemux.sym (188 bytes security) (deflated 83%)
+updating: gstrtp.pdb/7B6555BF617C4B9490BBE81910095BB91/gstrtp.sym (188 bytes security) (deflated 89%)
+updating: gstrtsp.pdb/3B720923EBDC42EE9C4045FDE1EA60B11/gstrtsp.sym (188 bytes security) (deflated 83%)
+updating: gstsmpte.pdb/27BC10DB163A487AAFB3DC728BF596ED1/gstsmpte.sym (188 bytes security) (deflated 84%)
+updating: gstspectrum.pdb/687817924D9F4FC6983538C62D247FF41/gstspectrum.sym (188 bytes security) (deflated 83%)
+updating: gstudp.pdb/BB60A11C7923435BA4C7B1B3C7DC33141/gstudp.sym (188 bytes security) (deflated 85%)
+updating: gstvideobalance.pdb/9FDE723278294F3D825D1326B4C8EDAF1/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideobox.pdb/285E05E2368F4DECB46C30D26BB5B23B1/gstvideobox.sym (188 bytes security) (deflated 83%)
+updating: gstvideocrop.pdb/93ADD7750B0E479A9568A718430AAD621/gstvideocrop.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/C79324F15E6D4724B8DF5F07480945981/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstvideomixer.pdb/F6F986B395554E58ACA67B7628301B901/gstvideomixer.sym (188 bytes security) (deflated 83%)
+updating: gstwavenc.pdb/2DCA85A0EE47406889540568FB5F65311/gstwavenc.sym (188 bytes security) (deflated 83%)
+updating: gstwavparse.pdb/8C5C0EC4B693483185EC04582737FA041/gstwavparse.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/DD54E0C623744DCBA33BB9CA591653711/level-example.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/F95DAC07CDFD4D19A9A3FF16C37771681/level-example.sym (188 bytes security) (deflated 83%)
+updating: gstalaw.pdb/F88FB713AEF247D6BE872E1F9FF0BF501/gstalaw.sym (188 bytes security) (deflated 83%)
+updating: gstalpha.pdb/E7F8B023EEB341058C2FB0E8B2392FA11/gstalpha.sym (188 bytes security) (deflated 83%)
+updating: gstalphacolor.pdb/69A895C0C0A24C8DA3AA458C442DD6831/gstalphacolor.sym (188 bytes security) (deflated 83%)
+updating: gstapetag.pdb/F5743C31698A494899493CAD449D65711/gstapetag.sym (188 bytes security) (deflated 83%)
+updating: gstaudiofx.pdb/88B02C1C504B44FAB889F1C4FA04FBC61/gstaudiofx.sym (188 bytes security) (deflated 85%)
+updating: gstauparse.pdb/227381D665054A86BAE1EE05E0FC2CE41/gstauparse.sym (188 bytes security) (deflated 83%)
+updating: gstautodetect.pdb/4D80CD81A9934285B049398A382FA6181/gstautodetect.sym (188 bytes security) (deflated 83%)
+updating: gstavi.pdb/6706340D20634DB38BD40D142724184E1/gstavi.sym (188 bytes security) (deflated 83%)
+updating: gstcutter.pdb/F3D79482ACCA4378B44691A3A6995E001/gstcutter.sym (188 bytes security) (deflated 83%)
+updating: gstdebug.pdb/9BA00FE4A6304E7CAB4728AE869EA5831/gstdebug.sym (188 bytes security) (deflated 85%)
+updating: gsteffectv.pdb/9FEDF74F3DB6469189A24982FC3EA65C1/gsteffectv.sym (188 bytes security) (deflated 85%)
+updating: gstequalizer.pdb/72BEE1AFA15945458DABA67E3F6018311/gstequalizer.sym (188 bytes security) (deflated 84%)
+updating: gstflxdec.pdb/940BF845D555482E887D2ADC10A1D5A51/gstflxdec.sym (188 bytes security) (deflated 83%)
+updating: gstgamma.pdb/C7534A8778264637894069E7EDB780951/gstgamma.sym (188 bytes security) (deflated 83%)
+updating: gstgoom.pdb/40884730B10844D78D854A87492E41541/gstgoom.sym (188 bytes security) (deflated 84%)
+updating: gsticydemux.pdb/CB5AF7CDBA3E46FAAC9F3074D7B0F6621/gsticydemux.sym (188 bytes security) (deflated 83%)
+updating: gstid3demux.pdb/C464B5E102D94CD7A7BC7A73D0F7FB711/gstid3demux.sym (188 bytes security) (deflated 83%)
+updating: gstlevel.pdb/BB1D44D3D4A240F99F8D630FD1E060671/gstlevel.sym (188 bytes security) (deflated 83%)
+updating: gstmatroska.pdb/144889E24875447598F018115BA556491/gstmatroska.sym (188 bytes security) (deflated 83%)
+updating: gstmulaw.pdb/C984343557E0424E9B3C8E0793B9CB8D1/gstmulaw.sym (188 bytes security) (deflated 84%)
+updating: gstmultifile.pdb/2A6D3DD3E9584A828377B15E13E5EEB31/gstmultifile.sym (188 bytes security) (deflated 83%)
+updating: gstmultipart.pdb/49BE8905E06E4A93B34DD0FEB55F587B1/gstmultipart.sym (188 bytes security) (deflated 84%)
+updating: gstnavigationtest.pdb/0CAAEC949A79493C8E9373B9D961D9CA1/gstnavigationtest.sym (188 bytes security) (deflated 83%)
+updating: gstqtdemux.pdb/68DE3D901DD444B29BF833A8BFACDFE11/gstqtdemux.sym (188 bytes security) (deflated 83%)
+updating: gstrtp.pdb/0B457D5247FB4FE1A9F620A3F985992A1/gstrtp.sym (188 bytes security) (deflated 89%)
+updating: gstrtsp.pdb/72E3DAC8E69E41EDB74DDBD268D2C9931/gstrtsp.sym (188 bytes security) (deflated 83%)
+updating: gstsmpte.pdb/1CF0CB24D9CF43F6A2203B8B1EF0FDB91/gstsmpte.sym (188 bytes security) (deflated 84%)
+updating: gstspectrum.pdb/E4CA8ABC2DF04B848790B26BF4CDCAFE1/gstspectrum.sym (188 bytes security) (deflated 83%)
+updating: gstudp.pdb/D7FB88408A8D4ACDB07B701BA1E1062B1/gstudp.sym (188 bytes security) (deflated 85%)
+updating: gstvideobalance.pdb/CB36E3BC59CA4FFB9F099C01DF2534F41/gstvideobalance.sym (188 bytes security) (deflated 83%)
+updating: gstvideobox.pdb/453C4AFA8E684CB28F23CCCB509366B41/gstvideobox.sym (188 bytes security) (deflated 83%)
+updating: gstvideocrop.pdb/2767EAA43F5042E1A12C47FF4A904EBC1/gstvideocrop.sym (188 bytes security) (deflated 83%)
+updating: gstvideoflip.pdb/54D99CC20D404CEA99DEEFA8DFC55EA41/gstvideoflip.sym (188 bytes security) (deflated 83%)
+updating: gstvideomixer.pdb/D5609704B85F466CBA8A6C6CAA991AAC1/gstvideomixer.sym (188 bytes security) (deflated 83%)
+updating: gstwavenc.pdb/961CD467CA164DDE8C9DF9D52B060B1E1/gstwavenc.sym (188 bytes security) (deflated 83%)
+updating: gstwavparse.pdb/D168AEA579304879BDA41EC1CDA2AEE21/gstwavparse.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/44F910D4CB6F42C7AB334EB31755A27D1/level-example.sym (188 bytes security) (deflated 83%)
+updating: level-example.pdb/9EE6E98146E24C4CA1E63772CA92D7021/level-example.sym (188 bytes security) (deflated 83%)
+  adding: gstdirectdrawsink.pdb/6ED49D5665E540C6A7E4DB661F19729D1/gstdirectdrawsink.sym (188 bytes security) (deflated 83%)
+  adding: gstdirectsoundsink.pdb/B65E8D820E66439EA26EFC8E900FBCC91/gstdirectsoundsink.sym (188 bytes security) (deflated 81%)
+  adding: level-example.pdb/58298E02F3A240C78AC4A324797268FB1/level-example.sym (188 bytes security) (deflated 83%)
+  adding: level-example.pdb/6139359420B1473A9FC87514784447861/level-example.sym (188 bytes security) (deflated 83%)

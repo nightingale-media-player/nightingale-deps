@@ -320,6 +320,9 @@ build()
         install_name_tool                                                      \
             -id libiconv.dylib                                                 \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libiconv.dylib
+        install_name_tool                                                      \
+            -id libcharset.dylib                                                 \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libcharset.dylib
     fi
 
     # Build the symbols.

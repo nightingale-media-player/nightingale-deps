@@ -359,6 +359,23 @@ build()
         install_name_tool                                                      \
             -id libgobject-2.0.dylib                                           \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgobject-2.0.dylib
+        install_name_tool                                                      \
+            -id libgmodule-2.0.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgmodule-2.0.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libglib-2.0.0.dylib\
+              libglib-2.0.dylib                                                \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgmodule-2.0.dylib
+        install_name_tool                                                      \
+            -id libgthread-2.0.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgthread-2.0.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libglib-2.0.0.dylib\
+              libglib-2.0.dylib                                                \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgthread-2.0.dylib
+
     fi
 
     # Build the symbols.

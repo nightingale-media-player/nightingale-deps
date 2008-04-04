@@ -1,0 +1,81 @@
+<!-- ##### SECTION Title ##### -->
+gstfftf32
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstFFTF32 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstFFTF32Complex ##### -->
+<para>
+
+</para>
+
+@r: 
+@i: 
+
+<!-- ##### FUNCTION gst_fft_f32_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@inverse: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_fft_f32_fft ##### -->
+<para>
+
+</para>
+
+@self: 
+@timedata: 
+@freqdata: 
+
+
+<!-- ##### FUNCTION gst_fft_f32_inverse_fft ##### -->
+<para>
+
+</para>
+
+@self: 
+@freqdata: 
+@timedata: 
+
+
+<!-- ##### FUNCTION gst_fft_f32_window ##### -->
+<para>
+
+</para>
+
+@self: 
+@timedata: 
+@window: 
+
+
+<!-- ##### FUNCTION gst_fft_f32_free ##### -->
+<para>
+
+</para>
+
+@self: 
+
+

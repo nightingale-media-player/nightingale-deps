@@ -1,0 +1,44 @@
+<!-- ##### SECTION Title ##### -->
+timidity
+
+<!-- ##### SECTION Short_Description ##### -->
+Midi Synthesizer Element
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-timidity-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTimidity ##### -->
+<para>
+
+</para>
+
+@element: 
+@sinkpad: 
+@srcpad: 
+@initialized: 
+@mididata_size: 
+@mididata_offset: 
+@mididata: 
+@mididata_filled: 
+@song: 
+@o_new_segment: 
+@o_segment_changed: 
+@o_seek: 
+@o_segment: 
+@o_len: 
+@song_options: 
+@bytes_per_frame: 
+@time_per_frame: 
+@out_caps: 
+

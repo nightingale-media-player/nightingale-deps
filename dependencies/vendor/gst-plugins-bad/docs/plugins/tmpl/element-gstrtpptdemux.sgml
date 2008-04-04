@@ -1,0 +1,59 @@
+<!-- ##### SECTION Title ##### -->
+gstrtpptdemux
+
+<!-- ##### SECTION Short_Description ##### -->
+Parses codec streams transmitted in the same RTP session
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-gstrtpptdemux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRtpPtDemux ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstRtpPtDemux::clear-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpptdemux: the object which received the signal.
+
+<!-- ##### SIGNAL GstRtpPtDemux::new-payload-type ##### -->
+<para>
+
+</para>
+
+@gstrtpptdemux: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstRtpPtDemux::payload-type-change ##### -->
+<para>
+
+</para>
+
+@gstrtpptdemux: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpPtDemux::request-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpptdemux: the object which received the signal.
+@arg1: 
+@Returns: 
+

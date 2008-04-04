@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+gsttunerchannel
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTunerChannel ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstTunerChannel::frequency-changed ##### -->
+<para>
+
+</para>
+
+@gsttunerchannel: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstTunerChannel::signal-changed ##### -->
+<para>
+
+</para>
+
+@gsttunerchannel: the object which received the signal.
+@arg1: 
+
+<!-- ##### ENUM GstTunerChannelFlags ##### -->
+<para>
+
+</para>
+
+@GST_TUNER_CHANNEL_INPUT: 
+@GST_TUNER_CHANNEL_OUTPUT: 
+@GST_TUNER_CHANNEL_FREQUENCY: 
+@GST_TUNER_CHANNEL_AUDIO: 
+
+<!-- ##### MACRO GST_TUNER_CHANNEL_HAS_FLAG ##### -->
+<para>
+
+</para>
+
+@channel: 
+@flag: 
+
+

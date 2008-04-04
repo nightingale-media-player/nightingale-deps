@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>filesrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gstreamer Elements">
+<link rel="prev" href="gstreamer-plugins-fdsrc.html" title="fdsrc">
+<link rel="next" href="gstreamer-plugins-filesink.html" title="filesink">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gstreamer Elements">
+<link rel="chapter" href="ch02.html" title="gstreamer Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-plugins-fdsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-plugins-filesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2572561" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2585756" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2584878" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2579862" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2593801" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-plugins-filesrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2572561"></a><span class="refentrytitle">filesrc</span>
+</h2>
+<p>filesrc &#8212; read from arbitrary point in a file</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstFileSrc"></a><pre class="synopsis">
+
+
+
+                    <a href="gstreamer-plugins-filesrc.html#GstFileSrc-struct">GstFileSrc</a>;
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2584878"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSrc
+                     +----GstFileSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2579862"></a><h2>Implemented Interfaces</h2>
+<p>
+GstFileSrc implements
+ GstURIHandler.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2593801"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--fd">fd</a>"                       gint                  : Read
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--location">location</a>"                 gchar*                : Read / Write
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--mmapsize">mmapsize</a>"                 gulong                : Read / Write
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--touch">touch</a>"                    gboolean              : Read / Write
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap">use-mmap</a>"                 gboolean              : Read / Write
+  "<a href="gstreamer-plugins-filesrc.html#GstFileSrc--sequential">sequential</a>"               gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2585756"></a><h2>Description</h2>
+<p>
+Read data from a file in the local file system.</p>
+<div class="refsect2" lang="en">
+<a name="id2585772"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Source/File</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572627"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2572638"></a><h3>
+<a name="GstFileSrc-struct"></a>GstFileSrc</h3>
+<a class="indexterm" name="id2572651"></a><pre class="programlisting">typedef struct _GstFileSrc GstFileSrc;</pre>
+<p>
+Opaque <a href="gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a> structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572678"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2572688"></a><h3>
+<a name="GstFileSrc--fd"></a>The "<code class="literal">fd</code>" property</h3>
+<a class="indexterm" name="id2572703"></a><pre class="programlisting">  "fd"                       gint                  : Read</pre>
+<p>File-descriptor for the file being mmap()d.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2572731"></a><h3>
+<a name="GstFileSrc--location"></a>The "<code class="literal">location</code>" property</h3>
+<a class="indexterm" name="id2572745"></a><pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<p>Location of the file to read.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2574778"></a><h3>
+<a name="GstFileSrc--mmapsize"></a>The "<code class="literal">mmapsize</code>" property</h3>
+<a class="indexterm" name="id2574792"></a><pre class="programlisting">  "mmapsize"                 gulong                : Read / Write</pre>
+<p>Size in bytes of mmap()d regions.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2574814"></a><h3>
+<a name="GstFileSrc--touch"></a>The "<code class="literal">touch</code>" property</h3>
+<a class="indexterm" name="id2574829"></a><pre class="programlisting">  "touch"                    gboolean              : Read / Write</pre>
+<p>Touch mmapped data regions to force them to be read from disk.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2574855"></a><h3>
+<a name="GstFileSrc--use-mmap"></a>The "<code class="literal">use-mmap</code>" property</h3>
+<a class="indexterm" name="id2574869"></a><pre class="programlisting">  "use-mmap"                 gboolean              : Read / Write</pre>
+<p>
+Whether to use <code class="function">mmap()</code>. Set to TRUE to force use of <code class="function">mmap()</code> instead of
+<code class="function">read()</code> for reading data.
+</p>
+<p>
+Use of <code class="function">mmap()</code> is disabled by default since with <code class="function">mmap()</code> there are a
+number of occasions where the process/application will be notified of
+read errors via a SIGBUS signal from the kernel, which will lead to
+the application being killed if not handled by the application. This
+is something that is difficult to work around for a library like
+GStreamer, hence use of <code class="function">mmap()</code> is disabled by default. Said errors
+can occur for example when an external device (e.g. an external hard
+drive or a portable music player) are unplugged while in use, or when
+a CD/DVD medium cannot be be read because the medium is scratched or
+otherwise damaged.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2574969"></a><h3>
+<a name="GstFileSrc--sequential"></a>The "<code class="literal">sequential</code>" property</h3>
+<a class="indexterm" name="id2574983"></a><pre class="programlisting">  "sequential"               gboolean              : Read / Write</pre>
+<p>Whether to use madvise to hint to the kernel that access to mmap pages will be sequential.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2575011"></a><h2>See Also</h2>
+<a href="gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a>
+</div>
+</div>
+</body>
+</html>

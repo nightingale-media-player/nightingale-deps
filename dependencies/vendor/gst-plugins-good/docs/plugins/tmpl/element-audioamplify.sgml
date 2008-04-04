@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+audioamplify
+
+<!-- ##### SECTION Short_Description ##### -->
+Amplifies an audio stream by a given factor
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audioamplify-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioAmplify ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioAmplify:amplification ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioAmplify:clipping-method ##### -->
+<para>
+
+</para>
+

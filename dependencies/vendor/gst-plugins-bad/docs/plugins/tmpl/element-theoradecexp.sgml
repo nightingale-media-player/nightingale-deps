@@ -1,0 +1,49 @@
+<!-- ##### SECTION Title ##### -->
+theoradecexp
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-theoradecexp-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTheoraExpDec ##### -->
+<para>
+
+</para>
+
+@element: 
+@sinkpad: 
+@srcpad: 
+@dec: 
+@setup: 
+@info: 
+@comment: 
+@have_header: 
+@granulepos: 
+@granule_shift: 
+@last_timestamp: 
+@need_keyframe: 
+@width: 
+@height: 
+@offset_x: 
+@offset_y: 
+@output_bpp: 
+@frame_nr: 
+@discont: 
+@queued: 
+@segment: 
+@proportion: 
+@earliest_time: 
+

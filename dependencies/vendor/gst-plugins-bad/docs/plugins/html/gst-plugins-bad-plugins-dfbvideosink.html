@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>dfbvideosink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-audioparse.html" title="audioparse">
+<link rel="next" href="gst-plugins-bad-plugins-dvbsrc.html" title="dvbsrc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-audioparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-dvbsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2576632" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2511724" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2580417" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2561328" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2561361" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-dfbvideosink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2576632"></a><span class="refentrytitle">dfbvideosink</span>
+</h2>
+<p>dfbvideosink &#8212; A DirectFB based videosink</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstDfbVideoSink"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink-struct">GstDfbVideoSink</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2580417"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
+>GstVideoSink</a>
+                           +----GstDfbVideoSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2561328"></a><h2>Implemented Interfaces</h2>
+<p>
+GstDfbVideoSink implements
+ GstImplementsInterface,  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
+>GstNavigation</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance"
+>GstColorBalance</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2561361"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--brightness">brightness</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--contrast">contrast</a>"                 gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--hue">hue</a>"                      gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--pixel-aspect-ratio">pixel-aspect-ratio</a>"       gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--saturation">saturation</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a>"                  gpointer              : Write
+  "<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--vsync">vsync</a>"                    gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2511724"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2511737"></a><p>
+DfbVideoSink renders video frames using the
+<a href="http://www.directfb.org/" target="_top">DirectFB</a> library.
+Rendering can happen in two different modes :
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li>
+<p>
+  Standalone: this mode will take complete control of the monitor forcing
+  <a href="http://www.directfb.org/" target="_top">DirectFB</a> to fullscreen layout.
+  This is convenient to test using the  gst-launch command line tool or
+  other simple applications. It is possible to interrupt playback while
+  being in this mode by pressing the Escape key.
+  </p>
+<p>
+  This mode handles navigation events for every input device supported by
+  the <a href="http://www.directfb.org/" target="_top">DirectFB</a> library, it will
+  look for available video modes in the fb.modes file and try to switch
+  the framebuffer video mode to the most suitable one. Depending on 
+  hardware acceleration capabilities the element will handle scaling or not.
+  If no acceleration is available it will do clipping or centering of the
+  video frames respecting the original aspect ratio.
+  </p>
+</li>
+<li>
+<p>
+  Embedded: this mode will render video frames in a 
+  <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a> provided by the
+  application developer. This is a more advanced usage of the element and
+  it is required to integrate video playback in existing 
+  <a href="http://www.directfb.org/" target="_top">DirectFB</a> applications.
+  </p>
+<p>
+  When using this mode the element just renders to the
+  <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a> provided by the 
+  application, that means it won't handle navigation events and won't resize
+  the <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a> to fit video
+  frames geometry. Application has to implement the necessary code to grab
+  informations about the negotiated geometry and resize there
+  <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a> accordingly.
+  </p>
+</li>
+</ul></div>
+<p>
+For both modes the element implements a buffer pool allocation system to 
+optimize memory allocation time and handle reverse negotiation. Indeed if 
+you insert an element like videoscale in the pipeline the video sink will
+negotiate with it to try get a scaled video for either the fullscreen layout
+or the application provided external
+<a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface">surface</a>.
+</p>
+<h3>Example application</h3>
+<p>
+</p>
+<pre class="programlisting">
+
+#include &lt;directfb.h&gt;
+#include &lt;gst/gst.h&gt;
+
+static IDirectFB *dfb = NULL;
+static IDirectFBSurface *primary = NULL;
+static GMainLoop *loop;
+
+#define DFBCHECK(x...)                                         \
+  {                                                            \
+    DFBResult err = x;                                         \
+                                                               \
+    if (err != DFB_OK)                                         \
+      {                                                        \
+        fprintf( stderr, "%s &lt;%d&gt;:\n\t", __FILE__, __LINE__ ); \
+        DirectFBErrorFatal( #x, err );                         \
+      }                                                        \
+  }
+
+static gboolean
+get_me_out (gpointer data)
+{
+  g_main_loop_quit (loop);
+  return FALSE;
+}
+
+int
+main (int argc, char *argv[])
+{
+  DFBSurfaceDescription dsc;
+  GstElement *pipeline, *src, *sink;
+
+  /* Init both GStreamer and DirectFB */
+  DFBCHECK (DirectFBInit (&amp;argc, &amp;argv));
+  gst_init (&amp;argc, &amp;argv);
+
+  /* Creates DirectFB main context and set it to fullscreen layout */
+  DFBCHECK (DirectFBCreate (&amp;dfb));
+  DFBCHECK (dfb-&gt;SetCooperativeLevel (dfb, DFSCL_FULLSCREEN));
+
+  /* We want a double buffered primary surface */
+  dsc.flags = DSDESC_CAPS;
+  dsc.caps = DSCAPS_PRIMARY | DSCAPS_FLIPPING;
+
+  DFBCHECK (dfb-&gt;CreateSurface (dfb, &amp;dsc, &amp;primary));
+
+  /* Creating our pipeline : videotestsrc ! dfbvideosink */
+  pipeline = gst_pipeline_new (NULL);
+  g_assert (pipeline);
+  src = gst_element_factory_make ("videotestsrc", NULL);
+  g_assert (src);
+  sink = gst_element_factory_make ("dfbvideosink", NULL);
+  g_assert (sink);
+  /* That's the interesting part, giving the primary surface to dfbvideosink */
+  g_object_set (sink, "surface", primary, NULL);
+
+  /* Adding elements to the pipeline */
+  gst_bin_add_many (GST_BIN (pipeline), src, sink, NULL);
+  g_assert (gst_element_link (src, sink));
+
+  /* Let's play ! */
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
+
+  /* we need to run a GLib main loop to get out of here */
+  loop = g_main_loop_new (NULL, FALSE);
+  /* Get us out after 20 seconds */
+  g_timeout_add (20000, get_me_out, NULL);
+  g_main_loop_run (loop);
+
+  /* Release elements and stop playback */
+  gst_element_set_state (pipeline, GST_STATE_NULL);
+
+  /* Free the main loop */
+  g_main_loop_unref (loop);
+
+  /* Release DirectFB context and surface */
+  primary-&gt;Release (primary);
+  dfb-&gt;Release (dfb);
+
+  return 0;
+}
+
+</pre>
+<p>
+</p>
+<h3>Example pipelines</h3>
+<p>
+Here is a test pipeline to test the colorbalance interface :
+</p>
+<pre class="programlisting">
+gst-launch -v videotestsrc ! dfbvideosink hue=20000 saturation=40000 brightness=25000
+</pre>
+<p>
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2599444"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-dfbvideosink.html#plugin-dfbvideosink">dfbvideosink</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Julien Moutte &lt;julien@moutte.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Sink/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-rgb, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]; video/x-raw-yuv, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2591744"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2591755"></a><h3>
+<a name="GstDfbVideoSink-struct"></a>GstDfbVideoSink</h3>
+<a class="indexterm" name="id2591767"></a><pre class="programlisting">typedef struct _GstDfbVideoSink GstDfbVideoSink;</pre>
+<p>
+The opaque <a href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink"><span class="type">GstDfbVideoSink</span></a> structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2591796"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2591806"></a><h3>
+<a name="GstDfbVideoSink--brightness"></a>The "<code class="literal">brightness</code>" property</h3>
+<a class="indexterm" name="id2591820"></a><pre class="programlisting">  "brightness"               gint                  : Read / Write</pre>
+<p>The brightness of the video.</p>
+<p>Allowed values: [0,65535]</p>
+<p>Default value: 32768</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591848"></a><h3>
+<a name="GstDfbVideoSink--contrast"></a>The "<code class="literal">contrast</code>" property</h3>
+<a class="indexterm" name="id2591861"></a><pre class="programlisting">  "contrast"                 gint                  : Read / Write</pre>
+<p>The contrast of the video.</p>
+<p>Allowed values: [0,65535]</p>
+<p>Default value: 32768</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591889"></a><h3>
+<a name="GstDfbVideoSink--hue"></a>The "<code class="literal">hue</code>" property</h3>
+<a class="indexterm" name="id2591903"></a><pre class="programlisting">  "hue"                      gint                  : Read / Write</pre>
+<p>The hue of the video.</p>
+<p>Allowed values: [0,65535]</p>
+<p>Default value: 32768</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591931"></a><h3>
+<a name="GstDfbVideoSink--pixel-aspect-ratio"></a>The "<code class="literal">pixel-aspect-ratio</code>" property</h3>
+<a class="indexterm" name="id2591945"></a><pre class="programlisting">  "pixel-aspect-ratio"       gchar*                : Read / Write</pre>
+<p>The pixel aspect ratio of the device.</p>
+<p>Default value: "1/1"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591971"></a><h3>
+<a name="GstDfbVideoSink--saturation"></a>The "<code class="literal">saturation</code>" property</h3>
+<a class="indexterm" name="id2591984"></a><pre class="programlisting">  "saturation"               gint                  : Read / Write</pre>
+<p>The saturation of the video.</p>
+<p>Allowed values: [0,65535]</p>
+<p>Default value: 32768</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2632758"></a><h3>
+<a name="GstDfbVideoSink--surface"></a>The "<code class="literal">surface</code>" property</h3>
+<a class="indexterm" name="id2632772"></a><pre class="programlisting">  "surface"                  gpointer              : Write</pre>
+<p>The target surface for video.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2632794"></a><h3>
+<a name="GstDfbVideoSink--vsync"></a>The "<code class="literal">vsync</code>" property</h3>
+<a class="indexterm" name="id2632808"></a><pre class="programlisting">  "vsync"                    gboolean              : Read / Write</pre>
+<p>Wait for next vertical sync to draw frames.</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+</body>
+</html>

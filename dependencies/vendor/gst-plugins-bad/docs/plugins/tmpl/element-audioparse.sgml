@@ -1,0 +1,61 @@
+<!-- ##### SECTION Title ##### -->
+audioparse
+
+<!-- ##### SECTION Short_Description ##### -->
+Converts stream into audio frames
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audioparse-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioParse ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioParse:channels ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:depth ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:endianness ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:format ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:rate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:signed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioParse:width ##### -->
+<para>
+
+</para>
+

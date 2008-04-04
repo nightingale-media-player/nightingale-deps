@@ -1,0 +1,2 @@
+ac_cv_lib_cposix_strerror=no
+ac_cv_prog_cc_g=no

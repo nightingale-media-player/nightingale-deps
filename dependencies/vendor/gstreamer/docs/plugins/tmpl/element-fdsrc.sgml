@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+fdsrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Read from a file descriptor
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-fdsrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstFdSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstFdSrc:fd ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+gstaudioclock
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioClock ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION GstAudioClockGetTimeFunc ##### -->
+<para>
+
+</para>
+
+@clock: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_audio_clock_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@func: 
+@user_data: 
+@Returns: 
+
+

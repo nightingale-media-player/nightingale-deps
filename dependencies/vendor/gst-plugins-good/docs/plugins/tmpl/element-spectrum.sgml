@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+spectrum
+
+<!-- ##### SECTION Short_Description ##### -->
+Run an FFT on the audio signal, output spectrum data
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-spectrum-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstSpectrum ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSpectrum:bands ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSpectrum:interval ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSpectrum:message ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSpectrum:threshold ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSpectrum:message-magnitude ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSpectrum:message-phase ##### -->
+<para>
+
+</para>
+

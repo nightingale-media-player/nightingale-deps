@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>equalizer-nbands</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-equalizer-3bands.html" title="equalizer-3bands">
+<link rel="next" href="gst-plugins-good-plugins-esdsink.html" title="esdsink">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-equalizer-3bands.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-esdsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2611506" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2582977" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2611465" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2583866" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2573838" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-equalizer-nbands"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2611506"></a><span class="refentrytitle">equalizer-nbands</span>
+</h2>
+<p>equalizer-nbands &#8212; Fully parametric N-band equalizer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstIirEqualizerNBands"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-equalizer-nbands.html#GstIirEqualizerNBands-struct">GstIirEqualizerNBands</a>;
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2611465"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseTransform
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
+>GstAudioFilter</a>
+                           +----GstIirEqualizer
+                                 +----GstIirEqualizerNBands
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2583866"></a><h2>Implemented Interfaces</h2>
+<p>
+GstIirEqualizerNBands implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2573838"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-good-plugins-equalizer-nbands.html#GstIirEqualizerNBands--num-bands">num-bands</a>"                guint                 : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2582977"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2559199"></a><p>
+The n-band equalizer element is a fully parametric equalizer. It allows to
+select between 1 and 64 bands and has properties on each band to change
+the center frequency, band width and gain.
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch filesrc location=song.ogg ! oggdemux ! vorbisdec ! audioconvert ! equalizer-nbands num-bands=15 band5::gain=6.0 ! alsasink
+</pre>
+<p>
+This make the equalizer use 15 bands and raises the volume of the 5th band by 6 db.
+</p>
+<h3>Example code</h3>
+<p>
+</p>
+<pre class="programlisting">
+
+#include &lt;gst/gst.h&gt;
+
+...
+typedef struct {
+  gfloat freq;
+  gfloat width;
+  gfloat gain;
+} GstEqualizerBandState;
+
+...
+
+  GstElement *equalizer;
+  GstObject *band;
+  gint i;
+  GstEqualizerBandState state[] = {
+    { 120.0,   50.0, - 3.0},
+    { 500.0,   20.0,  12.0},
+    {1503.0,    2.0, -20.0},
+    {6000.0, 1000.0,   6.0},
+    {3000.0,  120.0,   2.0}
+  };
+
+...
+
+
+  equalizer = gst_element_factory_make ("equalizer-nbands", "equalizer");
+  g_object_set (G_OBJECT (equalizer), "num-bands", 5, NULL);
+
+...
+
+  for (i = 0; i &lt; 5; i++) {
+    band = gst_child_proxy_get_child_by_index (GST_CHILD_PROXY (equalizer), i);
+    g_object_set (G_OBJECT (band), "freq", state[i].freq,
+        "bandwidth", state[i].width,
+	"gain", state[i].gain);
+    g_object_unref (G_OBJECT (band));
+  }
+
+...
+
+</pre>
+<p>
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2608832"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-equalizer.html#plugin-equalizer">equalizer</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Benjamin Otte &lt;otte@gnome.org&gt;, Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Effect/Audio</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1000, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int)1234, rate=(int)[ 1000, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1000, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int)1234, rate=(int)[ 1000, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2609041"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2609052"></a><h3>
+<a name="GstIirEqualizerNBands-struct"></a>GstIirEqualizerNBands</h3>
+<a class="indexterm" name="id2609063"></a><pre class="programlisting">typedef struct _GstIirEqualizerNBands GstIirEqualizerNBands;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2611725"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2611736"></a><h3>
+<a name="GstIirEqualizerNBands--num-bands"></a>The "<code class="literal">num-bands</code>" property</h3>
+<a class="indexterm" name="id2611749"></a><pre class="programlisting">  "num-bands"                guint                 : Read / Write / Construct</pre>
+<p>number of different bands to use.</p>
+<p>Allowed values: [1,64]</p>
+<p>Default value: 10</p>
+</div>
+</div>
+</div>
+</body>
+</html>

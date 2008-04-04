@@ -1,0 +1,84 @@
+--- gst-plugins-base-0.10.17/gst/playback/test4.c	2006-04-28 18:18:05.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/playback/test4.c	2008-03-11 17:10:38.000000000 -0700
+@@ -16,8 +16,12 @@
+  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+  * Boston, MA 02111-1307, USA.
+  */
++#ifdef HAVE_STDLIB_H
+ #include <stdlib.h>             /* exit() */
++#endif
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
+ 
+ #include <gst/gst.h>
+ 
+diff -ur gst-plugins-base-0.10.17/gst/playback/test5.c songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/playback/test5.c
+--- gst-plugins-base-0.10.17/gst/playback/test5.c	2006-05-02 11:15:25.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/playback/test5.c	2008-03-11 17:10:38.000000000 -0700
+@@ -16,8 +16,12 @@
+  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+  * Boston, MA 02111-1307, USA.
+  */
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
++#ifdef HAVE_STDLIB_H
+ #include <stdlib.h>             /* exit */
++#endif
+ #include <gst/gst.h>
+ 
+ static GMainLoop *loop;
+diff -ur gst-plugins-base-0.10.17/gst/playback/test6.c songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/playback/test6.c
+--- gst-plugins-base-0.10.17/gst/playback/test6.c	2006-05-02 11:15:25.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/playback/test6.c	2008-03-11 17:10:38.000000000 -0700
+@@ -16,8 +16,12 @@
+  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+  * Boston, MA 02111-1307, USA.
+  */
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
++#ifdef HAVE_STDLIB_H
+ #include <stdlib.h>             /* exit */
++#endif
+ #include <gst/gst.h>
+ 
+ static void
+--- gst-plugins-base-0.10.17/gst/tcp/gstfdset.c	2006-05-09 12:24:46.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/tcp/gstfdset.c	2008-03-11 17:10:38.000000000 -0700
+@@ -26,7 +26,9 @@
+ #include <sys/poll.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
+ /* OS/X needs this because of bad headers */
+ #include <string.h>
+ 
+diff -ur gst-plugins-base-0.10.17/gst/tcp/gstmultifdsink.c songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/tcp/gstmultifdsink.c
+--- gst-plugins-base-0.10.17/gst/tcp/gstmultifdsink.c	2007-06-05 09:00:33.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst/tcp/gstmultifdsink.c	2008-03-11 17:10:38.000000000 -0700
+@@ -117,7 +117,9 @@
+ #include <gst/gst-i18n-plugin.h>
+ 
+ #include <sys/ioctl.h>
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+--- gst-plugins-base-0.10.17/gst-libs/gst/rtsp/gstrtspconnection.c	2008-01-30 04:49:45.000000000 -0800
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-base/gst-libs/gst/rtsp/gstrtspconnection.c	2008-03-11 17:10:33.000000000 -0700
+@@ -61,7 +61,9 @@
+ 
+ #include <stdio.h>
+ #include <errno.h>
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
+ #include <stdlib.h>
+ #include <string.h>
+ #include <fcntl.h>

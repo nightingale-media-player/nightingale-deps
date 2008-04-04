@@ -1,0 +1,88 @@
+dependencies/vendor README
+--------------------------
+
+This directory contains the source code for dependencies needed to
+build songbird.
+
+For each module there is a songbird_<modulename>_make.sh script which
+allows you to compile that dependency for one of several target
+architecture.
+
+Architectures supported:
+ * linux-i686		(32 bit)
+ * linux-x86_64		(64bit)
+ * windows-i686		(MSVC < 8 , deprecated)
+ * windows-i686-msvc8	(MSVC 8)
+ * macosx-i686		(x86)
+ * macosx-ppc		(PowerPC)
+
+The build script for each module will produce the following output:
+
+ dependencies/
+	<architecture>/
+		<modulename>/
+			debug/	   # output with debugging symbols
+			release/   # output without debugging symbols
+			breakpad/  # symbol files
+
+
+Build environment:
+------------------
+
+Unless mentionned otherwise , the build environments are the same as
+for songbird for each respective architecture (see developper doc on
+songbird wiki).
+
+
+Modifications and patches
+-------------------------
+
+The dependencies might have been modified and not be 100% identical to
+the upstream release tarballs. In that case, patches are available in
+the patches/ directory.
+
+The patches follow this naming scheme:
+
+<modulename>-<moduleversion>-<XXX>-<description>.patch
+
+   modulename	 :  Name of the module (same as directory name)
+   moduleversion :  Version of the upstream module against which the
+			patch applies.
+   XXX		 :  Patch order number (starts from 001)
+   description	 :  Short description
+
+If detailed explanations are needed, they will be put in the 'README'
+file contained in the patches/ directory.
+
+
+upstream module versions used
+-----------------------------
+
+modulename		version
+-----------------------------------
+gstreamer		0.10.17
+liboil			0.3.13
+libvorbis		1.2.0
+gst-plugins-base	0.10.17
+gst-plugins-good	0.10.7
+<FILLME><FILLME><FILLME>
+
+
+
+Microsoft Visual C support with autotoools
+------------------------------------------
+
+  As of March 14th 2008, autotools don't know how to use the Microsoft
+  Visual Studio compiler and linker.
+
+  Most of those issues are related to the fact that libtool doesn't
+  know how to use those tools.
+
+  A patched version of libtool 2.3a is included in libtool-msvc/ which
+  adds support for msvc. Before adding/updating sources to the vendor/
+  directory, those sources should be properly libtoolized with that
+  version of libtool. This can be done by running ./autogen.sh in the
+  module source directory (OUTSIDE of vendor/), then 'make dist' in
+  order to produce a new tarball which has been properly libtoolized.
+  => Use that newly generated tarball as the new source package.
+

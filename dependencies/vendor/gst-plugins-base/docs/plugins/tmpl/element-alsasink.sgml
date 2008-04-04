@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+alsasink
+
+<!-- ##### SECTION Short_Description ##### -->
+Output to a sound card via ALSA
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-alsasink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAlsaSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAlsaSink:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAlsaSink:device-name ##### -->
+<para>
+
+</para>
+

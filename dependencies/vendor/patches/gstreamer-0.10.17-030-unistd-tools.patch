@@ -1,0 +1,12 @@
+--- gstreamer-0.10.17/tools/gst-run.c	2007-10-15 00:11:04.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gstreamer/tools/gst-run.c	2008-03-10 17:03:27.000000000 -0700
+@@ -25,7 +25,9 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
++#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
++#endif
+ #include <errno.h>
+ #include <glib.h>
+ 

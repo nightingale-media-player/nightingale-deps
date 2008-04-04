@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+pngdec
+
+<!-- ##### SECTION Short_Description ##### -->
+Decode a png video frame to a raw image
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-pngdec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPngDec ##### -->
+<para>
+
+</para>
+
+

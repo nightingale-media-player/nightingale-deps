@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstTypeFind</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstTask.html" title="GstTask">
+<link rel="next" href="GstTypeFindFactory.html" title="GstTypeFindFactory">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstTask.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="GstTypeFindFactory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2867420" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2867658" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-GstTypeFind"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2867420"></a><span class="refentrytitle">GstTypeFind</span>
+</h2>
+<p>GstTypeFind &#8212; Stream type detection</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+                    <a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a>;
+void                (<a href="gstreamer-GstTypeFind.html#GstTypeFindFunction">*GstTypeFindFunction</a>)              (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         gpointer data);
+enum                <a href="gstreamer-GstTypeFind.html#GstTypeFindProbability">GstTypeFindProbability</a>;
+guint8*             <a href="gstreamer-GstTypeFind.html#gst-type-find-peek">gst_type_find_peek</a>                  (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         gint64 offset,
+                                                         guint size);
+void                <a href="gstreamer-GstTypeFind.html#gst-type-find-suggest">gst_type_find_suggest</a>               (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         guint probability,
+                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);
+guint64             <a href="gstreamer-GstTypeFind.html#gst-type-find-get-length">gst_type_find_get_length</a>            (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find);
+gboolean            <a href="gstreamer-GstTypeFind.html#gst-type-find-register">gst_type_find_register</a>              (<a href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
+                                                         const gchar *name,
+                                                         guint rank,
+                                                         <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction">GstTypeFindFunction</a> func,
+                                                         gchar **extensions,
+                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *possible_caps,
+                                                         gpointer data,
+                                                         GDestroyNotify data_notify);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2867658"></a><h2>Description</h2>
+<p>
+The following functions allow you to detect the media type of an unknown
+stream.
+</p>
+<p>
+Last reviewed on 2005-11-09 (0.9.4)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2867681"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2867691"></a><h3>
+<a name="GstTypeFind"></a>GstTypeFind</h3>
+<a class="indexterm" name="id2867704"></a><pre class="programlisting">typedef struct {
+  /* private to the caller of the typefind function */
+  guint8 *	(* peek)	(gpointer		data,
+				 gint64	         	offset,
+				 guint			size);
+  void		(* suggest)	(gpointer		data,
+				 guint			probability,
+				 const GstCaps *	caps);
+
+  gpointer	data;
+
+  /* optional */
+  guint64	(* get_length)	(gpointer		data);
+} GstTypeFind;
+</pre>
+<p>
+Object that stores typefind callbacks. To use with <a href="GstTypeFindFactory.html" title="GstTypeFindFactory"><span class="type">GstTypeFindFactory</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="structfield"><code>peek</code></em>&#160;()</span></td>
+<td> Method to peek data.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="structfield"><code>suggest</code></em>&#160;()</span></td>
+<td> Method to suggest <a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> with a given probability.
+</td>
+</tr>
+<tr>
+<td><span class="term">gpointer&#160;<em class="structfield"><code>data</code></em>;</span></td>
+<td> The data used by the caller of the typefinding function.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="structfield"><code>get_length</code></em>&#160;()</span></td>
+<td> Returns the length of current data.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2867812"></a><h3>
+<a name="GstTypeFindFunction"></a>GstTypeFindFunction ()</h3>
+<a class="indexterm" name="id2867826"></a><pre class="programlisting">void                (*GstTypeFindFunction)              (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         gpointer data);</pre>
+<p>
+A function that will be called by typefinding.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>find</code></em>&#160;:</span></td>
+<td> A <a href="gstreamer-GstTypeFind.html#GstTypeFind"><span class="type">GstTypeFind</span></a> structure
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> optionnal data to pass to the function
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2867906"></a><h3>
+<a name="GstTypeFindProbability"></a>enum GstTypeFindProbability</h3>
+<a class="indexterm" name="id2867919"></a><pre class="programlisting">typedef enum {
+  GST_TYPE_FIND_MINIMUM = 1,
+  GST_TYPE_FIND_POSSIBLE = 50,
+  GST_TYPE_FIND_LIKELY = 80,
+  GST_TYPE_FIND_NEARLY_CERTAIN = 99,
+  GST_TYPE_FIND_MAXIMUM = 100
+} GstTypeFindProbability;
+</pre>
+<p>
+The probability of the typefind function. Higher values have more certainty
+in doing a reliable typefind.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-TYPE-FIND-MINIMUM:CAPS"></a><code class="literal">GST_TYPE_FIND_MINIMUM</code></span></td>
+<td> unlikely typefind
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-TYPE-FIND-POSSIBLE:CAPS"></a><code class="literal">GST_TYPE_FIND_POSSIBLE</code></span></td>
+<td> possible type detected
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-TYPE-FIND-LIKELY:CAPS"></a><code class="literal">GST_TYPE_FIND_LIKELY</code></span></td>
+<td> likely a type was detected
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-TYPE-FIND-NEARLY-CERTAIN:CAPS"></a><code class="literal">GST_TYPE_FIND_NEARLY_CERTAIN</code></span></td>
+<td> nearly certain that a type was detected
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-TYPE-FIND-MAXIMUM:CAPS"></a><code class="literal">GST_TYPE_FIND_MAXIMUM</code></span></td>
+<td> very certain a type was detected.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868060"></a><h3>
+<a name="gst-type-find-peek"></a>gst_type_find_peek ()</h3>
+<a class="indexterm" name="id2868073"></a><pre class="programlisting">guint8*             gst_type_find_peek                  (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         gint64 offset,
+                                                         guint size);</pre>
+<p>
+Returns the <em class="parameter"><code>size</code></em> bytes of the stream to identify beginning at offset. If
+offset is a positive number, the offset is relative to the beginning of the
+stream, if offset is a negative number the offset is relative to the end of
+the stream. The returned memory is valid until the typefinding function
+returns and must not be freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>find</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstTypeFind.html#GstTypeFind"><span class="type">GstTypeFind</span></a> object the function was called with
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>offset</code></em>&#160;:</span></td>
+<td> The offset
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> The number of bytes to return
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the requested data, or NULL if that data is not available.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868197"></a><h3>
+<a name="gst-type-find-suggest"></a>gst_type_find_suggest ()</h3>
+<a class="indexterm" name="id2868210"></a><pre class="programlisting">void                gst_type_find_suggest               (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find,
+                                                         guint probability,
+                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);</pre>
+<p>
+If a <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction"><span class="type">GstTypeFindFunction</span></a> calls this function it suggests the caps with the
+given probability. A <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction"><span class="type">GstTypeFindFunction</span></a> may supply different suggestions
+in one call.
+It is up to the caller of the <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction"><span class="type">GstTypeFindFunction</span></a> to interpret these values.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>find</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstTypeFind.html#GstTypeFind"><span class="type">GstTypeFind</span></a> object the function was called with
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>probability</code></em>&#160;:</span></td>
+<td> The probability in percent that the suggestion is right
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td> The fixed <a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> to suggest
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868349"></a><h3>
+<a name="gst-type-find-get-length"></a>gst_type_find_get_length ()</h3>
+<a class="indexterm" name="id2868361"></a><pre class="programlisting">guint64             gst_type_find_get_length            (<a href="gstreamer-GstTypeFind.html#GstTypeFind">GstTypeFind</a> *find);</pre>
+<p>
+Get the length of the data stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>find</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstTypeFind.html#GstTypeFind"><span class="type">GstTypeFind</span></a> the function was called with
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The length of the data stream, or 0 if it is not available.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868431"></a><h3>
+<a name="gst-type-find-register"></a>gst_type_find_register ()</h3>
+<a class="indexterm" name="id2868444"></a><pre class="programlisting">gboolean            gst_type_find_register              (<a href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
+                                                         const gchar *name,
+                                                         guint rank,
+                                                         <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction">GstTypeFindFunction</a> func,
+                                                         gchar **extensions,
+                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *possible_caps,
+                                                         gpointer data,
+                                                         GDestroyNotify data_notify);</pre>
+<p>
+Registers a new typefind function to be used for typefinding. After
+registering this function will be available for typefinding.
+This function is typically called during an element's plugin initialization.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>plugin</code></em>&#160;:</span></td>
+<td> A <a href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a>, or NULL for a static typefind function (note that
+   passing NULL only works in GStreamer 0.10.16 and later)
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td> The name for registering
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>rank</code></em>&#160;:</span></td>
+<td> The rank (or importance) of this typefind function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstTypeFind.html#GstTypeFindFunction"><span class="type">GstTypeFindFunction</span></a> to use
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>extensions</code></em>&#160;:</span></td>
+<td> Optional extensions that could belong to this type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>possible_caps</code></em>&#160;:</span></td>
+<td> Optionally the caps that could be returned when typefinding
+                succeeds
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> Optional user data. This user data must be available until the plugin
+       is unloaded.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data_notify</code></em>&#160;:</span></td>
+<td> a <span class="type">GDestroyNotify</span> that will be called on <em class="parameter"><code>data</code></em> when the plugin
+       is unloaded.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE on success, FALSE otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

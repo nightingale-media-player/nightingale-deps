@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstParse</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstPadTemplate.html" title="GstPadTemplate">
+<link rel="next" href="GstPipeline.html" title="GstPipeline">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstPadTemplate.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="GstPipeline.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2775087" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2775235" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-GstParse"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2775087"></a><span class="refentrytitle">GstParse</span>
+</h2>
+<p>GstParse &#8212; Get a pipeline from a text pipeline description</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+GQuark              <a href="gstreamer-GstParse.html#gst-parse-error-quark">gst_parse_error_quark</a>               (void);
+#define             <a href="gstreamer-GstParse.html#GST-PARSE-ERROR:CAPS">GST_PARSE_ERROR</a>
+enum                <a href="gstreamer-GstParse.html#GstParseError">GstParseError</a>;
+<a href="GstElement.html" title="GstElement">GstElement</a>*         <a href="gstreamer-GstParse.html#gst-parse-launch">gst_parse_launch</a>                    (const gchar *pipeline_description,
+                                                         GError **error);
+<a href="GstElement.html" title="GstElement">GstElement</a>*         <a href="gstreamer-GstParse.html#gst-parse-launchv">gst_parse_launchv</a>                   (const gchar **argv,
+                                                         GError **error);
+<a href="GstElement.html" title="GstElement">GstElement</a>*         <a href="gstreamer-GstParse.html#gst-parse-bin-from-description">gst_parse_bin_from_description</a>      (const gchar *bin_description,
+                                                         gboolean ghost_unconnected_pads,
+                                                         GError **err);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2775235"></a><h2>Description</h2>
+<p>
+These function allow to create a pipeline based on the syntax used in the
+gst-launch utillity.</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2775254"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2775264"></a><h3>
+<a name="gst-parse-error-quark"></a>gst_parse_error_quark ()</h3>
+<a class="indexterm" name="id2775278"></a><pre class="programlisting">GQuark              gst_parse_error_quark               (void);</pre>
+<p>
+Get the error quark used by the parsing subsystem.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the quark of the parse errors.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2775318"></a><h3>
+<a name="GST-PARSE-ERROR:CAPS"></a>GST_PARSE_ERROR</h3>
+<a class="indexterm" name="id2775332"></a><pre class="programlisting">#define GST_PARSE_ERROR gst_parse_error_quark ()
+</pre>
+<p>
+Get access to the error quark of the parse subsystem.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2775352"></a><h3>
+<a name="GstParseError"></a>enum GstParseError</h3>
+<a class="indexterm" name="id2775364"></a><pre class="programlisting">typedef enum
+{
+  GST_PARSE_ERROR_SYNTAX,
+  GST_PARSE_ERROR_NO_SUCH_ELEMENT,
+  GST_PARSE_ERROR_NO_SUCH_PROPERTY,
+  GST_PARSE_ERROR_LINK,
+  GST_PARSE_ERROR_COULD_NOT_SET_PROPERTY,
+  GST_PARSE_ERROR_EMPTY_BIN,
+  GST_PARSE_ERROR_EMPTY
+} GstParseError;
+</pre>
+<p>
+The different parsing errors that can occur.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-SYNTAX:CAPS"></a><code class="literal">GST_PARSE_ERROR_SYNTAX</code></span></td>
+<td> A syntax error occured.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-NO-SUCH-ELEMENT:CAPS"></a><code class="literal">GST_PARSE_ERROR_NO_SUCH_ELEMENT</code></span></td>
+<td> The description contained an unknown element
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-NO-SUCH-PROPERTY:CAPS"></a><code class="literal">GST_PARSE_ERROR_NO_SUCH_PROPERTY</code></span></td>
+<td> An element did not have a specified property
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-LINK:CAPS"></a><code class="literal">GST_PARSE_ERROR_LINK</code></span></td>
+<td> There was an error linking two pads.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-COULD-NOT-SET-PROPERTY:CAPS"></a><code class="literal">GST_PARSE_ERROR_COULD_NOT_SET_PROPERTY</code></span></td>
+<td> There was an error setting a property
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-EMPTY-BIN:CAPS"></a><code class="literal">GST_PARSE_ERROR_EMPTY_BIN</code></span></td>
+<td> An empty bin was specified.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-PARSE-ERROR-EMPTY:CAPS"></a><code class="literal">GST_PARSE_ERROR_EMPTY</code></span></td>
+<td> An empty description was specified
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2775556"></a><h3>
+<a name="gst-parse-launch"></a>gst_parse_launch ()</h3>
+<a class="indexterm" name="id2775569"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>*         gst_parse_launch                    (const gchar *pipeline_description,
+                                                         GError **error);</pre>
+<p>
+Create a new pipeline based on command line syntax.
+Please note that you might get a return value that is not <code class="literal">NULL</code> even though
+the <em class="parameter"><code>error</code></em> is set. In this case there was a recoverable parsing error and you
+can try to play the pipeline.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pipeline_description</code></em>&#160;:</span></td>
+<td> the command line describing the pipeline
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> the error message in case of an erroneous pipeline.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new element on success, <code class="literal">NULL</code> on failure. If more than one toplevel
+element is specified by the <em class="parameter"><code>pipeline_description</code></em>, all elements are put into
+a <a href="GstPipeline.html" title="GstPipeline"><span class="type">GstPipeline</span></a>, which than is returned.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2775699"></a><h3>
+<a name="gst-parse-launchv"></a>gst_parse_launchv ()</h3>
+<a class="indexterm" name="id2775713"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>*         gst_parse_launchv                   (const gchar **argv,
+                                                         GError **error);</pre>
+<p>
+Create a new element based on command line syntax.
+<em class="parameter"><code>error</code></em> will contain an error message if an erroneuos pipeline is specified.
+An error does not mean that the pipeline could not be constructed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>argv</code></em>&#160;:</span></td>
+<td> null-terminated array of arguments
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> pointer to a <span class="type">GError</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new element on success and <code class="literal">NULL</code> on failure.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2775822"></a><h3>
+<a name="gst-parse-bin-from-description"></a>gst_parse_bin_from_description ()</h3>
+<a class="indexterm" name="id2775838"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>*         gst_parse_bin_from_description      (const gchar *bin_description,
+                                                         gboolean ghost_unconnected_pads,
+                                                         GError **err);</pre>
+<p>
+This is a convenience wrapper around <a href="gstreamer-GstParse.html#gst-parse-launch"><code class="function">gst_parse_launch()</code></a> to create a
+<a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> from a gst-launch-style pipeline description. See
+<a href="gstreamer-GstParse.html#gst-parse-launch"><code class="function">gst_parse_launch()</code></a> and the gst-launch man page for details about the
+syntax. Ghost pads on the bin for unconnected source or sink pads
+within the bin can automatically be created (but only a maximum of
+one ghost pad for each direction will be created; if you expect
+multiple unconnected source pads or multiple unconnected sink pads
+and want them all ghosted, you will have to create the ghost pads
+yourself).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>bin_description</code></em>&#160;:</span></td>
+<td> command line describing the bin
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ghost_unconnected_pads</code></em>&#160;:</span></td>
+<td> whether to automatically create ghost pads
+                         for unconnected source or sink pads within
+                         the bin
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>err</code></em>&#160;:</span></td>
+<td> where to store the error message in case of an error, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly-created bin, or NULL if an error occurred.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.3
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

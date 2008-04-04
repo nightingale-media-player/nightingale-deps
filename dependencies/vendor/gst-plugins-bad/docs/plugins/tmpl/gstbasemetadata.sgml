@@ -1,0 +1,80 @@
+<!-- ##### SECTION Title ##### -->
+gstbasemetadata
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstBaseMetadata ##### -->
+<para>
+
+</para>
+
+@element: 
+
+<!-- ##### MACRO GST_BASE_METADATA_SINK_PAD ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO GST_BASE_METADATA_SRC_PAD ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### FUNCTION gst_base_metadata_get_option_flag ##### -->
+<para>
+
+</para>
+
+@base: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_metadata_set_option_flag ##### -->
+<para>
+
+</para>
+
+@base: 
+@options: 
+
+
+<!-- ##### FUNCTION gst_base_metadata_unset_option_flag ##### -->
+<para>
+
+</para>
+
+@base: 
+@options: 
+
+
+<!-- ##### FUNCTION gst_base_metadata_update_inject_segment_with_new_data ##### -->
+<para>
+
+</para>
+
+@base: 
+@data: 
+@size: 
+@type: 
+
+

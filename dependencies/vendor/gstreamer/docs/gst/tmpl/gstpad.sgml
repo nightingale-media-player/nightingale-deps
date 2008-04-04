@@ -1,0 +1,1267 @@
+<!-- ##### SECTION Title ##### -->
+GstPad
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPad ##### -->
+<para>
+
+</para>
+
+@element_private: 
+@padtemplate: 
+@direction: 
+@stream_rec_lock: 
+@task: 
+@preroll_lock: 
+@preroll_cond: 
+@block_cond: 
+@block_callback: 
+@block_data: 
+@caps: 
+@getcapsfunc: 
+@setcapsfunc: 
+@acceptcapsfunc: 
+@fixatecapsfunc: 
+@activatefunc: 
+@activatepushfunc: 
+@activatepullfunc: 
+@linkfunc: 
+@unlinkfunc: 
+@peer: 
+@sched_private: 
+@chainfunc: 
+@checkgetrangefunc: 
+@getrangefunc: 
+@eventfunc: 
+@mode: 
+@querytypefunc: 
+@queryfunc: 
+@intlinkfunc: 
+@bufferallocfunc: 
+@do_buffer_signals: 
+@do_event_signals: 
+
+<!-- ##### SIGNAL GstPad::have-data ##### -->
+<para>
+
+</para>
+
+@gstpad: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GstPad::linked ##### -->
+<para>
+
+</para>
+
+@gstpad: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstPad::request-link ##### -->
+<para>
+
+</para>
+
+@gstpad: the object which received the signal.
+
+<!-- ##### SIGNAL GstPad::unlinked ##### -->
+<para>
+
+</para>
+
+@gstpad: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG GstPad:caps ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPad:direction ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPad:template ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstPadDirection ##### -->
+<para>
+
+</para>
+
+@GST_PAD_UNKNOWN: 
+@GST_PAD_SRC: 
+@GST_PAD_SINK: 
+
+<!-- ##### ENUM GstPadFlags ##### -->
+<para>
+
+</para>
+
+@GST_PAD_BLOCKED: 
+@GST_PAD_FLUSHING: 
+@GST_PAD_IN_GETCAPS: 
+@GST_PAD_IN_SETCAPS: 
+@GST_PAD_BLOCKING: 
+@GST_PAD_FLAG_LAST: 
+
+<!-- ##### ENUM GstPadLinkReturn ##### -->
+<para>
+
+</para>
+
+@GST_PAD_LINK_OK: 
+@GST_PAD_LINK_WRONG_HIERARCHY: 
+@GST_PAD_LINK_WAS_LINKED: 
+@GST_PAD_LINK_WRONG_DIRECTION: 
+@GST_PAD_LINK_NOFORMAT: 
+@GST_PAD_LINK_NOSCHED: 
+@GST_PAD_LINK_REFUSED: 
+
+<!-- ##### MACRO GST_PAD_LINK_FAILED ##### -->
+<para>
+
+</para>
+
+@ret: 
+
+
+<!-- ##### MACRO GST_PAD_LINK_SUCCESSFUL ##### -->
+<para>
+
+</para>
+
+@ret: 
+
+
+<!-- ##### ENUM GstFlowReturn ##### -->
+<para>
+
+</para>
+
+@GST_FLOW_CUSTOM_SUCCESS: 
+@GST_FLOW_RESEND: 
+@GST_FLOW_OK: 
+@GST_FLOW_NOT_LINKED: 
+@GST_FLOW_WRONG_STATE: 
+@GST_FLOW_UNEXPECTED: 
+@GST_FLOW_NOT_NEGOTIATED: 
+@GST_FLOW_ERROR: 
+@GST_FLOW_NOT_SUPPORTED: 
+@GST_FLOW_CUSTOM_ERROR: 
+
+<!-- ##### ENUM GstActivateMode ##### -->
+<para>
+
+</para>
+
+@GST_ACTIVATE_NONE: 
+@GST_ACTIVATE_PUSH: 
+@GST_ACTIVATE_PULL: 
+
+<!-- ##### MACRO gst_pad_get_name ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### FUNCTION gst_pad_get_direction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### MACRO gst_pad_get_parent ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### FUNCTION gst_pad_get_parent_element ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_pad_template ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_link ##### -->
+<para>
+
+</para>
+
+@srcpad: 
+@sinkpad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_unlink ##### -->
+<para>
+
+</para>
+
+@srcpad: 
+@sinkpad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_is_linked ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_can_link ##### -->
+<para>
+
+</para>
+
+@srcpad: 
+@sinkpad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_allowed_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_negotiated_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_pad_template_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_peer ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_peer_get_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_use_fixed_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### FUNCTION gst_pad_is_active ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_blocked ##### -->
+<para>
+
+</para>
+
+@pad: 
+@blocked: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_blocked_async ##### -->
+<para>
+
+</para>
+
+@pad: 
+@blocked: 
+@callback: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GstPadBlockCallback ##### -->
+<para>
+
+</para>
+
+@pad: 
+@blocked: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gst_pad_is_blocked ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_is_blocking ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_add_data_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_add_buffer_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_add_event_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_remove_data_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler_id: 
+
+
+<!-- ##### FUNCTION gst_pad_remove_buffer_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler_id: 
+
+
+<!-- ##### FUNCTION gst_pad_remove_event_probe ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler_id: 
+
+
+<!-- ##### FUNCTION gst_pad_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@direction: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_new_from_template ##### -->
+<para>
+
+</para>
+
+@templ: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_new_from_static_template ##### -->
+<para>
+
+</para>
+
+@templ: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_alloc_buffer ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@size: 
+@caps: 
+@buf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_alloc_buffer_and_set_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@size: 
+@caps: 
+@buf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_bufferalloc_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@bufalloc: 
+
+
+<!-- ##### USER_FUNCTION GstPadBufferAllocFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@size: 
+@caps: 
+@buf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_chain_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@chain: 
+
+
+<!-- ##### USER_FUNCTION GstPadChainFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_checkgetrange_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@check: 
+
+
+<!-- ##### USER_FUNCTION GstPadCheckGetRangeFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_range ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@size: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_getrange_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@get: 
+
+
+<!-- ##### USER_FUNCTION GstPadGetRangeFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@length: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_event_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@event: 
+
+
+<!-- ##### USER_FUNCTION GstPadEventFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_link_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@link: 
+
+
+<!-- ##### USER_FUNCTION GstPadLinkFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@peer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_unlink_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@unlink: 
+
+
+<!-- ##### USER_FUNCTION GstPadUnlinkFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### FUNCTION gst_pad_accept_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_acceptcaps_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@acceptcaps: 
+
+
+<!-- ##### USER_FUNCTION GstPadAcceptCapsFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_getcaps_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@getcaps: 
+
+
+<!-- ##### USER_FUNCTION GstPadGetCapsFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_proxy_getcaps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_setcaps_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@setcaps: 
+
+
+<!-- ##### USER_FUNCTION GstPadSetCapsFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_proxy_setcaps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_fixate_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+
+
+<!-- ##### FUNCTION gst_pad_set_fixatecaps_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@fixatecaps: 
+
+
+<!-- ##### USER_FUNCTION GstPadFixateCapsFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+
+
+<!-- ##### FUNCTION gst_pad_get_fixed_caps_func ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_peer_accept_caps ##### -->
+<para>
+
+</para>
+
+@pad: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_activate_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@activate: 
+
+
+<!-- ##### USER_FUNCTION GstPadActivateFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_activatepush_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@activatepush: 
+
+
+<!-- ##### FUNCTION gst_pad_set_activatepull_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@activatepull: 
+
+
+<!-- ##### USER_FUNCTION GstPadActivateModeFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@active: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_push ##### -->
+<para>
+
+</para>
+
+@pad: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_push_event ##### -->
+<para>
+
+</para>
+
+@pad: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_check_pull_range ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_pull_range ##### -->
+<para>
+
+</para>
+
+@pad: 
+@offset: 
+@size: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_activate_pull ##### -->
+<para>
+
+</para>
+
+@pad: 
+@active: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_activate_push ##### -->
+<para>
+
+</para>
+
+@pad: 
+@active: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_send_event ##### -->
+<para>
+
+</para>
+
+@pad: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_event_default ##### -->
+<para>
+
+</para>
+
+@pad: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query ##### -->
+<para>
+
+</para>
+
+@pad: 
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_peer_query ##### -->
+<para>
+
+</para>
+
+@pad: 
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_default ##### -->
+<para>
+
+</para>
+
+@pad: 
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_position ##### -->
+<para>
+
+</para>
+
+@pad: 
+@format: 
+@cur: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_duration ##### -->
+<para>
+
+</para>
+
+@pad: 
+@format: 
+@duration: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_convert ##### -->
+<para>
+
+</para>
+
+@pad: 
+@src_format: 
+@src_val: 
+@dest_format: 
+@dest_val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_peer_position ##### -->
+<para>
+
+</para>
+
+@pad: 
+@format: 
+@cur: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_peer_duration ##### -->
+<para>
+
+</para>
+
+@pad: 
+@format: 
+@duration: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_query_peer_convert ##### -->
+<para>
+
+</para>
+
+@pad: 
+@src_format: 
+@src_val: 
+@dest_format: 
+@dest_val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_query_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@query: 
+
+
+<!-- ##### USER_FUNCTION GstPadQueryFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_query_type_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@type_func: 
+
+
+<!-- ##### USER_FUNCTION GstPadQueryTypeFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_query_types ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_query_types_default ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_internal_link_function ##### -->
+<para>
+
+</para>
+
+@pad: 
+@intlink: 
+
+
+<!-- ##### USER_FUNCTION GstPadIntLinkFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_internal_links ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_get_internal_links_default ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_load_and_link ##### -->
+<para>
+
+</para>
+
+@self: 
+@parent: 
+
+
+<!-- ##### FUNCTION gst_pad_dispatcher ##### -->
+<para>
+
+</para>
+
+@pad: 
+@dispatch: 
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GstPadDispatcherFunction ##### -->
+<para>
+
+</para>
+
+@pad: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_element_private ##### -->
+<para>
+
+</para>
+
+@pad: 
+@priv: 
+
+
+<!-- ##### FUNCTION gst_pad_get_element_private ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_chain ##### -->
+<para>
+
+</para>
+
+@pad: 
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_start_task ##### -->
+<para>
+
+</para>
+
+@pad: 
+@func: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_pause_task ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_stop_task ##### -->
+<para>
+
+</para>
+
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_set_active ##### -->
+<para>
+
+</para>
+
+@pad: 
+@active: 
+@Returns: 
+
+
+<!-- ##### MACRO GST_PAD_GET_STREAM_LOCK ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_PAD_STREAM_LOCK ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_PAD_STREAM_LOCK_FULL ##### -->
+<para>
+
+</para>
+
+@pad: 
+@t: 
+
+
+<!-- ##### MACRO GST_PAD_STREAM_TRYLOCK ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_PAD_STREAM_UNLOCK ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_PAD_STREAM_UNLOCK_FULL ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_FLOW_IS_FATAL ##### -->
+<para>
+
+</para>
+
+@ret: 
+
+
+<!-- ##### MACRO GST_FLOW_IS_SUCCESS ##### -->
+<para>
+
+</para>
+
+@ret: 
+
+

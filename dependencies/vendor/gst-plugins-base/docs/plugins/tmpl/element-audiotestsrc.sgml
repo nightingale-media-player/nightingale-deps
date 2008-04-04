@@ -1,0 +1,70 @@
+<!-- ##### SECTION Title ##### -->
+audiotestsrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Creates audio test signals of given frequency and volume
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audiotestsrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioTestSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioTestSrc:freq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioTestSrc:is-live ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioTestSrc:samplesperbuffer ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioTestSrc:timestamp-offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioTestSrc:volume ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioTestSrc:wave ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstAudioTestSrcWave ##### -->
+<para>
+
+</para>
+
+@GST_AUDIO_TEST_SRC_WAVE_SINE: 
+@GST_AUDIO_TEST_SRC_WAVE_SQUARE: 
+@GST_AUDIO_TEST_SRC_WAVE_SAW: 
+@GST_AUDIO_TEST_SRC_WAVE_TRIANGLE: 
+@GST_AUDIO_TEST_SRC_WAVE_SILENCE: 
+@GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE: 
+@GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE: 
+@GST_AUDIO_TEST_SRC_WAVE_SINE_TAB: 
+

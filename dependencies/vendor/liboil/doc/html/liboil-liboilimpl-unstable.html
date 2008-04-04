@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>OilFunctionImpl</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="Liboil Reference Manual">
+<link rel="up" href="ch02.html" title="Liboil Unstable API">
+<link rel="prev" href="liboil-liboilclass-unstable.html" title="OilFunctionClass">
+<link rel="next" href="liboil-liboilparameter.html" title="OilParameter">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="Liboil Stable API">
+<link rel="chapter" href="ch02.html" title="Liboil Unstable API">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="liboil-liboilclass-unstable.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Liboil Reference Manual</th>
+<td><a accesskey="n" href="liboil-liboilparameter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2578036" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2613064" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="liboil-liboilimpl-unstable"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2578036"></a><span class="refentrytitle">OilFunctionImpl</span>
+</h2>
+<p>OilFunctionImpl &#8212; Functions for manipulating function implementations.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+                    <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a>;
+<a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a>*    <a href="liboil-liboilimpl-unstable.html#oil-impl-get-by-index">oil_impl_get_by_index</a>               (int i);
+int                 <a href="liboil-liboilimpl-unstable.html#oil-impl-is-runnable">oil_impl_is_runnable</a>                (<a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);
+enum                <a href="liboil-liboilimpl-unstable.html#OilImplFlag">OilImplFlag</a>;
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-CPU-FLAG-MASK:CAPS">OIL_CPU_FLAG_MASK</a>
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-FULL:CAPS">OIL_DEFINE_IMPL_FULL</a>                (function,klass,flags)
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL:CAPS">OIL_DEFINE_IMPL</a>                     (function,klass)
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-REF:CAPS">OIL_DEFINE_IMPL_REF</a>                 (function,klass)
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-ASM:CAPS">OIL_DEFINE_IMPL_ASM</a>                 (function,klass)
+#define             <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-DEPENDS:CAPS">OIL_DEFINE_IMPL_DEPENDS</a>             (function,klass,...)
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613064"></a><h2>Description</h2>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613083"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2613094"></a><h3>
+<a name="OilFunctionImpl"></a>OilFunctionImpl</h3>
+<a class="indexterm" name="id2613107"></a><pre class="programlisting">typedef struct {
+} OilFunctionImpl;
+</pre>
+<p>
+An opaque structure representing a function implementation.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2613127"></a><h3>
+<a name="oil-impl-get-by-index"></a>oil_impl_get_by_index ()</h3>
+<a class="indexterm" name="id2613138"></a><pre class="programlisting"><a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a>*    oil_impl_get_by_index               (int i);</pre>
+<p>
+Returns a pointer to the function implementation with index <em class="parameter"><code>i</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>i</code></em>&#160;:</span></td>
+<td> index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to a function implementation structure
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2650272"></a><h3>
+<a name="oil-impl-is-runnable"></a>oil_impl_is_runnable ()</h3>
+<a class="indexterm" name="id2650284"></a><pre class="programlisting">int                 oil_impl_is_runnable                (<a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);</pre>
+<p>
+Determines whether the function implementation given by <em class="parameter"><code>impl</code></em>
+can be executed by the current CPU.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>impl</code></em>&#160;:</span></td>
+<td> an <em class="parameter"><code>OilFunctionImpl</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> 1 if the implementation can be executed, otherwise 0
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2650358"></a><h3>
+<a name="OilImplFlag"></a>enum OilImplFlag</h3>
+<a class="indexterm" name="id2650370"></a><pre class="programlisting">typedef enum {
+  OIL_IMPL_FLAG_REF = (1&lt;&lt;0),
+  OIL_IMPL_FLAG_OPT = (1&lt;&lt;1),
+  OIL_IMPL_FLAG_ASM = (1&lt;&lt;2),
+  OIL_IMPL_FLAG_DISABLED = (1&lt;&lt;3),
+  OIL_IMPL_FLAG_CMOV = (1&lt;&lt;16),
+  OIL_IMPL_FLAG_MMX = (1&lt;&lt;17),
+  OIL_IMPL_FLAG_SSE = (1&lt;&lt;18),
+  OIL_IMPL_FLAG_MMXEXT = (1&lt;&lt;19),
+  OIL_IMPL_FLAG_SSE2 = (1&lt;&lt;20),
+  OIL_IMPL_FLAG_3DNOW = (1&lt;&lt;21),
+  OIL_IMPL_FLAG_3DNOWEXT = (1&lt;&lt;22),
+  OIL_IMPL_FLAG_SSE3 = (1&lt;&lt;23),
+  OIL_IMPL_FLAG_ALTIVEC = (1&lt;&lt;24),
+  OIL_IMPL_FLAG_EDSP = (1&lt;&lt;25),
+  OIL_IMPL_FLAG_ARM6 = (1&lt;&lt;26),
+  OIL_IMPL_FLAG_VFP = (1&lt;&lt;27),
+  OIL_IMPL_FLAG_SSSE3 = (1&lt;&lt;28)
+} OilImplFlag;
+</pre>
+<p>
+Implementation flags.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_REF</code></em>: is the reference implementation for the class.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_OPT</code></em>: was compiled with alternate CFLAGS as specified
+by --enable-alternate-optimization.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_ASM</code></em>: is written in assembly code.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_DISABLED</code></em>: is disabled.  This can be set either in the
+source code or during library initialization.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_CMOV</code></em>: uses the i386 instruction cmov or its variants.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_MMX</code></em>: uses MMX instructions.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE</code></em>: uses SSE instructions.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_MMXEXT</code></em>: uses AMD's extended MMX instructions.  These
+are a subset of what Intel calls SSE2.  If an implementation uses
+only AMD's extended MMX instructions, it should set this flag, and
+not <em class="parameter"><code>OIL_IMPL_FLAG_SSE2</code></em>.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE2</code></em>: uses SSE2 instructions.  This flag implies
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE</code></em> and <em class="parameter"><code>OIL_IMPL_FLAG_MMXEXT</code></em>.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_3DNOW</code></em>: uses 3DNow! instructions.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_3DNOWEXT</code></em>: uses extended 3DNow! instructions.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE3</code></em>: uses SSE3 instructions.  This flag implies
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE2</code></em>.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_SSSE3</code></em>: uses SSSE3 instructions.  This flag implies
+<em class="parameter"><code>OIL_IMPL_FLAG_SSE3</code></em>.
+</p>
+<p>
+<em class="parameter"><code>OIL_IMPL_FLAG_ALTIVEC</code></em>: uses Altivec instructions.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2652262"></a><h3>
+<a name="OIL-CPU-FLAG-MASK:CAPS"></a>OIL_CPU_FLAG_MASK</h3>
+<a class="indexterm" name="id2652273"></a><pre class="programlisting">#define OIL_CPU_FLAG_MASK 0xffff0000
+</pre>
+<p>
+Mask describing which bits in <a href="liboil-liboilimpl-unstable.html#OilImplFlag"><span class="type">OilImplFlag</span></a> depend on the current
+CPU.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2652299"></a><h3>
+<a name="OIL-DEFINE-IMPL-FULL:CAPS"></a>OIL_DEFINE_IMPL_FULL()</h3>
+<a class="indexterm" name="id2652310"></a><pre class="programlisting">#define             OIL_DEFINE_IMPL_FULL(function,klass,flags)</pre>
+<p>
+Defines a <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl"><span class="type">OilFunctionImpl</span></a> structure for the function <em class="parameter"><code>function</code></em>
+and class <em class="parameter"><code>klass</code></em>.  CPU-dependent flags in <em class="parameter"><code>flags</code></em> will indicate
+that this implementation requires the given CPU flags.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>function</code></em>&#160;:</span></td>
+<td> name of function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td> name of class to declare (without oil_ prefix)
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> implementation flags and CPU requirements
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611213"></a><h3>
+<a name="OIL-DEFINE-IMPL:CAPS"></a>OIL_DEFINE_IMPL()</h3>
+<a class="indexterm" name="id2611225"></a><pre class="programlisting">#define             OIL_DEFINE_IMPL(function,klass)</pre>
+<p>
+Shorthand for defining a C implementation.  See <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-FULL:CAPS"><code class="function">OIL_DEFINE_IMPL_FULL()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>function</code></em>&#160;:</span></td>
+<td> name of function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td> name of class to declare (without oil_ prefix)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611289"></a><h3>
+<a name="OIL-DEFINE-IMPL-REF:CAPS"></a>OIL_DEFINE_IMPL_REF()</h3>
+<a class="indexterm" name="id2611300"></a><pre class="programlisting">#define             OIL_DEFINE_IMPL_REF(function,klass)</pre>
+<p>
+Shorthand for defining a reference implementation.  See <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-FULL:CAPS"><code class="function">OIL_DEFINE_IMPL_FULL()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>function</code></em>&#160;:</span></td>
+<td> name of function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td> name of class to declare (without oil_ prefix)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611364"></a><h3>
+<a name="OIL-DEFINE-IMPL-ASM:CAPS"></a>OIL_DEFINE_IMPL_ASM()</h3>
+<a class="indexterm" name="id2611375"></a><pre class="programlisting">#define             OIL_DEFINE_IMPL_ASM(function,klass)</pre>
+<p>
+Shorthand for defining an implementation written in inline
+assembly code.  See <a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-FULL:CAPS"><code class="function">OIL_DEFINE_IMPL_FULL()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>function</code></em>&#160;:</span></td>
+<td> name of function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td> name of class to declare (without oil_ prefix)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611439"></a><h3>
+<a name="OIL-DEFINE-IMPL-DEPENDS:CAPS"></a>OIL_DEFINE_IMPL_DEPENDS()</h3>
+<a class="indexterm" name="id2611450"></a><pre class="programlisting">#define             OIL_DEFINE_IMPL_DEPENDS(function,klass,...)</pre>
+<p>
+Shorthand for defining an implementation that uses another Liboil
+function class.  This is not currently used.  See
+<a href="liboil-liboilimpl-unstable.html#OIL-DEFINE-IMPL-FULL:CAPS"><code class="function">OIL_DEFINE_IMPL_FULL()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>function</code></em>&#160;:</span></td>
+<td> name of function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td> name of class to declare (without oil_ prefix)
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> other classes this implementation uses
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

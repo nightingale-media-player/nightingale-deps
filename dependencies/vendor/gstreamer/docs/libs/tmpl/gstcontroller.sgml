@@ -1,0 +1,264 @@
+<!-- ##### SECTION Title ##### -->
+GstController
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstController ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstController:control-rate ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gst_controller_init ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_new ##### -->
+<para>
+
+</para>
+
+@object: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_new_list ##### -->
+<para>
+
+</para>
+
+@object: 
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_new_valist ##### -->
+<para>
+
+</para>
+
+@object: 
+@var_args: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_remove_properties ##### -->
+<para>
+
+</para>
+
+@self: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_remove_properties_list ##### -->
+<para>
+
+</para>
+
+@self: 
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_remove_properties_valist ##### -->
+<para>
+
+</para>
+
+@self: 
+@var_args: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_set_disabled ##### -->
+<para>
+
+</para>
+
+@self: 
+@disabled: 
+
+
+<!-- ##### FUNCTION gst_controller_set_property_disabled ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@disabled: 
+
+
+<!-- ##### FUNCTION gst_controller_suggest_next_sync ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_sync_values ##### -->
+<para>
+
+</para>
+
+@self: 
+@timestamp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_get_control_source ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_set_control_source ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@csource: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_get ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@timestamp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_get_value_arrays ##### -->
+<para>
+
+</para>
+
+@self: 
+@timestamp: 
+@value_arrays: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_get_value_array ##### -->
+<para>
+
+</para>
+
+@self: 
+@timestamp: 
+@value_array: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_set ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@timestamp: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_set_from_list ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@timedvalues: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_unset ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@timestamp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_unset_all ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_get_all ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_controller_set_interpolation_mode ##### -->
+<para>
+
+</para>
+
+@self: 
+@property_name: 
+@mode: 
+@Returns: 
+
+
+<!-- ##### MACRO GST_PARAM_CONTROLLABLE ##### -->
+<para>
+
+</para>
+
+
+

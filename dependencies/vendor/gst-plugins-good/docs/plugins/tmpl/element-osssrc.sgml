@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+osssrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Capture from a sound card via OSS
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-osssrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstOssSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstOssSrc:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstOssSrc:device-name ##### -->
+<para>
+
+</para>
+

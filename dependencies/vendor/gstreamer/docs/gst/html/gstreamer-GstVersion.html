@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstVersion</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="gstreamer-GstValue.html" title="GstValue">
+<link rel="next" href="GstXML.html" title="GstXML">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-GstValue.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="GstXML.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2907360" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2907409" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-GstVersion"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2907360"></a><span class="refentrytitle">GstVersion</span>
+</h2>
+<p>GstVersion &#8212; GStreamer version macros.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+#define             <a href="gstreamer-GstVersion.html#GST-VERSION-MAJOR:CAPS">GST_VERSION_MAJOR</a>
+#define             <a href="gstreamer-GstVersion.html#GST-VERSION-MINOR:CAPS">GST_VERSION_MINOR</a>
+#define             <a href="gstreamer-GstVersion.html#GST-VERSION-MICRO:CAPS">GST_VERSION_MICRO</a>
+#define             <a href="gstreamer-GstVersion.html#GST-VERSION-NANO:CAPS">GST_VERSION_NANO</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2907409"></a><h2>Description</h2>
+<p>
+Use the GST_VERSION_* macros e.g. when defining own plugins. The GStreamer
+runtime checks if these plugin and core version match and refuses to use a
+plugin compiled against a different version of GStreamer.
+You can also use the macros to keep the GStreamer version information in
+your application.
+</p>
+<p>
+Use the <a href="gstreamer-Gst.html#gst-version"><code class="function">gst_version()</code></a> function if you want to know which version of
+GStreamer you are currently linked against.
+</p>
+<p>
+The version macros get defined by including "gst/gst.h".</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2907451"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2907461"></a><h3>
+<a name="GST-VERSION-MAJOR:CAPS"></a>GST_VERSION_MAJOR</h3>
+<a class="indexterm" name="id2907474"></a><pre class="programlisting">#define GST_VERSION_MAJOR (0)
+</pre>
+<p>
+The major version of GStreamer at compile time:</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2907493"></a><h3>
+<a name="GST-VERSION-MINOR:CAPS"></a>GST_VERSION_MINOR</h3>
+<a class="indexterm" name="id2907507"></a><pre class="programlisting">#define GST_VERSION_MINOR (10)
+</pre>
+<p>
+The minor version of GStreamer at compile time:</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2907526"></a><h3>
+<a name="GST-VERSION-MICRO:CAPS"></a>GST_VERSION_MICRO</h3>
+<a class="indexterm" name="id2907539"></a><pre class="programlisting">#define GST_VERSION_MICRO (17)
+</pre>
+<p>
+The micro version of GStreamer at compile time:</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2907559"></a><h3>
+<a name="GST-VERSION-NANO:CAPS"></a>GST_VERSION_NANO</h3>
+<a class="indexterm" name="id2907571"></a><pre class="programlisting">#define GST_VERSION_NANO (0)
+</pre>
+<p>
+The nano version of GStreamer at compile time:
+Actual releases have 0, CVS versions have 1, prerelease versions have 2-...</p>
+<p>
+
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

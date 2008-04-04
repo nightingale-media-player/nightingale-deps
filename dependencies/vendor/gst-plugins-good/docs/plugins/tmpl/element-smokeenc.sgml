@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+smokeenc
+
+<!-- ##### SECTION Short_Description ##### -->
+Encode images into the Smoke format
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-smokeenc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstSmokeEnc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSmokeEnc:keyframe ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSmokeEnc:qmax ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSmokeEnc:qmin ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSmokeEnc:threshold ##### -->
+<para>
+
+</para>
+

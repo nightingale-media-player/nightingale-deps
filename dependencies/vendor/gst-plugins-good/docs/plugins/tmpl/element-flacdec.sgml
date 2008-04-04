@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+flacdec
+
+<!-- ##### SECTION Short_Description ##### -->
+Decodes FLAC lossless audio streams
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-flacdec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstFlacDec ##### -->
+<para>
+
+</para>
+
+

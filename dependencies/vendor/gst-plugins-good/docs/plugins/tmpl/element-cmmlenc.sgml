@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+cmmlenc
+
+<!-- ##### SECTION Short_Description ##### -->
+Encodes CMML streams
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-cmmlenc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstCmmlEnc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstCmmlEnc:granule-rate-denominator ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCmmlEnc:granule-rate-numerator ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCmmlEnc:granule-shift ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,86 @@
+<!-- ##### SECTION Title ##### -->
+mythtvsrc
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-mythtvsrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMythtvSrc ##### -->
+<para>
+
+</para>
+
+@element: 
+@file: 
+@spawn_livetv: 
+@backend_info: 
+@state: 
+@uri_name: 
+@user_agent: 
+@live_chain_id: 
+@mythtv_version: 
+@content_size: 
+@prev_content_size: 
+@content_size_last: 
+@bytes_read: 
+@read_offset: 
+@eos: 
+@do_start: 
+@unique_setup: 
+@live_tv: 
+@enable_timing_position: 
+@live_tv_id: 
+@channel_name: 
+@mode: 
+@mythtv_caps: 
+@update_prog_chain: 
+@wait_to_transfer: 
+
+<!-- ##### ARG GstMythtvSrc:location ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-channel ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-enable-timing-position ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-live ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-live-chainid ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-live-id ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMythtvSrc:mythtv-version ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,82 @@
+
+Release notes for GStreamer 0.10.17 "Due Negligence"
+        
+
+
+The GStreamer team is proud to announce a new release
+in the 0.10.x stable series of the
+core of the GStreamer streaming media framework.
+
+
+The 0.10.x series is a stable series targeted at end users.
+It is not API or ABI compatible with the stable 0.8.x series.
+It is, however, parallel installable with the 0.8.x series.
+
+
+The 0.10.x series has been reworked for threadsafety.  It also features
+various feature additions and enhancements.
+
+
+This module, gstreamer, only contains core functionality.
+For actual media playback, you will need other modules.
+
+gst-plugins-base
+contains a basic set of well-supported plug-ins
+gst-plugins-good
+contains a set of well-supported plug-ins under our preferred license
+gst-plugins-ugly
+contains a set of well-supported plug-ins, but might pose problems for
+    distributors
+gst-plugins-bad
+contains a set of less supported plug-ins that haven't passed the
+    rigorous quality testing we expect
+
+
+
+  
+
+Features of this release
+    
+      * Fix compilation on environments that have POSIX timers but not monotonic clocks
+
+Bugs fixed in this release
+     
+      * 512715 : gst/gstutils.c and HAVE_MONOTONIC_CLOCK
+
+Download
+
+You can find source releases of gstreamer in the download directory:
+http://gstreamer.freedesktop.org/src/gstreamer/
+
+GStreamer Homepage
+
+More details can be found on the project's website:
+http://gstreamer.freedesktop.org/
+
+Support and Bugs
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Developers
+
+CVS is hosted on cvs.freedesktop.org.
+All code is in CVS and can be checked out from there.
+Interested developers of the core library, plug-ins, and applications should
+subscribe to the gstreamer-devel list. If there is sufficient interest we
+will create more lists as necessary.
+
+        
+Applications
+
+Applications ported to GStreamer 0.10 include Totem, RhythmBox, Sound-Juicer,
+Gnome Media, Flumotion, Amarok, Jamboree, Pitivi, Istanbul, AnnoAmp, Elisa, and others.
+Let us know if you want to be added to this list.
+
+  
+Contributors to this release
+    
+      * Jan Schmidt
+      * Cygwin Ports Maintainer
+      * Sebastian Dröge
+ 

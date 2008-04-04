@@ -1,0 +1,82 @@
+--- gst-plugins-good-0.10.7/gst/audiofx/audiochebband.c	2008-02-11 01:13:59.000000000 -0800
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/gst/audiofx/audiochebband.c	2008-03-12 11:16:38.000000000 -0700
+@@ -85,6 +85,27 @@
+ 
+ #include <math.h>
+ 
++#ifdef __MSC_VER
++static inline gdouble
++asinh (gdouble x) {
++  return log(x + sqrt (x * x + 1));
++}
++#endif
++
++#ifdef __MSC_VER
++static inline gdouble
++sinh (gdouble x) {
++  return 0.5 * (exp(x) - exp(-x));
++}
++#endif
++
++#ifdef __MSC_VER
++static inline gdouble
++cosh (gdouble x) {
++  return 0.5 * (exp(x) + exp(-x));
++}
++#endif
++
+ #include "audiochebband.h"
+ 
+ #define GST_CAT_DEFAULT gst_audio_cheb_band_debug
+diff -ur gst-plugins-good-0.10.7/gst/audiofx/audiocheblimit.c songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/gst/audiofx/audiocheblimit.c
+--- gst-plugins-good-0.10.7/gst/audiofx/audiocheblimit.c	2008-02-11 01:13:59.000000000 -0800
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/gst/audiofx/audiocheblimit.c	2008-03-12 11:16:38.000000000 -0700
+@@ -81,6 +81,27 @@
+ 
+ #include <math.h>
+ 
++#ifdef __MSC_VER
++static inline gdouble
++asinh (gdouble x) {
++  return log(x + sqrt (x * x + 1));
++}
++#endif
++
++#ifdef __MSC_VER
++static inline gdouble
++sinh (gdouble x) {
++  return 0.5 * (exp(x) - exp(-x));
++}
++#endif
++
++#ifdef __MSC_VER
++static inline gdouble
++cosh (gdouble x) {
++  return 0.5 * (exp(x) + exp(-x));
++}
++#endif
++
+ #include "audiocheblimit.h"
+ 
+ #define GST_CAT_DEFAULT gst_audio_cheb_limit_debug
+--- gst-plugins-good-0.10.7/gst/debug/gstnavigationtest.c	2007-07-11 15:31:06.000000000 -0700
++++ songbird/gst-sbird/trunk/dependencies/vendor/gst-plugins-good/gst/debug/gstnavigationtest.c	2008-03-12 11:16:38.000000000 -0700
+@@ -26,6 +26,18 @@
+ #include <string.h>
+ #include <math.h>
+ 
++#ifdef __MSC_VER
++static inline gdouble
++rint(double x) {
++  gint xi = (int) x;
++  gdouble remainder = x - (gdouble) xi;
++
++  if (remainder < 0.5)
++    return (x - remainder);
++  return (x - remainder + 1.0);
++}
++#endif
++
+ #include <gst/video/video.h>
+ 
+ GST_DEBUG_CATEGORY_STATIC (navigationtest_debug);

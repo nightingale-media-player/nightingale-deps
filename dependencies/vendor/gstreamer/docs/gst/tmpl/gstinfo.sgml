@@ -1,0 +1,635 @@
+<!-- ##### SECTION Title ##### -->
+GstInfo
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### ENUM GstDebugLevel ##### -->
+<para>
+
+</para>
+
+@GST_LEVEL_NONE: 
+@GST_LEVEL_ERROR: 
+@GST_LEVEL_WARNING: 
+@GST_LEVEL_INFO: 
+@GST_LEVEL_DEBUG: 
+@GST_LEVEL_LOG: 
+@GST_LEVEL_COUNT: 
+
+<!-- ##### MACRO GST_LEVEL_DEFAULT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM GstDebugColorFlags ##### -->
+<para>
+
+</para>
+
+@GST_DEBUG_FG_BLACK: 
+@GST_DEBUG_FG_RED: 
+@GST_DEBUG_FG_GREEN: 
+@GST_DEBUG_FG_YELLOW: 
+@GST_DEBUG_FG_BLUE: 
+@GST_DEBUG_FG_MAGENTA: 
+@GST_DEBUG_FG_CYAN: 
+@GST_DEBUG_FG_WHITE: 
+@GST_DEBUG_BG_BLACK: 
+@GST_DEBUG_BG_RED: 
+@GST_DEBUG_BG_GREEN: 
+@GST_DEBUG_BG_YELLOW: 
+@GST_DEBUG_BG_BLUE: 
+@GST_DEBUG_BG_MAGENTA: 
+@GST_DEBUG_BG_CYAN: 
+@GST_DEBUG_BG_WHITE: 
+@GST_DEBUG_BOLD: 
+@GST_DEBUG_UNDERLINE: 
+
+<!-- ##### STRUCT GstDebugCategory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstDebugGraphDetails ##### -->
+<para>
+
+</para>
+
+@GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE: 
+@GST_DEBUG_GRAPH_SHOW_CAPS_DETAILS: 
+@GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS: 
+@GST_DEBUG_GRAPH_SHOW_STATES: 
+@GST_DEBUG_GRAPH_SHOW_ALL: 
+
+<!-- ##### MACRO GST_STR_NULL ##### -->
+<para>
+
+</para>
+
+@str: 
+
+
+<!-- ##### MACRO GST_DEBUG_PAD_NAME ##### -->
+<para>
+
+</para>
+
+@pad: 
+
+
+<!-- ##### MACRO GST_FUNCTION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION GstLogFunction ##### -->
+<para>
+
+</para>
+
+@category: 
+@level: 
+@file: 
+@function: 
+@line: 
+@object: 
+@message: 
+@data: 
+
+
+<!-- ##### FUNCTION gst_debug_log ##### -->
+<para>
+
+</para>
+
+@category: 
+@level: 
+@file: 
+@function: 
+@line: 
+@object: 
+@format: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION gst_debug_log_valist ##### -->
+<para>
+
+</para>
+
+@category: 
+@level: 
+@file: 
+@function: 
+@line: 
+@object: 
+@format: 
+@args: 
+
+
+<!-- ##### FUNCTION gst_debug_message_get ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_log_default ##### -->
+<para>
+
+</para>
+
+@category: 
+@level: 
+@file: 
+@function: 
+@line: 
+@object: 
+@message: 
+@unused: 
+
+
+<!-- ##### FUNCTION gst_debug_level_get_name ##### -->
+<para>
+
+</para>
+
+@level: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_add_log_function ##### -->
+<para>
+
+</para>
+
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION gst_debug_remove_log_function ##### -->
+<para>
+
+</para>
+
+@func: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_remove_log_function_by_data ##### -->
+<para>
+
+</para>
+
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_set_active ##### -->
+<para>
+
+</para>
+
+@active: 
+
+
+<!-- ##### FUNCTION gst_debug_is_active ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_set_colored ##### -->
+<para>
+
+</para>
+
+@colored: 
+
+
+<!-- ##### FUNCTION gst_debug_is_colored ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_set_default_threshold ##### -->
+<para>
+
+</para>
+
+@level: 
+
+
+<!-- ##### FUNCTION gst_debug_get_default_threshold ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_set_threshold_for_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@level: 
+
+
+<!-- ##### FUNCTION gst_debug_unset_threshold_for_name ##### -->
+<para>
+
+</para>
+
+@name: 
+
+
+<!-- ##### MACRO GST_DEBUG_CATEGORY ##### -->
+<para>
+
+</para>
+
+@cat: 
+
+
+<!-- ##### MACRO GST_DEBUG_CATEGORY_EXTERN ##### -->
+<para>
+
+</para>
+
+@cat: 
+
+
+<!-- ##### MACRO GST_DEBUG_CATEGORY_STATIC ##### -->
+<para>
+
+</para>
+
+@cat: 
+
+
+<!-- ##### MACRO GST_DEBUG_CATEGORY_INIT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@name: 
+@color: 
+@description: 
+
+
+<!-- ##### FUNCTION gst_debug_category_free ##### -->
+<para>
+
+</para>
+
+@category: 
+
+
+<!-- ##### FUNCTION gst_debug_category_set_threshold ##### -->
+<para>
+
+</para>
+
+@category: 
+@level: 
+
+
+<!-- ##### FUNCTION gst_debug_category_reset_threshold ##### -->
+<para>
+
+</para>
+
+@category: 
+
+
+<!-- ##### FUNCTION gst_debug_category_get_threshold ##### -->
+<para>
+
+</para>
+
+@category: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_category_get_name ##### -->
+<para>
+
+</para>
+
+@category: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_category_get_color ##### -->
+<para>
+
+</para>
+
+@category: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_category_get_description ##### -->
+<para>
+
+</para>
+
+@category: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_get_all_categories ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_debug_construct_term_color ##### -->
+<para>
+
+</para>
+
+@colorinfo: 
+@Returns: 
+
+
+<!-- ##### MACRO GST_CAT_LEVEL_LOG ##### -->
+<para>
+
+</para>
+
+@cat: 
+@level: 
+@object: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_ERROR_OBJECT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_WARNING_OBJECT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_INFO_OBJECT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_DEBUG_OBJECT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_LOG_OBJECT ##### -->
+<para>
+
+</para>
+
+@cat: 
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_ERROR ##### -->
+<para>
+
+</para>
+
+@cat: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_WARNING ##### -->
+<para>
+
+</para>
+
+@cat: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_INFO ##### -->
+<para>
+
+</para>
+
+@cat: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_DEBUG ##### -->
+<para>
+
+</para>
+
+@cat: 
+@...: 
+
+
+<!-- ##### MACRO GST_CAT_LOG ##### -->
+<para>
+
+</para>
+
+@cat: 
+@...: 
+
+
+<!-- ##### MACRO GST_ERROR_OBJECT ##### -->
+<para>
+
+</para>
+
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_WARNING_OBJECT ##### -->
+<para>
+
+</para>
+
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_INFO_OBJECT ##### -->
+<para>
+
+</para>
+
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_DEBUG_OBJECT ##### -->
+<para>
+
+</para>
+
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_LOG_OBJECT ##### -->
+<para>
+
+</para>
+
+@obj: 
+@...: 
+
+
+<!-- ##### MACRO GST_ERROR ##### -->
+<para>
+
+</para>
+
+@...: 
+
+
+<!-- ##### MACRO GST_WARNING ##### -->
+<para>
+
+</para>
+
+@...: 
+
+
+<!-- ##### MACRO GST_INFO ##### -->
+<para>
+
+</para>
+
+@...: 
+
+
+<!-- ##### MACRO GST_DEBUG ##### -->
+<para>
+
+</para>
+
+@...: 
+
+
+<!-- ##### MACRO GST_LOG ##### -->
+<para>
+
+</para>
+
+@...: 
+
+
+<!-- ##### MACRO GST_DEBUG_FUNCPTR ##### -->
+<para>
+
+</para>
+
+@ptr: 
+
+
+<!-- ##### MACRO GST_DEBUG_FUNCPTR_NAME ##### -->
+<para>
+
+</para>
+
+@ptr: 
+
+
+<!-- ##### MACRO GST_DEBUG_BIN_TO_DOT_FILE ##### -->
+<para>
+
+</para>
+
+@bin: 
+@details: 
+@file_name: 
+
+
+<!-- ##### MACRO GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS ##### -->
+<para>
+
+</para>
+
+@bin: 
+@details: 
+@file_name: 
+
+
+<!-- ##### FUNCTION gst_debug_print_stack_trace ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_TIME_FORMAT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_TIME_ARGS ##### -->
+<para>
+
+</para>
+
+@t: 
+
+

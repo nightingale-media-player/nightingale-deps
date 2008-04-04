@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+wildmidi
+
+<!-- ##### SECTION Short_Description ##### -->
+Midi Synthesizer Element
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-wildmidi-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstWildmidi ##### -->
+<para>
+
+</para>
+
+@element: 
+@sinkpad: 
+@srcpad: 
+@initialized: 
+@mididata_size: 
+@mididata_offset: 
+@mididata: 
+@mididata_filled: 
+@song: 
+@o_new_segment: 
+@o_segment_changed: 
+@o_seek: 
+@o_segment: 
+@o_len: 
+@bytes_per_frame: 
+@time_per_frame: 
+@accurate_seek: 
+@high_quality: 
+@linear_volume: 
+@out_caps: 
+
+<!-- ##### ARG GstWildmidi:high-quality ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstWildmidi:linear-volume ##### -->
+<para>
+
+</para>
+

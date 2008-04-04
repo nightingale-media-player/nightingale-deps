@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>videoparse</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-videomark.html" title="videomark">
+<link rel="next" href="gst-plugins-bad-plugins-wildmidi.html" title="wildmidi">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-videomark.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-wildmidi.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2615738" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2615858" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2614655" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2567171" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-videoparse"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2615738"></a><span class="refentrytitle">videoparse</span>
+</h2>
+<p>videoparse &#8212; parses a byte stream into video frames</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstVideoParse"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse-struct">GstVideoParse</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2614655"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstRawParse
+                     +----GstVideoParse
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2567171"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--alpha-mask">alpha-mask</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--blue-mask">blue-mask</a>"                gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--bpp">bpp</a>"                      gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--depth">depth</a>"                    gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--endianness">endianness</a>"               GstVideoParseEndianness  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--format">format</a>"                   GstVideoParseFormat   : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--framerate">framerate</a>"                GstFraction           : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--green-mask">green-mask</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--height">height</a>"                   gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--pixel-aspect-ratio">pixel-aspect-ratio</a>"       GstFraction           : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--red-mask">red-mask</a>"                 gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-videoparse.html#GstVideoParse--width">width</a>"                    gint                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2615858"></a><h2>Description</h2>
+<p>
+Converts a byte stream into video frames.</p>
+<div class="refsect2" lang="en">
+<a name="id2615874"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-rawparse.html#plugin-rawparse">rawparse</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>David Schleef &lt;ds@schleef.org&gt;, Sebastian Dr&#246;ge &lt;slomo@circular-chaos.org&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12, YUY2, UYVY }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb; video/x-raw-gray</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613938"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2613949"></a><h3>
+<a name="GstVideoParse-struct"></a>GstVideoParse</h3>
+<a class="indexterm" name="id2613961"></a><pre class="programlisting">typedef struct _GstVideoParse GstVideoParse;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613979"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2613989"></a><h3>
+<a name="GstVideoParse--alpha-mask"></a>The "<code class="literal">alpha-mask</code>" property</h3>
+<a class="indexterm" name="id2614003"></a><pre class="programlisting">  "alpha-mask"               gint                  : Read / Write</pre>
+<p>Alpha mask of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614031"></a><h3>
+<a name="GstVideoParse--blue-mask"></a>The "<code class="literal">blue-mask</code>" property</h3>
+<a class="indexterm" name="id2614045"></a><pre class="programlisting">  "blue-mask"                gint                  : Read / Write</pre>
+<p>Blue mask of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614073"></a><h3>
+<a name="GstVideoParse--bpp"></a>The "<code class="literal">bpp</code>" property</h3>
+<a class="indexterm" name="id2614088"></a><pre class="programlisting">  "bpp"                      gint                  : Read / Write</pre>
+<p>Bits per pixel of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614116"></a><h3>
+<a name="GstVideoParse--depth"></a>The "<code class="literal">depth</code>" property</h3>
+<a class="indexterm" name="id2614130"></a><pre class="programlisting">  "depth"                    gint                  : Read / Write</pre>
+<p>Depth of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 24</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614159"></a><h3>
+<a name="GstVideoParse--endianness"></a>The "<code class="literal">endianness</code>" property</h3>
+<a class="indexterm" name="id2614172"></a><pre class="programlisting">  "endianness"               GstVideoParseEndianness  : Read / Write</pre>
+<p>Endianness of images in raw stream.</p>
+<p>Default value: Little Endian</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614198"></a><h3>
+<a name="GstVideoParse--format"></a>The "<code class="literal">format</code>" property</h3>
+<a class="indexterm" name="id2614212"></a><pre class="programlisting">  "format"                   GstVideoParseFormat   : Read / Write</pre>
+<p>Format of images in raw stream.</p>
+<p>Default value: I420</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614239"></a><h3>
+<a name="GstVideoParse--framerate"></a>The "<code class="literal">framerate</code>" property</h3>
+<a class="indexterm" name="id2614252"></a><pre class="programlisting">  "framerate"                GstFraction           : Read / Write</pre>
+<p>Frame rate of images in raw stream.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2612361"></a><h3>
+<a name="GstVideoParse--green-mask"></a>The "<code class="literal">green-mask</code>" property</h3>
+<a class="indexterm" name="id2612375"></a><pre class="programlisting">  "green-mask"               gint                  : Read / Write</pre>
+<p>Green mask of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 65280</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2612405"></a><h3>
+<a name="GstVideoParse--height"></a>The "<code class="literal">height</code>" property</h3>
+<a class="indexterm" name="id2612419"></a><pre class="programlisting">  "height"                   gint                  : Read / Write</pre>
+<p>Height of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 240</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2612448"></a><h3>
+<a name="GstVideoParse--pixel-aspect-ratio"></a>The "<code class="literal">pixel-aspect-ratio</code>" property</h3>
+<a class="indexterm" name="id2612464"></a><pre class="programlisting">  "pixel-aspect-ratio"       GstFraction           : Read / Write</pre>
+<p>Pixel aspect ratio of images in raw stream.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2612486"></a><h3>
+<a name="GstVideoParse--red-mask"></a>The "<code class="literal">red-mask</code>" property</h3>
+<a class="indexterm" name="id2612500"></a><pre class="programlisting">  "red-mask"                 gint                  : Read / Write</pre>
+<p>Red mask of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 16711680</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2612530"></a><h3>
+<a name="GstVideoParse--width"></a>The "<code class="literal">width</code>" property</h3>
+<a class="indexterm" name="id2612544"></a><pre class="programlisting">  "width"                    gint                  : Read / Write</pre>
+<p>Width of images in raw stream.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 320</p>
+</div>
+</div>
+</div>
+</body>
+</html>

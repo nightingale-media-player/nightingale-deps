@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>trm</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-timidity.html" title="timidity">
+<link rel="next" href="gst-plugins-bad-plugins-videoanalyse.html" title="videoanalyse">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-timidity.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-videoanalyse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2612056" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2582137" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2612016" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2571187" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-trm"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2612056"></a><span class="refentrytitle">trm</span>
+</h2>
+<p>trm &#8212; Compute MusicBrainz TRM Id using libmusicbrainz</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstTRM"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-trm.html#GstTRM-struct">GstTRM</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2612016"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstTRM
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2571187"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-trm.html#GstTRM--proxy-address">proxy-address</a>"            gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-trm.html#GstTRM--proxy-port">proxy-port</a>"               guint                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2582137"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2606552"></a><p>
+GstTRM computes <a href="http://www.musicbrainz.org/" target="_top">MusicBrainz</a>
+TRM identifiers for audio streams using libmusicbrainz.
+</p>
+<p>
+A TRM identifier is something like an 'acoustic fingerprint', the aim is
+to uniquely identify the same song regardless of which source it comes from
+or which audio format the stream is in.
+</p>
+<p>
+The TRM element will collect about 30 seconds of audio and let
+libmusicbrainz calculate a preliminary audio signature from that. That audio
+signature will then be sent over the internet to a musicbrainz.org server
+which will calculate the TRM for that signature.
+</p>
+<p>
+The TRM element will post a tag message with a <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRMID:CAPS"
+><span class="type">GST_TAG_MUSICBRAINZ_TRMID</span></a>
+tag on the bus once the TRM has been calculated (and also send a tag event
+with that information downstream).
+</p>
+<h3>Example pipeline</h3>
+<p>
+Here is a test pipeline to test the TRM element:
+</p>
+<pre class="programlisting">
+gst-launch -m filesrc location=somefile.ogg ! decodebin ! audioconvert ! trm ! fakesink
+</pre>
+<p>
+this should (among many other things) print the tag message with the TRM ID.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2593146"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-musicbrainz.html#plugin-musicbrainz">musicbrainz</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Jeremy Simon &lt;jsimon13@yahoo.fr&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Analyzer/Audio</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int){ 8, 16 }, depth=(int){ 8, 16 }, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int){ 8, 16 }, depth=(int){ 8, 16 }, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2608284"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2608294"></a><h3>
+<a name="GstTRM-struct"></a>GstTRM</h3>
+<a class="indexterm" name="id2608307"></a><pre class="programlisting">typedef struct _GstTRM GstTRM;</pre>
+<p>
+GStreamer TRM element. This structure is opaque (private).</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2608328"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2609765"></a><h3>
+<a name="GstTRM--proxy-address"></a>The "<code class="literal">proxy-address</code>" property</h3>
+<a class="indexterm" name="id2609779"></a><pre class="programlisting">  "proxy-address"            gchar*                : Read / Write</pre>
+<p>proxy address.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2609804"></a><h3>
+<a name="GstTRM--proxy-port"></a>The "<code class="literal">proxy-port</code>" property</h3>
+<a class="indexterm" name="id2609819"></a><pre class="programlisting">  "proxy-port"               guint                 : Read / Write</pre>
+<p>proxy port.</p>
+<p>Allowed values: [1,65535]</p>
+<p>Default value: 8080</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!-- ##### SECTION Title ##### -->
+gstrtpjitterbuffer
+
+<!-- ##### SECTION Short_Description ##### -->
+A buffer that deals with network jitter and other transmission faults
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-gstrtpjitterbuffer-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRtpJitterBuffer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstRtpJitterBuffer::clear-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpjitterbuffer: the object which received the signal.
+
+<!-- ##### SIGNAL GstRtpJitterBuffer::request-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpjitterbuffer: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### ARG GstRtpJitterBuffer:drop-on-latency ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpJitterBuffer:latency ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpJitterBuffer:ts-offset ##### -->
+<para>
+
+</para>
+

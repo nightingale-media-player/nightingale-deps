@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>alsasink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-alsamixer.html" title="alsamixer">
+<link rel="next" href="gst-plugins-base-plugins-alsasrc.html" title="alsasrc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-alsamixer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-alsasrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2577984" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2559421" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2575058" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2588860" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2589630" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-alsasink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2577984"></a><span class="refentrytitle">alsasink</span>
+</h2>
+<p>alsasink &#8212; play audio to an ALSA device</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstAlsaSink"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-base-plugins-alsasink.html#GstAlsaSink-struct">GstAlsaSink</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2575058"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"
+>GstBaseAudioSink</a>
+                           +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstaudiosink.html#GstAudioSink"
+>GstAudioSink</a>
+                                 +----GstAlsaSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2588860"></a><h2>Implemented Interfaces</h2>
+<p>
+GstAlsaSink implements
+ <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"
+>GstPropertyProbe</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2589630"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-alsasink.html#GstAlsaSink--device">device</a>"                   gchar*                : Read / Write
+  "<a href="gst-plugins-base-plugins-alsasink.html#GstAlsaSink--device-name">device-name</a>"              gchar*                : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2559421"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2559434"></a><p>
+This element renders raw audio samples using the ALSA api.
+</p>
+<h3>Example pipelines</h3>
+<p>
+Play an Ogg/Vorbis file.
+</p>
+<pre class="programlisting">
+gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! alsasink
+</pre>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsect2" lang="en">
+<a name="id2577847"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-base-plugins-plugin-alsa.html#plugin-alsa">alsa</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Sink/Audio</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-int, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, width=(int)24, depth=(int)24, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-int, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, width=(int)32, depth=(int)24, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-int, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-int, signed=(boolean){ true, false }, width=(int)8, depth=(int)8, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2580955"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2580965"></a><h3>
+<a name="GstAlsaSink-struct"></a>GstAlsaSink</h3>
+<a class="indexterm" name="id2580978"></a><pre class="programlisting">typedef struct _GstAlsaSink GstAlsaSink;</pre>
+<p>
+Opaque data structure</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2580998"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2581008"></a><h3>
+<a name="GstAlsaSink--device"></a>The "<code class="literal">device</code>" property</h3>
+<a class="indexterm" name="id2581023"></a><pre class="programlisting">  "device"                   gchar*                : Read / Write</pre>
+<p>ALSA device, as defined in an asound configuration file.</p>
+<p>Default value: "default"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2581048"></a><h3>
+<a name="GstAlsaSink--device-name"></a>The "<code class="literal">device-name</code>" property</h3>
+<a class="indexterm" name="id2581062"></a><pre class="programlisting">  "device-name"              gchar*                : Read</pre>
+<p>Human-readable name of the sound device.</p>
+<p>Default value: ""</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2586444"></a><h2>See Also</h2>
+alsasrc, alsamixer
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GStreamer 0.10 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="next" href="gstreamer.html" title="GStreamer Overview">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en">
+<div class="titlepage">
+<div>
+<div><table class="navigation" id="top" width="100%" cellpadding="2" cellspacing="0"><tr><th valign="middle"><p class="title">GStreamer 0.10 Core Reference Manual</p></th></tr></table></div>
+<div><p class="releaseinfo">
+      for GStreamer Core 0.10 (0.10.17)
+      The latest version of this documentation can be found on-line at
+      <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/" target="_top">http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/</a>.
+    </p></div>
+</div>
+<hr>
+</div>
+<div class="toc"><dl>
+<dt><span class="chapter"><a href="gstreamer.html">GStreamer Overview</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-running.html">Running GStreamer Applications</a></span><span class="refpurpose"> &#8212; 
+How to run and debug your GStreamer application
+</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="libgstreamer.html">GStreamer Core Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-Gst.html">Gst</a></span><span class="refpurpose"> &#8212; Media library supporting arbitrary formats and filter
+                    graphs.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstBin.html">GstBin</a></span><span class="refpurpose"> &#8212; Base class and element that can contain other elements</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstBuffer.html">GstBuffer</a></span><span class="refpurpose"> &#8212; Data-passing buffer type, supporting sub-buffers.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstBus.html">GstBus</a></span><span class="refpurpose"> &#8212; Asynchronous message bus subsystem</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstCaps.html">GstCaps</a></span><span class="refpurpose"> &#8212; Structure describing sets of media formats</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstChildProxy.html">GstChildProxy</a></span><span class="refpurpose"> &#8212; Interface for multi child elements.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstClock.html">GstClock</a></span><span class="refpurpose"> &#8212; Abstract class for global clocks</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-gstconfig.html">gstconfig</a></span><span class="refpurpose"> &#8212; Build configuration options</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstElement.html">GstElement</a></span><span class="refpurpose"> &#8212; Abstract base class for all pipeline elements</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstElementFactory.html">GstElementFactory</a></span><span class="refpurpose"> &#8212; Create GstElements from a factory</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstGError.html">GstGError</a></span><span class="refpurpose"> &#8212; Categorized error messages</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstEvent.html">GstEvent</a></span><span class="refpurpose"> &#8212; Structure describing events that are passed up and down
+                    a pipeline</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstFilter.html">GstFilter</a></span><span class="refpurpose"> &#8212; A utility function to filter GLists.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstFormat.html">GstFormat</a></span><span class="refpurpose"> &#8212; Dynamically register new data formats</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGhostPad.html">GstGhostPad</a></span><span class="refpurpose"> &#8212; Pseudo link pads</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstImplementsInterface.html">GstImplementsInterface</a></span><span class="refpurpose"> &#8212; Core interface implemented by <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> instances that
+allows runtime querying of interface availabillity</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstIndex.html">GstIndex</a></span><span class="refpurpose"> &#8212; Generate indexes on objects</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstIndexFactory.html">GstIndexFactory</a></span><span class="refpurpose"> &#8212; Create GstIndexes from a factory</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstIterator.html">GstIterator</a></span><span class="refpurpose"> &#8212; Object to retrieve multiple elements in a threadsafe
+way.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstMessage.html">GstMessage</a></span><span class="refpurpose"> &#8212; Lightweight objects to signal the application of
+                    pipeline events</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstMiniObject.html">GstMiniObject</a></span><span class="refpurpose"> &#8212; Lightweight base class for the GStreamer object hierarchy</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstObject.html">GstObject</a></span><span class="refpurpose"> &#8212; Base class for the GStreamer object hierarchy</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstPad.html">GstPad</a></span><span class="refpurpose"> &#8212; Object contained by elements that allows links to
+                    other elements</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstPadTemplate.html">GstPadTemplate</a></span><span class="refpurpose"> &#8212; Describe the media type of a pad.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstParse.html">GstParse</a></span><span class="refpurpose"> &#8212; Get a pipeline from a text pipeline description</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstPipeline.html">GstPipeline</a></span><span class="refpurpose"> &#8212; Top-level bin with clocking and bus management
+                       functionality.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstPlugin.html">GstPlugin</a></span><span class="refpurpose"> &#8212; Container for features loaded from a shared object module</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstPluginFeature.html">GstPluginFeature</a></span><span class="refpurpose"> &#8212; Base class for contents of a GstPlugin</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstQuery.html">GstQuery</a></span><span class="refpurpose"> &#8212; Dynamically register new query types. Provide functions
+                    to create queries, and to set and parse values in them.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstRegistry.html">GstRegistry</a></span><span class="refpurpose"> &#8212; Abstract base class for management of <a href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a> objects</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstSegment.html">GstSegment</a></span><span class="refpurpose"> &#8212; Structure describing the configured region of interest
+                    in a media file.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstStructure.html">GstStructure</a></span><span class="refpurpose"> &#8212; Generic structure containing fields of names and values</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstSystemClock.html">GstSystemClock</a></span><span class="refpurpose"> &#8212; Default clock that uses the current system time</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstTagList.html">GstTagList</a></span><span class="refpurpose"> &#8212; List of tags and values used to describe media metadata</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstTagSetter.html">GstTagSetter</a></span><span class="refpurpose"> &#8212; Element interface that allows setting and retrieval
+                    of media metadata</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstTask.html">GstTask</a></span><span class="refpurpose"> &#8212; Abstraction of GStreamer streaming threads.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstTypeFind.html">GstTypeFind</a></span><span class="refpurpose"> &#8212; Stream type detection</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstTypeFindFactory.html">GstTypeFindFactory</a></span><span class="refpurpose"> &#8212; Information about registered typefind functions</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstUriHandler.html">GstUriHandler</a></span><span class="refpurpose"> &#8212; Interface to ease URI handling in plugins.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstUtils.html">GstUtils</a></span><span class="refpurpose"> &#8212; Various utility functions</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstValue.html">GstValue</a></span><span class="refpurpose"> &#8212; GValue and GParamSpec implementations specific
+to GStreamer</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstVersion.html">GstVersion</a></span><span class="refpurpose"> &#8212; GStreamer version macros.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstXML.html">GstXML</a></span><span class="refpurpose"> &#8212; XML save/restore operations of pipelines</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-support.html">GStreamer Core Support</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstInfo.html">GstInfo</a></span><span class="refpurpose"> &#8212; Debugging and logging facilities</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gstreamer-GstTrace.html">GstTrace</a></span><span class="refpurpose"> &#8212; Tracing functionality</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-hierarchy.html">Object Hierarchy</a></span></dt>
+<dt><span class="index"><a href="api-index.html">Index</a></span></dt>
+<dt><span class="index"><a href="ix02.html">Index of deprecated symbols</a></span></dt>
+</dl></div>
+</div></body>
+</html>

@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+audiochebband
+
+<!-- ##### SECTION Short_Description ##### -->
+Chebyshev band pass and band reject filter
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audiochebband-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioChebBand ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioChebBand:lower-frequency ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebBand:mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebBand:poles ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebBand:ripple ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebBand:type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebBand:upper-frequency ##### -->
+<para>
+
+</para>
+

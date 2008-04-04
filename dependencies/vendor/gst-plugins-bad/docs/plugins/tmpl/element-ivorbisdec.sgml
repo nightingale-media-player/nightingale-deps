@@ -1,0 +1,27 @@
+<!-- ##### SECTION Title ##### -->
+ivorbisdec
+
+<!-- ##### SECTION Short_Description ##### -->
+decode raw vorbis streams to integer audio
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-ivorbisdec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstIVorbisDec ##### -->
+<para>
+
+</para>
+
+@element: 
+

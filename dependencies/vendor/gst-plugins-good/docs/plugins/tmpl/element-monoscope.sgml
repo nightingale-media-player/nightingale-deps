@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+monoscope
+
+<!-- ##### SECTION Short_Description ##### -->
+Displays a highly stabilised waveform of audio input
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-monoscope-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMonoscope ##### -->
+<para>
+
+</para>
+
+

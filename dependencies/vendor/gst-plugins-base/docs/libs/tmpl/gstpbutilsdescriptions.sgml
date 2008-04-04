@@ -1,0 +1,84 @@
+<!-- ##### SECTION Title ##### -->
+gstpbutilsdescriptions
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_source_description ##### -->
+<para>
+
+</para>
+
+@protocol: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_sink_description ##### -->
+<para>
+
+</para>
+
+@protocol: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_decoder_description ##### -->
+<para>
+
+</para>
+
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_encoder_description ##### -->
+<para>
+
+</para>
+
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_element_description ##### -->
+<para>
+
+</para>
+
+@factory_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_add_codec_description_to_tag_list ##### -->
+<para>
+
+</para>
+
+@taglist: 
+@codec_tag: 
+@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pb_utils_get_codec_description ##### -->
+<para>
+
+</para>
+
+@caps: 
+@Returns: 
+
+

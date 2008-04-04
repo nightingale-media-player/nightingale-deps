@@ -1,0 +1,69 @@
+<!-- ##### SECTION Title ##### -->
+GstLFOControlSource
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstLFOControlSource ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstLFOControlSource:amplitude ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLFOControlSource:frequency ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLFOControlSource:offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLFOControlSource:timeshift ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLFOControlSource:waveform ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstLFOWaveform ##### -->
+<para>
+
+</para>
+
+@GST_LFO_WAVEFORM_SINE: 
+@GST_LFO_WAVEFORM_SQUARE: 
+@GST_LFO_WAVEFORM_SAW: 
+@GST_LFO_WAVEFORM_REVERSE_SAW: 
+@GST_LFO_WAVEFORM_TRIANGLE: 
+
+<!-- ##### FUNCTION gst_lfo_control_source_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

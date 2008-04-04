@@ -1,0 +1,123 @@
+<!-- ##### SECTION Title ##### -->
+gstpbutilsinstallplugins
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### ENUM GstInstallPluginsReturn ##### -->
+<para>
+
+</para>
+
+@GST_INSTALL_PLUGINS_SUCCESS: 
+@GST_INSTALL_PLUGINS_NOT_FOUND: 
+@GST_INSTALL_PLUGINS_ERROR: 
+@GST_INSTALL_PLUGINS_PARTIAL_SUCCESS: 
+@GST_INSTALL_PLUGINS_USER_ABORT: 
+@GST_INSTALL_PLUGINS_CRASHED: 
+@GST_INSTALL_PLUGINS_INVALID: 
+@GST_INSTALL_PLUGINS_STARTED_OK: 
+@GST_INSTALL_PLUGINS_INTERNAL_FAILURE: 
+@GST_INSTALL_PLUGINS_HELPER_MISSING: 
+@GST_INSTALL_PLUGINS_INSTALL_IN_PROGRESS: 
+
+<!-- ##### USER_FUNCTION GstInstallPluginsResultFunc ##### -->
+<para>
+
+</para>
+
+@result: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_async ##### -->
+<para>
+
+</para>
+
+@details: 
+@ctx: 
+@func: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_sync ##### -->
+<para>
+
+</para>
+
+@details: 
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_return_get_name ##### -->
+<para>
+
+</para>
+
+@ret: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_installation_in_progress ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_supported ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### STRUCT GstInstallPluginsContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_install_plugins_context_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_context_free ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+
+<!-- ##### FUNCTION gst_install_plugins_context_set_xid ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@xid: 
+
+

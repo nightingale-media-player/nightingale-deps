@@ -22,6 +22,8 @@ make && make install
 make clean
 rm -f config.log config.status Makefile
 
+install_name_tool -id libogg.dylib ${PWD}/compiled/release-intel/lib/libogg.dylib
+
 #
 # Compile the release mode libogg for ppc
 #
@@ -37,6 +39,8 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
 make && make install
 make clean
 rm -f config.log config.status Makefile
+
+install_name_tool -id libogg.dylib ${PWD}/compiled/release-ppc/lib/libogg.dylib
 
 #
 # Package the release mode libogg into a universal binary
@@ -63,6 +67,8 @@ make && make install
 make clean
 rm -f config.log config.status Makefile
 
+install_name_tool -id libogg.dylib ${PWD}/compiled/debug-intel/lib/libogg.dylib
+
 #
 # Compile the debug mode libogg for ppc
 #
@@ -78,6 +84,8 @@ LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
 make && make install
 make clean
 rm -f config.log config.status Makefile
+
+install_name_tool -id libogg.dylib ${PWD}/compiled/debug-ppc/lib/libogg.dylib
 
 #
 # Package the debug mode libogg into a universal binary

@@ -1,0 +1,318 @@
+<!-- ##### SECTION Title ##### -->
+GstRegistry
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRegistry ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstRegistry::feature-added ##### -->
+<para>
+
+</para>
+
+@gstregistry: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRegistry::plugin-added ##### -->
+<para>
+
+</para>
+
+@gstregistry: the object which received the signal.
+@arg1: 
+
+<!-- ##### FUNCTION gst_registry_get_default ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_get_feature_list ##### -->
+<para>
+
+</para>
+
+@registry: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_get_feature_list_by_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_get_path_list ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_get_plugin_list ##### -->
+<para>
+
+</para>
+
+@registry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_add_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_remove_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@plugin: 
+
+
+<!-- ##### FUNCTION gst_registry_plugin_filter ##### -->
+<para>
+
+</para>
+
+@registry: 
+@filter: 
+@first: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_feature_filter ##### -->
+<para>
+
+</para>
+
+@registry: 
+@filter: 
+@first: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_find_plugin ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_find_feature ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_lookup_feature ##### -->
+<para>
+
+</para>
+
+@registry: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_add_path ##### -->
+<para>
+
+</para>
+
+@registry: 
+@path: 
+
+
+<!-- ##### FUNCTION gst_registry_scan_path ##### -->
+<para>
+
+</para>
+
+@registry: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_binary_read_cache ##### -->
+<para>
+
+</para>
+
+@registry: 
+@location: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_binary_write_cache ##### -->
+<para>
+
+</para>
+
+@registry: 
+@location: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_xml_read_cache ##### -->
+<para>
+
+</para>
+
+@registry: 
+@location: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_xml_write_cache ##### -->
+<para>
+
+</para>
+
+@registry: 
+@location: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_lookup ##### -->
+<para>
+
+</para>
+
+@registry: 
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_remove_feature ##### -->
+<para>
+
+</para>
+
+@registry: 
+@feature: 
+
+
+<!-- ##### FUNCTION gst_registry_add_feature ##### -->
+<para>
+
+</para>
+
+@registry: 
+@feature: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_default_registry_check_feature_version ##### -->
+<para>
+
+</para>
+
+@feature_name: 
+@min_major: 
+@min_minor: 
+@min_micro: 
+@Returns: 
+
+
+<!-- ##### MACRO gst_default_registry_get_path_list ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO gst_default_registry_add_plugin ##### -->
+<para>
+
+</para>
+
+@plugin: 
+
+
+<!-- ##### MACRO gst_default_registry_add_path ##### -->
+<para>
+
+</para>
+
+@path: 
+
+
+<!-- ##### MACRO gst_default_registry_find_plugin ##### -->
+<para>
+
+</para>
+
+@name: 
+
+
+<!-- ##### MACRO gst_default_registry_find_feature ##### -->
+<para>
+
+</para>
+
+@name: 
+@type: 
+
+
+<!-- ##### MACRO gst_default_registry_get_plugin_list ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO gst_default_registry_feature_filter ##### -->
+<para>
+
+</para>
+
+@filter: 
+@first: 
+@user_data: 
+
+

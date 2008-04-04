@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+alsasrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Read from a sound card via ALSA
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-alsasrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAlsaSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAlsaSrc:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAlsaSrc:device-name ##### -->
+<para>
+
+</para>
+

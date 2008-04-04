@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>metadatademux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-jackaudiosink.html" title="jackaudiosink">
+<link rel="next" href="gst-plugins-bad-plugins-metadatamux.html" title="metadatamux">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-jackaudiosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-metadatamux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2631154" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2631092" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2631118" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-metadatademux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2631154"></a><span class="refentrytitle">metadatademux</span>
+</h2>
+<p>metadatademux &#8212; element that parse or demux metadata from image files</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-metadatademux.html#GstMetadataDemux">GstMetadataDemux</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2631118"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-metadatademux.html#GstMetadataDemux--parse-only">parse-only</a>"               gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2631092"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2579417"></a><p>
+This element parses image files JPEG and PNG, to find metadata chunks (EXIF,
+IPTC, XMP) in it, and then send individual tags as a 'tag message' do the
+application and as 'tag event' to the next element in pipeline. It also
+strips out the metadata chunks from original stream (unless the 'parse-only'
+property is set to 'true'). In addition the whole metadata chunk (striped
+or not) it also sent as a message to the application bus, so the application
+can have more controls about the metadata.
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch -v -m filesrc location=./test.jpeg ! metadatademux ! fakesink
+silent=TRUE
+</pre>
+<p>
+</p>
+<pre class="programlisting">
+GST_DEBUG:*metadata:5 gst-launch filesrc location=./test.jpeg ! 
+metadatademux ! fakesink
+</pre>
+<p>
+</p>
+<h3>Application sample code using 'libexif' to have more control</h3>
+<p>
+</p>
+<pre class="programlisting">
+val = gst_tag_list_get_value_index (taglist, GST_TAG_EXIF, 0);
+if (val) {
+ exif_chunk = gst_value_get_buffer (val);
+ if (exif_chunk) {
+   ed = exif_data_new_from_data (GST_BUFFER_DATA (exif_chunk),
+       GST_BUFFER_SIZE (exif_chunk));
+ }
+}
+</pre>
+<p>
+This same idea can be used to handle IPTC and XMP directly by using
+libdata and exempi (or any other libraries). Notice: the whole metadata
+chunk sent as a message to the application contains only metadata data, i.e.
+the wrapper specific to the file format (JPEG, PNG, ...) is already
+striped out.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2576681"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-metadata.html#plugin-metadata">metadata</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Edgard Lima &lt;edgard.lima@indt.org.br&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Demuxer/Extracter/Metadata</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>image/jpeg, tags-extracted=(boolean)false; image/png, tags-extracted=(boolean)false</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>image/jpeg, tags-extracted=(boolean)true; image/png, tags-extracted=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2630315"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2630326"></a><h3>
+<a name="GstMetadataDemux"></a>GstMetadataDemux</h3>
+<a class="indexterm" name="id2630338"></a><pre class="programlisting">typedef struct {
+  GstBaseMetadata metadata;
+} GstMetadataDemux;
+</pre>
+<p>
+The opaque <a href="gst-plugins-bad-plugins-metadatademux.html#GstMetadataDemux"><span class="type">GstMetadataDemux</span></a> data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2630367"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2630377"></a><h3>
+<a name="GstMetadataDemux--parse-only"></a>The "<code class="literal">parse-only</code>" property</h3>
+<a class="indexterm" name="id2630391"></a><pre class="programlisting">  "parse-only"               gboolean              : Read / Write</pre>
+<p>If TRUE, don't strip out any chunk.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2630491"></a><h2>See Also</h2>
+<span class="type">metadatamux</span>
+</div>
+</div>
+</body>
+</html>

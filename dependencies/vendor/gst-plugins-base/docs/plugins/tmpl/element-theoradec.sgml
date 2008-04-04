@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+theoradec
+
+<!-- ##### SECTION Short_Description ##### -->
+decode raw theora streams to raw YUV video
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-theoradec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTheoraDec ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstTheoraDec:crop ##### -->
+<para>
+
+</para>
+

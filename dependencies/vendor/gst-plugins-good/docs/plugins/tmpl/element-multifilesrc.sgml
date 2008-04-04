@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+multifilesrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Read a sequentially named set of files into buffers
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-multifilesrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMultiFileSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstMultiFileSrc:caps ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMultiFileSrc:index ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMultiFileSrc:location ##### -->
+<para>
+
+</para>
+

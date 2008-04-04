@@ -346,6 +346,52 @@ build()
         install_name_tool                                                      \
             -id libintl.dylib                                                  \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libintl.dylib
+
+        install_name_tool                                                      \
+            -id libasprintf.dylib                                              \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libasprintf.dylib
+
+        install_name_tool                                                      \
+            -id libgettextlib.dylib                                            \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextlib.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libintl.3.dylib    \
+              libintl.dylib                                                    \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextlib.dylib
+
+        install_name_tool                                                      \
+            -id libgettextsrc.dylib                                            \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextsrc.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libintl.3.dylib    \
+              libintl.dylib                                                    \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextsrc.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextlib-0.14.4.dylib    \
+              libgettextlib.dylib                                              \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextsrc.dylib
+
+        install_name_tool                                                      \
+            -id libgettextpo.dylib                                            \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextpo.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libintl.3.dylib    \
+              libintl.dylib                                                    \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextpo.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextlib-0.14.4.dylib    \
+              libgettextlib.dylib                                              \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextpo.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextsrc-0.14.4.dylib    \
+              libgettextsrc.dylib                                              \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgettextpo.dylib
     fi
 
     # Build the symbols.

@@ -1,0 +1,230 @@
+<!-- ##### SECTION Title ##### -->
+GstBaseSink
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstBaseSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstBaseSink:async ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:last-buffer ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:max-lateness ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:preroll-queue-len ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:qos ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:sync ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseSink:ts-offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GstBaseSinkClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@get_caps: 
+@set_caps: 
+@buffer_alloc: 
+@get_times: 
+@start: 
+@stop: 
+@unlock: 
+@event: 
+@preroll: 
+@render: 
+@async_play: 
+@activate_pull: 
+@fixate: 
+@unlock_stop: 
+
+<!-- ##### FUNCTION gst_base_sink_query_latency ##### -->
+<para>
+
+</para>
+
+@sink: 
+@live: 
+@upstream_live: 
+@min_latency: 
+@max_latency: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_get_latency ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_wait_preroll ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_wait_eos ##### -->
+<para>
+
+</para>
+
+@sink: 
+@time: 
+@jitter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_set_sync ##### -->
+<para>
+
+</para>
+
+@sink: 
+@sync: 
+
+
+<!-- ##### FUNCTION gst_base_sink_get_sync ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_set_max_lateness ##### -->
+<para>
+
+</para>
+
+@sink: 
+@max_lateness: 
+
+
+<!-- ##### FUNCTION gst_base_sink_get_max_lateness ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_set_qos_enabled ##### -->
+<para>
+
+</para>
+
+@sink: 
+@enabled: 
+
+
+<!-- ##### FUNCTION gst_base_sink_is_qos_enabled ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_set_async_enabled ##### -->
+<para>
+
+</para>
+
+@sink: 
+@enabled: 
+
+
+<!-- ##### FUNCTION gst_base_sink_is_async_enabled ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_set_ts_offset ##### -->
+<para>
+
+</para>
+
+@sink: 
+@offset: 
+
+
+<!-- ##### FUNCTION gst_base_sink_get_ts_offset ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_sink_get_last_buffer ##### -->
+<para>
+
+</para>
+
+@sink: 
+@Returns: 
+
+
+<!-- ##### MACRO GST_BASE_SINK_PAD ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+

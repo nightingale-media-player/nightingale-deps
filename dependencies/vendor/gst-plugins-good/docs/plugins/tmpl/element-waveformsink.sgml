@@ -1,0 +1,38 @@
+<!-- ##### SECTION Title ##### -->
+waveformsink
+
+<!-- ##### SECTION Short_Description ##### -->
+WaveForm audio sink
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-waveformsink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstWaveFormSink ##### -->
+<para>
+
+</para>
+
+@sink: 
+@cached_caps: 
+@hwaveout: 
+@wave_buffers: 
+@critic_wave: 
+@free_buffers_count: 
+@write_buffer: 
+@buffer_size: 
+@buffer_count: 
+@bytes_in_queue: 
+@bytes_per_sample: 
+@error_string: 
+

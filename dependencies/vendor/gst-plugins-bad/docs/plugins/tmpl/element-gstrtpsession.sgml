@@ -1,0 +1,166 @@
+<!-- ##### SECTION Title ##### -->
+gstrtpsession
+
+<!-- ##### SECTION Short_Description ##### -->
+Implement an RTP session
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-gstrtpsession-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRtpSession ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstRtpSession::clear-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+
+<!-- ##### SIGNAL GstRtpSession::on-bye-ssrc ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-bye-timeout ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-new-ssrc ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-ssrc-active ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-ssrc-collision ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-ssrc-sdes ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-ssrc-validated ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::on-timeout ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstRtpSession::request-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrtpsession: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### ARG GstRtpSession:ntp-ns-base ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:bandwidth ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:num-active-sources ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:num-sources ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:rtcp-fraction ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-cname ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-email ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-location ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-note ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-phone ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRtpSession:sdes-tool ##### -->
+<para>
+
+</para>
+

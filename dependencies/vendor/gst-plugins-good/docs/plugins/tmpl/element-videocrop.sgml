@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+videocrop
+
+<!-- ##### SECTION Short_Description ##### -->
+Crops video into a user-defined region
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-videocrop-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstVideoCrop ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstVideoCrop:bottom ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstVideoCrop:left ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstVideoCrop:right ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstVideoCrop:top ##### -->
+<para>
+
+</para>
+

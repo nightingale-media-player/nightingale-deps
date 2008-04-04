@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>videomixer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-videoflip.html" title="videoflip">
+<link rel="next" href="gst-plugins-good-plugins-waveformsink.html" title="waveformsink">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-videoflip.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-waveformsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2628220" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2596384" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2628173" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2581649" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2573111" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-videomixer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2628220"></a><span class="refentrytitle">videomixer</span>
+</h2>
+<p>videomixer &#8212; Takes several AYUV video streams as input and mixes them
+together.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstVideoMixer"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer-struct">GstVideoMixer</a>;
+enum                <a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground">GstVideoMixerBackground</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2628173"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstVideoMixer
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2581649"></a><h2>Implemented Interfaces</h2>
+<p>
+GstVideoMixer implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2573111"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer--background">background</a>"               <a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground">GstVideoMixerBackground</a>  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2596384"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2588831"></a><p>
+Videomixer can only accept AYUV video streams. For each of the requested
+sink pads it will compare the incoming geometry and framerate to define the
+output parameters. Indeed output video frames will have the geometry of the
+biggest incoming video stream and the framerate of the fastest incoming one.
+</p>
+<h3>Sample pipelines</h3>
+<p>
+Here is a pipeline to demonstrate videomixer used together with videobox :
+</p>
+<pre class="programlisting">
+gst-launch videotestsrc pattern=1 ! video/x-raw-yuv, framerate=\(fraction\)10/1, width=100, height=100 ! videobox border-alpha=0 alpha=0.5 top=-70 bottom=-70 right=-220 ! videomixer name=mix ! ffmpegcolorspace ! xvimagesink videotestsrc ! video/x-raw-yuv, framerate=\(fraction\)5/1, width=320, height=240 ! alpha alpha=0.7 ! mix.
+</pre>
+<p>
+This should show a 320x240 pixels video test source with some transparency
+showing the background checker pattern. Another video test source with just
+the snow pattern of 100x100 pixels is overlayed on top of the first one on
+the left vertically centered with a small transparency showing the first
+video test source behind and the checker pattern under it. Note that the
+framerate of the output video is 10 frames per second.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2607727"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-videomixer.html#plugin-videomixer">videomixer</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Editor/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink_%d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>request</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2632361"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2632372"></a><h3>
+<a name="GstVideoMixer-struct"></a>GstVideoMixer</h3>
+<a class="indexterm" name="id2632383"></a><pre class="programlisting">typedef struct _GstVideoMixer GstVideoMixer;</pre>
+<p>
+The opaque <a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixer"><span class="type">GstVideoMixer</span></a> structure.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2632411"></a><h3>
+<a name="GstVideoMixerBackground"></a>enum GstVideoMixerBackground</h3>
+<a class="indexterm" name="id2632422"></a><pre class="programlisting">typedef enum
+{
+  VIDEO_MIXER_BACKGROUND_CHECKER,
+  VIDEO_MIXER_BACKGROUND_BLACK,
+  VIDEO_MIXER_BACKGROUND_WHITE
+}
+GstVideoMixerBackground;
+</pre>
+<p>
+The different backgrounds videomixer can blend over.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="VIDEO-MIXER-BACKGROUND-CHECKER:CAPS"></a><code class="literal">VIDEO_MIXER_BACKGROUND_CHECKER</code></span></td>
+<td> checker pattern background
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="VIDEO-MIXER-BACKGROUND-BLACK:CAPS"></a><code class="literal">VIDEO_MIXER_BACKGROUND_BLACK</code></span></td>
+<td> solid color black background
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="VIDEO-MIXER-BACKGROUND-WHITE:CAPS"></a><code class="literal">VIDEO_MIXER_BACKGROUND_WHITE</code></span></td>
+<td> solid color white background
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2632512"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2632523"></a><h3>
+<a name="GstVideoMixer--background"></a>The "<code class="literal">background</code>" property</h3>
+<a class="indexterm" name="id2632536"></a><pre class="programlisting">  "background"               <a href="gst-plugins-good-plugins-videomixer.html#GstVideoMixerBackground">GstVideoMixerBackground</a>  : Read / Write</pre>
+<p>Background type.</p>
+<p>Default value: Checker pattern</p>
+</div>
+</div>
+</div>
+</body>
+</html>

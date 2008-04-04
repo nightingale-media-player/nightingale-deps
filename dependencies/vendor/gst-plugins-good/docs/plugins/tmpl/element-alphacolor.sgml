@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+alphacolor
+
+<!-- ##### SECTION Short_Description ##### -->
+RGBA to AYUV colorspace conversion preserving the alpha channel
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-alphacolor-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAlphaColor ##### -->
+<para>
+
+</para>
+
+

@@ -1,0 +1,99 @@
+<!-- ##### SECTION Title ##### -->
+gstfloatcast
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO GDOUBLE_FROM_BE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GDOUBLE_FROM_LE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GDOUBLE_TO_BE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GDOUBLE_TO_LE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GFLOAT_FROM_BE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GFLOAT_FROM_LE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GFLOAT_TO_BE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO GFLOAT_TO_LE ##### -->
+<para>
+
+</para>
+
+@val: 
+
+
+<!-- ##### MACRO gst_cast_double ##### -->
+<para>
+
+</para>
+
+@x: 
+
+
+<!-- ##### MACRO gst_cast_float ##### -->
+<para>
+
+</para>
+
+@x: 
+
+

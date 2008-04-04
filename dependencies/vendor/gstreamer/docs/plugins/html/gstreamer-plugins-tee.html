@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>tee</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gstreamer Elements">
+<link rel="prev" href="gstreamer-plugins-queue.html" title="queue">
+<link rel="next" href="gstreamer-plugins-typefind.html" title="typefind">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gstreamer Elements">
+<link rel="chapter" href="ch02.html" title="gstreamer Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-plugins-queue.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-plugins-typefind.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2604972" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2559621" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2604926" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2587573" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-plugins-tee"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2604972"></a><span class="refentrytitle">tee</span>
+</h2>
+<p>tee &#8212; 1-to-N pipe fitting</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstTee"></a><pre class="synopsis">
+
+
+
+                    <a href="gstreamer-plugins-tee.html#GstTee-struct">GstTee</a>;
+enum                <a href="gstreamer-plugins-tee.html#GstTeePullMode">GstTeePullMode</a>;
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2604926"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstTee
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2587573"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gstreamer-plugins-tee.html#GstTee--has-chain">has-chain</a>"                gboolean              : Read / Write / Construct
+  "<a href="gstreamer-plugins-tee.html#GstTee--has-sink-loop">has-sink-loop</a>"            gboolean              : Read / Write / Construct
+  "<a href="gstreamer-plugins-tee.html#GstTee--last-message">last-message</a>"             gchar*                : Read
+  "<a href="gstreamer-plugins-tee.html#GstTee--num-src-pads">num-src-pads</a>"             gint                  : Read
+  "<a href="gstreamer-plugins-tee.html#GstTee--silent">silent</a>"                   gboolean              : Read / Write / Construct
+  "<a href="gstreamer-plugins-tee.html#GstTee--pull-mode">pull-mode</a>"                <a href="gstreamer-plugins-tee.html#GstTeePullMode">GstTeePullMode</a>        : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2559621"></a><h2>Description</h2>
+<p>
+Split data to multiple pads.</p>
+<div class="refsect2" lang="en">
+<a name="id2601157"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>request</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2597367"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2597378"></a><h3>
+<a name="GstTee-struct"></a>GstTee</h3>
+<a class="indexterm" name="id2597390"></a><pre class="programlisting">typedef struct _GstTee GstTee;</pre>
+<p>
+Opaque <a href="gstreamer-plugins-tee.html#GstTee"><span class="type">GstTee</span></a> data structure.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2605507"></a><h3>
+<a name="GstTeePullMode"></a>enum GstTeePullMode</h3>
+<a class="indexterm" name="id2605518"></a><pre class="programlisting">typedef enum {
+  GST_TEE_PULL_MODE_NEVER,
+  GST_TEE_PULL_MODE_SINGLE,
+} GstTeePullMode;
+</pre>
+<p>
+The different ways that tee can behave in pull mode. <em class="parameter"><code>TEE_PULL_MODE_NEVER</code></em>
+disables pull mode.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-TEE-PULL-MODE-NEVER:CAPS"></a><code class="literal">GST_TEE_PULL_MODE_NEVER</code></span></td>
+<td> Never activate in pull mode.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-TEE-PULL-MODE-SINGLE:CAPS"></a><code class="literal">GST_TEE_PULL_MODE_SINGLE</code></span></td>
+<td> Only one src pad can be active in pull mode.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2605593"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2605604"></a><h3>
+<a name="GstTee--has-chain"></a>The "<code class="literal">has-chain</code>" property</h3>
+<a class="indexterm" name="id2605619"></a><pre class="programlisting">  "has-chain"                gboolean              : Read / Write / Construct</pre>
+<p>If the element can operate in push mode.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2605644"></a><h3>
+<a name="GstTee--has-sink-loop"></a>The "<code class="literal">has-sink-loop</code>" property</h3>
+<a class="indexterm" name="id2605658"></a><pre class="programlisting">  "has-sink-loop"            gboolean              : Read / Write / Construct</pre>
+<p>If the element should spawn a thread (unimplemented and deprecated).</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2605683"></a><h3>
+<a name="GstTee--last-message"></a>The "<code class="literal">last-message</code>" property</h3>
+<a class="indexterm" name="id2605697"></a><pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<p>The message describing current status.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2605722"></a><h3>
+<a name="GstTee--num-src-pads"></a>The "<code class="literal">num-src-pads</code>" property</h3>
+<a class="indexterm" name="id2605736"></a><pre class="programlisting">  "num-src-pads"             gint                  : Read</pre>
+<p>The number of source pads.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591093"></a><h3>
+<a name="GstTee--silent"></a>The "<code class="literal">silent</code>" property</h3>
+<a class="indexterm" name="id2591108"></a><pre class="programlisting">  "silent"                   gboolean              : Read / Write / Construct</pre>
+<p>Don't produce last_message events.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591132"></a><h3>
+<a name="GstTee--pull-mode"></a>The "<code class="literal">pull-mode</code>" property</h3>
+<a class="indexterm" name="id2591147"></a><pre class="programlisting">  "pull-mode"                <a href="gstreamer-plugins-tee.html#GstTeePullMode">GstTeePullMode</a>        : Read / Write / Construct</pre>
+<p>Behavior of tee in pull mode.</p>
+<p>Default value: Never activate in pull mode</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2591174"></a><h2>See Also</h2>
+<a href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a>
+</div>
+</div>
+</body>
+</html>

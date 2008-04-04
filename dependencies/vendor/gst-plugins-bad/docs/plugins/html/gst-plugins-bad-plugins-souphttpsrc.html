@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>souphttpsrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-sdpdemux.html" title="sdpdemux">
+<link rel="next" href="gst-plugins-bad-plugins-speed.html" title="speed">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-sdpdemux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-speed.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2609596" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2609456" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2571471" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2597036" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2569197" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-souphttpsrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2609596"></a><span class="refentrytitle">souphttpsrc</span>
+</h2>
+<p>souphttpsrc &#8212; Read from an HTTP/HTTPS/WebDAV/Icecast/Shoutcast
+location.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstSoupHTTPSrc"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc-struct">GstSoupHTTPSrc</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2571471"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSrc
+                     +----GstPushSrc
+                           +----GstSoupHTTPSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2597036"></a><h2>Implemented Interfaces</h2>
+<p>
+GstSoupHTTPSrc implements
+ GstURIHandler.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2569197"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--location">location</a>"                 gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-genre">iradio-genre</a>"             gchar*                : Read
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-mode">iradio-mode</a>"              gboolean              : Read / Write
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-name">iradio-name</a>"              gchar*                : Read
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-title">iradio-title</a>"             gchar*                : Read
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-url">iradio-url</a>"               gchar*                : Read
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-agent">user-agent</a>"               gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--automatic-redirect">automatic-redirect</a>"       gboolean              : Read / Write
+  "<a href="gst-plugins-bad-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy">proxy</a>"                    gchar*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2609456"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2609470"></a><p>
+This plugin reads data from a remote location specified by a URI.
+Supported protocols are 'http', 'https', 'dav', or 'davs'.
+</p>
+<p>
+An HTTP proxy must be specified by its URL.
+If the "http_proxy" environment variable is set, its value is used.
+The element-souphttpsrc::proxy property can be used to override the
+default.
+</p>
+<p>
+In case the element-souphttpsrc::iradio-mode property is set and the
+location is an HTTP resource, souphttpsrc will send special Icecast HTTP
+headers to the server to request additional Icecast meta-information. If
+the server is not an Icecast server, it will behave as if the
+element-souphttpsrc::iradio-mode property were not set. If it is,
+souphttpsrc will output data with a media type of application/x-icy,
+in which case you will need to use the <span class="type">ICYDemux</span> element as follow-up
+element to extract the Icecast metadata and to determine the underlying
+media type.
+</p>
+<p>
+Example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v souphttpsrc location=https://some.server.org/index.html
+    ! filesink location=/home/joe/server.html
+</pre>
+<p>
+The above pipeline reads a web page from a server using the HTTPS protocol
+and writes it to a local file.
+</p>
+<p>
+Another example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v souphttpsrc user-agent="FooPlayer 0.99 beta"
+    automatic-redirect=false proxy=http://proxy.intranet.local:8080
+    location=http://music.foobar.com/demo.mp3 ! mad ! audioconvert
+    ! audioresample ! alsasink
+</pre>
+<p>
+The above pipeline will read and decode and play an mp3 file from a
+web server using the HTTP protocol. If the server sends redirects,
+the request fails instead of following the redirect. The specified
+HTTP proxy server is used. The User-Agent HTTP request header
+is set to a custom string instead of "GStreamer souphttpsrc."
+</p>
+<p>
+Yet another example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v souphttpsrc location=http://10.11.12.13/mjpeg
+    do-timestamp=true ! multipartdemux
+    ! image/jpeg,width=640,height=480 ! matroskamux
+    ! filesink location=mjpeg.mkv
+</pre>
+<p>
+The above pipeline reads a motion JPEG stream from an IP camera
+using the HTTP protocol, encoded as mime/multipart image/jpeg
+parts, and writes a Matroska motion JPEG file. The width and
+height properties are set in the caps to provide the Matroska
+multiplexer with the information to set this in the header.
+Timestamps are set on the buffers as they arrive from the camera.
+These are used by the mime/multipart demultiplexer to emit timestamps
+on the JPEG-encoded video frame buffers. This allows the Matroska
+multiplexer to timestamp the frames in the resulting file.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2609559"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-soup.html#plugin-soup">soup</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wouter Cloetens &lt;wouter@mind.be&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Source/Network</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2606927"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2606938"></a><h3>
+<a name="GstSoupHTTPSrc-struct"></a>GstSoupHTTPSrc</h3>
+<a class="indexterm" name="id2606949"></a><pre class="programlisting">typedef struct _GstSoupHTTPSrc GstSoupHTTPSrc;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2606967"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2606978"></a><h3>
+<a name="GstSoupHTTPSrc--location"></a>The "<code class="literal">location</code>" property</h3>
+<a class="indexterm" name="id2606992"></a><pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<p>Location to read from.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607017"></a><h3>
+<a name="GstSoupHTTPSrc--iradio-genre"></a>The "<code class="literal">iradio-genre</code>" property</h3>
+<a class="indexterm" name="id2607033"></a><pre class="programlisting">  "iradio-genre"             gchar*                : Read</pre>
+<p>Genre of the stream.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607058"></a><h3>
+<a name="GstSoupHTTPSrc--iradio-mode"></a>The "<code class="literal">iradio-mode</code>" property</h3>
+<a class="indexterm" name="id2607072"></a><pre class="programlisting">  "iradio-mode"              gboolean              : Read / Write</pre>
+<p>Enable internet radio mode (extraction of shoutcast/icecast metadata).</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607098"></a><h3>
+<a name="GstSoupHTTPSrc--iradio-name"></a>The "<code class="literal">iradio-name</code>" property</h3>
+<a class="indexterm" name="id2607112"></a><pre class="programlisting">  "iradio-name"              gchar*                : Read</pre>
+<p>Name of the stream.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607138"></a><h3>
+<a name="GstSoupHTTPSrc--iradio-title"></a>The "<code class="literal">iradio-title</code>" property</h3>
+<a class="indexterm" name="id2607154"></a><pre class="programlisting">  "iradio-title"             gchar*                : Read</pre>
+<p>Name of currently playing song.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607179"></a><h3>
+<a name="GstSoupHTTPSrc--iradio-url"></a>The "<code class="literal">iradio-url</code>" property</h3>
+<a class="indexterm" name="id2607192"></a><pre class="programlisting">  "iradio-url"               gchar*                : Read</pre>
+<p>Homepage URL for radio stream.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607218"></a><h3>
+<a name="GstSoupHTTPSrc--user-agent"></a>The "<code class="literal">user-agent</code>" property</h3>
+<a class="indexterm" name="id2607232"></a><pre class="programlisting">  "user-agent"               gchar*                : Read / Write</pre>
+<p>Value of the User-Agent HTTP request header field.</p>
+<p>Default value: "GStreamer souphttpsrc"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607784"></a><h3>
+<a name="GstSoupHTTPSrc--automatic-redirect"></a>The "<code class="literal">automatic-redirect</code>" property</h3>
+<a class="indexterm" name="id2607800"></a><pre class="programlisting">  "automatic-redirect"       gboolean              : Read / Write</pre>
+<p>Automatically follow HTTP redirects (HTTP Status Code 3xx).</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2607827"></a><h3>
+<a name="GstSoupHTTPSrc--proxy"></a>The "<code class="literal">proxy</code>" property</h3>
+<a class="indexterm" name="id2607841"></a><pre class="programlisting">  "proxy"                    gchar*                : Read / Write</pre>
+<p>HTTP proxy server URI.</p>
+<p>Default value: ""</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!-- ##### SECTION Title ##### -->
+GstPluginFeature
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPluginFeature ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GST_PLUGIN_FEATURE_NAME ##### -->
+<para>
+
+</para>
+
+@feature: 
+
+
+<!-- ##### STRUCT GstTypeNameData ##### -->
+<para>
+
+</para>
+
+@name: 
+@type: 
+
+<!-- ##### USER_FUNCTION GstPluginFeatureFilter ##### -->
+<para>
+
+</para>
+
+@feature: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### ENUM GstRank ##### -->
+<para>
+
+</para>
+
+@GST_RANK_NONE: 
+@GST_RANK_MARGINAL: 
+@GST_RANK_SECONDARY: 
+@GST_RANK_PRIMARY: 
+
+<!-- ##### FUNCTION gst_plugin_feature_type_name_filter ##### -->
+<para>
+
+</para>
+
+@feature: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_set_rank ##### -->
+<para>
+
+</para>
+
+@feature: 
+@rank: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_set_name ##### -->
+<para>
+
+</para>
+
+@feature: 
+@name: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_get_rank ##### -->
+<para>
+
+</para>
+
+@feature: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_get_name ##### -->
+<para>
+
+</para>
+
+@feature: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_load ##### -->
+<para>
+
+</para>
+
+@feature: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION gst_plugin_feature_check_version ##### -->
+<para>
+
+</para>
+
+@feature: 
+@min_major: 
+@min_minor: 
+@min_micro: 
+@Returns: 
+
+

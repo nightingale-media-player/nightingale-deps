@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>sdpdemux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-sdlvideosink.html" title="sdlvideosink">
+<link rel="next" href="gst-plugins-bad-plugins-souphttpsrc.html" title="souphttpsrc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-sdlvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-souphttpsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2606529" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2588168" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2606488" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2582769" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2575163" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-sdpdemux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2606529"></a><span class="refentrytitle">sdpdemux</span>
+</h2>
+<p>sdpdemux &#8212; Receive data over the network via SDP</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstSDPDemux"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-sdpdemux.html#GstSDPDemux-struct">GstSDPDemux</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2606488"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBin
+                     +----GstSDPDemux
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2582769"></a><h2>Implemented Interfaces</h2>
+<p>
+GstSDPDemux implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2575163"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-sdpdemux.html#GstSDPDemux--debug">debug</a>"                    gboolean              : Read / Write / Construct
+  "<a href="gst-plugins-bad-plugins-sdpdemux.html#GstSDPDemux--latency">latency</a>"                  guint                 : Read / Write / Construct
+  "<a href="gst-plugins-bad-plugins-sdpdemux.html#GstSDPDemux--timeout">timeout</a>"                  guint64               : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2588168"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2589727"></a><p>
+sdpdemux currently understands SDP as the input format of the session description.
+For each stream listed in the SDP a new rtp_stream<code class="literal">d</code> pad will be created
+with caps derived from the SDP media description. This is a caps of mime type
+"application/x-rtp" that can be connected to any available RTP depayloader
+element. 
+</p>
+<p>
+sdpdemux will internally instantiate an RTP session manager element
+that will handle the RTCP messages to and from the server, jitter removal,
+packet reordering along with providing a clock for the pipeline. 
+</p>
+<p>
+sdpdemux acts like a live element and will therefore only generate data in the 
+PLAYING state.
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch gnomevfssrc location=http://some.server/session.sdp ! sdpdemux ! fakesink
+</pre>
+<p>
+Establish a connection to an HTTP server that contains an SDP session description
+that gets parsed by sdpdemux and send the raw RTP packets to a fakesink.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2007-10-01 (0.10.6)</p>
+<div class="refsect2" lang="en">
+<a name="id2604388"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-sdp.html#plugin-sdp">sdp</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Demuxer/Network/RTP</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>stream%d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>application/sdp</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2606139"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2606149"></a><h3>
+<a name="GstSDPDemux-struct"></a>GstSDPDemux</h3>
+<a class="indexterm" name="id2606161"></a><pre class="programlisting">typedef struct _GstSDPDemux GstSDPDemux;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2606178"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2606188"></a><h3>
+<a name="GstSDPDemux--debug"></a>The "<code class="literal">debug</code>" property</h3>
+<a class="indexterm" name="id2606203"></a><pre class="programlisting">  "debug"                    gboolean              : Read / Write / Construct</pre>
+<p>Dump request and response messages to stdout.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2606228"></a><h3>
+<a name="GstSDPDemux--latency"></a>The "<code class="literal">latency</code>" property</h3>
+<a class="indexterm" name="id2606242"></a><pre class="programlisting">  "latency"                  guint                 : Read / Write / Construct</pre>
+<p>Amount of ms to buffer.</p>
+<p>Default value: 200</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2606268"></a><h3>
+<a name="GstSDPDemux--timeout"></a>The "<code class="literal">timeout</code>" property</h3>
+<a class="indexterm" name="id2606282"></a><pre class="programlisting">  "timeout"                  guint64               : Read / Write / Construct</pre>
+<p>Fail transport after UDP timeout microseconds (0 = disabled).</p>
+<p>Default value: 10000000</p>
+</div>
+</div>
+</div>
+</body>
+</html>

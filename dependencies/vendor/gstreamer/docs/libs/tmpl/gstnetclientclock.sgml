@@ -1,0 +1,38 @@
+<!-- ##### SECTION Title ##### -->
+GstNetClientClock
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstNetClientClock ##### -->
+<para>
+
+</para>
+
+@clock: 
+
+<!-- ##### FUNCTION gst_net_client_clock_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@remote_address: 
+@remote_port: 
+@base_time: 
+@Returns: 
+
+

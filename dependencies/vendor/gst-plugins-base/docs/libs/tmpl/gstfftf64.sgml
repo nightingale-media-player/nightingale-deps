@@ -1,0 +1,81 @@
+<!-- ##### SECTION Title ##### -->
+gstfftf64
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstFFTF64 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstFFTF64Complex ##### -->
+<para>
+
+</para>
+
+@r: 
+@i: 
+
+<!-- ##### FUNCTION gst_fft_f64_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@inverse: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_fft_f64_fft ##### -->
+<para>
+
+</para>
+
+@self: 
+@timedata: 
+@freqdata: 
+
+
+<!-- ##### FUNCTION gst_fft_f64_inverse_fft ##### -->
+<para>
+
+</para>
+
+@self: 
+@freqdata: 
+@timedata: 
+
+
+<!-- ##### FUNCTION gst_fft_f64_window ##### -->
+<para>
+
+</para>
+
+@self: 
+@timedata: 
+@window: 
+
+
+<!-- ##### FUNCTION gst_fft_f64_free ##### -->
+<para>
+
+</para>
+
+@self: 
+
+

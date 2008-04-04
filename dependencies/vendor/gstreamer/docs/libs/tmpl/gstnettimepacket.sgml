@@ -1,0 +1,75 @@
+<!-- ##### SECTION Title ##### -->
+GstNetTimePacket
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstNetTimePacket ##### -->
+<para>
+
+</para>
+
+@local_time: 
+@remote_time: 
+
+<!-- ##### MACRO GST_NET_TIME_PACKET_SIZE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_net_time_packet_new ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_net_time_packet_receive ##### -->
+<para>
+
+</para>
+
+@fd: 
+@addr: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_net_time_packet_send ##### -->
+<para>
+
+</para>
+
+@packet: 
+@fd: 
+@addr: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_net_time_packet_serialize ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+

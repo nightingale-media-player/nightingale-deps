@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+trm
+
+<!-- ##### SECTION Short_Description ##### -->
+Compute MusicBrainz TRM Id using libmusicbrainz
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-trm-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTRM ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstTRM:proxy-address ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTRM:proxy-port ##### -->
+<para>
+
+</para>
+

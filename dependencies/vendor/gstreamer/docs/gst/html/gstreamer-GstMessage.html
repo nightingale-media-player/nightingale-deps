@@ -1,0 +1,1956 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstMessage</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="gstreamer-GstIterator.html" title="GstIterator">
+<link rel="next" href="gstreamer-GstMiniObject.html" title="GstMiniObject">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-GstIterator.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-GstMiniObject.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2701245" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2702586" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-GstMessage"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2701245"></a><span class="refentrytitle">GstMessage</span>
+</h2>
+<p>GstMessage &#8212; Lightweight objects to signal the application of
+                    pipeline events</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+                    <a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>;
+enum                <a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a>;
+#define             <a href="gstreamer-GstMessage.html#GST-MESSAGE-SRC:CAPS">GST_MESSAGE_SRC</a>                     (message)
+#define             <a href="gstreamer-GstMessage.html#GST-MESSAGE-TIMESTAMP:CAPS">GST_MESSAGE_TIMESTAMP</a>               (message)
+#define             <a href="gstreamer-GstMessage.html#GST-MESSAGE-TYPE:CAPS">GST_MESSAGE_TYPE</a>                    (message)
+#define             <a href="gstreamer-GstMessage.html#GST-MESSAGE-TYPE-NAME:CAPS">GST_MESSAGE_TYPE_NAME</a>               (message)
+#define             <a href="gstreamer-GstMessage.html#GST-MESSAGE-TRACE-NAME:CAPS">GST_MESSAGE_TRACE_NAME</a>
+GQuark              <a href="gstreamer-GstMessage.html#gst-message-type-to-quark">gst_message_type_to_quark</a>           (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type);
+const gchar*        <a href="gstreamer-GstMessage.html#gst-message-type-get-name">gst_message_type_get_name</a>           (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type);
+#define             <a href="gstreamer-GstMessage.html#gst-message-copy">gst_message_copy</a>                    (msg)
+const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* <a href="gstreamer-GstMessage.html#gst-message-get-structure">gst_message_get_structure</a>           (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message);
+#define             <a href="gstreamer-GstMessage.html#gst-message-make-writable">gst_message_make_writable</a>           (msg)
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-application">gst_message_new_application</a>         (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-clock-provide">gst_message_new_clock_provide</a>       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock,
+                                                         gboolean ready);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-clock-lost">gst_message_new_clock_lost</a>          (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-custom">gst_message_new_custom</a>              (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-element">gst_message_new_element</a>             (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-eos">gst_message_new_eos</a>                 (<a href="GstObject.html" title="GstObject">GstObject</a> *src);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-error">gst_message_new_error</a>               (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-info">gst_message_new_info</a>                (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-new-clock">gst_message_new_new_clock</a>           (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-segment-done">gst_message_new_segment_done</a>        (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-segment-start">gst_message_new_segment_start</a>       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-state-changed">gst_message_new_state_changed</a>       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstElement.html#GstState">GstState</a> oldstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> newstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> pending);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-tag">gst_message_new_tag</a>                 (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *tag_list);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-buffering">gst_message_new_buffering</a>           (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         gint percent);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-warning">gst_message_new_warning</a>             (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-duration">gst_message_new_duration</a>            (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 duration);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-state-dirty">gst_message_new_state_dirty</a>         (<a href="GstObject.html" title="GstObject">GstObject</a> *src);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-async-start">gst_message_new_async_start</a>         (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         gboolean new_base_time);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-async-done">gst_message_new_async_done</a>          (<a href="GstObject.html" title="GstObject">GstObject</a> *src);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-new-latency">gst_message_new_latency</a>             (<a href="GstObject.html" title="GstObject">GstObject</a> *src);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-clock-lost">gst_message_parse_clock_lost</a>        (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-clock-provide">gst_message_parse_clock_provide</a>     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock,
+                                                         gboolean *ready);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-error">gst_message_parse_error</a>             (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-info">gst_message_parse_info</a>              (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-new-clock">gst_message_parse_new_clock</a>         (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-segment-done">gst_message_parse_segment_done</a>      (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *position);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-segment-start">gst_message_parse_segment_start</a>     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *position);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-state-changed">gst_message_parse_state_changed</a>     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstElement.html#GstState">GstState</a> *oldstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> *newstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> *pending);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-tag">gst_message_parse_tag</a>               (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> **tag_list);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-buffering">gst_message_parse_buffering</a>         (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         gint *percent);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-warning">gst_message_parse_warning</a>           (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-duration">gst_message_parse_duration</a>          (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *duration);
+void                <a href="gstreamer-GstMessage.html#gst-message-parse-async-start">gst_message_parse_async_start</a>       (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         gboolean *new_base_time);
+<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         <a href="gstreamer-GstMessage.html#gst-message-ref">gst_message_ref</a>                     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *msg);
+#define             <a href="gstreamer-GstMessage.html#gst-message-unref">gst_message_unref</a>                   (msg)
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2702586"></a><h2>Description</h2>
+<p>
+Messages are implemented as a subclass of <a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a> with a generic
+<a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> as the content. This allows for writing custom messages without
+requiring an API change while allowing a wide range of different types
+of messages.
+</p>
+<p>
+Messages are posted by objects in the pipeline and are passed to the
+application using the <a href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a>.
+</p>
+<p>
+The basic use pattern of posting a message on a <a href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> is as follows:
+</p>
+<p>
+</p>
+<div class="example">
+<a name="id2702647"></a><p class="title"><b>Example&#160;11.&#160;Posting a <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a></b></p>
+<div class="example-contents"><pre class="programlisting">
+   gst_bus_post (bus, gst_message_new_eos());
+  </pre></div>
+</div>
+<p><br class="example-break">
+</p>
+<p>
+A <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> usually posts messages on the bus provided by the parent
+container using <a href="GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>.
+</p>
+<p>
+Last reviewed on 2005-11-09 (0.9.4)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2702699"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2702709"></a><h3>
+<a name="GstMessage"></a>GstMessage</h3>
+<a class="indexterm" name="id2702722"></a><pre class="programlisting">typedef struct {
+  GstMiniObject mini_object;
+
+  GstMessageType type;
+  guint64 timestamp;
+  GstObject *src;
+
+  GstStructure *structure;
+} GstMessage;
+</pre>
+<p>
+A <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>&#160;<em class="structfield"><code>mini_object</code></em>;</span></td>
+<td> the parent structure
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a>&#160;<em class="structfield"><code>type</code></em>;</span></td>
+<td> the <a href="gstreamer-GstMessage.html#GstMessageType"><span class="type">GstMessageType</span></a> of the message
+</td>
+</tr>
+<tr>
+<td><span class="term">guint64&#160;<em class="structfield"><code>timestamp</code></em>;</span></td>
+<td> the timestamp of the message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="GstObject.html" title="GstObject">GstObject</a>&#160;*<em class="structfield"><code>src</code></em>;</span></td>
+<td> the src of the message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>&#160;*<em class="structfield"><code>structure</code></em>;</span></td>
+<td> the <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> containing the message info.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2702875"></a><h3>
+<a name="GstMessageType"></a>enum GstMessageType</h3>
+<a class="indexterm" name="id2702888"></a><pre class="programlisting">typedef enum
+{
+  GST_MESSAGE_UNKNOWN           = 0,
+  GST_MESSAGE_EOS               = (1 &lt;&lt; 0),
+  GST_MESSAGE_ERROR             = (1 &lt;&lt; 1),
+  GST_MESSAGE_WARNING           = (1 &lt;&lt; 2),
+  GST_MESSAGE_INFO              = (1 &lt;&lt; 3),
+  GST_MESSAGE_TAG               = (1 &lt;&lt; 4),
+  GST_MESSAGE_BUFFERING         = (1 &lt;&lt; 5),
+  GST_MESSAGE_STATE_CHANGED     = (1 &lt;&lt; 6),
+  GST_MESSAGE_STATE_DIRTY       = (1 &lt;&lt; 7),
+  GST_MESSAGE_STEP_DONE         = (1 &lt;&lt; 8),
+  GST_MESSAGE_CLOCK_PROVIDE     = (1 &lt;&lt; 9),
+  GST_MESSAGE_CLOCK_LOST        = (1 &lt;&lt; 10),
+  GST_MESSAGE_NEW_CLOCK         = (1 &lt;&lt; 11),
+  GST_MESSAGE_STRUCTURE_CHANGE  = (1 &lt;&lt; 12),
+  GST_MESSAGE_STREAM_STATUS     = (1 &lt;&lt; 13),
+  GST_MESSAGE_APPLICATION       = (1 &lt;&lt; 14),
+  GST_MESSAGE_ELEMENT           = (1 &lt;&lt; 15),
+  GST_MESSAGE_SEGMENT_START     = (1 &lt;&lt; 16),
+  GST_MESSAGE_SEGMENT_DONE      = (1 &lt;&lt; 17),
+  GST_MESSAGE_DURATION          = (1 &lt;&lt; 18),
+  GST_MESSAGE_LATENCY           = (1 &lt;&lt; 19),
+  GST_MESSAGE_ASYNC_START       = (1 &lt;&lt; 20),
+  GST_MESSAGE_ASYNC_DONE        = (1 &lt;&lt; 21),
+  GST_MESSAGE_ANY               = ~0
+} GstMessageType;
+</pre>
+<p>
+The different message types that are available.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-UNKNOWN:CAPS"></a><code class="literal">GST_MESSAGE_UNKNOWN</code></span></td>
+<td> an undefined message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-EOS:CAPS"></a><code class="literal">GST_MESSAGE_EOS</code></span></td>
+<td> end-of-stream reached in a pipeline. The application will
+only receive this message in the PLAYING state and every time it sets a
+pipeline to PLAYING that is in the EOS state. The application can perform a
+flushing seek in the pipeline, which will undo the EOS state again. 
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-ERROR:CAPS"></a><code class="literal">GST_MESSAGE_ERROR</code></span></td>
+<td> an error occured. Whe the application receives an error
+message it should stop playback of the pipeline and not assume that more
+data will be played.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-WARNING:CAPS"></a><code class="literal">GST_MESSAGE_WARNING</code></span></td>
+<td> a warning occured.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-INFO:CAPS"></a><code class="literal">GST_MESSAGE_INFO</code></span></td>
+<td> an info message occured
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-TAG:CAPS"></a><code class="literal">GST_MESSAGE_TAG</code></span></td>
+<td> a tag was found.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-BUFFERING:CAPS"></a><code class="literal">GST_MESSAGE_BUFFERING</code></span></td>
+<td> the pipeline is buffering. When the application
+receives a buffering message in the PLAYING state for a non-live pipeline it
+must PAUSE the pipeline until the buffering completes, when the percentage
+field in the message is 100%. For live pipelines, no action must be
+performed and the buffering percentage can be used to inform the user about
+the progress.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-STATE-CHANGED:CAPS"></a><code class="literal">GST_MESSAGE_STATE_CHANGED</code></span></td>
+<td> a state change happened
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-STATE-DIRTY:CAPS"></a><code class="literal">GST_MESSAGE_STATE_DIRTY</code></span></td>
+<td> an element changed state in a streaming thread.
+This message is deprecated.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-STEP-DONE:CAPS"></a><code class="literal">GST_MESSAGE_STEP_DONE</code></span></td>
+<td> a framestep finished. This message is not yet
+implemented.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-CLOCK-PROVIDE:CAPS"></a><code class="literal">GST_MESSAGE_CLOCK_PROVIDE</code></span></td>
+<td> an element notifies its capability of providing
+                            a clock. This message is used internally and
+                            never forwarded to the application.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-CLOCK-LOST:CAPS"></a><code class="literal">GST_MESSAGE_CLOCK_LOST</code></span></td>
+<td> The current clock as selected by the pipeline became
+                         unusable. The pipeline will select a new clock on
+                         the next PLAYING state change.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-NEW-CLOCK:CAPS"></a><code class="literal">GST_MESSAGE_NEW_CLOCK</code></span></td>
+<td> a new clock was selected in the pipeline.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-STRUCTURE-CHANGE:CAPS"></a><code class="literal">GST_MESSAGE_STRUCTURE_CHANGE</code></span></td>
+<td> the structure of the pipeline changed. Not
+implemented yet.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-STREAM-STATUS:CAPS"></a><code class="literal">GST_MESSAGE_STREAM_STATUS</code></span></td>
+<td> status about a stream, emitted when it starts,
+                            stops, errors, etc.. Not implemented yet.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-APPLICATION:CAPS"></a><code class="literal">GST_MESSAGE_APPLICATION</code></span></td>
+<td> message posted by the application, possibly
+                          via an application-specific element.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-ELEMENT:CAPS"></a><code class="literal">GST_MESSAGE_ELEMENT</code></span></td>
+<td> element-specific message, see the specific element's
+                      documentation
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-SEGMENT-START:CAPS"></a><code class="literal">GST_MESSAGE_SEGMENT_START</code></span></td>
+<td> pipeline started playback of a segment. This
+message is used internally and never forwarded to the application.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-SEGMENT-DONE:CAPS"></a><code class="literal">GST_MESSAGE_SEGMENT_DONE</code></span></td>
+<td> pipeline completed playback of a segment. This
+message is forwarded to the application after all elements that posted
+<em class="parameter"><code>GST_MESSAGE_SEGMENT_START</code></em> posted a GST_MESSAGE_SEGMENT_DONE message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-DURATION:CAPS"></a><code class="literal">GST_MESSAGE_DURATION</code></span></td>
+<td> The duration of a pipeline changed. The application
+can get the new duration with a duration query.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-LATENCY:CAPS"></a><code class="literal">GST_MESSAGE_LATENCY</code></span></td>
+<td> Posted by elements when their latency changes. The
+pipeline will calculate and distribute a new latency. Since: 0.10.12
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-ASYNC-START:CAPS"></a><code class="literal">GST_MESSAGE_ASYNC_START</code></span></td>
+<td> Posted by elements when they start an ASYNC state
+change. This message is not forwarded to the application but is used
+internally. Since: 0.10.13. 
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-ASYNC-DONE:CAPS"></a><code class="literal">GST_MESSAGE_ASYNC_DONE</code></span></td>
+<td> Posted by elements when they complete an ASYNC state
+change. The application will only receive this message from the toplevel
+pipeline. Since: 0.10.13
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-MESSAGE-ANY:CAPS"></a><code class="literal">GST_MESSAGE_ANY</code></span></td>
+<td> mask for all of the above messages.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703535"></a><h3>
+<a name="GST-MESSAGE-SRC:CAPS"></a>GST_MESSAGE_SRC()</h3>
+<a class="indexterm" name="id2703548"></a><pre class="programlisting">#define GST_MESSAGE_SRC(message)	(GST_MESSAGE(message)-&gt;src)
+</pre>
+<p>
+Get the object that posted <em class="parameter"><code>message</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703600"></a><h3>
+<a name="GST-MESSAGE-TIMESTAMP:CAPS"></a>GST_MESSAGE_TIMESTAMP()</h3>
+<a class="indexterm" name="id2703612"></a><pre class="programlisting">#define GST_MESSAGE_TIMESTAMP(message)	(GST_MESSAGE(message)-&gt;timestamp)
+</pre>
+<p>
+Get the timestamp of <em class="parameter"><code>message</code></em>. This is the timestamp when the message
+was created.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703666"></a><h3>
+<a name="GST-MESSAGE-TYPE:CAPS"></a>GST_MESSAGE_TYPE()</h3>
+<a class="indexterm" name="id2703679"></a><pre class="programlisting">#define GST_MESSAGE_TYPE(message)	(GST_MESSAGE(message)-&gt;type)
+</pre>
+<p>
+Get the <a href="gstreamer-GstMessage.html#GstMessageType"><span class="type">GstMessageType</span></a> of <em class="parameter"><code>message</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703739"></a><h3>
+<a name="GST-MESSAGE-TYPE-NAME:CAPS"></a>GST_MESSAGE_TYPE_NAME()</h3>
+<a class="indexterm" name="id2703754"></a><pre class="programlisting">#define GST_MESSAGE_TYPE_NAME(message)	gst_message_type_get_name(GST_MESSAGE_TYPE(message))
+</pre>
+<p>
+Get a constant string representation of the <a href="gstreamer-GstMessage.html#GstMessageType"><span class="type">GstMessageType</span></a> of <em class="parameter"><code>message</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> a <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703822"></a><h3>
+<a name="GST-MESSAGE-TRACE-NAME:CAPS"></a>GST_MESSAGE_TRACE_NAME</h3>
+<a class="indexterm" name="id2703835"></a><pre class="programlisting">#define GST_MESSAGE_TRACE_NAME	"GstMessage"
+</pre>
+<p>
+The name used for memory allocation tracing</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703855"></a><h3>
+<a name="gst-message-type-to-quark"></a>gst_message_type_to_quark ()</h3>
+<a class="indexterm" name="id2703869"></a><pre class="programlisting">GQuark              gst_message_type_to_quark           (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type);</pre>
+<p>
+Get the unique quark for the given message type.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> the message type
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the quark associated with the message type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2703931"></a><h3>
+<a name="gst-message-type-get-name"></a>gst_message_type_get_name ()</h3>
+<a class="indexterm" name="id2703945"></a><pre class="programlisting">const gchar*        gst_message_type_get_name           (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type);</pre>
+<p>
+Get a printable name for the given message type. Do not modify or free.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> the message type
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a reference to the static name of the message.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704008"></a><h3>
+<a name="gst-message-copy"></a>gst_message_copy()</h3>
+<a class="indexterm" name="id2704021"></a><pre class="programlisting">#define         gst_message_copy(msg)		GST_MESSAGE (gst_mini_object_copy (GST_MINI_OBJECT (msg)))
+</pre>
+<p>
+Creates a copy of the message. Returns a copy of the message.
+</p>
+<p>
+MT safe</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> the message to copy
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704063"></a><h3>
+<a name="gst-message-get-structure"></a>gst_message_get_structure ()</h3>
+<a class="indexterm" name="id2704077"></a><pre class="programlisting">const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_message_get_structure           (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message);</pre>
+<p>
+Access the structure of the message.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The structure of the message. The structure is still
+owned by the message, which means that you should not free it and
+that the pointer becomes invalid when you free the message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704150"></a><h3>
+<a name="gst-message-make-writable"></a>gst_message_make_writable()</h3>
+<a class="indexterm" name="id2704163"></a><pre class="programlisting">#define         gst_message_make_writable(msg)	GST_MESSAGE (gst_mini_object_make_writable (GST_MINI_OBJECT (msg)))
+</pre>
+<p>
+Checks if a message is writable. If not, a writable copy is made and
+returned. Returns a message (possibly a duplicate) that is writable.
+</p>
+<p>
+MT safe</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> the message to make writable
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704207"></a><h3>
+<a name="gst-message-new-application"></a>gst_message_new_application ()</h3>
+<a class="indexterm" name="id2704221"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_application         (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre>
+<p>
+Create a new application-typed message. GStreamer will never create these
+messages; they are a gift from us to you. Enjoy.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>structure</code></em>&#160;:</span></td>
+<td> The structure for the message. The message will take ownership of
+the structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new application message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704307"></a><h3>
+<a name="gst-message-new-clock-provide"></a>gst_message_new_clock_provide ()</h3>
+<a class="indexterm" name="id2704321"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_clock_provide       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock,
+                                                         gboolean ready);</pre>
+<p>
+Create a clock provide message. This message is posted whenever an
+element is ready to provide a clock or lost its ability to provide
+a clock (maybe because it paused or became EOS).
+</p>
+<p>
+This message is mainly used internally to manage the clock
+selection.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> The clock it provides
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ready</code></em>&#160;:</span></td>
+<td> TRUE if the sender can provide a clock
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new provide clock message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704434"></a><h3>
+<a name="gst-message-new-clock-lost"></a>gst_message_new_clock_lost ()</h3>
+<a class="indexterm" name="id2704448"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_clock_lost          (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre>
+<p>
+Create a clock lost message. This message is posted whenever the
+clock is not valid anymore.
+</p>
+<p>
+If this message is posted by the pipeline, the pipeline will
+select a new clock again when it goes to PLAYING. It might therefore
+be needed to set the pipeline to PAUSED and PLAYING again.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> the clock that was lost
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new clock lost message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704538"></a><h3>
+<a name="gst-message-new-custom"></a>gst_message_new_custom ()</h3>
+<a class="indexterm" name="id2704551"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_custom              (<a href="gstreamer-GstMessage.html#GstMessageType">GstMessageType</a> type,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre>
+<p>
+Create a new custom-typed message. This can be used for anything not
+handled by other message-specific functions to pass a message to the
+app. The structure field can be NULL.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> The <a href="gstreamer-GstMessage.html#GstMessageType"><span class="type">GstMessageType</span></a> to distinguish messages
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>structure</code></em>&#160;:</span></td>
+<td> The structure for the message. The message will take ownership of
+the structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704669"></a><h3>
+<a name="gst-message-new-element"></a>gst_message_new_element ()</h3>
+<a class="indexterm" name="id2704682"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_element             (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre>
+<p>
+Create a new element-specific message. This is meant as a generic way of
+allowing one-way communication from an element to an application, for example
+"the firewire cable was unplugged". The format of the message should be
+documented in the element's documentation. The structure field can be NULL.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>structure</code></em>&#160;:</span></td>
+<td> The structure for the message. The message will take ownership of
+the structure.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new element message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704772"></a><h3>
+<a name="gst-message-new-eos"></a>gst_message_new_eos ()</h3>
+<a class="indexterm" name="id2704785"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_eos                 (<a href="GstObject.html" title="GstObject">GstObject</a> *src);</pre>
+<p>
+Create a new eos message. This message is generated and posted in
+the sink elements of a GstBin. The bin will only forward the EOS
+message to the application if all sinks have posted an EOS message.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new eos message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704849"></a><h3>
+<a name="gst-message-new-error"></a>gst_message_new_error ()</h3>
+<a class="indexterm" name="id2704862"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_error               (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);</pre>
+<p>
+Create a new error message. The message will copy <em class="parameter"><code>error</code></em> and
+<em class="parameter"><code>debug</code></em>. This message is posted by element when a fatal event
+occured. The pipeline will probably (partially) stop. The application
+receiving this message should stop the pipeline.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> The GError for this message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> A debugging string for something or other.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new error message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2704983"></a><h3>
+<a name="gst-message-new-info"></a>gst_message_new_info ()</h3>
+<a class="indexterm" name="id2705000"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_info                (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);</pre>
+<p>
+Create a new info message. The message will make copies of <em class="parameter"><code>error</code></em> and
+<em class="parameter"><code>debug</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> The GError for this message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> A debugging string for something or other.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new info message.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.12
+
+MT safe.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705123"></a><h3>
+<a name="gst-message-new-new-clock"></a>gst_message_new_new_clock ()</h3>
+<a class="indexterm" name="id2705137"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_new_clock           (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre>
+<p>
+Create a new clock message. This message is posted whenever the
+pipeline selectes a new clock for the pipeline.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> the new selected clock
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new new clock message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705222"></a><h3>
+<a name="gst-message-new-segment-done"></a>gst_message_new_segment_done ()</h3>
+<a class="indexterm" name="id2705235"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_segment_done        (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);</pre>
+<p>
+Create a new segment done message. This message is posted by elements that
+finish playback of a segment as a result of a segment seek. This message
+is received by the application after all elements that posted a segment_start
+have posted the segment_done.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> The format of the position being done
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> The position of the segment being done
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new segment done message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705345"></a><h3>
+<a name="gst-message-new-segment-start"></a>gst_message_new_segment_start ()</h3>
+<a class="indexterm" name="id2705359"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_segment_start       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 position);</pre>
+<p>
+Create a new segment message. This message is posted by elements that
+start playback of a segment as a result of a segment seek. This message
+is not received by the application but is used for maintenance reasons in
+container elements.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> The format of the position being played
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> The position of the segment being played
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new segment start message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705468"></a><h3>
+<a name="gst-message-new-state-changed"></a>gst_message_new_state_changed ()</h3>
+<a class="indexterm" name="id2705482"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_state_changed       (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="GstElement.html#GstState">GstState</a> oldstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> newstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> pending);</pre>
+<p>
+Create a state change message. This message is posted whenever an element
+changed its state.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> the object originating the message
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>oldstate</code></em>&#160;:</span></td>
+<td> the previous state
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>newstate</code></em>&#160;:</span></td>
+<td> the new (current) state
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pending</code></em>&#160;:</span></td>
+<td> the pending (target) state
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new state change message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705610"></a><h3>
+<a name="gst-message-new-tag"></a>gst_message_new_tag ()</h3>
+<a class="indexterm" name="id2705624"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_tag                 (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *tag_list);</pre>
+<p>
+Create a new tag message. The message will take ownership of the tag list.
+The message is posted by elements that discovered a new taglist.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tag_list</code></em>&#160;:</span></td>
+<td> The tag list for the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new tag message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705709"></a><h3>
+<a name="gst-message-new-buffering"></a>gst_message_new_buffering ()</h3>
+<a class="indexterm" name="id2705727"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_buffering           (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         gint percent);</pre>
+<p>
+Create a new buffering message. This message can be posted by an element that
+needs to buffer data before it can continue processing. <em class="parameter"><code>percent</code></em> should be a
+value between 0 and 100. A value of 100 means that the buffering completed.
+</p>
+<p>
+When <em class="parameter"><code>percent</code></em> is &lt; 100 the application should PAUSE a PLAYING pipeline. When
+<em class="parameter"><code>percent</code></em> is 100, the application can set the pipeline (back) to PLAYING.
+The application must be prepared to receive BUFFERING messages in the
+PREROLLING state and may only set the pipeline to PLAYING after receiving a
+message with <em class="parameter"><code>percent</code></em> set to 100, which can happen after the pipeline
+completed prerolling.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>percent</code></em>&#160;:</span></td>
+<td> The buffering percent
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new buffering message.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.11
+
+MT safe.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705852"></a><h3>
+<a name="gst-message-new-warning"></a>gst_message_new_warning ()</h3>
+<a class="indexterm" name="id2705865"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_warning             (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         GError *error,
+                                                         gchar *debug);</pre>
+<p>
+Create a new warning message. The message will make copies of <em class="parameter"><code>error</code></em> and
+<em class="parameter"><code>debug</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> The GError for this message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> A debugging string for something or other.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new warning message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2705983"></a><h3>
+<a name="gst-message-new-duration"></a>gst_message_new_duration ()</h3>
+<a class="indexterm" name="id2705996"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_duration            (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 duration);</pre>
+<p>
+Create a new duration message. This message is posted by elements that
+know the duration of a stream in a specific format. This message
+is received by bins and is used to calculate the total duration of a
+pipeline. Elements may post a duration message with a duration of
+GST_CLOCK_TIME_NONE to indicate that the duration has changed and the 
+cached duration should be discarded. The new duration can then be 
+retrieved via a query.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> The format of the duration
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>duration</code></em>&#160;:</span></td>
+<td> The new duration 
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new duration message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706108"></a><h3>
+<a name="gst-message-new-state-dirty"></a>gst_message_new_state_dirty ()</h3>
+<a class="indexterm" name="id2706122"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_state_dirty         (<a href="GstObject.html" title="GstObject">GstObject</a> *src);</pre>
+<p>
+Create a state dirty message. This message is posted whenever an element
+changed its state asynchronously and is used internally to update the
+states of container objects.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> the object originating the message
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new state dirty message.
+
+MT safe.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706185"></a><h3>
+<a name="gst-message-new-async-start"></a>gst_message_new_async_start ()</h3>
+<a class="indexterm" name="id2706202"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_async_start         (<a href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         gboolean new_base_time);</pre>
+<p>
+This message is posted by elements when they start an ASYNC state change. 
+<em class="parameter"><code>new_base_time</code></em> is set to TRUE when the element lost its state when it was
+PLAYING.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>new_base_time</code></em>&#160;:</span></td>
+<td> if a new base_time should be set on the element
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new async_start message. 
+
+MT safe.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706300"></a><h3>
+<a name="gst-message-new-async-done"></a>gst_message_new_async_done ()</h3>
+<a class="indexterm" name="id2706316"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_async_done          (<a href="GstObject.html" title="GstObject">GstObject</a> *src);</pre>
+<p>
+The message is posted when elements completed an ASYNC state change.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new async_done message.
+
+MT safe.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706385"></a><h3>
+<a name="gst-message-new-latency"></a>gst_message_new_latency ()</h3>
+<a class="indexterm" name="id2706401"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_new_latency             (<a href="GstObject.html" title="GstObject">GstObject</a> *src);</pre>
+<p>
+This message can be posted by elements when their latency requirements have
+changed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The new latency message. 
+
+MT safe.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.12
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706470"></a><h3>
+<a name="gst-message-parse-clock-lost"></a>gst_message_parse_clock_lost ()</h3>
+<a class="indexterm" name="id2706484"></a><pre class="programlisting">void                gst_message_parse_clock_lost        (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock);</pre>
+<p>
+Extracts the lost clock from the GstMessage.
+The clock object returned remains valid until the message is freed.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_CLOCK_LOST.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> A pointer to hold the lost clock
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706570"></a><h3>
+<a name="gst-message-parse-clock-provide"></a>gst_message_parse_clock_provide ()</h3>
+<a class="indexterm" name="id2706584"></a><pre class="programlisting">void                gst_message_parse_clock_provide     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock,
+                                                         gboolean *ready);</pre>
+<p>
+Extracts the clock and ready flag from the GstMessage.
+The clock object returned remains valid until the message is freed.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_CLOCK_PROVIDE.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> A pointer to  hold a clock object.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ready</code></em>&#160;:</span></td>
+<td> A pointer to hold the ready flag.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706692"></a><h3>
+<a name="gst-message-parse-error"></a>gst_message_parse_error ()</h3>
+<a class="indexterm" name="id2706705"></a><pre class="programlisting">void                gst_message_parse_error             (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);</pre>
+<p>
+Extracts the GError and debug string from the GstMessage. The values returned
+in the output arguments are copies; the caller must free them when done.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_ERROR.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gerror</code></em>&#160;:</span></td>
+<td> Location for the GError
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> Location for the debug message, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706814"></a><h3>
+<a name="gst-message-parse-info"></a>gst_message_parse_info ()</h3>
+<a class="indexterm" name="id2706830"></a><pre class="programlisting">void                gst_message_parse_info              (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);</pre>
+<p>
+Extracts the GError and debug string from the GstMessage. The values returned
+in the output arguments are copies; the caller must free them when done.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_INFO.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gerror</code></em>&#160;:</span></td>
+<td> Location for the GError
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> Location for the debug message, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.12
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2706945"></a><h3>
+<a name="gst-message-parse-new-clock"></a>gst_message_parse_new_clock ()</h3>
+<a class="indexterm" name="id2706959"></a><pre class="programlisting">void                gst_message_parse_new_clock         (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstClock.html" title="GstClock">GstClock</a> **clock);</pre>
+<p>
+Extracts the new clock from the GstMessage.
+The clock object returned remains valid until the message is freed.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_NEW_CLOCK.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>clock</code></em>&#160;:</span></td>
+<td> A pointer to hold the selected new clock
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707044"></a><h3>
+<a name="gst-message-parse-segment-done"></a>gst_message_parse_segment_done ()</h3>
+<a class="indexterm" name="id2707058"></a><pre class="programlisting">void                gst_message_parse_segment_done      (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *position);</pre>
+<p>
+Extracts the position and format from the segment start message.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_SEGMENT_DONE.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> Result location for the format, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> Result location for the position, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707165"></a><h3>
+<a name="gst-message-parse-segment-start"></a>gst_message_parse_segment_start ()</h3>
+<a class="indexterm" name="id2707179"></a><pre class="programlisting">void                gst_message_parse_segment_start     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *position);</pre>
+<p>
+Extracts the position and format from the segment start message.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_SEGMENT_START.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> Result location for the format, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> Result location for the position, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707286"></a><h3>
+<a name="gst-message-parse-state-changed"></a>gst_message_parse_state_changed ()</h3>
+<a class="indexterm" name="id2707300"></a><pre class="programlisting">void                gst_message_parse_state_changed     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="GstElement.html#GstState">GstState</a> *oldstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> *newstate,
+                                                         <a href="GstElement.html#GstState">GstState</a> *pending);</pre>
+<p>
+Extracts the old and new states from the GstMessage.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> a valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_STATE_CHANGED
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>oldstate</code></em>&#160;:</span></td>
+<td> the previous state, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>newstate</code></em>&#160;:</span></td>
+<td> the new (current) state, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pending</code></em>&#160;:</span></td>
+<td> the pending (target) state, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707430"></a><h3>
+<a name="gst-message-parse-tag"></a>gst_message_parse_tag ()</h3>
+<a class="indexterm" name="id2707443"></a><pre class="programlisting">void                gst_message_parse_tag               (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> **tag_list);</pre>
+<p>
+Extracts the tag list from the GstMessage. The tag list returned in the
+output argument is a copy; the caller must free it when done.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_TAG.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tag_list</code></em>&#160;:</span></td>
+<td> Return location for the tag-list.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707529"></a><h3>
+<a name="gst-message-parse-buffering"></a>gst_message_parse_buffering ()</h3>
+<a class="indexterm" name="id2707547"></a><pre class="programlisting">void                gst_message_parse_buffering         (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         gint *percent);</pre>
+<p>
+Extracts the buffering percent from the GstMessage. see also
+<a href="gstreamer-GstMessage.html#gst-message-new-buffering"><code class="function">gst_message_new_buffering()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_BUFFERING.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>percent</code></em>&#160;:</span></td>
+<td> Return location for the percent.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.11
+
+MT safe.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707644"></a><h3>
+<a name="gst-message-parse-warning"></a>gst_message_parse_warning ()</h3>
+<a class="indexterm" name="id2707658"></a><pre class="programlisting">void                gst_message_parse_warning           (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         GError **gerror,
+                                                         gchar **debug);</pre>
+<p>
+Extracts the GError and debug string from the GstMessage. The values returned
+in the output arguments are copies; the caller must free them when done.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_WARNING.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gerror</code></em>&#160;:</span></td>
+<td> Location for the GError
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>debug</code></em>&#160;:</span></td>
+<td> Location for the debug message, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707766"></a><h3>
+<a name="gst-message-parse-duration"></a>gst_message_parse_duration ()</h3>
+<a class="indexterm" name="id2707780"></a><pre class="programlisting">void                gst_message_parse_duration          (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
+                                                         gint64 *duration);</pre>
+<p>
+Extracts the duration and format from the duration message. The duration
+might be GST_CLOCK_TIME_NONE, which indicates that the duration has
+changed. Applications should always use a query to retrieve the duration
+of a pipeline.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_DURATION.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> Result location for the format, or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>duration</code></em>&#160;:</span></td>
+<td> Result location for the duration, or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707890"></a><h3>
+<a name="gst-message-parse-async-start"></a>gst_message_parse_async_start ()</h3>
+<a class="indexterm" name="id2707906"></a><pre class="programlisting">void                gst_message_parse_async_start       (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *message,
+                                                         gboolean *new_base_time);</pre>
+<p>
+Extract the new_base_time from the async_start message. 
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td> A valid <a href="gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_ASYNC_DONE.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>new_base_time</code></em>&#160;:</span></td>
+<td> Result location for the new_base_time or NULL
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2707999"></a><h3>
+<a name="gst-message-ref"></a>gst_message_ref ()</h3>
+<a class="indexterm" name="id2708012"></a><pre class="programlisting"><a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a>*         gst_message_ref                     (<a href="gstreamer-GstMessage.html#GstMessage">GstMessage</a> *msg);</pre>
+<p>
+Convenience macro to increase the reference count of the message.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> the message to ref
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <em class="parameter"><code>msg</code></em> (for convenience when doing assignments)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2708079"></a><h3>
+<a name="gst-message-unref"></a>gst_message_unref()</h3>
+<a class="indexterm" name="id2708091"></a><pre class="programlisting">#define         gst_message_unref(msg)		gst_mini_object_unref (GST_MINI_OBJECT (msg))
+</pre>
+<p>
+Convenience macro to decrease the reference count of the message, possibly
+freeing it.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> the message to unref
+</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2708131"></a><h2>See Also</h2>
+<a href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a>, <a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a>, <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
+</div>
+</div>
+</body>
+</html>

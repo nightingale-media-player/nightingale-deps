@@ -1,0 +1,73 @@
+<!-- ##### SECTION Title ##### -->
+gsttagid3
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_tag_id3_genre_count ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_tag_id3_genre_get ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_tag_list_new_from_id3v1 ##### -->
+<para>
+
+</para>
+
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_tag_from_id3_tag ##### -->
+<para>
+
+</para>
+
+@id3_tag: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_tag_from_id3_user_tag ##### -->
+<para>
+
+</para>
+
+@type: 
+@id3_user_tag: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_tag_to_id3_tag ##### -->
+<para>
+
+</para>
+
+@gst_tag: 
+@Returns: 
+
+

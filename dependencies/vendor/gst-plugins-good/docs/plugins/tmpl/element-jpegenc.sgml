@@ -1,0 +1,38 @@
+<!-- ##### SECTION Title ##### -->
+jpegenc
+
+<!-- ##### SECTION Short_Description ##### -->
+Encode images in JPEG format
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-jpegenc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstJpegEnc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstJpegEnc::frame-encoded ##### -->
+<para>
+
+</para>
+
+@gstjpegenc: the object which received the signal.
+
+<!-- ##### ARG GstJpegEnc:quality ##### -->
+<para>
+
+</para>
+

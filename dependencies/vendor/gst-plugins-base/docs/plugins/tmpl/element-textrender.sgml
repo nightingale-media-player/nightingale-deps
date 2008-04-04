@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+textrender
+
+<!-- ##### SECTION Short_Description ##### -->
+Renders a text string to an image bitmap
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-textrender-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTextRender ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstTextRender:font-desc ##### -->
+<para>
+
+</para>
+
