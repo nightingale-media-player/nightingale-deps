@@ -178,7 +178,6 @@ setup_build()
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
-            use_sys_libs=true
             ;;
 
         windows-i686-msvc8)
@@ -200,9 +199,10 @@ setup_build()
             ;;
 
         macosx-i686 | macosx-ppc)
-            export CFLAGS="${CFLAGS} -fnested-functions"
+            export CFLAGS="${CFLAGS} -fnested-functions -D__APPLE__"
             export CFLAGS="${CFLAGS} -gstabs+"
             export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+	    export MACOSX_DEPLOYMENT_TARGET="10.4"
             ;;
 
     esac
@@ -323,6 +323,7 @@ build()
     export GLIB_CFLAGS=
     export GLIB_LIBS=
     export PKG_CONFIG_PATH=
+    export DYLDB_LIBRARY_PATH=/usr/lib:/opt/local/lib
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
@@ -337,56 +338,64 @@ build()
         tgt_dep_dir="${dep_arch_dir}/gettext/${build_type}"
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-lintl"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
         if [ "$sys_name" = "Darwin" ]; then
-            export_append "LD_FLAGS"                                           \
-                          "-dylib_file"                                        \
-                          "libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    export CFLAGS="$CFLAGS -I${tgt_dep_dir}/include"
+            export_append "LDFLAGS"	\
+                "-Wl,-dylib_file"	\
+                "-Wl,libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
         fi
 
         # Set up iconv build options.
         tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-liconv"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
         if [ "$sys_name" = "Darwin" ]; then
-            export_append "LD_FLAGS"                                           \
-                          "-dylib_file"                                        \
-                          "libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    export CFLAGS="$CFLAGS -I${tgt_dep_dir}/include"
+            export_append "LDFLAGS"	\
+                "-Wl,-dylib_file"	\
+                "-Wl,libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
         fi
 
         # Set up glib build options.
         tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
-        export_append "GLIB_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-lglib-2.0"                                             \
-                      "-lgobject-2.0"
-        export_append "GLIB_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/glib-2.0"                      \
-                      "-I${tgt_dep_dir}/lib/glib-2.0/include"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                        "LDFLAGS"                                              \
-                        "-dylib_file"                                          \
-                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
-            export_append                                                      \
-                "LDFLAGS"                                                      \
-                "-dylib_file"                                                  \
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
+	if [ "$sys_name" != "Linux" ]; then
+	    # We always use system-wide glib on linux
+            export_append "GLIB_LIBS"	\
+                "-L${tgt_dep_dir}/lib"	\
+                "-lglib-2.0"		\
+                "-lgmodule-2.0"		\
+                "-lgthread-2.0"		\
+                "-lgobject-2.0"
+            export_append "GLIB_CFLAGS"			\
+                "-I${tgt_dep_dir}/include/glib-2.0"	\
+                "-I${tgt_dep_dir}/lib/glib-2.0/include"
+        fi
+	if [ "$sys_name" = "Darwin" ]; then
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgmodule-2.0.dylib:${tgt_dep_dir}/lib/libgmodule-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgthread-2.0.dylib:${tgt_dep_dir}/lib/libgthread-2.0.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    #export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
+	    export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
 	    if [ "$build_type" = "debug" ]; then
 		export GLIB_LIBS="$GLIB_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${tgt_dep_dir}/lib/pkgconfig"
         fi
     fi
 
@@ -413,8 +422,6 @@ build()
         export GLIB_CFLAGS=`${cl_process} echo ${GLIB_CFLAGS}`
         export GLIB_LIBS=`${cl_process} echo ${GLIB_LIBS}`
     fi
-    export GLIB_ONLY_CFLAGS=$GLIB_CFLAGS
-    export GLIB_ONLY_LIBS=$GLIB_LIBS
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
@@ -448,8 +455,8 @@ build()
     # Post-process libraries on Mac.
     if [ "$sys_name" = "Darwin" ]; then
         install_name_tool                                                      \
-            -id libgpod.dylib                                                  \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dylib
+            -id liboil-0.3.dylib                                                  \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/liboil-0.3.dylib
     fi
 
     # Build the symbols.

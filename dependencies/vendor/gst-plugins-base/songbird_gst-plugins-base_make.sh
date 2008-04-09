@@ -200,9 +200,10 @@ setup_build()
             ;;
 
         macosx-i686 | macosx-ppc)
-            export CFLAGS="${CFLAGS} -fnested-functions"
+            export CFLAGS="${CFLAGS} -fnested-functions -D__MACOSX__"
             export CFLAGS="${CFLAGS} -gstabs+"
             export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+	    export MACOSX_DEPLOYMENT_TARGET="10.4"
             ;;
 
     esac
@@ -337,6 +338,7 @@ build()
     export VORBIS_CFLAGS=
     export VORBIS_LIBS=
     export PKG_CONFIG_PATH=
+    export DYLD_LIBRARY_PATH=/usr/lib:/opt/local/lib
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
@@ -351,63 +353,64 @@ build()
         tgt_dep_dir="${dep_arch_dir}/gettext/${build_type}"
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-lintl"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
         if [ "$sys_name" = "Darwin" ]; then
-            export_append "LD_FLAGS"                                           \
-                          "-dylib_file"                                        \
-                          "libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    export CFLAGS="$CFLAGS -I${tgt_dep_dir}/include"
+            export_append "LDFLAGS"	\
+                "-Wl,-dylib_file"	\
+                "-Wl,libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
         fi
 
         # Set up iconv build options.
         tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-liconv"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
         if [ "$sys_name" = "Darwin" ]; then
-            export_append "LD_FLAGS"                                           \
-                          "-dylib_file"                                        \
-                          "libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    export CFLAGS="$CFLAGS -I${tgt_dep_dir}/include"
+            export_append "LDFLAGS"	\
+                "-Wl,-dylib_file"	\
+                "-Wl,libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
         fi
 
         # Set up glib build options.
         tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
 	if [ "$sys_name" != "Linux" ]; then
-            export_append "GLIB_LIBS"                                           \
-                "-L${tgt_dep_dir}/lib"                                   \
-                "-lglib-2.0"                                             \
-                "-lgmodule-2.0"                                             \
-                "-lgthread-2.0"                                             \
-                "-lgobject-2.0"					       
-            export_append "GLIB_CFLAGS"                                         \
-                "-I${tgt_dep_dir}/include/glib-2.0"                      \
+	    # We always use system-wide glib on linux
+            export_append "GLIB_LIBS"	\
+                "-L${tgt_dep_dir}/lib"	\
+                "-lglib-2.0"		\
+                "-lgmodule-2.0"		\
+                "-lgthread-2.0"		\
+                "-lgobject-2.0"
+            export_append "GLIB_CFLAGS"			\
+                "-I${tgt_dep_dir}/include/glib-2.0"	\
                 "-I${tgt_dep_dir}/lib/glib-2.0/include"
-	else
-	    export GLIB_CFLAGS="`pkg-config --cflags glib-2.0 gmodule-2.0 gthread-2.0 gobject-2.0`"
-	    export GLIB_LIBS="`pkg-config --libs glib-2.0 gmodule-2.0 gthread-2.0 gobject-2.0`"
-	fi
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                "LD_FLAGS"                                              \
-                "-dylib_file"                                          \
-                "libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
-            export_append                                                      \
-                "LDFLAGS"                                                      \
-                "-dylib_file"                                                  \
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+        fi
+	if [ "$sys_name" = "Darwin" ]; then
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgmodule-2.0.dylib:${tgt_dep_dir}/lib/libgmodule-2.0.dylib"
+            export_append		\
+                "LDFLAGS"		\
+                "-Wl,-dylib_file"	\
+                "-Wl,libgthread-2.0.dylib:${tgt_dep_dir}/lib/libgthread-2.0.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    #export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
+	    export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
 	    if [ "$build_type" = "debug" ]; then
 		export GLIB_LIBS="$GLIB_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${tgt_dep_dir}/lib/pkgconfig"
         fi
 
         # Set up liboil build options.
@@ -417,23 +420,18 @@ build()
                       "-loil-0.3"
         export_append "LIBOIL_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include/liboil-0.3"
+	export PKG_CONFIG_PATH="${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
-                        "LDFLAGS"                                              \
+                        "LD_FLAGS"                                              \
                         "-dylib_file"                                          \
-                        "liboil-0.3.dylib"
-            export_append                                                      \
-                "LDFLAGS"                                                      \
-                "-dylib_file"                                                  \
-                "liboil-0.3.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+                        "liboil-0.3.dylib:${tgt_dep_dir}/lib/liboil-0.3.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    #export LIBOIL_LIBS="-Wl,${tgt_dep_dir}/lib/liboil-0.3.lib"
 	    if [ "$build_type" = "debug" ]; then
 		export LIBOIL_LIBS="$LIBOIL_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${tgt_dep_dir}/lib/pkgconfig"
         fi
 
         # Set up gstreamer build options.
@@ -458,33 +456,29 @@ build()
                       "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
         export_append "GST_CONTROLLER_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
+	export GST_TOOLS_DIR="${tgt_dep_dir}/bin"
+	export GST_PLUGINS_DIR="${tgt_dep_dir}/lib/gstreamer-0.10"
+	export PATH="${tgt_dep_dir}/bin:${PATH}"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
-                        "LDFLAGS"                                              \
+                        "LD_FLAGS"                                              \
                         "-dylib_file"                                          \
-                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libgstreamer-0.10.dylib"	\
-                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libgstbase-0.10.dylib"	\
-                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libgstdataprotocol-0.10.dylib"	\
-                        "libglib-2.0.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
-            export_append                                                      \
-                "LDFLAGS"                                                      \
-                "-dylib_file"                                                  \
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgstreamer-0.10.dylib"	\
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgstbase-0.10.dylib"	\
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgstdataprotocol-0.10.dylib"	\
-                "libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+                        "libgstreamer-0.10.dylib:${tgt_dep_dir}/lib/libgstreamer-0.10.dylib"	\
+                        "-dylib_file"                                          \
+                        "libgstbase-0.10.dylib:${tgt_dep_dir}/lib/libgstbase-0.10.dylib"	\
+                        "-dylib_file"                                          \
+                        "libgstdataprotocol-0.10.dylib:${tgt_dep_dir}/lib/libgstdataprotocol-0.10.dylib"	\
+                        "-dylib_file"                                          \
+                        "libgstcontorller-0.10.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    export GST_TOOLS_DIR="${tgt_dep_dir}/bin"
-	    export GST_PLUGINS_DIR="${tgt_dep_dir}/lib/gstreamer-0.10"
 	    if [ "$build_type" = "debug" ]; then
 		export GST_LIBS="$GST_LIBS -Wl,-Zi"
 		export GST_BASE_LIBS="$GST_BASE_LIBS -Wl,-Zi"
 		export GST_GDP_LIBS="$GST_GDP_LIBS -Wl,-Zi"
 		export GST_CONTROLLER_LIBS="$GST_CONTROLLER_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         fi
 
         # Set up libogg build options.
@@ -494,19 +488,18 @@ build()
                       "-logg"
         export_append "OGG_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
-                        "LDFLAGS"                                              \
+                        "LD_FLAGS"                                              \
                         "-dylib_file"                                          \
-                        "libogg.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+                        "libogg.dylib:${tgt_dep_dir}/lib/libogg.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
-#	    export OGG_LIBS="-Wl,${tgt_dep_dir}/lib/ogg.lib"
 	    if [ "$build_type" = "debug" ]; then
 		export OGG_LIBS="$OGG_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         fi
 
         # Set up libvorbis build options.
@@ -515,24 +508,24 @@ build()
                       "-L${tgt_dep_dir}/lib"                                   \
                       "-lvorbis"				\
 	    "-lvorbisenc"
+	export VORBIS_LIBS="${VORBIS_LIBS} ${OGG_LIBS}"
         export_append "VORBIS_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include"
+	export VORBIS_CFLAGS="${VORBIS_CFLAGS} ${OGG_CFLAGS}"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
-                        "LDFLAGS"                                              \
+                        "LD_FLAGS"                                              \
                         "-dylib_file"                                          \
-                        "libvorbis.dylib" \
+                        "libvorbis.dylib:${tgt_dep_dir}/lib/libvorbis.dylib" \
 		"-dylib_file" \
-		"libvorbisenc.dylib"
-            export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:${tgt_dep_dir}/lib"
+		"libvorbisenc.dylib:${tgt_dep_dir}/lib/libvorbisenc.dylib"
+            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
 	elif [ "$sys_name" = "Cygwin" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    #export VORBIS_LIBS="${OGG_LIBS} -Wl,${tgt_dep_dir}/lib/libvorbis.lib -Wl,${tgt_dep_dir}/lib/libvorbisenc.lib"
-	    export VORBIS_CFLAGS="${VORBIS_CFLAGS} ${OGG_CFLAGS}"
 	    if [ "$build_type" = "debug" ]; then
 		export VORBIS_LIBS="$VORBIS_LIBS -Wl,-Zi"
 	    fi
-	    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         fi
 
     fi
@@ -610,8 +603,77 @@ build()
     # Post-process libraries on Mac.
     if [ "$sys_name" = "Darwin" ]; then
         install_name_tool                                                      \
-            -id libgpod.dylib                                                  \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dylib
+            -id libgstaudio-0.10.dylib                                         \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
+              libgstinterfaces-0.10.dylib                                      \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstcdda-0.10.dylib                                          \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstcdda-0.10.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
+              libgsttag-0.10.dylib                                             \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstcdda-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstfft-0.10.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstfft-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstinterfaces-0.10.dylib                                    \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstnetbuffer-0.10.dylib                                     \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstnetbuffer-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstpbutils-0.10.dylib                                       \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstpbutils-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstriff-0.10.dylib                                          \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
+              libgstinterfaces-0.10.dylib                                      \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
+              libgsttag-0.10.dylib                                             \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
+        install_name_tool                                                      \
+            -change                                                            \
+              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
+              libgstaudio-0.10.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstrtp-0.10.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstrtp-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstrtsp-0.10.dylib                                          \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstrtsp-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstsdp-0.10.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstsdp-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgsttag-0.10.dylib                                           \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.dylib
+
+        install_name_tool                                                      \
+            -id libgstvideo-0.10.dylib                                         \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstvideo-0.10.dylib
 
         install_name_tool                                                      \
             -change                                                            \
