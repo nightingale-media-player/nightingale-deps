@@ -26,7 +26,7 @@
 #include <string.h>
 #include <math.h>
 
-#ifndef rint
+#ifdef __MSC_VER
 static inline gdouble
 rint(double x) {
   gint xi = (int) x;

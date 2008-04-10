@@ -85,21 +85,21 @@
 
 #include <math.h>
 
-#ifndef asinh
+#ifdef __MSC_VER
 static inline gdouble
 asinh (gdouble x) {
   return log(x + sqrt (x * x + 1));
 }
 #endif
 
-#ifndef sinh
+#ifdef __MSC_VER
 static inline gdouble
 sinh (gdouble x) {
   return 0.5 * (exp(x) - exp(-x));
 }
 #endif
 
-#ifndef cosh
+#ifdef __MSC_VER
 static inline gdouble
 cosh (gdouble x) {
   return 0.5 * (exp(x) + exp(-x));

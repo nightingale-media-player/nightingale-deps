@@ -33,8 +33,16 @@
 
 #include <math.h>
 
-#ifndef rint
-#define rint(x) ((int) (x))
+#ifdef __MSC_VER
+static inline gdouble
+rint(gdouble x) {
+  int xi = (int) x;
+  gdouble remainder = x - (gdouble) xi;
+
+  if (remainder < 0.5)
+    return x - remainder;
+  return (x - remainder + 1.0);
+}
 #endif
 
 /**
@@ -77,6 +85,7 @@ OIL_DEFINE_CLASS (conv8x8_f64_s16,
 OIL_DEFINE_CLASS (clipconv8x8_u8_s16,
     "uint8_t * d_8x8, int dstr, int16_t * s_8x8, int sstr");
 
+#ifdef __MSC_VER
 #define BLOCK8x8_F64(ptr, stride, row, column) \
 	(*((double *)((double *)ptr + stride*row) + column))
 
@@ -88,7 +97,19 @@ OIL_DEFINE_CLASS (clipconv8x8_u8_s16,
 
 #define BLOCK8x8_U8(ptr, stride, row, column) \
 	(*((uint8_t *)((uint8_t *)ptr + stride*row) + column))
+#else
+#define BLOCK8x8_F64(ptr, stride, row, column) \
+	(*((double *)((void *)ptr + stride*row) + column))
 
+#define BLOCK8x8_PTR_F64(ptr, stride, row, column) \
+	((double *)((void *)ptr + stride*row) + column)
+
+#define BLOCK8x8_S16(ptr, stride, row, column) \
+	(*((int16_t *)((void *)ptr + stride*row) + column))
+
+#define BLOCK8x8_U8(ptr, stride, row, column) \
+	(*((uint8_t *)((void *)ptr + stride*row) + column))
+#endif
 
 static void
 conv8x8_s16_f64_c (int16_t * dest, int dstr, double *src, int sstr)

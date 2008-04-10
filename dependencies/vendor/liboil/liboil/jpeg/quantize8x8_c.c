@@ -47,8 +47,13 @@ OIL_DEFINE_CLASS (dequantize8x8_s16,
     "int16_t *d_8x8, int dstr, int16_t *s1_8x8, int sstr1, "
     "int16_t *s2_8x8, int sstr2");
 
+#ifdef __MSC_VER
 #define BLOCK8x8_S16(ptr, stride, row, column) \
 	(*((int16_t *)((int16_t *)ptr + stride*row) + column))
+#else
+#define BLOCK8x8_S16(ptr, stride, row, column) \
+	(*((int16_t *)((void *)ptr + stride*row) + column))
+#endif
 
 static void
 dequantize8x8_s16_ref (int16_t *dest, int dstr, int16_t *src, int sstr,

@@ -120,7 +120,7 @@ build_all()
     for tgt_arch in ${tgt_arch_list}
     do
         # Build release target.
-        build release
+        #build release
 
         # Build debug target.
         build debug
@@ -517,7 +517,7 @@ build()
 
     # add win32 specific flags
     if [ "$sys_name" = "Cygwin" ]; then
-	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055"
+	export CFLAGS="${CFLAGS} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -DLIBDSHOW_EXPORTS -DLIBGSTDSHOWDECWRAPPER_EXPORTS -D_MBCS -D_USRDLL -DCOBJMACROS -D_WIN32_DCOM -EHsc"
 	if [ "$build_type" = "debug" ]; then
 	    export CFLAGS="${CFLAGS} -MTd -Zi"
 	    export GLIB_LIBS="${GLIB_LIBS} -Wl,-Zi"
@@ -525,7 +525,7 @@ build()
 	    export CFLAGS="${CFLAGS} -MT"
 	fi
 	export CFLAGS="${CFLAGS} -DYY_NO_UNISTD_H"
-	GST_PARSE_LA="parse/libgstparse_la-lex._gst_parse_yy.lo parse/libgstparse_la-grammar.tab.lo"
+	# add the directshow specific flags
     fi
 
     # Apply command line options pre-processing.
@@ -547,6 +547,9 @@ build()
         export GST_CONTROLLER_CFLAGS=`${cl_process} echo ${GST_CONTROLLER_CFLAGS}`
         export GST_CONTROLLER_LIBS=`${cl_process} echo ${GST_CONTROLLER_LIBS}`
     fi
+
+    # cpp build flags from c build flags
+    export CPPFLAGS="${CFLAGS}"
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
@@ -602,7 +605,7 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    rm -Rf ${build_dir}
+    #rm -Rf ${build_dir}
 }
 
 

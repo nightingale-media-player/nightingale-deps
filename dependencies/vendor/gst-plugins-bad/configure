@@ -804,6 +804,7 @@ target_alias
 INSTALL_PROGRAM
 INSTALL_SCRIPT
 INSTALL_DATA
+am__isrc
 CYGPATH_W
 PACKAGE
 VERSION
@@ -949,12 +950,6 @@ am__fastdepCXX_TRUE
 am__fastdepCXX_FALSE
 CXXCPP
 HAVE_CXX
-OBJC
-ac_ct_OBJC
-OBJC_LDFLAGS
-OBJCDEPMODE
-am__fastdepOBJC_TRUE
-am__fastdepOBJC_FALSE
 VALGRIND_PATH
 HAVE_VALGRIND_TRUE
 HAVE_VALGRIND_FALSE
@@ -2475,7 +2470,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-am__api_version="1.9"
+am__api_version='1.10'
+
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
   if test -f "$ac_dir/install-sh"; then
@@ -2658,38 +2654,53 @@ else
 echo "$as_me: WARNING: \`missing' script is too old or missing" >&2;}
 fi
 
-if mkdir -p --version . >/dev/null 2>&1 && test ! -d ./--version; then
-  # We used to keeping the `.' as first argument, in order to
-  # allow $(mkdir_p) to be used without argument.  As in
-  #   $(mkdir_p) $(somedir)
-  # where $(somedir) is conditionally defined.  However this is wrong
-  # for two reasons:
-  #  1. if the package is installed by a user who cannot write `.'
-  #     make install will fail,
-  #  2. the above comment should most certainly read
-  #     $(mkdir_p) $(DESTDIR)$(somedir)
-  #     so it does not work when $(somedir) is undefined and
-  #     $(DESTDIR) is not.
-  #  To support the latter case, we have to write
-  #     test -z "$(somedir)" || $(mkdir_p) $(DESTDIR)$(somedir),
-  #  so the `.' trick is pointless.
-  mkdir_p='mkdir -p --'
+{ echo "$as_me:$LINENO: checking for a thread-safe mkdir -p" >&5
+echo $ECHO_N "checking for a thread-safe mkdir -p... $ECHO_C" >&6; }
+if test -z "$MKDIR_P"; then
+  if test "${ac_cv_path_mkdir+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  # On NextStep and OpenStep, the `mkdir' command does not
-  # recognize any option.  It will interpret all options as
-  # directories to create, and then abort because `.' already
-  # exists.
-  for d in ./-p ./--version;
-  do
-    test -d $d && rmdir $d
-  done
-  # $(mkinstalldirs) is defined by Automake if mkinstalldirs exists.
-  if test -f "$ac_aux_dir/mkinstalldirs"; then
-    mkdir_p='$(mkinstalldirs)'
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/opt/sfw/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_prog in mkdir gmkdir; do
+	 for ac_exec_ext in '' $ac_executable_extensions; do
+	   { test -f "$as_dir/$ac_prog$ac_exec_ext" && $as_test_x "$as_dir/$ac_prog$ac_exec_ext"; } || continue
+	   case `"$as_dir/$ac_prog$ac_exec_ext" --version 2>&1` in #(
+	     'mkdir (GNU coreutils) '* | \
+	     'mkdir (coreutils) '* | \
+	     'mkdir (fileutils) '4.1*)
+	       ac_cv_path_mkdir=$as_dir/$ac_prog$ac_exec_ext
+	       break 3;;
+	   esac
+	 done
+       done
+done
+IFS=$as_save_IFS
+
+fi
+
+  if test "${ac_cv_path_mkdir+set}" = set; then
+    MKDIR_P="$ac_cv_path_mkdir -p"
   else
-    mkdir_p='$(install_sh) -d'
+    # As a last resort, use the slow shell script.  Don't cache a
+    # value for MKDIR_P within a source directory, because that will
+    # break other packages using the cache if that directory is
+    # removed, or if the value is a relative name.
+    test -d ./--version && rmdir ./--version
+    MKDIR_P="$ac_install_sh -d"
   fi
 fi
+{ echo "$as_me:$LINENO: result: $MKDIR_P" >&5
+echo "${ECHO_T}$MKDIR_P" >&6; }
+
+mkdir_p="$MKDIR_P"
+case $mkdir_p in
+  [\\/$]* | ?:[\\/]*) ;;
+  */*) mkdir_p="\$(top_builddir)/$mkdir_p" ;;
+esac
 
 for ac_prog in gawk mawk nawk awk
 do
@@ -2772,12 +2783,16 @@ else
 fi
 rmdir .tst 2>/dev/null
 
-# test to see if srcdir already configured
-if test "`cd $srcdir && pwd`" != "`pwd`" &&
-   test -f $srcdir/config.status; then
-  { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
+if test "`cd $srcdir && pwd`" != "`pwd`"; then
+  # Use -I$(srcdir) only when $(srcdir) != ., so that make's output
+  # is not polluted with repeated "-I."
+  am__isrc=' -I$(srcdir)'
+  # test to see if srcdir already configured
+  if test -f $srcdir/config.status; then
+    { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
 echo "$as_me: error: source directory already configured; run \"make distclean\" there first" >&2;}
    { (exit 1); exit 1; }; }
+  fi
 fi
 
 # test whether we have cygpath
@@ -2820,7 +2835,7 @@ AUTOHEADER=${AUTOHEADER-"${am_missing_run}autoheader"}
 
 MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
-install_sh=${install_sh-"$am_aux_dir/install-sh"}
+install_sh=${install_sh-"\$(SHELL) $am_aux_dir/install-sh"}
 
 # Installed binaries are usually stripped using `strip' when the user
 # run `make install-strip'.  However `strip' might not be the right
@@ -2924,7 +2939,7 @@ else
 fi
 
 fi
-INSTALL_STRIP_PROGRAM="\${SHELL} \$(install_sh) -c -s"
+INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
@@ -2988,9 +3003,7 @@ fi
 
   { echo "$as_me:$LINENO: result: $USE_MAINTAINER_MODE" >&5
 echo "${ECHO_T}$USE_MAINTAINER_MODE" >&6; }
-
-
-if test $USE_MAINTAINER_MODE = yes; then
+   if test $USE_MAINTAINER_MODE = yes; then
   MAINTAINER_MODE_TRUE=
   MAINTAINER_MODE_FALSE='#'
 else
@@ -3169,16 +3182,13 @@ if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
 fi
-
-
-if test "x$enable_dependency_tracking" != xno; then
+ if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
   AMDEP_FALSE='#'
 else
   AMDEP_TRUE='#'
   AMDEP_FALSE=
 fi
-
 
 
 ac_ext=c
@@ -4167,6 +4177,7 @@ else
        depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
        $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
          >/dev/null 2>conftest.err &&
+       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
@@ -4196,9 +4207,7 @@ fi
 echo "${ECHO_T}$am_cv_CC_dependencies_compiler_type" >&6; }
 CCDEPMODE=depmode=$am_cv_CC_dependencies_compiler_type
 
-
-
-if
+ if
   test "x$enable_dependency_tracking" != xno \
   && test "$am_cv_CC_dependencies_compiler_type" = gcc3; then
   am__fastdepCC_TRUE=
@@ -4862,13 +4871,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4865: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4874: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4868: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4877: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4871: output\"" >&5)
+  (eval echo "\"\$as_me:4880: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -5466,7 +5475,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5469: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5478: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6084,7 +6093,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6087 "configure"' > conftest.$ac_ext
+  echo '#line 6096 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7626,11 +7635,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7629: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7638: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7633: \$? = $ac_status" >&5
+   echo "$as_me:7642: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7950,11 +7959,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7953: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7962: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7957: \$? = $ac_status" >&5
+   echo "$as_me:7966: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8055,11 +8064,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8058: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8067: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8062: \$? = $ac_status" >&5
+   echo "$as_me:8071: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8110,11 +8119,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8113: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8122: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8117: \$? = $ac_status" >&5
+   echo "$as_me:8126: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10947,7 +10956,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10950 "configure"
+#line 10959 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11047,7 +11056,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11050 "configure"
+#line 11059 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13368,9 +13377,7 @@ _ACEOF
 echo "$as_me: gcov enabled, setting CFLAGS and friends to $CFLAGS" >&6;}
     fi
   fi
-
-
-if test x$enable_gcov = xyes; then
+   if test x$enable_gcov = xyes; then
   GST_GCOV_ENABLED_TRUE=
   GST_GCOV_ENABLED_FALSE='#'
 else
@@ -13395,9 +13402,7 @@ echo "$as_me: error: bad value ${enableval} for --disable-examples" >&2;}
 else
   BUILD_EXAMPLES=yes
 fi
-
-
-if test "x$BUILD_EXAMPLES" = "xyes"; then
+    if test "x$BUILD_EXAMPLES" = "xyes"; then
   BUILD_EXAMPLES_TRUE=
   BUILD_EXAMPLES_FALSE='#'
 else
@@ -13505,9 +13510,7 @@ echo "$as_me: error: bad value ${enableval} for --disable-examples" >&2;}
 else
   BUILD_EXAMPLES=yes
 fi
-
-
-if test "x$BUILD_EXAMPLES" = "xyes"; then
+    if test "x$BUILD_EXAMPLES" = "xyes"; then
   BUILD_EXAMPLES_TRUE=
   BUILD_EXAMPLES_FALSE='#'
 else
@@ -13531,7 +13534,6 @@ GST_PLUGINS_ALL="\
   interleave \
   librfb \
   modplug \
-  mpegtsparse \
   mpeg4videoparse \
   mpegvideoparse \
   mve \
@@ -13655,9 +13657,7 @@ echo "$as_me: WARNING: all plug-ins with external dependencies will not be built
       BUILD_EXTERNAL="no"
 
 fi
-
-
-if test x$USE_EXTERNAL = xyes; then
+ if test x$USE_EXTERNAL = xyes; then
   USE_EXTERNAL_TRUE=
   USE_EXTERNAL_FALSE='#'
 else
@@ -13667,9 +13667,7 @@ fi
 
 
   # make BUILD_EXTERNAL available to Makefile.am
-
-
-if test "x$BUILD_EXTERNAL" = "xyes"; then
+   if test "x$BUILD_EXTERNAL" = "xyes"; then
   BUILD_EXTERNAL_TRUE=
   BUILD_EXTERNAL_FALSE='#'
 else
@@ -13761,9 +13759,7 @@ echo "$as_me: not building experimental plug-ins" >&6;}
       BUILD_EXPERIMENTAL="no"
 
 fi
-
-
-if test x$USE_EXPERIMENTAL = xyes; then
+ if test x$USE_EXPERIMENTAL = xyes; then
   USE_EXPERIMENTAL_TRUE=
   USE_EXPERIMENTAL_FALSE='#'
 else
@@ -13773,9 +13769,7 @@ fi
 
 
   # make BUILD_EXPERIMENTAL available to Makefile.am
-
-
-if test "x$BUILD_EXPERIMENTAL" = "xyes"; then
+   if test "x$BUILD_EXPERIMENTAL" = "xyes"; then
   BUILD_EXPERIMENTAL_TRUE=
   BUILD_EXPERIMENTAL_FALSE='#'
 else
@@ -14137,9 +14131,7 @@ presetting ac_cv_c_bigendian=no (or yes) will help" >&2;}
 esac
 
 
-
-
-if test "x$HAVE_CPU_I386" = "xyes"; then
+   if test "x$HAVE_CPU_I386" = "xyes"; then
   HAVE_CPU_I386_TRUE=
   HAVE_CPU_I386_FALSE='#'
 else
@@ -14147,9 +14139,7 @@ else
   HAVE_CPU_I386_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_PPC" = "xyes"; then
+   if test "x$HAVE_CPU_PPC" = "xyes"; then
   HAVE_CPU_PPC_TRUE=
   HAVE_CPU_PPC_FALSE='#'
 else
@@ -14157,9 +14147,7 @@ else
   HAVE_CPU_PPC_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_PPC64" = "xyes"; then
+   if test "x$HAVE_CPU_PPC64" = "xyes"; then
   HAVE_CPU_PPC64_TRUE=
   HAVE_CPU_PPC64_FALSE='#'
 else
@@ -14167,9 +14155,7 @@ else
   HAVE_CPU_PPC64_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_ALPHA" = "xyes"; then
+   if test "x$HAVE_CPU_ALPHA" = "xyes"; then
   HAVE_CPU_ALPHA_TRUE=
   HAVE_CPU_ALPHA_FALSE='#'
 else
@@ -14177,9 +14163,7 @@ else
   HAVE_CPU_ALPHA_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_ARM" = "xyes"; then
+   if test "x$HAVE_CPU_ARM" = "xyes"; then
   HAVE_CPU_ARM_TRUE=
   HAVE_CPU_ARM_FALSE='#'
 else
@@ -14187,9 +14171,7 @@ else
   HAVE_CPU_ARM_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_SPARC" = "xyes"; then
+   if test "x$HAVE_CPU_SPARC" = "xyes"; then
   HAVE_CPU_SPARC_TRUE=
   HAVE_CPU_SPARC_FALSE='#'
 else
@@ -14197,9 +14179,7 @@ else
   HAVE_CPU_SPARC_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_HPPA" = "xyes"; then
+   if test "x$HAVE_CPU_HPPA" = "xyes"; then
   HAVE_CPU_HPPA_TRUE=
   HAVE_CPU_HPPA_FALSE='#'
 else
@@ -14207,9 +14187,7 @@ else
   HAVE_CPU_HPPA_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_MIPS" = "xyes"; then
+   if test "x$HAVE_CPU_MIPS" = "xyes"; then
   HAVE_CPU_MIPS_TRUE=
   HAVE_CPU_MIPS_FALSE='#'
 else
@@ -14217,9 +14195,7 @@ else
   HAVE_CPU_MIPS_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_S390" = "xyes"; then
+   if test "x$HAVE_CPU_S390" = "xyes"; then
   HAVE_CPU_S390_TRUE=
   HAVE_CPU_S390_FALSE='#'
 else
@@ -14227,9 +14203,7 @@ else
   HAVE_CPU_S390_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_IA64" = "xyes"; then
+   if test "x$HAVE_CPU_IA64" = "xyes"; then
   HAVE_CPU_IA64_TRUE=
   HAVE_CPU_IA64_FALSE='#'
 else
@@ -14237,9 +14211,7 @@ else
   HAVE_CPU_IA64_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_M68K" = "xyes"; then
+   if test "x$HAVE_CPU_M68K" = "xyes"; then
   HAVE_CPU_M68K_TRUE=
   HAVE_CPU_M68K_FALSE='#'
 else
@@ -14247,9 +14219,7 @@ else
   HAVE_CPU_M68K_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_X86_64" = "xyes"; then
+   if test "x$HAVE_CPU_X86_64" = "xyes"; then
   HAVE_CPU_X86_64_TRUE=
   HAVE_CPU_X86_64_FALSE='#'
 else
@@ -14257,9 +14227,7 @@ else
   HAVE_CPU_X86_64_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_CRIS" = "xyes"; then
+   if test "x$HAVE_CPU_CRIS" = "xyes"; then
   HAVE_CPU_CRIS_TRUE=
   HAVE_CPU_CRIS_FALSE='#'
 else
@@ -14267,9 +14235,7 @@ else
   HAVE_CPU_CRIS_FALSE=
 fi
 
-
-
-if test "x$HAVE_CPU_CRISV32" = "xyes"; then
+   if test "x$HAVE_CPU_CRISV32" = "xyes"; then
   HAVE_CPU_CRISV32_TRUE=
   HAVE_CPU_CRISV32_FALSE='#'
 else
@@ -15266,6 +15232,7 @@ else
        depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
        $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
          >/dev/null 2>conftest.err &&
+       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
@@ -15295,9 +15262,7 @@ fi
 echo "${ECHO_T}$am_cv_CC_dependencies_compiler_type" >&6; }
 CCDEPMODE=depmode=$am_cv_CC_dependencies_compiler_type
 
-
-
-if
+ if
   test "x$enable_dependency_tracking" != xno \
   && test "$am_cv_CC_dependencies_compiler_type" = gcc3; then
   am__fastdepCC_TRUE=
@@ -15740,6 +15705,7 @@ else
        depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
        $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
          >/dev/null 2>conftest.err &&
+       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
@@ -15769,9 +15735,7 @@ fi
 echo "${ECHO_T}$am_cv_CXX_dependencies_compiler_type" >&6; }
 CXXDEPMODE=depmode=$am_cv_CXX_dependencies_compiler_type
 
-
-
-if
+ if
   test "x$enable_dependency_tracking" != xno \
   && test "$am_cv_CXX_dependencies_compiler_type" = gcc3; then
   am__fastdepCXX_TRUE=
@@ -16214,6 +16178,7 @@ else
        depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
        $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
          >/dev/null 2>conftest.err &&
+       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
@@ -16243,9 +16208,7 @@ fi
 echo "${ECHO_T}$am_cv_CXX_dependencies_compiler_type" >&6; }
 CXXDEPMODE=depmode=$am_cv_CXX_dependencies_compiler_type
 
-
-
-if
+ if
   test "x$enable_dependency_tracking" != xno \
   && test "$am_cv_CXX_dependencies_compiler_type" = gcc3; then
   am__fastdepCXX_TRUE=
@@ -18319,11 +18282,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18322: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18285: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18326: \$? = $ac_status" >&5
+   echo "$as_me:18289: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18418,11 +18381,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18421: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18384: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18425: \$? = $ac_status" >&5
+   echo "$as_me:18388: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18470,11 +18433,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18473: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18436: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18477: \$? = $ac_status" >&5
+   echo "$as_me:18440: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -19513,266 +19476,6 @@ fi
 
 
 
-
-if test -n "$ac_tool_prefix"; then
-  for ac_prog in objcc objc gcc cc CC
-  do
-    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
-set dummy $ac_tool_prefix$ac_prog; ac_word=$2
-{ echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_prog_OBJC+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$OBJC"; then
-  ac_cv_prog_OBJC="$OBJC" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_OBJC="$ac_tool_prefix$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
-
-fi
-fi
-OBJC=$ac_cv_prog_OBJC
-if test -n "$OBJC"; then
-  { echo "$as_me:$LINENO: result: $OBJC" >&5
-echo "${ECHO_T}$OBJC" >&6; }
-else
-  { echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6; }
-fi
-
-
-    test -n "$OBJC" && break
-  done
-fi
-if test -z "$OBJC"; then
-  ac_ct_OBJC=$OBJC
-  for ac_prog in objcc objc gcc cc CC
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_prog_ac_ct_OBJC+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$ac_ct_OBJC"; then
-  ac_cv_prog_ac_ct_OBJC="$ac_ct_OBJC" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_ac_ct_OBJC="$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
-
-fi
-fi
-ac_ct_OBJC=$ac_cv_prog_ac_ct_OBJC
-if test -n "$ac_ct_OBJC"; then
-  { echo "$as_me:$LINENO: result: $ac_ct_OBJC" >&5
-echo "${ECHO_T}$ac_ct_OBJC" >&6; }
-else
-  { echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6; }
-fi
-
-
-  test -n "$ac_ct_OBJC" && break
-done
-
-  if test "x$ac_ct_OBJC" = x; then
-    OBJC="none"
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ echo "$as_me:$LINENO: WARNING: In the future, Autoconf will not detect cross-tools
-whose name does not start with the host triplet.  If you think this
-configuration is useful to you, please write to autoconf@gnu.org." >&5
-echo "$as_me: WARNING: In the future, Autoconf will not detect cross-tools
-whose name does not start with the host triplet.  If you think this
-configuration is useful to you, please write to autoconf@gnu.org." >&2;}
-ac_tool_warned=yes ;;
-esac
-    OBJC=$ac_ct_OBJC
-  fi
-fi
-
-
-OBJC_LDFLAGS="-lobjc"
-
-if test "x$OBJC" != xnone ; then
-
-depcc="$OBJC" am_compiler_list='gcc3 gcc'
-
-{ echo "$as_me:$LINENO: checking dependency style of $depcc" >&5
-echo $ECHO_N "checking dependency style of $depcc... $ECHO_C" >&6; }
-if test "${am_cv_OBJC_dependencies_compiler_type+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -z "$AMDEP_TRUE" && test -f "$am_depcomp"; then
-  # We make a subdir and do the tests there.  Otherwise we can end up
-  # making bogus files that we don't know about and never remove.  For
-  # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
-  mkdir conftest.dir
-  # Copy depcomp to subdir because otherwise we won't find it if we're
-  # using a relative directory.
-  cp "$am_depcomp" conftest.dir
-  cd conftest.dir
-  # We will build objects and dependencies in a subdirectory because
-  # it helps to detect inapplicable dependency modes.  For instance
-  # both Tru64's cc and ICC support -MD to output dependencies as a
-  # side effect of compilation, but ICC will put the dependencies in
-  # the current directory while Tru64 will put them in the object
-  # directory.
-  mkdir sub
-
-  am_cv_OBJC_dependencies_compiler_type=none
-  if test "$am_compiler_list" = ""; then
-     am_compiler_list=`sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < ./depcomp`
-  fi
-  for depmode in $am_compiler_list; do
-    # Setup a source with many dependencies, because some compilers
-    # like to wrap large dependency lists on column 80 (with \), and
-    # we should not choose a depcomp mode which is confused by this.
-    #
-    # We need to recreate these files for each test, as the compiler may
-    # overwrite some of them when testing with obscure command lines.
-    # This happens at least with the AIX C compiler.
-    : > sub/conftest.c
-    for i in 1 2 3 4 5 6; do
-      echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
-    done
-    echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
-
-    case $depmode in
-    nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
-      if test "x$enable_dependency_tracking" = xyes; then
-	continue
-      else
-	break
-      fi
-      ;;
-    none) break ;;
-    esac
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
-    # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.
-    if depmode=$depmode \
-       source=sub/conftest.c object=sub/conftest.${OBJEXT-o} \
-       depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
-       $SHELL ./depcomp $depcc -c -o sub/conftest.${OBJEXT-o} sub/conftest.c \
-         >/dev/null 2>conftest.err &&
-       grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
-       grep sub/conftest.${OBJEXT-o} sub/conftest.Po > /dev/null 2>&1 &&
-       ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
-      # icc doesn't choke on unknown options, it will just issue warnings
-      # or remarks (even with -Werror).  So we grep stderr for any message
-      # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
-      #   icc: Command line warning: ignoring option '-M'; no argument required
-      # The diagnosis changed in icc 8.0:
-      #   icc: Command line remark: option '-MP' not supported
-      if (grep 'ignoring option' conftest.err ||
-          grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
-        am_cv_OBJC_dependencies_compiler_type=$depmode
-        break
-      fi
-    fi
-  done
-
-  cd ..
-  rm -rf conftest.dir
-else
-  am_cv_OBJC_dependencies_compiler_type=none
-fi
-
-fi
-{ echo "$as_me:$LINENO: result: $am_cv_OBJC_dependencies_compiler_type" >&5
-echo "${ECHO_T}$am_cv_OBJC_dependencies_compiler_type" >&6; }
-OBJCDEPMODE=depmode=$am_cv_OBJC_dependencies_compiler_type
-
-
-
-if
-  test "x$enable_dependency_tracking" != xno \
-  && test "$am_cv_OBJC_dependencies_compiler_type" = gcc3; then
-  am__fastdepOBJC_TRUE=
-  am__fastdepOBJC_FALSE='#'
-else
-  am__fastdepOBJC_TRUE='#'
-  am__fastdepOBJC_FALSE=
-fi
-
-
-  { echo "$as_me:$LINENO: checking if Objective C compiler works" >&5
-echo $ECHO_N "checking if Objective C compiler works... $ECHO_C" >&6; }
-  cat >>conftest.m <<EOF
-#include <objc/Object.h>
-@interface Moo:Object
-{
-}
-- moo;
-int main();
-@end
-
-@implementation Moo
-- moo
-{
-  exit(0);
-}
-
-int main()
-{
-  id moo;
-  moo = [Moo new];
-  [moo moo];
-  return 1;
-}
-@end
-EOF
-  ${OBJC} conftest.m ${OBJC_LDFLAGS} >&5 2>&5
-  if test -f a.out -o -f a.exe ; then
-    result=yes
-  else
-    result=no
-    echo failed program is: >&5
-    cat conftest.m >&5
-  fi
-  rm -f conftest.m a.out a.exe
-  { echo "$as_me:$LINENO: result: $result" >&5
-echo "${ECHO_T}$result" >&6; }
-fi
-
-
-
 if test "x$CC" != xcc; then
   { echo "$as_me:$LINENO: checking whether $CC and cc understand -c and -o together" >&5
 echo $ECHO_N "checking whether $CC and cc understand -c and -o together... $ECHO_C" >&6; }
@@ -19899,6 +19602,7 @@ if eval "test \"`echo '$ac_cv_prog_cc_'${ac_cc}_c_o`\" != yes"; then
 fi
 
 
+
 # Extract the first word of "valgrind", so it can be a program name with args.
 set dummy valgrind; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -19940,9 +19644,7 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
-
-
-if test ! "x$VALGRIND_PATH" = "xno"; then
+ if test ! "x$VALGRIND_PATH" = "xno"; then
   HAVE_VALGRIND_TRUE=
   HAVE_VALGRIND_FALSE='#'
 else
@@ -20171,9 +19873,7 @@ fi
 done
 
 
-
-
-if test x$enable_gtk_doc = xyes; then
+   if test x$enable_gtk_doc = xyes; then
   ENABLE_GTK_DOC_TRUE=
   ENABLE_GTK_DOC_FALSE='#'
 else
@@ -20181,9 +19881,7 @@ else
   ENABLE_GTK_DOC_FALSE=
 fi
 
-
-
-if test -n "$LIBTOOL"; then
+   if test -n "$LIBTOOL"; then
   GTK_DOC_USE_LIBTOOL_TRUE=
   GTK_DOC_USE_LIBTOOL_FALSE='#'
 else
@@ -20356,9 +20054,7 @@ echo "${ECHO_T}yes" >&6; }
 echo "${ECHO_T}no (gtk-doc disabled or not available)" >&6; }
   fi
 
-
-
-if test x$build_plugin_docs = xyes; then
+   if test x$build_plugin_docs = xyes; then
   ENABLE_PLUGIN_DOCS_TRUE=
   ENABLE_PLUGIN_DOCS_FALSE='#'
 else
@@ -20724,9 +20420,7 @@ fi
 
 done
 
-
-
-if test "x$HAVE_UNISTD_H" = "xyes"; then
+ if test "x$HAVE_UNISTD_H" = "xyes"; then
   HAVE_UNISTD_H_TRUE=
   HAVE_UNISTD_H_FALSE='#'
 else
@@ -23513,120 +23207,120 @@ ac_config_commands="$ac_config_commands $ac_stdint_h"
 
 
 
-GLIB_REQ=2.6
-if test "x$GLIB_REQ" = "x"
-then
+    GLIB_REQ=2.6
+  if test "x$GLIB_REQ" = "x"
+  then
     { { echo "$as_me:$LINENO: error: Please specify a required version for GLib 2.0" >&5
-	    echo "$as_me: error: Please specify a required version for GLib 2.0" >&2;}
-	{ (exit 1); exit 1; }; }
-fi
+echo "$as_me: error: Please specify a required version for GLib 2.0" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
 
 
 
-which="glib-2.0 >= $GLIB_REQ gobject-2.0 gthread-2.0 gmodule-no-export-2.0"
-required="no"
+  which="glib-2.0 >= $GLIB_REQ gobject-2.0 gthread-2.0 gmodule-no-export-2.0"
+    required="no"
 
 
 pkg_failed=no
 { echo "$as_me:$LINENO: checking for GLIB" >&5
-    echo $ECHO_N "checking for GLIB... $ECHO_C" >&6; }
+echo $ECHO_N "checking for GLIB... $ECHO_C" >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$GLIB_CFLAGS"; then
         pkg_cv_GLIB_CFLAGS="$GLIB_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-	    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
-		($PKG_CONFIG --exists --print-errors "$which") 2>&5
-		ac_status=$?
-		echo "$as_me:$LINENO: \$? = $ac_status" >&5
-		(exit $ac_status); }; then
-	    pkg_cv_GLIB_CFLAGS=`$PKG_CONFIG --cflags "$which" 2>/dev/null`
-	else
-	    pkg_failed=yes
-	fi
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$which") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GLIB_CFLAGS=`$PKG_CONFIG --cflags "$which" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
     fi
 else
-    pkg_failed=untried
+	pkg_failed=untried
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$GLIB_LIBS"; then
         pkg_cv_GLIB_LIBS="$GLIB_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-	    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
-		($PKG_CONFIG --exists --print-errors "$which") 2>&5
-		ac_status=$?
-		echo "$as_me:$LINENO: \$? = $ac_status" >&5
-		(exit $ac_status); }; then
-	    pkg_cv_GLIB_LIBS=`$PKG_CONFIG --libs "$which" 2>/dev/null`
-	else
-	    pkg_failed=yes
-	fi
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$which") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GLIB_LIBS=`$PKG_CONFIG --libs "$which" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
     fi
 else
-    pkg_failed=untried
+	pkg_failed=untried
 fi
 
 if test $pkg_failed = yes; then
-    GLIB_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$which"`
+	GLIB_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$which"`
 	# Put the nasty error message in config.log where it belongs
-    echo "$GLIB_PKG_ERRORS" 1>&5
+	echo "$GLIB_PKG_ERRORS" 1>&5
 
 
-    HAVE_GLIB="no"
-    { echo "$as_me:$LINENO: result: no" >&5
-	echo "${ECHO_T}no" >&6; }
-    if test "x$required" = "xyes"; then
+      HAVE_GLIB="no"
+      { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+      if test "x$required" = "xyes"; then
         { { echo "$as_me:$LINENO: error: $GLIB_PKG_ERRORS" >&5
-		echo "$as_me: error: $GLIB_PKG_ERRORS" >&2;}
-	    { (exit 1); exit 1; }; }
-    else
+echo "$as_me: error: $GLIB_PKG_ERRORS" >&2;}
+   { (exit 1); exit 1; }; }
+      else
         { echo "$as_me:$LINENO: $GLIB_PKG_ERRORS" >&5
-	    echo "$as_me: $GLIB_PKG_ERRORS" >&6;}
-    fi
+echo "$as_me: $GLIB_PKG_ERRORS" >&6;}
+      fi
 
 elif test $pkg_failed = untried; then
 
-    HAVE_GLIB="no"
-    { echo "$as_me:$LINENO: result: no" >&5
-	echo "${ECHO_T}no" >&6; }
-    if test "x$required" = "xyes"; then
+      HAVE_GLIB="no"
+      { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+      if test "x$required" = "xyes"; then
         { { echo "$as_me:$LINENO: error: $GLIB_PKG_ERRORS" >&5
-		echo "$as_me: error: $GLIB_PKG_ERRORS" >&2;}
-	    { (exit 1); exit 1; }; }
-    else
+echo "$as_me: error: $GLIB_PKG_ERRORS" >&2;}
+   { (exit 1); exit 1; }; }
+      else
         { echo "$as_me:$LINENO: $GLIB_PKG_ERRORS" >&5
-	    echo "$as_me: $GLIB_PKG_ERRORS" >&6;}
-    fi
+echo "$as_me: $GLIB_PKG_ERRORS" >&6;}
+      fi
 
 else
-    GLIB_CFLAGS=$pkg_cv_GLIB_CFLAGS
-    GLIB_LIBS=$pkg_cv_GLIB_LIBS
-    { echo "$as_me:$LINENO: result: yes" >&5
-	echo "${ECHO_T}yes" >&6; }
+	GLIB_CFLAGS=$pkg_cv_GLIB_CFLAGS
+	GLIB_LIBS=$pkg_cv_GLIB_LIBS
+        { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
 
-    HAVE_GLIB="yes"
+      HAVE_GLIB="yes"
 
 fi
 
 
 
-if test "x$HAVE_GLIB" = "xno"; then
+  if test "x$HAVE_GLIB" = "xno"; then
     { { echo "$as_me:$LINENO: error: This package requires GLib >= $GLIB_REQ to compile." >&5
-	    echo "$as_me: error: This package requires GLib >= $GLIB_REQ to compile." >&2;}
-	{ (exit 1); exit 1; }; }
-fi
+echo "$as_me: error: This package requires GLib >= $GLIB_REQ to compile." >&2;}
+   { (exit 1); exit 1; }; }
+  fi
 
 
-GIVEN_CFLAGS=$GLIB_CFLAGS
-INCLUDE_DIRS=`echo | cpp -v 2>&1`
+  GIVEN_CFLAGS=$GLIB_CFLAGS
+  INCLUDE_DIRS=`echo | cpp -v 2>&1`
 
-INCLUDE_DIRS=`echo $INCLUDE_DIRS | sed -e 's/.*<...> search starts here://' | sed -e 's/End of search list.*//'`
-for dir in $INCLUDE_DIRS; do
-    GIVEN_CFLAGS=`echo $GIVEN_CFLAGS | sed -e "s#-I$dir ##"`
-done
-GLIB_CFLAGS=$GIVEN_CFLAGS
+      INCLUDE_DIRS=`echo $INCLUDE_DIRS | sed -e 's/.*<...> search starts here://' | sed -e 's/End of search list.*//'`
+  for dir in $INCLUDE_DIRS; do
+        GIVEN_CFLAGS=`echo $GIVEN_CFLAGS | sed -e "s#-I$dir ##"`
+  done
+  GLIB_CFLAGS=$GIVEN_CFLAGS
 
 
 
@@ -24304,9 +23998,7 @@ echo "$as_me: error: no pluginsdir set in GStreamer Base Plug-ins pkg-config fil
 echo "$as_me: using GStreamer Base Plug-ins in $GSTPB_PLUGINS_DIR" >&6;}
 
 
-
-
-if test "x$HAVE_GST_CHECK" = "xyes"; then
+ if test "x$HAVE_GST_CHECK" = "xyes"; then
   HAVE_GST_CHECK_TRUE=
   HAVE_GST_CHECK_FALSE='#'
 else
@@ -24461,9 +24153,7 @@ GTK_LIBS=$GTK2_LIBS
 
 
 
-
-
-if test "x$HAVE_GTK" = "xyes"; then
+ if test "x$HAVE_GTK" = "xyes"; then
   HAVE_GTK_TRUE=
   HAVE_GTK_FALSE='#'
 else
@@ -24533,9 +24223,7 @@ fi
 
 
 
-
-
-if test "x$HAVE_GLADE" = "xyes"; then
+ if test "x$HAVE_GLADE" = "xyes"; then
   HAVE_GLADE_TRUE=
   HAVE_GLADE_FALSE='#'
 else
@@ -25394,9 +25082,7 @@ echo "$as_me: *** These plugins will not be built: qtwrapper" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_QUICKTIME = xyes; then
+ if test x$USE_QUICKTIME = xyes; then
   USE_QUICKTIME_TRUE=
   USE_QUICKTIME_FALSE='#'
 else
@@ -25453,9 +25139,9 @@ if test x$USE_DIRECTSHOW = xyes; then
   save_CFLAGS="$CFLAGS"
   save_LDFLAGS="$LDFLAGS"
   save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS"
+  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS -TP"
   LDFLAGS="$LDFLAGS $DIRECTSHOW_LDFLAGS"
-  LIBS="$LIBS -ldshow -ldxerr9"
+  LIBS="$LIBS -lstrmiids -lole32"
   { echo "$as_me:$LINENO: checking for DirectShow LDFLAGS" >&5
 echo $ECHO_N "checking for DirectShow LDFLAGS... $ECHO_C" >&6; }
   cat >conftest.$ac_ext <<_ACEOF
@@ -25465,8 +25151,12 @@ echo $ECHO_N "checking for DirectShow LDFLAGS... $ECHO_C" >&6; }
 
 int main ()
 {
-  DXGetErrorString9 (0);
-  DirectShowCreate(NULL, NULL, NULL);
+  IFilterMapper2 *mapper = NULL;
+
+  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_INPROC,
+  IID_IFilterMapper2,(void **) &mapper);
+  if (mapper)
+    mapper->Release ();
 
   return 0;
 }
@@ -25507,7 +25197,7 @@ echo "${ECHO_T}$HAVE_DIRECTSHOW" >&6; }
   LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTSHOW" = "xyes";  then
-        DIRECTSHOW_LIBS="-ldsound -ldxerr9"
+        DIRECTSHOW_LIBS="-lstrmiids -lole32"
 
 
 
@@ -25546,9 +25236,7 @@ echo "$as_me: *** These plugins will not be built: dshowdecwrapper" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DIRECTSHOW = xyes; then
+ if test x$USE_DIRECTSHOW = xyes; then
   USE_DIRECTSHOW_TRUE=
   USE_DIRECTSHOW_FALSE='#'
 else
@@ -25772,9 +25460,7 @@ echo "$as_me: *** These plugins will not be built: vcdsrc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_VCD = xyes; then
+ if test x$USE_VCD = xyes; then
   USE_VCD_TRUE=
   USE_VCD_FALSE='#'
 else
@@ -26432,9 +26118,7 @@ echo "$as_me: *** These plugins will not be built: gstalsa" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_ALSA = xyes; then
+ if test x$USE_ALSA = xyes; then
   USE_ALSA_TRUE=
   USE_ALSA_FALSE='#'
 else
@@ -26738,9 +26422,7 @@ echo "$as_me: *** These plugins will not be built: amrwb" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_AMRWB = xyes; then
+ if test x$USE_AMRWB = xyes; then
   USE_AMRWB_TRUE=
   USE_AMRWB_FALSE='#'
 else
@@ -27044,9 +26726,7 @@ echo "$as_me: *** These plugins will not be built: bz2" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_BZ2 = xyes; then
+ if test x$USE_BZ2 = xyes; then
   USE_BZ2_TRUE=
   USE_BZ2_FALSE='#'
 else
@@ -27203,9 +26883,7 @@ echo "$as_me: *** These plugins will not be built: cdaudio" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_CDAUDIO = xyes; then
+ if test x$USE_CDAUDIO = xyes; then
   USE_CDAUDIO_TRUE=
   USE_CDAUDIO_FALSE='#'
 else
@@ -27359,9 +27037,7 @@ echo "$as_me: *** These plugins will not be built: dc1394" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DC1394 = xyes; then
+ if test x$USE_DC1394 = xyes; then
   USE_DC1394_TRUE=
   USE_DC1394_FALSE='#'
 else
@@ -27513,9 +27189,7 @@ echo "$as_me: *** These plugins will not be built: dfbvideosink " >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DIRECTFB = xyes; then
+ if test x$USE_DIRECTFB = xyes; then
   USE_DIRECTFB_TRUE=
   USE_DIRECTFB_FALSE='#'
 else
@@ -28039,9 +27713,7 @@ echo "$as_me: *** These plugins will not be built: dtsdec" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DTS = xyes; then
+ if test x$USE_DTS = xyes; then
   USE_DTS_TRUE=
   USE_DTS_FALSE='#'
 else
@@ -28701,9 +28373,7 @@ echo "$as_me: *** These plugins will not be built: divx" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DIVX = xyes; then
+ if test x$USE_DIVX = xyes; then
   USE_DIVX_TRUE=
   USE_DIVX_FALSE='#'
 else
@@ -29054,9 +28724,7 @@ echo "$as_me: *** These plugins will not be built: metadata" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_METADATA = xyes; then
+ if test x$USE_METADATA = xyes; then
   USE_METADATA_TRUE=
   USE_METADATA_FALSE='#'
 else
@@ -29370,9 +29038,7 @@ echo "$as_me: *** These plugins will not be built: faac" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_FAAC = xyes; then
+ if test x$USE_FAAC = xyes; then
   USE_FAAC_TRUE=
   USE_FAAC_FALSE='#'
 else
@@ -29974,9 +29640,7 @@ echo "$as_me: *** These plugins will not be built: faad" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_FAAD = xyes; then
+ if test x$USE_FAAD = xyes; then
   USE_FAAD_TRUE=
   USE_FAAD_FALSE='#'
 else
@@ -30201,9 +29865,7 @@ echo "$as_me: *** These plugins will not be built: fbdevsink" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_FBDEV = xyes; then
+ if test x$USE_FBDEV = xyes; then
   USE_FBDEV_TRUE=
   USE_FBDEV_FALSE='#'
 else
@@ -30733,9 +30395,7 @@ echo "$as_me: *** These plugins will not be built: gsmenc gsmdec" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_GSM = xyes; then
+ if test x$USE_GSM = xyes; then
   USE_GSM_TRUE=
   USE_GSM_FALSE='#'
 else
@@ -30898,9 +30558,7 @@ echo "$as_me: *** These plugins will not be built: ivorbisdec" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_IVORBIS = xyes; then
+ if test x$USE_IVORBIS = xyes; then
   USE_IVORBIS_TRUE=
   USE_IVORBIS_FALSE='#'
 else
@@ -31045,9 +30703,7 @@ echo "$as_me: *** These plugins will not be built: jack" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_JACK = xyes; then
+ if test x$USE_JACK = xyes; then
   USE_JACK_TRUE=
   USE_JACK_FALSE='#'
 else
@@ -31270,9 +30926,7 @@ echo "$as_me: *** These plugins will not be built: ladspa" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_LADSPA = xyes; then
+ if test x$USE_LADSPA = xyes; then
   USE_LADSPA_TRUE=
   USE_LADSPA_FALSE='#'
 else
@@ -31423,9 +31077,7 @@ echo "$as_me: *** These plugins will not be built: libmms" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_LIBMMS = xyes; then
+ if test x$USE_LIBMMS = xyes; then
   USE_LIBMMS_TRUE=
   USE_LIBMMS_FALSE='#'
 else
@@ -31996,9 +31648,7 @@ echo "$as_me: *** These plugins will not be built: mpeg2enc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_MPEG2ENC = xyes; then
+ if test x$USE_MPEG2ENC = xyes; then
   USE_MPEG2ENC_TRUE=
   USE_MPEG2ENC_FALSE='#'
 else
@@ -32237,9 +31887,7 @@ echo "$as_me: *** These plugins will not be built: musepack" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_MUSEPACK = xyes; then
+ if test x$USE_MUSEPACK = xyes; then
   USE_MUSEPACK_TRUE=
   USE_MUSEPACK_FALSE='#'
 else
@@ -32384,9 +32032,7 @@ echo "$as_me: *** These plugins will not be built: musicbrainz" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_MUSICBRAINZ = xyes; then
+ if test x$USE_MUSICBRAINZ = xyes; then
   USE_MUSICBRAINZ_TRUE=
   USE_MUSICBRAINZ_FALSE='#'
 else
@@ -32539,9 +32185,7 @@ echo "$as_me: *** These plugins will not be built: mythtvsrc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_MYTHTV = xyes; then
+ if test x$USE_MYTHTV = xyes; then
   USE_MYTHTV_TRUE=
   USE_MYTHTV_FALSE='#'
 else
@@ -32852,9 +32496,7 @@ echo "$as_me: *** These plugins will not be built: nassink" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_NAS = xyes; then
+ if test x$USE_NAS = xyes; then
   USE_NAS_TRUE=
   USE_NAS_FALSE='#'
 else
@@ -33007,9 +32649,7 @@ echo "$as_me: *** These plugins will not be built: neonhttpsrc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_NEON = xyes; then
+ if test x$USE_NEON = xyes; then
   USE_NEON_TRUE=
   USE_NEON_FALSE='#'
 else
@@ -33162,9 +32802,7 @@ echo "$as_me: *** These plugins will not be built: souphttpsrc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_SOUP = xyes; then
+ if test x$USE_SOUP = xyes; then
   USE_SOUP_TRUE=
   USE_SOUP_FALSE='#'
 else
@@ -33343,9 +32981,7 @@ echo "$as_me: *** These plugins will not be built: timidity" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_TIMIDITY = xyes; then
+ if test x$USE_TIMIDITY = xyes; then
   USE_TIMIDITY_TRUE=
   USE_TIMIDITY_FALSE='#'
 else
@@ -33581,9 +33217,7 @@ echo "$as_me: *** These plugins will not be built: wildmidi" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_WILDMIDI = xyes; then
+ if test x$USE_WILDMIDI = xyes; then
   USE_WILDMIDI_TRUE=
   USE_WILDMIDI_FALSE='#'
 else
@@ -33969,9 +33603,7 @@ echo "$as_me: *** These plugins will not be built: sdlvideosink sdlaudiosink" >&
   fi
   :
 fi
-
-
-if test x$USE_SDL = xyes; then
+ if test x$USE_SDL = xyes; then
   USE_SDL_TRUE=
   USE_SDL_FALSE='#'
 else
@@ -34116,9 +33748,7 @@ echo "$as_me: *** These plugins will not be built: sfsrc sfsink" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_SNDFILE = xyes; then
+ if test x$USE_SNDFILE = xyes; then
   USE_SNDFILE_TRUE=
   USE_SNDFILE_FALSE='#'
 else
@@ -34380,9 +34010,7 @@ echo "$as_me: *** These plugins will not be built: soundtouch" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_SOUNDTOUCH = xyes; then
+ if test x$USE_SOUNDTOUCH = xyes; then
   USE_SOUNDTOUCH_TRUE=
   USE_SOUNDTOUCH_FALSE='#'
 else
@@ -34681,9 +34309,7 @@ echo "$as_me: *** These plugins will not be built: spc" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_SPC = xyes; then
+ if test x$USE_SPC = xyes; then
   USE_SPC_TRUE=
   USE_SPC_FALSE='#'
 else
@@ -34836,9 +34462,7 @@ echo "$as_me: *** These plugins will not be built: swfdec" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_SWFDEC = xyes; then
+ if test x$USE_SWFDEC = xyes; then
   USE_SWFDEC_TRUE=
   USE_SWFDEC_FALSE='#'
 else
@@ -34991,9 +34615,7 @@ echo "$as_me: *** These plugins will not be built: theoraexpdec" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_THEORADEC = xyes; then
+ if test x$USE_THEORADEC = xyes; then
   USE_THEORADEC_TRUE=
   USE_THEORADEC_FALSE='#'
 else
@@ -35299,9 +34921,7 @@ echo "$as_me: *** These plugins will not be built: x264" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_X264 = xyes; then
+ if test x$USE_X264 = xyes; then
   USE_X264_TRUE=
   USE_X264_FALSE='#'
 else
@@ -35778,9 +35398,7 @@ echo "$as_me: *** These plugins will not be built: xvid" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_XVID = xyes; then
+ if test x$USE_XVID = xyes; then
   USE_XVID_TRUE=
   USE_XVID_FALSE='#'
 else
@@ -36005,9 +35623,7 @@ echo "$as_me: *** These plugins will not be built: dvb" >&6;}
   fi
   :
 fi
-
-
-if test x$USE_DVB = xyes; then
+ if test x$USE_DVB = xyes; then
   USE_DVB_TRUE=
   USE_DVB_FALSE='#'
 else
@@ -36020,9 +35636,7 @@ fi
 else
 
 
-
-
-if false; then
+ if false; then
   USE_QUICKTIME_TRUE=
   USE_QUICKTIME_FALSE='#'
 else
@@ -36030,9 +35644,7 @@ else
   USE_QUICKTIME_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_VCD_TRUE=
   USE_VCD_FALSE='#'
 else
@@ -36040,9 +35652,7 @@ else
   USE_VCD_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_ALSA_TRUE=
   USE_ALSA_FALSE='#'
 else
@@ -36050,9 +35660,7 @@ else
   USE_ALSA_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_AMRWB_TRUE=
   USE_AMRWB_FALSE='#'
 else
@@ -36060,9 +35668,7 @@ else
   USE_AMRWB_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_BZ2_TRUE=
   USE_BZ2_FALSE='#'
 else
@@ -36070,9 +35676,7 @@ else
   USE_BZ2_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_CDAUDIO_TRUE=
   USE_CDAUDIO_FALSE='#'
 else
@@ -36080,9 +35684,7 @@ else
   USE_CDAUDIO_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_DIRECTFB_TRUE=
   USE_DIRECTFB_FALSE='#'
 else
@@ -36090,9 +35692,7 @@ else
   USE_DIRECTFB_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_DTS_TRUE=
   USE_DTS_FALSE='#'
 else
@@ -36100,9 +35700,7 @@ else
   USE_DTS_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_DIVX_TRUE=
   USE_DIVX_FALSE='#'
 else
@@ -36110,9 +35708,7 @@ else
   USE_DIVX_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_FAAC_TRUE=
   USE_FAAC_FALSE='#'
 else
@@ -36120,9 +35716,7 @@ else
   USE_FAAC_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_FAAD_TRUE=
   USE_FAAD_FALSE='#'
 else
@@ -36130,9 +35724,7 @@ else
   USE_FAAD_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_FBDEV_TRUE=
   USE_FBDEV_FALSE='#'
 else
@@ -36140,9 +35732,7 @@ else
   USE_FBDEV_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_GSM_TRUE=
   USE_GSM_FALSE='#'
 else
@@ -36150,9 +35740,7 @@ else
   USE_GSM_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_IVORBIS_TRUE=
   USE_IVORBIS_FALSE='#'
 else
@@ -36160,9 +35748,7 @@ else
   USE_IVORBIS_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_JACK_TRUE=
   USE_JACK_FALSE='#'
 else
@@ -36170,9 +35756,7 @@ else
   USE_JACK_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_LADSPA_TRUE=
   USE_LADSPA_FALSE='#'
 else
@@ -36180,9 +35764,7 @@ else
   USE_LADSPA_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_LIBMMS_TRUE=
   USE_LIBMMS_FALSE='#'
 else
@@ -36190,9 +35772,7 @@ else
   USE_LIBMMS_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_MPEG2ENC_TRUE=
   USE_MPEG2ENC_FALSE='#'
 else
@@ -36200,9 +35780,7 @@ else
   USE_MPEG2ENC_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_MUSEPACK_TRUE=
   USE_MUSEPACK_FALSE='#'
 else
@@ -36210,9 +35788,7 @@ else
   USE_MUSEPACK_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_MUSICBRAINZ_TRUE=
   USE_MUSICBRAINZ_FALSE='#'
 else
@@ -36220,9 +35796,7 @@ else
   USE_MUSICBRAINZ_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_MYTHTV_TRUE=
   USE_MYTHTV_FALSE='#'
 else
@@ -36230,9 +35804,7 @@ else
   USE_MYTHTV_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_NAS_TRUE=
   USE_NAS_FALSE='#'
 else
@@ -36240,9 +35812,7 @@ else
   USE_NAS_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_NEON_TRUE=
   USE_NEON_FALSE='#'
 else
@@ -36250,9 +35820,7 @@ else
   USE_NEON_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SOUP_TRUE=
   USE_SOUP_FALSE='#'
 else
@@ -36260,9 +35828,7 @@ else
   USE_SOUP_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SDL_TRUE=
   USE_SDL_FALSE='#'
 else
@@ -36270,9 +35836,7 @@ else
   USE_SDL_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SNDFILE_TRUE=
   USE_SNDFILE_FALSE='#'
 else
@@ -36280,9 +35844,7 @@ else
   USE_SNDFILE_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SOUNDTOUCH_TRUE=
   USE_SOUNDTOUCH_FALSE='#'
 else
@@ -36290,9 +35852,7 @@ else
   USE_SOUNDTOUCH_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SPC_TRUE=
   USE_SPC_FALSE='#'
 else
@@ -36300,9 +35860,7 @@ else
   USE_SPC_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_SWFDEC_TRUE=
   USE_SWFDEC_FALSE='#'
 else
@@ -36310,9 +35868,7 @@ else
   USE_SWFDEC_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_THEORADEC_TRUE=
   USE_THEORADEC_FALSE='#'
 else
@@ -36320,9 +35876,7 @@ else
   USE_THEORADEC_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_TIMIDITY_TRUE=
   USE_TIMIDITY_FALSE='#'
 else
@@ -36330,9 +35884,7 @@ else
   USE_TIMIDITY_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_X264_TRUE=
   USE_X264_FALSE='#'
 else
@@ -36340,9 +35892,7 @@ else
   USE_X264_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_XVID_TRUE=
   USE_XVID_FALSE='#'
 else
@@ -36350,9 +35900,7 @@ else
   USE_XVID_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_WILDMIDI_TRUE=
   USE_WILDMIDI_FALSE='#'
 else
@@ -36360,9 +35908,7 @@ else
   USE_WILDMIDI_FALSE=
 fi
 
-
-
-if false; then
+ if false; then
   USE_DVB_TRUE=
   USE_DVB_FALSE='#'
 else
@@ -36686,13 +36232,6 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${am__fastdepOBJC_TRUE}" && test -z "${am__fastdepOBJC_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"am__fastdepOBJC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"am__fastdepOBJC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -37627,6 +37166,7 @@ gives unlimited permission to copy, distribute and modify it."
 ac_pwd='$ac_pwd'
 srcdir='$srcdir'
 INSTALL='$INSTALL'
+MKDIR_P='$MKDIR_P'
 _ACEOF
 
 cat >>$CONFIG_STATUS <<\_ACEOF
@@ -38329,6 +37869,7 @@ target_alias!$target_alias$ac_delim
 INSTALL_PROGRAM!$INSTALL_PROGRAM$ac_delim
 INSTALL_SCRIPT!$INSTALL_SCRIPT$ac_delim
 INSTALL_DATA!$INSTALL_DATA$ac_delim
+am__isrc!$am__isrc$ac_delim
 CYGPATH_W!$CYGPATH_W$ac_delim
 PACKAGE!$PACKAGE$ac_delim
 VERSION!$VERSION$ac_delim
@@ -38385,7 +37926,6 @@ SED!$SED$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
 FGREP!$FGREP$ac_delim
-LD!$LD$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -38427,6 +37967,7 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+LD!$LD$ac_delim
 DUMPBIN!$DUMPBIN$ac_delim
 ac_ct_DUMPBIN!$ac_ct_DUMPBIN$ac_delim
 NM!$NM$ac_delim
@@ -38515,15 +38056,14 @@ am__fastdepCXX_TRUE!$am__fastdepCXX_TRUE$ac_delim
 am__fastdepCXX_FALSE!$am__fastdepCXX_FALSE$ac_delim
 CXXCPP!$CXXCPP$ac_delim
 HAVE_CXX!$HAVE_CXX$ac_delim
-OBJC!$OBJC$ac_delim
-ac_ct_OBJC!$ac_ct_OBJC$ac_delim
-OBJC_LDFLAGS!$OBJC_LDFLAGS$ac_delim
-OBJCDEPMODE!$OBJCDEPMODE$ac_delim
-am__fastdepOBJC_TRUE!$am__fastdepOBJC_TRUE$ac_delim
-am__fastdepOBJC_FALSE!$am__fastdepOBJC_FALSE$ac_delim
 VALGRIND_PATH!$VALGRIND_PATH$ac_delim
 HAVE_VALGRIND_TRUE!$HAVE_VALGRIND_TRUE$ac_delim
 HAVE_VALGRIND_FALSE!$HAVE_VALGRIND_FALSE$ac_delim
+HTML_DIR!$HTML_DIR$ac_delim
+GTKDOC_CHECK!$GTKDOC_CHECK$ac_delim
+ENABLE_GTK_DOC_TRUE!$ENABLE_GTK_DOC_TRUE$ac_delim
+ENABLE_GTK_DOC_FALSE!$ENABLE_GTK_DOC_FALSE$ac_delim
+GTK_DOC_USE_LIBTOOL_TRUE!$GTK_DOC_USE_LIBTOOL_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -38565,11 +38105,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-HTML_DIR!$HTML_DIR$ac_delim
-GTKDOC_CHECK!$GTKDOC_CHECK$ac_delim
-ENABLE_GTK_DOC_TRUE!$ENABLE_GTK_DOC_TRUE$ac_delim
-ENABLE_GTK_DOC_FALSE!$ENABLE_GTK_DOC_FALSE$ac_delim
-GTK_DOC_USE_LIBTOOL_TRUE!$GTK_DOC_USE_LIBTOOL_TRUE$ac_delim
 GTK_DOC_USE_LIBTOOL_FALSE!$GTK_DOC_USE_LIBTOOL_FALSE$ac_delim
 PYTHON!$PYTHON$ac_delim
 PYTHON_VERSION!$PYTHON_VERSION$ac_delim
@@ -38662,6 +38197,11 @@ LIBDC1394_LIBS!$LIBDC1394_LIBS$ac_delim
 USE_DC1394_TRUE!$USE_DC1394_TRUE$ac_delim
 USE_DC1394_FALSE!$USE_DC1394_FALSE$ac_delim
 DIRECTFB_CFLAGS!$DIRECTFB_CFLAGS$ac_delim
+DIRECTFB_LIBS!$DIRECTFB_LIBS$ac_delim
+USE_DIRECTFB_TRUE!$USE_DIRECTFB_TRUE$ac_delim
+USE_DIRECTFB_FALSE!$USE_DIRECTFB_FALSE$ac_delim
+HAVE_DTS!$HAVE_DTS$ac_delim
+DTS_LIBS!$DTS_LIBS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -38703,11 +38243,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-DIRECTFB_LIBS!$DIRECTFB_LIBS$ac_delim
-USE_DIRECTFB_TRUE!$USE_DIRECTFB_TRUE$ac_delim
-USE_DIRECTFB_FALSE!$USE_DIRECTFB_FALSE$ac_delim
-HAVE_DTS!$HAVE_DTS$ac_delim
-DTS_LIBS!$DTS_LIBS$ac_delim
 USE_DTS_TRUE!$USE_DTS_TRUE$ac_delim
 USE_DTS_FALSE!$USE_DTS_FALSE$ac_delim
 DIVXENC_LIBS!$DIVXENC_LIBS$ac_delim
@@ -38800,6 +38335,11 @@ SNDFILE_CFLAGS!$SNDFILE_CFLAGS$ac_delim
 SNDFILE_LIBS!$SNDFILE_LIBS$ac_delim
 USE_SNDFILE_TRUE!$USE_SNDFILE_TRUE$ac_delim
 USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
+SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
+SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
+USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
+USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
+SPC_LIBS!$SPC_LIBS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -38841,11 +38381,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
-SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
-USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
-USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
-SPC_LIBS!$SPC_LIBS$ac_delim
 USE_SPC_TRUE!$USE_SPC_TRUE$ac_delim
 USE_SPC_FALSE!$USE_SPC_FALSE$ac_delim
 SWFDEC_CFLAGS!$SWFDEC_CFLAGS$ac_delim
@@ -38875,7 +38410,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 32; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 27; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -39102,6 +38637,11 @@ ac_abs_srcdir=$ac_abs_top_srcdir$ac_dir_suffix
   [\\/$]* | ?:[\\/]* ) ac_INSTALL=$INSTALL ;;
   *) ac_INSTALL=$ac_top_build_prefix$INSTALL ;;
   esac
+  ac_MKDIR_P=$MKDIR_P
+  case $MKDIR_P in
+  [\\/$]* | ?:[\\/]* ) ;;
+  */*) ac_MKDIR_P=$ac_top_build_prefix$MKDIR_P ;;
+  esac
 _ACEOF
 
 cat >>$CONFIG_STATUS <<\_ACEOF
@@ -39155,6 +38695,7 @@ s&@builddir@&$ac_builddir&;t t
 s&@abs_builddir@&$ac_abs_builddir&;t t
 s&@abs_top_builddir@&$ac_abs_top_builddir&;t t
 s&@INSTALL@&$ac_INSTALL&;t t
+s&@MKDIR_P@&$ac_MKDIR_P&;t t
 $ac_datarootdir_hack
 " $ac_file_inputs | sed -f "$tmp/subs-1.sed" | sed -f "$tmp/subs-2.sed" | sed -f "$tmp/subs-3.sed" | sed -f "$tmp/subs-4.sed" | sed -f "$tmp/subs-5.sed" >$tmp/out
 
@@ -39270,21 +38811,22 @@ echo "$as_me: $ac_file is unchanged" >&6;}
   fi
   rm -f "$tmp/out12"
 # Compute $ac_file's index in $config_headers.
+_am_arg=$ac_file
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    $ac_file | $ac_file:* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for $ac_file" >`$as_dirname -- $ac_file ||
-$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X$ac_file : 'X\(//\)[^/]' \| \
-	 X$ac_file : 'X\(//\)$' \| \
-	 X$ac_file : 'X\(/\)' \| . 2>/dev/null ||
-echo X$ac_file |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -39319,8 +38861,9 @@ echo "$as_me: executing $ac_file commands" >&6;}
   # some people rename them; so instead we look at the file content.
   # Grep'ing the first line is not enough: some people post-process
   # each Makefile.in and add a new line on top of each file to say so.
-  # So let's grep whole file.
-  if grep '^#.*generated by automake' $mf > /dev/null 2>&1; then
+  # Grep'ing the whole file is not good either: AIX grep has a line
+  # limit of 2048, but all sed's we know have understand at least 4000.
+  if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
     dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \

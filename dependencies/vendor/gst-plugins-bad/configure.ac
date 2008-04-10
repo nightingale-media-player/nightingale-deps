@@ -92,7 +92,6 @@ GST_PLUGINS_ALL="\
   interleave \
   librfb \
   modplug \
-  mpegtsparse \
   mpeg4videoparse \
   mpegvideoparse \
   mve \
@@ -141,8 +140,6 @@ dnl determine c++ compiler
 AC_PROG_CXX
 dnl determine if c++ is available on this system
 AC_CHECK_PROG(HAVE_CXX, $CXX, yes, no)
-
-AS_PROG_OBJC
 
 dnl check if the compiler supports '-c' and '-o' options
 AM_PROG_CC_C_O
@@ -302,9 +299,9 @@ AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
   save_CFLAGS="$CFLAGS"
   save_LDFLAGS="$LDFLAGS"
   save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS"
+  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS -TP"
   LDFLAGS="$LDFLAGS $DIRECTSHOW_LDFLAGS"
-  LIBS="$LIBS -ldshow -ldxerr9"
+  LIBS="$LIBS -lstrmiids -lole32"
   AC_MSG_CHECKING(for DirectShow LDFLAGS)
   AC_LINK_IFELSE([
 #include <windows.h>
@@ -312,8 +309,12 @@ AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
 
 int main ()
 {
-  DXGetErrorString9 (0);
-  DirectShowCreate(NULL, NULL, NULL);
+  IFilterMapper2 *mapper = NULL;
+  
+  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_INPROC,
+  IID_IFilterMapper2,(void **) &mapper);
+  if (mapper)
+    mapper->Release ();  
 
   return 0;
 }
@@ -327,7 +328,7 @@ int main ()
 
   if test "x$HAVE_DIRECTSHOW" = "xyes";  then
     dnl this is much more than we want
-    DIRECTSHOW_LIBS="-ldsound -ldxerr9"
+    DIRECTSHOW_LIBS="-lstrmiids -lole32"
     AC_SUBST(DIRECTSHOW_CFLAGS)
     AC_SUBST(DIRECTSHOW_LDFLAGS)
     AC_SUBST(DIRECTSHOW_LIBS)
