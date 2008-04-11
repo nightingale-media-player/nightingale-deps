@@ -6,7 +6,7 @@
 # 
 # This file is part of the Songbird web player.
 #
-# Copyright(c) 2007 POTI, Inc.
+# Copyright(c) 2007-2008 POTI, Inc.
 # http://www.songbirdnest.com
 # 
 # This file may be licensed under the terms of of the
@@ -58,7 +58,7 @@ mach_name=`uname -m`
 if [ "$sys_name" = "Darwin" ]; then
     build_sys_type=Darwin
     if [ "$mach_name" = "i386" ]; then
-        tgt_arch_list="macosx-i686 macosx-ppc"
+        tgt_arch_list="macosx-i686"
     else
         tgt_arch_list=macosx-ppc
     fi
@@ -137,40 +137,63 @@ setup_build()
     build_tgt_arch="$1"
     build_type="$2"
 
+    # Set up the build type environment.
+    case "${build_type}" in
+        debug)
+            CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_BUILD_TYPE=Debug"
+            ;;
+
+        release | *)
+            CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_BUILD_TYPE=Release"
+            ;;
+    esac
+
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
-            export CPPFLAGS="-fPIC -fno-stack-protector"
+            # Set library defs.
+            ZLIB_LIBRARY="libz.a"
+
+            # Set compiler flags.
+            CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC -fno-stack-protector"
+            CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fPIC -fno-stack-protector"
+
+            # Set makefile type.
+            CMAKE_MAKEFILE_TYPE="Unix Makefiles"
+            CMAKE_MAKE_CMD="make"
             ;;
 
         windows-i686)
-            if [ "${build_type}" = "debug" ]; then
-                export CPPFLAGS="-MTd -Zc:wchar_t-"
-            else
-                export CPPFLAGS="-MT -Zc:wchar_t-"
-            fi
-            export CC="cl"
-            export CXX="cl"
-            export LD="link"
             ;;
 
         windows-i686-msvc8)
-            if [ "${build_type}" = "debug" ]; then
-                export CPPFLAGS="-MTd -Zc:wchar_t-"
-            else
-                export CPPFLAGS="-MT -Zc:wchar_t-"
-            fi
-            export CC="cl"
-            export CXX="cl"
-            export LD="link"
+            # Set compiler flags.
+            CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -Zc:wchar_t-"
+            CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Zc:wchar_t-"
+
+            # Set to use multi-threaded libraries.  Can't set in CMAKE_C_FLAGS
+            # because default flags will override.
+            CMAKE_C_FLAGS_DEBUG="${CMAKE_C_FLAGS} -MTd"
+            CMAKE_CXX_FLAGS_DEBUG="${CMAKE_CXX_FLAGS} -MTd"
+            CMAKE_C_FLAGS_RELEASE="${CMAKE_C_FLAGS} -MT"
+            CMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS} -MT"
+
+            # Set library defs.
+            ZLIB_LIBRARY="zlib.lib"
+
+            # Set makefile type.
+            CMAKE_MAKEFILE_TYPE="NMake Makefiles"
+            CMAKE_MAKE_CMD="nmake"
             ;;
 
-        macosx-ppc)
-            cfg_tgt=i686-apple-darwin8.0.0
-            export CFLAGS="-arch ppc"
-            export CXXFLAGS="-arch ppc"
-            export LDFLAGS="-Wl,-arch,ppc"
+        macosx-i686 | macosx-ppc)
+            # Set library defs.
+            ZLIB_LIBRARY="libz.a"
+
+            # Set makefile type.
+            CMAKE_MAKEFILE_TYPE="Unix Makefiles"
+            CMAKE_MAKE_CMD="make"
             ;;
 
     esac
@@ -196,21 +219,6 @@ build()
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
 
-    # Set up internal taglib include paths and build defs.
-    #XXXeps taglib makefiles should do this.
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/taglib/build/taglib/taglib"
-    export CPPFLAGS="${CPPFLAGS} -DMAKE_TAGLIB_LIB"
-
-    # Set up zlib build options.
-    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/zlib/${build_type}/lib"
-    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/zlib/${build_type}/include"
-    if [ "${tgt_arch}" = "windows-i686" -o "${tgt_arch}" = "windows-i686-msvc8" ]; then
-        export LDFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper \
-                        echo ${LDFLAGS}`
-        export CPPFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper\
-                         echo ${CPPFLAGS}`
-    fi
-
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
     rm -Rf ${build_dir}
@@ -218,33 +226,32 @@ build()
     cp -R ../taglib ${build_dir}
     cd ${build_dir}/taglib
 
-    # Determine the debug options.
-    if [ "${build_type}" = "debug" ]; then
-        cfg_opts="${cfg_opts} --enable-debug=full"
-    else
-        cfg_opts="${cfg_opts} --enable-debug=no"
-    fi
-
-    # Enable use of zlib.
-    export ac_cv_header_zlib_h=yes
-
-    # Set up the target configuration options.
-    if test -n "${cfg_tgt}"; then
-        cfg_opts="${cfg_opts} --target=${cfg_tgt}"
-        cfg_opts="${cfg_opts} --host=${cfg_tgt}"
-    fi
-
     # Make the source distribution.
     make -f Makefile.cvs
 
-    # Configure, build, and install.
-    ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
-                ${cfg_opts}                                                    \
-                --disable-libsuffix                                            \
-                --enable-static                                                \
-                --disable-shared                                               \
-                --enable-cxx-warnings=no
-    make && make install
+    # Build and install.
+    zlib_dir=${dep_arch_dir}/zlib/${build_type}
+    cmake ${CMAKE_ARGS}                                                        \
+          -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS}"                                   \
+          -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                               \
+          -DCMAKE_C_FLAGS_DEBUG="${CMAKE_C_FLAGS_DEBUG}"                       \
+          -DCMAKE_CXX_FLAGS_DEBUG="${CMAKE_CXX_FLAGS_DEBUG}"                   \
+          -DCMAKE_C_FLAGS_RELEASE="${CMAKE_C_FLAGS_RELEASE}"                   \
+          -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"               \
+          -DCMAKE_VERBOSE_MAKEFILE=1                                           \
+          -DCMAKE_INSTALL_PREFIX=${dep_arch_dir}/${tgt_name}/${build_type}     \
+          -DCMAKE_DEBUG_POSTFIX=                                               \
+          -DZLIB_INCLUDE_DIR:PATH="${zlib_dir}/include"                        \
+          -DZLIB_LIBRARY:FILEPATH="${zlib_dir}/lib/${ZLIB_LIBRARY}"            \
+          -G "${CMAKE_MAKEFILE_TYPE}"
+    ${CMAKE_MAKE_CMD} && ${CMAKE_MAKE_CMD} install
+
+    # Post-process libraries on Mac.
+    if [ "$sys_name" = "Darwin" ]; then
+        install_name_tool                                                      \
+            -id @executable_path/libtag.dylib                                  \
+            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libtag.dylib
+    fi
 
     # Move back to starting directory.
     cd ${start_dir}

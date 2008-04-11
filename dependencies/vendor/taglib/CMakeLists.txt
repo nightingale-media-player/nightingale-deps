@@ -22,18 +22,17 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 if(MSVC)
   add_definitions( -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE )
-  set ( CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} -Zc:wchar_t-")
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zc:wchar_t-")
-  set ( CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} -MTd")
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -MTd")
-  set ( CMAKE_C_FLAGS_RELEASE     "${CMAKE_C_FLAGS_DEBUG} -MT")
-  set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -MT")
 endif(MSVC)
 if (WIN32)
-  set(CMAKE_DEBUG_POSTFIX "d")
+  if (NOT DEFINED CMAKE_DEBUG_POSTFIX)
+    set(CMAKE_DEBUG_POSTFIX "d")
+  endif (NOT DEFINED CMAKE_DEBUG_POSTFIX)
 endif (WIN32)
 
-SET(TAGLIB_LIB_MAJOR_VERSION "1")
+# Set major version to be Songbird specific to avoid conflicts with system
+# taglib libraries.  These can be pulled in by other components (e.g.,
+# gstreamer).
+SET(TAGLIB_LIB_MAJOR_VERSION "1sb")
 SET(TAGLIB_LIB_MINOR_VERSION "5")
 SET(TAGLIB_LIB_PATCH_VERSION "0")
 
