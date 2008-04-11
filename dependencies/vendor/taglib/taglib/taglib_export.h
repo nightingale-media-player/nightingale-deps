@@ -26,12 +26,15 @@
 #ifndef TAGLIB_EXPORT_H
 #define TAGLIB_EXPORT_H
 
+// Some fudge to remove the burning
+#if 0
 #if defined(_WIN32) || defined(_WIN64)
 #ifdef MAKE_TAGLIB_LIB
 #define TAGLIB_EXPORT __declspec(dllexport)
 #else
 #define TAGLIB_EXPORT __declspec(dllimport)
 #endif
+#endif // Remove this fudge
 #else
 #define TAGLIB_EXPORT
 #endif
