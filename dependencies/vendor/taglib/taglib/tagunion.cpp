@@ -111,6 +111,11 @@ String TagUnion::artist() const
   stringUnion(artist);
 }
 
+String TagUnion::albumArtist() const
+{
+  stringUnion(albumArtist);
+}
+
 String TagUnion::album() const
 {
   stringUnion(album);
@@ -121,9 +126,64 @@ String TagUnion::comment() const
   stringUnion(comment);
 }
 
+String TagUnion::lyrics() const
+{
+  stringUnion(lyrics);
+}
+
 String TagUnion::genre() const
 {
   stringUnion(genre);
+}
+
+String TagUnion::producer() const
+{
+  stringUnion(producer);
+}
+
+String TagUnion::composer() const
+{
+  stringUnion(composer);
+}
+
+String TagUnion::conductor() const
+{
+  stringUnion(conductor);
+}
+
+String TagUnion::lyricist() const
+{
+  stringUnion(lyricist);
+}
+
+String TagUnion::recordLabel() const
+{
+  stringUnion(recordLabel);
+}
+
+String TagUnion::rating() const
+{
+  stringUnion(rating);
+}
+
+String TagUnion::language() const
+{
+  stringUnion(language);
+}
+
+String TagUnion::key() const
+{
+  stringUnion(key);
+}
+
+String TagUnion::license() const
+{
+  stringUnion(license);
+}
+
+String TagUnion::licenseUrl() const
+{
+  stringUnion(licenseUrl);
 }
 
 TagLib::uint TagUnion::year() const
@@ -136,6 +196,37 @@ TagLib::uint TagUnion::track() const
   numberUnion(track);
 }
 
+TagLib::uint TagUnion::totalTracks() const
+{
+  numberUnion(totalTracks);
+}
+
+TagLib::uint TagUnion::disc() const
+{
+  numberUnion(disc);
+}
+
+TagLib::uint TagUnion::totalDiscs() const
+{
+  numberUnion(totalDiscs);
+}
+
+TagLib::uint TagUnion::bpm() const
+{
+  numberUnion(bpm);
+}
+
+bool TagUnion::isCompilation() const
+{
+  if(tag(0) && tag(0)->isCompilation())
+    return true;
+  if(tag(1) && tag(1)->isCompilation())
+    return true;
+  if(tag(2) && tag(2)->isCompilation())
+    return true;
+  return false;
+}
+
 void TagUnion::setTitle(const String &s)
 {
   setUnion(Title, s);
@@ -144,6 +235,11 @@ void TagUnion::setTitle(const String &s)
 void TagUnion::setArtist(const String &s)
 {
   setUnion(Artist, s);
+}
+
+void TagUnion::setAlbumArtist(const String &s)
+{
+  setUnion(AlbumArtist, s);
 }
 
 void TagUnion::setAlbum(const String &s)
@@ -156,9 +252,64 @@ void TagUnion::setComment(const String &s)
   setUnion(Comment, s);
 }
 
+void TagUnion::setLyrics(const String &s)
+{
+  setUnion(Lyrics, s);
+}
+
 void TagUnion::setGenre(const String &s)
 {
   setUnion(Genre, s);
+}
+
+void TagUnion::setProducer(const String &s)
+{
+  setUnion(Producer, s);
+}
+
+void TagUnion::setComposer(const String &s)
+{
+  setUnion(Composer, s);
+}
+
+void TagUnion::setConductor(const String &s)
+{
+  setUnion(Conductor, s);
+}
+
+void TagUnion::setLyricist(const String &s)
+{
+  setUnion(Lyricist, s);
+}
+
+void TagUnion::setRecordLabel(const String &s)
+{
+  setUnion(RecordLabel, s);
+}
+
+void TagUnion::setRating(const String &s)
+{
+  setUnion(Rating, s);
+}
+
+void TagUnion::setLanguage(const String &s)
+{
+  setUnion(Language, s);
+}
+
+void TagUnion::setKey(const String &s)
+{
+  setUnion(Key, s);
+}
+
+void TagUnion::setLicense(const String &s)
+{
+  setUnion(License, s);
+}
+
+void TagUnion::setLicenseUrl(const String &s)
+{
+  setUnion(LicenseUrl, s);
 }
 
 void TagUnion::setYear(uint i)
@@ -169,6 +320,31 @@ void TagUnion::setYear(uint i)
 void TagUnion::setTrack(uint i)
 {
   setUnion(Track, i);
+}
+
+void TagUnion::setTotalTracks(uint i)
+{
+  setUnion(TotalTracks, i);
+}
+
+void TagUnion::setDisc(uint i)
+{
+  setUnion(Disc, i);
+}
+
+void TagUnion::setTotalDiscs(uint i)
+{
+  setUnion(TotalDiscs, i);
+}
+
+void TagUnion::setBpm(uint i)
+{
+  setUnion(Bpm, i);
+}
+
+void TagUnion::setIsCompilation(bool i)
+{
+  setUnion(IsCompilation, i);
 }
 
 bool TagUnion::isEmpty() const
