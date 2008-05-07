@@ -53,26 +53,57 @@ tgt_name=zlib
 #   tgt_arch_list               List of build target architectures.
 #
 
-sys_name=`uname`
 mach_name=`uname -m`
-if [ "$sys_name" = "Darwin" ]; then
-    build_sys_type=Darwin
-    if [ "$mach_name" = "i386" ]; then
-        tgt_arch_list="macosx-i686 macosx-ppc"
-    else
-        tgt_arch_list=macosx-ppc
-    fi
-elif [ "$sys_name" = "Linux" ]; then
-    build_sys_type=Linux
-    if [ "$mach_name" = "x86_64" ]; then
-        tgt_arch_list=linux-x86_64
-    else
-        tgt_arch_list=linux-i686
-    fi
-else
-    build_sys_type=Cygwin
-    tgt_arch_list=windows-i686
-fi
+case `uname` in
+
+    Darwin)
+        build_sys_type=Darwin
+        if [ "$mach_name" = "i386" ]; then
+            tgt_arch_list="macosx-i686 macosx-ppc"
+        else
+            tgt_arch_list=macosx-ppc
+        fi
+        ;;
+
+    Linux)
+        build_sys_type=Linux
+        if [ "$mach_name" = "x86_64" ]; then
+            tgt_arch_list=linux-x86_64
+        else
+            tgt_arch_list=linux-i686
+        fi
+        ;;
+
+    SunOS)
+        build_sys_type=Solaris
+        case "mach_name" in
+            x86_64)
+                tgt_arch_list=solaris-x86_64
+                ;;
+            i86pc)
+                tgt_arch_list=solaris-i386
+                ;;
+            *)
+                tgt_arch_list=solaris-sparc
+                ;;
+        esac
+        ;;
+
+    *)
+        build_sys_type=Cygwin
+        _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+        CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+        case "$CC_VERSION" in
+            13.*)
+                tgt_arch_list=windows-i686
+                ;;
+            *)
+                tgt_arch_list=windows-i686-msvc8
+                ;;
+        esac
+        ;;
+
+esac
 
 
 #
@@ -131,21 +162,28 @@ setup_build()
     case "${build_tgt_arch}" in
 
         linux-i686 | linux-x86_64)
-            export CPPFLAGS="-fPIC"
+            CPPFLAGS="-fPIC"
+            ;;
+
+        solaris-*)
+            CC=cc
+            CXX=CC
             ;;
 
         windows-i686)
-            export CPPFLAGS="-MT"
+            CPPFLAGS="-MT"
             ;;
 
         macosx-ppc)
             cfg_tgt=i686-apple-darwin8.0.0
-            export CFLAGS="-arch ppc"
-            export CXXFLAGS="-arch ppc"
-            export LDFLAGS="-Wl,-arch,ppc"
+            CFLAGS="-arch ppc"
+            CXXFLAGS="-arch ppc"
+            LDFLAGS="-Wl,-arch,ppc"
             ;;
 
     esac
+
+    export CPPFLAGS CC CXX CFLAGS LDFLAGS
 }
 
 
