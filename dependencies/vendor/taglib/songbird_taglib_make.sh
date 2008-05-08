@@ -75,7 +75,7 @@ case `uname` in
 
     SunOS)
         build_sys_type=Solaris
-        case "mach_name" in
+        case "$mach_name" in
             x86_64)
                 tgt_arch_list=solaris-x86_64
                 ;;
