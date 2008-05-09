@@ -144,3 +144,11 @@ void Tag::duplicate(const Tag *source, Tag *target, bool overwrite) // static
       target->setBpm(source->bpm());
   }
 }
+
+String Tag::splitNumberRender(uint first, uint second)
+{
+  String firstString = first ? String("") : String::number(first);
+  String secondString = second ? String("") : String::number(second);
+  
+  return firstString + String("/") + secondString;
+}

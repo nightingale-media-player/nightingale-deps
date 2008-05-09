@@ -361,6 +361,13 @@ namespace TagLib {
      * through subclasses.
      */
     Tag();
+    
+    /*!
+     * Render a pair of uints to a "/" separated string.
+     * Inputs equal to 0 will be rendered as an empty string for consistency
+     * with the Tag interface.
+     */
+    static String splitNumberRender(uint first, uint second);
 
   private:
     Tag(const Tag &);

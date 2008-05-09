@@ -12,12 +12,12 @@ public:
   TagLib::String     genre;
   TagLib::uint       year;
   TagLib::uint       track;
-  TagLib::uint       numTracks;
+  TagLib::uint       totalTracks;
   TagLib::String     comment;
   TagLib::String     grouping;
   TagLib::String     composer;
-  TagLib::uint       disk;
-  TagLib::uint       numDisks;
+  TagLib::uint       disc;
+  TagLib::uint       totalDiscs;
   TagLib::uint       bpm;
   bool               isEmpty;
   TagLib::ByteVector cover;
@@ -29,9 +29,9 @@ MP4::Tag::Tag( )
   d = new TagPrivate();
   d->year       = 0;
   d->track      = 0;
-  d->numTracks  = 0;
-  d->disk       = 0;
-  d->numTracks  = 0;
+  d->totalTracks  = 0;
+  d->disc       = 0;
+  d->totalTracks  = 0;
   d->bpm        = 0;
   d->isEmpty    = true;
 }
@@ -76,9 +76,9 @@ TagLib::uint MP4::Tag::track() const
   return d->track;
 }
 
-TagLib::uint MP4::Tag::numTracks() const
+TagLib::uint MP4::Tag::totalTracks() const
 {
-  return d->numTracks;
+  return d->totalTracks;
 }
 
 String MP4::Tag::grouping() const
@@ -91,14 +91,14 @@ String MP4::Tag::composer() const
   return d->composer;
 }
 
-TagLib::uint MP4::Tag::disk() const
+TagLib::uint MP4::Tag::disc() const
 {
-  return d->disk;
+  return d->disc;
 }
 
-TagLib::uint MP4::Tag::numDisks() const
+TagLib::uint MP4::Tag::totalDiscs() const
 {
-  return d->numDisks;
+  return d->totalDiscs;
 }
 
 TagLib::uint MP4::Tag::bpm() const
@@ -153,9 +153,9 @@ void MP4::Tag::setTrack(TagLib::uint i)
   d->isEmpty = false;
 }
 
-void MP4::Tag::setNumTracks(const TagLib::uint i)
+void MP4::Tag::setTotalTracks(TagLib::uint i)
 {
-  d->numTracks = i;
+  d->totalTracks = i;
   d->isEmpty = false;
 }
 
@@ -171,15 +171,15 @@ void MP4::Tag::setComposer(const String &s)
   d->isEmpty = false;
 }
 
-void MP4::Tag::setDisk(const TagLib::uint i)
+void MP4::Tag::setDisc(const TagLib::uint i)
 {
-  d->disk = i;
+  d->disc = i;
   d->isEmpty = false;
 }
 
-void MP4::Tag::setNumDisks(const TagLib::uint i)
+void MP4::Tag::setTotalDiscs(const TagLib::uint i)
 {
-  d->numDisks = i;
+  d->totalDiscs = i;
   d->isEmpty = false;
 }
 

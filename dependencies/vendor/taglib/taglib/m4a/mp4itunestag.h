@@ -45,13 +45,12 @@ namespace TagLib
       virtual String licenseUrl() const { return String::null; };
       virtual uint year() const;
       virtual uint track() const;
-      virtual uint totalTracks() const { return 0; };
-      virtual uint disc() const { return 0; };
-      virtual uint totalDiscs() const { return 0; };
+      virtual uint totalTracks() const;
+      virtual uint disc() const;
+      virtual uint totalDiscs() const;
       virtual uint bpm() const;
       virtual bool isCompilation() const { return false; };
-  
-  
+    
       virtual void setTitle(const String &s);
       virtual void setArtist(const String &s);
       virtual void setAlbumArtist(const String &s) {};
@@ -71,9 +70,9 @@ namespace TagLib
       virtual void setLicenseUrl(const String &s) {};
       virtual void setYear(uint i);
       virtual void setTrack(uint i);
-      virtual void setTotalTracks(uint i) {};
-      virtual void setDisc(uint i) {};
-      virtual void setTotalDiscs(uint i) {};
+      virtual void setTotalTracks(uint i);
+      virtual void setDisc(uint i);
+      virtual void setTotalDiscs(uint i);
       virtual void setBpm(uint i);
       virtual void setIsCompilation(bool i) {};
     
@@ -81,21 +80,9 @@ namespace TagLib
       // MP4 specific fields
 
       String     grouping() const;
-      //String     composer() const;
-      uint       numTracks() const;
-      uint       disk() const;
-      uint       numDisks() const;
-      //uint       bpm() const;
       ByteVector cover() const;
       
       void setGrouping(const String &s);
-      //void setComposer(const String &s);
-      // TODO: rename these
-      void setNumTracks(const uint i);
-      void setDisk(const uint i);
-      void setNumDisks(const uint i);
-      //void setBpm(const uint i);
-      // TODO: bubble this up?
       void setCover( const ByteVector& cover );
   
       virtual bool isEmpty() const;

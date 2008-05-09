@@ -45,13 +45,19 @@ using namespace APE;
 class APE::Tag::TagPrivate
 {
 public:
-  TagPrivate() : file(0), footerLocation(-1), tagLength(0) {}
+  TagPrivate() : file(0), footerLocation(-1), tagLength(0),
+  track(0), totalTracks(0), disc(0), totalDiscs(0) {}
 
   File *file;
   long footerLocation;
   long tagLength;
 
   Footer footer;
+  
+  uint track;
+  uint totalTracks;
+  uint disc;
+  uint totalDiscs;
 
   ItemListMap itemListMap;
 };
@@ -84,39 +90,96 @@ ByteVector APE::Tag::fileIdentifier()
   return ByteVector::fromCString("APETAGEX");
 }
 
+String APE::Tag::stringItem(const String &item) const
+{
+  if(d->itemListMap[item].isEmpty())
+    return String::null;
+  return d->itemListMap[item].toString();  
+}
+
 String APE::Tag::title() const
 {
-  if(d->itemListMap["TITLE"].isEmpty())
-    return String::null;
-  return d->itemListMap["TITLE"].toString();
+  return stringItem("TITLE");
 }
 
 String APE::Tag::artist() const
 {
-  if(d->itemListMap["ARTIST"].isEmpty())
-    return String::null;
-  return d->itemListMap["ARTIST"].toString();
+  return stringItem("ARTIST");
+}
+
+String APE::Tag::albumArtist() const
+{
+  return stringItem("ALBUMARTIST");
 }
 
 String APE::Tag::album() const
 {
-  if(d->itemListMap["ALBUM"].isEmpty())
-    return String::null;
-  return d->itemListMap["ALBUM"].toString();
+  return stringItem("ALBUM");
 }
 
 String APE::Tag::comment() const
 {
-  if(d->itemListMap["COMMENT"].isEmpty())
-    return String::null;
-  return d->itemListMap["COMMENT"].toString();
+  return stringItem("COMMENT");
+}
+
+String APE::Tag::lyrics() const
+{
+  return stringItem("LYRICS");
 }
 
 String APE::Tag::genre() const
 {
-  if(d->itemListMap["GENRE"].isEmpty())
-    return String::null;
-  return d->itemListMap["GENRE"].toString();
+  return stringItem("GENRE");
+}
+
+String APE::Tag::producer() const
+{
+  return stringItem("PRODUCER");
+}
+
+String APE::Tag::composer() const
+{
+  return stringItem("COMPOSER");
+}
+
+String APE::Tag::conductor() const
+{
+  return stringItem("CONDUCTOR");
+}
+
+String APE::Tag::lyricist() const
+{
+  return stringItem("LYRICIST");
+}
+
+String APE::Tag::recordLabel() const
+{
+  return stringItem("RECORDLABEL");
+}
+
+String APE::Tag::rating() const
+{
+  return stringItem("RATING");
+}
+
+String APE::Tag::language() const
+{
+  return stringItem("LANGUAGE");
+}
+
+String APE::Tag::key() const
+{
+  return stringItem("KEY");
+}
+
+String APE::Tag::license() const
+{
+  return stringItem("LICENSE");
+}
+
+String APE::Tag::licenseUrl() const
+{
+  return stringItem("LICENSEURL");
 }
 
 TagLib::uint APE::Tag::year() const
@@ -126,11 +189,138 @@ TagLib::uint APE::Tag::year() const
   return d->itemListMap["YEAR"].toString().toInt();
 }
 
+
+// TODO: probably ought to not require people to read these values
+//       prior to being able to store them.
 TagLib::uint APE::Tag::track() const
 {
   if(d->itemListMap["TRACK"].isEmpty())
     return 0;
-  return d->itemListMap["TRACK"].toString().toInt();
+
+  String trackDetails = d->itemListMap["TRACK"].toString();
+
+  uint value = 0;
+  bool isNumber = true;
+
+  for(String::ConstIterator charIt = trackDetails.begin();
+      isNumber && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+  
+  d->track = value;
+
+  return value;
+}
+
+TagLib::uint APE::Tag::totalTracks() const
+{
+  if(d->itemListMap["TRACK"].isEmpty())
+    return 0;  
+  
+  String trackDetails = d->itemListMap["TRACK"].toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  bool reachedSecondNumber = false;
+  bool foundSeparator = false;
+
+  for(String::ConstIterator charIt = trackDetails.begin();
+      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber && foundSeparator) {
+        reachedSecondNumber = true;
+      }
+      else if (!isNumber) {
+        foundSeparator = true;
+      }
+      
+      if (reachedSecondNumber && isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+
+  d->totalTracks = value;
+
+  return value;
+}
+
+TagLib::uint APE::Tag::disc() const
+{
+  if(d->itemListMap["DISC"].isEmpty())
+    return 0;
+
+  String trackDetails = d->itemListMap["DISC"].toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  for(String::ConstIterator charIt = trackDetails.begin();
+      isNumber && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+  
+  d->disc = value;
+
+  return value;
+}
+
+TagLib::uint APE::Tag::totalDiscs() const
+{
+  if(d->itemListMap["DISC"].isEmpty())
+    return 0;  
+  
+  String trackDetails = d->itemListMap["DISC"].toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  bool reachedSecondNumber = false;
+  bool foundSeparator = false;
+
+  for(String::ConstIterator charIt = trackDetails.begin();
+      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber && foundSeparator) {
+        reachedSecondNumber = true;
+      }
+      else if (!isNumber) {
+        foundSeparator = true;
+      }
+      
+      if (reachedSecondNumber && isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+
+  d->totalDiscs = value;
+
+  return value;
+}
+
+TagLib::uint APE::Tag::bpm() const
+{
+  if(d->itemListMap["BPM"].isEmpty())
+    return 0;
+  return d->itemListMap["BPM"].toString().toInt();
+}
+
+bool APE::Tag::isCompilation() const
+{
+  if(d->itemListMap["COMPILATION"].isEmpty())
+    return false;
+  return d->itemListMap["COMPILATION"].toString() == "true";
 }
 
 void APE::Tag::setTitle(const String &s)
@@ -143,6 +333,11 @@ void APE::Tag::setArtist(const String &s)
   addValue("ARTIST", s, true);
 }
 
+void APE::Tag::setAlbumArtist(const String &s)
+{
+  addValue("ALBUMARTIST", s, true);
+}
+
 void APE::Tag::setAlbum(const String &s)
 {
   addValue("ALBUM", s, true);
@@ -153,9 +348,64 @@ void APE::Tag::setComment(const String &s)
   addValue("COMMENT", s, true);
 }
 
+void APE::Tag::setLyrics(const String &s)
+{
+  addValue("LYRICS", s, true);
+}
+
 void APE::Tag::setGenre(const String &s)
 {
   addValue("GENRE", s, true);
+}
+
+void APE::Tag::setProducer(const String &s)
+{
+  addValue("PRODUCER", s, true);
+}
+
+void APE::Tag::setComposer(const String &s)
+{
+  addValue("COMPOSER", s, true);
+}
+
+void APE::Tag::setConductor(const String &s)
+{
+  addValue("CONDUCTOR", s, true);
+}
+
+void APE::Tag::setLyricist(const String &s)
+{
+  addValue("LYRICIST", s, true);
+}
+
+void APE::Tag::setRecordLabel(const String &s)
+{
+  addValue("RECORDLABEL", s, true);
+}
+
+void APE::Tag::setRating(const String &s)
+{
+  addValue("RATING", s, true);
+}
+
+void APE::Tag::setLanguage(const String &s)
+{
+  addValue("LANGUAGE", s, true);
+}
+
+void APE::Tag::setKey(const String &s)
+{
+  addValue("KEY", s, true);
+}
+
+void APE::Tag::setLicense(const String &s)
+{
+  addValue("LICENSE", s, true);
+}
+
+void APE::Tag::setLicenseUrl(const String &s)
+{
+  addValue("LICENSEURL", s, true);
 }
 
 void APE::Tag::setYear(uint i)
@@ -168,10 +418,61 @@ void APE::Tag::setYear(uint i)
 
 void APE::Tag::setTrack(uint i)
 {
-  if(i <= 0)
+  if(i <= 0 && d->totalTracks == 0) {
     removeItem("TRACK");
+    return;
+  }
+  
+  d->track = i;
+  addValue("TRACK", Tag::splitNumberRender(i, d->totalTracks));
+}
+
+void APE::Tag::setTotalTracks(uint i)
+{
+  if(i <= 0 && d->track == 0) {
+    removeItem("TRACK");
+    return;
+  }
+  
+  d->totalTracks = i;
+  addValue("TRACK", Tag::splitNumberRender(d->track, i));
+}
+
+void APE::Tag::setDisc(uint i)
+{
+  if(i <= 0 && d->totalDiscs == 0) {
+    removeItem("DISC");
+    return;
+  }
+  
+  d->disc = i;
+  addValue("DISC", Tag::splitNumberRender(i, d->totalDiscs));
+}
+
+void APE::Tag::setTotalDiscs(uint i)
+{
+  if(i <= 0 && d->disc == 0) {
+    removeItem("DISC");
+    return;
+  }
+  
+  addValue("DISC", Tag::splitNumberRender(d->disc, i));
+}
+
+void APE::Tag::setBpm(uint i)
+{
+  if(i <= 0)
+    removeItem("BPM");
   else
-    addValue("TRACK", String::number(i), true);
+    addValue("BPM", String::number(i), true);
+}
+
+void APE::Tag::setIsCompilation(bool i)
+{
+  if(!i)
+    removeItem("COMPILATION");
+  else
+    addValue("COMPILATION", "true", true);
 }
 
 APE::Footer *APE::Tag::footer() const
