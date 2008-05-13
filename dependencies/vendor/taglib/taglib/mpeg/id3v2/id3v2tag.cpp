@@ -661,6 +661,7 @@ void ID3v2::Tag::setTotalTracks(uint i)
   }
   
   d->totalTracks = i;
+
   setTextFrame("TRCK", Tag::splitNumberRender(d->track, i));
 }
 

@@ -147,8 +147,7 @@ void Tag::duplicate(const Tag *source, Tag *target, bool overwrite) // static
 
 String Tag::splitNumberRender(uint first, uint second)
 {
-  String firstString = first ? String("") : String::number(first);
-  String secondString = second ? String("") : String::number(second);
-  
+  String firstString = first ? String::number(first) : String("");
+  String secondString = second ? String::number(second) : String("");
   return firstString + String("/") + secondString;
 }
