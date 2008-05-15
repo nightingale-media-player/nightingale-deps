@@ -183,21 +183,20 @@ setup_build()
             ;;
 
         windows-i686 | windows-i686-msvc8)
-            export CPPFLAGS="${CPPFLAGS} -MD -DWIN32 -gstabs+"
+	    if [ "${build_type}" = "debug" ]; then
+		    export CPPFLAGS="${CPPFLAGS} -MTd"
+	    else
+		    export CPPFLAGS="${CPPFLAGS} -MT"
+	    fi
+            export CPPFLAGS="${CPPFLAGS} -Zi -DWIN32 -nologo"
             export_append                                                      \
                     "LIBGPOD_CFLAGS"                                           \
-                    "-D __NO_CTYPE"                                            \
-                    "-I${dep_arch_dir}/libgw32c/include/glibc"                 \
-                    "-I${dep_arch_dir}/mingw/include"                          \
-                    "-include"                                                 \
-                        "${dep_dir}/vendor/libgpod/win32/include/libgpod_port.h"
+	            "-FI ${dep_dir}/vendor/libgpod/win32/include/libgpod_port.h" \
+                    "-D __NO_CTYPE"
             export_append                                                      \
                         "LIBGPOD_LIBS"                                         \
-                        "${dep_arch_dir}/libgw32c/lib/libgw32c.a"              \
-                        "-L${dep_arch_dir}/mingw/lib"                          \
-                        "${dep_arch_dir}/mingw/lib/gcc/mingw32/3.4.2/libgcc.a" \
-                        "/NODEFAULTLIB:msvcrt.Lib"                             \
-                        "/IMPLIB:gpod.lib"                                     \
+			"-debug"					       \
+                        "-IMPLIB:gpod.lib"                                     \
                         "-ladvapi32"                                           \
                         "-lgdi32"                                              \
                         "-lkernel32"                                           \
@@ -206,7 +205,6 @@ setup_build()
                         "-luser32"                                             \
                         "-luuid"
             cl_process="${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper"
-            cfg_tgt=i686-pc-mingw32
 
             # Determine MSVC version.
             tmp='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
@@ -219,16 +217,6 @@ setup_build()
 
             # Set up to use the MSVC linker.
             export LD=link
-
-            # Apply version specific settings.
-            case "$CC_VERSION" in
-                13.*)
-                    ;;
-                *)
-                    export CPPFLAGS="${CPPFLAGS} -Zc:wchar_t-"
-                    ;;
-            esac
-
             ;;
 
         macosx-i686 | macosx-ppc)

@@ -119,8 +119,8 @@
 #include <glib/gstdio.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/statvfs.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
 #ifndef WIN32
 #include <unistd.h>
@@ -4764,50 +4764,27 @@ static WContents *wcontents_new (const gchar *filename)
  * cts->error accordingly. */
 static gboolean wcontents_write (WContents *cts)
 {
-    int fd;
+    GError* error = NULL;
+    gboolean success;
 
     g_return_val_if_fail (cts, FALSE);
     g_return_val_if_fail (cts->filename, FALSE);
 
-#ifndef WIN32
-    fd = creat (cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
-#else /* WIN32 */
-    chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
-    fd = creat (cts->filename, 0);
-    chmod(cts->filename, S_IRWXU|S_IRWXG|S_IRWXO);
-    setmode(fd, 0x8000);
-#endif /* WIN32 */
+    /* try to make the file writable first, ignoring errors */
+    g_chmod(cts->filename, 0777);
 
-    if (fd == -1)
-    {
-	cts->error = g_error_new (G_FILE_ERROR,
-				  g_file_error_from_errno (errno),
-				  _("Opening of '%s' for writing failed (%s)."),
-				  cts->filename, g_strerror (errno));
-	return FALSE;
+    /* write the contents to the file */
+    success = g_file_set_contents(cts->filename, cts->contents, cts->pos, 
+        &error);
+
+    if (!success) {
+        cts->error = error;
+        return FALSE;
     }
-    if (cts->contents && cts->pos)
-    {
-	ssize_t written = write (fd, cts->contents, cts->pos);
-	if (written == -1)
-	{
-	    cts->error = g_error_new (G_FILE_ERROR,
-				      g_file_error_from_errno (errno),
-				      _("Writing to '%s' failed (%s)."),
-				      cts->filename, g_strerror (errno));
-	    close (fd);
-	    return FALSE;
-	}
-    }
-    fd = close (fd);
-    if (fd == -1)
-    {
-	cts->error = g_error_new (G_FILE_ERROR,
-				  g_file_error_from_errno (errno),
-				  _("Writing to '%s' failed (%s)."),
-				  cts->filename, g_strerror (errno));
-	return FALSE;
-    }
+
+    /* set the permissions again */
+    g_chmod(cts->filename, 0777);
+
     return TRUE;
 }
 
@@ -5233,7 +5210,17 @@ gboolean itdb_shuffle_write (Itdb_iTunesDB *itdb, GError **error)
     return result;
 }
 
-
+/* helper function */
+static gboolean haystack (gchar *filetype, gchar **desclist)
+{
+    gchar **dlp;
+    if (!filetype || !desclist) return FALSE;
+    for (dlp=desclist; *dlp; ++dlp)
+    {
+        if (strstr (filetype, *dlp)) return TRUE;
+    }
+    return FALSE;
+}
 /**
  * itdb_shuffle_write_file:
  * @itdb: the #Itdb_iTunesDB to write to disk
@@ -5248,18 +5235,6 @@ gboolean itdb_shuffle_write (Itdb_iTunesDB *itdb, GError **error)
 gboolean itdb_shuffle_write_file (Itdb_iTunesDB *itdb,
 				  const gchar *filename, GError **error)
 {
-    auto gboolean haystack (gchar *filetype, gchar **desclist);
-    gboolean haystack (gchar *filetype, gchar **desclist)
-    {
-	gchar **dlp;
-	if (!filetype || !desclist) return FALSE;
-	for (dlp=desclist; *dlp; ++dlp)
-	{
-	    if (strstr (filetype, *dlp)) return TRUE;
-	}
-	return FALSE;
-    }
-
     FExport *fexp;
     GList *gl;
     WContents *cts;
@@ -6030,7 +6005,7 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
     setmode (file_in, 0x8000);/*zzz set to binary, use def*/
 #endif
 
-    chmod(to_file, S_IRWXU|S_IRWXG|S_IRWXO);
+    g_chmod(to_file, 0777);
     file_out = creat (to_file, 0);
     if (file_out < 0)
     {
@@ -6041,7 +6016,7 @@ gboolean itdb_cp (const gchar *from_file, const gchar *to_file,
 		     to_file, g_strerror (errno));
 	goto err_out;
     }
-	chmod(to_file, S_IRWXU|S_IRWXG|S_IRWXO);
+	g_chmod(to_file, 0777);
 #ifdef WIN32
 	setmode(file_out, 0x8000);/*zzz set to binary, use def*/
 #endif
@@ -6767,16 +6742,13 @@ static gboolean itdb_create_directories (Itdb_Device *device, GError **error)
     dirnum = info->musicdirs;
     if (dirnum == 0)
     {   /* do a guess */
-	struct statvfs stat;
-	if (statvfs (mp, &stat) != 0)
-	{   /* why should this fail !? */
-	    dirnum = 20;
-	}
-	else
-	{
-	    gdouble size = ((gdouble)stat.f_blocks * stat.f_frsize) / 1073741824;
+        guint64 capacity, free_space;
+        if (itdb_device_get_storage_info(device, &capacity, &free_space)) {
+	    gdouble size = ((gdouble)capacity) / 1073741824;
 	    if (size < 20)  dirnum = 20;
 	    else            dirnum = 50;
+        } else {
+	    dirnum = 20;
 	}
     }
 
@@ -6956,8 +6928,8 @@ Itdb_Prefs *itdb_prefs_parse(Itdb_Device *device, GError **error)
     {
         prefs->contents = g_malloc (sizeof (default_prefs));
         prefs->length = sizeof (default_prefs);
-        bcopy (default_prefs, prefs->contents, sizeof (default_prefs));
-        bcopy (contents, prefs->contents, length);
+        memcpy (prefs->contents, default_prefs, sizeof (default_prefs));
+        memcpy (prefs->contents, contents, length);
         g_free (contents);
         contents = prefs->contents;
     }
@@ -6970,7 +6942,7 @@ Itdb_Prefs *itdb_prefs_parse(Itdb_Device *device, GError **error)
     prefs->ipod_set_up = contents[0x08];
     prefs->music_mgmt_type = contents[0x0A];
     prefs->music_update_type = contents[0x0B];
-    bcopy (&(contents[0x0C]), &(prefs->music_lib_link_id), 8);
+    memcpy (&(prefs->music_lib_link_id), &(contents[0x0C]), 8);
 
     g_free (itunes_dir);
     return prefs;
@@ -7020,7 +6992,7 @@ gboolean itdb_prefs_write(Itdb_Device *device, Itdb_Prefs *prefs,
     contents[0x08] = prefs->ipod_set_up;
     contents[0x0A] = prefs->music_mgmt_type;
     contents[0x0B] = prefs->music_update_type;
-    bcopy (&(prefs->music_lib_link_id), &(contents[0x0C]), 8);
+    memcpy (&(contents[0x0C]), &(prefs->music_lib_link_id), 8);
 
     /* open the preferences file for writing */
     fd = fopen(prefs_filename, "wb");

@@ -572,6 +572,9 @@ struct _MhliHeader {
 	unsigned char padding[];
 };
 
+#ifdef _MSC_VER
+#pragma pack(push,1)
+#endif
 struct _MhiiHeader {
 	unsigned char header_id[4];
 	gint32 header_len;
@@ -586,7 +589,13 @@ struct _MhiiHeader {
 	gint32 digitized_date;
 	gint32 orig_img_size;
 	unsigned char padding[];
-} __attribute__((__packed__));
+} 
+#ifdef _MSC_VER
+;
+#pragma pack(pop)
+#else
+__attribute__((__packed__));
+#endif
 /* I we don't put the 'packed' attribute above, some 64 bit systems
  * will pad the 64 bit integer to be aligned to an 8-byte boundary.
  * Hopefully there won't be any systems around that crash when

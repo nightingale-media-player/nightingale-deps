@@ -1106,7 +1106,11 @@ G_GNUC_INTERNAL gboolean itdb_device_requires_checksum (Itdb_Device *device)
     return FALSE;
 }
 
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/statvfs.h>
+#endif
 
 /**
  * itdb_device_get_storage_info:
@@ -1121,13 +1125,25 @@ G_GNUC_INTERNAL gboolean itdb_device_requires_checksum (Itdb_Device *device)
  **/
 gboolean itdb_device_get_storage_info (Itdb_Device *device, guint64 *capacity, guint64 *free)
 {
+#ifdef WIN32
+    ULARGE_INTEGER u_free, u_capacity;
+#else
     struct statvfs info;
     guint64 block_size;
+#endif
 
     g_return_val_if_fail (device, FALSE);
     g_return_val_if_fail (capacity, FALSE);
     g_return_val_if_fail (free, FALSE);
 
+#ifdef WIN32
+    if (GetDiskFreeSpaceEx(device->mountpoint, &u_free, &u_capacity, NULL) == 0) {
+    	return FALSE;
+    }
+    *free = u_free.QuadPart;
+    *capacity = u_capacity.QuadPart;
+    return TRUE;
+#else
     if (statvfs(device->mountpoint, &info))
 	return FALSE;
 
@@ -1140,5 +1156,6 @@ gboolean itdb_device_get_storage_info (Itdb_Device *device, guint64 *capacity, g
     *free = info.f_bfree * block_size;
 
     return TRUE;
+#endif
 }
 

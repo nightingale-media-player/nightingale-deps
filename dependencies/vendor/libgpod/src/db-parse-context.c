@@ -23,7 +23,6 @@
  */
 
 
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -57,12 +56,12 @@ db_parse_context_new (const unsigned char *buffer, off_t len, guint byte_order)
 }
 
 void
-db_parse_context_destroy (DBParseContext *ctx, gboolean unmap) 
+db_parse_context_destroy (DBParseContext *ctx) 
 {
 	g_return_if_fail (ctx != NULL);
 
-	if (unmap) {
-		munmap ((void*)ctx->buffer, ctx->total_len);
+	if (ctx->mapped_file) {
+		g_mapped_file_free(ctx->mapped_file);
 	}
 	g_free (ctx);
 }
@@ -170,63 +169,46 @@ db_parse_context_get_m_header_internal (DBParseContext *ctx, const char *id, off
 DBParseContext *
 db_parse_context_new_from_file (const char *filename, Itdb_DB *db)
 {
-	int fd;
-	struct stat stat_buf;
-	int result;
-	unsigned char *buffer;
 	DBParseContext *ctx;
 	Itdb_Device *device;
+	GError* error;
+	GMappedFile* mapped_file;
 
-	buffer = NULL;
 	ctx = NULL;
+	error = NULL;
+	mapped_file = NULL;
 
 	device = db_get_device (db);
 	g_return_val_if_fail (device, NULL);
 
-	fd = open (filename, O_RDONLY);
-	if (fd == -1) {
-		g_print ("Failed to open %s: %s\n", 
-			 filename, strerror (errno));
+	mapped_file = g_mapped_file_new(filename, FALSE, &error);
+	
+	if (mapped_file == NULL) {
+		g_print ("Error while mapping %s: %s\n", filename, 
+                    error->message);
+		g_error_free(error);
 		return NULL;
 	}
 
-	result = fstat (fd, &stat_buf);
-	if (result == -1) {
-		g_print ("Failed to read %s size: %s\n", 
-			 filename, strerror (errno));
-		goto error;
-	}
-
-	if (!S_ISREG (stat_buf.st_mode)) {
-		g_print ("%s is not a regular file\n", filename);
-		goto error;
-	}
-
-	if (stat_buf.st_size > ITUNESDB_MAX_SIZE) {
+        if (g_mapped_file_get_length(mapped_file) > ITUNESDB_MAX_SIZE) {
 		g_print ("%s is too big to be an buffer file\n", filename);
-		goto error;
-	}
-
-	buffer = mmap (NULL, stat_buf.st_size, PROT_READ, MAP_SHARED, fd, 0);
-
-	if (buffer == MAP_FAILED) {
-		g_print ("Error while mmap'ing %s: %s\n", 
-			 filename, strerror (errno));
-		goto error;
-	}
+                g_mapped_file_free(mapped_file);
+		return NULL;
+        }
 
 	if (device->byte_order == 0)
 	    itdb_device_autodetect_endianess (device);
 
-	ctx = db_parse_context_new (buffer,
-				    stat_buf.st_size, device->byte_order);
+	ctx = db_parse_context_new (g_mapped_file_get_contents(mapped_file),
+					g_mapped_file_get_length(mapped_file), 
+					device->byte_order);
 
 	if (ctx == NULL) {
-		munmap (buffer, stat_buf.st_size);
+		g_mapped_file_free(mapped_file);
+		return NULL;
 	}
 	ctx->db = db;
+	ctx->mapped_file = mapped_file;
 
- error:
-	close (fd);
-	return ctx;
+        return ctx;
 }

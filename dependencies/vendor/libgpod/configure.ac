@@ -1,4 +1,4 @@
-AC_PREREQ(2.52)
+AC_PREREQ(2.59)
 AC_INIT(src)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CONFIG_MACRO_DIR(m4)
@@ -55,7 +55,6 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 PKG_CHECK_MODULES(LIBGPOD, glib-2.0 >= 2.8.0 gobject-2.0)
-LIBGPOD_CFLAGS="$LIBGPOD_CFLAGS -Wall"
 
 dnl **************************************************
 dnl * expand $libdir 

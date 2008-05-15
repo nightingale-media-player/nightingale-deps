@@ -39,6 +39,7 @@ struct _DBParseContext {
 	off_t total_len;
 	guint byte_order;
 	Itdb_DB *db;
+	GMappedFile* mapped_file;
 };
 
 typedef struct _DBParseContext DBParseContext;
@@ -73,6 +74,6 @@ db_parse_context_new_from_file (const char *filename, Itdb_DB *db);
 
 
 G_GNUC_INTERNAL void 
-db_parse_context_destroy (DBParseContext *ctx, gboolean unmap);
+db_parse_context_destroy (DBParseContext *ctx);
 
 #endif
