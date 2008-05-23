@@ -59,7 +59,7 @@ MSVC_libgpod_la_OBJECTS = $(patsubst %.lo,.libs/%.obj,$(libgpod_la_OBJECTS))
 # Build MSVC dll in place of libtool la.
 libgpod.la: .libs/libgpod.dll
 .libs/libgpod.dll: $(libgpod_la_OBJECTS) $(libgpod_la_DEPENDENCIES) 
-	$(MSVC_libgpod_la_LINK) -def:libgpod.def -nologo $(MSVC_libgpod_la_OBJECTS) \
+	$(MSVC_libgpod_la_LINK) -debug -def:libgpod.def -nologo $(MSVC_libgpod_la_OBJECTS) \
 		$(MSVC_LIBS)
 
 endif

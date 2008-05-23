@@ -445,6 +445,8 @@ build()
            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gpod.lib
         cp ${build_dir}/${tgt_name}/src/.libs/libgpod.dll                      \
            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.dll
+        cp ${build_dir}/${tgt_name}/src/.libs/libgpod.pdb                      \
+           ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgpod.pdb
     fi
 
     # Post-process libraries on Mac.
