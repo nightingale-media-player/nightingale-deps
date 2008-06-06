@@ -302,6 +302,8 @@ BrowserGlue.prototype = {
    * - imports the bookmarks html file if bookmarks datastore is empty
    */
   _initPlaces: function bg__initPlaces() {
+    // XXXSongbird: Songbird does not use Places
+    /*
     // we need to instantiate the history service before we check the 
     // the browser.places.importBookmarksHTML pref, as 
     // nsNavHistory::ForceMigrateBookmarksDB() will set that pref
@@ -350,6 +352,7 @@ BrowserGlue.prototype = {
         }
       }
     }
+    */
   },
 
   /**
@@ -357,11 +360,14 @@ BrowserGlue.prototype = {
    * - back up and archive bookmarks
    */
   _shutdownPlaces: function bg__shutdownPlaces() {
+    // XXXSongbird: Songbird does not use Places
+    /*
     // backup bookmarks to bookmarks.html
     var importer =
       Cc["@mozilla.org/browser/places/import-export-service;1"].
       getService(Ci.nsIPlacesImportExportService);
     importer.backupBookmarksFile();
+    */
   },
   
   // ------------------------------
