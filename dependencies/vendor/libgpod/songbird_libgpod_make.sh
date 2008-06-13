@@ -431,6 +431,7 @@ build()
     ./autogen.sh
     ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
+                --disable-pygobject                                            \
                 --disable-libsuffix                                            \
                 --disable-gdk-pixbuf                                           \
                 --disable-dependency-tracking                                  \
