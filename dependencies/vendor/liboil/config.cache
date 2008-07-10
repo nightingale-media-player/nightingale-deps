@@ -1,3 +1,0 @@
-lt_reload_flag=""
-lt_reload_cmds="\$LD -out:\$output\$reload_objs"
-lt_cv_sys_max_cmd_len=35000
