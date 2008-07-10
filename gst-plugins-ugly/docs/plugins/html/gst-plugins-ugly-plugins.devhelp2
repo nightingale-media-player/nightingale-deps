@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual" link="index.html" author="" name="gst-plugins-ugly-plugins" version="2">
+  <chapters>
+    <sub name="gst-plugins-ugly Elements" link="ch01.html">
+      <sub name="amrnbdec" link="gst-plugins-ugly-plugins-amrnbdec.html"/>
+      <sub name="amrnbenc" link="gst-plugins-ugly-plugins-amrnbenc.html"/>
+      <sub name="amrnbparse" link="gst-plugins-ugly-plugins-amrnbparse.html"/>
+      <sub name="lame" link="gst-plugins-ugly-plugins-lame.html"/>
+      <sub name="mad" link="gst-plugins-ugly-plugins-mad.html"/>
+      <sub name="siddec" link="gst-plugins-ugly-plugins-siddec.html"/>
+      <sub name="synaesthesia" link="gst-plugins-ugly-plugins-synaesthesia.html"/>
+      <sub name="xingmux" link="gst-plugins-ugly-plugins-xingmux.html"/>
+    </sub>
+    <sub name="gst-plugins-ugly Plugins" link="ch02.html">
+      <sub name="a52dec" link="gst-plugins-ugly-plugins-plugin-a52dec.html"/>
+      <sub name="amrnb" link="gst-plugins-ugly-plugins-plugin-amrnb.html"/>
+      <sub name="asf" link="gst-plugins-ugly-plugins-plugin-asf.html"/>
+      <sub name="dvdlpcmdec" link="gst-plugins-ugly-plugins-plugin-dvdlpcmdec.html"/>
+      <sub name="dvdnav" link="gst-plugins-ugly-plugins-plugin-dvdnav.html"/>
+      <sub name="dvdread" link="gst-plugins-ugly-plugins-plugin-dvdread.html"/>
+      <sub name="dvdsub" link="gst-plugins-ugly-plugins-plugin-dvdsub.html"/>
+      <sub name="iec958" link="gst-plugins-ugly-plugins-plugin-iec958.html"/>
+      <sub name="lame" link="gst-plugins-ugly-plugins-plugin-lame.html"/>
+      <sub name="mad" link="gst-plugins-ugly-plugins-plugin-mad.html"/>
+      <sub name="mpeg2dec" link="gst-plugins-ugly-plugins-plugin-mpeg2dec.html"/>
+      <sub name="mpegaudioparse" link="gst-plugins-ugly-plugins-plugin-mpegaudioparse.html"/>
+      <sub name="mpegstream" link="gst-plugins-ugly-plugins-plugin-mpegstream.html"/>
+      <sub name="realmedia" link="gst-plugins-ugly-plugins-plugin-realmedia.html"/>
+      <sub name="rmdemux" link="gst-plugins-ugly-plugins-plugin-rmdemux.html"/>
+      <sub name="siddec" link="gst-plugins-ugly-plugins-plugin-siddec.html"/>
+      <sub name="synaesthesia" link="gst-plugins-ugly-plugins-plugin-synaesthesia.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbdec.html#id2588319"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id2589193"/>
+    <keyword type="struct" name="GstAmrnbDec" link="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbenc.html#id2567010"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id2559705"/>
+    <keyword type="struct" name="GstAmrnbEnc" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbparse.html#id2580045"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbparse.html#id2587001"/>
+    <keyword type="struct" name="GstAmrnbParse" link="gst-plugins-ugly-plugins-amrnbparse.html#GstAmrnbParse"/>
+    <keyword type="" name="Output sample rate" link="gst-plugins-ugly-plugins-lame.html#id2563056"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-lame.html#id2563176"/>
+    <keyword type="struct" name="GstLame" link="gst-plugins-ugly-plugins-lame.html#GstLame-struct"/>
+    <keyword type="" name="The &quot;allow-diff-short&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--allow-diff-short"/>
+    <keyword type="" name="The &quot;ath-lower&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--ath-lower"/>
+    <keyword type="" name="The &quot;ath-only&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--ath-only"/>
+    <keyword type="" name="The &quot;ath-short&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--ath-short"/>
+    <keyword type="" name="The &quot;bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--bitrate"/>
+    <keyword type="" name="The &quot;compression-ratio&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--compression-ratio"/>
+    <keyword type="" name="The &quot;copyright&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--copyright"/>
+    <keyword type="" name="The &quot;cwlimit&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--cwlimit"/>
+    <keyword type="" name="The &quot;disable-reservoir&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--disable-reservoir"/>
+    <keyword type="" name="The &quot;emphasis&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--emphasis"/>
+    <keyword type="" name="The &quot;error-protection&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--error-protection"/>
+    <keyword type="" name="The &quot;extension&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--extension"/>
+    <keyword type="" name="The &quot;force-ms&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--force-ms"/>
+    <keyword type="" name="The &quot;free-format&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--free-format"/>
+    <keyword type="" name="The &quot;highpass-freq&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--highpass-freq"/>
+    <keyword type="" name="The &quot;highpass-width&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--highpass-width"/>
+    <keyword type="" name="The &quot;lowpass-freq&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--lowpass-freq"/>
+    <keyword type="" name="The &quot;lowpass-width&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--lowpass-width"/>
+    <keyword type="" name="The &quot;mode&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--mode"/>
+    <keyword type="" name="The &quot;no-ath&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--no-ath"/>
+    <keyword type="" name="The &quot;no-short-blocks&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--no-short-blocks"/>
+    <keyword type="" name="The &quot;original&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--original"/>
+    <keyword type="" name="The &quot;padding-type&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--padding-type"/>
+    <keyword type="" name="The &quot;preset&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--preset"/>
+    <keyword type="" name="The &quot;quality&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--quality"/>
+    <keyword type="" name="The &quot;strict-iso&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--strict-iso"/>
+    <keyword type="" name="The &quot;vbr&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr"/>
+    <keyword type="" name="The &quot;vbr-hard-min&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-hard-min"/>
+    <keyword type="" name="The &quot;vbr-max-bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-max-bitrate"/>
+    <keyword type="" name="The &quot;vbr-mean-bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-mean-bitrate"/>
+    <keyword type="" name="The &quot;vbr-min-bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-min-bitrate"/>
+    <keyword type="" name="The &quot;vbr-quality&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-quality"/>
+    <keyword type="" name="The &quot;xingheader&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--xingheader"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id2591512"/>
+    <keyword type="struct" name="GstMad" link="gst-plugins-ugly-plugins-mad.html#GstMad-struct"/>
+    <keyword type="" name="The &quot;half&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--half"/>
+    <keyword type="" name="The &quot;ignore-crc&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc"/>
+    <keyword type="" name="Example pipelines" link="gst-plugins-ugly-plugins-siddec.html#id2597026"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id2597067"/>
+    <keyword type="struct" name="GstSidDec" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct"/>
+    <keyword type="" name="The &quot;blocksize&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize"/>
+    <keyword type="" name="The &quot;clock&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock"/>
+    <keyword type="" name="The &quot;filter&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--filter"/>
+    <keyword type="" name="The &quot;force-speed&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--force-speed"/>
+    <keyword type="" name="The &quot;measured-volume&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--measured-volume"/>
+    <keyword type="" name="The &quot;memory&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--memory"/>
+    <keyword type="" name="The &quot;metadata&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata"/>
+    <keyword type="" name="The &quot;mos8580&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580"/>
+    <keyword type="" name="The &quot;tune&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-synaesthesia.html#id2559572"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-synaesthesia.html#id2586427"/>
+    <keyword type="struct" name="GstSynaesthesia" link="gst-plugins-ugly-plugins-synaesthesia.html#GstSynaesthesia"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id2557484"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id2593802"/>
+    <keyword type="struct" name="GstXingMux" link="gst-plugins-ugly-plugins-xingmux.html#GstXingMux"/>
+  </functions>
+</book>

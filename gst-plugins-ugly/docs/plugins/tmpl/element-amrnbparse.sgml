@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+amrnbparse
+
+<!-- ##### SECTION Short_Description ##### -->
+Adaptive Multi-Rate Narrow-Band audio parser
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-amrnbparse-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAmrnbParse ##### -->
+<para>
+
+</para>
+
+@element: 
+@sinkpad: 
+@srcpad: 
+@adapter: 
+@seekable: 
+@need_header: 
+@offset: 
+@ts: 
+@segment: 
+

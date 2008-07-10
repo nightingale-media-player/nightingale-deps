@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+amrnbenc
+
+<!-- ##### SECTION Short_Description ##### -->
+Adaptive Multi-Rate Narrow-Band audio encoder
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-amrnbenc-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAmrnbEnc ##### -->
+<para>
+
+</para>
+
+@element: 
+@sinkpad: 
+@srcpad: 
+@ts: 
+@adapter: 
+@handle: 
+@channels: 
+@rate: 
+@duration: 
+

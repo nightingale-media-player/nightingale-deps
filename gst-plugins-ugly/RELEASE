@@ -1,0 +1,150 @@
+
+Release notes for GStreamer Ugly Plug-ins 0.10.7 "I Cheated Time"
+        
+
+The GStreamer team is proud to announce a new release
+in the 0.10.x stable series of the
+GStreamer Ugly Plug-ins.
+
+
+The 0.10.x series is a stable series targeted at end users.
+It is not API or ABI compatible with the stable 0.8.x series.
+It is, however, parallel installable with the 0.8.x series.
+
+
+
+"When you have to shoot, shoot.  Don't talk."
+
+
+There are times when the world needs a color between black and white.
+Quality code to match the good's, but two-timing, backstabbing and ready to
+sell your freedom down the river.  These plug-ins might have a patent noose
+around their neck, or a lock-up license, or any other problem that makes you
+think twice about shipping them.
+
+
+We don't call them ugly because we like them less.  Does a mother love her
+son less because he's not as pretty as the other ones ? No  - she commends
+him on his great personality.  These plug-ins are the life of the party.
+And we'll still step in and set them straight if you report any unacceptable
+behaviour - because there are two kinds of people in the world, my friend:
+those with a rope around their neck and the people who do the cutting.
+
+
+This module contains a set of plug-ins that have good quality and correct
+functionality, but distributing them might pose problems.  The license
+on either the plug-ins or the supporting libraries might not be how we'd
+like. The code might be widely known to present patent problems.
+Distributors should check if they want/can ship these plug-ins.
+
+
+Other modules containing plug-ins are:
+
+
+gst-plugins-base
+contains a basic set of well-supported plug-ins
+gst-plugins-good
+contains a set of well-supported plug-ins under our preferred license
+gst-plugins-bad
+contains a set of less supported plug-ins that haven't passed the
+    rigorous quality testing we expect
+
+
+
+  
+
+Features of this release
+    
+      * Many bug fixes and improvements
+      * Accurate seeking support in mp3
+      * xingmux moved from -bad
+      * RealMedia and WMS RTSP support
+      * LAME mp3 encoder fixes
+      * Support non-square pixels in ASF
+      * rmdemux fixes
+      * amrnb fixes
+      * dvdreadsrc seeking fix
+      * Initial MPEG-2 reverse playback support
+      * New element: dvdsubdec
+
+Bugs fixed in this release
+     
+      * 358891 : [dvdreadsrc] aborts due to src- > cur_pack == dsi_pack.dsi_...
+      * 337681 : Seeking problem with MP3s in banshee and rhythmbox
+      * 414988 : Stream encoded by lame has gap after decoding
+      * 427309 : [rmdemux] trouble playing RV10 video
+      * 439390 : [lame] fix up so we can control sample rate conversion
+      * 450879 : Missing files in po/POTFILES.in
+      * 452025 : ./configure breaks when cross-compiling LAME
+      * 454311 : missing xml/{element-synaesthesia-details.xml,plugin-syna...
+      * 466442 : amrnbenc has not properties to add header and select band...
+      * 495885 : [mpegdemux] unknown stream id 0xbe
+      * 500467 : [rmdemux] totem crashed with SIGSEGV
+      * 500808 : gstmpeg2dec compile problem in MSVC 6.0
+      * 507821 : Skip over broken seektable in Xing headers
+      * 511497 : [PLUGIN-MOVE] Move xingheader to gst-plugins-ugly
+      * 514297 : mpeg2dec with corrupted packets causes fps denominator so...
+      * 515575 : [lame] unit test shows memory leak
+      * 515708 : [dvdsubparse] Leaks a pad template
+      * 515725 : [xingmux] Fails on big endian systems
+      * 516278 : [dvdreadsrc] FORMAT_BYTES based seek stopped working sinc...
+      * 516811 : [mp3parse] immediate EOS when playing back AVIs
+      * 516989 : [dvdreadsrc] wrong (negative) stream position returned du...
+      * 308312 : Make mp3parse plugin implement GST_SEEK_FLAG_ACCURATE
+      * 508595 : [lame] wrong output caps in mono encoding mode
+      * 140136 : [mpeg] plays choppy in gst-player/totem
+      * 448782 : add finalize() to amrnbdec element
+      * 491305 : [playbin?] intro-leopard.mov sometimes EOSes immediately,...
+      * 504671 : [rtspsrc] spews warnings on setup and shutdown
+
+Download
+
+You can find source releases of gst-plugins-ugly in the download directory:
+http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
+
+GStreamer Homepage
+
+More details can be found on the project's website:
+http://gstreamer.freedesktop.org/
+
+Support and Bugs
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Developers
+
+CVS is hosted on cvs.freedesktop.org.
+All code is in CVS and can be checked out from there.
+Interested developers of the core library, plug-ins, and applications should
+subscribe to the gstreamer-devel list. If there is sufficient interest we
+will create more lists as necessary.
+
+        
+Applications
+  
+Contributors to this release
+    
+      * Alexander Shopov
+      * Daniel Charles
+      * David Schleef
+      * Edward Hervey
+      * Ilkka Tuohela
+      * Jakub Bogusz
+      * Jan Schmidt
+      * Jorge González González
+      * Julien MOUTTE
+      * Laurent Glayal
+      * Mark Nauwelaerts
+      * Raphael Higino
+      * Sebastian Dröge
+      * Sebastien Moutte
+      * Stefan Kost
+      * Tal Shalif
+      * Thijs Vermeir
+      * Thomas Vander Stichele
+      * Tim-Philipp Müller
+      * Wenzheng Hu
+      * Wim Taymans
+      * Zaheer Abbas Merali
+ 

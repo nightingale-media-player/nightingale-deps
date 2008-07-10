@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+rtspreal
+
+<!-- ##### SECTION Short_Description ##### -->
+Extends RTSP so that it can handle RealMedia setup
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rtspreal-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRTSPReal ##### -->
+<para>
+
+</para>
+
+@element: 
+@checksum: 
+@challenge2: 
+@isreal: 
+@n_streams: 
+@streams: 
+@max_bit_rate: 
+@avg_bit_rate: 
+@max_packet_size: 
+@avg_packet_size: 
+@duration: 
+

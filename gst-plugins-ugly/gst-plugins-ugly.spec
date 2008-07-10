@@ -1,0 +1,120 @@
+%define majorminor  0.10
+%define gstreamer   gstreamer
+
+%define gst_minver  0.10.0
+
+Name: 		%{gstreamer}-plugins-ugly
+Version: 	0.10.7
+Release: 	1.gst
+Summary: 	GStreamer streaming media framework "ugly" plug-ins
+
+Group: 		Applications/Multimedia
+License: 	LGPL
+URL:		http://gstreamer.freedesktop.org/
+Vendor:         GStreamer Backpackers Team <package@gstreamer.freedesktop.org>
+Source:         http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires: 	%{gstreamer} >= %{gst_minver}
+BuildRequires: 	%{gstreamer}-devel >= %{gst_minver}
+BuildRequires:  gcc-c++
+
+BuildRequires:  libsidplay-devel >= 1.36.0
+BuildRequires:  a52dec-devel >= 0.7.3
+# #BuildRequires:  libdvdnav-devel >= 0.1.3
+BuildRequires:  libdvdread-devel >= 0.9.0
+BuildRequires:  lame-devel >= 3.89
+BuildRequires:  libid3tag-devel >= 0.15.0
+BuildRequires:  libmad-devel >= 0.15.0
+BuildRequires:  mpeg2dec-devel >= 0.4.0
+
+Provides:       gstreamer-sid = %{version}-%{release}
+Provides:      gstreamer-lame = %{version}-%{release}
+Provides:       gstreamer-mad = %{version}-%{release}
+Provides:       gstreamer-a52dec = %{version}-%{release}
+# #Provides:       gstreamer-dvdnavsrc = %{version}-%{release}
+Provides:       gstreamer-dvdread = %{version}-%{release}
+Provides:       gstreamer-mpeg2dec = %{version}-%{release}
+
+%description
+GStreamer is a streaming media framework, based on graphs of elements which
+operate on media data.
+
+This package contains well-written plug-ins that can't be shipped in
+gstreamer-plugins-good because:
+- the license is not LGPL
+- the license of the library is not LGPL
+- there are possible licensing issues with the code.
+
+# %package devel
+# Summary:        Development files for GStreamer Ugly Plugins
+# Group:          Development/Libraries
+#
+# Requires:       %{name} = %{version}-%{release}
+#
+# %description devel
+# GStreamer is a streaming media framework, based on graphs of elements which
+# operate on media data.
+#
+# This package contains well-written plug-ins that can't be shipped in
+# gstreamer-plugins-good because:
+# - the license is not LGPL
+# - the license of the library is not LGPL
+# - there are possible licensing issues with the code.
+# 
+# This package contains development files and documentation.
+
+%prep
+%setup -q -n gst-plugins-ugly-%{version}
+%build
+%configure \
+  --enable-debug \
+  --enable-gtk-doc 
+
+make %{?_smp_mflags}
+                                                                                
+%install
+rm -rf $RPM_BUILD_ROOT
+
+# Install doc temporarily in order to be included later by rpm
+%makeinstall
+
+# Clean out files that should not be part of the rpm.
+rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer-%{majorminor}/*.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer-%{majorminor}/*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+%find_lang gst-plugins-ugly-%{majorminor}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files -f gst-plugins-ugly-%{majorminor}.lang
+%defattr(-, root, root, -)
+%doc AUTHORS COPYING README REQUIREMENTS gst-plugins-ugly.doap
+%{_libdir}/gstreamer-%{majorminor}/libgstasf.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdvdlpcmdec.so
+%{_libdir}/gstreamer-%{majorminor}/libgstiec958.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpegaudioparse.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpegstream.so
+%{_libdir}/gstreamer-%{majorminor}/libgstrmdemux.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdvdsub.so
+
+# plugins with dependencies
+%{_libdir}/gstreamer-%{majorminor}/libgstsid.so
+%{_libdir}/gstreamer-%{majorminor}/libgstlame.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmad.so
+%{_libdir}/gstreamer-%{majorminor}/libgsta52dec.so
+# #%{_libdir}/gstreamer-%{majorminor}/libgstdvdnavsrc.so
+%{_libdir}/gstreamer-%{majorminor}/libgstdvdread.so
+%{_libdir}/gstreamer-%{majorminor}/libgstmpeg2dec.so
+%doc %{_datadir}/gtk-doc/html/gst-plugins-ugly-plugins-%{majorminor}/*
+
+%changelog
+* Fri Dec 15 2006 Thomas Vander Stichele <thomas at apestaart dot org>
+- further cleanup
+- add .doap file
+
+* Fri Sep 02 2005 Thomas Vander Stichele <thomas at apestaart dot org>
+- clean out for split into ugly

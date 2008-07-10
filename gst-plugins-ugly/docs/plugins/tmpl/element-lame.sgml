@@ -1,0 +1,193 @@
+<!-- ##### SECTION Title ##### -->
+lame
+
+<!-- ##### SECTION Short_Description ##### -->
+High-quality free MP3 encoder
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-lame-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstLame ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstLame:allow-diff-short ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:ath-lower ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:ath-only ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:ath-short ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:compression-ratio ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:copyright ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:cwlimit ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:disable-reservoir ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:emphasis ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:error-protection ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:extension ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:force-ms ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:free-format ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:highpass-freq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:highpass-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:lowpass-freq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:lowpass-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:no-ath ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:no-short-blocks ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:original ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:padding-type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:preset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:quality ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:strict-iso ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr-hard-min ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr-max-bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr-mean-bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr-min-bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:vbr-quality ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstLame:xingheader ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>amrnbdec</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="prev" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="next" href="gst-plugins-ugly-plugins-amrnbenc.html" title="amrnbenc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-amrnbenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2575494" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2575457" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-ugly-plugins-amrnbdec"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2575494"></a><span class="refentrytitle">amrnbdec</span>
+</h2>
+<p>amrnbdec &#8212; Adaptive Multi-Rate Narrow-Band audio decoder</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec">GstAmrnbDec</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2575457"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2588319"></a><p>
+This is an AMR narrowband decoder based on the 
+<a href="http://www.penguin.cz/~utx/amr" target="_top">reference codec implementation</a>.
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
+</pre>
+<p>
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2589193"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-ugly-plugins-plugin-amrnb.html#plugin-amrnb">amrnb</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Decoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)8000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/AMR, rate=(int)8000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2533329"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2575512"></a><h3>
+<a name="GstAmrnbDec"></a>GstAmrnbDec</h3>
+<a class="indexterm" name="id2575524"></a><pre class="programlisting">typedef struct {
+  GstElement element;
+
+  /* pads */
+  GstPad *sinkpad, *srcpad;
+  guint64 ts;
+
+  GstAdapter *adapter;
+
+  /* library handle */
+  void *handle;
+
+  /* output settings */
+  gint channels, rate;
+  gint duration;
+
+  GstSegment        segment;
+  gboolean          discont;
+} GstAmrnbDec;
+</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2575546"></a><h2>See Also</h2>
+<a href="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc"><span class="type">GstAmrnbEnc</span></a>, <a href="gst-plugins-ugly-plugins-amrnbparse.html#GstAmrnbParse"><span class="type">GstAmrnbParse</span></a>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!-- ##### SECTION Title ##### -->
+rdtmanager
+
+<!-- ##### SECTION Short_Description ##### -->
+Accepts raw RTP and RTCP packets and sends them forward
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rdtmanager-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRDTManager ##### -->
+<para>
+
+</para>
+
+@element: 
+@latency: 
+@sessions: 
+@provided_clock: 
+
