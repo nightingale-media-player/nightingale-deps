@@ -23,13 +23,13 @@ BuildRequires:  libsidplay-devel >= 1.36.0
 BuildRequires:  a52dec-devel >= 0.7.3
 # #BuildRequires:  libdvdnav-devel >= 0.1.3
 BuildRequires:  libdvdread-devel >= 0.9.0
-BuildRequires:  lame-devel >= 3.89
+#BuildRequires:  lame-devel >= 3.89
 BuildRequires:  libid3tag-devel >= 0.15.0
 BuildRequires:  libmad-devel >= 0.15.0
 BuildRequires:  mpeg2dec-devel >= 0.4.0
 
 Provides:       gstreamer-sid = %{version}-%{release}
-Provides:      gstreamer-lame = %{version}-%{release}
+#Provides:      gstreamer-lame = %{version}-%{release}
 Provides:       gstreamer-mad = %{version}-%{release}
 Provides:       gstreamer-a52dec = %{version}-%{release}
 # #Provides:       gstreamer-dvdnavsrc = %{version}-%{release}
@@ -103,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 
 # plugins with dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgstsid.so
-%{_libdir}/gstreamer-%{majorminor}/libgstlame.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstlame.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmad.so
 %{_libdir}/gstreamer-%{majorminor}/libgsta52dec.so
 # #%{_libdir}/gstreamer-%{majorminor}/libgstdvdnavsrc.so
