@@ -26,6 +26,18 @@
 #include <string.h>
 #include <math.h>
 
+#ifdef _MSC_VER
+static double
+rint(double x) {
+  int xi = (int) x;
+  double remainder = x - (double) xi;
+
+  if (remainder < 0.5)
+    return (x - remainder);
+  return (x - remainder + 1.0);
+}
+#endif
+
 #include <gst/video/video.h>
 
 GST_DEBUG_CATEGORY_STATIC (navigationtest_debug);
