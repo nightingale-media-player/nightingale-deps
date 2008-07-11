@@ -32,9 +32,11 @@
 #include <emmintrin.h>
 #include <liboil/liboilcolorspace.h>
 
+#include "sse_wrapper.h"
+
 #define COMPOSITE_ADD(d,s) oil_clamp_255((d) + (s))
 
-static void
+SSE_FUNCTION static void
 composite_add_argb_sse (uint32_t *dest, const uint32_t *src, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -67,7 +69,7 @@ composite_add_argb_sse (uint32_t *dest, const uint32_t *src, int n)
 OIL_DEFINE_IMPL_FULL (composite_add_argb_sse, composite_add_argb,
     OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_add_argb_const_src_sse (uint32_t *dest, const uint32_t *src_1, int n)
 {
   __m128i s;
@@ -103,7 +105,7 @@ composite_add_argb_const_src_sse (uint32_t *dest, const uint32_t *src_1, int n)
 OIL_DEFINE_IMPL_FULL (composite_add_argb_const_src_sse,
     composite_add_argb_const_src, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_add_u8_sse (uint8_t *dest, const uint8_t *src, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -131,7 +133,7 @@ composite_add_u8_sse (uint8_t *dest, const uint8_t *src, int n)
 OIL_DEFINE_IMPL_FULL (composite_add_u8_sse, composite_add_u8,
     OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_add_u8_const_src_sse (uint8_t *dest, const uint8_t *src_1, int n)
 {
   __m128i s;

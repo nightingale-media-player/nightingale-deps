@@ -63,7 +63,7 @@ static const struct _SSEData {
 /* Shuffles the given value such that the alpha for each pixel appears in each
  * channel of the pixel.
  */
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 argb_A_sse2(__m128i a)
 {
   a = _mm_shufflehi_epi16(a, _MM_SHUFFLE(3,3,3,3));
@@ -74,7 +74,7 @@ argb_A_sse2(__m128i a)
 /* Multiplies the pixel data in a channel-by-channel by b, and divides the
  * result by 255, with rounding.
  */
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 muldiv_255_sse2(__m128i a, __m128i b)
 {
   __m128i ret;
@@ -88,14 +88,14 @@ muldiv_255_sse2(__m128i a, __m128i b)
   return ret;
 }
 
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 negate_argb_sse2(__m128i a)
 {
   return _mm_xor_si128(a, MC(8x00ff));
 }
 
 /* Loads the 2 (unaligned) pixels at *src into unpacked SSE2 registers */
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 load_argb_sse2(const uint32_t *src)
 {
   __m128i pix;
@@ -105,7 +105,7 @@ load_argb_sse2(const uint32_t *src)
   return pix;
 }
 
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 set1_argb_sse2(uint32_t src)
 {
   __m128i pix;
@@ -115,32 +115,33 @@ set1_argb_sse2(uint32_t src)
   return pix;
 }
 
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 load_u8_mask(const uint8_t *m)
 {
   return _mm_unpacklo_epi64(_mm_set1_epi16(m[0]), _mm_set1_epi16(m[1]));
 }
 
-static inline __m128i
+SSE_FUNCTION static inline __m128i
 set1_u8_mask(uint8_t m)
 {
   return _mm_unpacklo_epi8(_mm_set1_epi8(m), _mm_setzero_si128());
 }
 
 /* Stores the 2 unpacked pixels in pix into the (unaligned) *dest */
-static void
+SSE_FUNCTION static void
 store_argb_sse2(uint32_t *dest, __m128i pix)
 {
   pix = _mm_packus_epi16(pix, pix);
   _mm_storel_epi64((__m128i *)dest, pix);
 }
 
-static __m128i over_argb_sse2(__m128i dest, __m128i src, __m128i srca)
+SSE_FUNCTION static __m128i 
+over_argb_sse2(__m128i dest, __m128i src, __m128i srca)
 {
   return _mm_adds_epu8(src, muldiv_255_sse2(dest, negate_argb_sse2(srca)));
 }
 
-static void
+SSE_FUNCTION static void
 composite_in_argb_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -167,7 +168,7 @@ composite_in_argb_sse_2pix (uint32_t *dest, const uint32_t *src,
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_argb_sse_2pix, composite_in_argb,
     OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_in_argb_const_src_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -196,7 +197,7 @@ OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_argb_const_src_sse_2pix,
     composite_in_argb_const_src, OIL_IMPL_FLAG_SSE2);
 
 #ifdef SSE_ALIGN
-static void
+SSE_FUNCTION static void
 composite_in_argb_const_mask_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -225,7 +226,7 @@ OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_argb_const_mask_sse_2pix,
     composite_in_argb_const_mask, OIL_IMPL_FLAG_SSE2);
 #endif
 
-static void
+SSE_FUNCTION static void
 composite_over_argb_sse_2pix (uint32_t *dest, const uint32_t *src, int n)
 {
   for (; n >= 2; n -= 2) {
@@ -251,7 +252,7 @@ composite_over_argb_sse_2pix (uint32_t *dest, const uint32_t *src, int n)
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_over_argb_sse_2pix, composite_over_argb,
     OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_over_argb_const_src_sse_2pix (uint32_t *dest, const uint32_t *src,
     int n)
 {
@@ -281,7 +282,7 @@ composite_over_argb_const_src_sse_2pix (uint32_t *dest, const uint32_t *src,
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_over_argb_const_src_sse_2pix,
     composite_over_argb_const_src, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_in_over_argb_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -318,7 +319,7 @@ composite_in_over_argb_sse_2pix (uint32_t *dest, const uint32_t *src,
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_over_argb_sse_2pix, composite_in_over_argb,
     OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_in_over_argb_const_src_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -357,7 +358,7 @@ composite_in_over_argb_const_src_sse_2pix (uint32_t *dest, const uint32_t *src,
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_over_argb_const_src_sse_2pix,
     composite_in_over_argb_const_src, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_in_over_argb_const_mask_sse_2pix (uint32_t *dest, const uint32_t *src,
     const uint8_t *mask, int n)
 {
@@ -396,7 +397,7 @@ composite_in_over_argb_const_mask_sse_2pix (uint32_t *dest, const uint32_t *src,
 OIL_DEFINE_IMPL_FULL_WRAPPER(composite_in_over_argb_const_mask_sse_2pix,
     composite_in_over_argb_const_mask, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 composite_over_u8_sse_2pix (uint8_t *dest, const uint8_t *src, int n)
 {
   /* Initial operations to align the destination pointer */

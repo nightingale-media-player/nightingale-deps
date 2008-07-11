@@ -40,7 +40,7 @@ union m128_int {
   uint16_t s[8];
 };
 
-static void
+SSE_FUNCTION static void
 sad8x8_u8_sse (uint32_t *dest, uint8_t *src1, int sstr1, uint8_t *src2,
     int sstr2)
 {

@@ -5,6 +5,8 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
+#include "sse_wrapper.h"
+
 #define MULTSUM_SSE2_NSTRIDED(i) { \
   t1 = _mm_load_pd(&OIL_GET(src1, i, double)); \
   t2 = _mm_load_pd(&OIL_GET(src2, i, double)); \
@@ -29,7 +31,7 @@
 
 
 #ifdef ENABLE_BROKEN_IMPLS
-static void
+SSE_FUNCTION static void
 multsum_f64_sse2_unroll4(double *dest,
      const double *src1, int sstr1,
      const double *src2, int sstr2,

@@ -31,7 +31,9 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
-static void
+#include "sse_wrapper.h"
+
+SSE_FUNCTION static void
 splat_u32_ns_sse (uint32_t *dest, const uint32_t *param, int n)
 {
   __m128i v;
@@ -51,7 +53,7 @@ splat_u32_ns_sse (uint32_t *dest, const uint32_t *param, int n)
 }
 OIL_DEFINE_IMPL_FULL (splat_u32_ns_sse, splat_u32_ns, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 splat_u32_ns_sse_unroll2 (uint32_t *dest, const uint32_t *param, int n)
 {
   __m128i v;
@@ -76,7 +78,7 @@ splat_u32_ns_sse_unroll2 (uint32_t *dest, const uint32_t *param, int n)
 }
 OIL_DEFINE_IMPL_FULL (splat_u32_ns_sse_unroll2, splat_u32_ns, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 splat_u8_ns_sse (uint8_t *dest, const uint8_t *param, int n)
 {
   __m128i v;
@@ -96,7 +98,7 @@ splat_u8_ns_sse (uint8_t *dest, const uint8_t *param, int n)
 }
 OIL_DEFINE_IMPL_FULL (splat_u8_ns_sse, splat_u8_ns, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 splat_u8_ns_sse_unroll2 (uint8_t *dest, const uint8_t *param, int n)
 {
   __m128i v;

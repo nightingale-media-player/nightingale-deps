@@ -32,7 +32,9 @@
 #include <emmintrin.h>
 #include <xmmintrin.h>
 
-static void
+#include "sse_wrapper.h"
+
+SSE_FUNCTION static void
 clamp_u8_sse (uint8_t *dest, uint8_t *src1, int n, uint8_t *src2_1,
     uint8_t *src3_1)
 {
@@ -71,7 +73,7 @@ clamp_u8_sse (uint8_t *dest, uint8_t *src1, int n, uint8_t *src2_1,
 }
 OIL_DEFINE_IMPL_FULL (clamp_u8_sse, clamp_u8, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamp_s16_sse (int16_t *dest, int16_t *src1, int n, int16_t *src2_1,
     int16_t *src3_1)
 {
@@ -110,7 +112,7 @@ clamp_s16_sse (int16_t *dest, int16_t *src1, int n, int16_t *src2_1,
 }
 OIL_DEFINE_IMPL_FULL (clamp_s16_sse, clamp_s16, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamp_f32_sse (float *dest, const float *src1, int n, const float *src2_1,
     const float *src3_1)
 {
@@ -149,7 +151,7 @@ clamp_f32_sse (float *dest, const float *src1, int n, const float *src2_1,
 }
 OIL_DEFINE_IMPL_FULL (clamp_f32_sse, clamp_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 clamp_f64_sse (double *dest, const double *src1, int n, const double *src2_1,
     const double *src3_1)
 {
@@ -189,7 +191,7 @@ clamp_f64_sse (double *dest, const double *src1, int n, const double *src2_1,
 OIL_DEFINE_IMPL_FULL (clamp_f64_sse, clamp_f64,
     OIL_IMPL_FLAG_SSE | OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamplow_u8_sse (uint8_t *dest, const uint8_t *src1, int n,
     const uint8_t *src2_1)
 {
@@ -221,7 +223,7 @@ clamplow_u8_sse (uint8_t *dest, const uint8_t *src1, int n,
 }
 OIL_DEFINE_IMPL_FULL (clamplow_u8_sse, clamplow_u8, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamplow_s16_sse (int16_t *dest, const int16_t *src1, int n,
     const int16_t *src2_1)
 {
@@ -253,7 +255,7 @@ clamplow_s16_sse (int16_t *dest, const int16_t *src1, int n,
 }
 OIL_DEFINE_IMPL_FULL (clamplow_s16_sse, clamplow_s16, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamplow_f32_sse (float *dest, const float *src1, int n, const float *src2_1)
 {
   __m128 xmm1;
@@ -284,7 +286,7 @@ clamplow_f32_sse (float *dest, const float *src1, int n, const float *src2_1)
 }
 OIL_DEFINE_IMPL_FULL (clamplow_f32_sse, clamplow_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 clamplow_f64_sse (double *dest, const double *src1, int n, const double *src2_1)
 {
   __m128d xmm1;
@@ -316,7 +318,7 @@ clamplow_f64_sse (double *dest, const double *src1, int n, const double *src2_1)
 OIL_DEFINE_IMPL_FULL (clamplow_f64_sse, clamplow_f64,
     OIL_IMPL_FLAG_SSE | OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamphigh_u8_sse (uint8_t *dest, const uint8_t *src1, int n,
     const uint8_t *src2_1)
 {
@@ -348,7 +350,7 @@ clamphigh_u8_sse (uint8_t *dest, const uint8_t *src1, int n,
 }
 OIL_DEFINE_IMPL_FULL (clamphigh_u8_sse, clamphigh_u8, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamphigh_s16_sse (int16_t *dest, const int16_t *src1, int n,
     const int16_t *src2_1)
 {
@@ -380,7 +382,7 @@ clamphigh_s16_sse (int16_t *dest, const int16_t *src1, int n,
 }
 OIL_DEFINE_IMPL_FULL (clamphigh_s16_sse, clamphigh_s16, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 clamphigh_f32_sse (float *dest, const float *src1, int n, const float *src2_1)
 {
   __m128 xmm1;
@@ -411,7 +413,7 @@ clamphigh_f32_sse (float *dest, const float *src1, int n, const float *src2_1)
 }
 OIL_DEFINE_IMPL_FULL (clamphigh_f32_sse, clamphigh_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 clamphigh_f64_sse (double *dest, const double *src1, int n, const double *src2_1)
 {
   __m128d xmm1;

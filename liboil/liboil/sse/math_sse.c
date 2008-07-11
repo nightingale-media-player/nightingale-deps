@@ -32,7 +32,9 @@
 #include <emmintrin.h>
 #include <xmmintrin.h>
 
-static void
+#include "sse_wrapper.h"
+
+SSE_FUNCTION static void
 add_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -55,7 +57,7 @@ add_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (add_f32_sse, add_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 add_f64_sse2 (double *dest, double *src1, double *src2, int n)
 {
   __m128d xmm0, xmm1;
@@ -80,7 +82,7 @@ add_f64_sse2 (double *dest, double *src1, double *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (add_f64_sse2, add_f64, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 add_f64_sse2_unroll (double *dest, double *src1, double *src2, int n)
 {
   __m128d xmm0, xmm1;
@@ -120,7 +122,7 @@ add_f64_sse2_unroll (double *dest, double *src1, double *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (add_f64_sse2_unroll, add_f64, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 subtract_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -143,7 +145,7 @@ subtract_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (subtract_f32_sse, subtract_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 multiply_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -166,7 +168,7 @@ multiply_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (multiply_f32_sse, multiply_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 divide_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -189,7 +191,7 @@ divide_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (divide_f32_sse, divide_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 minimum_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -216,7 +218,7 @@ minimum_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (minimum_f32_sse, minimum_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 maximum_f32_sse (float *dest, float *src1, float *src2, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -243,7 +245,7 @@ maximum_f32_sse (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_FULL (maximum_f32_sse, maximum_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 inverse_f32_sse (float *dest, float *src1, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -268,7 +270,7 @@ inverse_f32_sse (float *dest, float *src1, int n)
 }
 OIL_DEFINE_IMPL_FULL (inverse_f32_sse, inverse_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 negative_f32_sse (float *dest, float *src1, int n)
 {
   /* Initial operations to align the destination pointer */
@@ -290,7 +292,7 @@ negative_f32_sse (float *dest, float *src1, int n)
 }
 OIL_DEFINE_IMPL_FULL (negative_f32_sse, negative_f32, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 scalaradd_f32_ns_sse (float *dest, float *src1, float *val, int n)
 {
   __m128 xmm1;
@@ -314,7 +316,7 @@ scalaradd_f32_ns_sse (float *dest, float *src1, float *val, int n)
 }
 OIL_DEFINE_IMPL_FULL (scalaradd_f32_ns_sse, scalaradd_f32_ns, OIL_IMPL_FLAG_SSE);
 
-static void
+SSE_FUNCTION static void
 scalarmultiply_f32_ns_sse (float *dest, float *src1, float *val, int n)
 {
   __m128 xmm1;

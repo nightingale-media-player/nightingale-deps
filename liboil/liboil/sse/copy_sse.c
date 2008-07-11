@@ -31,7 +31,9 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
-static void
+#include "sse_wrapper.h"
+
+SSE_FUNCTION static void
 copy_u8_sse (uint8_t *dest, const uint8_t *src, int n)
 {
   for (; ((long)dest & 15) && (n > 0); n--) {
@@ -48,7 +50,7 @@ copy_u8_sse (uint8_t *dest, const uint8_t *src, int n)
 }
 OIL_DEFINE_IMPL_FULL (copy_u8_sse, copy_u8, OIL_IMPL_FLAG_SSE2);
 
-static void
+SSE_FUNCTION static void
 copy_u8_sse_unroll2 (uint8_t *dest, const uint8_t *src, int n)
 {
   for (; ((long)dest & 15) && (n > 0); n--) {

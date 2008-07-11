@@ -1,35 +1,22 @@
 #ifndef __SSE_WRAPPER_H__
 #define __SSE_WRAPPER_H__
 
-/* A massive hack to work around gcc (and mono) alignment bugs.  This
- * realigns the stack to 16 bytes when calling a wrapped function. */
-
-#ifdef USE_SSE_WRAPPER
-#define OIL_SSE_WRAPPER(func) \
-static void func () __attribute__ ((used)); \
-static void func ## _wrapper (void) \
-{ \
-  __asm__ __volatile__ ("\n" \
-      "  subl $0x20, %%esp\n" \
-      "  andl $0xfffffff0, %%esp\n" \
-      "  movdqu 0x08(%%ebp), %%xmm0\n" \
-      "  movdqa %%xmm0, 0x00(%%esp)\n" \
-      "  movdqu 0x18(%%ebp), %%xmm0\n" \
-      "  movdqa %%xmm0, 0x10(%%esp)\n" \
-      "  call *%[f]\n" \
-      "  movl %%ebp, %%esp\n" \
-      : \
-      : [f] "r" (func) \
-      : "xmm0"); \
-}
-
-#define OIL_DEFINE_IMPL_FULL_WRAPPER(func,klass,flags) \
-OIL_SSE_WRAPPER(func) \
-OIL_DEFINE_IMPL_FULL(func ## _wrapper, klass, flags)
+/* GCC breaks when using SSE intrinsics on a stack which isn't 16-byte
+ * aligned, on x86-32. This attribute forces re-alignment of the stack
+ */
+#if defined(__GNUC__) && defined(__i386__)
+#if (__GNUC__ < 4) || (__GNUC_MINOR__ < 2)
+#error "SSE broken on this compiler, please upgrade"
 #else
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#endif
+#else
+#define SSE_FUNCTION
+#endif 
+
+/* No longer used */
 #define OIL_DEFINE_IMPL_FULL_WRAPPER(func,klass,flags) \
 OIL_DEFINE_IMPL_FULL(func, klass, flags)
-#endif
 
 #endif
 
