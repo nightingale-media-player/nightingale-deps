@@ -215,6 +215,10 @@
 /* gettext locale dir */
 #undef LOCALEDIR
 
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
 /* Define if you have no native inet_aton() function. */
 #undef NO_INET_ATON
 
