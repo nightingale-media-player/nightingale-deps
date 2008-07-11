@@ -92,7 +92,6 @@ GST_PLUGINS_ALL="\
   interleave \
   librfb \
   modplug \
-  mpegtsparse \
   mpeg4videoparse \
   mpegvideoparse \
   mve \
@@ -141,8 +140,6 @@ dnl determine c++ compiler
 AC_PROG_CXX
 dnl determine if c++ is available on this system
 AC_CHECK_PROG(HAVE_CXX, $CXX, yes, no)
-
-AS_PROG_OBJC
 
 dnl check if the compiler supports '-c' and '-o' options
 AM_PROG_CC_C_O
@@ -294,6 +291,51 @@ translit(dnm, m, l) AM_CONDITIONAL(USE_QUICKTIME, true)
 AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
   AC_CHECK_HEADER(QuickTime/Movies.h, HAVE_QUICKTIME="yes", HAVE_QUICKTIME="no")
 ])
+
+dnl check for DirectShow
+translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
+AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
+  HAVE_DIRECTSHOW="no"
+  save_CFLAGS="$CFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS -TP"
+  LDFLAGS="$LDFLAGS $DIRECTSHOW_LDFLAGS"
+  LIBS="$LIBS -lstrmiids -lole32"
+  AC_MSG_CHECKING(for DirectShow LDFLAGS)
+  AC_LINK_IFELSE([
+#include <windows.h>
+#include <dshow.h>
+
+int main ()
+{
+  IFilterMapper2 *mapper = NULL;
+  
+  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_INPROC,
+  IID_IFilterMapper2,(void **) &mapper);
+  if (mapper)
+    mapper->Release ();  
+
+  return 0;
+}
+],
+    [HAVE_DIRECTSHOW="yes"],
+    [HAVE_DIRECTSHOW="no"])
+  AC_MSG_RESULT($HAVE_DIRECTSHOW)
+  CFLAGS=$save_CFLAGS
+  LDFLAGS=$save_LDFLAGS
+  LIBS=$save_LIBS
+
+  if test "x$HAVE_DIRECTSHOW" = "xyes";  then
+    dnl this is much more than we want
+    DIRECTSHOW_LIBS="-lstrmiids -lole32"
+    AC_SUBST(DIRECTSHOW_CFLAGS)
+    AC_SUBST(DIRECTSHOW_LDFLAGS)
+    AC_SUBST(DIRECTSHOW_LIBS)
+  fi
+  AC_SUBST(HAVE_DIRECTSHOW)
+])
+
 
 dnl check for Video CD
 translit(dnm, m, l) AM_CONDITIONAL(USE_VCD, true)

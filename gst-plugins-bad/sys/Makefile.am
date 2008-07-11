@@ -40,7 +40,13 @@ else
 QT_DIR=
 endif
 
-SUBDIRS = $(FBDEV_DIR) $(DVB_DIR) $(VCD_DIR) $(QT_DIR)
+if USE_DIRECTSHOW
+DSHOW_DIR=dshowdecwrapper
+else
+DSHOW_DIR=
+endif
+
+SUBDIRS = $(FBDEV_DIR) $(DVB_DIR) $(VCD_DIR) $(QT_DIR) $(DSHOW_DIR)
 
 DIST_SUBDIRS = dvb fbdev vcd qtwrapper dshowdecwrapper dshowsrcwrapper
 
