@@ -31,9 +31,6 @@
 
 #include <liboil/liboil.h>
 #include <liboil/dct/dct.h>
-#ifdef _MSC_VER
-#define _USE_MATH_DEFINES
-#endif
 #include <math.h>
 #include <liboil/liboiltest.h>
 #include <liboil/liboilparameter.h>
@@ -45,21 +42,13 @@
  * @short_description: DCT related functions
  */
 
-#ifdef __MSC_VER
 #define BLOCK8x8_F64(ptr, stride, row, column) \
-	(*((double *)((double *)ptr + stride*row) + column))
+	(*((double *)((char *)ptr + stride*row) + column))
 
 #define BLOCK8x8_PTR_F64(ptr, stride, row, column) \
-	((double *)((double *)ptr + stride*row) + column)
-#else
-#define BLOCK8x8_F64(ptr, stride, row, column) \
-	(*((double *)((void *)ptr + stride*row) + column))
-
-#define BLOCK8x8_PTR_F64(ptr, stride, row, column) \
-	((double *)((void *)ptr + stride*row) + column)
-#endif
+	((double *)((char *)ptr + stride*row) + column)
 #define BLOCK8x8_S16(ptr, stride, row, column) \
-	(*((int16_t *)((void *)ptr + stride*row) + column))
+	(*((int16_t *)((char *)ptr + stride*row) + column))
 
 static void
 idct8x8_test (OilTest *test)

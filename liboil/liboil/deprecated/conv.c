@@ -35,11 +35,11 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef __MSC_VER
-static inline gdouble
-rint(gdouble x) {
+#ifdef _MSC_VER
+static double
+rint(double x) {
   int xi = (int) x;
-  gdouble remainder = x - (gdouble) xi;
+  double remainder = x - (double) xi;
 
   if (remainder < 0.5)
     return x - remainder;

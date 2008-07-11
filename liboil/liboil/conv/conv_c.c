@@ -33,12 +33,11 @@
 
 #include <math.h>
 
-#ifdef __MSC_VER
-#include <glib/glib.h>
-static inline gdouble
-rint(gdouble x) {
+#ifdef _MSC_VER
+static double
+rint(double x) {
   int xi = (int) x;
-  gdouble remainder = x - (gdouble) xi;
+  double remainder = x - (double) xi;
 
   if (remainder < 0.5)
     return x - remainder;

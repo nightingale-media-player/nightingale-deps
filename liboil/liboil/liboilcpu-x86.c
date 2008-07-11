@@ -61,7 +61,7 @@
 
 #if defined(__sun)
 #define USE_I386_GETISAX
-#else
+#elif defined(HAVE_GCC_ASM)
 #define USE_I386_CPUID
 #endif
 
@@ -141,6 +141,7 @@ oil_profile_stamp_rdtsc(void)
 	__asm__ __volatile__("rdtsc\n" : "=a" (ts) : : "edx");
 	return ts;
 }
+#endif
 
 #ifdef USE_I386_CPUID
 #ifdef __i386__
@@ -291,7 +292,6 @@ oil_cpu_detect_getisax (void)
   }
 }
 #endif
-#endif
 
 /* Reduce the set of CPU capabilities detected by whatever detection mechanism
  * was chosen, according to kernel limitations.  SSE requires kernel support for
@@ -334,7 +334,6 @@ oil_cpu_detect_kernel_support (void)
 void
 oil_cpu_detect_arch(void)
 {
-#ifdef HAVE_GCC_ASM
 #ifdef USE_I386_CPUID
   oil_cpu_detect_cpuid ();
 #endif
@@ -343,7 +342,6 @@ oil_cpu_detect_arch(void)
 #endif
 #ifdef USE_I386_CPUINFO
   oil_cpu_detect_cpuinfo ();
-#endif
 #endif
 
   oil_cpu_detect_kernel_support ();
