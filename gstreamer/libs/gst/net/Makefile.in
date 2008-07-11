@@ -67,7 +67,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/iconv.m4 \
-	$(top_srcdir)/common/m4/isc-posix.m4 \
 	$(top_srcdir)/common/m4/lib-ld.m4 \
 	$(top_srcdir)/common/m4/lib-link.m4 \
 	$(top_srcdir)/common/m4/lib-prefix.m4 \
