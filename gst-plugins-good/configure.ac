@@ -226,7 +226,7 @@ dnl *** checks for library functions ***
 
 LIBS_SAVE=$LIBS
 LIBS="$LIBS $LIBM"
-AC_CHECK_FUNCS(rint)
+AC_CHECK_FUNCS(rint asinh sinh cosh)
 LIBS=$LIBS_SAVE
 
 dnl Check for mmap (needed by electricfence plugin)

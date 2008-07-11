@@ -46,11 +46,17 @@
 /* support for features: annodex */
 #undef HAVE_ANNODEX
 
+/* Define to 1 if you have the `asinh' function. */
+#undef HAVE_ASINH
+
 /* support for features: cairo */
 #undef HAVE_CAIRO
 
 /* support for features: cdio */
 #undef HAVE_CDIO
+
+/* Define to 1 if you have the `cosh' function. */
+#undef HAVE_COSH
 
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -211,6 +217,9 @@
 
 /* support for features: shout2 */
 #undef HAVE_SHOUT2
+
+/* Define to 1 if you have the `sinh' function. */
+#undef HAVE_SINH
 
 /* support for features: speex */
 #undef HAVE_SPEEX
