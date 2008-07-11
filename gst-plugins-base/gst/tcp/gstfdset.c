@@ -26,7 +26,9 @@
 #include <sys/poll.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 /* OS/X needs this because of bad headers */
 #include <string.h>
 
