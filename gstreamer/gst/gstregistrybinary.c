@@ -51,6 +51,12 @@
 #include <errno.h>
 #include <stdio.h>
 
+#ifdef _MSC_VER
+#include <io.h>
+#define close _close
+#define write _write
+#endif
+
 #include <gst/gst_private.h>
 #include <gst/gstconfig.h>
 #include <gst/gstelement.h>
@@ -63,10 +69,79 @@
 
 #include <gst/gstregistrybinary.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>        /* for g_stat(), g_mapped_file(), ... */
+#include <fcntl.h>
 
 #include "glib-compat-private.h"
 
+#ifdef _MSC_VER
+#undef g_mkstemp
+static gint
+g_mkstemp (gchar *tmpl)
+{
+  char *XXXXXX;
+  int count, fd;
+  static const char letters[] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  static const int NLETTERS = sizeof (letters) - 1;
+  glong value;
+  GTimeVal tv;
+  static int counter = 0;
+
+  /* find the last occurrence of 'XXXXXX' */
+  XXXXXX = g_strrstr (tmpl, "XXXXXX");
+
+  if (!XXXXXX || strcmp (XXXXXX, "XXXXXX"))
+    {
+      errno = EINVAL;
+      return -1;
+    }
+
+  /* Get some more or less random data.  */
+  g_get_current_time (&tv);
+  value = (tv.tv_usec ^ tv.tv_sec) + counter++;
+
+  for (count = 0; count < 100; value += 7777, ++count)
+    {
+      glong v = value;
+
+      /* Fill in the random bits.  */
+      XXXXXX[0] = letters[v % NLETTERS];
+      v /= NLETTERS;
+      XXXXXX[1] = letters[v % NLETTERS];
+      v /= NLETTERS;
+      XXXXXX[2] = letters[v % NLETTERS];
+      v /= NLETTERS;
+      XXXXXX[3] = letters[v % NLETTERS];
+      v /= NLETTERS;
+      XXXXXX[4] = letters[v % NLETTERS];
+      v /= NLETTERS;
+      XXXXXX[5] = letters[v % NLETTERS];
+
+      /* This is the backward compatibility system codepage version,
+       * thus use normal open().
+       */
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+      fd = open (tmpl, O_RDWR | O_CREAT | O_EXCL | O_BINARY, 0600);
+
+      if (fd >= 0)
+	return fd;
+      else if (errno != EEXIST)
+	/* Any other error will apply also to other names we might
+	 *  try, and there are 2^32 or so of them, so give up now.
+	 */
+	return -1;
+    }
+
+  /* We got out of the loop because we ran out of combinations to try.  */
+  errno = EEXIST;
+  return -1;
+}
+#endif /* _MSC_VER */
 
 #define GST_CAT_DEFAULT GST_CAT_REGISTRY
 
@@ -85,7 +160,7 @@
   _inptr += strlen(_outptr) + 1
 
 #if !GST_HAVE_UNALIGNED_ACCESS
-#  define alignment32(_address)  (size_t)_address%4
+#  define alignment32(_address)  (gsize)_address%4
 #  define align32(_ptr)          _ptr += (( alignment32(_ptr) == 0) ? 0 : 4-alignment32(_ptr))
 #else
 #  define alignment32(_address)  0
@@ -104,7 +179,7 @@
  */
 inline static gboolean
 gst_registry_binary_write (GstRegistry * registry, const void *mem,
-    const ssize_t size, unsigned long *file_position, gboolean align)
+    const gssize size, unsigned long *file_position, gboolean align)
 {
 #if !GST_HAVE_UNALIGNED_ACCESS
   gchar padder[] = { 0, 0, 0, 0 };
@@ -464,7 +539,7 @@ gst_registry_binary_write_cache (GstRegistry * registry, const char *location)
   GList *to_write = NULL;
   unsigned long file_position = 0;
 
-  GST_INFO ("Building binary registry cache image");
+  GST_INFO ("Building binary registry cache image in %s", location);
 
   g_return_val_if_fail (GST_IS_REGISTRY (registry), FALSE);
   tmp_location = g_strconcat (location, ".tmpXXXXXX", NULL);
@@ -942,17 +1017,17 @@ gst_registry_binary_read_cache (GstRegistry * registry, const char *location)
 
   /* check if there are plugins in the file */
 
-  if (!(((size_t) in + sizeof (GstBinaryPluginElement)) <
-          (size_t) contents + size)) {
+  if (!(((gsize) in + sizeof (GstBinaryPluginElement)) <
+          (gsize) contents + size)) {
     GST_INFO ("No binary plugins structure to read");
     /* empty file, this is not an error */
   } else {
     for (;
-        ((size_t) in + sizeof (GstBinaryPluginElement)) <
-        (size_t) contents + size;) {
+        ((gsize) in + sizeof (GstBinaryPluginElement)) <
+        (gsize) contents + size;) {
       GST_DEBUG ("reading binary registry %" G_GSIZE_FORMAT "(%x)/%"
-          G_GSIZE_FORMAT, (size_t) in - (size_t) contents,
-          (guint) ((size_t) in - (size_t) contents), size);
+          G_GSIZE_FORMAT, (gsize) in - (gsize) contents,
+          (guint) ((gsize) in - (gsize) contents), size);
       if (!gst_registry_binary_load_plugin (registry, &in)) {
         GST_ERROR ("Problem while reading binary registry");
         goto Error;
