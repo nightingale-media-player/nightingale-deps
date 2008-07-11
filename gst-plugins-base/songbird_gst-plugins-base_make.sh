@@ -70,8 +70,8 @@ elif [ "$sys_name" = "Linux" ]; then
         tgt_arch_list=linux-i686
     fi
 else
-    sys_name="Cygwin"
-    build_sys_type=Cygwin
+    sys_name="Windows"
+    build_sys_type=Windows
     _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
     CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
     _CC_MAJOR_VERSION=`echo ${CC_VERSION} | awk -F\. '{ print $1 }'`
@@ -299,6 +299,50 @@ strip()
          -and -exec ${strip} {} \;
 }
 
+# remap_library_name name
+#
+# Remap the library name 'libgst${name}-0.10.dylib' to not refer to the build directory
+remap_library_name()
+{
+  name="$1"
+  fullname="libgst${name}-0.10.dylib"
+
+  install_name_tool -id "$fullname" "${dep_arch_dir}/${tgt_name}/${build_type}/lib/${fullname}"
+}
+
+# remap_lib_dep_names name depname1 [...]
+#
+# Remap the dependent library names 'libgst${depname}-0.10.dylib' to not refer to the build directory
+remap_lib_dep_names()
+{
+  libname="$1"
+  libfullname="libgst${libname}-0.10.dylib"
+  shift
+
+  for dep in $@
+  do
+      depname="libgst${dep}-0.10"
+      install_name_tool -change "${dep_arch_dir}/${tgt_name}/${build_type}/lib/${depname}.0.dylib" "${depname}.dylib" \
+              "${dep_arch_dir}/${tgt_name}/${build_type}/lib/${libfullname}"
+  done
+}
+
+# remap_plugin_dep_names name depname1 [...]
+#
+# Remap the dependent library names 'libgst${depname}-0.10.dylib' to not refer to the build directory
+remap_plugin_dep_names()
+{
+  libname="$1"
+  libfullname="libgst${libname}.so"
+  shift
+
+  for dep in $@
+  do
+      depname="libgst${dep}-0.10"
+      install_name_tool -change "${dep_arch_dir}/${tgt_name}/${build_type}/lib/${depname}.0.dylib" "${depname}.dylib" \
+              "${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/${libfullname}"
+  done
+}
 
 #
 # build
@@ -328,7 +372,7 @@ build()
     export VORBIS_CFLAGS=
     export VORBIS_LIBS=
     export PKG_CONFIG_PATH=
-    export DYLD_LIBRARY_PATH=/usr/lib:/opt/local/lib
+    export DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
@@ -344,47 +388,17 @@ build()
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-lintl"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append "LDFLAGS"	\
-                "-Wl,-dylib_file"	\
-                "-Wl,libintl.dylib:${tgt_dep_dir}/lib/libintl.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-        fi
 
         # Set up iconv build options.
         tgt_dep_dir="${dep_arch_dir}/libiconv/${build_type}"
         export_append "LIBS" "-L${tgt_dep_dir}/lib" "-liconv"
         export_append "CFLAGS" "-I${tgt_dep_dir}/include"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append "LDFLAGS"	\
-                "-Wl,-dylib_file"	\
-                "-Wl,libiconv.dylib:${tgt_dep_dir}/lib/libiconv.dylib"
-        fi
 
         # Set up glib build options.
         tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-	if [ "$sys_name" = "Darwin" ]; then
-            export_append		\
-                "LDFLAGS"		\
-                "-Wl,-dylib_file"	\
-                "-Wl,libglib-2.0.dylib:${tgt_dep_dir}/lib/libglib-2.0.dylib"
-            export_append		\
-                "LDFLAGS"		\
-                "-Wl,-dylib_file"	\
-                "-Wl,libgobject-2.0.dylib:${tgt_dep_dir}/lib/libgobject-2.0.dylib"
-            export_append		\
-                "LDFLAGS"		\
-                "-Wl,-dylib_file"	\
-                "-Wl,libgmodule-2.0.dylib:${tgt_dep_dir}/lib/libgmodule-2.0.dylib"
-            export_append		\
-                "LDFLAGS"		\
-                "-Wl,-dylib_file"	\
-                "-Wl,libgthread-2.0.dylib:${tgt_dep_dir}/lib/libgthread-2.0.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-        fi
 
         # Set up liboil build options.
         tgt_dep_dir="${dep_arch_dir}/liboil/${build_type}"
@@ -394,13 +408,7 @@ build()
         export_append "LIBOIL_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include/liboil-0.3"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                        "LD_FLAGS"                                              \
-                        "-dylib_file"                                          \
-                        "liboil-0.3.dylib:${tgt_dep_dir}/lib/liboil-0.3.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
+	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
 	    if [ "$build_type" = "debug" ]; then
 		export LIBOIL_LIBS="$LIBOIL_LIBS -Wl,-Zi"
@@ -411,23 +419,10 @@ build()
         tgt_dep_dir="${dep_arch_dir}/gstreamer/${build_type}"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                        "LD_FLAGS"                                              \
-                        "-dylib_file"                                          \
-                        "libgstreamer-0.10.dylib:${tgt_dep_dir}/lib/libgstreamer-0.10.dylib"	\
-                        "-dylib_file"                                          \
-                        "libgstbase-0.10.dylib:${tgt_dep_dir}/lib/libgstbase-0.10.dylib"	\
-                        "-dylib_file"                                          \
-                        "libgstdataprotocol-0.10.dylib:${tgt_dep_dir}/lib/libgstdataprotocol-0.10.dylib"	\
-                        "-dylib_file"                                          \
-                        "libgstcontorller-0.10.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-        fi
 
         # Set up libogg build options.
         tgt_dep_dir="${dep_arch_dir}/libogg/${build_type}"
-	if [ "$build_type" = "debug" -a $sys_name = "Cygwin" ]; then
+	if [ "$build_type" = "debug" -a $sys_name = "Windows" ]; then
 	    # debug builds on windows use "ogg_d.dll" instead of "ogg.dll"
             export_append "OGG_LIBS"                                           \
                           "-L${tgt_dep_dir}/lib"                                   \
@@ -440,13 +435,7 @@ build()
         export_append "OGG_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                        "LD_FLAGS"                                              \
-                        "-dylib_file"                                          \
-                        "libogg.dylib:${tgt_dep_dir}/lib/libogg.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
+	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
 	    if [ "$build_type" = "debug" ]; then
 		export OGG_LIBS="$OGG_LIBS -Wl,-Zi"
@@ -464,15 +453,7 @@ build()
                       "-I${tgt_dep_dir}/include"
 	export VORBIS_CFLAGS="${VORBIS_CFLAGS} ${OGG_CFLAGS}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-        if [ "$sys_name" = "Darwin" ]; then
-            export_append                                                      \
-                        "LD_FLAGS"                                              \
-                        "-dylib_file"                                          \
-                        "libvorbis.dylib:${tgt_dep_dir}/lib/libvorbis.dylib" \
-		"-dylib_file" \
-		"libvorbisenc.dylib:${tgt_dep_dir}/lib/libvorbisenc.dylib"
-            export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
+	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
 	    if [ "$build_type" = "debug" ]; then
 		export VORBIS_LIBS="$VORBIS_LIBS -Wl,-Zi"
@@ -487,7 +468,7 @@ build()
                   "-I ${dep_arch_dir}/libtool/release/share/aclocal"
 
     # add win32 specific flags
-    if [ "$sys_name" = "Cygwin" ]; then
+    if [ "$sys_name" = "Windows" ]; then
 	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055"
 	if [ "$build_type" = "debug" ]; then
 	    export CFLAGS="${CFLAGS} -MTd -Zi"
@@ -542,189 +523,23 @@ build()
 
     # Post-process libraries on Mac.
     if [ "$sys_name" = "Darwin" ]; then
-        install_name_tool                                                      \
-            -id libgstaudio-0.10.dylib                                         \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.dylib
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.dylib
+	for lib in audio cdda fft interfaces netbuffer pbutils riff rtp rtsp sdp tag video
+	do
+	    remap_library_name $lib
+	done
 
-        install_name_tool                                                      \
-            -id libgstcdda-0.10.dylib                                          \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstcdda-0.10.dylib
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
-              libgsttag-0.10.dylib                                             \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstcdda-0.10.dylib
+	remap_lib_dep_names audio interfaces
+        remap_lib_dep_names cdda tag
+	remap_lib_dep_names riff interfaces tag audio
 
-        install_name_tool                                                      \
-            -id libgstfft-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstfft-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstinterfaces-0.10.dylib                                    \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstnetbuffer-0.10.dylib                                     \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstnetbuffer-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstpbutils-0.10.dylib                                       \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstpbutils-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstriff-0.10.dylib                                          \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
-              libgsttag-0.10.dylib                                             \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
-              libgstaudio-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstrtp-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstrtp-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstrtsp-0.10.dylib                                          \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstrtsp-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstsdp-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstsdp-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgsttag-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.dylib
-
-        install_name_tool                                                      \
-            -id libgstvideo-0.10.dylib                                         \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstvideo-0.10.dylib
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
-              libgstaudio-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstaudioconvert.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstaudioconvert.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstpbutils-0.10.0.dylib \
-              libgstpbutils-0.10.dylib                                         \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstdecodebin.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstpbutils-0.10.0.dylib \
-              libgstpbutils-0.10.dylib                                         \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstdecodebin2.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstriff-0.10.0.dylib \
-              libgstriff-0.10.dylib                                            \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstogg.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
-              libgsttag-0.10.dylib                                             \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstogg.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
-              libgstaudio-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstogg.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstogg.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstpbutils-0.10.0.dylib \
-              libgstpbutils-0.10.dylib                                         \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstplaybin.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
-              libgsttag-0.10.dylib                                             \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgsttheora.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstvideo-0.10.0.dylib \
-              libgstvideo-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvideoscale.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
-              libgstaudio-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvolume.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvolume.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgsttag-0.10.0.dylib \
-              libgsttag-0.10.dylib                                             \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvorbis.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstaudio-0.10.0.dylib \
-              libgstaudio-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvorbis.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstvorbis.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstximagesink.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstvideo-0.10.0.dylib \
-              libgstvideo-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstximagesink.so
-
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstinterfaces-0.10.0.dylib \
-              libgstinterfaces-0.10.dylib                                      \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstxvimagesink.so
-        install_name_tool                                                      \
-            -change                                                            \
-              ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libgstvideo-0.10.0.dylib \
-              libgstvideo-0.10.dylib                                           \
-            ${dep_arch_dir}/${tgt_name}/${build_type}/lib/gstreamer-0.10/libgstxvimagesink.so
+	remap_plugin_dep_names audioconvert audio interfaces
+	remap_plugin_dep_names decodebin pbutils
+	remap_plugin_dep_names decodebin2 pbutils
+	remap_plugin_dep_names ogg riff tag audio interfaces
+	remap_plugin_dep_names playbin pbutils
+	remap_plugin_dep_names videoscale video
+	remap_plugin_dep_names volume audio interfaces
+	remap_plugin_dep_names vorbis tag audio interfaces
     fi
 
     # Build the symbols.
@@ -739,7 +554,7 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    #rm -Rf ${build_dir}
+    rm -Rf ${build_dir}
 }
 
 
