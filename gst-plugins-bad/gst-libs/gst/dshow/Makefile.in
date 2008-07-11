@@ -44,7 +44,6 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
-	$(top_srcdir)/common/m4/as-objc.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
@@ -64,7 +63,10 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/gst-alsa.m4 $(top_srcdir)/m4/gst-sdl.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -81,9 +83,13 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstdshow_@GST_MAJORMINOR@_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libgstdshow_@GST_MAJORMINOR@_la_OBJECTS = gstdshow.lo \
-	gstdshowfakesink.lo gstdshowfakesrc.lo gstdshowinterface.lo
+libgstdshow_@GST_MAJORMINOR@_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_libgstdshow_@GST_MAJORMINOR@_la_OBJECTS =  \
+	libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo \
+	libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo \
+	libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo \
+	libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo
 libgstdshow_@GST_MAJORMINOR@_la_OBJECTS =  \
 	$(am_libgstdshow_@GST_MAJORMINOR@_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -113,6 +119,9 @@ AMDEP_TRUE = @AMDEP_TRUE@
 AMRWB_LIBS = @AMRWB_LIBS@
 AMTAR = @AMTAR@
 AR = @AR@
+AR_FLAGS = @AR_FLAGS@
+AR_SEP = @AR_SEP@
+AR_TFLAGS = @AR_TFLAGS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -143,10 +152,14 @@ DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
+DIRECTSHOW_CFLAGS = @DIRECTSHOW_CFLAGS@
+DIRECTSHOW_LDFLAGS = @DIRECTSHOW_LDFLAGS@
+DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIVXDEC_LIBS = @DIVXDEC_LIBS@
 DIVXENC_LIBS = @DIVXENC_LIBS@
+DSYMUTIL = @DSYMUTIL@
 DTS_LIBS = @DTS_LIBS@
-ECHO = @ECHO@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -159,11 +172,11 @@ ERROR_CFLAGS = @ERROR_CFLAGS@
 EXEEXT = @EXEEXT@
 EXIF_CFLAGS = @EXIF_CFLAGS@
 EXIF_LIBS = @EXIF_LIBS@
-F77 = @F77@
 FAAC_LIBS = @FAAC_LIBS@
 FAAD_IS_NEAAC = @FAAD_IS_NEAAC@
 FAAD_LIBS = @FAAD_LIBS@
 FFLAGS = @FFLAGS@
+FGREP = @FGREP@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
@@ -248,6 +261,7 @@ HAVE_CPU_SPARC_TRUE = @HAVE_CPU_SPARC_TRUE@
 HAVE_CPU_X86_64_FALSE = @HAVE_CPU_X86_64_FALSE@
 HAVE_CPU_X86_64_TRUE = @HAVE_CPU_X86_64_TRUE@
 HAVE_CXX = @HAVE_CXX@
+HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DTS = @HAVE_DTS@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
@@ -278,6 +292,7 @@ IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
 LIBDC1394_LIBS = @LIBDC1394_LIBS@
@@ -314,9 +329,8 @@ NAS_CFLAGS = @NAS_CFLAGS@
 NAS_LIBS = @NAS_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
-OBJC = @OBJC@
-OBJCDEPMODE = @OBJCDEPMODE@
-OBJC_LDFLAGS = @OBJC_LDFLAGS@
+NM = @NM@
+NMEDIT = @NMEDIT@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -372,6 +386,8 @@ USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
 USE_DIRECTFB_FALSE = @USE_DIRECTFB_FALSE@
 USE_DIRECTFB_TRUE = @USE_DIRECTFB_TRUE@
+USE_DIRECTSHOW_FALSE = @USE_DIRECTSHOW_FALSE@
+USE_DIRECTSHOW_TRUE = @USE_DIRECTSHOW_TRUE@
 USE_DIVX_FALSE = @USE_DIVX_FALSE@
 USE_DIVX_TRUE = @USE_DIVX_TRUE@
 USE_DTS_FALSE = @USE_DTS_FALSE@
@@ -453,16 +469,14 @@ XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
 XMP_LIBS = @XMP_LIBS@
 XVID_LIBS = @XVID_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
-ac_ct_OBJC = @ac_ct_OBJC@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
-am__fastdepOBJC_FALSE = @am__fastdepOBJC_FALSE@
-am__fastdepOBJC_TRUE = @am__fastdepOBJC_TRUE@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -492,6 +506,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -510,13 +525,13 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 lib_LTLIBRARIES = libgstdshow-@GST_MAJORMINOR@.la
 libgstdshow_@GST_MAJORMINOR@_la_SOURCES = gstdshow.cpp gstdshowfakesink.cpp gstdshowfakesrc.cpp gstdshowinterface.cpp
-libgstdshow_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-	$(GST_PLUGINS_BASE_CFLAGS)
+libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) ${DIRECTSHOW_CFLAGS}
 
-libgstdshow_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS)
+libgstdshow_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) ${DIRECTSHOW_LIBS}
 libgstdshow_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_ALL_LDFLAGS)
-libgstdshow_@GST_MAJORMINOR@includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/app
-libgstdshow_@GST_MAJORMINOR@include_HEADERS = 
+libgstdshow_@GST_MAJORMINOR@includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/dshow
+libgstdshow_@GST_MAJORMINOR@include_HEADERS = gstdshow.h gstdshowfakesink.h gstdshowfakesrc.h gstdshowinterface.h
 all: all-am
 
 .SUFFIXES:
@@ -586,10 +601,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstdshow.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstdshowfakesink.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstdshowfakesrc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstdshowinterface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshow.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -611,6 +626,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo: gstdshow.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo -MD -MP -MF "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshow.Tpo" -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo `test -f 'gstdshow.cpp' || echo '$(srcdir)/'`gstdshow.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshow.Tpo" "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshow.Plo"; else rm -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshow.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gstdshow.cpp' object='libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshow.lo `test -f 'gstdshow.cpp' || echo '$(srcdir)/'`gstdshow.cpp
+
+libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo: gstdshowfakesink.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo -MD -MP -MF "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.Tpo" -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo `test -f 'gstdshowfakesink.cpp' || echo '$(srcdir)/'`gstdshowfakesink.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.Tpo" "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.Plo"; else rm -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gstdshowfakesink.cpp' object='libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesink.lo `test -f 'gstdshowfakesink.cpp' || echo '$(srcdir)/'`gstdshowfakesink.cpp
+
+libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo: gstdshowfakesrc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo -MD -MP -MF "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.Tpo" -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo `test -f 'gstdshowfakesrc.cpp' || echo '$(srcdir)/'`gstdshowfakesrc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.Tpo" "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.Plo"; else rm -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gstdshowfakesrc.cpp' object='libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowfakesrc.lo `test -f 'gstdshowfakesrc.cpp' || echo '$(srcdir)/'`gstdshowfakesrc.cpp
+
+libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo: gstdshowinterface.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -MT libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo -MD -MP -MF "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.Tpo" -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo `test -f 'gstdshowinterface.cpp' || echo '$(srcdir)/'`gstdshowinterface.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.Tpo" "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.Plo"; else rm -f "$(DEPDIR)/libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gstdshowinterface.cpp' object='libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS) $(CXXFLAGS) -c -o libgstdshow_@GST_MAJORMINOR@_la-gstdshowinterface.lo `test -f 'gstdshowinterface.cpp' || echo '$(srcdir)/'`gstdshowinterface.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

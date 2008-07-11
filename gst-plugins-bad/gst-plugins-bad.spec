@@ -32,13 +32,13 @@ BuildRequires:  gsm-devel >= 1.0.10
 Requires:      SDL >= 1.2.0
 #BuildRequires:  swfdec-devel
 Provides:      gstreamer-faad = %{version}-%{release}
-Requires:      faac >= 1.23
+#Requires:      faac >= 1.23
 Provides:       gstreamer-gsm = %{version}-%{release}
 # @USE_LIBFAME_TRUE@Provides:       gstreamer-libfame = %{version}-%{release}
 Requires: libmms >= 0.1
 @USE_OPENGL_TRUE@Requires: mesa-libGL
 #Requires: gmyth
-Requires: x264
+#Requires: x264
 
 %description
 GStreamer is a streaming media framework, based on graphs of filters which
@@ -130,16 +130,16 @@ rm -rf $RPM_BUILD_ROOT
 
 # gstreamer-plugins with external dependencies but in the main package
 %{_libdir}/gstreamer-%{majorminor}/libgstfaad.so
-%{_libdir}/gstreamer-%{majorminor}/libgstfaac.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstfaac.so
 @USE_OPENGL_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstglimagesink.so
 %{_libdir}/gstreamer-%{majorminor}/libgsttrm.so
 # @USE_POLYP_TRUE@%{_libdir}/gstreamer-%{majorminor}/libpolypaudio.so
 %{_libdir}/gstreamer-%{majorminor}/libgstsdl.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstswfdec.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmms.so
-%{_libdir}/gstreamer-%{majorminor}/libgstxvid.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstxvid.so
 %{_libdir}/gstreamer-%{majorminor}/libgstbz2.so
-%{_libdir}/gstreamer-%{majorminor}/libgstivorbis.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstivorbis.so
 %{_libdir}/gstreamer-%{majorminor}/libgstneonhttpsrc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstalsaspdif.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmusepack.so
@@ -147,10 +147,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstdtsdec.so
 %{_libdir}/gstreamer-%{majorminor}/libgstladspa.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstmythtvsrc.so
-%{_libdir}/gstreamer-%{majorminor}/libgstx264.so
+#%{_libdir}/gstreamer-%{majorminor}/libgstx264.so
 #%{_libdir}/gstreamer-%{majorminor}/libgstdc1394.so
 #%{_libdir}/gstreamer-%{majorminor}/libgsttimidity.so
-#%{_libdir}/gstreamer-%{majorminor}/libgstsouphttpsrc.so
+%{_libdir}/gstreamer-%{majorminor}/libgstsouphttpsrc.so
 
 
 %changelog
