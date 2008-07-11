@@ -434,7 +434,11 @@ build()
 	fi
         export_append "OGG_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include"
-	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
+	# Our pkgconfig scripts are currently broken on OSX; the above definitions are ok though.
+	if [ "$sys_name"  != "Darwin" ]; then
+	    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
+	fi
+
 	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
 	    if [ "$build_type" = "debug" ]; then
