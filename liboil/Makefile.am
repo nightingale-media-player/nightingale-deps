@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = liboil testsuite examples doc
+SUBDIRS = liboil testsuite doc
 
 EXTRA_DIST = COPYING autogen.sh gtk-doc.make HACKING BUG-REPORTING
 

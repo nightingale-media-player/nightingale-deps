@@ -450,7 +450,6 @@ build()
 	--disable-examples \
 	--disable-tests \
 	-C
-    cd liboil
     make && make install
 
     # Post-process libraries on Mac.
