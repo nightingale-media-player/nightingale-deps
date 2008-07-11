@@ -1114,7 +1114,21 @@ gst_riff_create_audio_caps (guint16 codec_id,
     case GST_RIFF_WAVE_FORMAT_WMAV3_L:
     {
       /* WMA Version 9 Lossless */
-      goto unknown;
+      caps = gst_caps_new_simple ("audio/x-wma", "wmaversion", G_TYPE_INT, 4, NULL);
+
+      if (codec_name)
+        *codec_name = g_strdup ("WMA Version 3 Lossless");
+
+      if (strf != NULL) {
+        gst_caps_set_simple (caps,
+            "bitrate", G_TYPE_INT, strf->av_bps * 8,
+            "depth", G_TYPE_INT, strf->size, NULL);
+      } else {
+        gst_caps_set_simple (caps,
+            "bitrate", GST_TYPE_INT_RANGE, 0, G_MAXINT, NULL);
+      }
+      break;
+
     }
     case GST_RIFF_WAVE_FORMAT_SONY_ATRAC3:
       caps = gst_caps_new_simple ("audio/x-vnd.sony.atrac3", NULL);
