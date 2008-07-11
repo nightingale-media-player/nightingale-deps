@@ -323,7 +323,7 @@ build()
     export LDFLAGS=
     export ACLOCAL_FLAGS=
     export PKG_CONFIG_PATH=
-    export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/usr/lib:/opt/local/lib
+    export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/opt/local/lib:/usr/lib
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
