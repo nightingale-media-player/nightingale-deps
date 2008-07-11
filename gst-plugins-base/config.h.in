@@ -233,6 +233,10 @@
 /* gettext locale dir */
 #undef LOCALEDIR
 
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
 /* Define if you have no native hstrerror() function. */
 #undef NO_HSTRERROR
 
