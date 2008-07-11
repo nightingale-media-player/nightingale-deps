@@ -1,0 +1,177 @@
+<!-- ##### SECTION Title ##### -->
+GstBaseTransform
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstBaseTransform ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstBaseTransform:qos ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GstBaseTransformClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@transform_caps: 
+@fixate_caps: 
+@transform_size: 
+@get_unit_size: 
+@set_caps: 
+@start: 
+@stop: 
+@event: 
+@transform: 
+@transform_ip: 
+@passthrough_on_same_caps: 
+@prepare_output_buffer: 
+@src_event: 
+
+<!-- ##### FUNCTION gst_base_transform_is_passthrough ##### -->
+<para>
+
+</para>
+
+@trans: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_transform_set_passthrough ##### -->
+<para>
+
+</para>
+
+@trans: 
+@passthrough: 
+
+
+<!-- ##### FUNCTION gst_base_transform_is_in_place ##### -->
+<para>
+
+</para>
+
+@trans: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_transform_set_in_place ##### -->
+<para>
+
+</para>
+
+@trans: 
+@in_place: 
+
+
+<!-- ##### FUNCTION gst_base_transform_is_qos_enabled ##### -->
+<para>
+
+</para>
+
+@trans: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_base_transform_set_qos_enabled ##### -->
+<para>
+
+</para>
+
+@trans: 
+@enabled: 
+
+
+<!-- ##### FUNCTION gst_base_transform_update_qos ##### -->
+<para>
+
+</para>
+
+@trans: 
+@proportion: 
+@diff: 
+@timestamp: 
+
+
+<!-- ##### FUNCTION gst_base_transform_set_gap_aware ##### -->
+<para>
+
+</para>
+
+@trans: 
+@gap_aware: 
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_SINK_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_SRC_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_SINK_PAD ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_SRC_PAD ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_FLOW_DROPPED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_LOCK ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO GST_BASE_TRANSFORM_UNLOCK ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+

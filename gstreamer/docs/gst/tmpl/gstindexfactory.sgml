@@ -1,0 +1,71 @@
+<!-- ##### SECTION Title ##### -->
+GstIndexFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstIndexFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_index_factory_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@longdesc: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_factory_destroy ##### -->
+<para>
+
+</para>
+
+@factory: 
+
+
+<!-- ##### FUNCTION gst_index_factory_find ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_factory_create ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_factory_make ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+

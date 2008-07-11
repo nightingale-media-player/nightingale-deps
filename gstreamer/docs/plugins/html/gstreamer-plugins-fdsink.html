@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>fdsink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gstreamer Elements">
+<link rel="prev" href="gstreamer-plugins-fakesink.html" title="fakesink">
+<link rel="next" href="gstreamer-plugins-fdsrc.html" title="fdsrc">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gstreamer Elements">
+<link rel="chapter" href="ch02.html" title="gstreamer Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-plugins-fakesink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-plugins-fdsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2587110" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2585266" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2595177" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2596543" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2560517" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-plugins-fdsink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2587110"></a><span class="refentrytitle">fdsink</span>
+</h2>
+<p>fdsink &#8212; write to a unix file descriptor</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstFdSink"></a><pre class="synopsis">
+
+
+
+                    <a href="gstreamer-plugins-fdsink.html#GstFdSink-struct">GstFdSink</a>;
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2595177"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----GstFdSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2596543"></a><h2>Implemented Interfaces</h2>
+<p>
+GstFdSink implements
+ GstURIHandler.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2560517"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gstreamer-plugins-fdsink.html#GstFdSink--fd">fd</a>"                       gint                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2585266"></a><h2>Description</h2>
+<p>
+Write data to a unix file descriptor.
+</p>
+<p>
+This element will sycnhronize on the clock before writing the data on the
+socket. For file descriptors where this does not make sense (files, ...) the
+::sync property can be used to disable synchronisation.
+</p>
+<p>
+Last reviewed on 2006-04-28 (0.10.6)</p>
+<div class="refsect2" lang="en">
+<a name="id2556408"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Sink/File</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572130"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2572141"></a><h3>
+<a name="GstFdSink-struct"></a>GstFdSink</h3>
+<a class="indexterm" name="id2572154"></a><pre class="programlisting">typedef struct _GstFdSink GstFdSink;</pre>
+<p>
+The opaque <a href="gstreamer-plugins-fdsink.html#GstFdSink"><span class="type">GstFdSink</span></a> data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572181"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2572192"></a><h3>
+<a name="GstFdSink--fd"></a>The "<code class="literal">fd</code>" property</h3>
+<a class="indexterm" name="id2572207"></a><pre class="programlisting">  "fd"                       gint                  : Read / Write</pre>
+<p>An open file descriptor to write to.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572236"></a><h2>See Also</h2>
+<a href="gstreamer-plugins-fdsrc.html#GstFdSrc"><span class="type">GstFdSrc</span></a>
+</div>
+</div>
+</body>
+</html>

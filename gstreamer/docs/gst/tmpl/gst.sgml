@@ -1,0 +1,113 @@
+<!-- ##### SECTION Title ##### -->
+Gst
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_init ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+
+
+<!-- ##### FUNCTION gst_init_check ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+@err: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_init_get_option_group ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_deinit ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_version ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@micro: 
+@nano: 
+
+
+<!-- ##### FUNCTION gst_version_string ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_segtrap_is_enabled ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_segtrap_set_enabled ##### -->
+<para>
+
+</para>
+
+@enabled: 
+
+
+<!-- ##### FUNCTION gst_registry_fork_is_enabled ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_registry_fork_set_enabled ##### -->
+<para>
+
+</para>
+
+@enabled: 
+
+
+<!-- ##### FUNCTION gst_update_registry ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

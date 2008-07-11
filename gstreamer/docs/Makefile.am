@@ -1,0 +1,17 @@
+if ENABLE_DOCBOOK
+SUBDIRS_DOCBOOK = faq manual pwg
+else
+SUBDIRS_DOCBOOK =
+endif
+
+BUILT_SOURCES = version.entities
+
+SUBDIRS = design gst libs plugins $(SUBDIRS_DOCBOOK)
+DIST_SUBDIRS = design gst libs plugins faq manual pwg slides xsl
+
+EXTRA_DIST = \
+	manuals.mak htmlinstall.mak \
+	image-png image-pdf image-eps url.entities version.entities.in
+
+upload:
+	@if test "x$(SUBDIRS)" != x; then for a in $(SUBDIRS); do cd $$a; make upload; cd ..; done; fi

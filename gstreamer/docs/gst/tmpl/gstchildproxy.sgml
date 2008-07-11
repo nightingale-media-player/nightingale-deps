@@ -1,0 +1,169 @@
+<!-- ##### SECTION Title ##### -->
+GstChildProxy
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstChildProxy ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstChildProxy::child-added ##### -->
+<para>
+
+</para>
+
+@gstchildproxy: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstChildProxy::child-removed ##### -->
+<para>
+
+</para>
+
+@gstchildproxy: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GstChildProxyInterface ##### -->
+<para>
+
+</para>
+
+@parent: 
+@get_child_by_index: 
+@get_children_count: 
+
+<!-- ##### FUNCTION gst_child_proxy_get_children_count ##### -->
+<para>
+
+</para>
+
+@parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_get_child_by_name ##### -->
+<para>
+
+</para>
+
+@parent: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_get_child_by_index ##### -->
+<para>
+
+</para>
+
+@parent: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_lookup ##### -->
+<para>
+
+</para>
+
+@object: 
+@name: 
+@target: 
+@pspec: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_get_property ##### -->
+<para>
+
+</para>
+
+@object: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_get_valist ##### -->
+<para>
+
+</para>
+
+@object: 
+@first_property_name: 
+@var_args: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_get ##### -->
+<para>
+
+</para>
+
+@object: 
+@first_property_name: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_set_property ##### -->
+<para>
+
+</para>
+
+@object: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_set_valist ##### -->
+<para>
+
+</para>
+
+@object: 
+@first_property_name: 
+@var_args: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_set ##### -->
+<para>
+
+</para>
+
+@object: 
+@first_property_name: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_child_added ##### -->
+<para>
+
+</para>
+
+@object: 
+@child: 
+
+
+<!-- ##### FUNCTION gst_child_proxy_child_removed ##### -->
+<para>
+
+</para>
+
+@object: 
+@child: 
+
+

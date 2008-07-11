@@ -1,0 +1,119 @@
+<!-- ##### SECTION Title ##### -->
+GstFormat
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### ENUM GstFormat ##### -->
+<para>
+
+</para>
+
+@GST_FORMAT_UNDEFINED: 
+@GST_FORMAT_DEFAULT: 
+@GST_FORMAT_BYTES: 
+@GST_FORMAT_TIME: 
+@GST_FORMAT_BUFFERS: 
+@GST_FORMAT_PERCENT: 
+
+<!-- ##### MACRO GST_FORMAT_PERCENT_MAX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_FORMAT_PERCENT_SCALE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT GstFormatDefinition ##### -->
+<para>
+
+</para>
+
+@value: 
+@nick: 
+@description: 
+@quark: 
+
+<!-- ##### FUNCTION gst_format_get_name ##### -->
+<para>
+
+</para>
+
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_format_to_quark ##### -->
+<para>
+
+</para>
+
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_format_register ##### -->
+<para>
+
+</para>
+
+@nick: 
+@description: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_format_get_by_nick ##### -->
+<para>
+
+</para>
+
+@nick: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_formats_contains ##### -->
+<para>
+
+</para>
+
+@formats: 
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_format_get_details ##### -->
+<para>
+
+</para>
+
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_format_iterate_definitions ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

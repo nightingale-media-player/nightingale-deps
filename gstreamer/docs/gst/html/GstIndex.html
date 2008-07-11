@@ -1,0 +1,1616 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GstIndex</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstImplementsInterface.html" title="GstImplementsInterface">
+<link rel="next" href="GstIndexFactory.html" title="GstIndexFactory">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
+<link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstImplementsInterface.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
+<td><a accesskey="n" href="GstIndexFactory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2681601" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2682800" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2682706" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2682738" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id2682772" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GstIndex"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2681601"></a><span class="refentrytitle">GstIndex</span>
+</h2>
+<p>GstIndex &#8212; Generate indexes on objects</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
+
+
+                    <a href="GstIndex.html#GstIndex-struct">GstIndex</a>;
+                    <a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>;
+                    <a href="GstIndex.html#GstIndexGroup">GstIndexGroup</a>;
+enum                <a href="GstIndex.html#GstIndexCertainty">GstIndexCertainty</a>;
+enum                <a href="GstIndex.html#GstIndexEntryType">GstIndexEntryType</a>;
+enum                <a href="GstIndex.html#GstIndexLookupMethod">GstIndexLookupMethod</a>;
+#define             <a href="GstIndex.html#GST-INDEX-NASSOCS:CAPS">GST_INDEX_NASSOCS</a>                   (entry)
+#define             <a href="GstIndex.html#GST-INDEX-ASSOC-FLAGS:CAPS">GST_INDEX_ASSOC_FLAGS</a>               (entry)
+#define             <a href="GstIndex.html#GST-INDEX-ASSOC-FORMAT:CAPS">GST_INDEX_ASSOC_FORMAT</a>              (entry,i)
+#define             <a href="GstIndex.html#GST-INDEX-ASSOC-VALUE:CAPS">GST_INDEX_ASSOC_VALUE</a>               (entry,i)
+                    <a href="GstIndex.html#GstIndexAssociation">GstIndexAssociation</a>;
+enum                <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a>;
+#define             <a href="GstIndex.html#GST-INDEX-FORMAT-FORMAT:CAPS">GST_INDEX_FORMAT_FORMAT</a>             (entry)
+#define             <a href="GstIndex.html#GST-INDEX-FORMAT-KEY:CAPS">GST_INDEX_FORMAT_KEY</a>                (entry)
+#define             <a href="GstIndex.html#GST-INDEX-ID-INVALID:CAPS">GST_INDEX_ID_INVALID</a>
+#define             <a href="GstIndex.html#GST-INDEX-ID-DESCRIPTION:CAPS">GST_INDEX_ID_DESCRIPTION</a>            (entry)
+gboolean            (<a href="GstIndex.html#GstIndexFilter">*GstIndexFilter</a>)                   (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry,
+                                                         gpointer user_data);
+enum                <a href="GstIndex.html#GstIndexResolverMethod">GstIndexResolverMethod</a>;
+gboolean            (<a href="GstIndex.html#GstIndexResolver">*GstIndexResolver</a>)                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *writer,
+                                                         gchar **writer_string,
+                                                         gpointer user_data);
+enum                <a href="GstIndex.html#GstIndexFlags">GstIndexFlags</a>;
+#define             <a href="GstIndex.html#GST-INDEX-IS-READABLE:CAPS">GST_INDEX_IS_READABLE</a>               (obj)
+#define             <a href="GstIndex.html#GST-INDEX-IS-WRITABLE:CAPS">GST_INDEX_IS_WRITABLE</a>               (obj)
+<a href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a href="GstIndex.html#gst-index-new">gst_index_new</a>                       (void);
+void                <a href="GstIndex.html#gst-index-commit">gst_index_commit</a>                    (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id);
+gint                <a href="GstIndex.html#gst-index-get-group">gst_index_get_group</a>                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
+gint                <a href="GstIndex.html#gst-index-new-group">gst_index_new_group</a>                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
+gboolean            <a href="GstIndex.html#gst-index-set-group">gst_index_set_group</a>                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint groupnum);
+void                <a href="GstIndex.html#gst-index-set-certainty">gst_index_set_certainty</a>             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexCertainty">GstIndexCertainty</a> certainty);
+<a href="GstIndex.html#GstIndexCertainty">GstIndexCertainty</a>   <a href="GstIndex.html#gst-index-get-certainty">gst_index_get_certainty</a>             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
+void                <a href="GstIndex.html#gst-index-set-filter">gst_index_set_filter</a>                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexFilter">GstIndexFilter</a> filter,
+                                                         gpointer user_data);
+void                <a href="GstIndex.html#gst-index-set-filter-full">gst_index_set_filter_full</a>           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexFilter">GstIndexFilter</a> filter,
+                                                         gpointer user_data,
+                                                         GDestroyNotify user_data_destroy);
+void                <a href="GstIndex.html#gst-index-set-resolver">gst_index_set_resolver</a>              (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexResolver">GstIndexResolver</a> resolver,
+                                                         gpointer user_data);
+gboolean            <a href="GstIndex.html#gst-index-get-writer-id">gst_index_get_writer_id</a>             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *writer,
+                                                         gint *id);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-add-format">gst_index_add_format</a>                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-add-association">gst_index_add_association</a>           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value,
+                                                         ...);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-add-associationv">gst_index_add_associationv</a>          (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         gint n,
+                                                         const <a href="GstIndex.html#GstIndexAssociation">GstIndexAssociation</a> *list);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-add-object">gst_index_add_object</a>                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         gchar *key,
+                                                         GType type,
+                                                         gpointer object);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-add-id">gst_index_add_id</a>                    (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         gchar *description);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-get-assoc-entry">gst_index_get_assoc_entry</a>           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstIndexLookupMethod">GstIndexLookupMethod</a> method,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-get-assoc-entry-full">gst_index_get_assoc_entry_full</a>      (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstIndexLookupMethod">GstIndexLookupMethod</a> method,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value,
+                                                         GCompareDataFunc func,
+                                                         gpointer user_data);
+<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      <a href="GstIndex.html#gst-index-entry-copy">gst_index_entry_copy</a>                (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry);
+void                <a href="GstIndex.html#gst-index-entry-free">gst_index_entry_free</a>                (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry);
+gboolean            <a href="GstIndex.html#gst-index-entry-assoc-map">gst_index_entry_assoc_map</a>           (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 *value);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2682706"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----<a href="GstObject.html" title="GstObject">GstObject</a>
+         +----GstIndex
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2682738"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="GstIndex.html#GstIndex--resolver">resolver</a>"                 <a href="GstIndex.html#GstIndexResolver">GstIndexResolver</a>      : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2682772"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  "<a href="GstIndex.html#GstIndex-entry-added">entry-added</a>"                                    : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2682800"></a><h2>Description</h2>
+<p>
+GstIndex is used to generate a stream index of one or more elements
+in a pipeline.</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2682819"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2682829"></a><h3>
+<a name="GstIndex-struct"></a>GstIndex</h3>
+<a class="indexterm" name="id2682842"></a><pre class="programlisting">typedef struct _GstIndex GstIndex;</pre>
+<p>
+Opaque <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> structure.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2682868"></a><h3>
+<a name="GstIndexEntry"></a>GstIndexEntry</h3>
+<a class="indexterm" name="id2682881"></a><pre class="programlisting">typedef struct {
+} GstIndexEntry;
+</pre>
+<p>
+The basic element of an index.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2682900"></a><h3>
+<a name="GstIndexGroup"></a>GstIndexGroup</h3>
+<a class="indexterm" name="id2682913"></a><pre class="programlisting">typedef struct {
+} GstIndexGroup;
+</pre>
+<p>
+A group of related entries in an index.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2682932"></a><h3>
+<a name="GstIndexCertainty"></a>enum GstIndexCertainty</h3>
+<a class="indexterm" name="id2682945"></a><pre class="programlisting">typedef enum {
+  GST_INDEX_UNKNOWN,
+  GST_INDEX_CERTAIN,
+  GST_INDEX_FUZZY
+} GstIndexCertainty;
+</pre>
+<p>
+The certainty of a group in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-INDEX-UNKNOWN:CAPS"></a><code class="literal">GST_INDEX_UNKNOWN</code></span></td>
+<td> accuracy is not known
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-CERTAIN:CAPS"></a><code class="literal">GST_INDEX_CERTAIN</code></span></td>
+<td> accuracy is perfect
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-FUZZY:CAPS"></a><code class="literal">GST_INDEX_FUZZY</code></span></td>
+<td> accuracy is fuzzy
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683038"></a><h3>
+<a name="GstIndexEntryType"></a>enum GstIndexEntryType</h3>
+<a class="indexterm" name="id2683051"></a><pre class="programlisting">typedef enum {
+  GST_INDEX_ENTRY_ID,
+  GST_INDEX_ENTRY_ASSOCIATION,
+  GST_INDEX_ENTRY_OBJECT,
+  GST_INDEX_ENTRY_FORMAT
+} GstIndexEntryType;
+</pre>
+<p>
+The different types of entries in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-INDEX-ENTRY-ID:CAPS"></a><code class="literal">GST_INDEX_ENTRY_ID</code></span></td>
+<td> This entry is an id that maps an index id to its owner object
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-ENTRY-ASSOCIATION:CAPS"></a><code class="literal">GST_INDEX_ENTRY_ASSOCIATION</code></span></td>
+<td> This entry is an association between formats
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-ENTRY-OBJECT:CAPS"></a><code class="literal">GST_INDEX_ENTRY_OBJECT</code></span></td>
+<td> An object
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-ENTRY-FORMAT:CAPS"></a><code class="literal">GST_INDEX_ENTRY_FORMAT</code></span></td>
+<td> A format definition
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683170"></a><h3>
+<a name="GstIndexLookupMethod"></a>enum GstIndexLookupMethod</h3>
+<a class="indexterm" name="id2683183"></a><pre class="programlisting">typedef enum {
+  GST_INDEX_LOOKUP_EXACT,
+  GST_INDEX_LOOKUP_BEFORE,
+  GST_INDEX_LOOKUP_AFTER
+} GstIndexLookupMethod;
+</pre>
+<p>
+Specify the method to find an index entry in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-INDEX-LOOKUP-EXACT:CAPS"></a><code class="literal">GST_INDEX_LOOKUP_EXACT</code></span></td>
+<td> There has to be an exact indexentry with the given format/value
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-LOOKUP-BEFORE:CAPS"></a><code class="literal">GST_INDEX_LOOKUP_BEFORE</code></span></td>
+<td> The exact entry or the one before it
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-LOOKUP-AFTER:CAPS"></a><code class="literal">GST_INDEX_LOOKUP_AFTER</code></span></td>
+<td> The exact entry or the one after it
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683278"></a><h3>
+<a name="GST-INDEX-NASSOCS:CAPS"></a>GST_INDEX_NASSOCS()</h3>
+<a class="indexterm" name="id2683292"></a><pre class="programlisting">#define GST_INDEX_NASSOCS(entry)		((entry)-&gt;data.assoc.nassocs)
+</pre>
+<p>
+Get the number of associations in the entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683330"></a><h3>
+<a name="GST-INDEX-ASSOC-FLAGS:CAPS"></a>GST_INDEX_ASSOC_FLAGS()</h3>
+<a class="indexterm" name="id2683344"></a><pre class="programlisting">#define GST_INDEX_ASSOC_FLAGS(entry)		((entry)-&gt;data.assoc.flags)
+</pre>
+<p>
+Get the flags for this entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683382"></a><h3>
+<a name="GST-INDEX-ASSOC-FORMAT:CAPS"></a>GST_INDEX_ASSOC_FORMAT()</h3>
+<a class="indexterm" name="id2683395"></a><pre class="programlisting">#define GST_INDEX_ASSOC_FORMAT(entry,i)		((entry)-&gt;data.assoc.assocs[(i)].format)
+</pre>
+<p>
+Get the i-th format of the entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>i</code></em>&#160;:</span></td>
+<td> The format index
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683448"></a><h3>
+<a name="GST-INDEX-ASSOC-VALUE:CAPS"></a>GST_INDEX_ASSOC_VALUE()</h3>
+<a class="indexterm" name="id2683461"></a><pre class="programlisting">#define GST_INDEX_ASSOC_VALUE(entry,i)		((entry)-&gt;data.assoc.assocs[(i)].value)
+</pre>
+<p>
+Get the i-th value of the entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>i</code></em>&#160;:</span></td>
+<td> The value index
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683514"></a><h3>
+<a name="GstIndexAssociation"></a>GstIndexAssociation</h3>
+<a class="indexterm" name="id2683527"></a><pre class="programlisting">typedef struct {
+  GstFormat 	format;
+  gint64 	value;
+} GstIndexAssociation;
+</pre>
+<p>
+An association in an entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>&#160;<em class="structfield"><code>format</code></em>;</span></td>
+<td> the format of the association
+</td>
+</tr>
+<tr>
+<td><span class="term">gint64&#160;<em class="structfield"><code>value</code></em>;</span></td>
+<td> the value of the association
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683593"></a><h3>
+<a name="GstAssocFlags"></a>enum GstAssocFlags</h3>
+<a class="indexterm" name="id2683606"></a><pre class="programlisting">typedef enum {
+  GST_ASSOCIATION_FLAG_NONE 	  = 0,
+  GST_ASSOCIATION_FLAG_KEY_UNIT   = (1 &lt;&lt; 0),
+  GST_ASSOCIATION_FLAG_DELTA_UNIT = (1 &lt;&lt; 1),
+
+  /* new flags should start here */
+  GST_ASSOCIATION_FLAG_LAST	= (1 &lt;&lt; 8)
+} GstAssocFlags;
+</pre>
+<p>
+Flags for an association entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-ASSOCIATION-FLAG-NONE:CAPS"></a><code class="literal">GST_ASSOCIATION_FLAG_NONE</code></span></td>
+<td> no extra flags
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-ASSOCIATION-FLAG-KEY-UNIT:CAPS"></a><code class="literal">GST_ASSOCIATION_FLAG_KEY_UNIT</code></span></td>
+<td> the entry marks a key unit, a key unit is one
+ that marks a place where one can randomly seek to.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-ASSOCIATION-FLAG-DELTA-UNIT:CAPS"></a><code class="literal">GST_ASSOCIATION_FLAG_DELTA_UNIT</code></span></td>
+<td> the entry marks a delta unit, a delta unit
+ is one that marks a place where one can relatively seek to.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-ASSOCIATION-FLAG-LAST:CAPS"></a><code class="literal">GST_ASSOCIATION_FLAG_LAST</code></span></td>
+<td> extra user defined flags should start here.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683735"></a><h3>
+<a name="GST-INDEX-FORMAT-FORMAT:CAPS"></a>GST_INDEX_FORMAT_FORMAT()</h3>
+<a class="indexterm" name="id2683748"></a><pre class="programlisting">#define GST_INDEX_FORMAT_FORMAT(entry)		((entry)-&gt;data.format.format)
+</pre>
+<p>
+Get the format of the format entry</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683787"></a><h3>
+<a name="GST-INDEX-FORMAT-KEY:CAPS"></a>GST_INDEX_FORMAT_KEY()</h3>
+<a class="indexterm" name="id2683800"></a><pre class="programlisting">#define GST_INDEX_FORMAT_KEY(entry)		((entry)-&gt;data.format.key)
+</pre>
+<p>
+Get the key of the format entry</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683839"></a><h3>
+<a name="GST-INDEX-ID-INVALID:CAPS"></a>GST_INDEX_ID_INVALID</h3>
+<a class="indexterm" name="id2683852"></a><pre class="programlisting">#define GST_INDEX_ID_INVALID			(-1)
+</pre>
+<p>
+Constant for an invalid index id</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683871"></a><h3>
+<a name="GST-INDEX-ID-DESCRIPTION:CAPS"></a>GST_INDEX_ID_DESCRIPTION()</h3>
+<a class="indexterm" name="id2683885"></a><pre class="programlisting">#define GST_INDEX_ID_DESCRIPTION(entry)		((entry)-&gt;data.id.description)
+</pre>
+<p>
+Get the description of the id entry</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to query
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2683924"></a><h3>
+<a name="GstIndexFilter"></a>GstIndexFilter ()</h3>
+<a class="indexterm" name="id2683937"></a><pre class="programlisting">gboolean            (*GstIndexFilter)                   (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry,
+                                                         gpointer user_data);</pre>
+<p>
+Function to filter out entries in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> The index being queried
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> The entry to be added.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> User data passed to the function.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> This function should return <code class="literal">TRUE</code> if the entry is to be added
+to the index, <code class="literal">FALSE</code> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684064"></a><h3>
+<a name="GstIndexResolverMethod"></a>enum GstIndexResolverMethod</h3>
+<a class="indexterm" name="id2684077"></a><pre class="programlisting">typedef enum {
+  GST_INDEX_RESOLVER_CUSTOM,
+  GST_INDEX_RESOLVER_GTYPE,
+  GST_INDEX_RESOLVER_PATH
+} GstIndexResolverMethod;
+</pre>
+<p>
+The method used to resolve index writers</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-INDEX-RESOLVER-CUSTOM:CAPS"></a><code class="literal">GST_INDEX_RESOLVER_CUSTOM</code></span></td>
+<td> Use a custom resolver
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-RESOLVER-GTYPE:CAPS"></a><code class="literal">GST_INDEX_RESOLVER_GTYPE</code></span></td>
+<td> Resolve based on the GType of the object
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-RESOLVER-PATH:CAPS"></a><code class="literal">GST_INDEX_RESOLVER_PATH</code></span></td>
+<td> Resolve on the path in graph
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684172"></a><h3>
+<a name="GstIndexResolver"></a>GstIndexResolver ()</h3>
+<a class="indexterm" name="id2684185"></a><pre class="programlisting">gboolean            (*GstIndexResolver)                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *writer,
+                                                         gchar **writer_string,
+                                                         gpointer user_data);</pre>
+<p>
+Function to resolve ids to writer descriptions.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index being queried.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>writer</code></em>&#160;:</span></td>
+<td> The object that wants to write
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>writer_string</code></em>&#160;:</span></td>
+<td> A description of the writer.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> user_data as registered
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <code class="literal">TRUE</code> if an id could be assigned to the writer.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684323"></a><h3>
+<a name="GstIndexFlags"></a>enum GstIndexFlags</h3>
+<a class="indexterm" name="id2684336"></a><pre class="programlisting">typedef enum {
+  GST_INDEX_WRITABLE    = (GST_OBJECT_FLAG_LAST &lt;&lt; 0),
+  GST_INDEX_READABLE    = (GST_OBJECT_FLAG_LAST &lt;&lt; 1),
+
+  GST_INDEX_FLAG_LAST   = (GST_OBJECT_FLAG_LAST &lt;&lt; 8)
+} GstIndexFlags;
+</pre>
+<p>
+Flags for this index</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-INDEX-WRITABLE:CAPS"></a><code class="literal">GST_INDEX_WRITABLE</code></span></td>
+<td> The index is writable
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-READABLE:CAPS"></a><code class="literal">GST_INDEX_READABLE</code></span></td>
+<td> The index is readable
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-INDEX-FLAG-LAST:CAPS"></a><code class="literal">GST_INDEX_FLAG_LAST</code></span></td>
+<td> First flag that can be used by subclasses
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684434"></a><h3>
+<a name="GST-INDEX-IS-READABLE:CAPS"></a>GST_INDEX_IS_READABLE()</h3>
+<a class="indexterm" name="id2684447"></a><pre class="programlisting">#define GST_INDEX_IS_READABLE(obj)    (GST_OBJECT_FLAG_IS_SET (obj, GST_INDEX_READABLE))
+</pre>
+<p>
+Check if the index can be read from</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td> The index to check
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684486"></a><h3>
+<a name="GST-INDEX-IS-WRITABLE:CAPS"></a>GST_INDEX_IS_WRITABLE()</h3>
+<a class="indexterm" name="id2684499"></a><pre class="programlisting">#define GST_INDEX_IS_WRITABLE(obj)    (GST_OBJECT_FLAG_IS_SET (obj, GST_INDEX_WRITABLE))
+</pre>
+<p>
+Check if the index can be written to</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td> The index to check
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684538"></a><h3>
+<a name="gst-index-new"></a>gst_index_new ()</h3>
+<a class="indexterm" name="id2684550"></a><pre class="programlisting"><a href="GstIndex.html" title="GstIndex">GstIndex</a>*           gst_index_new                       (void);</pre>
+<p>
+Create a new tileindex object</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new index object
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684591"></a><h3>
+<a name="gst-index-commit"></a>gst_index_commit ()</h3>
+<a class="indexterm" name="id2684604"></a><pre class="programlisting">void                gst_index_commit                    (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id);</pre>
+<p>
+Tell the index that the writer with the given id is done
+with this index and is not going to write any more entries
+to it.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to commit
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the writer that commited the index
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684678"></a><h3>
+<a name="gst-index-get-group"></a>gst_index_get_group ()</h3>
+<a class="indexterm" name="id2684691"></a><pre class="programlisting">gint                gst_index_get_group                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
+<p>
+Get the id of the current group.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to get the current group from
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the id of the current group.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684752"></a><h3>
+<a name="gst-index-new-group"></a>gst_index_new_group ()</h3>
+<a class="indexterm" name="id2684766"></a><pre class="programlisting">gint                gst_index_new_group                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
+<p>
+Create a new group for the given index. It will be
+set as the current group.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to create the new group in
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the id of the newly created group.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684828"></a><h3>
+<a name="gst-index-set-group"></a>gst_index_set_group ()</h3>
+<a class="indexterm" name="id2684841"></a><pre class="programlisting">gboolean            gst_index_set_group                 (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint groupnum);</pre>
+<p>
+Set the current groupnumber to the given argument.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to set the new group in
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>groupnum</code></em>&#160;:</span></td>
+<td> the groupnumber to set
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the operation succeeded, FALSE if the group
+did not exist.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2684925"></a><h3>
+<a name="gst-index-set-certainty"></a>gst_index_set_certainty ()</h3>
+<a class="indexterm" name="id2684938"></a><pre class="programlisting">void                gst_index_set_certainty             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexCertainty">GstIndexCertainty</a> certainty);</pre>
+<p>
+Set the certainty of the given index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to set the certainty on
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>certainty</code></em>&#160;:</span></td>
+<td> the certainty to set
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685012"></a><h3>
+<a name="gst-index-get-certainty"></a>gst_index_get_certainty ()</h3>
+<a class="indexterm" name="id2685025"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexCertainty">GstIndexCertainty</a>   gst_index_get_certainty             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
+<p>
+Get the certainty of the given index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to get the certainty of
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the certainty of the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685087"></a><h3>
+<a name="gst-index-set-filter"></a>gst_index_set_filter ()</h3>
+<a class="indexterm" name="id2685100"></a><pre class="programlisting">void                gst_index_set_filter                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexFilter">GstIndexFilter</a> filter,
+                                                         gpointer user_data);</pre>
+<p>
+Lets the app register a custom filter function so that
+it can select what entries should be stored in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to register the filter on
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filter</code></em>&#160;:</span></td>
+<td> the filter to register
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> data passed to the filter function
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685197"></a><h3>
+<a name="gst-index-set-filter-full"></a>gst_index_set_filter_full ()</h3>
+<a class="indexterm" name="id2685211"></a><pre class="programlisting">void                gst_index_set_filter_full           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexFilter">GstIndexFilter</a> filter,
+                                                         gpointer user_data,
+                                                         GDestroyNotify user_data_destroy);</pre>
+<p>
+Lets the app register a custom filter function so that
+it can select what entries should be stored in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to register the filter on
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filter</code></em>&#160;:</span></td>
+<td> the filter to register
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> data passed to the filter function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data_destroy</code></em>&#160;:</span></td>
+<td> function to call when <em class="parameter"><code>user_data</code></em> is unset
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685336"></a><h3>
+<a name="gst-index-set-resolver"></a>gst_index_set_resolver ()</h3>
+<a class="indexterm" name="id2685349"></a><pre class="programlisting">void                gst_index_set_resolver              (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstIndex.html#GstIndexResolver">GstIndexResolver</a> resolver,
+                                                         gpointer user_data);</pre>
+<p>
+Lets the app register a custom function to map index
+ids to writer descriptions.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to register the resolver on
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>resolver</code></em>&#160;:</span></td>
+<td> the resolver to register
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> data passed to the resolver function
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685446"></a><h3>
+<a name="gst-index-get-writer-id"></a>gst_index_get_writer_id ()</h3>
+<a class="indexterm" name="id2685459"></a><pre class="programlisting">gboolean            gst_index_get_writer_id             (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a href="GstObject.html" title="GstObject">GstObject</a> *writer,
+                                                         gint *id);</pre>
+<p>
+Before entries can be added to the index, a writer
+should obtain a unique id. The methods to add new entries
+to the index require this id as an argument.
+</p>
+<p>
+The application can implement a custom function to map the writer object
+to a string. That string will be used to register or look up an id
+in the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to get a unique write id for
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>writer</code></em>&#160;:</span></td>
+<td> the GstObject to allocate an id for
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> a pointer to a gint to hold the id
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the writer would be mapped to an id.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685573"></a><h3>
+<a name="gst-index-add-format"></a>gst_index_add_format ()</h3>
+<a class="indexterm" name="id2685586"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_add_format                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<p>
+Adds a format entry into the index. This function is
+used to map dynamic GstFormat ids to their original
+format key.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to add the entry to
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format to add to the index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the newly added entry in the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685693"></a><h3>
+<a name="gst-index-add-association"></a>gst_index_add_association ()</h3>
+<a class="indexterm" name="id2685707"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_add_association           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value,
+                                                         ...);</pre>
+<p>
+Associate given format/value pairs with each other.
+Be sure to pass gint64 values to this functions varargs,
+you might want to use a gint64 cast to be sure.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to add the entry to
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> optinal flags for this entry
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> other format/value pairs or 0 to end the list
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the newly added entry in the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2685874"></a><h3>
+<a name="gst-index-add-associationv"></a>gst_index_add_associationv ()</h3>
+<a class="indexterm" name="id2685888"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_add_associationv          (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         gint n,
+                                                         const <a href="GstIndex.html#GstIndexAssociation">GstIndexAssociation</a> *list);</pre>
+<p>
+Associate given format/value pairs with each other.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to add the entry to
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> optinal flags for this entry
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td> number of associations
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>list</code></em>&#160;:</span></td>
+<td> list of associations
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the newly added entry in the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686038"></a><h3>
+<a name="gst-index-add-object"></a>gst_index_add_object ()</h3>
+<a class="indexterm" name="id2686051"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_add_object                (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         gchar *key,
+                                                         GType type,
+                                                         gpointer object);</pre>
+<p>
+Add the given object to the index with the given key.
+</p>
+<p>
+This function is not yet implemented.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to add the object to
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key for the object
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> the GType of the object
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>object</code></em>&#160;:</span></td>
+<td> a pointer to the object to add
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the newly added entry in the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686205"></a><h3>
+<a name="gst-index-add-id"></a>gst_index_add_id ()</h3>
+<a class="indexterm" name="id2686218"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_add_id                    (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         gchar *description);</pre>
+<p>
+Add an id entry into the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to add the entry to
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>description</code></em>&#160;:</span></td>
+<td> the description of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the newly added entry in the index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686324"></a><h3>
+<a name="gst-index-get-assoc-entry"></a>gst_index_get_assoc_entry ()</h3>
+<a class="indexterm" name="id2686337"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_get_assoc_entry           (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstIndexLookupMethod">GstIndexLookupMethod</a> method,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value);</pre>
+<p>
+Finds the given format/value in the index</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to search
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td> The lookup method to use
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> Flags for the entry
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> the value to find
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the entry associated with the value or NULL if the
+  value was not found.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686510"></a><h3>
+<a name="gst-index-get-assoc-entry-full"></a>gst_index_get_assoc_entry_full ()</h3>
+<a class="indexterm" name="id2686523"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_get_assoc_entry_full      (<a href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         gint id,
+                                                         <a href="GstIndex.html#GstIndexLookupMethod">GstIndexLookupMethod</a> method,
+                                                         <a href="GstIndex.html#GstAssocFlags">GstAssocFlags</a> flags,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 value,
+                                                         GCompareDataFunc func,
+                                                         gpointer user_data);</pre>
+<p>
+Finds the given format/value in the index with the given
+compare function and user_data.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td> the index to search
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id</code></em>&#160;:</span></td>
+<td> the id of the index writer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td> The lookup method to use
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> Flags for the entry
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> the value to find
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> the function used to compare entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> user data passed to the compare function
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the entry associated with the value or NULL if the
+  value was not found.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686742"></a><h3>
+<a name="gst-index-entry-copy"></a>gst_index_entry_copy ()</h3>
+<a class="indexterm" name="id2686755"></a><pre class="programlisting"><a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a>*      gst_index_entry_copy                (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry);</pre>
+<p>
+Copies an entry and returns the result.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> the entry to copy
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly allocated <a href="GstIndex.html#GstIndexEntry"><span class="type">GstIndexEntry</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686825"></a><h3>
+<a name="gst-index-entry-free"></a>gst_index_entry_free ()</h3>
+<a class="indexterm" name="id2686839"></a><pre class="programlisting">void                gst_index_entry_free                (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry);</pre>
+<p>
+Free the memory used by the given entry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> the entry to free
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2686890"></a><h3>
+<a name="gst-index-entry-assoc-map"></a>gst_index_entry_assoc_map ()</h3>
+<a class="indexterm" name="id2686904"></a><pre class="programlisting">gboolean            gst_index_entry_assoc_map           (<a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *entry,
+                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+                                                         gint64 *value);</pre>
+<p>
+Gets alternative formats associated with the indexentry.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>entry</code></em>&#160;:</span></td>
+<td> the index to search
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format of the value the find
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a pointer to store the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if there was a value associated with the given
+format.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2687011"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2687022"></a><h3>
+<a name="GstIndex--resolver"></a>The "<code class="literal">resolver</code>" property</h3>
+<a class="indexterm" name="id2687038"></a><pre class="programlisting">  "resolver"                 <a href="GstIndex.html#GstIndexResolver">GstIndexResolver</a>      : Read / Write</pre>
+<p>Select a predefined object to string mapper.</p>
+<p>Default value: GST_INDEX_RESOLVER_PATH</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2687066"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2687077"></a><h3>
+<a name="GstIndex-entry-added"></a>The "entry-added" signal</h3>
+<a class="indexterm" name="id2687088"></a><pre class="programlisting">void                user_function                      (<a href="GstIndex.html" title="GstIndex">GstIndex</a>      *gstindex,
+                                                        <a href="GstIndex.html#GstIndexEntry">GstIndexEntry</a> *arg1,
+                                                        gpointer       user_data)      : Run Last</pre>
+<p>
+Is emitted when a new entry is added to the index.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstindex</code></em>&#160;:</span></td>
+<td> the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td> The entry added to the index.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2687185"></a><h2>See Also</h2>
+<a href="GstIndexFactory.html" title="GstIndexFactory"><span class="type">GstIndexFactory</span></a>
+</div>
+</div>
+</body>
+</html>

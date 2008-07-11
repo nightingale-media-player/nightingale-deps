@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+fdsink
+
+<!-- ##### SECTION Short_Description ##### -->
+Write data to a file descriptor
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-fdsink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstFdSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstFdSink:fd ##### -->
+<para>
+
+</para>
+

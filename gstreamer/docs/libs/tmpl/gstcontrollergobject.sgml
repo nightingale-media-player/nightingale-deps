@@ -1,0 +1,138 @@
+<!-- ##### SECTION Title ##### -->
+GstControllerGObject
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_object_control_properties ##### -->
+<para>
+
+</para>
+
+@object: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_uncontrol_properties ##### -->
+<para>
+
+</para>
+
+@object: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_get_controller ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_set_controller ##### -->
+<para>
+
+</para>
+
+@object: 
+@controller: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_suggest_next_sync ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_sync_values ##### -->
+<para>
+
+</para>
+
+@object: 
+@timestamp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_get_control_source ##### -->
+<para>
+
+</para>
+
+@object: 
+@property_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_set_control_source ##### -->
+<para>
+
+</para>
+
+@object: 
+@property_name: 
+@csource: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_get_value_arrays ##### -->
+<para>
+
+</para>
+
+@object: 
+@timestamp: 
+@value_arrays: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_get_value_array ##### -->
+<para>
+
+</para>
+
+@object: 
+@timestamp: 
+@value_array: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_get_control_rate ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_object_set_control_rate ##### -->
+<para>
+
+</para>
+
+@object: 
+@control_rate: 
+
+

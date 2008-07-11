@@ -1,0 +1,278 @@
+<!-- ##### SECTION Title ##### -->
+GstPlugin
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_plugin_error_quark ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO GST_PLUGIN_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM GstPluginError ##### -->
+<para>
+
+</para>
+
+@GST_PLUGIN_ERROR_MODULE: 
+@GST_PLUGIN_ERROR_DEPENDENCIES: 
+@GST_PLUGIN_ERROR_NAME_MISMATCH: 
+
+<!-- ##### STRUCT GstPlugin ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstPluginDesc ##### -->
+<para>
+
+</para>
+
+@major_version: 
+@minor_version: 
+@name: 
+@description: 
+@plugin_init: 
+@version: 
+@license: 
+@source: 
+@package: 
+@origin: 
+@_gst_reserved: 
+
+<!-- ##### USER_FUNCTION GstPluginInitFunc ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### MACRO GST_PLUGIN_DEFINE ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@name: 
+@description: 
+@init: 
+@version: 
+@license: 
+@package: 
+@origin: 
+
+
+<!-- ##### MACRO GST_PLUGIN_DEFINE_STATIC ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@name: 
+@description: 
+@init: 
+@version: 
+@license: 
+@package: 
+@origin: 
+
+
+<!-- ##### MACRO GST_LICENSE_UNKNOWN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION GstPluginFilter ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_name ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_description ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_filename ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_license ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_package ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_origin ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_source ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_version ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_module ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_is_loaded ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_name_filter ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_load_file ##### -->
+<para>
+
+</para>
+
+@filename: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_load ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_load_by_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_list_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION gst_plugin_register_static ##### -->
+<para>
+
+</para>
+
+@major_version: 
+@minor_version: 
+@name: 
+@description: 
+@init_func: 
+@version: 
+@license: 
+@source: 
+@package: 
+@origin: 
+@Returns: 
+
+

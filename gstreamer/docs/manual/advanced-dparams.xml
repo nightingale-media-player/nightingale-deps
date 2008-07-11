@@ -1,0 +1,82 @@
+<chapter id="chapter-dparams">
+  <title>Dynamic Controllable Parameters</title>
+  
+  <sect1 id="section-dparams-getting-started">
+    <title>Getting Started</title>
+    <para>
+    The controller subsystem offers a lightweight way to adjust gobject
+    properties over stream-time.
+    It works by using time-stamped value pairs that are queued for
+    element-properties.
+    At run-time the elements continously pull values changes for the
+    current stream-time.
+    </para>
+    <para>
+      This subsystem is contained within the
+      <filename>gstcontroller</filename> library.
+      You need to include the header in your application's source file:
+    </para>
+    <programlisting>
+...
+#include &lt;gst/gst.h&gt;
+#include &lt;gst/controller/gstcontroller.h&gt;
+...
+    </programlisting>
+    <para>
+      Your application should link to the shared library <filename>gstreamer-controller</filename>.
+    </para>
+    <para>
+      The <filename>gstreamer-controller</filename> library needs to be initialized
+      when your application is run.  This can be done after the the GStreamer
+      library has been initialized.
+    </para>
+    <programlisting>
+  ...
+  gst_init (&amp;argc, &amp;argv);
+  gst_controller_init (&amp;argc, &amp;argv);
+  ...
+    </programlisting>
+  </sect1>
+  
+  <sect1 id="section-dparams-parameters">
+    <title>Setting up parameter control</title>
+    <para>
+      The first step is to select the parameters that should be controlled.
+      This returns a controller object that is needed to further adjust the
+      behaviour.      
+    </para>
+    <programlisting>
+  controller = gst_object_control_properties(object, "prop1", "prop2",...);
+    </programlisting>
+    <para>
+      Next we can select an interpolation mode. This mode controls how inbetween
+      values are determined.
+      The controller subsystem can e.g. fill gaps by smoothing parameter changes.
+      Each controllable GObject property can be
+      interpolated differently.      
+    </para>
+    <programlisting>
+  gst_controller_set_interpolation_mode(controller,"prop1",mode);
+    </programlisting>
+    <para>
+      Finally one needs to set control points. These are time-stamped GValues.
+      The values become active when the timestamp is reached. They still stay
+      in the list. If e.g. the pipeline runs a loop (using a segmented seek),
+      the control-curve gets repeated as well. 
+    </para>
+    <programlisting>
+  gst_controller_set (controller, "prop1" ,0 * GST_SECOND, value1);
+  gst_controller_set (controller, "prop1" ,1 * GST_SECOND, value2);
+    </programlisting>
+    <para>
+      The controller subsystem has a builtin live-mode. Even though a parameter
+      has timestamped control-values assigned one can change the GObject
+      property through <function>g_object_set()</function>.
+      This is highly useful when binding the GObject properties to GUI widgets.
+      When the user adjusts the value with the widget, one can set the GOBject
+      property and this remains active until the next timestamped value overrides.
+      This also works with smoothed parameters.  
+    </para>
+  </sect1>
+  
+</chapter>

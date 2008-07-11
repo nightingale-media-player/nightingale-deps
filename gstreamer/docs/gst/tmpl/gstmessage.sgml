@@ -1,0 +1,491 @@
+<!-- ##### SECTION Title ##### -->
+GstMessage
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMessage ##### -->
+<para>
+
+</para>
+
+@mini_object: 
+@type: 
+@timestamp: 
+@src: 
+@structure: 
+
+<!-- ##### ENUM GstMessageType ##### -->
+<para>
+
+</para>
+
+@GST_MESSAGE_UNKNOWN: 
+@GST_MESSAGE_EOS: 
+@GST_MESSAGE_ERROR: 
+@GST_MESSAGE_WARNING: 
+@GST_MESSAGE_INFO: 
+@GST_MESSAGE_TAG: 
+@GST_MESSAGE_BUFFERING: 
+@GST_MESSAGE_STATE_CHANGED: 
+@GST_MESSAGE_STATE_DIRTY: 
+@GST_MESSAGE_STEP_DONE: 
+@GST_MESSAGE_CLOCK_PROVIDE: 
+@GST_MESSAGE_CLOCK_LOST: 
+@GST_MESSAGE_NEW_CLOCK: 
+@GST_MESSAGE_STRUCTURE_CHANGE: 
+@GST_MESSAGE_STREAM_STATUS: 
+@GST_MESSAGE_APPLICATION: 
+@GST_MESSAGE_ELEMENT: 
+@GST_MESSAGE_SEGMENT_START: 
+@GST_MESSAGE_SEGMENT_DONE: 
+@GST_MESSAGE_DURATION: 
+@GST_MESSAGE_LATENCY: 
+@GST_MESSAGE_ASYNC_START: 
+@GST_MESSAGE_ASYNC_DONE: 
+@GST_MESSAGE_ANY: 
+
+<!-- ##### MACRO GST_MESSAGE_SRC ##### -->
+<para>
+
+</para>
+
+@message: 
+
+
+<!-- ##### MACRO GST_MESSAGE_TIMESTAMP ##### -->
+<para>
+
+</para>
+
+@message: 
+
+
+<!-- ##### MACRO GST_MESSAGE_TYPE ##### -->
+<para>
+
+</para>
+
+@message: 
+
+
+<!-- ##### MACRO GST_MESSAGE_TYPE_NAME ##### -->
+<para>
+
+</para>
+
+@message: 
+
+
+<!-- ##### MACRO GST_MESSAGE_TRACE_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_message_type_to_quark ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_type_get_name ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+
+<!-- ##### MACRO gst_message_copy ##### -->
+<para>
+
+</para>
+
+@msg: 
+
+
+<!-- ##### FUNCTION gst_message_get_structure ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### MACRO gst_message_make_writable ##### -->
+<para>
+
+</para>
+
+@msg: 
+
+
+<!-- ##### FUNCTION gst_message_new_application ##### -->
+<para>
+
+</para>
+
+@src: 
+@structure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_clock_provide ##### -->
+<para>
+
+</para>
+
+@src: 
+@clock: 
+@ready: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_clock_lost ##### -->
+<para>
+
+</para>
+
+@src: 
+@clock: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_custom ##### -->
+<para>
+
+</para>
+
+@type: 
+@src: 
+@structure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_element ##### -->
+<para>
+
+</para>
+
+@src: 
+@structure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_eos ##### -->
+<para>
+
+</para>
+
+@src: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_error ##### -->
+<para>
+
+</para>
+
+@src: 
+@error: 
+@debug: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_info ##### -->
+<para>
+
+</para>
+
+@src: 
+@error: 
+@debug: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_new_clock ##### -->
+<para>
+
+</para>
+
+@src: 
+@clock: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_segment_done ##### -->
+<para>
+
+</para>
+
+@src: 
+@format: 
+@position: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_segment_start ##### -->
+<para>
+
+</para>
+
+@src: 
+@format: 
+@position: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_state_changed ##### -->
+<para>
+
+</para>
+
+@src: 
+@oldstate: 
+@newstate: 
+@pending: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_tag ##### -->
+<para>
+
+</para>
+
+@src: 
+@tag_list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_buffering ##### -->
+<para>
+
+</para>
+
+@src: 
+@percent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_warning ##### -->
+<para>
+
+</para>
+
+@src: 
+@error: 
+@debug: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_duration ##### -->
+<para>
+
+</para>
+
+@src: 
+@format: 
+@duration: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_state_dirty ##### -->
+<para>
+
+</para>
+
+@src: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_async_start ##### -->
+<para>
+
+</para>
+
+@src: 
+@new_base_time: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_async_done ##### -->
+<para>
+
+</para>
+
+@src: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_new_latency ##### -->
+<para>
+
+</para>
+
+@src: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_message_parse_clock_lost ##### -->
+<para>
+
+</para>
+
+@message: 
+@clock: 
+
+
+<!-- ##### FUNCTION gst_message_parse_clock_provide ##### -->
+<para>
+
+</para>
+
+@message: 
+@clock: 
+@ready: 
+
+
+<!-- ##### FUNCTION gst_message_parse_error ##### -->
+<para>
+
+</para>
+
+@message: 
+@gerror: 
+@debug: 
+
+
+<!-- ##### FUNCTION gst_message_parse_info ##### -->
+<para>
+
+</para>
+
+@message: 
+@gerror: 
+@debug: 
+
+
+<!-- ##### FUNCTION gst_message_parse_new_clock ##### -->
+<para>
+
+</para>
+
+@message: 
+@clock: 
+
+
+<!-- ##### FUNCTION gst_message_parse_segment_done ##### -->
+<para>
+
+</para>
+
+@message: 
+@format: 
+@position: 
+
+
+<!-- ##### FUNCTION gst_message_parse_segment_start ##### -->
+<para>
+
+</para>
+
+@message: 
+@format: 
+@position: 
+
+
+<!-- ##### FUNCTION gst_message_parse_state_changed ##### -->
+<para>
+
+</para>
+
+@message: 
+@oldstate: 
+@newstate: 
+@pending: 
+
+
+<!-- ##### FUNCTION gst_message_parse_tag ##### -->
+<para>
+
+</para>
+
+@message: 
+@tag_list: 
+
+
+<!-- ##### FUNCTION gst_message_parse_buffering ##### -->
+<para>
+
+</para>
+
+@message: 
+@percent: 
+
+
+<!-- ##### FUNCTION gst_message_parse_warning ##### -->
+<para>
+
+</para>
+
+@message: 
+@gerror: 
+@debug: 
+
+
+<!-- ##### FUNCTION gst_message_parse_duration ##### -->
+<para>
+
+</para>
+
+@message: 
+@format: 
+@duration: 
+
+
+<!-- ##### FUNCTION gst_message_parse_async_start ##### -->
+<para>
+
+</para>
+
+@message: 
+@new_base_time: 
+
+
+<!-- ##### FUNCTION gst_message_ref ##### -->
+<para>
+
+</para>
+
+@msg: 
+@Returns: 
+
+
+<!-- ##### MACRO gst_message_unref ##### -->
+<para>
+
+</para>
+
+@msg: 
+
+

@@ -1,0 +1,82 @@
+Seeking
+-------
+
+Seeking in GStreamer means configuring the pipeline for playback of the
+media between a certain start and stop time, called a segment.
+
+Different kinds of seeking exist:
+
+ - immediate seeking with low latency (FLUSH seek)
+ - seeking without flush, playback will start from the new
+   position after all the queues are emptied with old data.
+ - segment seeking with and without FLUSH, this can be used to
+   implement seamless looping or NLE functionality.
+
+Seeking can be performed in different formats such as time, frames
+or samples.
+
+Seeking can be performed to an absolute position or relative to the
+currently configured segment.
+
+For seeking to work reliably, all plugins in the pipeline need to follow
+the well-defined rules in this document.
+
+Non segment seeking will make the pipeline emit EOS when the configured 
+segment has been played.
+
+Segment seeking will not emit an EOS at the end of the range but will
+post a SEGMENT_DONE message on the bus. This message is posted by the
+earliest element in the pipeline, typically a demuxer. After receiving
+the message, the application can reconnect the pipeline or issue other
+seek events in the pipeline. Since the message is posted as early as
+possible in the pipeline, the application has some time to issue a new
+seek to make the transition seamless. Typically the allowed delay is
+defined by the buffer sizes of the sinks as well as the size of any 
+queues in the pipeline.
+
+The seek can also  change the playback speed of the configured segment.
+A speed of 1.0 is normal speed, 2.0 is double speed. Negative values
+mean backward playback.
+
+
+Generating seeking events
+-------------------------
+
+
+
+
+
+The different kinds of seeking methods and their internal workings are
+described below.
+
+
+FLUSH seeking
+-------------
+
+This is the most common way of performing a seek in a playback application.
+The application issues a seek on the pipeline and the new media is immediatly
+played after the seek calls returns.
+
+
+seeking without FLUSH
+---------------------
+
+This seek type is typically performed after issuing segment seeks to finish
+the playback of the pipeline.
+
+Performing a non-flushing seek in a PAUSED pipeline blocks until the pipeline
+is set to playing again since all data passing is blocked in the prerolled
+sinks.
+
+
+segment seeking with FLUSH
+--------------------------
+
+This seek is typically performed when starting seamless looping.
+
+
+segment seeking without FLUSH
+-----------------------------
+
+This seek is typically performed when continuing seamless looping.
+

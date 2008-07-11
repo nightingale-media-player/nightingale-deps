@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+GstBufferStraw
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gst_buffer_straw_start_pipeline ##### -->
+<para>
+
+</para>
+
+@bin: 
+@pad: 
+
+
+<!-- ##### FUNCTION gst_buffer_straw_get_buffer ##### -->
+<para>
+
+</para>
+
+@bin: 
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_buffer_straw_stop_pipeline ##### -->
+<para>
+
+</para>
+
+@bin: 
+@pad: 
+
+

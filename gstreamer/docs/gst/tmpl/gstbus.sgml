@@ -1,0 +1,282 @@
+<!-- ##### SECTION Title ##### -->
+GstBus
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstBus ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstBus::message ##### -->
+<para>
+
+</para>
+
+@gstbus: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstBus::sync-message ##### -->
+<para>
+
+</para>
+
+@gstbus: the object which received the signal.
+@arg1: 
+
+<!-- ##### ENUM GstBusFlags ##### -->
+<para>
+
+</para>
+
+@GST_BUS_FLUSHING: 
+@GST_BUS_FLAG_LAST: 
+
+<!-- ##### ENUM GstBusSyncReply ##### -->
+<para>
+
+</para>
+
+@GST_BUS_DROP: 
+@GST_BUS_PASS: 
+@GST_BUS_ASYNC: 
+
+<!-- ##### USER_FUNCTION GstBusFunc ##### -->
+<para>
+
+</para>
+
+@bus: 
+@message: 
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GstBusSyncHandler ##### -->
+<para>
+
+</para>
+
+@bus: 
+@message: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_post ##### -->
+<para>
+
+</para>
+
+@bus: 
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_have_pending ##### -->
+<para>
+
+</para>
+
+@bus: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_peek ##### -->
+<para>
+
+</para>
+
+@bus: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_pop ##### -->
+<para>
+
+</para>
+
+@bus: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_pop_filtered ##### -->
+<para>
+
+</para>
+
+@bus: 
+@types: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_timed_pop ##### -->
+<para>
+
+</para>
+
+@bus: 
+@timeout: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_timed_pop_filtered ##### -->
+<para>
+
+</para>
+
+@bus: 
+@timeout: 
+@types: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_set_flushing ##### -->
+<para>
+
+</para>
+
+@bus: 
+@flushing: 
+
+
+<!-- ##### FUNCTION gst_bus_set_sync_handler ##### -->
+<para>
+
+</para>
+
+@bus: 
+@func: 
+@data: 
+
+
+<!-- ##### FUNCTION gst_bus_sync_signal_handler ##### -->
+<para>
+
+</para>
+
+@bus: 
+@message: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_create_watch ##### -->
+<para>
+
+</para>
+
+@bus: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_add_watch_full ##### -->
+<para>
+
+</para>
+
+@bus: 
+@priority: 
+@func: 
+@user_data: 
+@notify: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_add_watch ##### -->
+<para>
+
+</para>
+
+@bus: 
+@func: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_disable_sync_message_emission ##### -->
+<para>
+
+</para>
+
+@bus: 
+
+
+<!-- ##### FUNCTION gst_bus_enable_sync_message_emission ##### -->
+<para>
+
+</para>
+
+@bus: 
+
+
+<!-- ##### FUNCTION gst_bus_async_signal_func ##### -->
+<para>
+
+</para>
+
+@bus: 
+@message: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bus_add_signal_watch ##### -->
+<para>
+
+</para>
+
+@bus: 
+
+
+<!-- ##### FUNCTION gst_bus_add_signal_watch_full ##### -->
+<para>
+
+</para>
+
+@bus: 
+@priority: 
+
+
+<!-- ##### FUNCTION gst_bus_remove_signal_watch ##### -->
+<para>
+
+</para>
+
+@bus: 
+
+
+<!-- ##### FUNCTION gst_bus_poll ##### -->
+<para>
+
+</para>
+
+@bus: 
+@events: 
+@timeout: 
+@Returns: 
+
+

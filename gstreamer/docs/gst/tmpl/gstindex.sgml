@@ -1,0 +1,443 @@
+<!-- ##### SECTION Title ##### -->
+GstIndex
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstIndex ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstIndex::entry-added ##### -->
+<para>
+
+</para>
+
+@gstindex: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG GstIndex:resolver ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GstIndexEntry ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstIndexGroup ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstIndexCertainty ##### -->
+<para>
+
+</para>
+
+@GST_INDEX_UNKNOWN: 
+@GST_INDEX_CERTAIN: 
+@GST_INDEX_FUZZY: 
+
+<!-- ##### ENUM GstIndexEntryType ##### -->
+<para>
+
+</para>
+
+@GST_INDEX_ENTRY_ID: 
+@GST_INDEX_ENTRY_ASSOCIATION: 
+@GST_INDEX_ENTRY_OBJECT: 
+@GST_INDEX_ENTRY_FORMAT: 
+
+<!-- ##### ENUM GstIndexLookupMethod ##### -->
+<para>
+
+</para>
+
+@GST_INDEX_LOOKUP_EXACT: 
+@GST_INDEX_LOOKUP_BEFORE: 
+@GST_INDEX_LOOKUP_AFTER: 
+
+<!-- ##### MACRO GST_INDEX_NASSOCS ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### MACRO GST_INDEX_ASSOC_FLAGS ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### MACRO GST_INDEX_ASSOC_FORMAT ##### -->
+<para>
+
+</para>
+
+@entry: 
+@i: 
+
+
+<!-- ##### MACRO GST_INDEX_ASSOC_VALUE ##### -->
+<para>
+
+</para>
+
+@entry: 
+@i: 
+
+
+<!-- ##### STRUCT GstIndexAssociation ##### -->
+<para>
+
+</para>
+
+@format: 
+@value: 
+
+<!-- ##### ENUM GstAssocFlags ##### -->
+<para>
+
+</para>
+
+@GST_ASSOCIATION_FLAG_NONE: 
+@GST_ASSOCIATION_FLAG_KEY_UNIT: 
+@GST_ASSOCIATION_FLAG_DELTA_UNIT: 
+@GST_ASSOCIATION_FLAG_LAST: 
+
+<!-- ##### MACRO GST_INDEX_FORMAT_FORMAT ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### MACRO GST_INDEX_FORMAT_KEY ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### MACRO GST_INDEX_ID_INVALID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_INDEX_ID_DESCRIPTION ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### USER_FUNCTION GstIndexFilter ##### -->
+<para>
+
+</para>
+
+@index: 
+@entry: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### ENUM GstIndexResolverMethod ##### -->
+<para>
+
+</para>
+
+@GST_INDEX_RESOLVER_CUSTOM: 
+@GST_INDEX_RESOLVER_GTYPE: 
+@GST_INDEX_RESOLVER_PATH: 
+
+<!-- ##### USER_FUNCTION GstIndexResolver ##### -->
+<para>
+
+</para>
+
+@index: 
+@writer: 
+@writer_string: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### ENUM GstIndexFlags ##### -->
+<para>
+
+</para>
+
+@GST_INDEX_WRITABLE: 
+@GST_INDEX_READABLE: 
+@GST_INDEX_FLAG_LAST: 
+
+<!-- ##### MACRO GST_INDEX_IS_READABLE ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO GST_INDEX_IS_WRITABLE ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### FUNCTION gst_index_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_commit ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+
+
+<!-- ##### FUNCTION gst_index_get_group ##### -->
+<para>
+
+</para>
+
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_new_group ##### -->
+<para>
+
+</para>
+
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_set_group ##### -->
+<para>
+
+</para>
+
+@index: 
+@groupnum: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_set_certainty ##### -->
+<para>
+
+</para>
+
+@index: 
+@certainty: 
+
+
+<!-- ##### FUNCTION gst_index_get_certainty ##### -->
+<para>
+
+</para>
+
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_set_filter ##### -->
+<para>
+
+</para>
+
+@index: 
+@filter: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gst_index_set_filter_full ##### -->
+<para>
+
+</para>
+
+@index: 
+@filter: 
+@user_data: 
+@user_data_destroy: 
+
+
+<!-- ##### FUNCTION gst_index_set_resolver ##### -->
+<para>
+
+</para>
+
+@index: 
+@resolver: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gst_index_get_writer_id ##### -->
+<para>
+
+</para>
+
+@index: 
+@writer: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_add_format ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_add_association ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@flags: 
+@format: 
+@value: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_add_associationv ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@flags: 
+@n: 
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_add_object ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@key: 
+@type: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_add_id ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@description: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_get_assoc_entry ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@method: 
+@flags: 
+@format: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_get_assoc_entry_full ##### -->
+<para>
+
+</para>
+
+@index: 
+@id: 
+@method: 
+@flags: 
+@format: 
+@value: 
+@func: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_entry_copy ##### -->
+<para>
+
+</para>
+
+@entry: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_index_entry_free ##### -->
+<para>
+
+</para>
+
+@entry: 
+
+
+<!-- ##### FUNCTION gst_index_entry_assoc_map ##### -->
+<para>
+
+</para>
+
+@entry: 
+@format: 
+@value: 
+@Returns: 
+
+

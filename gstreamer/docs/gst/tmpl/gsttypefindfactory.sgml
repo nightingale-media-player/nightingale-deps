@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+GstTypeFindFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTypeFindFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_type_find_factory_get_list ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_type_find_factory_get_extensions ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_type_find_factory_get_caps ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_type_find_factory_call_function ##### -->
+<para>
+
+</para>
+
+@factory: 
+@find: 
+
+

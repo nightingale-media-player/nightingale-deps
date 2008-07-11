@@ -1,0 +1,213 @@
+<!-- ##### SECTION Title ##### -->
+GstCollectPads
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstCollectData ##### -->
+<para>
+
+</para>
+
+@collect: 
+@pad: 
+@buffer: 
+@pos: 
+@segment: 
+
+<!-- ##### STRUCT GstCollectPads ##### -->
+<para>
+
+</para>
+
+@data: 
+
+<!-- ##### USER_FUNCTION GstCollectPadsFunction ##### -->
+<para>
+
+</para>
+
+@pads: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GstCollectDataDestroyNotify ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_set_function ##### -->
+<para>
+
+</para>
+
+@pads: 
+@func: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_add_pad ##### -->
+<para>
+
+</para>
+
+@pads: 
+@pad: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_add_pad_full ##### -->
+<para>
+
+</para>
+
+@pads: 
+@pad: 
+@size: 
+@destroy_notify: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_remove_pad ##### -->
+<para>
+
+</para>
+
+@pads: 
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_is_active ##### -->
+<para>
+
+</para>
+
+@pads: 
+@pad: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_collect ##### -->
+<para>
+
+</para>
+
+@pads: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_collect_range ##### -->
+<para>
+
+</para>
+
+@pads: 
+@offset: 
+@length: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_start ##### -->
+<para>
+
+</para>
+
+@pads: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_stop ##### -->
+<para>
+
+</para>
+
+@pads: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_set_flushing ##### -->
+<para>
+
+</para>
+
+@pads: 
+@flushing: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_peek ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_pop ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_available ##### -->
+<para>
+
+</para>
+
+@pads: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_read ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@bytes: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_flush ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@size: 
+@Returns: 
+
+
