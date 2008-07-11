@@ -187,8 +187,8 @@ setup_build()
 
             # Set up to use the MSVC linker and compiler
             export LD=link
-	    export CC="${dep_dir}/vendor/wintools/clwrapper.py"
-	    export CXX="${dep_dir}/vendor/wintools/clwrapper.py"
+	    export CC=cl
+	    export CXX=cl
 	    export OBJDUMP=objdump
 
 	    # cygpath tool
