@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>dvbsrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-dfbvideosink.html" title="dfbvideosink">
+<link rel="next" href="gst-plugins-bad-plugins-dvdspu.html" title="dvdspu">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-dfbvideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-dvdspu.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2586679" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2567531" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2578173" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2561180" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-dvbsrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2586679"></a><span class="refentrytitle">dvbsrc</span>
+</h2>
+<p>dvbsrc &#8212; Digital Video Broadcast Source</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstDvbSrc"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc-struct">GstDvbSrc</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2578173"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSrc
+                     +----GstPushSrc
+                           +----GstDvbSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2561180"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--bandwidth">bandwidth</a>"                GstDvbSrcBandwidth    : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--code-rate-hp">code-rate-hp</a>"             GstDvbSrcCode_Rate    : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--code-rate-lp">code-rate-lp</a>"             GstDvbSrcCode_Rate    : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--device">device</a>"                   gchararray            : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-src">diseqc-src</a>"               gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--freq">freq</a>"                     gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--guard">guard</a>"                    GstDvbSrcGuard        : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--hierarchy">hierarchy</a>"                GstDvbSrcHierarchy    : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--inversion">inversion</a>"                GstDvbSrcInversion    : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--modulation">modulation</a>"               GstDvbSrcModulation   : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pids">pids</a>"                     gchar*                : Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pol">pol</a>"                      gchararray            : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--srate">srate</a>"                    gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--trans-mode">trans-mode</a>"               GstDvbSrcTransmission_Mode  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--tune">tune</a>"                     gpointer              : Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--adapter">adapter</a>"                  gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-source">diseqc-source</a>"            gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frequency">frequency</a>"                gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frontend">frontend</a>"                 gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--polarity">polarity</a>"                 gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--symbol-rate">symbol-rate</a>"              gint                  : Read / Write
+  "<a href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--stats-reporting-interval">stats-reporting-interval</a>" guint                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2567531"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2567544"></a>
+dvbsrc can be used to capture video from DVB cards, DVB-T, DVB-S or DVB-T.
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8MHz frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 ! flutsdemux crc-check=false name=demux ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
+</pre>
+<p>
+This pipeline captures a full transport stream from dvb card 0 that is a DVB-T card at tuned frequency 514000000 with other parameters as seen in the 
+pipeline and outputs the first tv program on the transport stream.  The reason the sinks have to be set to have sync=false is due to bug <span class="type">340482</span>.
+</p>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8 frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 pids=256:257 ! flutsdemux crc-check=false name=demux es-pids=256:257 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
+</pre>
+<p>
+This pipeline captures a partial transport stream from dvb card 0 that is a DVB-T card for a program at tuned frequency 514000000 and pids of 256:257 with other parameters as seen in the pipeline and outputs the program with the pids 256 and 257.  The reason the sinks have to be set to
+have sync=false is due to bug <span class="type">340482</span>.
+</p>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=102:103 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
+</pre>
+<p>
+This pipeline captures a partial transport stream from dvb card 0 that is a DVB-S card for a program at tuned frequency 11302000 Hz, symbol rate of 27500 kHz and pids of 256:257 and outputs the program with the pids 256 and 257.  The reason the sinks have to be set to have sync=false is due to bug <span class="type">340482</span>.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2567636"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-dvb.html#plugin-dvb">dvb</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>P2P-VCR, C-Lab, University of Paderborn
+    Zaheer Abbas Merali &lt;zaheerabbas at merali dot org&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Source/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/mpegts, mpegversion=(int)2, systemstream=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2595282"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2595293"></a><h3>
+<a name="GstDvbSrc-struct"></a>GstDvbSrc</h3>
+<a class="indexterm" name="id2595305"></a><pre class="programlisting">typedef struct _GstDvbSrc GstDvbSrc;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2595322"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2595332"></a><h3>
+<a name="GstDvbSrc--bandwidth"></a>The "<code class="literal">bandwidth</code>" property</h3>
+<a class="indexterm" name="id2595346"></a><pre class="programlisting">  "bandwidth"                GstDvbSrcBandwidth    : Read / Write</pre>
+<p>Bandwidth (DVB-T).</p>
+<p>Default value: 7</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595372"></a><h3>
+<a name="GstDvbSrc--code-rate-hp"></a>The "<code class="literal">code-rate-hp</code>" property</h3>
+<a class="indexterm" name="id2595386"></a><pre class="programlisting">  "code-rate-hp"             GstDvbSrcCode_Rate    : Read / Write</pre>
+<p>High Priority Code Rate (DVB-T and DVB-S).</p>
+<p>Default value: AUTO</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595412"></a><h3>
+<a name="GstDvbSrc--code-rate-lp"></a>The "<code class="literal">code-rate-lp</code>" property</h3>
+<a class="indexterm" name="id2595426"></a><pre class="programlisting">  "code-rate-lp"             GstDvbSrcCode_Rate    : Read / Write</pre>
+<p>Low Priority Code Rate (DVB-T).</p>
+<p>Default value: 1/2</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595452"></a><h3>
+<a name="GstDvbSrc--device"></a>The "<code class="literal">device</code>" property</h3>
+<a class="indexterm" name="id2623051"></a><pre class="programlisting">  "device"                   gchararray            : Read / Write</pre>
+<p>The device directory.</p>
+<p>Default value: "/dev/dvb/adapter0"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623076"></a><h3>
+<a name="GstDvbSrc--diseqc-src"></a>The "<code class="literal">diseqc-src</code>" property</h3>
+<a class="indexterm" name="id2623090"></a><pre class="programlisting">  "diseqc-src"               gint                  : Read / Write</pre>
+<p>DISEqC selected source (-1 disabled) (DVB-S).</p>
+<p>Allowed values: [-1,7]</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623120"></a><h3>
+<a name="GstDvbSrc--freq"></a>The "<code class="literal">freq</code>" property</h3>
+<a class="indexterm" name="id2623135"></a><pre class="programlisting">  "freq"                     gint                  : Read / Write</pre>
+<p>Frequency.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623164"></a><h3>
+<a name="GstDvbSrc--guard"></a>The "<code class="literal">guard</code>" property</h3>
+<a class="indexterm" name="id2623180"></a><pre class="programlisting">  "guard"                    GstDvbSrcGuard        : Read / Write</pre>
+<p>Guard Interval (DVB-T).</p>
+<p>Default value: 16</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623205"></a><h3>
+<a name="GstDvbSrc--hierarchy"></a>The "<code class="literal">hierarchy</code>" property</h3>
+<a class="indexterm" name="id2623219"></a><pre class="programlisting">  "hierarchy"                GstDvbSrcHierarchy    : Read / Write</pre>
+<p>Hierarchy Information (DVB-T).</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623246"></a><h3>
+<a name="GstDvbSrc--inversion"></a>The "<code class="literal">inversion</code>" property</h3>
+<a class="indexterm" name="id2623259"></a><pre class="programlisting">  "inversion"                GstDvbSrcInversion    : Read / Write</pre>
+<p>Inversion Information (DVB-T).</p>
+<p>Default value: ON</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623286"></a><h3>
+<a name="GstDvbSrc--modulation"></a>The "<code class="literal">modulation</code>" property</h3>
+<a class="indexterm" name="id2623300"></a><pre class="programlisting">  "modulation"               GstDvbSrcModulation   : Read / Write</pre>
+<p>Modulation (DVB-T).</p>
+<p>Default value: QAM 16</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623326"></a><h3>
+<a name="GstDvbSrc--pids"></a>The "<code class="literal">pids</code>" property</h3>
+<a class="indexterm" name="id2623341"></a><pre class="programlisting">  "pids"                     gchar*                : Write</pre>
+<p>Colon seperated list of pids (eg. 110:120).</p>
+<p>Default value: "8192"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623366"></a><h3>
+<a name="GstDvbSrc--pol"></a>The "<code class="literal">pol</code>" property</h3>
+<a class="indexterm" name="id2623381"></a><pre class="programlisting">  "pol"                      gchararray            : Read / Write</pre>
+<p>Polarity [vhHV] (DVB-S).</p>
+<p>Default value: "h"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623406"></a><h3>
+<a name="GstDvbSrc--srate"></a>The "<code class="literal">srate</code>" property</h3>
+<a class="indexterm" name="id2623422"></a><pre class="programlisting">  "srate"                    gint                  : Read / Write</pre>
+<p>Symbol Rate (DVB-S, DVB-C).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623451"></a><h3>
+<a name="GstDvbSrc--trans-mode"></a>The "<code class="literal">trans-mode</code>" property</h3>
+<a class="indexterm" name="id2623465"></a><pre class="programlisting">  "trans-mode"               GstDvbSrcTransmission_Mode  : Read / Write</pre>
+<p>Transmission Mode (DVB-T).</p>
+<p>Default value: 8k</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623490"></a><h3>
+<a name="GstDvbSrc--tune"></a>The "<code class="literal">tune</code>" property</h3>
+<a class="indexterm" name="id2623505"></a><pre class="programlisting">  "tune"                     gpointer              : Write</pre>
+<p>Atomically tune to channel. (For Apps).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623527"></a><h3>
+<a name="GstDvbSrc--adapter"></a>The "<code class="literal">adapter</code>" property</h3>
+<a class="indexterm" name="id2623542"></a><pre class="programlisting">  "adapter"                  gint                  : Read / Write</pre>
+<p>The adapter device number (eg. 0 for adapter0).</p>
+<p>Allowed values: [0,16]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623572"></a><h3>
+<a name="GstDvbSrc--diseqc-source"></a>The "<code class="literal">diseqc-source</code>" property</h3>
+<a class="indexterm" name="id2623586"></a><pre class="programlisting">  "diseqc-source"            gint                  : Read / Write</pre>
+<p>DISEqC selected source (-1 disabled) (DVB-S).</p>
+<p>Allowed values: [-1,7]</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623616"></a><h3>
+<a name="GstDvbSrc--frequency"></a>The "<code class="literal">frequency</code>" property</h3>
+<a class="indexterm" name="id2623630"></a><pre class="programlisting">  "frequency"                gint                  : Read / Write</pre>
+<p>Frequency.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623660"></a><h3>
+<a name="GstDvbSrc--frontend"></a>The "<code class="literal">frontend</code>" property</h3>
+<a class="indexterm" name="id2623675"></a><pre class="programlisting">  "frontend"                 gint                  : Read / Write</pre>
+<p>The frontend device number (eg. 0 for frontend0).</p>
+<p>Allowed values: [0,16]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623705"></a><h3>
+<a name="GstDvbSrc--polarity"></a>The "<code class="literal">polarity</code>" property</h3>
+<a class="indexterm" name="id2623720"></a><pre class="programlisting">  "polarity"                 gchar*                : Read / Write</pre>
+<p>Polarity [vhHV] (DVB-S).</p>
+<p>Default value: "h"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623746"></a><h3>
+<a name="GstDvbSrc--symbol-rate"></a>The "<code class="literal">symbol-rate</code>" property</h3>
+<a class="indexterm" name="id2623760"></a><pre class="programlisting">  "symbol-rate"              gint                  : Read / Write</pre>
+<p>Symbol Rate (DVB-S, DVB-C).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2623789"></a><h3>
+<a name="GstDvbSrc--stats-reporting-interval"></a>The "<code class="literal">stats-reporting-interval</code>" property</h3>
+<a class="indexterm" name="id2623804"></a><pre class="programlisting">  "stats-reporting-interval" guint                 : Read / Write</pre>
+<p>The number of reads before reporting frontend stats.</p>
+<p>Default value: 100</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>videoanalyse</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-trm.html" title="trm">
+<link rel="next" href="gst-plugins-bad-plugins-videodetect.html" title="videodetect">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-trm.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-videodetect.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2608977" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2564873" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2608936" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2587273" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-videoanalyse"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2608977"></a><span class="refentrytitle">videoanalyse</span>
+</h2>
+<p>videoanalyse &#8212; Analyse and report about the video frame</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstVideoAnalyse"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-videoanalyse.html#GstVideoAnalyse-struct">GstVideoAnalyse</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2608936"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseTransform
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter"
+>GstVideoFilter</a>
+                           +----GstVideoAnalyse
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2587273"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-videoanalyse.html#GstVideoAnalyse--message">message</a>"                  gboolean              : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2564873"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2570904"></a><p>
+This plugin analyses every video frame and if the <a href="gst-plugins-bad-plugins-videoanalyse.html#GstVideoAnalyse--message">message property</a> is <span class="type">TRUE</span>, posts an element
+message with video statistics called <code class="classname">"GstVideoAnalyse"</code>.
+The message's structure contains these fields:
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li><p>
+  <span class="type">GstClockTime</span>
+  <code class="classname">"timestamp"</code>:
+  the timestamp of the buffer that triggered the message.
+  </p></li>
+<li><p>
+  <span class="type">GstClockTime</span>
+  <code class="classname">"stream-time"</code>:
+  the stream time of the buffer.
+  </p></li>
+<li><p>
+  <span class="type">GstClockTime</span>
+  <code class="classname">"running-time"</code>:
+  the running_time of the buffer.
+  </p></li>
+<li><p>
+  <span class="type">GstClockTime</span>
+  <code class="classname">"duration"</code>:
+  the duration of the buffer.
+  </p></li>
+<li><p>
+  <span class="type">gdouble</span>
+  <code class="classname">"brightness"</code>:
+  the average brightness of the frame.
+  </p></li>
+<li><p>
+  <span class="type">gdouble</span>
+  <code class="classname">"brightness-variance"</code>:
+  the brightness variance of the frame.
+  </p></li>
+</ul></div>
+<p>
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch -m videotestsrc ! videoanalyse ! ffmpegcolorspace ! ximagesink
+</pre>
+<p>
+This pipeline emits messages to the console for each frame that has been analysed. 
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2007-05-30 (0.10.5)</p>
+<div class="refsect2" lang="en">
+<a name="id2608900"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-videosignal.html#plugin-videosignal">videosignal</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Effect/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2609231"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2609242"></a><h3>
+<a name="GstVideoAnalyse-struct"></a>GstVideoAnalyse</h3>
+<a class="indexterm" name="id2609253"></a><pre class="programlisting">typedef struct _GstVideoAnalyse GstVideoAnalyse;</pre>
+<p>
+Opaque datastructure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2609274"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2609285"></a><h3>
+<a name="GstVideoAnalyse--message"></a>The "<code class="literal">message</code>" property</h3>
+<a class="indexterm" name="id2609299"></a><pre class="programlisting">  "message"                  gboolean              : Read / Write / Construct</pre>
+<p>Post statics messages.</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+</body>
+</html>

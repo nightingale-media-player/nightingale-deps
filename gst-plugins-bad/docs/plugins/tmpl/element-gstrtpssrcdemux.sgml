@@ -1,0 +1,35 @@
+<!-- ##### SECTION Title ##### -->
+gstrtpssrcdemux
+
+<!-- ##### SECTION Short_Description ##### -->
+Splits RTP streams based on the SSRC
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-gstrtpssrcdemux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRtpSsrcDemux ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstRtpSsrcDemux::new-ssrc-pad ##### -->
+<para>
+
+</para>
+
+@gstrtpssrcdemux: the object which received the signal.
+@arg1: 
+@arg2: 
+

@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstbasemetadata</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch03.html" title="gst-plugins-bad Classes">
+<link rel="prev" href="ch03.html" title="gst-plugins-bad Classes">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch03.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td>&#160;</td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2601717" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2638609" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-gstbasemetadata"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2601717"></a><span class="refentrytitle">gstbasemetadata</span>
+</h2>
+<p>gstbasemetadata &#8212; Base class for metadata handling elements</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a>;
+#define             <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GST-BASE-METADATA-SINK-PAD:CAPS">GST_BASE_METADATA_SINK_PAD</a>          (obj)
+#define             <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GST-BASE-METADATA-SRC-PAD:CAPS">GST_BASE_METADATA_SRC_PAD</a>           (obj)
+MetaOptions         <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-get-option-flag">gst_base_metadata_get_option_flag</a>   (const <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base);
+void                <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-set-option-flag">gst_base_metadata_set_option_flag</a>   (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         const MetaOptions options);
+void                <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-unset-option-flag">gst_base_metadata_unset_option_flag</a> (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         const MetaOptions options);
+void                <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-update-inject-segment-with-new-data">gst_base_metadata_update_inject_segment_with_new_data</a>
+                                                        (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         guint8 **data,
+                                                         guint32 *size,
+                                                         MetadataChunkType type);
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2638609"></a><h2>Description</h2>
+<p>
+This is a generice base class for metadata handling elements. The following
+types of elements are supported:
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li><p>parsers (only parse data)</p></li>
+<li><p>demuxers (parse data and remove metadata chunks)</p></li>
+<li><p>muxers</p></li>
+<li><p>any other kind of element that wants to handle chunks in
+    file formats based on chunks</p></li>
+</ul></div>
+<p>
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2638653"></a><p>
+This a abstract element that parses a stream and find chunks and offset
+where new chunks could be injected into it.
+Basically, the only thing need by implementors (parsers, (de)muxers) is to
+set virtual methods that will be used to setup the caps and do some
+'processing', which is called after the stream is completely parsed and
+before the first buffer is sent to the next element. Usualy the 'processing'
+function will send tags messages and event in case of parsers and demuxers,
+and add chunks to be injected (using the helper function
+<a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-update-inject-segment-with-new-data"><span class="type">gst_base_metadata_update_inject_segment_with_new_data</span></a> in case of muxers.
+</p>
+<p>
+This can work in 'pull' and 'push' scheduling modes. In case of push mode,
+the stream will be parsed during sink activation if <span class="type">gst_pad_get_range</span> is
+available on upstream element. If get_range function is not available
+upstream, then the data will be hold until the stream is completly parsed,
+and then after that the fisrt buffer will be pushed downstream. The same
+happens with pull mode, if the downstream element calls gst_pad_get_range
+it will only gets data after the stream has been completely parsed.
+</p>
+<p>
+Seek, and query duration will only be available after the stream has been
+parsed. Query position will always be 0 (zero) before the stream is
+completely parsed.
+</p>
+<p>
+Currently there is implementation for JPEG and PNG (demux mode only)
+stream types and EXIF, IPTC and XMP metadatas.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2008-01-21 (0.10.15)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618976"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2618986"></a><h3>
+<a name="GstBaseMetadata"></a>GstBaseMetadata</h3>
+<a class="indexterm" name="id2618998"></a><pre class="programlisting">typedef struct {
+  GstElement element;
+} GstBaseMetadata;
+</pre>
+<p>
+The opaque <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata"><span class="type">GstBaseMetadata</span></a> data structure.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2619023"></a><h3>
+<a name="GST-BASE-METADATA-SINK-PAD:CAPS"></a>GST_BASE_METADATA_SINK_PAD()</h3>
+<a class="indexterm" name="id2619034"></a><pre class="programlisting">#define GST_BASE_METADATA_SINK_PAD(obj) (GST_BASE_METADATA_CAST (obj)-&gt;sinkpad)
+</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2619069"></a><h3>
+<a name="GST-BASE-METADATA-SRC-PAD:CAPS"></a>GST_BASE_METADATA_SRC_PAD()</h3>
+<a class="indexterm" name="id2619080"></a><pre class="programlisting">#define GST_BASE_METADATA_SRC_PAD(obj) (GST_BASE_METADATA_CAST (obj)-&gt;srcpad)
+</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2642075"></a><h3>
+<a name="gst-base-metadata-get-option-flag"></a>gst_base_metadata_get_option_flag ()</h3>
+<a class="indexterm" name="id2642086"></a><pre class="programlisting">MetaOptions         gst_base_metadata_get_option_flag   (const <a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base);</pre>
+<p>
+Check how the this base class will behaviour. As a demuxer or muxer.
+Hanlding EXIF, IPTC, XMP or not.
+<em class="parameter"><code>see_also</code></em>: <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-set-option-flag"><span class="type">gst_base_metadata_set_option_flag</span></a>
+<a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-unset-option-flag"><span class="type">gst_base_metadata_unset_option_flag</span></a></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>base</code></em>&#160;:</span></td>
+<td> the base metadata instance
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The current mode of operation
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2642166"></a><h3>
+<a name="gst-base-metadata-set-option-flag"></a>gst_base_metadata_set_option_flag ()</h3>
+<a class="indexterm" name="id2642179"></a><pre class="programlisting">void                gst_base_metadata_set_option_flag   (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         const MetaOptions options);</pre>
+<p>
+Set how the this base class will behaviour. As a demuxer or muxer. Hanlding
+EXIF, IPTC, XMP or not.
+<em class="parameter"><code>see_also</code></em>: <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-unset-option-flag"><span class="type">gst_base_metadata_unset_option_flag</span></a>
+<a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-get-option-flag"><span class="type">gst_base_metadata_get_option_flag</span></a></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>base</code></em>&#160;:</span></td>
+<td> the base metadata instance
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>options</code></em>&#160;:</span></td>
+<td> mode of operation
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2642271"></a><h3>
+<a name="gst-base-metadata-unset-option-flag"></a>gst_base_metadata_unset_option_flag ()</h3>
+<a class="indexterm" name="id2642284"></a><pre class="programlisting">void                gst_base_metadata_unset_option_flag (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         const MetaOptions options);</pre>
+<p>
+Set how the this base class will behaviour. As a demuxer or muxer. Hanlding
+EXIF, IPTC, XMP or not.
+<em class="parameter"><code>see_also</code></em>: <a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-set-option-flag"><span class="type">gst_base_metadata_set_option_flag</span></a>
+<a href="gst-plugins-bad-plugins-gstbasemetadata.html#gst-base-metadata-get-option-flag"><span class="type">gst_base_metadata_get_option_flag</span></a></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>base</code></em>&#160;:</span></td>
+<td> the base metadata instance
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>options</code></em>&#160;:</span></td>
+<td> mode of operation
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2639340"></a><h3>
+<a name="gst-base-metadata-update-inject-segment-with-new-data"></a>gst_base_metadata_update_inject_segment_with_new_data ()</h3>
+<a class="indexterm" name="id2639354"></a><pre class="programlisting">void                gst_base_metadata_update_inject_segment_with_new_data
+                                                        (<a href="gst-plugins-bad-plugins-gstbasemetadata.html#GstBaseMetadata">GstBaseMetadata</a> *base,
+                                                         guint8 **data,
+                                                         guint32 *size,
+                                                         MetadataChunkType type);</pre>
+<p>
+If the file type specification of the parsed stream allows a chunk of <em class="parameter"><code>type</code></em>,
+set the <em class="parameter"><code>data</code></em> and <em class="parameter"><code>size</code></em> of the segment to be injected. This the <em class="parameter"><code>data</code></em> has
+been injected (metadata type supported by the stream <em class="parameter"><code>type</code></em>) then, the
+the <em class="parameter"><code>data</code></em> ownership will be taken and <em class="parameter"><code>data</code></em> and <em class="parameter"><code>size</code></em> willl be set to 0;
+Hanlding EXIF, IPTC, XMP or not.
+<em class="parameter"><code>see_also</code></em>: <span class="type">gst_base_metadata_calculate_offsets</span></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>base</code></em>&#160;:</span></td>
+<td> the base metadata instance
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> new data to be injected
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> the size in bytes of <em class="parameter"><code>data</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> kind of metadata chunk it is (currently EXIF, IPTC or XMP)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

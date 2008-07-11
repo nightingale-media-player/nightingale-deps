@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gst-plugins-bad Elements</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="prev" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="next" href="gst-plugins-bad-plugins-amrwbdec.html" title="amrwbdec">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
+<td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td>&#160;</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-amrwbdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="chapter" lang="en">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2547099"></a>gst-plugins-bad Elements</h2></div></div></div>
+<div class="toc"><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-amrwbdec.html">amrwbdec</a></span><span class="refpurpose"> &#8212; Adaptive Multi-Rate Wideband audio decoder</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-amrwbenc.html">amrwbenc</a></span><span class="refpurpose"> &#8212; Adaptive Multi-Rate Wideband audio encoder</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-amrwbparse.html">amrwbparse</a></span><span class="refpurpose"> &#8212; Adaptive Multi-Rate WideBand audio parser</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-audioparse.html">audioparse</a></span><span class="refpurpose"> &#8212; parses a byte stream into audio frames</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-dfbvideosink.html">dfbvideosink</a></span><span class="refpurpose"> &#8212; A DirectFB based videosink</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-dvbsrc.html">dvbsrc</a></span><span class="refpurpose"> &#8212; Digital Video Broadcast Source</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-dvdspu.html">dvdspu</a></span><span class="refpurpose"> &#8212; Parses the DVD Sub-Picture command stream and renders the SPU overlay onto the video as it passes through</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-festival.html">festival</a></span><span class="refpurpose"> &#8212; Synthesizes plain text into audio</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpbin.html">gstrtpbin</a></span><span class="refpurpose"> &#8212; handle media from one RTP bin</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpclient.html">gstrtpclient</a></span><span class="refpurpose"> &#8212; handle media from one RTP client</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpjitterbuffer.html">gstrtpjitterbuffer</a></span><span class="refpurpose"> &#8212; buffer, reorder and remove duplicate RTP packets to
+compensate for network oddities.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpptdemux.html">gstrtpptdemux</a></span><span class="refpurpose"> &#8212; separate RTP payloads based on the payload type</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpsession.html">gstrtpsession</a></span><span class="refpurpose"> &#8212; an RTP session manager</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-gstrtpssrcdemux.html">gstrtpssrcdemux</a></span><span class="refpurpose"> &#8212; separate RTP payloads based on the SSRC</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-input-selector.html">input-selector</a></span><span class="refpurpose"> &#8212; N-to-1 stream selectoring</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-ivorbisdec.html">ivorbisdec</a></span><span class="refpurpose"> &#8212; a decoder that decodes Vorbis to raw audio</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-jackaudiosink.html">jackaudiosink</a></span><span class="refpurpose"> &#8212; JACK audio sink</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-metadatademux.html">metadatademux</a></span><span class="refpurpose"> &#8212; element that parse or demux metadata from image files</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-metadatamux.html">metadatamux</a></span><span class="refpurpose"> &#8212; Write metadata (EXIF, IPTC and XMP) into a image stream</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-modplug.html">modplug</a></span><span class="refpurpose"> &#8212; Module decoder based on modplug engine</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-nuvdemux.html">nuvdemux</a></span><span class="refpurpose"> &#8212; Demultiplex a mythtv .nuv file into audio and video</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-output-selector.html">output-selector</a></span><span class="refpurpose"> &#8212; 1-to-N stream selectoring</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-rganalysis.html">rganalysis</a></span><span class="refpurpose"> &#8212; Perform the ReplayGain analysis</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-rglimiter.html">rglimiter</a></span><span class="refpurpose"> &#8212; Apply signal compression to raw audio data</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-rgvolume.html">rgvolume</a></span><span class="refpurpose"> &#8212; Apply ReplayGain volume adjustment</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-sdlaudiosink.html">sdlaudiosink</a></span><span class="refpurpose"> &#8212; Output to a sound card via SDLAUDIO</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-sdlvideosink.html">sdlvideosink</a></span><span class="refpurpose"> &#8212; An SDL-based videosink</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-sdpdemux.html">sdpdemux</a></span><span class="refpurpose"> &#8212; Receive data over the network via SDP</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-souphttpsrc.html">souphttpsrc</a></span><span class="refpurpose"> &#8212; Read from an HTTP/HTTPS/WebDAV/Icecast/Shoutcast
+location.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-speed.html">speed</a></span><span class="refpurpose"> &#8212; Set speed/pitch on audio/raw streams (resampler)</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-speexresample.html">speexresample</a></span><span class="refpurpose"> &#8212; Resamples audio</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-timidity.html">timidity</a></span><span class="refpurpose"> &#8212; Midi Synthesizer Element</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-trm.html">trm</a></span><span class="refpurpose"> &#8212; Compute MusicBrainz TRM Id using libmusicbrainz</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-videoanalyse.html">videoanalyse</a></span><span class="refpurpose"> &#8212; Analyse and report about the video frame</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-videodetect.html">videodetect</a></span><span class="refpurpose"> &#8212; Detect a pattern in a video signal</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-videomark.html">videomark</a></span><span class="refpurpose"> &#8212; Mark a pattern in a video signal</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-videoparse.html">videoparse</a></span><span class="refpurpose"> &#8212; parses a byte stream into video frames</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-wildmidi.html">wildmidi</a></span><span class="refpurpose"> &#8212; Midi Synthesizer Element</span>
+</dt>
+</dl></div>
+<pre class="programlisting">
+
+#include &lt;directfb.h&gt;
+#include &lt;gst/gst.h&gt;
+
+static IDirectFB *dfb = NULL;
+static IDirectFBSurface *primary = NULL;
+static GMainLoop *loop;
+
+#define DFBCHECK(x...)                                         \
+  {                                                            \
+    DFBResult err = x;                                         \
+                                                               \
+    if (err != DFB_OK)                                         \
+      {                                                        \
+        fprintf( stderr, "%s &lt;%d&gt;:\n\t", __FILE__, __LINE__ ); \
+        DirectFBErrorFatal( #x, err );                         \
+      }                                                        \
+  }
+
+static gboolean
+get_me_out (gpointer data)
+{
+  g_main_loop_quit (loop);
+  return FALSE;
+}
+
+int
+main (int argc, char *argv[])
+{
+  DFBSurfaceDescription dsc;
+  GstElement *pipeline, *src, *sink;
+
+  /* Init both GStreamer and DirectFB */
+  DFBCHECK (DirectFBInit (&amp;argc, &amp;argv));
+  gst_init (&amp;argc, &amp;argv);
+
+  /* Creates DirectFB main context and set it to fullscreen layout */
+  DFBCHECK (DirectFBCreate (&amp;dfb));
+  DFBCHECK (dfb-&gt;SetCooperativeLevel (dfb, DFSCL_FULLSCREEN));
+
+  /* We want a double buffered primary surface */
+  dsc.flags = DSDESC_CAPS;
+  dsc.caps = DSCAPS_PRIMARY | DSCAPS_FLIPPING;
+
+  DFBCHECK (dfb-&gt;CreateSurface (dfb, &amp;dsc, &amp;primary));
+
+  /* Creating our pipeline : videotestsrc ! dfbvideosink */
+  pipeline = gst_pipeline_new (NULL);
+  g_assert (pipeline);
+  src = gst_element_factory_make ("videotestsrc", NULL);
+  g_assert (src);
+  sink = gst_element_factory_make ("dfbvideosink", NULL);
+  g_assert (sink);
+  /* That's the interesting part, giving the primary surface to dfbvideosink */
+  g_object_set (sink, "surface", primary, NULL);
+
+  /* Adding elements to the pipeline */
+  gst_bin_add_many (GST_BIN (pipeline), src, sink, NULL);
+  g_assert (gst_element_link (src, sink));
+
+  /* Let's play ! */
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
+
+  /* we need to run a GLib main loop to get out of here */
+  loop = g_main_loop_new (NULL, FALSE);
+  /* Get us out after 20 seconds */
+  g_timeout_add (20000, get_me_out, NULL);
+  g_main_loop_run (loop);
+
+  /* Release elements and stop playback */
+  gst_element_set_state (pipeline, GST_STATE_NULL);
+
+  /* Free the main loop */
+  g_main_loop_unref (loop);
+
+  /* Release DirectFB context and surface */
+  primary-&gt;Release (primary);
+  dfb-&gt;Release (dfb);
+
+  return 0;
+}
+
+</pre>
+</div>
+</body>
+</html>

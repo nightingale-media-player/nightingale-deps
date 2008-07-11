@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+amrwbenc
+
+<!-- ##### SECTION Short_Description ##### -->
+Adaptive Multi-Rate Wideband audio encoder
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-amrwbenc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAmrwbEnc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAmrwbEnc:band-mode ##### -->
+<para>
+
+</para>
+

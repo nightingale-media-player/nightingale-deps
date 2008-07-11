@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+speed
+
+<!-- ##### SECTION Short_Description ##### -->
+Set speed/pitch on audio/raw streams (resampler)
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-speed-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstSpeed ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSpeed:speed ##### -->
+<para>
+
+</para>
+

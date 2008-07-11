@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>output-selector</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-nuvdemux.html" title="nuvdemux">
+<link rel="next" href="gst-plugins-bad-plugins-rganalysis.html" title="rganalysis">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-nuvdemux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-rganalysis.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2602881" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2580300" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2602843" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-output-selector"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2602881"></a><span class="refentrytitle">output-selector</span>
+</h2>
+<p>output-selector &#8212; 1-to-N stream selectoring</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector">GstOutputSelector</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2602843"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector--active-pad">active-pad</a>"               gchar*                : Read / Write
+  "<a href="gst-plugins-bad-plugins-output-selector.html#GstOutputSelector--resend-latest">resend-latest</a>"            gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2580300"></a><h2>Description</h2>
+<p>
+Direct input stream to one out of N output pads.</p>
+<div class="refsect2" lang="en">
+<a name="id2573302"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-bad-plugins-plugin-selector.html#plugin-selector">selector</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Stefan Kost &lt;stefan.kost@nokia.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>request</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2602258"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2602268"></a><h3>
+<a name="GstOutputSelector"></a>GstOutputSelector</h3>
+<a class="indexterm" name="id2602281"></a><pre class="programlisting">typedef struct {
+  GstElement element;
+
+  GstPad *sinkpad;
+
+  GstPad *active_srcpad;
+  GstPad *pending_srcpad;
+  guint nb_srcpads;
+
+  GstSegment segment;
+
+  /* resend latest buffer after switch */
+  gboolean resend_latest;
+  GstBuffer *latest_buffer;
+} GstOutputSelector;
+</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2602302"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2602313"></a><h3>
+<a name="GstOutputSelector--active-pad"></a>The "<code class="literal">active-pad</code>" property</h3>
+<a class="indexterm" name="id2602327"></a><pre class="programlisting">  "active-pad"               gchar*                : Read / Write</pre>
+<p>Name of the currently active src pad.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2602351"></a><h3>
+<a name="GstOutputSelector--resend-latest"></a>The "<code class="literal">resend-latest</code>" property</h3>
+<a class="indexterm" name="id2602365"></a><pre class="programlisting">  "resend-latest"            gboolean              : Read / Write</pre>
+<p>Resend latest buffer after a switch to a new pad.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2602391"></a><h2>See Also</h2>
+<span class="type">GstTee</span>, <a href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector"><span class="type">GstInputSelector</span></a>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+rgvolume
+
+<!-- ##### SECTION Short_Description ##### -->
+Apply ReplayGain volume adjustment
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rgvolume-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstRgVolume ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:album-mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRgVolume:fallback-gain ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRgVolume:headroom ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRgVolume:pre-amp ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRgVolume:result-gain ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstRgVolume:target-gain ##### -->
+<para>
+
+</para>
+
