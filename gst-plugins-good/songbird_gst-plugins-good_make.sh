@@ -299,7 +299,6 @@ strip()
          -and -exec ${strip} {} \;
 }
 
-
 #
 # build
 #
@@ -321,20 +320,6 @@ build()
     export CFLAGS=
     export LDFLAGS=
     export ACLOCAL_FLAGS=
-    export GLIB_CFLAGS=
-    export GLIB_LIBS=
-    export LIBOIL_CFLAGS=
-    export LIBOIL_LIBS=
-    export GST_CFLAGS=
-    export GST_LIBS=
-    export GST_BASE_CFLAGS=
-    export GST_BASE_LIBS=
-    export GST_PLUGINS_BASE_CFLAGS=
-    export GST_PLUGINS_BASE_LIBS=
-    export GST_GDP_CFLAGS=
-    export GST_GDP_LIBS=
-    export GST_CONTROLLER_CFLAGS=
-    export GST_CONTROLLER_LIBS=
     export PKG_CONFIG_PATH=
 
     # Get the target architecture depedencies directory.
@@ -374,18 +359,6 @@ build()
         tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-	if [ "$sys_name" != "Linux" ]; then
-	    # We always use system-wide glib on linux
-            export_append "GLIB_LIBS"	\
-                "-L${tgt_dep_dir}/lib"	\
-                "-lglib-2.0"		\
-                "-lgmodule-2.0"		\
-                "-lgthread-2.0"		\
-                "-lgobject-2.0"
-            export_append "GLIB_CFLAGS"			\
-                "-I${tgt_dep_dir}/include/glib-2.0"	\
-                "-I${tgt_dep_dir}/lib/glib-2.0/include"
-        fi
 	if [ "$sys_name" = "Darwin" ]; then
             export_append		\
                 "LDFLAGS"		\
@@ -404,58 +377,31 @@ build()
                 "-Wl,-dylib_file"	\
                 "-Wl,libgthread-2.0.dylib:${tgt_dep_dir}/lib/libgthread-2.0.dylib"
             export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
-	    if [ "$build_type" = "debug" ]; then
-		export GLIB_LIBS="$GLIB_LIBS -Wl,-Zi"
-	    fi
         fi
 
         # Set up liboil build options.
         tgt_dep_dir="${dep_arch_dir}/liboil/${build_type}"
-        export_append "LIBOIL_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-loil-0.3"
-        export_append "LIBOIL_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/liboil-0.3"
-	export PKG_CONFIG_PATH="${tgt_dep_dir}/lib/pkgconfig"
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
                         "LD_FLAGS"                                              \
                         "-dylib_file"                                          \
                         "liboil-0.3.dylib:${tgt_dep_dir}/lib/liboil-0.3.dylib"
             export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    if [ "$build_type" = "debug" ]; then
-		export LIBOIL_LIBS="$LIBOIL_LIBS -Wl,-Zi"
-	    fi
         fi
+
+	# Point at flac library
+        tgt_dep_dir="${dep_arch_dir}/flac/${build_type}"
+        export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
+        export LDFLAGS="-L${tgt_dep_dir}/lib"
+        export CPPFLAGS="-I${tgt_dep_dir}/include"
+        if [ "$sys_name" = "Cygwin" ]; then
+	    # Explicitly override this; otherwise -lm is included, which fails
+	    export FLAC_LIBS="-lFLAC-8"
+	fi
 
         # Set up gstreamer build options.
         tgt_dep_dir="${dep_arch_dir}/gstreamer/${build_type}"
-        export_append "GST_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-lgstreamer-0.10 ${GLIB_LIBS}"
-        export_append "GST_BASE_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-lgstbase-0.10 ${GLIB_LIBS}"
-        export_append "GST_GDP_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-lgstdataprotocol-0.10 ${GLIB_LIBS}"
-        export_append "GST_CONTROLLER_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib"                                   \
-                      "-lgstcontroller-0.10 ${GLIB_LIBS}"
-        export_append "GST_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
-        export_append "GST_BASE_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
-        export_append "GST_GDP_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
-        export_append "GST_CONTROLLER_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GLIB_CFLAGS}"
-	export GST_TOOLS_DIR="${tgt_dep_dir}/bin"
-	export GST_PLUGINS_DIR="${tgt_dep_dir}/lib/gstreamer-0.10"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
@@ -470,24 +416,10 @@ build()
                         "-dylib_file"                                          \
                         "libgstcontorller-0.10.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
             export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    if [ "$build_type" = "debug" ]; then
-		export GST_LIBS="$GST_LIBS -Wl,-Zi"
-		export GST_BASE_LIBS="$GST_BASE_LIBS -Wl,-Zi"
-		export GST_GDP_LIBS="$GST_GDP_LIBS -Wl,-Zi"
-		export GST_CONTROLLER_LIBS="$GST_CONTROLLER_LIBS -Wl,-Zi"
-	    fi
         fi
 
         # Set up gst-plugins-base build options.
         tgt_dep_dir="${dep_arch_dir}/gst-plugins-base/${build_type}"
-        export_append "GST_PLUGINS_BASE_LIBS"                                           \
-                      "-L${tgt_dep_dir}/lib ${GST_LIBS}"                                   \
-                      "-lgstreamer-0.10 ${GLIB_LIBS}"
-        export_append "GST_PLUGINS_BASE_CFLAGS"                                         \
-                      "-I${tgt_dep_dir}/include/gstreamer-0.10 ${GST_CFLAGS}"
-	export GSTPB_TOOLS_DIR="${tgt_dep_dir}/bin"
-	export GSTPB_PLUGINS_DIR="${tgt_dep_dir}/lib/gstreamer-0.10"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
         if [ "$sys_name" = "Darwin" ]; then
             export_append                                                      \
@@ -501,11 +433,6 @@ build()
                         "-dylib_file"                                          \
                         "libgstcontorller-0.10.dylib:${tgt_dep_dir}/lib/libgstcontroller-0.10.dylib"
             export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export PATH="$PATH:${tgt_dep_dir}/bin"
-	    if [ "$build_type" = "debug" ]; then
-		export GST_PLUGINS_BASE_LIBS="$GST_PLUGINS_BASE_LIBS -Wl,-Zi"
-	    fi
         fi
 
     fi
@@ -520,7 +447,6 @@ build()
 	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055"
 	if [ "$build_type" = "debug" ]; then
 	    export CFLAGS="${CFLAGS} -MTd -Zi"
-	    export GLIB_LIBS="${GLIB_LIBS} -Wl,-Zi"
 	else
 	    export CFLAGS="${CFLAGS} -MT"
 	fi
@@ -532,20 +458,6 @@ build()
     if test -n "${cl_process}"; then
         export CFLAGS=`${cl_process} echo ${CFLAGS}`
         export LIBS=`${cl_process} echo ${LIBS}`
-        export GLIB_CFLAGS=`${cl_process} echo ${GLIB_CFLAGS}`
-        export GLIB_LIBS=`${cl_process} echo ${GLIB_LIBS}`
-        export LIBOIL_CFLAGS=`${cl_process} echo ${LIBOIL_CFLAGS}`
-        export LIBOIL_LIBS=`${cl_process} echo ${LIBOIL_LIBS}`
-        export GST_CFLAGS=`${cl_process} echo ${GST_CFLAGS}`
-        export GST_LIBS=`${cl_process} echo ${GST_LIBS}`
-        export GST_BASE_CFLAGS=`${cl_process} echo ${GST_BASE_CFLAGS}`
-        export GST_BASE_LIBS=`${cl_process} echo ${GST_BASE_LIBS}`
-        export GST_PLUGINS_BASE_CFLAGS=`${cl_process} echo ${GST_PLUGINS_BASE_CFLAGS}`
-        export GST_PLUGINS_BASE_LIBS=`${cl_process} echo ${GST_PLUGINS_BASE_LIBS}`
-        export GST_GDP_CFLAGS=`${cl_process} echo ${GST_GDP_CFLAGS}`
-        export GST_GDP_LIBS=`${cl_process} echo ${GST_GDP_LIBS}`
-        export GST_CONTROLLER_CFLAGS=`${cl_process} echo ${GST_CONTROLLER_CFLAGS}`
-        export GST_CONTROLLER_LIBS=`${cl_process} echo ${GST_CONTROLLER_LIBS}`
     fi
 
     # Set up to build within a clean build directory.
@@ -575,6 +487,7 @@ build()
                 ${cfg_opts}                                                    \
 	--disable-examples \
 	--disable-tests \
+	--enable-flac=yes \
 	-C
     make && make install
 
