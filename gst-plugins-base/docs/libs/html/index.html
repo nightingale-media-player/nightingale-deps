@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GStreamer Base Plugins 0.10 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="next" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en">
+<div class="titlepage">
+<div>
+<div><table class="navigation" id="top" width="100%" cellpadding="2" cellspacing="0"><tr><th valign="middle"><p class="title">GStreamer Base Plugins 0.10 Library Reference Manual</p></th></tr></table></div>
+<div><p class="releaseinfo">
+      for GStreamer Library 0.10 (0.10.17)
+      <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/" target="_top">http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/</a>.
+    </p></div>
+</div>
+<hr>
+</div>
+<div class="toc"><dl>
+<dt><span class="part"><a href="gstreamer-plugins-base.html">I. GStreamer Base Plugins Libraries</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="compiling.html">Compiling</a></span><span class="refpurpose"> &#8212; 
+How to compile against the base plugins libraries
+</span>
+</dt>
+<dt><span class="chapter"><a href="gstreamer-audio.html">Audio Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudio.html">gstaudio</a></span><span class="refpurpose"> &#8212; Support library for audio elements</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudioclock.html">gstaudioclock</a></span><span class="refpurpose"> &#8212; Helper object for implementing audio clocks</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiofilter.html">gstaudiofilter</a></span><span class="refpurpose"> &#8212; Base class for simple audio filters</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiomixerutils.html">gstaudiomixerutils</a></span><span class="refpurpose"> &#8212; utility functions to find available audio mixers
+                     from the plugin registry</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstbaseaudiosink.html">gstbaseaudiosink</a></span><span class="refpurpose"> &#8212; Base class for audio sinks</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstbaseaudiosrc.html">gstbaseaudiosrc</a></span><span class="refpurpose"> &#8212; Base class for audio sources</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiosink.html">gstaudiosink</a></span><span class="refpurpose"> &#8212; Simple base class for audio sinks</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiosrc.html">gstaudiosrc</a></span><span class="refpurpose"> &#8212; Simple base class for audio sources</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstmultichannel.html">gstmultichannel</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstringbuffer.html">gstringbuffer</a></span><span class="refpurpose"> &#8212; Base class for audio ringbuffer implementations</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-cdda.html">CDDA Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstcddabasesrc.html">gstcddabasesrc</a></span><span class="refpurpose"> &#8212; Base class for CD digital audio (CDDA) sources</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-ffft.html">FFT Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstfft.html">gstfft</a></span><span class="refpurpose"> &#8212; General FFT functions and declarations</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstffts16.html">gstffts16</a></span><span class="refpurpose"> &#8212; FFT functions for signed 16 bit integer samples</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstffts32.html">gstffts32</a></span><span class="refpurpose"> &#8212; FFT functions for signed 32 bit integer samples</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstfftf32.html">gstfftf32</a></span><span class="refpurpose"> &#8212; FFT functions for 32 bit float samples</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstfftf64.html">gstfftf64</a></span><span class="refpurpose"> &#8212; FFT functions for 64 bit float samples</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-floatcast.html">FloatCast Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstfloatcast.html">gstfloatcast</a></span><span class="refpurpose"> &#8212; Floating point platform independence macros</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-interfaces.html">Interfaces Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstcolorbalance.html">gstcolorbalance</a></span><span class="refpurpose"> &#8212; Interface for adjusting color balance settings</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstcolorbalancechannel.html">gstcolorbalancechannel</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstmixer.html">gstmixer</a></span><span class="refpurpose"> &#8212; Interface for elements that provide mixer operations</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstmixeroptions.html">gstmixeroptions</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstmixertrack.html">gstmixertrack</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstnavigation.html">gstnavigation</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstpropertyprobe.html">gstpropertyprobe</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttuner.html">gsttuner</a></span><span class="refpurpose"> &#8212; Interface for elements providing tuner operations</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttunerchannel.html">gsttunerchannel</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttunernorm.html">gsttunernorm</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstvideoorientation.html">gstvideoorientation</a></span><span class="refpurpose"> &#8212; Interface for elements providing video orientation
+controls</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstxoverlay.html">gstxoverlay</a></span><span class="refpurpose"> &#8212; Interface for setting/getting a Window on elements
+supporting it</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-netbuffer.html">Network Buffer Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstnetbuffer.html">gstnetbuffer</a></span><span class="refpurpose"> &#8212; Buffer for use in network sources and sinks</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-riff.html">Riff Media Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstriff.html">gstriff</a></span><span class="refpurpose"></span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-rtp.html">RTP Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstbasertpaudiopayload.html">gstbasertpaudiopayload</a></span><span class="refpurpose"> &#8212; Base class for audio RTP payloader</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstbasertpdepayload.html">gstbasertpdepayload</a></span><span class="refpurpose"> &#8212; Base class for RTP depayloader</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstbasertppayload.html">gstbasertppayload</a></span><span class="refpurpose"> &#8212; Base class for RTP payloader</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtppayloads.html">gstrtppayloads</a></span><span class="refpurpose"> &#8212; Helper methods for dealing with RTP payloads</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtpbuffer.html">gstrtpbuffer</a></span><span class="refpurpose"> &#8212; Helper methods for dealing with RTP buffers</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtcpbuffer.html">gstrtcpbuffer</a></span><span class="refpurpose"> &#8212; Helper methods for dealing with RTCP buffers</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-rtsp.html">RTSP Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtspbase64.html">gstrtspbase64</a></span><span class="refpurpose"> &#8212; Helper functions to handle Base64</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtspconnection.html">gstrtspconnection</a></span><span class="refpurpose"> &#8212; manage RTSP connections</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtspdefs.html">gstrtspdefs</a></span><span class="refpurpose"> &#8212; common RTSP defines</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtspmessage.html">gstrtspmessage</a></span><span class="refpurpose"> &#8212; RTSP messages</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtsprange.html">gstrtsprange</a></span><span class="refpurpose"> &#8212; dealing with time ranges</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtsptransport.html">gstrtsptransport</a></span><span class="refpurpose"> &#8212; dealing with RTSP transports</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstrtspurl.html">gstrtspurl</a></span><span class="refpurpose"> &#8212; handling RTSP urls</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-sdp.html">SDP Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstsdpmessage.html">gstsdpmessage</a></span><span class="refpurpose"> &#8212; Helper methods for dealing with SDP messages</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-tag.html">Tag Support Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttag.html">gsttag</a></span><span class="refpurpose"> &#8212; additional tag definitions for plugins and applications</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttagvorbis.html">gsttagvorbis</a></span><span class="refpurpose"> &#8212; tag mappings and support functions for plugins
+                    dealing with vorbiscomments</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttagid3.html">gsttagid3</a></span><span class="refpurpose"> &#8212; tag mappings and support functions for plugins
+                    dealing with ID3v1 and ID3v2 tags</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gsttagdemux.html">gsttagdemux</a></span><span class="refpurpose"> &#8212; Base class for demuxing tags that are in chunks
+                    directly at the beginning or at the end of a file</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-base-utils.html">Base Utils Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstpbutils.html">gstpbutils</a></span><span class="refpurpose"> &#8212; General Application and Plugin Utility Library</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstpbutilsdescriptions.html">gstpbutilsdescriptions</a></span><span class="refpurpose"> &#8212; Provides human-readable descriptions for caps/codecs
+and encoder, decoder, URI source and URI sink elements</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html">gstpbutilsmissingplugins</a></span><span class="refpurpose"> &#8212; Create, recognise and parse missing-plugins messages</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html">gstpbutilsinstallplugins</a></span><span class="refpurpose"> &#8212; Missing plugin installation support for applications</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="gstreamer-video.html">Video Library</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstvideo.html">gstvideo</a></span><span class="refpurpose"> &#8212; Support library for video operations</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstvideosink.html">gstvideosink</a></span><span class="refpurpose"> &#8212; Base class for video sinks</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstvideofilter.html">gstvideofilter</a></span><span class="refpurpose"> &#8212; Base class for video filters</span>
+</dt>
+</dl></dd>
+</dl></dd>
+<dt><span class="part"><a href="gstreamer-libs-hierarchy.html">II. Object Hierarchy</a></span></dt>
+<dt><span class="index"><a href="api-index.html">Index</a></span></dt>
+</dl></div>
+</div></body>
+</html>

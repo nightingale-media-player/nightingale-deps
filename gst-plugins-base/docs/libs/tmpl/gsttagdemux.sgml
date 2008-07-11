@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+gsttagdemux
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTagDemux ##### -->
+<para>
+
+</para>
+
+@element: 
+
+<!-- ##### STRUCT GstTagDemuxClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@min_start_size: 
+@min_end_size: 
+@identify_tag: 
+@parse_tag: 
+@merge_tags: 
+
+<!-- ##### ENUM GstTagDemuxResult ##### -->
+<para>
+
+</para>
+
+@GST_TAG_DEMUX_RESULT_BROKEN_TAG: 
+@GST_TAG_DEMUX_RESULT_AGAIN: 
+@GST_TAG_DEMUX_RESULT_OK: 
+

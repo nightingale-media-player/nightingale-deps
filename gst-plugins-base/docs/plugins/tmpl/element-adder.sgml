@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+adder
+
+<!-- ##### SECTION Short_Description ##### -->
+Add N audio channels together
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-adder-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAdder ##### -->
+<para>
+
+</para>
+
+

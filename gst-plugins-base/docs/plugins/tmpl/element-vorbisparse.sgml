@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+vorbisparse
+
+<!-- ##### SECTION Short_Description ##### -->
+parse raw vorbis streams
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-vorbisparse-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstVorbisParse ##### -->
+<para>
+
+</para>
+
+

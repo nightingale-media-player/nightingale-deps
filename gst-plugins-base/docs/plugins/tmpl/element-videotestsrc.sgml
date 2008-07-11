@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+videotestsrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Creates a test video stream
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-videotestsrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstVideoTestSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstVideoTestSrc:pattern ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstVideoTestSrc:timestamp-offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstVideoTestSrc:is-live ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstVideoTestSrcPattern ##### -->
+<para>
+
+</para>
+
+@GST_VIDEO_TEST_SRC_SMPTE: 
+@GST_VIDEO_TEST_SRC_SNOW: 
+@GST_VIDEO_TEST_SRC_BLACK: 
+@GST_VIDEO_TEST_SRC_WHITE: 
+@GST_VIDEO_TEST_SRC_RED: 
+@GST_VIDEO_TEST_SRC_GREEN: 
+@GST_VIDEO_TEST_SRC_BLUE: 
+@GST_VIDEO_TEST_SRC_CHECKERS1: 
+@GST_VIDEO_TEST_SRC_CHECKERS2: 
+@GST_VIDEO_TEST_SRC_CHECKERS4: 
+@GST_VIDEO_TEST_SRC_CHECKERS8: 
+@GST_VIDEO_TEST_SRC_CIRCULAR: 
+@GST_VIDEO_TEST_SRC_BLINK: 
+

@@ -1,0 +1,95 @@
+<!-- ##### SECTION Title ##### -->
+theoraenc
+
+<!-- ##### SECTION Short_Description ##### -->
+encode raw YUV video to a theora stream
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-theoraenc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTheoraEnc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstTheoraEnc:bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:border ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:center ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:keyframe-auto ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:keyframe-force ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:keyframe-freq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:keyframe-mindistance ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:keyframe-threshold ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:noise-sensitivity ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:quality ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:quick ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstTheoraEnc:sharpness ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstTheoraEncBorderMode ##### -->
+<para>
+
+</para>
+
+@BORDER_NONE: 
+@BORDER_BLACK: 
+@BORDER_MIRROR: 
+

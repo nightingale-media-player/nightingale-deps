@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+audioconvert
+
+<!-- ##### SECTION Short_Description ##### -->
+Convert audio to different formats
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audioconvert-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioConvert ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioConvert:dithering ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioConvert:noise-shaping ##### -->
+<para>
+
+</para>
+

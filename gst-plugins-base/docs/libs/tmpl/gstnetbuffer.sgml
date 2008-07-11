@@ -1,0 +1,102 @@
+<!-- ##### SECTION Title ##### -->
+gstnetbuffer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstNetBuffer ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@from: 
+@to: 
+
+<!-- ##### ENUM GstNetType ##### -->
+<para>
+
+</para>
+
+@GST_NET_TYPE_UNKNOWN: 
+@GST_NET_TYPE_IP4: 
+@GST_NET_TYPE_IP6: 
+
+<!-- ##### STRUCT GstNetAddress ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_netbuffer_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_netaddress_get_ip4_address ##### -->
+<para>
+
+</para>
+
+@naddr: 
+@address: 
+@port: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_netaddress_get_ip6_address ##### -->
+<para>
+
+</para>
+
+@naddr: 
+@address: 
+@port: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_netaddress_get_net_type ##### -->
+<para>
+
+</para>
+
+@naddr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_netaddress_set_ip4_address ##### -->
+<para>
+
+</para>
+
+@naddr: 
+@address: 
+@port: 
+
+
+<!-- ##### FUNCTION gst_netaddress_set_ip6_address ##### -->
+<para>
+
+</para>
+
+@naddr: 
+@address: 
+@port: 
+
+

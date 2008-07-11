@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gsttagvorbis</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="prev" href="gst-plugins-base-libs-gsttag.html" title="gsttag">
+<link rel="next" href="gst-plugins-base-libs-gsttagid3.html" title="gsttagid3">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-libs-gsttag.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-tag.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gsttagid3.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2739065" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2739240" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gsttagvorbis"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2739065"></a><span class="refentrytitle">gsttagvorbis</span>
+</h2>
+<p>gsttagvorbis &#8212; tag mappings and support functions for plugins
+                    dealing with vorbiscomments</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/tag/tag.h&gt;
+
+
+
+const gchar*        <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-from-vorbis-tag">gst_tag_from_vorbis_tag</a>             (const gchar *vorbis_tag);
+const gchar*        <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-tag">gst_tag_to_vorbis_tag</a>               (const gchar *gst_tag);
+void                <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-vorbis-tag-add">gst_vorbis_tag_add</a>                  (GstTagList *list,
+                                                         const gchar *tag,
+                                                         const gchar *value);
+GList*              <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-comments">gst_tag_to_vorbis_comments</a>          (const GstTagList *list,
+                                                         const gchar *tag);
+
+GstTagList*         <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-list-from-vorbiscomment-buffer">gst_tag_list_from_vorbiscomment_buffer</a>
+                                                        (const GstBuffer *buffer,
+                                                         const guint8 *id_data,
+                                                         const guint id_data_length,
+                                                         gchar **vendor_string);
+GstBuffer*          <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-list-to-vorbiscomment-buffer">gst_tag_list_to_vorbiscomment_buffer</a>
+                                                        (const GstTagList *list,
+                                                         const guint8 *id_data,
+                                                         const guint id_data_length,
+                                                         const gchar *vendor_string);
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2739240"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2739251"></a><p>
+Contains various utility functions for plugins to parse or create
+vorbiscomments and map them to and from <span class="type">GstTagList</span>s.
+</p>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2739271"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2739280"></a><h3>
+<a name="gst-tag-from-vorbis-tag"></a>gst_tag_from_vorbis_tag ()</h3>
+<a class="indexterm" name="id2739291"></a><pre class="programlisting">const gchar*        gst_tag_from_vorbis_tag             (const gchar *vorbis_tag);</pre>
+<p>
+Looks up the GStreamer tag for a vorbiscomment tag.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>vorbis_tag</code></em>&#160;:</span></td>
+<td> vorbiscomment tag to convert to GStreamer tag
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The corresponding GStreamer tag or NULL if none exists.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2739348"></a><h3>
+<a name="gst-tag-to-vorbis-tag"></a>gst_tag_to_vorbis_tag ()</h3>
+<a class="indexterm" name="id2739359"></a><pre class="programlisting">const gchar*        gst_tag_to_vorbis_tag               (const gchar *gst_tag);</pre>
+<p>
+Looks up the vorbiscomment tag for a GStreamer tag.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gst_tag</code></em>&#160;:</span></td>
+<td> GStreamer tag to convert to vorbiscomment tag
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The corresponding vorbiscomment tag or NULL if none exists.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2739420"></a><h3>
+<a name="gst-vorbis-tag-add"></a>gst_vorbis_tag_add ()</h3>
+<a class="indexterm" name="id2739433"></a><pre class="programlisting">void                gst_vorbis_tag_add                  (GstTagList *list,
+                                                         const gchar *tag,
+                                                         const gchar *value);</pre>
+<p>
+Convenience function using <a href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-from-vorbis-tag"><code class="function">gst_tag_from_vorbis_tag()</code></a>, parsing
+a vorbis comment string into the right type and adding it to the
+given taglist <em class="parameter"><code>list</code></em>.
+</p>
+<p>
+Unknown vorbiscomment tags will be added to the tag list in form
+of a <span class="type">GST_TAG_EXTENDED_COMMENT</span> (since 0.10.10 at least).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>list</code></em>&#160;:</span></td>
+<td> a <span class="type">GstTagList</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tag</code></em>&#160;:</span></td>
+<td> a vorbiscomment tag string (key in key=value), must be valid UTF-8
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a vorbiscomment value string (value in key=value), must be valid UTF-8
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2739568"></a><h3>
+<a name="gst-tag-to-vorbis-comments"></a>gst_tag_to_vorbis_comments ()</h3>
+<a class="indexterm" name="id2739581"></a><pre class="programlisting">GList*              gst_tag_to_vorbis_comments          (const GstTagList *list,
+                                                         const gchar *tag);</pre>
+<p>
+Creates a new tag list that contains the information parsed out of a
+vorbiscomment packet.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>list</code></em>&#160;:</span></td>
+<td> a <span class="type">GstTagList</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tag</code></em>&#160;:</span></td>
+<td> a GStreamer tag identifier, such as <span class="type">GST_TAG_ARTIST</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A <span class="type">GList</span> of newly-allowcated key=value strings. Free with
+         g_list_foreach (list, (GFunc) g_free, NULL) plus g_list_free (list)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2739691"></a><h3>
+<a name="gst-tag-list-from-vorbiscomment-buffer"></a>gst_tag_list_from_vorbiscomment_buffer ()</h3>
+<a class="indexterm" name="id2739705"></a><pre class="programlisting">GstTagList*         gst_tag_list_from_vorbiscomment_buffer
+                                                        (const GstBuffer *buffer,
+                                                         const guint8 *id_data,
+                                                         const guint id_data_length,
+                                                         gchar **vendor_string);</pre>
+<p>
+Creates a new tag list that contains the information parsed out of a
+vorbiscomment packet.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> buffer to convert
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id_data</code></em>&#160;:</span></td>
+<td> identification data at start of stream
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id_data_length</code></em>&#160;:</span></td>
+<td> length of identification data
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>vendor_string</code></em>&#160;:</span></td>
+<td> pointer to a string that should take the vendor string
+                of this vorbis comment or NULL if you don't need it.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A new <span class="type">GstTagList</span> with all tags that could be extracted from the
+         given vorbiscomment buffer or NULL on error.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2739846"></a><h3>
+<a name="gst-tag-list-to-vorbiscomment-buffer"></a>gst_tag_list_to_vorbiscomment_buffer ()</h3>
+<a class="indexterm" name="id2739860"></a><pre class="programlisting">GstBuffer*          gst_tag_list_to_vorbiscomment_buffer
+                                                        (const GstTagList *list,
+                                                         const guint8 *id_data,
+                                                         const guint id_data_length,
+                                                         const gchar *vendor_string);</pre>
+<p>
+Creates a new vorbiscomment buffer from a tag list.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>list</code></em>&#160;:</span></td>
+<td> tag list to convert
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id_data</code></em>&#160;:</span></td>
+<td> identification data at start of stream
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>id_data_length</code></em>&#160;:</span></td>
+<td> length of identification data, may be 0 if <em class="parameter"><code>id_data</code></em> is NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>vendor_string</code></em>&#160;:</span></td>
+<td> string that describes the vendor string or NULL
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A new <span class="type">GstBuffer</span> containing a vorbiscomment buffer with all tags
+         that could be converted from the given tag list.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2740006"></a><h2>See Also</h2>
+<span class="type">GstTagList</span>
+</div>
+</div>
+</body>
+</html>

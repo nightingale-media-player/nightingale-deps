@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gsttunerchannel</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="prev" href="gst-plugins-base-libs-gsttuner.html" title="gsttuner">
+<link rel="next" href="gst-plugins-base-libs-gsttunernorm.html" title="gsttunernorm">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-libs-gsttuner.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-interfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gsttunernorm.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2618287" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2618395" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2618332" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2618356" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gsttunerchannel"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2618287"></a><span class="refentrytitle">gsttunerchannel</span>
+</h2>
+<p>gsttunerchannel</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstTunerChannel"></a><pre class="synopsis">
+
+#include &lt;gst/interfaces/tuner.h&gt;
+
+
+                    <a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-struct">GstTunerChannel</a>;
+enum                <a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannelFlags">GstTunerChannelFlags</a>;
+#define             <a href="gst-plugins-base-libs-gsttunerchannel.html#GST-TUNER-CHANNEL-HAS-FLAG:CAPS">GST_TUNER_CHANNEL_HAS_FLAG</a>          (channel, flag)
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618332"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstTunerChannel
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618356"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-frequency-changed">frequency-changed</a>"                              : Run Last
+  "<a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel-signal-changed">signal-changed</a>"                                 : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618395"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618409"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2618420"></a><h3>
+<a name="GstTunerChannel-struct"></a>GstTunerChannel</h3>
+<a class="indexterm" name="id2618433"></a><pre class="programlisting">typedef struct _GstTunerChannel GstTunerChannel;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618449"></a><h3>
+<a name="GstTunerChannelFlags"></a>enum GstTunerChannelFlags</h3>
+<a class="indexterm" name="id2618462"></a><pre class="programlisting">typedef enum {
+  GST_TUNER_CHANNEL_INPUT     = (1&lt;&lt;0),
+  GST_TUNER_CHANNEL_OUTPUT    = (1&lt;&lt;1),
+  GST_TUNER_CHANNEL_FREQUENCY = (1&lt;&lt;2),
+  GST_TUNER_CHANNEL_AUDIO     = (1&lt;&lt;3)
+} GstTunerChannelFlags;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618481"></a><h3>
+<a name="GST-TUNER-CHANNEL-HAS-FLAG:CAPS"></a>GST_TUNER_CHANNEL_HAS_FLAG()</h3>
+<a class="indexterm" name="id2618494"></a><pre class="programlisting">#define             GST_TUNER_CHANNEL_HAS_FLAG(channel, flag)</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>channel</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flag</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618543"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2618553"></a><h3>
+<a name="GstTunerChannel-frequency-changed"></a>The "frequency-changed" signal</h3>
+<a class="indexterm" name="id2618565"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *gsttunerchannel,
+                                                        gulong           arg1,
+                                                        gpointer         user_data)            : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gsttunerchannel</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618654"></a><h3>
+<a name="GstTunerChannel-signal-changed"></a>The "signal-changed" signal</h3>
+<a class="indexterm" name="id2618666"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *gsttunerchannel,
+                                                        gint             arg1,
+                                                        gpointer         user_data)            : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>gsttunerchannel</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

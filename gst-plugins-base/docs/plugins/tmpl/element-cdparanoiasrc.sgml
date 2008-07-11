@@ -1,0 +1,62 @@
+<!-- ##### SECTION Title ##### -->
+cdparanoiasrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Read audio from CD in paranoid mode
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-cdparanoiasrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstCdParanoiaSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstCdParanoiaSrc::transport-error ##### -->
+<para>
+
+</para>
+
+@gstcdparanoiasrc: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GstCdParanoiaSrc::uncorrected-error ##### -->
+<para>
+
+</para>
+
+@gstcdparanoiasrc: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG GstCdParanoiaSrc:generic-device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCdParanoiaSrc:paranoia-mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCdParanoiaSrc:read-speed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCdParanoiaSrc:search-overlap ##### -->
+<para>
+
+</para>
+

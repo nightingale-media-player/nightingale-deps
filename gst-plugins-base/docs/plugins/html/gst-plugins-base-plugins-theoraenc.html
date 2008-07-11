@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>theoraenc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-theoradec.html" title="theoradec">
+<link rel="next" href="gst-plugins-base-plugins-textoverlay.html" title="textoverlay">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-theoradec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-textoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2614025" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2596968" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2613978" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2596581" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-theoraenc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2614025"></a><span class="refentrytitle">theoraenc</span>
+</h2>
+<p>theoraenc &#8212; encode raw YUV video to a theora stream</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstTheoraEnc"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc-struct">GstTheoraEnc</a>;
+enum                <a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613978"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstTheoraEnc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2596581"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--bitrate">bitrate</a>"                  gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--border">border</a>"                   <a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--center">center</a>"                   gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-auto">keyframe-auto</a>"            gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-force">keyframe-force</a>"           gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-freq">keyframe-freq</a>"            gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-mindistance">keyframe-mindistance</a>"     gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-threshold">keyframe-threshold</a>"       gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--noise-sensitivity">noise-sensitivity</a>"        gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--quality">quality</a>"                  gint                  : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--quick">quick</a>"                    gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--sharpness">sharpness</a>"                gint                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2596968"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2596982"></a><p>
+This element encodes raw video into a Theora stream.
+<a href="http://www.theora.org/" target="_top">Theora</a> is a royalty-free
+video codec maintained by the <a href="http://www.xiph.org/" target="_top">Xiph.org
+Foundation</a>, based on the VP3 codec.
+</p>
+<p>
+The theora codec internally only supports encoding of images that are a
+multiple of 16 pixels in both X and Y direction. It is however perfectly
+possible to encode images with other dimensions because an arbitrary
+rectangular cropping region can be set up. This element will automatically
+set up a correct cropping region if the dimensions are not multiples of 16
+pixels. The "border" and "center" properties control how this cropping
+region will be set up.
+</p>
+<p>
+To control the quality of the encoding, the "bitrate" and "quality"
+properties can be used. These two properties are mutualy exclusive. Setting
+the bitrate property will produce a constant bitrate (CBR) stream while
+setting the quality property will produce a variable bitrate (VBR) stream.
+</p>
+<h3>Example pipeline</h3>
+<pre class="programlisting">
+gst-launch -v videotestsrc num-buffers=1000 ! theoraenc ! oggmux ! filesink location=videotestsrc.ogg
+</pre>
+This example pipeline will encode a test video source to theora muxed in an
+ogg container. Refer to the theoradec documentation to decode the create
+stream.
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsect2" lang="en">
+<a name="id2597042"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Encoder/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-theora</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv, format=(fourcc)I420, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2611560"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2611571"></a><h3>
+<a name="GstTheoraEnc-struct"></a>GstTheoraEnc</h3>
+<a class="indexterm" name="id2611583"></a><pre class="programlisting">typedef struct _GstTheoraEnc GstTheoraEnc;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611603"></a><h3>
+<a name="GstTheoraEncBorderMode"></a>enum GstTheoraEncBorderMode</h3>
+<a class="indexterm" name="id2611614"></a><pre class="programlisting">typedef enum
+{
+  BORDER_NONE,
+  BORDER_BLACK,
+  BORDER_MIRROR
+}
+GstTheoraEncBorderMode;
+</pre>
+<p>
+Border color to add when sizes not multiple of 16.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="BORDER-NONE:CAPS"></a><code class="literal">BORDER_NONE</code></span></td>
+<td> no border
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="BORDER-BLACK:CAPS"></a><code class="literal">BORDER_BLACK</code></span></td>
+<td> black border
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="BORDER-MIRROR:CAPS"></a><code class="literal">BORDER_MIRROR</code></span></td>
+<td> Mirror image in border
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2611707"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2611717"></a><h3>
+<a name="GstTheoraEnc--bitrate"></a>The "<code class="literal">bitrate</code>" property</h3>
+<a class="indexterm" name="id2611731"></a><pre class="programlisting">  "bitrate"                  gint                  : Read / Write</pre>
+<p>Compressed video bitrate (kbps).</p>
+<p>Allowed values: [0,2000]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611760"></a><h3>
+<a name="GstTheoraEnc--border"></a>The "<code class="literal">border</code>" property</h3>
+<a class="indexterm" name="id2573016"></a><pre class="programlisting">  "border"                   <a href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>  : Read / Write</pre>
+<p>Border color to add when sizes not multiple of 16.</p>
+<p>Default value: Black Border</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573042"></a><h3>
+<a name="GstTheoraEnc--center"></a>The "<code class="literal">center</code>" property</h3>
+<a class="indexterm" name="id2573056"></a><pre class="programlisting">  "center"                   gboolean              : Read / Write</pre>
+<p>Center image when sizes not multiple of 16.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573083"></a><h3>
+<a name="GstTheoraEnc--keyframe-auto"></a>The "<code class="literal">keyframe-auto</code>" property</h3>
+<a class="indexterm" name="id2573097"></a><pre class="programlisting">  "keyframe-auto"            gboolean              : Read / Write</pre>
+<p>Automatic keyframe detection.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573123"></a><h3>
+<a name="GstTheoraEnc--keyframe-force"></a>The "<code class="literal">keyframe-force</code>" property</h3>
+<a class="indexterm" name="id2573139"></a><pre class="programlisting">  "keyframe-force"           gint                  : Read / Write</pre>
+<p>Force keyframe every N frames.</p>
+<p>Allowed values: [1,32768]</p>
+<p>Default value: 64</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573169"></a><h3>
+<a name="GstTheoraEnc--keyframe-freq"></a>The "<code class="literal">keyframe-freq</code>" property</h3>
+<a class="indexterm" name="id2573183"></a><pre class="programlisting">  "keyframe-freq"            gint                  : Read / Write</pre>
+<p>Keyframe frequency.</p>
+<p>Allowed values: [1,32768]</p>
+<p>Default value: 64</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573212"></a><h3>
+<a name="GstTheoraEnc--keyframe-mindistance"></a>The "<code class="literal">keyframe-mindistance</code>" property</h3>
+<a class="indexterm" name="id2573228"></a><pre class="programlisting">  "keyframe-mindistance"     gint                  : Read / Write</pre>
+<p>Keyframe mindistance.</p>
+<p>Allowed values: [1,32768]</p>
+<p>Default value: 8</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573257"></a><h3>
+<a name="GstTheoraEnc--keyframe-threshold"></a>The "<code class="literal">keyframe-threshold</code>" property</h3>
+<a class="indexterm" name="id2573273"></a><pre class="programlisting">  "keyframe-threshold"       gint                  : Read / Write</pre>
+<p>Keyframe threshold.</p>
+<p>Allowed values: [0,32768]</p>
+<p>Default value: 80</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573303"></a><h3>
+<a name="GstTheoraEnc--noise-sensitivity"></a>The "<code class="literal">noise-sensitivity</code>" property</h3>
+<a class="indexterm" name="id2573319"></a><pre class="programlisting">  "noise-sensitivity"        gint                  : Read / Write</pre>
+<p>Noise sensitivity.</p>
+<p>Allowed values: [0,32768]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573348"></a><h3>
+<a name="GstTheoraEnc--quality"></a>The "<code class="literal">quality</code>" property</h3>
+<a class="indexterm" name="id2573362"></a><pre class="programlisting">  "quality"                  gint                  : Read / Write</pre>
+<p>Video quality.</p>
+<p>Allowed values: [0,63]</p>
+<p>Default value: 16</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573392"></a><h3>
+<a name="GstTheoraEnc--quick"></a>The "<code class="literal">quick</code>" property</h3>
+<a class="indexterm" name="id2573407"></a><pre class="programlisting">  "quick"                    gboolean              : Read / Write</pre>
+<p>Quick encoding.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2573433"></a><h3>
+<a name="GstTheoraEnc--sharpness"></a>The "<code class="literal">sharpness</code>" property</h3>
+<a class="indexterm" name="id2573447"></a><pre class="programlisting">  "sharpness"                gint                  : Read / Write</pre>
+<p>Sharpness.</p>
+<p>Allowed values: [0,2]</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2573478"></a><h2>See Also</h2>
+theoradec, oggmux
+</div>
+</div>
+</body>
+</html>

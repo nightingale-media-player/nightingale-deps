@@ -1,0 +1,143 @@
+<!-- ##### SECTION Title ##### -->
+gstpropertyprobe
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPropertyProbe ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstPropertyProbe::probe-needed ##### -->
+<para>
+
+</para>
+
+@gstpropertyprobe: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GstPropertyProbeInterface ##### -->
+<para>
+
+</para>
+
+@klass: 
+@probe_needed: 
+@get_properties: 
+@needs_probe: 
+@probe_property: 
+@get_values: 
+@_gst_reserved: 
+
+<!-- ##### FUNCTION gst_property_probe_get_properties ##### -->
+<para>
+
+</para>
+
+@probe: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_get_property ##### -->
+<para>
+
+</para>
+
+@probe: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_get_values ##### -->
+<para>
+
+</para>
+
+@probe: 
+@pspec: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_get_values_name ##### -->
+<para>
+
+</para>
+
+@probe: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_needs_probe ##### -->
+<para>
+
+</para>
+
+@probe: 
+@pspec: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_needs_probe_name ##### -->
+<para>
+
+</para>
+
+@probe: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_probe_and_get_values ##### -->
+<para>
+
+</para>
+
+@probe: 
+@pspec: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_probe_and_get_values_name ##### -->
+<para>
+
+</para>
+
+@probe: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_property_probe_probe_property ##### -->
+<para>
+
+</para>
+
+@probe: 
+@pspec: 
+
+
+<!-- ##### FUNCTION gst_property_probe_probe_property_name ##### -->
+<para>
+
+</para>
+
+@probe: 
+@name: 
+
+

@@ -1,0 +1,530 @@
+<!-- ##### SECTION Title ##### -->
+gstrtcpbuffer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO GST_RTCP_VERSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_MAX_SDES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_MAX_BYE_SSRC_COUNT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_MAX_RB_COUNT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_MAX_SDES_ITEM_COUNT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_VALID_MASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RTCP_VALID_VALUE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM GstRTCPType ##### -->
+<para>
+
+</para>
+
+@GST_RTCP_TYPE_INVALID: 
+@GST_RTCP_TYPE_SR: 
+@GST_RTCP_TYPE_RR: 
+@GST_RTCP_TYPE_SDES: 
+@GST_RTCP_TYPE_BYE: 
+@GST_RTCP_TYPE_APP: 
+
+<!-- ##### STRUCT GstRTCPPacket ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@offset: 
+
+<!-- ##### ENUM GstRTCPSDESType ##### -->
+<para>
+
+</para>
+
+@GST_RTCP_SDES_INVALID: 
+@GST_RTCP_SDES_END: 
+@GST_RTCP_SDES_CNAME: 
+@GST_RTCP_SDES_NAME: 
+@GST_RTCP_SDES_EMAIL: 
+@GST_RTCP_SDES_PHONE: 
+@GST_RTCP_SDES_LOC: 
+@GST_RTCP_SDES_TOOL: 
+@GST_RTCP_SDES_NOTE: 
+@GST_RTCP_SDES_PRIV: 
+
+<!-- ##### FUNCTION gst_rtcp_buffer_new_take_data ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_new_copy_data ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_validate_data ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_validate ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_new ##### -->
+<para>
+
+</para>
+
+@mtu: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_end ##### -->
+<para>
+
+</para>
+
+@buffer: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_get_packet_count ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_get_first_packet ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_move_to_next ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_buffer_add_packet ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@type: 
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_remove ##### -->
+<para>
+
+</para>
+
+@packet: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_padding ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_count ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_type ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_length ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sr_get_sender_info ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@ntptime: 
+@rtptime: 
+@packet_count: 
+@octet_count: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sr_set_sender_info ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@ntptime: 
+@rtptime: 
+@packet_count: 
+@octet_count: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_rr_get_ssrc ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_rr_set_ssrc ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_rb_count ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_get_rb ##### -->
+<para>
+
+</para>
+
+@packet: 
+@nth: 
+@ssrc: 
+@fractionlost: 
+@packetslost: 
+@exthighestseq: 
+@jitter: 
+@lsr: 
+@dlsr: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_add_rb ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@fractionlost: 
+@packetslost: 
+@exthighestseq: 
+@jitter: 
+@lsr: 
+@dlsr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_set_rb ##### -->
+<para>
+
+</para>
+
+@packet: 
+@nth: 
+@ssrc: 
+@fractionlost: 
+@packetslost: 
+@exthighestseq: 
+@jitter: 
+@lsr: 
+@dlsr: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_get_item_count ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_first_item ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_next_item ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_get_ssrc ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_first_entry ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_next_entry ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_get_entry ##### -->
+<para>
+
+</para>
+
+@packet: 
+@type: 
+@len: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_copy_entry ##### -->
+<para>
+
+</para>
+
+@packet: 
+@type: 
+@len: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_add_item ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_sdes_add_entry ##### -->
+<para>
+
+</para>
+
+@packet: 
+@type: 
+@len: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_get_ssrc_count ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_get_nth_ssrc ##### -->
+<para>
+
+</para>
+
+@packet: 
+@nth: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_add_ssrc ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_add_ssrcs ##### -->
+<para>
+
+</para>
+
+@packet: 
+@ssrc: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_get_reason_len ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_get_reason ##### -->
+<para>
+
+</para>
+
+@packet: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_packet_bye_set_reason ##### -->
+<para>
+
+</para>
+
+@packet: 
+@reason: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_ntp_to_unix ##### -->
+<para>
+
+</para>
+
+@ntptime: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_rtcp_unix_to_ntp ##### -->
+<para>
+
+</para>
+
+@unixtime: 
+@Returns: 
+
+

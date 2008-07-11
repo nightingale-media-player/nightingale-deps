@@ -1,0 +1,256 @@
+<!-- ##### SECTION Title ##### -->
+gstmixer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMixer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstMixer::mute-toggled ##### -->
+<para>
+
+</para>
+
+@gstmixer: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstMixer::option-changed ##### -->
+<para>
+
+</para>
+
+@gstmixer: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstMixer::record-toggled ##### -->
+<para>
+
+</para>
+
+@gstmixer: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstMixer::volume-changed ##### -->
+<para>
+
+</para>
+
+@gstmixer: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ENUM GstMixerType ##### -->
+<para>
+
+</para>
+
+@GST_MIXER_HARDWARE: 
+@GST_MIXER_SOFTWARE: 
+
+<!-- ##### ENUM GstMixerFlags ##### -->
+<para>
+
+</para>
+
+@GST_MIXER_FLAG_NONE: 
+@GST_MIXER_FLAG_AUTO_NOTIFICATIONS: 
+
+<!-- ##### ENUM GstMixerMessageType ##### -->
+<para>
+
+</para>
+
+@GST_MIXER_MESSAGE_INVALID: 
+@GST_MIXER_MESSAGE_MUTE_TOGGLED: 
+@GST_MIXER_MESSAGE_RECORD_TOGGLED: 
+@GST_MIXER_MESSAGE_VOLUME_CHANGED: 
+@GST_MIXER_MESSAGE_OPTION_CHANGED: 
+
+<!-- ##### FUNCTION gst_mixer_list_tracks ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_mixer_get_volume ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@volumes: 
+
+
+<!-- ##### FUNCTION gst_mixer_set_volume ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@volumes: 
+
+
+<!-- ##### FUNCTION gst_mixer_set_mute ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@mute: 
+
+
+<!-- ##### FUNCTION gst_mixer_set_record ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@record: 
+
+
+<!-- ##### FUNCTION gst_mixer_set_option ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@opts: 
+@value: 
+
+
+<!-- ##### FUNCTION gst_mixer_mute_toggled ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@mute: 
+
+
+<!-- ##### FUNCTION gst_mixer_record_toggled ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@record: 
+
+
+<!-- ##### FUNCTION gst_mixer_volume_changed ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@track: 
+@volumes: 
+
+
+<!-- ##### FUNCTION gst_mixer_option_changed ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@opts: 
+@value: 
+
+
+<!-- ##### FUNCTION gst_mixer_get_option ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@opts: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_mixer_get_mixer_flags ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_get_type ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_parse_mute_toggled ##### -->
+<para>
+
+</para>
+
+@message: 
+@track: 
+@mute: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_parse_option_changed ##### -->
+<para>
+
+</para>
+
+@message: 
+@options: 
+@value: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_parse_record_toggled ##### -->
+<para>
+
+</para>
+
+@message: 
+@track: 
+@record: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_parse_volume_changed ##### -->
+<para>
+
+</para>
+
+@message: 
+@track: 
+@volumes: 
+@num_channels: 
+
+

@@ -1,0 +1,81 @@
+<!-- ##### SECTION Title ##### -->
+gstcddabasesrc
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstCddaBaseSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstCddaBaseSrc:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCddaBaseSrc:mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstCddaBaseSrc:track ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GstCddaBaseSrcClass ##### -->
+<para>
+
+</para>
+
+@pushsrc_class: 
+@open: 
+@close: 
+@read_sector: 
+@get_default_device: 
+@probe_devices: 
+
+<!-- ##### STRUCT GstCddaBaseSrcTrack ##### -->
+<para>
+
+</para>
+
+@is_audio: 
+@num: 
+@start: 
+@end: 
+@tags: 
+
+<!-- ##### ENUM GstCddaBaseSrcMode ##### -->
+<para>
+
+</para>
+
+@GST_CDDA_BASE_SRC_MODE_NORMAL: 
+@GST_CDDA_BASE_SRC_MODE_CONTINUOUS: 
+
+<!-- ##### FUNCTION gst_cdda_base_src_add_track ##### -->
+<para>
+
+</para>
+
+@src: 
+@track: 
+@Returns: 
+
+

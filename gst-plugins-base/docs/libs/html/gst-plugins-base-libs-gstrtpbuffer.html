@@ -1,0 +1,1449 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstrtpbuffer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="prev" href="gst-plugins-base-libs-gstrtppayloads.html" title="gstrtppayloads">
+<link rel="next" href="gst-plugins-base-libs-gstrtcpbuffer.html" title="gstrtcpbuffer">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-libs-gstrtppayloads.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-rtp.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstrtcpbuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2656583" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2657823" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstrtpbuffer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2656583"></a><span class="refentrytitle">gstrtpbuffer</span>
+</h2>
+<p>gstrtpbuffer &#8212; Helper methods for dealing with RTP buffers</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/rtp/gstrtpbuffer.h&gt;
+
+
+#define             <a href="gst-plugins-base-libs-gstrtpbuffer.html#GST-RTP-VERSION:CAPS">GST_RTP_VERSION</a>
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-allocate-data">gst_rtp_buffer_allocate_data</a>        (GstBuffer *buffer,
+                                                         guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-take-data">gst_rtp_buffer_new_take_data</a>        (gpointer data,
+                                                         guint len);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-copy-data">gst_rtp_buffer_new_copy_data</a>        (gpointer data,
+                                                         guint len);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate">gst_rtp_buffer_new_allocate</a>         (guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-new-allocate-len">gst_rtp_buffer_new_allocate_len</a>     (guint packet_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-calc-header-len">gst_rtp_buffer_calc_header_len</a>      (guint8 csrc_count);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-calc-packet-len">gst_rtp_buffer_calc_packet_len</a>      (guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-calc-payload-len">gst_rtp_buffer_calc_payload_len</a>     (guint packet_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate">gst_rtp_buffer_validate</a>             (GstBuffer *buffer);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate-data">gst_rtp_buffer_validate_data</a>        (guint8 *data,
+                                                         guint len);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-packet-len">gst_rtp_buffer_set_packet_len</a>       (GstBuffer *buffer,
+                                                         guint len);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-packet-len">gst_rtp_buffer_get_packet_len</a>       (GstBuffer *buffer);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-header-len">gst_rtp_buffer_get_header_len</a>       (GstBuffer *buffer);
+guint8              <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-version">gst_rtp_buffer_get_version</a>          (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-version">gst_rtp_buffer_set_version</a>          (GstBuffer *buffer,
+                                                         guint8 version);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-padding">gst_rtp_buffer_get_padding</a>          (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-padding">gst_rtp_buffer_set_padding</a>          (GstBuffer *buffer,
+                                                         gboolean padding);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-pad-to">gst_rtp_buffer_pad_to</a>               (GstBuffer *buffer,
+                                                         guint len);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension">gst_rtp_buffer_get_extension</a>        (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-extension">gst_rtp_buffer_set_extension</a>        (GstBuffer *buffer,
+                                                         gboolean extension);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-extension-data">gst_rtp_buffer_get_extension_data</a>   (GstBuffer *buffer,
+                                                         guint16 *bits,
+                                                         gpointer *data,
+                                                         guint *wordlen);
+guint32             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-ssrc">gst_rtp_buffer_get_ssrc</a>             (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-ssrc">gst_rtp_buffer_set_ssrc</a>             (GstBuffer *buffer,
+                                                         guint32 ssrc);
+guint8              <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc-count">gst_rtp_buffer_get_csrc_count</a>       (GstBuffer *buffer);
+guint32             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-csrc">gst_rtp_buffer_get_csrc</a>             (GstBuffer *buffer,
+                                                         guint8 idx);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-csrc">gst_rtp_buffer_set_csrc</a>             (GstBuffer *buffer,
+                                                         guint8 idx,
+                                                         guint32 csrc);
+gboolean            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-marker">gst_rtp_buffer_get_marker</a>           (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-marker">gst_rtp_buffer_set_marker</a>           (GstBuffer *buffer,
+                                                         gboolean marker);
+guint8              <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-type">gst_rtp_buffer_get_payload_type</a>     (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-payload-type">gst_rtp_buffer_set_payload_type</a>     (GstBuffer *buffer,
+                                                         guint8 payload_type);
+guint16             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-seq">gst_rtp_buffer_get_seq</a>              (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-seq">gst_rtp_buffer_set_seq</a>              (GstBuffer *buffer,
+                                                         guint16 seq);
+guint32             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-timestamp">gst_rtp_buffer_get_timestamp</a>        (GstBuffer *buffer);
+void                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-set-timestamp">gst_rtp_buffer_set_timestamp</a>        (GstBuffer *buffer,
+                                                         guint32 timestamp);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-buffer">gst_rtp_buffer_get_payload_buffer</a>   (GstBuffer *buffer);
+GstBuffer*          <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-subbuffer">gst_rtp_buffer_get_payload_subbuffer</a>
+                                                        (GstBuffer *buffer,
+                                                         guint offset,
+                                                         guint len);
+guint               <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload-len">gst_rtp_buffer_get_payload_len</a>      (GstBuffer *buffer);
+gpointer            <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-get-payload">gst_rtp_buffer_get_payload</a>          (GstBuffer *buffer);
+guint32             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-default-clock-rate">gst_rtp_buffer_default_clock_rate</a>   (guint8 payload_type);
+gint                <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-compare-seqnum">gst_rtp_buffer_compare_seqnum</a>       (guint16 seqnum1,
+                                                         guint16 seqnum2);
+guint64             <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-ext-timestamp">gst_rtp_buffer_ext_timestamp</a>        (guint64 *exttimestamp,
+                                                         guint32 timestamp);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2657823"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2657835"></a><p>
+The GstRTPBuffer helper functions makes it easy to parse and create regular 
+<span class="type">GstBuffer</span> objects that contain RTP payloads. These buffers are typically of
+'application/x-rtp' <span class="type">GstCaps</span>.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2006-07-17 (0.10.10)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2657870"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2657880"></a><h3>
+<a name="GST-RTP-VERSION:CAPS"></a>GST_RTP_VERSION</h3>
+<a class="indexterm" name="id2657894"></a><pre class="programlisting">#define GST_RTP_VERSION 2
+</pre>
+<p>
+The supported RTP version 2.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2657912"></a><h3>
+<a name="gst-rtp-buffer-allocate-data"></a>gst_rtp_buffer_allocate_data ()</h3>
+<a class="indexterm" name="id2657926"></a><pre class="programlisting">void                gst_rtp_buffer_allocate_data        (GstBuffer *buffer,
+                                                         guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);</pre>
+<p>
+Allocate enough data in <em class="parameter"><code>buffer</code></em> to hold an RTP packet with <em class="parameter"><code>csrc_count</code></em> CSRCs,
+a payload length of <em class="parameter"><code>payload_len</code></em> and padding of <em class="parameter"><code>pad_len</code></em>.
+MALLOCDATA of <em class="parameter"><code>buffer</code></em> will be overwritten and will not be freed. 
+All other RTP header fields will be set to 0/FALSE.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> a <span class="type">GstBuffer</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_len</code></em>&#160;:</span></td>
+<td> the length of the payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pad_len</code></em>&#160;:</span></td>
+<td> the amount of padding
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658082"></a><h3>
+<a name="gst-rtp-buffer-new-take-data"></a>gst_rtp_buffer_new_take_data ()</h3>
+<a class="indexterm" name="id2658096"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_take_data        (gpointer data,
+                                                         guint len);</pre>
+<p>
+Create a new buffer and set the data and size of the buffer to <em class="parameter"><code>data</code></em> and <em class="parameter"><code>len</code></em>
+respectively. <em class="parameter"><code>data</code></em> will be freed when the buffer is unreffed, so this
+function transfers ownership of <em class="parameter"><code>data</code></em> to the new buffer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> data for the new buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the length of data
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated buffer with <em class="parameter"><code>data</code></em> and of size <em class="parameter"><code>len</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658217"></a><h3>
+<a name="gst-rtp-buffer-new-copy-data"></a>gst_rtp_buffer_new_copy_data ()</h3>
+<a class="indexterm" name="id2658230"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_copy_data        (gpointer data,
+                                                         guint len);</pre>
+<p>
+Create a new buffer and set the data to a copy of <em class="parameter"><code>len</code></em>
+bytes of <em class="parameter"><code>data</code></em> and the size to <em class="parameter"><code>len</code></em>. The data will be freed when the buffer
+is freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> data for the new buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the length of data
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated buffer with a copy of <em class="parameter"><code>data</code></em> and of size <em class="parameter"><code>len</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658344"></a><h3>
+<a name="gst-rtp-buffer-new-allocate"></a>gst_rtp_buffer_new_allocate ()</h3>
+<a class="indexterm" name="id2658358"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_allocate         (guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);</pre>
+<p>
+Allocate a new <span class="type">Gstbuffer</span> with enough data to hold an RTP packet with <em class="parameter"><code>csrc_count</code></em> CSRCs,
+a payload length of <em class="parameter"><code>payload_len</code></em> and padding of <em class="parameter"><code>pad_len</code></em>.
+All other RTP header fields will be set to 0/FALSE.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_len</code></em>&#160;:</span></td>
+<td> the length of the payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pad_len</code></em>&#160;:</span></td>
+<td> the amount of padding
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated buffer that can hold an RTP packet with given
+parameters.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658493"></a><h3>
+<a name="gst-rtp-buffer-new-allocate-len"></a>gst_rtp_buffer_new_allocate_len ()</h3>
+<a class="indexterm" name="id2658506"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_new_allocate_len     (guint packet_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);</pre>
+<p>
+Create a new <span class="type">GstBuffer</span> that can hold an RTP packet that is exactly
+<em class="parameter"><code>packet_len</code></em> long. The length of the payload depends on <em class="parameter"><code>pad_len</code></em> and
+<em class="parameter"><code>csrc_count</code></em> and can be calculated with <a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-calc-payload-len"><code class="function">gst_rtp_buffer_calc_payload_len()</code></a>.
+All RTP header fields will be set to 0/FALSE.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>packet_len</code></em>&#160;:</span></td>
+<td> the total length of the packet
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pad_len</code></em>&#160;:</span></td>
+<td> the amount of padding
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated buffer that can hold an RTP packet of <em class="parameter"><code>packet_len</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658658"></a><h3>
+<a name="gst-rtp-buffer-calc-header-len"></a>gst_rtp_buffer_calc_header_len ()</h3>
+<a class="indexterm" name="id2658671"></a><pre class="programlisting">guint               gst_rtp_buffer_calc_header_len      (guint8 csrc_count);</pre>
+<p>
+Calculate the header length of an RTP packet with <em class="parameter"><code>csrc_count</code></em> CSRC entries.
+An RTP packet can have at most 15 CSRC entries.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The length of an RTP header with <em class="parameter"><code>csrc_count</code></em> CSRC entries.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658746"></a><h3>
+<a name="gst-rtp-buffer-calc-packet-len"></a>gst_rtp_buffer_calc_packet_len ()</h3>
+<a class="indexterm" name="id2658760"></a><pre class="programlisting">guint               gst_rtp_buffer_calc_packet_len      (guint payload_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);</pre>
+<p>
+Calculate the total length of an RTP packet with a payload size of <em class="parameter"><code>payload_len</code></em>,
+a padding of <em class="parameter"><code>pad_len</code></em> and a <em class="parameter"><code>csrc_count</code></em> CSRC entries.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_len</code></em>&#160;:</span></td>
+<td> the length of the payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pad_len</code></em>&#160;:</span></td>
+<td> the amount of padding
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The total length of an RTP header with given parameters.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2658885"></a><h3>
+<a name="gst-rtp-buffer-calc-payload-len"></a>gst_rtp_buffer_calc_payload_len ()</h3>
+<a class="indexterm" name="id2658899"></a><pre class="programlisting">guint               gst_rtp_buffer_calc_payload_len     (guint packet_len,
+                                                         guint8 pad_len,
+                                                         guint8 csrc_count);</pre>
+<p>
+Calculate the length of the payload of an RTP packet with size <em class="parameter"><code>packet_len</code></em>,
+a padding of <em class="parameter"><code>pad_len</code></em> and a <em class="parameter"><code>csrc_count</code></em> CSRC entries.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>packet_len</code></em>&#160;:</span></td>
+<td> the length of the total RTP packet
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pad_len</code></em>&#160;:</span></td>
+<td> the amount of padding
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc_count</code></em>&#160;:</span></td>
+<td> the number of CSRC entries
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The length of the payload of an RTP packet  with given parameters.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659024"></a><h3>
+<a name="gst-rtp-buffer-validate"></a>gst_rtp_buffer_validate ()</h3>
+<a class="indexterm" name="id2659038"></a><pre class="programlisting">gboolean            gst_rtp_buffer_validate             (GstBuffer *buffer);</pre>
+<p>
+Check if the data pointed to by <em class="parameter"><code>buffer</code></em> is a valid RTP packet using
+<a href="gst-plugins-base-libs-gstrtpbuffer.html#gst-rtp-buffer-validate-data"><code class="function">gst_rtp_buffer_validate_data()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer to validate
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if <em class="parameter"><code>buffer</code></em> is a valid RTP packet.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659122"></a><h3>
+<a name="gst-rtp-buffer-validate-data"></a>gst_rtp_buffer_validate_data ()</h3>
+<a class="indexterm" name="id2659136"></a><pre class="programlisting">gboolean            gst_rtp_buffer_validate_data        (guint8 *data,
+                                                         guint len);</pre>
+<p>
+Check if the <em class="parameter"><code>data</code></em> and <em class="parameter"><code>size</code></em> point to the data of a valid RTP packet.
+This function checks the length, version and padding of the packet data.
+Use this function to validate a packet before using the other functions in
+this module.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> the data to validate
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the length of <em class="parameter"><code>data</code></em> to validate
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the data points to a valid RTP packet.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659240"></a><h3>
+<a name="gst-rtp-buffer-set-packet-len"></a>gst_rtp_buffer_set_packet_len ()</h3>
+<a class="indexterm" name="id2659254"></a><pre class="programlisting">void                gst_rtp_buffer_set_packet_len       (GstBuffer *buffer,
+                                                         guint len);</pre>
+<p>
+Set the total <em class="parameter"><code>buffer</code></em> size to <em class="parameter"><code>len</code></em>. The data in the buffer will be made
+larger if needed. Any padding will be removed from the packet.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the new packet length
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659339"></a><h3>
+<a name="gst-rtp-buffer-get-packet-len"></a>gst_rtp_buffer_get_packet_len ()</h3>
+<a class="indexterm" name="id2659353"></a><pre class="programlisting">guint               gst_rtp_buffer_get_packet_len       (GstBuffer *buffer);</pre>
+<p>
+Return the total length of the packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The total length of the packet in <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659426"></a><h3>
+<a name="gst-rtp-buffer-get-header-len"></a>gst_rtp_buffer_get_header_len ()</h3>
+<a class="indexterm" name="id2659439"></a><pre class="programlisting">guint               gst_rtp_buffer_get_header_len       (GstBuffer *buffer);</pre>
+<p>
+Return the total length of the header in <em class="parameter"><code>buffer</code></em>. This include the length of
+the fixed header, the CSRC list and the extension header.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The total length of the header in <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659514"></a><h3>
+<a name="gst-rtp-buffer-get-version"></a>gst_rtp_buffer_get_version ()</h3>
+<a class="indexterm" name="id2659528"></a><pre class="programlisting">guint8              gst_rtp_buffer_get_version          (GstBuffer *buffer);</pre>
+<p>
+Get the version number of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The version of <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659600"></a><h3>
+<a name="gst-rtp-buffer-set-version"></a>gst_rtp_buffer_set_version ()</h3>
+<a class="indexterm" name="id2659614"></a><pre class="programlisting">void                gst_rtp_buffer_set_version          (GstBuffer *buffer,
+                                                         guint8 version);</pre>
+<p>
+Set the version of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>version</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>version</code></em>&#160;:</span></td>
+<td> the new version
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659698"></a><h3>
+<a name="gst-rtp-buffer-get-padding"></a>gst_rtp_buffer_get_padding ()</h3>
+<a class="indexterm" name="id2659712"></a><pre class="programlisting">gboolean            gst_rtp_buffer_get_padding          (GstBuffer *buffer);</pre>
+<p>
+Check if the padding bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if <em class="parameter"><code>buffer</code></em> has the padding bit set.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659784"></a><h3>
+<a name="gst-rtp-buffer-set-padding"></a>gst_rtp_buffer_set_padding ()</h3>
+<a class="indexterm" name="id2659798"></a><pre class="programlisting">void                gst_rtp_buffer_set_padding          (GstBuffer *buffer,
+                                                         gboolean padding);</pre>
+<p>
+Set the padding bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>padding</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>padding</code></em>&#160;:</span></td>
+<td> the new padding
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659882"></a><h3>
+<a name="gst-rtp-buffer-pad-to"></a>gst_rtp_buffer_pad_to ()</h3>
+<a class="indexterm" name="id2659895"></a><pre class="programlisting">void                gst_rtp_buffer_pad_to               (GstBuffer *buffer,
+                                                         guint len);</pre>
+<p>
+Set the amount of padding in the RTP packet in <em class="parameter"><code>buffer</code></em> to
+<em class="parameter"><code>len</code></em>. If <em class="parameter"><code>len</code></em> is 0, the padding is removed.
+</p>
+<p>
+NOTE: This function does not work correctly.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the new amount of padding
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2659990"></a><h3>
+<a name="gst-rtp-buffer-get-extension"></a>gst_rtp_buffer_get_extension ()</h3>
+<a class="indexterm" name="id2660004"></a><pre class="programlisting">gboolean            gst_rtp_buffer_get_extension        (GstBuffer *buffer);</pre>
+<p>
+Check if the extension bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if <em class="parameter"><code>buffer</code></em> has the extension bit set.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660077"></a><h3>
+<a name="gst-rtp-buffer-set-extension"></a>gst_rtp_buffer_set_extension ()</h3>
+<a class="indexterm" name="id2660090"></a><pre class="programlisting">void                gst_rtp_buffer_set_extension        (GstBuffer *buffer,
+                                                         gboolean extension);</pre>
+<p>
+Set the extension bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>extension</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>extension</code></em>&#160;:</span></td>
+<td> the new extension
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660175"></a><h3>
+<a name="gst-rtp-buffer-get-extension-data"></a>gst_rtp_buffer_get_extension_data ()</h3>
+<a class="indexterm" name="id2660192"></a><pre class="programlisting">gboolean            gst_rtp_buffer_get_extension_data   (GstBuffer *buffer,
+                                                         guint16 *bits,
+                                                         gpointer *data,
+                                                         guint *wordlen);</pre>
+<p>
+Get the extension data. <em class="parameter"><code>bits</code></em> will contain the extension 16 bits of custom
+data. <em class="parameter"><code>data</code></em> will point to the data in the extension and <em class="parameter"><code>wordlen</code></em> will contain
+the length of <em class="parameter"><code>data</code></em> in 32 bits words.
+</p>
+<p>
+If <em class="parameter"><code>buffer</code></em> did not contain an extension, this function will return <code class="literal">FALSE</code>
+with <em class="parameter"><code>bits</code></em>, <em class="parameter"><code>data</code></em> and <em class="parameter"><code>wordlen</code></em> unchanged.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>bits</code></em>&#160;:</span></td>
+<td> location for result bits
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> location for data
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>wordlen</code></em>&#160;:</span></td>
+<td> location for length of <em class="parameter"><code>data</code></em> in 32 bits words
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if <em class="parameter"><code>buffer</code></em> had the extension bit set.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.15
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660401"></a><h3>
+<a name="gst-rtp-buffer-get-ssrc"></a>gst_rtp_buffer_get_ssrc ()</h3>
+<a class="indexterm" name="id2660414"></a><pre class="programlisting">guint32             gst_rtp_buffer_get_ssrc             (GstBuffer *buffer);</pre>
+<p>
+Get the SSRC of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the SSRC of <em class="parameter"><code>buffer</code></em> in host order.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660487"></a><h3>
+<a name="gst-rtp-buffer-set-ssrc"></a>gst_rtp_buffer_set_ssrc ()</h3>
+<a class="indexterm" name="id2660501"></a><pre class="programlisting">void                gst_rtp_buffer_set_ssrc             (GstBuffer *buffer,
+                                                         guint32 ssrc);</pre>
+<p>
+Set the SSRC on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>ssrc</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td> the new SSRC
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660585"></a><h3>
+<a name="gst-rtp-buffer-get-csrc-count"></a>gst_rtp_buffer_get_csrc_count ()</h3>
+<a class="indexterm" name="id2660598"></a><pre class="programlisting">guint8              gst_rtp_buffer_get_csrc_count       (GstBuffer *buffer);</pre>
+<p>
+Get the CSRC count of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the CSRC count of <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660671"></a><h3>
+<a name="gst-rtp-buffer-get-csrc"></a>gst_rtp_buffer_get_csrc ()</h3>
+<a class="indexterm" name="id2660684"></a><pre class="programlisting">guint32             gst_rtp_buffer_get_csrc             (GstBuffer *buffer,
+                                                         guint8 idx);</pre>
+<p>
+Get the CSRC at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the index of the CSRC to get
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the CSRC at index <em class="parameter"><code>idx</code></em> in host order.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660785"></a><h3>
+<a name="gst-rtp-buffer-set-csrc"></a>gst_rtp_buffer_set_csrc ()</h3>
+<a class="indexterm" name="id2660797"></a><pre class="programlisting">void                gst_rtp_buffer_set_csrc             (GstBuffer *buffer,
+                                                         guint8 idx,
+                                                         guint32 csrc);</pre>
+<p>
+Modify the CSRC at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>csrc</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the CSRC index to set
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>csrc</code></em>&#160;:</span></td>
+<td> the CSRC in host order to set at <em class="parameter"><code>idx</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2660914"></a><h3>
+<a name="gst-rtp-buffer-get-marker"></a>gst_rtp_buffer_get_marker ()</h3>
+<a class="indexterm" name="id2660928"></a><pre class="programlisting">gboolean            gst_rtp_buffer_get_marker           (GstBuffer *buffer);</pre>
+<p>
+Check if the marker bit is set on the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if <em class="parameter"><code>buffer</code></em> has the marker bit set.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661001"></a><h3>
+<a name="gst-rtp-buffer-set-marker"></a>gst_rtp_buffer_set_marker ()</h3>
+<a class="indexterm" name="id2661015"></a><pre class="programlisting">void                gst_rtp_buffer_set_marker           (GstBuffer *buffer,
+                                                         gboolean marker);</pre>
+<p>
+Set the marker bit on the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>marker</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>marker</code></em>&#160;:</span></td>
+<td> the new marker
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661099"></a><h3>
+<a name="gst-rtp-buffer-get-payload-type"></a>gst_rtp_buffer_get_payload_type ()</h3>
+<a class="indexterm" name="id2661112"></a><pre class="programlisting">guint8              gst_rtp_buffer_get_payload_type     (GstBuffer *buffer);</pre>
+<p>
+Get the payload type of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The payload type.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661179"></a><h3>
+<a name="gst-rtp-buffer-set-payload-type"></a>gst_rtp_buffer_set_payload_type ()</h3>
+<a class="indexterm" name="id2661193"></a><pre class="programlisting">void                gst_rtp_buffer_set_payload_type     (GstBuffer *buffer,
+                                                         guint8 payload_type);</pre>
+<p>
+Set the payload type of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>payload_type</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_type</code></em>&#160;:</span></td>
+<td> the new type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661278"></a><h3>
+<a name="gst-rtp-buffer-get-seq"></a>gst_rtp_buffer_get_seq ()</h3>
+<a class="indexterm" name="id2661291"></a><pre class="programlisting">guint16             gst_rtp_buffer_get_seq              (GstBuffer *buffer);</pre>
+<p>
+Get the sequence number of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The sequence number in host order.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661358"></a><h3>
+<a name="gst-rtp-buffer-set-seq"></a>gst_rtp_buffer_set_seq ()</h3>
+<a class="indexterm" name="id2661372"></a><pre class="programlisting">void                gst_rtp_buffer_set_seq              (GstBuffer *buffer,
+                                                         guint16 seq);</pre>
+<p>
+Set the sequence number of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>seq</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>seq</code></em>&#160;:</span></td>
+<td> the new sequence number
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661456"></a><h3>
+<a name="gst-rtp-buffer-get-timestamp"></a>gst_rtp_buffer_get_timestamp ()</h3>
+<a class="indexterm" name="id2661470"></a><pre class="programlisting">guint32             gst_rtp_buffer_get_timestamp        (GstBuffer *buffer);</pre>
+<p>
+Get the timestamp of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The timestamp in host order.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661537"></a><h3>
+<a name="gst-rtp-buffer-set-timestamp"></a>gst_rtp_buffer_set_timestamp ()</h3>
+<a class="indexterm" name="id2661551"></a><pre class="programlisting">void                gst_rtp_buffer_set_timestamp        (GstBuffer *buffer,
+                                                         guint32 timestamp);</pre>
+<p>
+Set the timestamp of the RTP packet in <em class="parameter"><code>buffer</code></em> to <em class="parameter"><code>timestamp</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>timestamp</code></em>&#160;:</span></td>
+<td> the new timestamp
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661635"></a><h3>
+<a name="gst-rtp-buffer-get-payload-buffer"></a>gst_rtp_buffer_get_payload_buffer ()</h3>
+<a class="indexterm" name="id2661650"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_get_payload_buffer   (GstBuffer *buffer);</pre>
+<p>
+Create a buffer of the payload of the RTP packet in <em class="parameter"><code>buffer</code></em>. This function
+will internally create a subbuffer of <em class="parameter"><code>buffer</code></em> so that a memcpy can be
+avoided.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A new buffer with the data of the payload.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661724"></a><h3>
+<a name="gst-rtp-buffer-get-payload-subbuffer"></a>gst_rtp_buffer_get_payload_subbuffer ()</h3>
+<a class="indexterm" name="id2661741"></a><pre class="programlisting">GstBuffer*          gst_rtp_buffer_get_payload_subbuffer
+                                                        (GstBuffer *buffer,
+                                                         guint offset,
+                                                         guint len);</pre>
+<p>
+Create a subbuffer of the payload of the RTP packet in <em class="parameter"><code>buffer</code></em>. <em class="parameter"><code>offset</code></em> bytes
+are skipped in the payload and the subbuffer will be of size <em class="parameter"><code>len</code></em>.
+If <em class="parameter"><code>len</code></em> is -1 the total payload starting from <em class="parameter"><code>offset</code></em> if subbuffered.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>offset</code></em>&#160;:</span></td>
+<td> the offset in the payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td> the length in the payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A new buffer with the specified data of the payload.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661886"></a><h3>
+<a name="gst-rtp-buffer-get-payload-len"></a>gst_rtp_buffer_get_payload_len ()</h3>
+<a class="indexterm" name="id2661899"></a><pre class="programlisting">guint               gst_rtp_buffer_get_payload_len      (GstBuffer *buffer);</pre>
+<p>
+Get the length of the payload of the RTP packet in <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The length of the payload in <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2661972"></a><h3>
+<a name="gst-rtp-buffer-get-payload"></a>gst_rtp_buffer_get_payload ()</h3>
+<a class="indexterm" name="id2661986"></a><pre class="programlisting">gpointer            gst_rtp_buffer_get_payload          (GstBuffer *buffer);</pre>
+<p>
+Get a pointer to the payload data in <em class="parameter"><code>buffer</code></em>. This pointer is valid as long
+as a reference to <em class="parameter"><code>buffer</code></em> is held.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td> the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A pointer to the payload data in <em class="parameter"><code>buffer</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2662065"></a><h3>
+<a name="gst-rtp-buffer-default-clock-rate"></a>gst_rtp_buffer_default_clock_rate ()</h3>
+<a class="indexterm" name="id2662082"></a><pre class="programlisting">guint32             gst_rtp_buffer_default_clock_rate   (guint8 payload_type);</pre>
+<p>
+Get the default clock-rate for the static payload type <em class="parameter"><code>payload_type</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_type</code></em>&#160;:</span></td>
+<td> the static payload type
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the default clock rate or -1 if the payload type is not static or
+the clock-rate is undefined.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2662158"></a><h3>
+<a name="gst-rtp-buffer-compare-seqnum"></a>gst_rtp_buffer_compare_seqnum ()</h3>
+<a class="indexterm" name="id2662174"></a><pre class="programlisting">gint                gst_rtp_buffer_compare_seqnum       (guint16 seqnum1,
+                                                         guint16 seqnum2);</pre>
+<p>
+Compare two sequence numbers, taking care of wraparounds.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>seqnum1</code></em>&#160;:</span></td>
+<td> a sequence number
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>seqnum2</code></em>&#160;:</span></td>
+<td> a sequence number
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> -1 if <em class="parameter"><code>seqnum1</code></em> is before <em class="parameter"><code>seqnum2</code></em>, 0 if they are equal or 1 if
+<em class="parameter"><code>seqnum1</code></em> is bigger than <em class="parameter"><code>segnum2</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.15
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2662288"></a><h3>
+<a name="gst-rtp-buffer-ext-timestamp"></a>gst_rtp_buffer_ext_timestamp ()</h3>
+<a class="indexterm" name="id2662305"></a><pre class="programlisting">guint64             gst_rtp_buffer_ext_timestamp        (guint64 *exttimestamp,
+                                                         guint32 timestamp);</pre>
+<p>
+Update the <em class="parameter"><code>exttimestamp</code></em> field with <em class="parameter"><code>timestamp</code></em>. For the first call of the
+method, <em class="parameter"><code>exttimestamp</code></em> should point to a location with a value of -1.
+</p>
+<p>
+This function makes sure that the returned value is a constantly increasing
+value even in the case where there is a timestamp wraparound.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>exttimestamp</code></em>&#160;:</span></td>
+<td> a previous extended timestamp
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>timestamp</code></em>&#160;:</span></td>
+<td> a new timestamp
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The extended timestamp of <em class="parameter"><code>timestamp</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.15
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2662427"></a><h2>See Also</h2>
+<a href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>, <a href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload"><span class="type">GstBaseRTPDepayload</span></a>, gstrtcpbuffer
+</div>
+</div>
+</body>
+</html>

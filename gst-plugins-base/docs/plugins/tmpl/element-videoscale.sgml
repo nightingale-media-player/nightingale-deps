@@ -1,0 +1,40 @@
+<!-- ##### SECTION Title ##### -->
+videoscale
+
+<!-- ##### SECTION Short_Description ##### -->
+Resizes video
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-videoscale-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstVideoScale ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstVideoScale:method ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstVideoScaleMethod ##### -->
+<para>
+
+</para>
+
+@GST_VIDEO_SCALE_NEAREST: 
+@GST_VIDEO_SCALE_BILINEAR: 
+@GST_VIDEO_SCALE_4TAP: 
+

@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstbasertpaudiopayload</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="prev" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="next" href="gst-plugins-base-libs-gstbasertpdepayload.html" title="gstbasertpdepayload">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-rtp.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-rtp.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstbasertpdepayload.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2646228" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2646518" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2646470" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstbasertpaudiopayload"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2646228"></a><span class="refentrytitle">gstbasertpaudiopayload</span>
+</h2>
+<p>gstbasertpaudiopayload &#8212; Base class for audio RTP payloader</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstBaseRTPAudioPayload"></a><pre class="synopsis">
+
+#include &lt;gst/rtp/gstbasertpaudiopayload.h&gt;
+
+
+                    <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload-struct">GstBaseRTPAudioPayload</a>;
+                    <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayloadClass">GstBaseRTPAudioPayloadClass</a>;
+void                <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-frame-based">gst_base_rtp_audio_payload_set_frame_based</a>
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
+void                <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-frame-options">gst_base_rtp_audio_payload_set_frame_options</a>
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
+                                                         gint frame_duration,
+                                                         gint frame_size);
+void                <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-based">gst_base_rtp_audio_payload_set_sample_based</a>
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
+void                <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-options">gst_base_rtp_audio_payload_set_sample_options</a>
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
+                                                         gint sample_size);
+GstAdapter*         <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-get-adapter">gst_base_rtp_audio_payload_get_adapter</a>
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
+GstFlowReturn       <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-push">gst_base_rtp_audio_payload_push</a>     (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *baseaudiopayload,
+                                                         const guint8 *data,
+                                                         guint payload_len,
+                                                         GstClockTime timestamp);
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2646470"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----<a href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a>
+                     +----GstBaseRTPAudioPayload
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2646518"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2646530"></a><p>
+Provides a base class for audio RTP payloaders for frame or sample based
+audio codecs (constant bitrate)
+</p>
+<p>
+This class derives from GstBaseRTPPayload. It can be used for payloading
+audio codecs. It will only work with constant bitrate codecs. It supports
+both frame based and sample based codecs. It takes care of packing up the
+audio data into RTP packets and filling up the headers accordingly. The
+payloading is done based on the maximum MTU (mtu) and the maximum time per
+packet (max-ptime). The general idea is to divide large data buffers into
+smaller RTP packets. The RTP packet size is the minimum of either the MTU,
+max-ptime (if set) or available data. The RTP packet size is always larger or
+equal to min-ptime (if set). If min-ptime is not set, any residual data is
+sent in a last RTP packet. In the case of frame based codecs, the resulting
+RTP packets always contain full frames.
+</p>
+<h3>Usage</h3>
+<p>
+To use this base class, your child element needs to call either
+<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-frame-based"><code class="function">gst_base_rtp_audio_payload_set_frame_based()</code></a> or
+<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-based"><code class="function">gst_base_rtp_audio_payload_set_sample_based()</code></a>. This is usually done in the
+element's <code class="function">_init()</code> function. Then, the child element must call either
+<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-frame-options"><code class="function">gst_base_rtp_audio_payload_set_frame_options()</code></a> or
+<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-options"><code class="function">gst_base_rtp_audio_payload_set_sample_options()</code></a>. Since GstBaseRTPAudioPayload
+derives from GstBaseRTPPayload, the child element must set any variables or
+call/override any functions required by that base class. The child element
+does not need to override any other functions specific to
+GstBaseRTPAudioPayload.
+</p>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2646633"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2646643"></a><h3>
+<a name="GstBaseRTPAudioPayload-struct"></a>GstBaseRTPAudioPayload</h3>
+<a class="indexterm" name="id2646658"></a><pre class="programlisting">typedef struct _GstBaseRTPAudioPayload GstBaseRTPAudioPayload;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2646674"></a><h3>
+<a name="GstBaseRTPAudioPayloadClass"></a>GstBaseRTPAudioPayloadClass</h3>
+<a class="indexterm" name="id2646687"></a><pre class="programlisting">typedef struct {
+  GstBaseRTPPayloadClass parent_class;
+
+  gpointer _gst_reserved[GST_PADDING];
+} GstBaseRTPAudioPayloadClass;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2646704"></a><h3>
+<a name="gst-base-rtp-audio-payload-set-frame-based"></a>gst_base_rtp_audio_payload_set_frame_based ()</h3>
+<a class="indexterm" name="id2646719"></a><pre class="programlisting">void                gst_base_rtp_audio_payload_set_frame_based
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);</pre>
+<p>
+Tells <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload"><span class="type">GstBaseRTPAudioPayload</span></a> that the child element is for a frame based
+audio codec</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>basertpaudiopayload</code></em>&#160;:</span></td>
+<td> a pointer to the element.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2646780"></a><h3>
+<a name="gst-base-rtp-audio-payload-set-frame-options"></a>gst_base_rtp_audio_payload_set_frame_options ()</h3>
+<a class="indexterm" name="id2646795"></a><pre class="programlisting">void                gst_base_rtp_audio_payload_set_frame_options
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
+                                                         gint frame_duration,
+                                                         gint frame_size);</pre>
+<p>
+Sets the options for frame based audio codecs.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>basertpaudiopayload</code></em>&#160;:</span></td>
+<td> a pointer to the element.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>frame_duration</code></em>&#160;:</span></td>
+<td> The duraction of an audio frame in milliseconds.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>frame_size</code></em>&#160;:</span></td>
+<td> The size of an audio frame in bytes.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2646893"></a><h3>
+<a name="gst-base-rtp-audio-payload-set-sample-based"></a>gst_base_rtp_audio_payload_set_sample_based ()</h3>
+<a class="indexterm" name="id2646908"></a><pre class="programlisting">void                gst_base_rtp_audio_payload_set_sample_based
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);</pre>
+<p>
+Tells <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload"><span class="type">GstBaseRTPAudioPayload</span></a> that the child element is for a sample based
+audio codec</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>basertpaudiopayload</code></em>&#160;:</span></td>
+<td> a pointer to the element.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2646970"></a><h3>
+<a name="gst-base-rtp-audio-payload-set-sample-options"></a>gst_base_rtp_audio_payload_set_sample_options ()</h3>
+<a class="indexterm" name="id2646984"></a><pre class="programlisting">void                gst_base_rtp_audio_payload_set_sample_options
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
+                                                         gint sample_size);</pre>
+<p>
+Sets the options for sample based audio codecs.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>basertpaudiopayload</code></em>&#160;:</span></td>
+<td> a pointer to the element.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sample_size</code></em>&#160;:</span></td>
+<td> Size per sample in bytes.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2647060"></a><h3>
+<a name="gst-base-rtp-audio-payload-get-adapter"></a>gst_base_rtp_audio_payload_get_adapter ()</h3>
+<a class="indexterm" name="id2647076"></a><pre class="programlisting">GstAdapter*         gst_base_rtp_audio_payload_get_adapter
+                                                        (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);</pre>
+<p>
+Gets the internal adapter used by the depayloader.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>basertpaudiopayload</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload"><span class="type">GstBaseRTPAudioPayload</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <span class="type">GstAdapter</span>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2647163"></a><h3>
+<a name="gst-base-rtp-audio-payload-push"></a>gst_base_rtp_audio_payload_push ()</h3>
+<a class="indexterm" name="id2647179"></a><pre class="programlisting">GstFlowReturn       gst_base_rtp_audio_payload_push     (<a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *baseaudiopayload,
+                                                         const guint8 *data,
+                                                         guint payload_len,
+                                                         GstClockTime timestamp);</pre>
+<p>
+Create an RTP buffer and store <em class="parameter"><code>payload_len</code></em> bytes of <em class="parameter"><code>data</code></em> as the
+payload. Set the timestamp on the new buffer to <em class="parameter"><code>timestamp</code></em> before pushing
+the buffer downstream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>baseaudiopayload</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> data to set as payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>payload_len</code></em>&#160;:</span></td>
+<td> length of payload
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>timestamp</code></em>&#160;:</span></td>
+<td> a <span class="type">GstClockTime</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <span class="type">GstFlowReturn</span>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.13
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

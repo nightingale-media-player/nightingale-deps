@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+gstaudiosink
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstAudioSinkClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@open: 
+@prepare: 
+@unprepare: 
+@close: 
+@write: 
+@delay: 
+@reset: 
+

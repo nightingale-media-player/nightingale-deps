@@ -1,0 +1,1500 @@
+<!-- ##### SECTION Title ##### -->
+gstriff
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO GST_RIFF_00 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_0021 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_0031 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_0032 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00AM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00__ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00db ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00dc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00dx ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00id ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00iv ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00pc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00rt ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00vc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00xm ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_00xx ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_01 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_01dc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_01pc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_01wb ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_02 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_03 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_04 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_05 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_06 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_07 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_AURA ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_BW10 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_CCC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_CRAM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_CVID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_CYUV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_DISP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_DIV3 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_DMB1 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCCH_MSVC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCCH_RLE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCCH_msvc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_auds ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_iavs ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_pads ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_txts ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_vidc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FCC_vids ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_FF00 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_H263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_I420 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IDIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IJPG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IARL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IART ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ICMS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ICMT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ICOP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ICRD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ICRP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IDIM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IDPI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IENG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IGNR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IKEY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ILGT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IMED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_INAM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IPLT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_IPRD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ISBJ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ISFT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ISHP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ISRC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ISRF ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_INFO_ITCH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_ISBJ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_ISFT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IV31 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IV32 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IV41 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IV50 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_IYUV ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_JPEG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_L263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_AVIX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_INFO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_adtl ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_hdrl ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_movi ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_odml ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_LIST_strl ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_M263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_MJPG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_MPIX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_MVI1 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_NONE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_PACK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_Q1_0 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RGB ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RIFF_AVI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RIFF_CDXA ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RIFF_WAVE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RLE4 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RLE8 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_RT21 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_SFMC ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_BEXT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_JUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_LIST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_RIFF ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_RIFX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_avih ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_bext ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_cue ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_data ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_dmlh ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_fact ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_fmt ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_idx1 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_plst ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_strd ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_strf ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_strh ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_strn ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TAG_vedt ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_TRAN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_ULTI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_V422 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_VDOW ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_VIXL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_VSSH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_VYUY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_WHAM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_WINX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_WPY2 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_XMPG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_Y41P ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_YUV8 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_YUV9 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_YUY2 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_YV12 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_YVU9 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_azpr ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_bw10 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_ccc ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_cram ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_cvid ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_cyuv ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_dmb1 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_h263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_i263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_i420 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_iv31 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_iv32 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_iv41 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_iv50 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_iyuv ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_jpeg ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_m263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_mJPG ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_mvi1 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_none ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_pack ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rec ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rgb ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rle4 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rle8 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rpza ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_rt21 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_tran ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_ulti ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_v422 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_vixl ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_vyuy ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_wham ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_x263 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_xmpg ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_y41p ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_yuy2 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_RIFF_yv12 ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_riff_create_audio_caps ##### -->
+<para>
+
+</para>
+
+@codec_id: 
+@strh: 
+@strf: 
+@strf_data: 
+@strd_data: 
+@codec_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_create_audio_template_caps ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_create_iavs_caps ##### -->
+<para>
+
+</para>
+
+@codec_fcc: 
+@strh: 
+@strf: 
+@strf_data: 
+@strd_data: 
+@codec_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_create_iavs_template_caps ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_create_video_caps ##### -->
+<para>
+
+</para>
+
+@codec_fcc: 
+@strh: 
+@strf: 
+@strf_data: 
+@strd_data: 
+@codec_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_create_video_template_caps ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### STRUCT gst_riff_dmlh ##### -->
+<para>
+
+</para>
+
+@totalframes: 
+
+<!-- ##### STRUCT gst_riff_index_entry ##### -->
+<para>
+
+</para>
+
+@id: 
+@flags: 
+@size: 
+
+<!-- ##### FUNCTION gst_riff_init ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_riff_parse_chunk ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@offset: 
+@fourcc: 
+@chunk_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_file_header ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@doctype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_info ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@taglist: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_strf_auds ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@strf: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_strf_iavs ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@strf: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_strf_vids ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@strf: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_parse_strh ##### -->
+<para>
+
+</para>
+
+@element: 
+@buf: 
+@strh: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_riff_read_chunk ##### -->
+<para>
+
+</para>
+
+@element: 
+@pad: 
+@offset: 
+@tag: 
+@chunk_data: 
+@Returns: 
+
+
+<!-- ##### STRUCT gst_riff_strf_auds ##### -->
+<para>
+
+</para>
+
+@format: 
+@rate: 
+@av_bps: 
+@blockalign: 
+@size: 
+
+<!-- ##### STRUCT gst_riff_strf_iavs ##### -->
+<para>
+
+</para>
+
+@DVAAuxSrc: 
+@DVAAuxCtl: 
+@DVAAuxSrc1: 
+@DVAAuxCtl1: 
+@DVVAuxSrc: 
+@DVVAuxCtl: 
+@DVReserved1: 
+@DVReserved2: 
+
+<!-- ##### STRUCT gst_riff_strf_vids ##### -->
+<para>
+
+</para>
+
+@size: 
+@width: 
+@height: 
+@planes: 
+@bit_cnt: 
+@compression: 
+@image_size: 
+@xpels_meter: 
+@ypels_meter: 
+@num_colors: 
+@imp_colors: 
+
+<!-- ##### STRUCT gst_riff_strh ##### -->
+<para>
+
+</para>
+
+@type: 
+@fcc_handler: 
+@flags: 
+@init_frames: 
+@scale: 
+@rate: 
+@start: 
+@length: 
+@bufsize: 
+@quality: 
+@samplesize: 
+

@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>ximagesink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-vorbistag.html" title="vorbistag">
+<link rel="next" href="gst-plugins-base-plugins-xvimagesink.html" title="xvimagesink">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-vorbistag.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-xvimagesink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2623244" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2623216" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2565256" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2572126" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2623125" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-ximagesink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2623244"></a><span class="refentrytitle">ximagesink</span>
+</h2>
+<p>ximagesink &#8212; A standard X based videosink</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstXImageSink"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink-struct">GstXImageSink</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2565256"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
+>GstVideoSink</a>
+                           +----GstXImageSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2572126"></a><h2>Implemented Interfaces</h2>
+<p>
+GstXImageSink implements
+ GstImplementsInterface,  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
+>GstXOverlay</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
+>GstNavigation</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2623125"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--display">display</a>"                  gchar*                : Read / Write
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--pixel-aspect-ratio">pixel-aspect-ratio</a>"       gchar*                : Read / Write
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--synchronous">synchronous</a>"              gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--force-aspect-ratio">force-aspect-ratio</a>"       gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--handle-events">handle-events</a>"            gboolean              : Read / Write
+  "<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--handle-expose">handle-expose</a>"            gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2623216"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2620830"></a><p>
+XImageSink renders video frames to a drawable (XWindow) on a local or remote
+display. This element can receive a Window ID from the application through
+the XOverlay interface and will then render video frames in this drawable.
+If no Window ID was provided by the application, the element will create its
+own internal window and render into it.
+</p>
+<h3>Scaling</h3>
+<p>
+As standard XImage rendering to a drawable is not scaled, XImageSink will use
+reverse caps negotiation to try to get scaled video frames for the drawable.
+This is accomplished by asking the peer pad if it accepts some different caps
+which in most cases implies that there is a scaling element in the pipeline,
+or that an element generating the video frames can generate them with a 
+different geometry. This mechanism is handled during buffer allocations, for
+each allocation request the video sink will check the drawable geometry, look
+at the
+<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--force-aspect-ratio">force-aspect-ratio</a>
+property, calculate the geometry of desired video frames and then check that
+the peer pad accept those new caps. If it does it will then allocate a buffer
+in video memory with this new geometry and return it with the new caps.
+</p>
+<h3>Events</h3>
+<p>
+XImageSink creates a thread to handle events coming from the drawable. There
+are several kind of events that can be grouped in 2 big categories: input 
+events and window state related events. Input events will be translated to
+navigation events and pushed upstream for other elements to react on them.
+This includes events such as pointer moves, key press/release, clicks etc...
+Other events are used to handle the drawable appearance even when the data
+is not flowing (GST_STATE_PAUSED). That means that even when the element is
+paused, it will receive expose events from the drawable and draw the latest
+frame with correct borders/aspect-ratio.
+</p>
+<h3>Pixel aspect ratio</h3>
+<p>
+When changing state to GST_STATE_READY, XImageSink will open a connection to
+the display specified in the
+<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--display">display</a> property or the default
+display if nothing specified. Once this connection is open it will inspect 
+the display configuration including the physical display geometry and 
+then calculate the pixel aspect ratio. When caps negotiation will occur, the
+video sink will set the calculated pixel aspect ratio on the caps to make 
+sure that incoming video frames will have the correct pixel aspect ratio for
+this display. Sometimes the calculated pixel aspect ratio can be wrong, it is
+then possible to enforce a specific pixel aspect ratio using the
+<a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink--pixel-aspect-ratio">pixel-aspect-ratio</a>
+property.
+</p>
+<h3>Examples</h3>
+<p>
+Here is a simple pipeline to test reverse negotiation :
+</p>
+<pre class="programlisting">
+gst-launch -v videotestsrc ! queue ! ximagesink
+</pre>
+<p>
+When the test video signal appears you can resize the window and see that
+scaled buffers of the desired size are going to arrive with a short delay.
+This illustrates how buffers of desired size are allocated along the way.
+If you take away the queue, scaling will happen almost immediately.
+</p>
+<p>
+Here is a simple pipeline to test navigation events :
+</p>
+<pre class="programlisting">
+gst-launch -v videotestsrc ! navigationtest ! ffmpegcolorspace ! ximagesink
+</pre>
+<p>
+While moving the mouse pointer over the test signal you will see a black box
+following the mouse pointer. If you press the mouse button somewhere on the 
+video and release it somewhere else a green box will appear where you pressed
+the button and a red one where you released it. (The navigationtest element
+is part of gst-plugins-good.)
+</p>
+<p>
+Here is a simple pipeline to test pixel aspect ratio :
+</p>
+<pre class="programlisting">
+gst-launch -v videotestsrc ! video/x-raw-rgb, pixel-aspect-ratio=(fraction)4/3 ! videoscale ! ximagesink
+</pre>
+<p>
+This is faking a 4/3 pixel aspect ratio caps on video frames produced by
+videotestsrc, in most cases the pixel aspect ratio of the display will be
+1/1. This means that videoscale will have to do the scaling to convert 
+incoming frames to a size that will match the display pixel aspect ratio
+(from 320x240 to 320x180 in this case). Note that you might have to escape 
+some characters for your shell like '\(fraction\)'.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2619139"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-base-plugins-plugin-ximagesink.html#plugin-ximagesink">ximagesink</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Julien Moutte &lt;julien@moutte.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Sink/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-rgb, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2619277"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2618752"></a><h3>
+<a name="GstXImageSink-struct"></a>GstXImageSink</h3>
+<a class="indexterm" name="id2618764"></a><pre class="programlisting">typedef struct _GstXImageSink GstXImageSink;</pre>
+<p>
+The <a href="gst-plugins-base-plugins-ximagesink.html#GstXImageSink"><span class="type">GstXImageSink</span></a> data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2618793"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2618804"></a><h3>
+<a name="GstXImageSink--display"></a>The "<code class="literal">display</code>" property</h3>
+<a class="indexterm" name="id2618817"></a><pre class="programlisting">  "display"                  gchar*                : Read / Write</pre>
+<p>X Display name.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618844"></a><h3>
+<a name="GstXImageSink--pixel-aspect-ratio"></a>The "<code class="literal">pixel-aspect-ratio</code>" property</h3>
+<a class="indexterm" name="id2618860"></a><pre class="programlisting">  "pixel-aspect-ratio"       gchar*                : Read / Write</pre>
+<p>The pixel aspect ratio of the device.</p>
+<p>Default value: "1/1"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618885"></a><h3>
+<a name="GstXImageSink--synchronous"></a>The "<code class="literal">synchronous</code>" property</h3>
+<a class="indexterm" name="id2618899"></a><pre class="programlisting">  "synchronous"              gboolean              : Read / Write</pre>
+<p>When enabled, runs the X display in synchronous mode. (used only for debugging).</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618926"></a><h3>
+<a name="GstXImageSink--force-aspect-ratio"></a>The "<code class="literal">force-aspect-ratio</code>" property</h3>
+<a class="indexterm" name="id2618942"></a><pre class="programlisting">  "force-aspect-ratio"       gboolean              : Read / Write</pre>
+<p>When enabled, reverse caps negotiation (scaling) will respect original aspect ratio.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2618968"></a><h3>
+<a name="GstXImageSink--handle-events"></a>The "<code class="literal">handle-events</code>" property</h3>
+<a class="indexterm" name="id2618984"></a><pre class="programlisting">  "handle-events"            gboolean              : Read / Write</pre>
+<p>When enabled, XEvents will be selected and handled.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2619010"></a><h3>
+<a name="GstXImageSink--handle-expose"></a>The "<code class="literal">handle-expose</code>" property</h3>
+<a class="indexterm" name="id2621496"></a><pre class="programlisting">  "handle-expose"            gboolean              : Read / Write</pre>
+<p>When enabled, the current frame will always be drawn in response to X Expose events.</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+</body>
+</html>

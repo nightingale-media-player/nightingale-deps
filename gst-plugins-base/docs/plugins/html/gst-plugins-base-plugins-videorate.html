@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>videorate</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-timeoverlay.html" title="timeoverlay">
+<link rel="next" href="gst-plugins-base-plugins-videoscale.html" title="videoscale">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-timeoverlay.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-videoscale.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2617962" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2590751" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2617914" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2617891" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-videorate"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2617962"></a><span class="refentrytitle">videorate</span>
+</h2>
+<p>videorate &#8212; retimestamps and drops/duplicates video frames to
+ match the source pad's framerate and create a perfect stream</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstVideoRate"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-base-plugins-videorate.html#GstVideoRate-struct">GstVideoRate</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2617914"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstVideoRate
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2617891"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--drop">drop</a>"                     guint64               : Read
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--duplicate">duplicate</a>"                guint64               : Read
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--in">in</a>"                       guint64               : Read
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--new-pref">new-pref</a>"                 gdouble               : Read / Write
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--out">out</a>"                      guint64               : Read
+  "<a href="gst-plugins-base-plugins-videorate.html#GstVideoRate--silent">silent</a>"                   gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2590751"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2585540"></a><p>
+This element takes an incoming stream of timestamped video frames.
+It will produce a perfect stream that matches the source pad's framerate.
+</p>
+<p>
+The correction is performed by dropping and duplicating frames, no fancy
+algorithm is used to interpolate frames (yet).
+</p>
+<p>
+By default the element will simply negotiate the same framerate on its
+source and sink pad.
+</p>
+<p>
+This operation is useful to link to elements that require a perfect stream.
+Typical examples are formats that do not store timestamps for video frames,
+but only store a framerate, like Ogg and AVI.
+</p>
+<p>
+A conversion to a specific framerate can be forced by using filtered caps on
+the source pad.
+</p>
+<p>
+The properties "in", "out", "duplicate" and "drop" can be read to obtain
+information about number of input frames, output frames, dropped frames
+(i.e. the number of unused input frames) and duplicated frames (i.e. the
+ number of times an input frame was duplicated, beside being used normally).
+</p>
+<p>
+An input stream that needs no adjustments will thus never have dropped or
+duplicated frames.
+</p>
+<p>
+When the "silent" property is set to FALSE, a GObject property notification
+will be emitted whenever one of the "duplicate" or "drop" values changes.
+This can potentially cause performance degradation.
+Note that property notification will happen from the streaming thread, so
+applications should be prepared for this.
+</p>
+<h3>Example pipelines</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! videorate ! video/x-raw-yuv,framerate=15/1 ! xvimagesink
+</pre>
+<p>
+Decode an Ogg/Theora file and adjust the framerate to 15 fps before playing.
+To create the test Ogg/Theora file refer to the documentation of theoraenc.
+</p>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch -v v4lsrc ! videorate ! video/x-raw-yuv,framerate=25/2 ! theoraenc ! oggmux ! filesink location=v4l.ogg
+</pre>
+<p>
+Capture video from a V4L device, and adjust the stream to 12.5 fps before
+encoding to Ogg/Theora.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2006-09-02 (0.10.11)</p>
+<div class="refsect2" lang="en">
+<a name="id2617876"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-base-plugins-plugin-videorate.html#plugin-videorate">videorate</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Filter/Effect/Video</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv; video/x-raw-rgb</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-raw-yuv; video/x-raw-rgb</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613772"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2613783"></a><h3>
+<a name="GstVideoRate-struct"></a>GstVideoRate</h3>
+<a class="indexterm" name="id2613795"></a><pre class="programlisting">typedef struct _GstVideoRate GstVideoRate;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2613816"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2613826"></a><h3>
+<a name="GstVideoRate--drop"></a>The "<code class="literal">drop</code>" property</h3>
+<a class="indexterm" name="id2613841"></a><pre class="programlisting">  "drop"                     guint64               : Read</pre>
+<p>Number of dropped frames.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2615281"></a><h3>
+<a name="GstVideoRate--duplicate"></a>The "<code class="literal">duplicate</code>" property</h3>
+<a class="indexterm" name="id2615295"></a><pre class="programlisting">  "duplicate"                guint64               : Read</pre>
+<p>Number of duplicated frames.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2615320"></a><h3>
+<a name="GstVideoRate--in"></a>The "<code class="literal">in</code>" property</h3>
+<a class="indexterm" name="id2615335"></a><pre class="programlisting">  "in"                       guint64               : Read</pre>
+<p>Number of input frames.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2615360"></a><h3>
+<a name="GstVideoRate--new-pref"></a>The "<code class="literal">new-pref</code>" property</h3>
+<a class="indexterm" name="id2615374"></a><pre class="programlisting">  "new-pref"                 gdouble               : Read / Write</pre>
+<p>Value indicating how much to prefer new frames (unused).</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2615405"></a><h3>
+<a name="GstVideoRate--out"></a>The "<code class="literal">out</code>" property</h3>
+<a class="indexterm" name="id2615420"></a><pre class="programlisting">  "out"                      guint64               : Read</pre>
+<p>Number of output frames.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2615445"></a><h3>
+<a name="GstVideoRate--silent"></a>The "<code class="literal">silent</code>" property</h3>
+<a class="indexterm" name="id2615459"></a><pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<p>Don't emit notify for dropped and duplicated frames.</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+</body>
+</html>

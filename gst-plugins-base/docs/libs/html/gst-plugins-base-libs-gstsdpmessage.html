@@ -1,0 +1,3041 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstsdpmessage</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="prev" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="next" href="gstreamer-tag.html" title="Tag Support Library">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-sdp.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-sdp.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-tag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2710035" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2712377" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstsdpmessage"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2710035"></a><span class="refentrytitle">gstsdpmessage</span>
+</h2>
+<p>gstsdpmessage &#8212; Helper methods for dealing with SDP messages</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/sdp/gstsdpmessage.h&gt;
+
+
+enum                <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin">GstSDPOrigin</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>;
+#define             <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-CT:CAPS">GST_SDP_BWTYPE_CT</a>
+#define             <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-AS:CAPS">GST_SDP_BWTYPE_AS</a>
+#define             <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-BWTYPE-EXT-PREFIX:CAPS">GST_SDP_BWTYPE_EXT_PREFIX</a>
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth">GstSDPBandwidth</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime">GstSDPTime</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone">GstSDPZone</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute">GstSDPAttribute</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a>;
+                    <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a>;
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-new">gst_sdp_message_new</a>                 (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> **msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-init">gst_sdp_message_init</a>                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-uninit">gst_sdp_message_uninit</a>              (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-free">gst_sdp_message_free</a>                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-parse-buffer">gst_sdp_message_parse_buffer</a>        (const guint8 *data,
+                                                         guint size,
+                                                         <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-version">gst_sdp_message_get_version</a>         (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-version">gst_sdp_message_set_version</a>         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *version);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin">GstSDPOrigin</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-origin">gst_sdp_message_get_origin</a>          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-origin">gst_sdp_message_set_origin</a>          (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *username,
+                                                         const gchar *sess_id,
+                                                         const gchar *sess_version,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *addr);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-session-name">gst_sdp_message_get_session_name</a>    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-session-name">gst_sdp_message_set_session_name</a>    (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *session_name);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-information">gst_sdp_message_get_information</a>     (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-information">gst_sdp_message_set_information</a>     (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *information);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-uri">gst_sdp_message_get_uri</a>             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-uri">gst_sdp_message_set_uri</a>             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *uri);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-emails-len">gst_sdp_message_emails_len</a>          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-email">gst_sdp_message_get_email</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-email">gst_sdp_message_add_email</a>           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *email);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-phones-len">gst_sdp_message_phones_len</a>          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-phone">gst_sdp_message_get_phone</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-phone">gst_sdp_message_add_phone</a>           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *phone);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-connection">gst_sdp_message_get_connection</a>  (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-connection">gst_sdp_message_set_connection</a>      (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *address,
+                                                         guint ttl,
+                                                         guint addr_number);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-bandwidths-len">gst_sdp_message_bandwidths_len</a>      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth">GstSDPBandwidth</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-bandwidth">gst_sdp_message_get_bandwidth</a>    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-bandwidth">gst_sdp_message_add_bandwidth</a>       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *bwtype,
+                                                         guint bandwidth);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-times-len">gst_sdp_message_times_len</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime">GstSDPTime</a>*   <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-time">gst_sdp_message_get_time</a>            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-time">gst_sdp_message_add_time</a>            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *start,
+                                                         const gchar *stop,
+                                                         const gchar **repeat);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-zones-len">gst_sdp_message_zones_len</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone">GstSDPZone</a>*   <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-zone">gst_sdp_message_get_zone</a>            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-zone">gst_sdp_message_add_zone</a>            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *adj_time,
+                                                         const gchar *typed_time);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>*    <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-key">gst_sdp_message_get_key</a>             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-set-key">gst_sdp_message_set_key</a>             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *type,
+                                                         const gchar *data);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-attributes-len">gst_sdp_message_attributes_len</a>      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute">GstSDPAttribute</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-attribute">gst_sdp_message_get_attribute</a>    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-attribute-val">gst_sdp_message_get_attribute_val</a>   (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-attribute-val-n">gst_sdp_message_get_attribute_val_n</a> (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key,
+                                                         guint nth);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-attribute">gst_sdp_message_add_attribute</a>       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key,
+                                                         const gchar *value);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-medias-len">gst_sdp_message_medias_len</a>          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a>*  <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-get-media">gst_sdp_message_get_media</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-add-media">gst_sdp_message_add_media</a>           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-dump">gst_sdp_message_dump</a>                (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-new">gst_sdp_media_new</a>                   (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> **media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-init">gst_sdp_media_init</a>                  (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-uninit">gst_sdp_media_uninit</a>                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-free">gst_sdp_media_free</a>                  (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-media">gst_sdp_media_get_media</a>             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-set-media">gst_sdp_media_set_media</a>             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *med);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-port">gst_sdp_media_get_port</a>              (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-num-ports">gst_sdp_media_get_num_ports</a>         (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-set-port-info">gst_sdp_media_set_port_info</a>         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint port,
+                                                         guint num_ports);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-proto">gst_sdp_media_get_proto</a>             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-set-proto">gst_sdp_media_set_proto</a>             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *proto);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-formats-len">gst_sdp_media_formats_len</a>           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-format">gst_sdp_media_get_format</a>            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-add-format">gst_sdp_media_add_format</a>            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *format);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-information">gst_sdp_media_get_information</a>       (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-set-information">gst_sdp_media_set_information</a>       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *information);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-connections-len">gst_sdp_media_connections_len</a>       (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-connection">gst_sdp_media_get_connection</a>    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-add-connection">gst_sdp_media_add_connection</a>        (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *address,
+                                                         guint ttl,
+                                                         guint addr_number);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-bandwidths-len">gst_sdp_media_bandwidths_len</a>        (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth">GstSDPBandwidth</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-bandwidth">gst_sdp_media_get_bandwidth</a>      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-add-bandwidth">gst_sdp_media_add_bandwidth</a>         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *bwtype,
+                                                         guint bandwidth);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>*    <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-key">gst_sdp_media_get_key</a>               (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-set-key">gst_sdp_media_set_key</a>               (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *type,
+                                                         const gchar *data);
+guint               <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-attributes-len">gst_sdp_media_attributes_len</a>        (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);
+const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute">GstSDPAttribute</a>* <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-attribute">gst_sdp_media_get_attribute</a>      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-attribute-val">gst_sdp_media_get_attribute_val</a>     (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key);
+const gchar*        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-get-attribute-val-n">gst_sdp_media_get_attribute_val_n</a>   (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key,
+                                                         guint nth);
+<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-add-attribute">gst_sdp_media_add_attribute</a>         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key,
+                                                         const gchar *value);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2712377"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2712389"></a><p>
+The GstSDPMessage helper functions makes it easy to parse and create SDP
+messages.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2007-07-24 (0.10.14)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2712407"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2712417"></a><h3>
+<a name="GstSDPResult"></a>enum GstSDPResult</h3>
+<a class="indexterm" name="id2712430"></a><pre class="programlisting">typedef enum {
+  GST_SDP_OK     = 0,
+  GST_SDP_EINVAL = -1
+} GstSDPResult;
+</pre>
+<p>
+Return values for the SDP functions.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-SDP-OK:CAPS"></a><code class="literal">GST_SDP_OK</code></span></td>
+<td> A successful return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-SDP-EINVAL:CAPS"></a><code class="literal">GST_SDP_EINVAL</code></span></td>
+<td> a function was given invalid parameters
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712500"></a><h3>
+<a name="GstSDPOrigin"></a>GstSDPOrigin</h3>
+<a class="indexterm" name="id2712512"></a><pre class="programlisting">typedef struct {
+  gchar *username;
+  gchar *sess_id;
+  gchar *sess_version;
+  gchar *nettype;
+  gchar *addrtype;
+  gchar *addr;
+} GstSDPOrigin;
+</pre>
+<p>
+The contents of the SDP "o=" field which gives the originator of the session
+(their username and the address of the user's host) plus a session id and
+session version number.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>username</code></em>;</span></td>
+<td> the user's login on the originating host, or it is "-"
+   if the originating host does not support the concept of user ids.
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>sess_id</code></em>;</span></td>
+<td> is a numeric string such that the tuple of <em class="parameter"><code>username</code></em>, <em class="parameter"><code>sess_id</code></em>,
+   <em class="parameter"><code>nettype</code></em>, <em class="parameter"><code>addrtype</code></em> and <em class="parameter"><code>addr</code></em> form a globally unique identifier for the
+   session.
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>sess_version</code></em>;</span></td>
+<td> a version number for this announcement
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>nettype</code></em>;</span></td>
+<td> the type of network. "IN" is defined to have the meaning
+   "Internet".
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>addrtype</code></em>;</span></td>
+<td> the type of <em class="parameter"><code>addr</code></em>.
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>addr</code></em>;</span></td>
+<td> the globally unique address of the machine from which the session was
+    created.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712704"></a><h3>
+<a name="GstSDPConnection"></a>GstSDPConnection</h3>
+<a class="indexterm" name="id2712716"></a><pre class="programlisting">typedef struct {
+  gchar *nettype;
+  gchar *addrtype;
+  gchar *address;
+  guint  ttl;
+  guint  addr_number;
+} GstSDPConnection;
+</pre>
+<p>
+The contents of the SDP "c=" field which contains connection data.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>nettype</code></em>;</span></td>
+<td> the type of network. "IN" is defined to have the meaning
+   "Internet".
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>addrtype</code></em>;</span></td>
+<td> the type of <em class="parameter"><code>address</code></em>.
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>address</code></em>;</span></td>
+<td> the address
+</td>
+</tr>
+<tr>
+<td><span class="term">guint&#160;<em class="structfield"><code>ttl</code></em>;</span></td>
+<td> the time to live of the address
+</td>
+</tr>
+<tr>
+<td><span class="term">guint&#160;<em class="structfield"><code>addr_number</code></em>;</span></td>
+<td> the number of layers
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712851"></a><h3>
+<a name="GST-SDP-BWTYPE-CT:CAPS"></a>GST_SDP_BWTYPE_CT</h3>
+<a class="indexterm" name="id2712865"></a><pre class="programlisting">#define GST_SDP_BWTYPE_CT 		"CT"
+</pre>
+<p>
+The Conference Total bandwidth modifier.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712884"></a><h3>
+<a name="GST-SDP-BWTYPE-AS:CAPS"></a>GST_SDP_BWTYPE_AS</h3>
+<a class="indexterm" name="id2712897"></a><pre class="programlisting">#define GST_SDP_BWTYPE_AS 		"AS"
+</pre>
+<p>
+The Application-Specific Maximum bandwidth modifier.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712917"></a><h3>
+<a name="GST-SDP-BWTYPE-EXT-PREFIX:CAPS"></a>GST_SDP_BWTYPE_EXT_PREFIX</h3>
+<a class="indexterm" name="id2712931"></a><pre class="programlisting">#define GST_SDP_BWTYPE_EXT_PREFIX 	"X-"
+</pre>
+<p>
+The extension prefix bandwidth modifier.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2712950"></a><h3>
+<a name="GstSDPBandwidth"></a>GstSDPBandwidth</h3>
+<a class="indexterm" name="id2712963"></a><pre class="programlisting">typedef struct {
+  gchar *bwtype;
+  guint  bandwidth;
+} GstSDPBandwidth;
+</pre>
+<p>
+The contents of the SDP "b=" field which specifies the proposed bandwidth to
+be used by the session or media.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>bwtype</code></em>;</span></td>
+<td> the bandwidth modifier type
+</td>
+</tr>
+<tr>
+<td><span class="term">guint&#160;<em class="structfield"><code>bandwidth</code></em>;</span></td>
+<td> the bandwidth in kilobits per second
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713030"></a><h3>
+<a name="GstSDPTime"></a>GstSDPTime</h3>
+<a class="indexterm" name="id2713042"></a><pre class="programlisting">typedef struct {
+  gchar  *start;
+  gchar  *stop;
+  GArray *repeat;
+} GstSDPTime;
+</pre>
+<p>
+The contents of the SDP "t=" field which specify the start and stop times for
+a conference session.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>start</code></em>;</span></td>
+<td> start time for the conference. The value is the decimal
+    representation of Network Time Protocol (NTP) time values in seconds
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>stop</code></em>;</span></td>
+<td> stop time for the conference. The value is the decimal
+    representation of Network Time Protocol (NTP) time values in seconds
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>repeat</code></em>;</span></td>
+<td> repeat times for a session
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713134"></a><h3>
+<a name="GstSDPZone"></a>GstSDPZone</h3>
+<a class="indexterm" name="id2713146"></a><pre class="programlisting">typedef struct {
+  gchar *time;
+  gchar *typed_time;
+} GstSDPZone;
+</pre>
+<p>
+The contents of the SDP "z=" field which allows the sender to
+specify a list of time zone adjustments and offsets from the base
+time.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>time</code></em>;</span></td>
+<td> the NTP time that a time zone adjustment happens
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>typed_time</code></em>;</span></td>
+<td> the offset from the time when the session was first scheduled
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713214"></a><h3>
+<a name="GstSDPKey"></a>GstSDPKey</h3>
+<a class="indexterm" name="id2713227"></a><pre class="programlisting">typedef struct {
+  gchar *type;
+  gchar *data;
+} GstSDPKey;
+</pre>
+<p>
+The contents of the SDP "k=" field which is used to convey encryption
+keys.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>type</code></em>;</span></td>
+<td> the encryption type
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>data</code></em>;</span></td>
+<td> the encryption data
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713293"></a><h3>
+<a name="GstSDPAttribute"></a>GstSDPAttribute</h3>
+<a class="indexterm" name="id2713306"></a><pre class="programlisting">typedef struct {
+  gchar *key;
+  gchar *value;
+} GstSDPAttribute;
+</pre>
+<p>
+The contents of the SDP "a=" field which contains a key/value pair.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>key</code></em>;</span></td>
+<td> the attribute key
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>value</code></em>;</span></td>
+<td> the attribute value or NULL when it was a property attribute
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713372"></a><h3>
+<a name="GstSDPMedia"></a>GstSDPMedia</h3>
+<a class="indexterm" name="id2713384"></a><pre class="programlisting">typedef struct {
+  gchar            *media;
+  guint             port;
+  guint             num_ports;
+  gchar            *proto;
+  GArray           *fmts;
+  gchar            *information;
+  GArray           *connections;
+  GArray           *bandwidths;
+  GstSDPKey         key;
+  GArray           *attributes;
+} GstSDPMedia;
+</pre>
+<p>
+The contents of the SDP "m=" field with all related fields.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>media</code></em>;</span></td>
+<td> the media type
+</td>
+</tr>
+<tr>
+<td><span class="term">guint&#160;<em class="structfield"><code>port</code></em>;</span></td>
+<td> the transport port to which the media stream will be sent
+</td>
+</tr>
+<tr>
+<td><span class="term">guint&#160;<em class="structfield"><code>num_ports</code></em>;</span></td>
+<td> the number of ports or -1 if only one port was specified
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>proto</code></em>;</span></td>
+<td> the transport protocol
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>fmts</code></em>;</span></td>
+<td> an array of <span class="type">gchar</span> formats
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>information</code></em>;</span></td>
+<td> the media title
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>connections</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection"><span class="type">GstSDPConnection</span></a> with media connection information
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>bandwidths</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth"><span class="type">GstSDPBandwidth</span></a> with media bandwidth information
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>&#160;<em class="structfield"><code>key</code></em>;</span></td>
+<td> the encryption key
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>attributes</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute"><span class="type">GstSDPAttribute</span></a> with the additional media attributes
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2713652"></a><h3>
+<a name="GstSDPMessage"></a>GstSDPMessage</h3>
+<a class="indexterm" name="id2713665"></a><pre class="programlisting">typedef struct {
+  gchar            *version;
+  GstSDPOrigin      origin;
+  gchar            *session_name;
+  gchar            *information;
+  gchar            *uri;
+  GArray           *emails;
+  GArray           *phones;
+  GstSDPConnection  connection;
+  GArray           *bandwidths;
+  GArray           *times;
+  GArray           *zones;
+  GstSDPKey         key;
+  GArray           *attributes;
+  GArray           *medias;
+} GstSDPMessage;
+</pre>
+<p>
+The contents of the SDP message.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>version</code></em>;</span></td>
+<td> the protocol version
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin">GstSDPOrigin</a>&#160;<em class="structfield"><code>origin</code></em>;</span></td>
+<td> owner/creator and session identifier
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>session_name</code></em>;</span></td>
+<td> session name
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>information</code></em>;</span></td>
+<td> session information
+</td>
+</tr>
+<tr>
+<td><span class="term">gchar&#160;*<em class="structfield"><code>uri</code></em>;</span></td>
+<td> URI of description
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>emails</code></em>;</span></td>
+<td> array of <span class="type">gchar</span> with email addresses
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>phones</code></em>;</span></td>
+<td> array of <span class="type">gchar</span> with phone numbers
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>&#160;<em class="structfield"><code>connection</code></em>;</span></td>
+<td> connection information for the session
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>bandwidths</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth"><span class="type">GstSDPBandwidth</span></a> with bandwidth information
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>times</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime"><span class="type">GstSDPTime</span></a> with time descriptions
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>zones</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone"><span class="type">GstSDPZone</span></a> with time zone adjustments
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>&#160;<em class="structfield"><code>key</code></em>;</span></td>
+<td> encryption key
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>attributes</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute"><span class="type">GstSDPAttribute</span></a> with session attributes
+</td>
+</tr>
+<tr>
+<td><span class="term">GArray&#160;*<em class="structfield"><code>medias</code></em>;</span></td>
+<td> array of <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a> with media descriptions
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714041"></a><h3>
+<a name="gst-sdp-message-new"></a>gst_sdp_message_new ()</h3>
+<a class="indexterm" name="id2714054"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_new                 (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> **msg);</pre>
+<p>
+Allocate a new GstSDPMessage and store the result in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> pointer to new <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714137"></a><h3>
+<a name="gst-sdp-message-init"></a>gst_sdp_message_init ()</h3>
+<a class="indexterm" name="id2714150"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_init                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Initialize <em class="parameter"><code>msg</code></em> so that its contents are as if it was freshly allocated
+with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-new"><code class="function">gst_sdp_message_new()</code></a>. This function is mostly used to initialize a message
+allocated on the stack. <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-uninit"><code class="function">gst_sdp_message_uninit()</code></a> undoes this operation.
+</p>
+<p>
+When this function is invoked on newly allocated data (with malloc or on the
+stack), its contents should be set to 0 before calling this function.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714263"></a><h3>
+<a name="gst-sdp-message-uninit"></a>gst_sdp_message_uninit ()</h3>
+<a class="indexterm" name="id2714276"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_uninit              (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Free all resources allocated in <em class="parameter"><code>msg</code></em>. <em class="parameter"><code>msg</code></em> should not be used anymore after
+this function. This function should be used when <em class="parameter"><code>msg</code></em> was allocated on the
+stack and initialized with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-init"><code class="function">gst_sdp_message_init()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714382"></a><h3>
+<a name="gst-sdp-message-free"></a>gst_sdp_message_free ()</h3>
+<a class="indexterm" name="id2714396"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_free                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Free all resources allocated by <em class="parameter"><code>msg</code></em>. <em class="parameter"><code>msg</code></em> should not be used anymore after
+this function. This function should be used when <em class="parameter"><code>msg</code></em> was dynamically
+allocated with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-message-new"><code class="function">gst_sdp_message_new()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714502"></a><h3>
+<a name="gst-sdp-message-parse-buffer"></a>gst_sdp_message_parse_buffer ()</h3>
+<a class="indexterm" name="id2714516"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_parse_buffer        (const guint8 *data,
+                                                         guint size,
+                                                         <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Parse the contents of <em class="parameter"><code>size</code></em> bytes pointed to by <em class="parameter"><code>data</code></em> and store the result in
+<em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> the start of the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> the size of the buffer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> the result <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a> on success.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714656"></a><h3>
+<a name="gst-sdp-message-get-version"></a>gst_sdp_message_get_version ()</h3>
+<a class="indexterm" name="id2714670"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_version         (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the version in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714753"></a><h3>
+<a name="gst-sdp-message-set-version"></a>gst_sdp_message_set_version ()</h3>
+<a class="indexterm" name="id2714767"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_version         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *version);</pre>
+<p>
+Set the version in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>version</code></em>&#160;:</span></td>
+<td> the version
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714870"></a><h3>
+<a name="gst-sdp-message-get-origin"></a>gst_sdp_message_get_origin ()</h3>
+<a class="indexterm" name="id2714884"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin">GstSDPOrigin</a>* gst_sdp_message_get_origin          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the origin of <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPOrigin"><span class="type">GstSDPOrigin</span></a>. The result remains valid as long as <em class="parameter"><code>msg</code></em> is valid.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2714974"></a><h3>
+<a name="gst-sdp-message-set-origin"></a>gst_sdp_message_set_origin ()</h3>
+<a class="indexterm" name="id2714988"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_origin          (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *username,
+                                                         const gchar *sess_id,
+                                                         const gchar *sess_version,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *addr);</pre>
+<p>
+Configure the SDP origin in <em class="parameter"><code>msg</code></em> with the given parameters.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>username</code></em>&#160;:</span></td>
+<td> the user name
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sess_id</code></em>&#160;:</span></td>
+<td> a session id
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sess_version</code></em>&#160;:</span></td>
+<td> a session version
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>nettype</code></em>&#160;:</span></td>
+<td> a network type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addrtype</code></em>&#160;:</span></td>
+<td> an address type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addr</code></em>&#160;:</span></td>
+<td> an address
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715202"></a><h3>
+<a name="gst-sdp-message-get-session-name"></a>gst_sdp_message_get_session_name ()</h3>
+<a class="indexterm" name="id2715216"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_session_name    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the session name in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715299"></a><h3>
+<a name="gst-sdp-message-set-session-name"></a>gst_sdp_message_set_session_name ()</h3>
+<a class="indexterm" name="id2715312"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_session_name    (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *session_name);</pre>
+<p>
+Set the session name in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>session_name</code></em>&#160;:</span></td>
+<td> the session name
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715416"></a><h3>
+<a name="gst-sdp-message-get-information"></a>gst_sdp_message_get_information ()</h3>
+<a class="indexterm" name="id2715430"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_information     (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the information in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715514"></a><h3>
+<a name="gst-sdp-message-set-information"></a>gst_sdp_message_set_information ()</h3>
+<a class="indexterm" name="id2715527"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_information     (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *information);</pre>
+<p>
+Set the information in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>information</code></em>&#160;:</span></td>
+<td> the information
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715632"></a><h3>
+<a name="gst-sdp-message-get-uri"></a>gst_sdp_message_get_uri ()</h3>
+<a class="indexterm" name="id2715645"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_uri             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the URI in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715728"></a><h3>
+<a name="gst-sdp-message-set-uri"></a>gst_sdp_message_set_uri ()</h3>
+<a class="indexterm" name="id2715742"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_uri             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *uri);</pre>
+<p>
+Set the URI in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> the URI
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715845"></a><h3>
+<a name="gst-sdp-message-emails-len"></a>gst_sdp_message_emails_len ()</h3>
+<a class="indexterm" name="id2715859"></a><pre class="programlisting">guint               gst_sdp_message_emails_len          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of emails in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of emails in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2715939"></a><h3>
+<a name="gst-sdp-message-get-email"></a>gst_sdp_message_get_email ()</h3>
+<a class="indexterm" name="id2715953"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_email           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get the email with number <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> an email index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the email at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716061"></a><h3>
+<a name="gst-sdp-message-add-email"></a>gst_sdp_message_add_email ()</h3>
+<a class="indexterm" name="id2716075"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_email           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *email);</pre>
+<p>
+Add <em class="parameter"><code>email</code></em> to the list of emails in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>email</code></em>&#160;:</span></td>
+<td> an email
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716184"></a><h3>
+<a name="gst-sdp-message-phones-len"></a>gst_sdp_message_phones_len ()</h3>
+<a class="indexterm" name="id2716198"></a><pre class="programlisting">guint               gst_sdp_message_phones_len          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of phones in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of phones in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716278"></a><h3>
+<a name="gst-sdp-message-get-phone"></a>gst_sdp_message_get_phone ()</h3>
+<a class="indexterm" name="id2716292"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_phone           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get the phone with number <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> a phone index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the phone at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716399"></a><h3>
+<a name="gst-sdp-message-add-phone"></a>gst_sdp_message_add_phone ()</h3>
+<a class="indexterm" name="id2716413"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_phone           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *phone);</pre>
+<p>
+Add <em class="parameter"><code>phone</code></em> to the list of phones in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>phone</code></em>&#160;:</span></td>
+<td> a phone
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716523"></a><h3>
+<a name="gst-sdp-message-get-connection"></a>gst_sdp_message_get_connection ()</h3>
+<a class="indexterm" name="id2716537"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>* gst_sdp_message_get_connection  (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the connection of <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection"><span class="type">GstSDPConnection</span></a>. The result remains valid as long as <em class="parameter"><code>msg</code></em> is valid.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716627"></a><h3>
+<a name="gst-sdp-message-set-connection"></a>gst_sdp_message_set_connection ()</h3>
+<a class="indexterm" name="id2716640"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_connection      (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *address,
+                                                         guint ttl,
+                                                         guint addr_number);</pre>
+<p>
+Configure the SDP connection in <em class="parameter"><code>msg</code></em> with the given parameters.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>nettype</code></em>&#160;:</span></td>
+<td> the type of network. "IN" is defined to have the meaning
+"Internet".
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addrtype</code></em>&#160;:</span></td>
+<td> the type of address.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> the address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ttl</code></em>&#160;:</span></td>
+<td> the time to live of the address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addr_number</code></em>&#160;:</span></td>
+<td> the number of layers
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716834"></a><h3>
+<a name="gst-sdp-message-bandwidths-len"></a>gst_sdp_message_bandwidths_len ()</h3>
+<a class="indexterm" name="id2716848"></a><pre class="programlisting">guint               gst_sdp_message_bandwidths_len      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of bandwidth information in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of bandwidth information in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2716928"></a><h3>
+<a name="gst-sdp-message-get-bandwidth"></a>gst_sdp_message_get_bandwidth ()</h3>
+<a class="indexterm" name="id2716942"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth">GstSDPBandwidth</a>* gst_sdp_message_get_bandwidth    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get the bandwidth at index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the bandwidth index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth"><span class="type">GstSDPBandwidth</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717053"></a><h3>
+<a name="gst-sdp-message-add-bandwidth"></a>gst_sdp_message_add_bandwidth ()</h3>
+<a class="indexterm" name="id2717067"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_bandwidth       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *bwtype,
+                                                         guint bandwidth);</pre>
+<p>
+Add the specified bandwidth information to <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>bwtype</code></em>&#160;:</span></td>
+<td> the bandwidth modifier type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>bandwidth</code></em>&#160;:</span></td>
+<td> the bandwidth in kilobits per second
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717194"></a><h3>
+<a name="gst-sdp-message-times-len"></a>gst_sdp_message_times_len ()</h3>
+<a class="indexterm" name="id2717208"></a><pre class="programlisting">guint               gst_sdp_message_times_len           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of time information entries in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of time information entries in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717288"></a><h3>
+<a name="gst-sdp-message-get-time"></a>gst_sdp_message_get_time ()</h3>
+<a class="indexterm" name="id2717302"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime">GstSDPTime</a>*   gst_sdp_message_get_time            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get time information with index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the time index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPTime"><span class="type">GstSDPTime</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717412"></a><h3>
+<a name="gst-sdp-message-add-time"></a>gst_sdp_message_add_time ()</h3>
+<a class="indexterm" name="id2717425"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_time            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *start,
+                                                         const gchar *stop,
+                                                         const gchar **repeat);</pre>
+<p>
+Add time information <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> to <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td> the start time
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stop</code></em>&#160;:</span></td>
+<td> the stop time
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>repeat</code></em>&#160;:</span></td>
+<td> the repeat times
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717585"></a><h3>
+<a name="gst-sdp-message-zones-len"></a>gst_sdp_message_zones_len ()</h3>
+<a class="indexterm" name="id2717599"></a><pre class="programlisting">guint               gst_sdp_message_zones_len           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of time zone information entries in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of time zone information entries in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717679"></a><h3>
+<a name="gst-sdp-message-get-zone"></a>gst_sdp_message_get_zone ()</h3>
+<a class="indexterm" name="id2717692"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone">GstSDPZone</a>*   gst_sdp_message_get_zone            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get time zone information with index <em class="parameter"><code>idx</code></em> from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the zone index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPZone"><span class="type">GstSDPZone</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717803"></a><h3>
+<a name="gst-sdp-message-add-zone"></a>gst_sdp_message_add_zone ()</h3>
+<a class="indexterm" name="id2717816"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_zone            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *adj_time,
+                                                         const gchar *typed_time);</pre>
+<p>
+Add time zone information to <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>adj_time</code></em>&#160;:</span></td>
+<td> the NTP time that a time zone adjustment happens
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>typed_time</code></em>&#160;:</span></td>
+<td> the offset from the time when the session was first scheduled
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2717944"></a><h3>
+<a name="gst-sdp-message-get-key"></a>gst_sdp_message_get_key ()</h3>
+<a class="indexterm" name="id2717957"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>*    gst_sdp_message_get_key             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the encryption information from <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey"><span class="type">GstSDPKey</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718040"></a><h3>
+<a name="gst-sdp-message-set-key"></a>gst_sdp_message_set_key ()</h3>
+<a class="indexterm" name="id2718053"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_set_key             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *type,
+                                                         const gchar *data);</pre>
+<p>
+Adds the encryption information to <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> the encryption type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> the encryption data
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718180"></a><h3>
+<a name="gst-sdp-message-attributes-len"></a>gst_sdp_message_attributes_len ()</h3>
+<a class="indexterm" name="id2718194"></a><pre class="programlisting">guint               gst_sdp_message_attributes_len      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of attributes in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of attributes in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718274"></a><h3>
+<a name="gst-sdp-message-get-attribute"></a>gst_sdp_message_get_attribute ()</h3>
+<a class="indexterm" name="id2718288"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute">GstSDPAttribute</a>* gst_sdp_message_get_attribute    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get the attribute at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute"><span class="type">GstSDPAttribute</span></a> at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718405"></a><h3>
+<a name="gst-sdp-message-get-attribute-val"></a>gst_sdp_message_get_attribute_val ()</h3>
+<a class="indexterm" name="id2718419"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_attribute_val   (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key);</pre>
+<p>
+Get the first attribute with key <em class="parameter"><code>key</code></em> in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> the key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the attribute value of the first attribute with <em class="parameter"><code>key</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718527"></a><h3>
+<a name="gst-sdp-message-get-attribute-val-n"></a>gst_sdp_message_get_attribute_val_n ()</h3>
+<a class="indexterm" name="id2718542"></a><pre class="programlisting">const gchar*        gst_sdp_message_get_attribute_val_n (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key,
+                                                         guint nth);</pre>
+<p>
+Get the <em class="parameter"><code>nth</code></em> attribute with key <em class="parameter"><code>key</code></em> in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> the key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>nth</code></em>&#160;:</span></td>
+<td> the index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the attribute value of the <em class="parameter"><code>nth</code></em> attribute with <em class="parameter"><code>key</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718682"></a><h3>
+<a name="gst-sdp-message-add-attribute"></a>gst_sdp_message_add_attribute ()</h3>
+<a class="indexterm" name="id2718696"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_attribute       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         const gchar *key,
+                                                         const gchar *value);</pre>
+<p>
+Add the attribute with <em class="parameter"><code>key</code></em> and <em class="parameter"><code>value</code></em> to <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> the key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> the value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <em class="parameter"><code>GST_SDP_OK</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718831"></a><h3>
+<a name="gst-sdp-message-medias-len"></a>gst_sdp_message_medias_len ()</h3>
+<a class="indexterm" name="id2718845"></a><pre class="programlisting">guint               gst_sdp_message_medias_len          (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Get the number of media descriptions in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of media descriptions in <em class="parameter"><code>msg</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2718925"></a><h3>
+<a name="gst-sdp-message-get-media"></a>gst_sdp_message_get_media ()</h3>
+<a class="indexterm" name="id2718939"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a>*  gst_sdp_message_get_media           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         guint idx);</pre>
+<p>
+Get the media description at index <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>msg</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> the index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719049"></a><h3>
+<a name="gst-sdp-message-add-media"></a>gst_sdp_message_add_media ()</h3>
+<a class="indexterm" name="id2719063"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_add_media           (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg,
+                                                         <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Adds <em class="parameter"><code>media</code></em> to the array of medias in <em class="parameter"><code>msg</code></em>. This function takes ownership of
+the contents of <em class="parameter"><code>media</code></em> so that <em class="parameter"><code>media</code></em> will have to be reinitialized with
+<code class="function">gst_media_init()</code> before it can be used again.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a> to add
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719206"></a><h3>
+<a name="gst-sdp-message-dump"></a>gst_sdp_message_dump ()</h3>
+<a class="indexterm" name="id2719219"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_message_dump                (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage">GstSDPMessage</a> *msg);</pre>
+<p>
+Dump the parsed contents of <em class="parameter"><code>msg</code></em> to stdout.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719302"></a><h3>
+<a name="gst-sdp-media-new"></a>gst_sdp_media_new ()</h3>
+<a class="indexterm" name="id2719315"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_new                   (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> **media);</pre>
+<p>
+Allocate a new GstSDPMedia and store the result in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> pointer to new <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719398"></a><h3>
+<a name="gst-sdp-media-init"></a>gst_sdp_media_init ()</h3>
+<a class="indexterm" name="id2719411"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_init                  (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Initialize <em class="parameter"><code>media</code></em> so that its contents are as if it was freshly allocated
+with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-new"><code class="function">gst_sdp_media_new()</code></a>. This function is mostly used to initialize a media
+allocated on the stack. <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-uninit"><code class="function">gst_sdp_media_uninit()</code></a> undoes this operation.
+</p>
+<p>
+When this function is invoked on newly allocated data (with malloc or on the
+stack), its contents should be set to 0 before calling this function.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719522"></a><h3>
+<a name="gst-sdp-media-uninit"></a>gst_sdp_media_uninit ()</h3>
+<a class="indexterm" name="id2719536"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_uninit                (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Free all resources allocated in <em class="parameter"><code>media</code></em>. <em class="parameter"><code>media</code></em> should not be used anymore after
+this function. This function should be used when <em class="parameter"><code>media</code></em> was allocated on the
+stack and initialized with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-init"><code class="function">gst_sdp_media_init()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719642"></a><h3>
+<a name="gst-sdp-media-free"></a>gst_sdp_media_free ()</h3>
+<a class="indexterm" name="id2719656"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_free                  (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Free all resources allocated by <em class="parameter"><code>media</code></em>. <em class="parameter"><code>media</code></em> should not be used anymore after
+this function. This function should be used when <em class="parameter"><code>media</code></em> was dynamically
+allocated with <a href="gst-plugins-base-libs-gstsdpmessage.html#gst-sdp-media-new"><code class="function">gst_sdp_media_new()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719761"></a><h3>
+<a name="gst-sdp-media-get-media"></a>gst_sdp_media_get_media ()</h3>
+<a class="indexterm" name="id2719775"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_media             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the media description of <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the media description.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719850"></a><h3>
+<a name="gst-sdp-media-set-media"></a>gst_sdp_media_set_media ()</h3>
+<a class="indexterm" name="id2719864"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_set_media             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *med);</pre>
+<p>
+Set the media description of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>med</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>med</code></em>&#160;:</span></td>
+<td> the media description
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2719974"></a><h3>
+<a name="gst-sdp-media-get-port"></a>gst_sdp_media_get_port ()</h3>
+<a class="indexterm" name="id2719987"></a><pre class="programlisting">guint               gst_sdp_media_get_port              (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the port number for <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the port number of <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720067"></a><h3>
+<a name="gst-sdp-media-get-num-ports"></a>gst_sdp_media_get_num_ports ()</h3>
+<a class="indexterm" name="id2720081"></a><pre class="programlisting">guint               gst_sdp_media_get_num_ports         (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the number of ports for <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of ports for <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720160"></a><h3>
+<a name="gst-sdp-media-set-port-info"></a>gst_sdp_media_set_port_info ()</h3>
+<a class="indexterm" name="id2720174"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_set_port_info         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint port,
+                                                         guint num_ports);</pre>
+<p>
+Set the port information in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>port</code></em>&#160;:</span></td>
+<td> the port number
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>num_ports</code></em>&#160;:</span></td>
+<td> the number of ports
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720300"></a><h3>
+<a name="gst-sdp-media-get-proto"></a>gst_sdp_media_get_proto ()</h3>
+<a class="indexterm" name="id2720313"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_proto             (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the transport protocol of <em class="parameter"><code>media</code></em></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the transport protocol of <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720392"></a><h3>
+<a name="gst-sdp-media-set-proto"></a>gst_sdp_media_set_proto ()</h3>
+<a class="indexterm" name="id2720406"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_set_proto             (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *proto);</pre>
+<p>
+Set the media transport protocol of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>proto</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>proto</code></em>&#160;:</span></td>
+<td> the media transport protocol
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720516"></a><h3>
+<a name="gst-sdp-media-formats-len"></a>gst_sdp_media_formats_len ()</h3>
+<a class="indexterm" name="id2720530"></a><pre class="programlisting">guint               gst_sdp_media_formats_len           (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the number of formats in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of formats in <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720610"></a><h3>
+<a name="gst-sdp-media-get-format"></a>gst_sdp_media_get_format ()</h3>
+<a class="indexterm" name="id2720623"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_format            (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);</pre>
+<p>
+Get the format information at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> an index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the format at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720731"></a><h3>
+<a name="gst-sdp-media-add-format"></a>gst_sdp_media_add_format ()</h3>
+<a class="indexterm" name="id2720744"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_add_format            (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *format);</pre>
+<p>
+Add the format information to <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td> the format
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720849"></a><h3>
+<a name="gst-sdp-media-get-information"></a>gst_sdp_media_get_information ()</h3>
+<a class="indexterm" name="id2720862"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_information       (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the information of <em class="parameter"><code>media</code></em></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the information of <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2720942"></a><h3>
+<a name="gst-sdp-media-set-information"></a>gst_sdp_media_set_information ()</h3>
+<a class="indexterm" name="id2720956"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_set_information       (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *information);</pre>
+<p>
+Set the media information of <em class="parameter"><code>media</code></em> to <em class="parameter"><code>information</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>information</code></em>&#160;:</span></td>
+<td> the media information
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721067"></a><h3>
+<a name="gst-sdp-media-connections-len"></a>gst_sdp_media_connections_len ()</h3>
+<a class="indexterm" name="id2721080"></a><pre class="programlisting">guint               gst_sdp_media_connections_len       (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the number of connection fields in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of connections in <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721160"></a><h3>
+<a name="gst-sdp-media-get-connection"></a>gst_sdp_media_get_connection ()</h3>
+<a class="indexterm" name="id2721174"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection">GstSDPConnection</a>* gst_sdp_media_get_connection    (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);</pre>
+<p>
+Get the connection at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> an index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPConnection"><span class="type">GstSDPConnection</span></a> at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721291"></a><h3>
+<a name="gst-sdp-media-add-connection"></a>gst_sdp_media_add_connection ()</h3>
+<a class="indexterm" name="id2721305"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_add_connection        (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *nettype,
+                                                         const gchar *addrtype,
+                                                         const gchar *address,
+                                                         guint ttl,
+                                                         guint addr_number);</pre>
+<p>
+Add the given connection parameters to <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>nettype</code></em>&#160;:</span></td>
+<td> the type of network. "IN" is defined to have the meaning
+"Internet".
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addrtype</code></em>&#160;:</span></td>
+<td> the type of address.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> the address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>ttl</code></em>&#160;:</span></td>
+<td> the time to live of the address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>addr_number</code></em>&#160;:</span></td>
+<td> the number of layers
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721498"></a><h3>
+<a name="gst-sdp-media-bandwidths-len"></a>gst_sdp_media_bandwidths_len ()</h3>
+<a class="indexterm" name="id2721511"></a><pre class="programlisting">guint               gst_sdp_media_bandwidths_len        (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the number of bandwidth fields in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of bandwidths in <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721592"></a><h3>
+<a name="gst-sdp-media-get-bandwidth"></a>gst_sdp_media_get_bandwidth ()</h3>
+<a class="indexterm" name="id2721606"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth">GstSDPBandwidth</a>* gst_sdp_media_get_bandwidth      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);</pre>
+<p>
+Get the bandwidth at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> an index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPBandwidth"><span class="type">GstSDPBandwidth</span></a> at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721722"></a><h3>
+<a name="gst-sdp-media-add-bandwidth"></a>gst_sdp_media_add_bandwidth ()</h3>
+<a class="indexterm" name="id2721736"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_add_bandwidth         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *bwtype,
+                                                         guint bandwidth);</pre>
+<p>
+Add the bandwidth information with <em class="parameter"><code>bwtype</code></em> and <em class="parameter"><code>bandwidth</code></em> to <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>bwtype</code></em>&#160;:</span></td>
+<td> the bandwidth modifier type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>bandwidth</code></em>&#160;:</span></td>
+<td> the bandwidth in kilobits per second
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721874"></a><h3>
+<a name="gst-sdp-media-get-key"></a>gst_sdp_media_get_key ()</h3>
+<a class="indexterm" name="id2721887"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey">GstSDPKey</a>*    gst_sdp_media_get_key               (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the encryption information from <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPKey"><span class="type">GstSDPKey</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2721970"></a><h3>
+<a name="gst-sdp-media-set-key"></a>gst_sdp_media_set_key ()</h3>
+<a class="indexterm" name="id2721983"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_set_key               (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *type,
+                                                         const gchar *data);</pre>
+<p>
+Adds the encryption information to <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> the encryption type
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> the encryption data
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult"><span class="type">GstSDPResult</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2722109"></a><h3>
+<a name="gst-sdp-media-attributes-len"></a>gst_sdp_media_attributes_len ()</h3>
+<a class="indexterm" name="id2722123"></a><pre class="programlisting">guint               gst_sdp_media_attributes_len        (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media);</pre>
+<p>
+Get the number of attribute fields in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of attributes in <em class="parameter"><code>media</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2722204"></a><h3>
+<a name="gst-sdp-media-get-attribute"></a>gst_sdp_media_get_attribute ()</h3>
+<a class="indexterm" name="id2722218"></a><pre class="programlisting">const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute">GstSDPAttribute</a>* gst_sdp_media_get_attribute      (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         guint idx);</pre>
+<p>
+Get the attribute at position <em class="parameter"><code>idx</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>idx</code></em>&#160;:</span></td>
+<td> an index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPAttribute"><span class="type">GstSDPAttribute</span></a> at position <em class="parameter"><code>idx</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2722334"></a><h3>
+<a name="gst-sdp-media-get-attribute-val"></a>gst_sdp_media_get_attribute_val ()</h3>
+<a class="indexterm" name="id2722347"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_attribute_val     (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key);</pre>
+<p>
+Get the first attribute value for <em class="parameter"><code>key</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the first attribute value for <em class="parameter"><code>key</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2722456"></a><h3>
+<a name="gst-sdp-media-get-attribute-val-n"></a>gst_sdp_media_get_attribute_val_n ()</h3>
+<a class="indexterm" name="id2722470"></a><pre class="programlisting">const gchar*        gst_sdp_media_get_attribute_val_n   (const <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key,
+                                                         guint nth);</pre>
+<p>
+Get the <em class="parameter"><code>nth</code></em> attribute value for <em class="parameter"><code>key</code></em> in <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>nth</code></em>&#160;:</span></td>
+<td> an index
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the <em class="parameter"><code>nth</code></em> attribute value.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2722605"></a><h3>
+<a name="gst-sdp-media-add-attribute"></a>gst_sdp_media_add_attribute ()</h3>
+<a class="indexterm" name="id2722619"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPResult">GstSDPResult</a>        gst_sdp_media_add_attribute         (<a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia">GstSDPMedia</a> *media,
+                                                         const gchar *key,
+                                                         const gchar *value);</pre>
+<p>
+Add the attribute with <em class="parameter"><code>key</code></em> and <em class="parameter"><code>value</code></em> to <em class="parameter"><code>media</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>media</code></em>&#160;:</span></td>
+<td> a <a href="gst-plugins-base-libs-gstsdpmessage.html#GstSDPMedia"><span class="type">GstSDPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a href="gst-plugins-base-libs-gstsdpmessage.html#GST-SDP-OK:CAPS"><span class="type">GST_SDP_OK</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

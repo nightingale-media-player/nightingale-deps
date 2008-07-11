@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstnetbuffer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="prev" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="next" href="gstreamer-riff.html" title="Riff Media Library">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-netbuffer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-netbuffer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-riff.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2624963" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2625202" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstnetbuffer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2624963"></a><span class="refentrytitle">gstnetbuffer</span>
+</h2>
+<p>gstnetbuffer &#8212; Buffer for use in network sources and sinks</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/netbuffer/gstnetbuffer.h&gt;
+
+
+                    <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer">GstNetBuffer</a>;
+enum                <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetType">GstNetType</a>;
+                    <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a>;
+<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer">GstNetBuffer</a>*       <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netbuffer-new">gst_netbuffer_new</a>                   (void);
+gboolean            <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip4-address">gst_netaddress_get_ip4_address</a>      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint32 *address,
+                                                         guint16 *port);
+gboolean            <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip6-address">gst_netaddress_get_ip6_address</a>      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint8 address[16],
+                                                         guint16 *port);
+<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetType">GstNetType</a>          <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-net-type">gst_netaddress_get_net_type</a>         (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr);
+void                <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-set-ip4-address">gst_netaddress_set_ip4_address</a>      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint32 address,
+                                                         guint16 port);
+void                <a href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-set-ip6-address">gst_netaddress_set_ip6_address</a>      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint8 address[16],
+                                                         guint16 port);
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2625202"></a><h2>Description</h2>
+<p>
+<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer"><span class="type">GstNetBuffer</span></a> is a subclass of a normal <span class="type">GstBuffer</span> that contains two
+additional metadata fields of type <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress"><span class="type">GstNetAddress</span></a> named 'to' and 'from'. The
+buffer can be used to store additional information about the origin of the
+buffer data and is used in various network elements to track the to and from
+addresses.
+</p>
+<p>
+Last reviewed on 2006-08-21 (0.10.10)</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2625252"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2625262"></a><h3>
+<a name="GstNetBuffer"></a>GstNetBuffer</h3>
+<a class="indexterm" name="id2625275"></a><pre class="programlisting">typedef struct {
+  GstBuffer buffer;
+
+  GstNetAddress from;
+  GstNetAddress to;
+} GstNetBuffer;
+</pre>
+<p>
+buffer for use in network sources and sinks.
+It contains the source or destination address of the buffer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">GstBuffer&#160;<em class="structfield"><code>buffer</code></em>;</span></td>
+<td> the parent <span class="type">GstBuffer</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a>&#160;<em class="structfield"><code>from</code></em>;</span></td>
+<td> the address where this buffer came from.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a>&#160;<em class="structfield"><code>to</code></em>;</span></td>
+<td> the address where this buffer should go to.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625371"></a><h3>
+<a name="GstNetType"></a>enum GstNetType</h3>
+<a class="indexterm" name="id2625383"></a><pre class="programlisting">typedef enum {
+  GST_NET_TYPE_UNKNOWN,
+  GST_NET_TYPE_IP4,
+  GST_NET_TYPE_IP6,
+} GstNetType;
+</pre>
+<p>
+The Address type used in <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress"><span class="type">GstNetAddress</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GST-NET-TYPE-UNKNOWN:CAPS"></a><code class="literal">GST_NET_TYPE_UNKNOWN</code></span></td>
+<td> unknown address type
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-NET-TYPE-IP4:CAPS"></a><code class="literal">GST_NET_TYPE_IP4</code></span></td>
+<td> an IPv4 address type
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GST-NET-TYPE-IP6:CAPS"></a><code class="literal">GST_NET_TYPE_IP6</code></span></td>
+<td> and IPv6 address type
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625483"></a><h3>
+<a name="GstNetAddress"></a>GstNetAddress</h3>
+<a class="indexterm" name="id2625496"></a><pre class="programlisting">typedef struct {
+} GstNetAddress;
+</pre>
+<p>
+An opaque network address as used in <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer"><span class="type">GstNetBuffer</span></a>.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625523"></a><h3>
+<a name="gst-netbuffer-new"></a>gst_netbuffer_new ()</h3>
+<a class="indexterm" name="id2625537"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer">GstNetBuffer</a>*       gst_netbuffer_new                   (void);</pre>
+<p>
+Create a new network buffer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer"><span class="type">GstNetBuffer</span></a>.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625585"></a><h3>
+<a name="gst-netaddress-get-ip4-address"></a>gst_netaddress_get_ip4_address ()</h3>
+<a class="indexterm" name="id2625598"></a><pre class="programlisting">gboolean            gst_netaddress_get_ip4_address      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint32 *address,
+                                                         guint16 *port);</pre>
+<p>
+Get the IPv4 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>naddr</code></em>&#160;:</span></td>
+<td> a network address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> a location to store the address.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>port</code></em>&#160;:</span></td>
+<td> a location to store the port.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the address could be retrieved.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625716"></a><h3>
+<a name="gst-netaddress-get-ip6-address"></a>gst_netaddress_get_ip6_address ()</h3>
+<a class="indexterm" name="id2625730"></a><pre class="programlisting">gboolean            gst_netaddress_get_ip6_address      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint8 address[16],
+                                                         guint16 *port);</pre>
+<p>
+Get the IPv6 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>naddr</code></em>&#160;:</span></td>
+<td> a network address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> a location to store the result.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>port</code></em>&#160;:</span></td>
+<td> a location to store the port.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the address could be retrieved.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625848"></a><h3>
+<a name="gst-netaddress-get-net-type"></a>gst_netaddress_get_net_type ()</h3>
+<a class="indexterm" name="id2625862"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetType">GstNetType</a>          gst_netaddress_get_net_type         (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr);</pre>
+<p>
+Get the type of address stored in <em class="parameter"><code>naddr</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>naddr</code></em>&#160;:</span></td>
+<td> a network address
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the network type stored in <em class="parameter"><code>naddr</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2625934"></a><h3>
+<a name="gst-netaddress-set-ip4-address"></a>gst_netaddress_set_ip4_address ()</h3>
+<a class="indexterm" name="id2625948"></a><pre class="programlisting">void                gst_netaddress_set_ip4_address      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint32 address,
+                                                         guint16 port);</pre>
+<p>
+Set <em class="parameter"><code>naddr</code></em> with the IPv4 <em class="parameter"><code>address</code></em> and <em class="parameter"><code>port</code></em> pair.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>naddr</code></em>&#160;:</span></td>
+<td> a network address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> an IPv4 network address.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>port</code></em>&#160;:</span></td>
+<td> a port number to set.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2626060"></a><h3>
+<a name="gst-netaddress-set-ip6-address"></a>gst_netaddress_set_ip6_address ()</h3>
+<a class="indexterm" name="id2626074"></a><pre class="programlisting">void                gst_netaddress_set_ip6_address      (<a href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress">GstNetAddress</a> *naddr,
+                                                         guint8 address[16],
+                                                         guint16 port);</pre>
+<p>
+Set <em class="parameter"><code>naddr</code></em> with the IPv6 <em class="parameter"><code>address</code></em> and <em class="parameter"><code>port</code></em> pair.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>naddr</code></em>&#160;:</span></td>
+<td> a network address
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>address</code></em>&#160;:</span></td>
+<td> an IPv6 network address.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>port</code></em>&#160;:</span></td>
+<td> a port number to set.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

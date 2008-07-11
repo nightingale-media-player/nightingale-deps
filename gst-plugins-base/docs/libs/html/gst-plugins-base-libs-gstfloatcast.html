@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>gstfloatcast</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="prev" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="next" href="gstreamer-interfaces.html" title="Interfaces Library">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
+<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
+<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
+<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
+<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
+<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
+<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
+<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
+<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
+<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
+<link rel="chapter" href="gstreamer-video.html" title="Video Library">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="index" href="api-index.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-floatcast.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-floatcast.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="gstreamer-interfaces.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2595398" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2595502" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-libs-gstfloatcast"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2595398"></a><span class="refentrytitle">gstfloatcast</span>
+</h2>
+<p>gstfloatcast &#8212; Floating point platform independence macros</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/floatcast/floatcast.h&gt;
+
+
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-BE:CAPS">GDOUBLE_FROM_BE</a>                     (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-LE:CAPS">GDOUBLE_FROM_LE</a>                     (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-BE:CAPS">GDOUBLE_TO_BE</a>                       (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-LE:CAPS">GDOUBLE_TO_LE</a>                       (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-BE:CAPS">GFLOAT_FROM_BE</a>                      (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-LE:CAPS">GFLOAT_FROM_LE</a>                      (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-BE:CAPS">GFLOAT_TO_BE</a>                        (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-LE:CAPS">GFLOAT_TO_LE</a>                        (val)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#gst-cast-double">gst_cast_double</a>                     (x)
+#define             <a href="gst-plugins-base-libs-gstfloatcast.html#gst-cast-float">gst_cast_float</a>                      (x)
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2595502"></a><h2>Description</h2>
+<p>
+The floatcast.h header file contains a couple of convenience macros for
+floating point numbers.
+</p>
+<p>
+If you include this header, your application or library must link against
+libm (for maths.h support).
+</p>
+<p>
+For optimal results, your application's or library's build
+system should check whether the C99 functions lrint and lrintf are supported
+and define the preprocessor symbols HAVE_LRINT and HAVE_LRINTF if so.  If
+you are using autoconf, you can do this by using the AC_C99_FUNC_LRINT and
+AC_C99_FUNC_LRINTF checks in your configure.ac or configure.in file and
+including your application's config.h header before you include floatcast.h.</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2595546"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2595556"></a><h3>
+<a name="GDOUBLE-FROM-BE:CAPS"></a>GDOUBLE_FROM_BE()</h3>
+<a class="indexterm" name="id2595569"></a><pre class="programlisting">#define GDOUBLE_FROM_BE(val) (GDOUBLE_TO_BE (val))
+</pre>
+<p>
+Convert 64-bit floating point value (double) from big endian byte order
+into native byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595608"></a><h3>
+<a name="GDOUBLE-FROM-LE:CAPS"></a>GDOUBLE_FROM_LE()</h3>
+<a class="indexterm" name="id2595621"></a><pre class="programlisting">#define GDOUBLE_FROM_LE(val) (GDOUBLE_TO_LE (val))
+</pre>
+<p>
+Convert 64-bit floating point value (double) from little endian byte order
+into native byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595659"></a><h3>
+<a name="GDOUBLE-TO-BE:CAPS"></a>GDOUBLE_TO_BE()</h3>
+<a class="indexterm" name="id2595671"></a><pre class="programlisting">#define             GDOUBLE_TO_BE(val)</pre>
+<p>
+Convert 64-bit floating point value (double) from native byte order into
+big endian byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595710"></a><h3>
+<a name="GDOUBLE-TO-LE:CAPS"></a>GDOUBLE_TO_LE()</h3>
+<a class="indexterm" name="id2595722"></a><pre class="programlisting">#define             GDOUBLE_TO_LE(val)</pre>
+<p>
+Convert 64-bit floating point value (double) from native byte order into
+little endian byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595760"></a><h3>
+<a name="GFLOAT-FROM-BE:CAPS"></a>GFLOAT_FROM_BE()</h3>
+<a class="indexterm" name="id2595773"></a><pre class="programlisting">#define GFLOAT_FROM_BE(val)  (GFLOAT_TO_BE (val))
+</pre>
+<p>
+Convert 32-bit floating point value (float) from big endian byte order
+into native byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595811"></a><h3>
+<a name="GFLOAT-FROM-LE:CAPS"></a>GFLOAT_FROM_LE()</h3>
+<a class="indexterm" name="id2595824"></a><pre class="programlisting">#define GFLOAT_FROM_LE(val)  (GFLOAT_TO_LE (val))
+</pre>
+<p>
+Convert 32-bit floating point value (float) from little endian byte order
+into native byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595862"></a><h3>
+<a name="GFLOAT-TO-BE:CAPS"></a>GFLOAT_TO_BE()</h3>
+<a class="indexterm" name="id2595875"></a><pre class="programlisting">#define             GFLOAT_TO_BE(val)</pre>
+<p>
+Convert 32-bit floating point value (float) from native byte order into
+big endian byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595913"></a><h3>
+<a name="GFLOAT-TO-LE:CAPS"></a>GFLOAT_TO_LE()</h3>
+<a class="indexterm" name="id2595925"></a><pre class="programlisting">#define             GFLOAT_TO_LE(val)</pre>
+<p>
+Convert 32-bit floating point value (float) from native byte order into
+little endian byte order.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>val</code></em>&#160;:</span></td>
+<td> value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2595964"></a><h3>
+<a name="gst-cast-double"></a>gst_cast_double()</h3>
+<a class="indexterm" name="id2595976"></a><pre class="programlisting">#define             gst_cast_double(x)</pre>
+<p>
+Casts a 64-bit floating point value (double) to an integer without bias.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td> input value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2596014"></a><h3>
+<a name="gst-cast-float"></a>gst_cast_float()</h3>
+<a class="indexterm" name="id2596027"></a><pre class="programlisting">#define             gst_cast_float(x)</pre>
+<p>
+Casts a 32-bit floating point value (float) to an integer without bias.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td> input value
+</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

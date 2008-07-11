@@ -1,0 +1,87 @@
+<!-- ##### SECTION Title ##### -->
+gstmultichannel
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### ENUM GstAudioChannelPosition ##### -->
+<para>
+
+</para>
+
+@GST_AUDIO_CHANNEL_POSITION_INVALID: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_MONO: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT: 
+@GST_AUDIO_CHANNEL_POSITION_REAR_CENTER: 
+@GST_AUDIO_CHANNEL_POSITION_REAR_LEFT: 
+@GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT: 
+@GST_AUDIO_CHANNEL_POSITION_LFE: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER: 
+@GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER: 
+@GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT: 
+@GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT: 
+@GST_AUDIO_CHANNEL_POSITION_NONE: 
+@GST_AUDIO_CHANNEL_POSITION_NUM: 
+
+<!-- ##### FUNCTION gst_audio_fixate_channel_positions ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_audio_get_channel_positions ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_audio_set_caps_channel_positions_list ##### -->
+<para>
+
+</para>
+
+@caps: 
+@pos: 
+@num_positions: 
+
+
+<!-- ##### FUNCTION gst_audio_set_channel_positions ##### -->
+<para>
+
+</para>
+
+@str: 
+@pos: 
+
+
+<!-- ##### FUNCTION gst_audio_set_structure_channel_positions_list ##### -->
+<para>
+
+</para>
+
+@str: 
+@pos: 
+@num_positions: 
+
+
