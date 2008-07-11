@@ -31,6 +31,7 @@
 #include <liboil/liboilfunction.h>
 #include <mmintrin.h>
 
+#ifdef ENABLE_BROKEN_IMPLS
 union m64_int {
   __m64 m64;
   uint64_t ull;
@@ -64,6 +65,7 @@ recon8x8_intra_mmx (uint8_t *dest, int ds, int16_t *change)
   _mm_empty();
 }
 OIL_DEFINE_IMPL_FULL (recon8x8_intra_mmx, recon8x8_intra, OIL_IMPL_FLAG_MMX);
+#endif
 
 static void
 recon8x8_inter_mmx (uint8_t *dest, int ds, uint8_t *src, int ss,

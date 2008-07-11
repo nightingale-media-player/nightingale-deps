@@ -2,7 +2,9 @@
 #ifndef _JPEG_DECODER_H_
 #define _JPEG_DECODER_H_
 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 
 #define JPEG_MARKER_STUFFED		0x00
 #define JPEG_MARKER_TEM			0x01
@@ -69,8 +71,7 @@ int jpeg_decoder_get_component_ptr(JpegDecoder *dec, int id,
 	unsigned char **image, int *rowstride);
 
 unsigned char *jpeg_decoder_get_argb_image (JpegDecoder *dec);
-int jpeg_decode_argb (uint8_t *data, int length, uint32_t **image,
-    int *width, int *height);
+int jpeg_decode_argb (uint8_t *data, int length, uint32_t **image, int *width, int *height);
 
 #endif
 

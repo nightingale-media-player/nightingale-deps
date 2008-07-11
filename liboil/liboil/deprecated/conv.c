@@ -35,7 +35,17 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef __MSC_VER
+static inline gdouble
+rint(gdouble x) {
+  int xi = (int) x;
+  gdouble remainder = x - (gdouble) xi;
 
+  if (remainder < 0.5)
+    return x - remainder;
+  return (x - remainder + 1.0);
+}
+#endif
 
 /**
  * SECTION:liboilfuncs-conv

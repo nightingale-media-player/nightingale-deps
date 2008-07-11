@@ -34,14 +34,18 @@
 #include <liboil/liboilfault.h>
 #include <liboil/liboilutils.h>
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include <signal.h>
+#ifndef _MSC_VER
 #include <sys/time.h>
+#endif
 #include <time.h>
 
 #if defined(__FreeBSD__)

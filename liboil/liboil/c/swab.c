@@ -33,7 +33,9 @@
 #include <liboil/liboilfunction.h>
 #include <liboil/liboilclasses.h>
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 
 

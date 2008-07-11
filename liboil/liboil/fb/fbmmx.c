@@ -660,6 +660,7 @@ void fbComposeSetupMMX(void)
 #endif
 
 
+#ifdef ENABLE_BROKEN_IMPLS
 /* ------------------ MMX code paths called from fbpict.c ----------------------- */
 
 typedef union {
@@ -897,6 +898,7 @@ pack565 (__m64 pixel, __m64 target, int pos)
     
     return _mm_or_si64 (b, p);
 }
+#endif
 
 #ifdef ENABLE_BROKEN_IMPLS
 /* broken.  See Debian bug #340932 */

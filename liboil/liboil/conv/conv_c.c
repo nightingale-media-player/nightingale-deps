@@ -33,6 +33,18 @@
 
 #include <math.h>
 
+#ifdef __MSC_VER
+#include <glib/glib.h>
+static inline gdouble
+rint(gdouble x) {
+  int xi = (int) x;
+  gdouble remainder = x - (gdouble) xi;
+
+  if (remainder < 0.5)
+    return x - remainder;
+  return (x - remainder + 1.0);
+}
+#endif
 
 
 #define CONV_DEFINE_CAST(desttype,srctype) \

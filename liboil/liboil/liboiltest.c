@@ -671,7 +671,7 @@ check_holes (void *data, OilType type, int pre_n, int stride, int post_n,
   }
 
   for(i=0;i<post_n;i++){
-    if (!check_guard (data + stride * i + chunk_size, hole_size, guard)) {
+    if (!check_guard ((uint8_t *) data + stride * i + chunk_size, hole_size, guard)) {
       return 0;
     }
   }

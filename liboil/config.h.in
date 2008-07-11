@@ -96,6 +96,10 @@
 /* Defined if prototype checking enabled */
 #undef LIBOIL_STRICT_PROTOTYPES
 
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
 /* Defined for compiling internal code */
 #undef OIL_EXPORTS
 

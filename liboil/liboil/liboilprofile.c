@@ -32,7 +32,9 @@
 #include <liboil/liboilprofile.h>
 #include <liboil/liboildebug.h>
 
+#ifndef _MSC_VER
 #include <sys/time.h>
+#endif
 #include <time.h>
 #include <string.h>
 #include <math.h>

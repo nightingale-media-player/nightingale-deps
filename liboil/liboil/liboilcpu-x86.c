@@ -34,14 +34,18 @@
 #include <liboil/liboilfault.h>
 #include <liboil/liboilutils.h>
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include <signal.h>
+#ifndef _MSC_VER
 #include <sys/time.h>
+#endif
 #include <time.h>
 
 #if defined(__FreeBSD__) || defined(__APPLE__)
@@ -129,6 +133,7 @@ oil_cpu_i386_getflags_cpuinfo (char *cpuinfo)
 }
 #endif
 
+#ifdef HAVE_GCC_ASM
 static unsigned long
 oil_profile_stamp_rdtsc(void)
 {
@@ -286,6 +291,7 @@ oil_cpu_detect_getisax (void)
   }
 }
 #endif
+#endif
 
 /* Reduce the set of CPU capabilities detected by whatever detection mechanism
  * was chosen, according to kernel limitations.  SSE requires kernel support for
@@ -328,6 +334,7 @@ oil_cpu_detect_kernel_support (void)
 void
 oil_cpu_detect_arch(void)
 {
+#ifdef HAVE_GCC_ASM
 #ifdef USE_I386_CPUID
   oil_cpu_detect_cpuid ();
 #endif
@@ -336,6 +343,7 @@ oil_cpu_detect_arch(void)
 #endif
 #ifdef USE_I386_CPUINFO
   oil_cpu_detect_cpuinfo ();
+#endif
 #endif
 
   oil_cpu_detect_kernel_support ();
