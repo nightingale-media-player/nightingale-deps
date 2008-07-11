@@ -450,6 +450,7 @@ build()
 	--disable-examples \
 	--disable-tests \
 	-C
+    cd liboil
     make && make install
 
     # Post-process libraries on Mac.
@@ -471,7 +472,6 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    # FIXME : Uncomment me after fixes
     rm -Rf ${build_dir}
 }
 
