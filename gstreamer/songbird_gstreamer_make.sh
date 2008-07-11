@@ -322,8 +322,6 @@ build()
     export CFLAGS=
     export LDFLAGS=
     export ACLOCAL_FLAGS=
-    export GLIB_CFLAGS=
-    export GLIB_LIBS=
     export PKG_CONFIG_PATH=
     export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/usr/lib:/opt/local/lib
 
@@ -363,18 +361,6 @@ build()
         tgt_dep_dir="${dep_arch_dir}/glib/${build_type}"
 	export PATH="${tgt_dep_dir}/bin:${PATH}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-	if [ "$sys_name" != "Linux" ]; then
-	    # We always use system-wide glib on linux
-            export_append "GLIB_LIBS"	\
-                "-L${tgt_dep_dir}/lib"	\
-                "-lglib-2.0"		\
-                "-lgmodule-2.0"		\
-                "-lgthread-2.0"		\
-                "-lgobject-2.0"
-            export_append "GLIB_CFLAGS"			\
-                "-I${tgt_dep_dir}/include/glib-2.0"	\
-                "-I${tgt_dep_dir}/lib/glib-2.0/include"
-        fi
 	if [ "$sys_name" = "Darwin" ]; then
             export_append		\
                 "LDFLAGS"		\
@@ -393,11 +379,6 @@ build()
                 "-Wl,-dylib_file"	\
                 "-Wl,libgthread-2.0.dylib:${tgt_dep_dir}/lib/libgthread-2.0.dylib"
             export DYLD_LIBRARY_PATH="${tgt_dep_dir}/lib:${DYLD_LIBRARY_PATH}"
-	elif [ "$sys_name" = "Cygwin" ]; then
-	    export GLIB_LIBS="-Wl,${tgt_dep_dir}/lib/glib-2.0.lib -Wl,${tgt_dep_dir}/lib/gmodule-2.0.lib -Wl,${tgt_dep_dir}/lib/gobject-2.0.lib -Wl,${tgt_dep_dir}/lib/gthread-2.0.lib"
-	    if [ "$build_type" = "debug" ]; then
-		export GLIB_LIBS="$GLIB_LIBS -Wl,-Zi"
-	    fi
         fi
     fi
 
@@ -411,7 +392,6 @@ build()
 	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055"
 	if [ "$build_type" = "debug" ]; then
 	    export CFLAGS="${CFLAGS} -MTd -Zi"
-	    export GLIB_LIBS="${GLIB_LIBS} -Wl,-Zi"
 	else
 	    export CFLAGS="${CFLAGS} -MT"
 	fi
@@ -423,11 +403,7 @@ build()
     if test -n "${cl_process}"; then
         export CFLAGS=`${cl_process} echo ${CFLAGS}`
         export LIBS=`${cl_process} echo ${LIBS}`
-        export GLIB_CFLAGS=`${cl_process} echo ${GLIB_CFLAGS}`
-        export GLIB_LIBS=`${cl_process} echo ${GLIB_LIBS}`
     fi
-    export GLIB_ONLY_CFLAGS="${GLIB_CFLAGS}"
-    export GLIB_ONLY_LIBS="${GLIB_LIBS}"
 
     # Set up to build within a clean build directory.
     build_dir=${dep_arch_dir}/${tgt_name}/build
@@ -526,7 +502,7 @@ build()
     buildsymbols
 
     # Strip symbols from compiled files.
-    if [ "${build_type}" = "release"]; then
+    if [ "${build_type}" = "release" ]; then
 	strip ${dep_arch_dir}/${tgt_name}/${build_type}
     fi
 
