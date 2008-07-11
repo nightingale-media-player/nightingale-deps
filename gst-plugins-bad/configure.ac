@@ -91,7 +91,6 @@ GST_PLUGINS_ALL="\
   h264parse \
   interleave \
   librfb \
-  modplug \
   mpeg4videoparse \
   mpegvideoparse \
   mve \
