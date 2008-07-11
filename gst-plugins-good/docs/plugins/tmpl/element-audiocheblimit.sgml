@@ -1,0 +1,51 @@
+<!-- ##### SECTION Title ##### -->
+audiocheblimit
+
+<!-- ##### SECTION Short_Description ##### -->
+Chebyshev low pass and high pass filter
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audiocheblimit-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioChebLimit ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioChebLimit:cutoff ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebLimit:mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebLimit:poles ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebLimit:ripple ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioChebLimit:type ##### -->
+<para>
+
+</para>
+

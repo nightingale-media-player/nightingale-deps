@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+icydemux
+
+<!-- ##### SECTION Short_Description ##### -->
+Read and output ICY tags while demuxing the contents
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-icydemux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstICYDemux ##### -->
+<para>
+
+</para>
+
+

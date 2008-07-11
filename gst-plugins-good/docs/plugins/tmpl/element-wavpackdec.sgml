@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+wavpackdec
+
+<!-- ##### SECTION Short_Description ##### -->
+Decodes Wavpack audio data
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-wavpackdec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstWavpackDec ##### -->
+<para>
+
+</para>
+
+

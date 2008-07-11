@@ -1,0 +1,51 @@
+<!-- ##### SECTION Title ##### -->
+audiowsinclimit
+
+<!-- ##### SECTION Short_Description ##### -->
+Low pass and high pass windowed sinc filter
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audiowsinclimit-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioWSincLimit ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioWSincLimit:frequency ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioWSincLimit:length ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioWSincLimit:mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioWSincLimit:window ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioWSincLimit:cutoff ##### -->
+<para>
+
+</para>
+

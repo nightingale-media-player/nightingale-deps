@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+directsoundsink
+
+<!-- ##### SECTION Short_Description ##### -->
+DirectSound audio sink
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-directsoundsink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstDirectSoundSink ##### -->
+<para>
+
+</para>
+
+@sink: 
+@pDS: 
+@pDSBSecondary: 
+@buffer_size: 
+@current_circular_offset: 
+@bytes_per_sample: 
+@volume: 
+@tracks: 
+@dsound_lock: 
+@first_buffer_after_reset: 
+

@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+apev2mux
+
+<!-- ##### SECTION Short_Description ##### -->
+Adds an APEv2 header to the beginning of files using taglib
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-apev2mux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstApev2Mux ##### -->
+<para>
+
+</para>
+
+

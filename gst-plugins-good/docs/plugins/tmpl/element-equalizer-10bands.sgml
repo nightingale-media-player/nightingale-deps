@@ -1,0 +1,76 @@
+<!-- ##### SECTION Title ##### -->
+equalizer-10bands
+
+<!-- ##### SECTION Short_Description ##### -->
+Direct Form 10 band IIR equalizer
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-equalizer-10bands-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstIirEqualizer10Bands ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstIirEqualizer10Bands:band0 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band4 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band5 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band6 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band7 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band8 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstIirEqualizer10Bands:band9 ##### -->
+<para>
+
+</para>
+

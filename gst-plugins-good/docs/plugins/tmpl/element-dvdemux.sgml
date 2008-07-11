@@ -1,0 +1,26 @@
+<!-- ##### SECTION Title ##### -->
+dvdemux
+
+<!-- ##### SECTION Short_Description ##### -->
+Uses libdv to separate DV audio from DV video (libdv.sourceforge.net)
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-dvdemux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstDVDemux ##### -->
+<para>
+
+</para>
+
+

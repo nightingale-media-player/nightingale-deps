@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>avidemux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-autovideosink.html" title="autovideosink">
+<link rel="next" href="gst-plugins-good-plugins-avimux.html" title="avimux">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-autovideosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-avimux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2602828" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2568145" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2602787" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-avidemux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2602828"></a><span class="refentrytitle">avidemux</span>
+</h2>
+<p>avidemux &#8212; Demultiplex an avi file into audio and video</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstAviDemux"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-avidemux.html#GstAviDemux-struct">GstAviDemux</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2602787"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstAviDemux
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2568145"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2568135"></a><p>
+Demuxes an .avi file into raw or compressed audio and/or video streams.
+</p>
+<p>
+This element supports both push and pull-based scheduling, depending on the
+capabilities of the upstream elements.
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch filesrc location=test.avi ! avidemux name=demux  demux.audio_00 ! decodebin ! audioconvert ! audioresample ! autoaudiosink   demux.video_00 ! queue ! decodebin ! ffmpegcolorspace ! videoscale ! autovideosink
+</pre>
+<p>
+Play (parse and decode) an .avi file and try to output it to
+an automatically detected soundcard and videosink. If the AVI file contains
+compressed audio or video data, this will only work if you have the
+right decoder elements/plugins installed.
+</p>
+</div>
+<p>
+</p>
+<p>
+Last reviewed on 2006-12-29 (0.10.6)</p>
+<div class="refsect2" lang="en">
+<a name="id2593012"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-avi.html#plugin-avi">avi</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;
+    Wim Taymans &lt;wim.taymans@chello.be&gt;
+    Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Demuxer</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>audio_%02d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>audio/ms-gsm, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]; audio/mpeg, mpegversion=(int)1, layer=(int)3, rate=(int)[ 8000, 48000 ], channels=(int)[ 1, 2 ]; audio/mpeg, mpegversion=(int)1, layer=(int)2, rate=(int)[ 16000, 48000 ], channels=(int)[ 1, 2 ]; audio/x-raw-int, endianness=(int)1234, signed=(boolean){ true, false }, width=(int){ 8, 16, 24, 32 }, depth=(int)[ 1, 32 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ]; audio/x-vorbis, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]; audio/x-ac3, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 6 ]; audio/x-dts; audio/mpeg, mpegversion=(int)4, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ]; audio/x-alaw, rate=(int)[ 1000, 48000 ], channels=(int)[ 1, 2 ]; audio/x-mulaw, rate=(int)[ 1000, 48000 ], channels=(int)[ 1, 2 ]; audio/x-wms, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]; audio/x-adpcm, layout=(string)microsoft, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]; audio/x-adpcm, layout=(string)dvi, rate=(int)[ 1000, 48000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]; audio/x-wma, wmaversion=(int)1, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 6 ], block_align=(int)[ 1, 2147483647 ]; audio/x-wma, wmaversion=(int)2, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 6 ], block_align=(int)[ 1, 2147483647 ]; audio/x-wma, wmaversion=(int)3, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 6 ], block_align=(int)[ 1, 2147483647 ]; audio/x-vnd.sony.atrac3, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]; audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ]; audio/x-voxware, voxwaretype=(int)98, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]; application/x-ogg-avi; audio/x-avi-unknown</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>video_%02d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-3ivx, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-asus, asusversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-asus, asusversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-cirrus-logic-accupak, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-compressed-yuv, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-raw-rgb, bpp=(int){ 8, 24 }, depth=(int){ 8, 24 }, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-divx, divxversion=(int)3, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-divx, divxversion=(int)4, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-truemotion, trueversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-dv, systemstream=(boolean)false, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-divx, divxversion=(int)5, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-flash-video, flvversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)itu, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h264, variant=(string)itu, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-huffyuv, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-intel-h263, variant=(string)intel, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-raw-yuv, format=(fourcc)I420, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-indeo, indeoversion=(int)3, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-indeo, indeoversion=(int)4, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-indeo, indeoversion=(int)5, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)lead, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)microsoft, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/mpeg, mpegversion=(int)4, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; image/jpeg, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-msmpeg, msmpegversion=(int)42, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-msmpeg, msmpegversion=(int)43, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/mpeg, systemstream=(boolean)false, mpegversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/mpeg, systemstream=(boolean)false, mpegversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-msmpeg, msmpegversion=(int)41, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-mszh, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; image/png, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-rle, layout=(string)microsoft, depth=(int)[ 1, 64 ], framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-indeo, indeoversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/sp5x, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-truemotion, trueversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-camtasia, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-ultimotion, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-ati-vcr, vcrversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-ati-vcr, vcrversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)vdolive, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)vivo, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-vmnc, version=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-vp3, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h264, variant=(string)videosoft, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-wmv, wmvversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-wmv, wmvversion=(int)2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-wmv, wmvversion=(int)3, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-xvid, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-xan, wcversion=(int)4, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-raw-yuv, format=(fourcc)YUY2, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-raw-yuv, format=(fourcc)YVU9, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-zlib, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-cinepak, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h264, variant=(string)itu, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-msvideocodec, msvideoversion=(int)1, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-h263, variant=(string)xirlink, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ]; video/x-dv, systemstream=(boolean)true; video/x-avi-unknown</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>subtitle_%02d</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>application/x-subtitle-avi</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>video/x-msvideo</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2566406"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2566417"></a><h3>
+<a name="GstAviDemux-struct"></a>GstAviDemux</h3>
+<a class="indexterm" name="id2566430"></a><pre class="programlisting">typedef struct _GstAviDemux GstAviDemux;</pre>
+<p>
+
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>icydemux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-halaudiosrc.html" title="halaudiosrc">
+<link rel="next" href="gst-plugins-good-plugins-id3demux.html" title="id3demux">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-halaudiosrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-id3demux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2616692" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2612054" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2616653" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-icydemux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2616692"></a><span class="refentrytitle">icydemux</span>
+</h2>
+<p>icydemux &#8212; reads tag information from an Icy (Icecast/Shoutcast) 
+stream, outputting them as tag messages, and forwarding the enclosed data.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstICYDemux"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-icydemux.html#GstICYDemux-struct">GstICYDemux</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2616653"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstICYDemux
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2612054"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2597598"></a><p>
+icydemux accepts data streams with ICY metadata at known intervals, as
+transmitted from an upstream element (usually read as response headers from
+an HTTP stream). The mime type of the data between the tag blocks is
+detected using typefind functions, and the appropriate output mime type set
+on outgoing buffers. 
+</p>
+<h3>Example launch line</h3>
+<p>
+</p>
+<pre class="programlisting">
+gst-launch gnomevfssrc location=http://some.server/ ! icydemux ! fakesink -t
+</pre>
+<p>
+This pipeline should read any available ICY tag information and output it.
+The contents of the stream should be detected, and the appropriate mime
+type set on buffers produced from icydemux.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2592753"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-icydemux.html#plugin-icydemux">icydemux</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;
+    Michael Smith &lt;msmith@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Demuxer/Metadata</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>application/x-icy, metadata-interval=(int)[ 0, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2614811"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2614821"></a><h3>
+<a name="GstICYDemux-struct"></a>GstICYDemux</h3>
+<a class="indexterm" name="id2614833"></a><pre class="programlisting">typedef struct _GstICYDemux GstICYDemux;</pre>
+<p>
+
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

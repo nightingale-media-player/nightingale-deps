@@ -1,0 +1,31 @@
+<!-- ##### SECTION Title ##### -->
+equalizer-nbands
+
+<!-- ##### SECTION Short_Description ##### -->
+Direct Form IIR equalizer
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-equalizer-nbands-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstIirEqualizerNBands ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstIirEqualizerNBands:num-bands ##### -->
+<para>
+
+</para>
+

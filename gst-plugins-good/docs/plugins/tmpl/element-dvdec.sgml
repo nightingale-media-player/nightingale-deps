@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+dvdec
+
+<!-- ##### SECTION Short_Description ##### -->
+Uses libdv to decode DV video (smpte314) (libdv.sourceforge.net)
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-dvdec-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstDVDec ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstDVDec:clamp-chroma ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDVDec:clamp-luma ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDVDec:drop-factor ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDVDec:quality ##### -->
+<para>
+
+</para>
+

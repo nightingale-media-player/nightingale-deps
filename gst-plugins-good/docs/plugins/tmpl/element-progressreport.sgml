@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+progressreport
+
+<!-- ##### SECTION Short_Description ##### -->
+Periodically query and report on processing progress
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-progressreport-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstProgressReport ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstProgressReport:silent ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstProgressReport:update-freq ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstProgressReport:format ##### -->
+<para>
+
+</para>
+

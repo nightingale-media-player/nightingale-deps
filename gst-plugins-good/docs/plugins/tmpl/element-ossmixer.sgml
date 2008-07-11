@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+ossmixer
+
+<!-- ##### SECTION Short_Description ##### -->
+Control sound input and output levels with OSS
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-ossmixer-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstOssMixerElement ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstOssMixerElement:device-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstOssMixerElement:device ##### -->
+<para>
+
+</para>
+

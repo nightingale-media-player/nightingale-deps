@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>multipartdemux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-multifilesrc.html" title="multifilesrc">
+<link rel="next" href="gst-plugins-good-plugins-multipartmux.html" title="multipartmux">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-good-plugins-multifilesrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-good-plugins-multipartmux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2619997" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2570996" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2619956" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2619929" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-good-plugins-multipartdemux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2619997"></a><span class="refentrytitle">multipartdemux</span>
+</h2>
+<p>multipartdemux &#8212; Demuxer that takes a multipart digital stream as input
+and demuxes one or many digital streams from it.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GstMultipartDemux"></a><pre class="synopsis">
+
+
+
+                    <a href="gst-plugins-good-plugins-multipartdemux.html#GstMultipartDemux-struct">GstMultipartDemux</a>;
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2619956"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstMultipartDemux
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2619929"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  "<a href="gst-plugins-good-plugins-multipartdemux.html#GstMultipartDemux--autoscan">autoscan</a>"                 gboolean              : Read / Write
+  "<a href="gst-plugins-good-plugins-multipartdemux.html#GstMultipartDemux--boundary">boundary</a>"                 gchar*                : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2570996"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2579929"></a><p>
+MultipartDemux uses the Content-type field of incoming buffers to demux and 
+push data to dynamic source pads. Most of the time multipart streams are 
+sequential JPEG frames generated from a live source such as a network source
+or a camera.
+</p>
+<h3>Sample pipelines</h3>
+<p>
+Here is a simple pipeline to demux a multipart file muxed with
+<a href="gst-plugins-good-plugins-multipartmux.html#GstMultipartMux"><span class="type">GstMultipartMux</span></a> containing JPEG frames:
+</p>
+<pre class="programlisting">
+gst-launch filesrc location=/tmp/test.multipart ! multipartdemux ! jpegdec ! ffmpegcolorspace ! ximagesink
+</pre>
+<p>
+</p>
+<p>
+The output buffers of the multipartdemux typically have no timestamps and are usually 
+played as fast as possible (at the rate that the source provides the data).
+</p>
+<p>
+the content in multipart files is separated with a boundary string that can be 
+configured specifically with the "boundary" property otherwise it will be 
+autodetected. 
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2604586"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">plugin</span></td>
+<td>
+          <a href="gst-plugins-good-plugins-plugin-multipart.html#plugin-multipart">multipart</a>
+        </td>
+</tr>
+<tr>
+<td><span class="term">author</span></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;, Sjoerd Simons &lt;sjoerd@luon.net&gt;</td>
+</tr>
+<tr>
+<td><span class="term">class</span></td>
+<td>Codec/Demuxer</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>always</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>multipart/x-mixed-replace</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term">name</span></td>
+<td>src</td>
+</tr>
+<tr>
+<td><span class="term">direction</span></td>
+<td>source</td>
+</tr>
+<tr>
+<td><span class="term">presence</span></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><span class="term">details</span></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2621657"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2621668"></a><h3>
+<a name="GstMultipartDemux-struct"></a>GstMultipartDemux</h3>
+<a class="indexterm" name="id2621680"></a><pre class="programlisting">typedef struct _GstMultipartDemux GstMultipartDemux;</pre>
+<p>
+The opaque <a href="gst-plugins-good-plugins-multipartdemux.html#GstMultipartDemux"><span class="type">GstMultipartDemux</span></a> structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2619348"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2619359"></a><h3>
+<a name="GstMultipartDemux--autoscan"></a>The "<code class="literal">autoscan</code>" property</h3>
+<a class="indexterm" name="id2619372"></a><pre class="programlisting">  "autoscan"                 gboolean              : Read / Write</pre>
+<p>Try to autofind the prefix (deprecated unused, see boundary).</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2619398"></a><h3>
+<a name="GstMultipartDemux--boundary"></a>The "<code class="literal">boundary</code>" property</h3>
+<a class="indexterm" name="id2619412"></a><pre class="programlisting">  "boundary"                 gchar*                : Read / Write / Construct</pre>
+<p>The boundary string separating data, automatic if NULL.</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2619438"></a><h2>See Also</h2>
+<a href="gst-plugins-good-plugins-multipartmux.html#GstMultipartMux"><span class="type">GstMultipartMux</span></a>
+</div>
+</div>
+</body>
+</html>

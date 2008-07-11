@@ -1,0 +1,66 @@
+<!-- ##### SECTION Title ##### -->
+ximagesrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Creates a screenshot video stream
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-ximagesrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstXImageSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstXImageSrc:display-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:screen-num ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:show-pointer ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:endx ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:endy ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:startx ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:starty ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstXImageSrc:use-damage ##### -->
+<para>
+
+</para>
+
