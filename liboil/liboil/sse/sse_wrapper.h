@@ -3,8 +3,9 @@
 
 /* GCC breaks when using SSE intrinsics on a stack which isn't 16-byte
  * aligned, on x86-32. This attribute forces re-alignment of the stack
+ * On OSX, the ABI requires 16 byte alignment, so we don't need to do this.
  */
-#if defined(__GNUC__) && defined(__i386__)
+#if defined(__GNUC__) && defined(__i386__) && !defined(__APPLE__)
 #if (__GNUC__ < 4) || (__GNUC_MINOR__ < 2)
 #error "SSE broken on this compiler, please upgrade"
 #else
