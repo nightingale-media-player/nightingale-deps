@@ -434,10 +434,7 @@ build()
 	fi
         export_append "OGG_CFLAGS"                                         \
                       "-I${tgt_dep_dir}/include"
-	# Our pkgconfig scripts are currently broken on OSX; the above definitions are ok though.
-	if [ "$sys_name"  != "Darwin" ]; then
-	    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
-	fi
+	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
 
 	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
@@ -457,6 +454,7 @@ build()
                       "-I${tgt_dep_dir}/include"
 	export VORBIS_CFLAGS="${VORBIS_CFLAGS} ${OGG_CFLAGS}"
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${tgt_dep_dir}/lib/pkgconfig"
+
 	if [ "$sys_name" = "Windows" ]; then
 	    export PATH="$PATH:${tgt_dep_dir}/bin"
 	    if [ "$build_type" = "debug" ]; then
