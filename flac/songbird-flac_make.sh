@@ -366,8 +366,6 @@ build()
 	--disable-oggtest \
 	--disable-asm-optimizations \
 	-C
-    # We only want to build the library, not everything else.
-    cd src/libFLAC/
     make && make install
 
     if [ "$sys_name" = "Darwin" ]; then
