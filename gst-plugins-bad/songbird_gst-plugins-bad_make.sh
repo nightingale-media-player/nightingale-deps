@@ -120,7 +120,7 @@ build_all()
     for tgt_arch in ${tgt_arch_list}
     do
         # Build release target.
-        #build release
+        build release
 
         # Build debug target.
         build debug
@@ -508,7 +508,7 @@ build()
     cd ${start_dir}
 
     # Clean up build directory.
-    #rm -Rf ${build_dir}
+    rm -Rf ${build_dir}
 }
 
 
