@@ -25,18 +25,7 @@ endif
 
 SUBDIRS = \
 	libFLAC \
-	share \
-	flac \
-	metaflac \
-	monkeys_audio_utilities \
-	$(XMMS_DIRS) \
-	plugin_winamp2 \
-	test_grabbag \
-	test_libs_common \
-	test_libFLAC \
-	test_seeking \
-	test_streams \
-	$(CPPLIBS_DIRS)
+	share
 
 EXTRA_DIST = \
 	Makefile.lite
