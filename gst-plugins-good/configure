@@ -1097,7 +1097,7 @@ ESD_LIBS
 ESD_CONFIG
 USE_ESD_TRUE
 USE_ESD_FALSE
-HAVE_FLAC
+FLAC_CFLAGS
 FLAC_LIBS
 USE_FLAC_TRUE
 USE_FLAC_FALSE
@@ -1216,6 +1216,8 @@ CDIO_CFLAGS
 CDIO_LIBS
 ESD_CFLAGS
 ESD_LIBS
+FLAC_CFLAGS
+FLAC_LIBS
 GCONF_CFLAGS
 GCONF_LIBS
 HAL_CFLAGS
@@ -1860,7 +1862,7 @@ Optional Features:
   --disable-cdio               disable cdio library: cdio
   --disable-esd                disable ESounD sound daemon: esdsink
   --disable-esdtest       do not try to compile and run a test ESD program
-  --disable-flac               disable FLAC lossless audio: flac
+  --disable-flac               disable FLAC plug-in: flac
   --disable-gconf              disable GConf libraries: gconfelements
   --disable-gdk_pixbuf         disable GDK pixbuf: gdkpixbuf
   --disable-hal                disable HAL libraries: halelements
@@ -1979,6 +1981,8 @@ Some influential environment variables:
   CDIO_LIBS   linker flags for CDIO, overriding pkg-config
   ESD_CFLAGS  C compiler flags for ESD, overriding pkg-config
   ESD_LIBS    linker flags for ESD, overriding pkg-config
+  FLAC_CFLAGS C compiler flags for FLAC, overriding pkg-config
+  FLAC_LIBS   linker flags for FLAC, overriding pkg-config
   GCONF_CFLAGS
               C compiler flags for GCONF, overriding pkg-config
   GCONF_LIBS  linker flags for GCONF, overriding pkg-config
@@ -4839,13 +4843,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4842: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4846: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4845: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4849: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4848: output\"" >&5)
+  (eval echo "\"\$as_me:4852: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -5443,7 +5447,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5446: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5450: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6061,7 +6065,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6064 "configure"' > conftest.$ac_ext
+  echo '#line 6068 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7603,11 +7607,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7606: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7610: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7610: \$? = $ac_status" >&5
+   echo "$as_me:7614: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7927,11 +7931,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7930: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7934: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7934: \$? = $ac_status" >&5
+   echo "$as_me:7938: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8032,11 +8036,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8035: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8039: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8039: \$? = $ac_status" >&5
+   echo "$as_me:8043: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8087,11 +8091,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8090: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8094: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8094: \$? = $ac_status" >&5
+   echo "$as_me:8098: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10924,7 +10928,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10927 "configure"
+#line 10931 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11024,7 +11028,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11027 "configure"
+#line 11031 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18568,11 +18572,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18571: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18575: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18575: \$? = $ac_status" >&5
+   echo "$as_me:18579: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18667,11 +18671,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18670: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18674: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18674: \$? = $ac_status" >&5
+   echo "$as_me:18678: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18719,11 +18723,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18722: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18726: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18726: \$? = $ac_status" >&5
+   echo "$as_me:18730: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -32449,56 +32453,9 @@ fi
 
 
 
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <FLAC/export.h>
-int
-main ()
-{
-
-  #if FLAC_API_VERSION_CURRENT < 8
-  #error "legacy flac API"
-  #endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-   legacy_flac=no
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	 legacy_flac=yes
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-if test "x$legacy_flac" = "xyes"; then
 echo
-{ echo "$as_me:$LINENO: *** checking feature: FLAC lossless audio ***" >&5
-echo "$as_me: *** checking feature: FLAC lossless audio ***" >&6;}
+{ echo "$as_me:$LINENO: *** checking feature: FLAC plug-in ***" >&5
+echo "$as_me: *** checking feature: FLAC plug-in ***" >&6;}
 if test "xflac" != "x"
 then
   { echo "$as_me:$LINENO: *** for plug-ins: flac ***" >&5
@@ -32540,285 +32497,85 @@ if test x$USE_FLAC = xyes; then
   HAVE_FLAC=no
 
 
-  { echo "$as_me:$LINENO: checking for FLAC__seekable_stream_encoder_new in -lFLAC" >&5
-echo $ECHO_N "checking for FLAC__seekable_stream_encoder_new in -lFLAC... $ECHO_C" >&6; }
-if test "${ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lFLAC -lm $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
+  which="flac >= 1.1.3"
+    required="no"
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char FLAC__seekable_stream_encoder_new ();
-int
-main ()
-{
-return FLAC__seekable_stream_encoder_new ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
+
+pkg_failed=no
+{ echo "$as_me:$LINENO: checking for FLAC" >&5
+echo $ECHO_N "checking for FLAC... $ECHO_C" >&6; }
+
+if test -n "$PKG_CONFIG"; then
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$which") 2>&5
   ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new=yes
+  (exit $ac_status); }; then
+  pkg_cv_FLAC_CFLAGS=`$PKG_CONFIG --cflags "$which" 2>/dev/null`
 else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new=no
+  pkg_failed=yes
 fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new" >&5
-echo "${ECHO_T}$ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new" >&6; }
-if test $ac_cv_lib_FLAC_FLAC__seekable_stream_encoder_new = yes; then
-  HAVE_FLAC=yes
 else
-  HAVE_FLAC=no
+	pkg_failed=untried
 fi
-
-  if test "x$HAVE_FLAC" = "xyes"; then
-    if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  { echo "$as_me:$LINENO: checking for FLAC/all.h" >&5
-echo $ECHO_N "checking for FLAC/all.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_FLAC_all_h" >&5
-echo "${ECHO_T}$ac_cv_header_FLAC_all_h" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking FLAC/all.h usability" >&5
-echo $ECHO_N "checking FLAC/all.h usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <FLAC/all.h>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
+if test -n "$PKG_CONFIG"; then
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$which\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$which") 2>&5
   ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
+  (exit $ac_status); }; then
+  pkg_cv_FLAC_LIBS=`$PKG_CONFIG --libs "$which" 2>/dev/null`
 else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
+  pkg_failed=yes
 fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking FLAC/all.h presence" >&5
-echo $ECHO_N "checking FLAC/all.h presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <FLAC/all.h>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
 else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
+	pkg_failed=untried
 fi
 
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
+if test $pkg_failed = yes; then
+	FLAC_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$which"`
+	# Put the nasty error message in config.log where it belongs
+	echo "$FLAC_PKG_ERRORS" 1>&5
 
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: FLAC/all.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: FLAC/all.h: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: present but cannot be compiled" >&5
-echo "$as_me: WARNING: FLAC/all.h: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: FLAC/all.h:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: FLAC/all.h: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: FLAC/all.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: FLAC/all.h: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: FLAC/all.h: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ------------------------------------------------------------------------ ##
-## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
-## ------------------------------------------------------------------------ ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for FLAC/all.h" >&5
-echo $ECHO_N "checking for FLAC/all.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
+
+      HAVE_FLAC="no"
+      { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+      if test "x$required" = "xyes"; then
+        { { echo "$as_me:$LINENO: error: $FLAC_PKG_ERRORS" >&5
+echo "$as_me: error: $FLAC_PKG_ERRORS" >&2;}
+   { (exit 1); exit 1; }; }
+      else
+        { echo "$as_me:$LINENO: $FLAC_PKG_ERRORS" >&5
+echo "$as_me: $FLAC_PKG_ERRORS" >&6;}
+      fi
+
+elif test $pkg_failed = untried; then
+
+      HAVE_FLAC="no"
+      { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+      if test "x$required" = "xyes"; then
+        { { echo "$as_me:$LINENO: error: $FLAC_PKG_ERRORS" >&5
+echo "$as_me: error: $FLAC_PKG_ERRORS" >&2;}
+   { (exit 1); exit 1; }; }
+      else
+        { echo "$as_me:$LINENO: $FLAC_PKG_ERRORS" >&5
+echo "$as_me: $FLAC_PKG_ERRORS" >&6;}
+      fi
+
 else
-  ac_cv_header_FLAC_all_h=$ac_header_preproc
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_FLAC_all_h" >&5
-echo "${ECHO_T}$ac_cv_header_FLAC_all_h" >&6; }
+	FLAC_CFLAGS=$pkg_cv_FLAC_CFLAGS
+	FLAC_LIBS=$pkg_cv_FLAC_LIBS
+        { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+
+      HAVE_FLAC="yes"
 
 fi
-if test $ac_cv_header_FLAC_all_h = yes; then
-  :
-else
-  HAVE_FLAC=no
-fi
 
-
-    if test "x$HAVE_FLAC" = "xyes"; then
-            FLAC_LIBS="-lFLAC -lm"
-    else
-      :
-    fi
-  else
-    :
-  fi
-
-
-
-      if test x$HAVE_FLAC = xyes; then
-    { echo "$as_me:$LINENO: checking whether FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR is declared" >&5
-echo $ECHO_N "checking whether FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR is declared... $ECHO_C" >&6; }
-if test "${ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-#include <FLAC/seekable_stream_encoder.h>
-
-
-int
-main ()
-{
-#ifndef FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR
-  (void) FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR;
-#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR" >&5
-echo "${ECHO_T}$ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR" >&6; }
-if test $ac_cv_have_decl_FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR = yes; then
-  HAVE_FLAC="yes"
-else
-  HAVE_FLAC="no"
-fi
-
-  fi
 
 
 
@@ -32864,376 +32621,6 @@ else
 fi
 
 
-else
-echo
-{ echo "$as_me:$LINENO: *** checking feature: FLAC lossless audio ***" >&5
-echo "$as_me: *** checking feature: FLAC lossless audio ***" >&6;}
-if test "xflac" != "x"
-then
-  { echo "$as_me:$LINENO: *** for plug-ins: flac ***" >&5
-echo "$as_me: *** for plug-ins: flac ***" >&6;}
-fi
-NOUSE=
-if test "x$USE_FLAC" = "xno"; then
-  NOUSE="yes"
-fi
-# Check whether --enable-flac was given.
-if test "${enable_flac+set}" = set; then
-  enableval=$enable_flac;  case "${enableval}" in
-      yes) USE_FLAC=yes;;
-      no) USE_FLAC=no;;
-      *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-flac" >&5
-echo "$as_me: error: bad value ${enableval} for --enable-flac" >&2;}
-   { (exit 1); exit 1; }; } ;;
-    esac
-else
-   USE_FLAC=yes
-fi
-
-if test "x$NOUSE" = "xyes"; then
-  USE_FLAC="no"
-  { echo "$as_me:$LINENO: WARNING: *** flac pre-configured not to be built" >&5
-echo "$as_me: WARNING: *** flac pre-configured not to be built" >&2;}
-fi
-NOUSE=
-
-
-if test x$USE_FLAC = xyes; then
-
-  gst_check_save_LIBS=$LIBS
-  gst_check_save_LDFLAGS=$LDFLAGS
-  gst_check_save_CFLAGS=$CFLAGS
-  gst_check_save_CPPFLAGS=$CPPFLAGS
-  gst_check_save_CXXFLAGS=$CXXFLAGS
-
-  HAVE_FLAC=no
-
-
-  { echo "$as_me:$LINENO: checking for FLAC__stream_encoder_new in -lFLAC" >&5
-echo $ECHO_N "checking for FLAC__stream_encoder_new in -lFLAC... $ECHO_C" >&6; }
-if test "${ac_cv_lib_FLAC_FLAC__stream_encoder_new+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lFLAC -lm $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char FLAC__stream_encoder_new ();
-int
-main ()
-{
-return FLAC__stream_encoder_new ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_FLAC_FLAC__stream_encoder_new=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_FLAC_FLAC__stream_encoder_new=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_FLAC_FLAC__stream_encoder_new" >&5
-echo "${ECHO_T}$ac_cv_lib_FLAC_FLAC__stream_encoder_new" >&6; }
-if test $ac_cv_lib_FLAC_FLAC__stream_encoder_new = yes; then
-  HAVE_FLAC=yes
-else
-  HAVE_FLAC=no
-fi
-
-  if test "x$HAVE_FLAC" = "xyes"; then
-    if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  { echo "$as_me:$LINENO: checking for FLAC/all.h" >&5
-echo $ECHO_N "checking for FLAC/all.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_FLAC_all_h" >&5
-echo "${ECHO_T}$ac_cv_header_FLAC_all_h" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking FLAC/all.h usability" >&5
-echo $ECHO_N "checking FLAC/all.h usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <FLAC/all.h>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking FLAC/all.h presence" >&5
-echo $ECHO_N "checking FLAC/all.h presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <FLAC/all.h>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
-fi
-
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: FLAC/all.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: FLAC/all.h: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: present but cannot be compiled" >&5
-echo "$as_me: WARNING: FLAC/all.h: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: FLAC/all.h:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: FLAC/all.h: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: FLAC/all.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: FLAC/all.h: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: FLAC/all.h: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: FLAC/all.h: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ------------------------------------------------------------------------ ##
-## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
-## ------------------------------------------------------------------------ ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for FLAC/all.h" >&5
-echo $ECHO_N "checking for FLAC/all.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_FLAC_all_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_header_FLAC_all_h=$ac_header_preproc
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_FLAC_all_h" >&5
-echo "${ECHO_T}$ac_cv_header_FLAC_all_h" >&6; }
-
-fi
-if test $ac_cv_header_FLAC_all_h = yes; then
-  :
-else
-  HAVE_FLAC=no
-fi
-
-
-    if test "x$HAVE_FLAC" = "xyes"; then
-            FLAC_LIBS="-lFLAC -lm"
-    else
-      :
-    fi
-  else
-    :
-  fi
-
-
-
-    if test x$HAVE_FLAC = xyes; then
-    { echo "$as_me:$LINENO: checking whether FLAC__STREAM_ENCODER_TELL_STATUS_ERROR is declared" >&5
-echo $ECHO_N "checking whether FLAC__STREAM_ENCODER_TELL_STATUS_ERROR is declared... $ECHO_C" >&6; }
-if test "${ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-#include <FLAC/stream_encoder.h>
-
-
-int
-main ()
-{
-#ifndef FLAC__STREAM_ENCODER_TELL_STATUS_ERROR
-  (void) FLAC__STREAM_ENCODER_TELL_STATUS_ERROR;
-#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR" >&5
-echo "${ECHO_T}$ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR" >&6; }
-if test $ac_cv_have_decl_FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = yes; then
-  HAVE_FLAC="yes"
-else
-  HAVE_FLAC="no"
-fi
-
-  fi
-
-
-
-  LIBS=$gst_check_save_LIBS
-  LDFLAGS=$gst_check_save_LDFLAGS
-  CFLAGS=$gst_check_save_CFLAGS
-  CPPFLAGS=$gst_check_save_CPPFLAGS
-  CXXFLAGS=$gst_check_save_CXXFLAGS
-
-    if test x$HAVE_FLAC = xno; then
-    USE_FLAC=no
-  else
-    { echo "$as_me:$LINENO: *** These plugins will be built: flac" >&5
-echo "$as_me: *** These plugins will be built: flac" >&6;}
-  fi
-fi
-if test x$USE_FLAC = xyes; then
-  :
-  if test "xflac" != "x"; then
-    GST_PLUGINS_YES="\tflac\n$GST_PLUGINS_YES"
-  fi
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_FLAC
-_ACEOF
-
-else
-  { echo "$as_me:$LINENO: *** These plugins will not be built: flac" >&5
-echo "$as_me: *** These plugins will not be built: flac" >&6;}
-  if test "xflac" != "x"; then
-    GST_PLUGINS_NO="\tflac\n$GST_PLUGINS_NO"
-  fi
-  :
-fi
-
-
-if test x$USE_FLAC = xyes; then
-  USE_FLAC_TRUE=
-  USE_FLAC_FALSE='#'
-else
-  USE_FLAC_TRUE='#'
-  USE_FLAC_FALSE=
-fi
-
-
-fi
 
 echo
 { echo "$as_me:$LINENO: *** checking feature: GConf libraries ***" >&5
@@ -38723,13 +38110,6 @@ echo "$as_me: error: conditional \"USE_FLAC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${USE_FLAC_TRUE}" && test -z "${USE_FLAC_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"USE_FLAC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"USE_FLAC\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${USE_GCONF_TRUE}" && test -z "${USE_GCONF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_GCONF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -40504,7 +39884,7 @@ ESD_LIBS!$ESD_LIBS$ac_delim
 ESD_CONFIG!$ESD_CONFIG$ac_delim
 USE_ESD_TRUE!$USE_ESD_TRUE$ac_delim
 USE_ESD_FALSE!$USE_ESD_FALSE$ac_delim
-HAVE_FLAC!$HAVE_FLAC$ac_delim
+FLAC_CFLAGS!$FLAC_CFLAGS$ac_delim
 FLAC_LIBS!$FLAC_LIBS$ac_delim
 USE_FLAC_TRUE!$USE_FLAC_TRUE$ac_delim
 USE_FLAC_FALSE!$USE_FLAC_FALSE$ac_delim
