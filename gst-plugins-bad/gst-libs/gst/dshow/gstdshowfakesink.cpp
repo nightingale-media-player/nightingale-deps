@@ -23,7 +23,7 @@
 
 
 CDshowFakeSink::CDshowFakeSink()
-  : m_hres(S_OK), CBaseRenderer(CLSID_DshowFakeSink, "DshowFakeSink", NULL, &m_hres)
+  : m_hres(S_OK), CBaseRenderer(CLSID_DshowFakeSink, L"DshowFakeSink", NULL, &m_hres)
 {
   m_callback = NULL;
 }

@@ -938,13 +938,11 @@ gst_dshowaudiodec_get_filter_settings (GstDshowAudioDec * adec)
     IEnumMediaTypes_Reset (enum_mediatypes);
     while (hres =
         IEnumMoniker_Next (enum_mediatypes, 1, &mediatype, &fetched),
-        hres == S_OK) {
-      RPC_STATUS rpcstatus;
-
-      if ((UuidCompare (&mediatype->subtype, &MEDIASUBTYPE_PCM, &rpcstatus) == 0
-              && rpcstatus == RPC_S_OK) &&
-          (UuidCompare (&mediatype->formattype, &FORMAT_WaveFormatEx,
-                  &rpcstatus) == 0 && rpcstatus == RPC_S_OK)) {
+        hres == S_OK) 
+    {
+      if (IsEqualGUID (&mediatype->subtype, &MEDIASUBTYPE_PCM) &&
+          IsEqualGUID (&mediatype->formattype, &FORMAT_WaveFormatEx))
+      {
         WAVEFORMATEX *audio_info = (WAVEFORMATEX *) mediatype->pbFormat;
 
         adec->channels = audio_info->nChannels;
@@ -993,14 +991,7 @@ gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
   }
 
   /* create fake src filter */
-  hres = CoCreateInstance (&CLSID_DshowFakeSrc, NULL, CLSCTX_INPROC,
-      &IID_IBaseFilter, (LPVOID *) & adec->srcfilter);
-  if (hres != S_OK || !adec->srcfilter) {
-    GST_ELEMENT_ERROR (adec, STREAM, FAILED,
-        ("Can't create an instance of the directshow fakesrc (error=%d)", hres),
-        (NULL));
-    goto error;
-  }
+  adec->srcfilter = gst_dshow_create_fakesrc();
 
   /* create decoder filter */
   if (!gst_dshow_find_filter (klass->entry->input_majortype,
@@ -1014,14 +1005,7 @@ gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
   }
 
   /* create fake sink filter */
-  hres = CoCreateInstance (&CLSID_DshowFakeSink, NULL, CLSCTX_INPROC,
-      &IID_IBaseFilter, (LPVOID *) & adec->sinkfilter);
-  if (hres != S_OK || !adec->sinkfilter) {
-    GST_ELEMENT_ERROR (adec, STREAM, FAILED,
-        ("Can't create an instance of the directshow fakesink (error=%d)",
-            hres), (NULL));
-    goto error;
-  }
+  adec->sinkfilter = gst_dshow_create_fakesink();
 
   /* add filters to the graph */
   hres = IFilterGraph_AddFilter (adec->filtergraph, adec->srcfilter, L"src");

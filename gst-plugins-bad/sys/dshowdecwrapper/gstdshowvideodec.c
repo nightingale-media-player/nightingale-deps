@@ -805,16 +805,15 @@ gst_dshowvideodec_src_getcaps (GstPad * pad)
       IEnumMediaTypes_Reset (enum_mediatypes);
       while (hres =
           IEnumMoniker_Next (enum_mediatypes, 1, &mediatype, &fetched),
-          hres == S_OK) {
-        RPC_STATUS rpcstatus;
+          hres == S_OK) 
+      {
         VIDEOINFOHEADER *video_info;
         GstCaps *mediacaps = NULL;
 
         /* RGB24 */
-        if ((UuidCompare (&mediatype->subtype, &MEDIASUBTYPE_RGB24,
-                    &rpcstatus) == 0 && rpcstatus == RPC_S_OK)
-            && (UuidCompare (&mediatype->formattype, &FORMAT_VideoInfo,
-                    &rpcstatus) == 0 && rpcstatus == RPC_S_OK)) {
+        if (IsEqualGUID (&mediatype->subtype, &MEDIASUBTYPE_RGB24) &&
+            IsEqualGUID (&mediatype->formattype, &FORMAT_VideoInfo))
+        {
           video_info = (VIDEOINFOHEADER *) mediatype->pbFormat;
 
           /* ffmpegcolorspace handles RGB24 in BIG_ENDIAN */
@@ -900,13 +899,11 @@ gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec * vdec,
     IEnumMediaTypes_Reset (enum_mediatypes);
     while (hres =
         IEnumMoniker_Next (enum_mediatypes, 1, &mediatype, &fetched),
-        hres == S_OK) {
-      RPC_STATUS rpcstatus;
-
-      if ((UuidCompare (&mediatype->subtype, subtype, &rpcstatus) == 0
-              && rpcstatus == RPC_S_OK) &&
-          (UuidCompare (&mediatype->formattype, &FORMAT_VideoInfo,
-                  &rpcstatus) == 0 && rpcstatus == RPC_S_OK)) {
+        hres == S_OK) 
+    {
+      if (IsEqualGUID (&mediatype->subtype, subtype) &&
+          IsEqualGUID (&mediatype->formattype, &FORMAT_VideoInfo))
+      {
         *size = mediatype->cbFormat;
         *format = g_malloc0 (*size);
         memcpy (*format, mediatype->pbFormat, *size);
@@ -951,13 +948,7 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
   }
 
   /* create fake src filter */
-  hres = CoCreateInstance (&CLSID_DshowFakeSrc, NULL, CLSCTX_INPROC,
-      &IID_IBaseFilter, (LPVOID *) & vdec->srcfilter);
-  if (hres != S_OK || !vdec->srcfilter) {
-    GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't create an instance "
-            "of the directshow fakesrc (error=%d)", hres), (NULL));
-    goto error;
-  }
+  vdec->srcfilter = gst_dshow_create_fakesrc();
 
   /* search a decoder filter and create it */
   if (!gst_dshow_find_filter (klass->entry->input_majortype,
@@ -971,13 +962,7 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
   }
 
   /* create fake sink filter */
-  hres = CoCreateInstance (&CLSID_DshowFakeSink, NULL, CLSCTX_INPROC,
-      &IID_IBaseFilter, (LPVOID *) & vdec->sinkfilter);
-  if (hres != S_OK || !vdec->sinkfilter) {
-    GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't create an instance "
-            "of the directshow fakesink (error=%d)", hres), (NULL));
-    goto error;
-  }
+  vdec->sinkfilter = gst_dshow_create_fakesink();
 
   /* add filters to the graph */
   hres = IFilterGraph_AddFilter (vdec->filtergraph, vdec->srcfilter, L"src");

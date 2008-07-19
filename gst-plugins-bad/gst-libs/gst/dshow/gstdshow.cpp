@@ -23,50 +23,20 @@
 #include "gstdshowfakesink.h"
 #include "gstdshowfakesrc.h"
 
-CFactoryTemplate g_Templates[]=
+IBaseFilter *gst_dshow_create_fakesrc ()
 {
-  { 
-    L"DSHOW fake sink filter"
-    , &CLSID_DshowFakeSink
-    , CDshowFakeSink::CreateInstance
-    , NULL
-    , NULL
-  },
-  { 
-    L"DSHOW fake src filter"
-    , &CLSID_DshowFakeSrc
-    , CDshowFakeSrc::CreateInstance
-    , NULL
-    , NULL
-  },
-
-};
-
-int g_cTemplates = sizeof(g_Templates)/sizeof(g_Templates[0]);
-static HINSTANCE g_hModule = NULL;
-
-extern "C" BOOL WINAPI DllEntryPoint(HINSTANCE, ULONG, LPVOID);
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved)
-{
-  if (!g_hModule)
-    g_hModule = (HINSTANCE)hModule;
-
-  return DllEntryPoint((HINSTANCE)(hModule), dwReason, lpReserved);
+  CUnknown *filter = CDshowFakeSrc::CreateInstance(NULL, NULL);
+  IBaseFilter *basefilter;
+  filter->NonDelegatingQueryInterface(IID_IBaseFilter, (void **)&basefilter);
+  return basefilter;
 }
 
-STDAPI DllRegisterServer()
+IBaseFilter *gst_dshow_create_fakesink ()
 {
-  return AMovieDllRegisterServer2 (TRUE);
-}
-
-STDAPI DllUnregisterServer()
-{
-  return AMovieDllRegisterServer2 (FALSE);
-}
-
-BOOL gst_dshow_register_fakefilters ()
-{
-  return (DllRegisterServer() == S_OK) ? TRUE : FALSE;
+  CUnknown *filter = CDshowFakeSink::CreateInstance(NULL, NULL);
+  IBaseFilter *basefilter;
+  filter->NonDelegatingQueryInterface(IID_IBaseFilter, (void **)&basefilter);
+  return basefilter;
 }
 
 void 

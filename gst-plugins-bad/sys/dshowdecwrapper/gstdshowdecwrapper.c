@@ -63,9 +63,6 @@ const GUID IID_IGstSrcInterface =
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* register fake filters */
-  gst_dshow_register_fakefilters ();
-
   if (!dshow_adec_register (plugin) || !dshow_vdec_register (plugin))
     return FALSE;
 
