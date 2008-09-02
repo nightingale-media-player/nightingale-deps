@@ -74,7 +74,9 @@
 #include "gstpreset.h"
 
 #include "stdlib.h"
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <glib/gstdio.h>
 
 #define GST_CAT_DEFAULT preset_debug
