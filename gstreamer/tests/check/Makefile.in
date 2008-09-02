@@ -44,12 +44,12 @@ check_PROGRAMS = gst/gstabi$(EXEEXT) gst/gstbuffer$(EXEEXT) \
 	gst/gstiterator$(EXEEXT) gst/gstmessage$(EXEEXT) \
 	gst/gstminiobject$(EXEEXT) gst/gstobject$(EXEEXT) \
 	gst/gstpad$(EXEEXT) gst/gstparamspecs$(EXEEXT) \
-	gst/gstsegment$(EXEEXT) gst/gstsystemclock$(EXEEXT) \
-	gst/gststructure$(EXEEXT) gst/gsttag$(EXEEXT) \
-	gst/gsttagsetter$(EXEEXT) gst/gsttask$(EXEEXT) \
-	gst/gstvalue$(EXEEXT) $(am__EXEEXT_1) generic/states$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3) libs/libsabi$(EXEEXT) \
-	libs/gdp$(EXEEXT) libs/adapter$(EXEEXT) \
+	gst/gstpoll$(EXEEXT) gst/gstsegment$(EXEEXT) \
+	gst/gstsystemclock$(EXEEXT) gst/gststructure$(EXEEXT) \
+	gst/gsttag$(EXEEXT) gst/gsttagsetter$(EXEEXT) \
+	gst/gsttask$(EXEEXT) gst/gstvalue$(EXEEXT) $(am__EXEEXT_1) \
+	generic/states$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3) \
+	libs/libsabi$(EXEEXT) libs/gdp$(EXEEXT) libs/adapter$(EXEEXT) \
 	libs/gstnetclientclock$(EXEEXT) \
 	libs/gstnettimeprovider$(EXEEXT)
 noinst_PROGRAMS = gst/gstpipeline$(EXEEXT) libs/collectpads$(EXEEXT) \
@@ -108,7 +108,10 @@ CONFIG_CLEAN_FILES =
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstelement$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstevent$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstghostpad$(EXEEXT) \
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstindex$(EXEEXT) \
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstinterface$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstplugin$(EXEEXT) \
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstpreset$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstquery$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstregistry$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gsturi$(EXEEXT) \
@@ -229,10 +232,20 @@ gst_gstghostpad_OBJECTS = gstghostpad.$(OBJEXT)
 gst_gstghostpad_LDADD = $(LDADD)
 gst_gstghostpad_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gst_gstindex_SOURCES = gst/gstindex.c
+gst_gstindex_OBJECTS = gstindex.$(OBJEXT)
+gst_gstindex_LDADD = $(LDADD)
+gst_gstindex_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 gst_gstinfo_SOURCES = gst/gstinfo.c
 gst_gstinfo_OBJECTS = gstinfo.$(OBJEXT)
 gst_gstinfo_LDADD = $(LDADD)
 gst_gstinfo_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gst_gstinterface_SOURCES = gst/gstinterface.c
+gst_gstinterface_OBJECTS = gstinterface.$(OBJEXT)
+gst_gstinterface_LDADD = $(LDADD)
+gst_gstinterface_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 gst_gstiterator_SOURCES = gst/gstiterator.c
 gst_gstiterator_OBJECTS = gstiterator.$(OBJEXT)
@@ -273,6 +286,16 @@ gst_gstplugin_SOURCES = gst/gstplugin.c
 gst_gstplugin_OBJECTS = gstplugin.$(OBJEXT)
 gst_gstplugin_LDADD = $(LDADD)
 gst_gstplugin_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gst_gstpoll_SOURCES = gst/gstpoll.c
+gst_gstpoll_OBJECTS = gstpoll.$(OBJEXT)
+gst_gstpoll_LDADD = $(LDADD)
+gst_gstpoll_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gst_gstpreset_SOURCES = gst/gstpreset.c
+gst_gstpreset_OBJECTS = gstpreset.$(OBJEXT)
+gst_gstpreset_LDADD = $(LDADD)
+gst_gstpreset_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 gst_gstquery_SOURCES = gst/gstquery.c
 gst_gstquery_OBJECTS = gstquery.$(OBJEXT)
@@ -422,36 +445,40 @@ SOURCES = elements/fakesink.c elements/fakesrc.c elements/fdsrc.c \
 	generic/sinks.c generic/states.c gst/gst.c gst/gstabi.c \
 	gst/gstbin.c gst/gstbuffer.c gst/gstbus.c gst/gstcaps.c \
 	gst/gstelement.c gst/gstevent.c gst/gstghostpad.c \
-	gst/gstinfo.c gst/gstiterator.c gst/gstmessage.c \
-	gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
-	gst/gstparamspecs.c gst/gstpipeline.c gst/gstplugin.c \
-	gst/gstquery.c gst/gstregistry.c gst/gstsegment.c \
-	gst/gststructure.c gst/gstsystemclock.c gst/gsttag.c \
-	gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c gst/gstutils.c \
-	gst/gstvalue.c gst/gstxml.c libs/adapter.c libs/basesrc.c \
-	libs/collectpads.c libs/controller.c $(libs_gdp_SOURCES) \
-	libs/gstnetclientclock.c libs/gstnettimeprovider.c \
-	libs/libsabi.c libs/typefindhelper.c pipelines/cleanup.c \
-	pipelines/parse-disabled.c pipelines/parse-launch.c \
-	pipelines/simple-launch-lines.c pipelines/stress.c
+	gst/gstindex.c gst/gstinfo.c gst/gstinterface.c \
+	gst/gstiterator.c gst/gstmessage.c gst/gstminiobject.c \
+	gst/gstobject.c gst/gstpad.c gst/gstparamspecs.c \
+	gst/gstpipeline.c gst/gstplugin.c gst/gstpoll.c \
+	gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
+	gst/gstsegment.c gst/gststructure.c gst/gstsystemclock.c \
+	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c \
+	gst/gstutils.c gst/gstvalue.c gst/gstxml.c libs/adapter.c \
+	libs/basesrc.c libs/collectpads.c libs/controller.c \
+	$(libs_gdp_SOURCES) libs/gstnetclientclock.c \
+	libs/gstnettimeprovider.c libs/libsabi.c libs/typefindhelper.c \
+	pipelines/cleanup.c pipelines/parse-disabled.c \
+	pipelines/parse-launch.c pipelines/simple-launch-lines.c \
+	pipelines/stress.c
 DIST_SOURCES = elements/fakesink.c elements/fakesrc.c elements/fdsrc.c \
 	elements/filesink.c elements/filesrc.c elements/identity.c \
 	elements/multiqueue.c elements/queue.c elements/tee.c \
 	generic/sinks.c generic/states.c gst/gst.c gst/gstabi.c \
 	gst/gstbin.c gst/gstbuffer.c gst/gstbus.c gst/gstcaps.c \
 	gst/gstelement.c gst/gstevent.c gst/gstghostpad.c \
-	gst/gstinfo.c gst/gstiterator.c gst/gstmessage.c \
-	gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
-	gst/gstparamspecs.c gst/gstpipeline.c gst/gstplugin.c \
-	gst/gstquery.c gst/gstregistry.c gst/gstsegment.c \
-	gst/gststructure.c gst/gstsystemclock.c gst/gsttag.c \
-	gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c gst/gstutils.c \
-	gst/gstvalue.c gst/gstxml.c libs/adapter.c libs/basesrc.c \
-	libs/collectpads.c libs/controller.c $(libs_gdp_SOURCES) \
-	libs/gstnetclientclock.c libs/gstnettimeprovider.c \
-	libs/libsabi.c libs/typefindhelper.c pipelines/cleanup.c \
-	pipelines/parse-disabled.c pipelines/parse-launch.c \
-	pipelines/simple-launch-lines.c pipelines/stress.c
+	gst/gstindex.c gst/gstinfo.c gst/gstinterface.c \
+	gst/gstiterator.c gst/gstmessage.c gst/gstminiobject.c \
+	gst/gstobject.c gst/gstpad.c gst/gstparamspecs.c \
+	gst/gstpipeline.c gst/gstplugin.c gst/gstpoll.c \
+	gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
+	gst/gstsegment.c gst/gststructure.c gst/gstsystemclock.c \
+	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c \
+	gst/gstutils.c gst/gstvalue.c gst/gstxml.c libs/adapter.c \
+	libs/basesrc.c libs/collectpads.c libs/controller.c \
+	$(libs_gdp_SOURCES) libs/gstnetclientclock.c \
+	libs/gstnettimeprovider.c libs/libsabi.c libs/typefindhelper.c \
+	pipelines/cleanup.c pipelines/parse-disabled.c \
+	pipelines/parse-launch.c pipelines/simple-launch-lines.c \
+	pipelines/stress.c
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -465,6 +492,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -489,9 +517,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -519,8 +549,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -534,7 +562,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -555,6 +582,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -684,6 +714,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -806,7 +837,10 @@ SUPPRESSIONS = $(top_srcdir)/common/gst.supp
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstelement				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstevent				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstghostpad				\
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstindex				\
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstinterface				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstplugin				\
+@GST_DISABLE_REGISTRY_FALSE@	gst/gstpreset				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstquery				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstregistry				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gsturi  				\
@@ -894,7 +928,8 @@ libs_typefindhelper_LDADD = \
 # these just need valgrind fixing, period
 VALGRIND_TO_FIX = \
 	gst/gstinfo \
-	libs/collectpads
+	libs/collectpads \
+	pipelines/parse-launch
 
 VALGRIND_IGNORE = \
 	pipelines/stress
@@ -1041,9 +1076,15 @@ gst/gstevent$(EXEEXT): $(gst_gstevent_OBJECTS) $(gst_gstevent_DEPENDENCIES) gst/
 gst/gstghostpad$(EXEEXT): $(gst_gstghostpad_OBJECTS) $(gst_gstghostpad_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstghostpad$(EXEEXT)
 	$(LINK) $(gst_gstghostpad_LDFLAGS) $(gst_gstghostpad_OBJECTS) $(gst_gstghostpad_LDADD) $(LIBS)
+gst/gstindex$(EXEEXT): $(gst_gstindex_OBJECTS) $(gst_gstindex_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstindex$(EXEEXT)
+	$(LINK) $(gst_gstindex_LDFLAGS) $(gst_gstindex_OBJECTS) $(gst_gstindex_LDADD) $(LIBS)
 gst/gstinfo$(EXEEXT): $(gst_gstinfo_OBJECTS) $(gst_gstinfo_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstinfo$(EXEEXT)
 	$(LINK) $(gst_gstinfo_LDFLAGS) $(gst_gstinfo_OBJECTS) $(gst_gstinfo_LDADD) $(LIBS)
+gst/gstinterface$(EXEEXT): $(gst_gstinterface_OBJECTS) $(gst_gstinterface_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstinterface$(EXEEXT)
+	$(LINK) $(gst_gstinterface_LDFLAGS) $(gst_gstinterface_OBJECTS) $(gst_gstinterface_LDADD) $(LIBS)
 gst/gstiterator$(EXEEXT): $(gst_gstiterator_OBJECTS) $(gst_gstiterator_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstiterator$(EXEEXT)
 	$(LINK) $(gst_gstiterator_LDFLAGS) $(gst_gstiterator_OBJECTS) $(gst_gstiterator_LDADD) $(LIBS)
@@ -1068,6 +1109,12 @@ gst/gstpipeline$(EXEEXT): $(gst_gstpipeline_OBJECTS) $(gst_gstpipeline_DEPENDENC
 gst/gstplugin$(EXEEXT): $(gst_gstplugin_OBJECTS) $(gst_gstplugin_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstplugin$(EXEEXT)
 	$(LINK) $(gst_gstplugin_LDFLAGS) $(gst_gstplugin_OBJECTS) $(gst_gstplugin_LDADD) $(LIBS)
+gst/gstpoll$(EXEEXT): $(gst_gstpoll_OBJECTS) $(gst_gstpoll_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstpoll$(EXEEXT)
+	$(LINK) $(gst_gstpoll_LDFLAGS) $(gst_gstpoll_OBJECTS) $(gst_gstpoll_LDADD) $(LIBS)
+gst/gstpreset$(EXEEXT): $(gst_gstpreset_OBJECTS) $(gst_gstpreset_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstpreset$(EXEEXT)
+	$(LINK) $(gst_gstpreset_LDFLAGS) $(gst_gstpreset_OBJECTS) $(gst_gstpreset_LDADD) $(LIBS)
 gst/gstquery$(EXEEXT): $(gst_gstquery_OBJECTS) $(gst_gstquery_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstquery$(EXEEXT)
 	$(LINK) $(gst_gstquery_LDFLAGS) $(gst_gstquery_OBJECTS) $(gst_gstquery_LDADD) $(LIBS)
@@ -1178,7 +1225,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstelement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstevent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstghostpad.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstindex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstinterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstiterator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstmessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstminiobject.Po@am__quote@
@@ -1189,6 +1238,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstparamspecs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstpipeline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstplugin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstpoll.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstpreset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstquery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstregistry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstsegment.Po@am__quote@
@@ -1516,6 +1567,20 @@ gstghostpad.obj: gst/gstghostpad.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstghostpad.obj `if test -f 'gst/gstghostpad.c'; then $(CYGPATH_W) 'gst/gstghostpad.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstghostpad.c'; fi`
 
+gstindex.o: gst/gstindex.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstindex.o -MD -MP -MF "$(DEPDIR)/gstindex.Tpo" -c -o gstindex.o `test -f 'gst/gstindex.c' || echo '$(srcdir)/'`gst/gstindex.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstindex.Tpo" "$(DEPDIR)/gstindex.Po"; else rm -f "$(DEPDIR)/gstindex.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstindex.c' object='gstindex.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstindex.o `test -f 'gst/gstindex.c' || echo '$(srcdir)/'`gst/gstindex.c
+
+gstindex.obj: gst/gstindex.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstindex.obj -MD -MP -MF "$(DEPDIR)/gstindex.Tpo" -c -o gstindex.obj `if test -f 'gst/gstindex.c'; then $(CYGPATH_W) 'gst/gstindex.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstindex.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstindex.Tpo" "$(DEPDIR)/gstindex.Po"; else rm -f "$(DEPDIR)/gstindex.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstindex.c' object='gstindex.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstindex.obj `if test -f 'gst/gstindex.c'; then $(CYGPATH_W) 'gst/gstindex.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstindex.c'; fi`
+
 gstinfo.o: gst/gstinfo.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstinfo.o -MD -MP -MF "$(DEPDIR)/gstinfo.Tpo" -c -o gstinfo.o `test -f 'gst/gstinfo.c' || echo '$(srcdir)/'`gst/gstinfo.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstinfo.Tpo" "$(DEPDIR)/gstinfo.Po"; else rm -f "$(DEPDIR)/gstinfo.Tpo"; exit 1; fi
@@ -1529,6 +1594,20 @@ gstinfo.obj: gst/gstinfo.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstinfo.c' object='gstinfo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstinfo.obj `if test -f 'gst/gstinfo.c'; then $(CYGPATH_W) 'gst/gstinfo.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstinfo.c'; fi`
+
+gstinterface.o: gst/gstinterface.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstinterface.o -MD -MP -MF "$(DEPDIR)/gstinterface.Tpo" -c -o gstinterface.o `test -f 'gst/gstinterface.c' || echo '$(srcdir)/'`gst/gstinterface.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstinterface.Tpo" "$(DEPDIR)/gstinterface.Po"; else rm -f "$(DEPDIR)/gstinterface.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstinterface.c' object='gstinterface.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstinterface.o `test -f 'gst/gstinterface.c' || echo '$(srcdir)/'`gst/gstinterface.c
+
+gstinterface.obj: gst/gstinterface.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstinterface.obj -MD -MP -MF "$(DEPDIR)/gstinterface.Tpo" -c -o gstinterface.obj `if test -f 'gst/gstinterface.c'; then $(CYGPATH_W) 'gst/gstinterface.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstinterface.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstinterface.Tpo" "$(DEPDIR)/gstinterface.Po"; else rm -f "$(DEPDIR)/gstinterface.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstinterface.c' object='gstinterface.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstinterface.obj `if test -f 'gst/gstinterface.c'; then $(CYGPATH_W) 'gst/gstinterface.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstinterface.c'; fi`
 
 gstiterator.o: gst/gstiterator.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstiterator.o -MD -MP -MF "$(DEPDIR)/gstiterator.Tpo" -c -o gstiterator.o `test -f 'gst/gstiterator.c' || echo '$(srcdir)/'`gst/gstiterator.c; \
@@ -1641,6 +1720,34 @@ gstplugin.obj: gst/gstplugin.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstplugin.c' object='gstplugin.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstplugin.obj `if test -f 'gst/gstplugin.c'; then $(CYGPATH_W) 'gst/gstplugin.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstplugin.c'; fi`
+
+gstpoll.o: gst/gstpoll.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstpoll.o -MD -MP -MF "$(DEPDIR)/gstpoll.Tpo" -c -o gstpoll.o `test -f 'gst/gstpoll.c' || echo '$(srcdir)/'`gst/gstpoll.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstpoll.Tpo" "$(DEPDIR)/gstpoll.Po"; else rm -f "$(DEPDIR)/gstpoll.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstpoll.c' object='gstpoll.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstpoll.o `test -f 'gst/gstpoll.c' || echo '$(srcdir)/'`gst/gstpoll.c
+
+gstpoll.obj: gst/gstpoll.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstpoll.obj -MD -MP -MF "$(DEPDIR)/gstpoll.Tpo" -c -o gstpoll.obj `if test -f 'gst/gstpoll.c'; then $(CYGPATH_W) 'gst/gstpoll.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstpoll.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstpoll.Tpo" "$(DEPDIR)/gstpoll.Po"; else rm -f "$(DEPDIR)/gstpoll.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstpoll.c' object='gstpoll.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstpoll.obj `if test -f 'gst/gstpoll.c'; then $(CYGPATH_W) 'gst/gstpoll.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstpoll.c'; fi`
+
+gstpreset.o: gst/gstpreset.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstpreset.o -MD -MP -MF "$(DEPDIR)/gstpreset.Tpo" -c -o gstpreset.o `test -f 'gst/gstpreset.c' || echo '$(srcdir)/'`gst/gstpreset.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstpreset.Tpo" "$(DEPDIR)/gstpreset.Po"; else rm -f "$(DEPDIR)/gstpreset.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstpreset.c' object='gstpreset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstpreset.o `test -f 'gst/gstpreset.c' || echo '$(srcdir)/'`gst/gstpreset.c
+
+gstpreset.obj: gst/gstpreset.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstpreset.obj -MD -MP -MF "$(DEPDIR)/gstpreset.Tpo" -c -o gstpreset.obj `if test -f 'gst/gstpreset.c'; then $(CYGPATH_W) 'gst/gstpreset.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstpreset.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/gstpreset.Tpo" "$(DEPDIR)/gstpreset.Po"; else rm -f "$(DEPDIR)/gstpreset.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gst/gstpreset.c' object='gstpreset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gstpreset.obj `if test -f 'gst/gstpreset.c'; then $(CYGPATH_W) 'gst/gstpreset.c'; else $(CYGPATH_W) '$(srcdir)/gst/gstpreset.c'; fi`
 
 gstquery.o: gst/gstquery.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gstquery.o -MD -MP -MF "$(DEPDIR)/gstquery.Tpo" -c -o gstquery.o `test -f 'gst/gstquery.c' || echo '$(srcdir)/'`gst/gstquery.c; \
@@ -2390,6 +2497,7 @@ inspect:
 	     $(GST_INSPECT) $$e > /dev/null 2>&1; done
 
 help:
+	@echo
 	@echo "make check                         -- run all checks"
 	@echo "make torture                       -- run all checks $(LOOPS) times"
 	@echo "make (dir)/(test).check            -- run the given check once"
@@ -2404,6 +2512,18 @@ help:
 	@echo "make (dir)/(test).valgrind.gen-suppressions -- generate suppressions"
 	@echo "                                               and save to suppressions.log"
 	@echo "make inspect                       -- inspect all plugin features"
+	@echo
+	@echo
+	@echo "Additionally, you can use the GST_CHECKS environment variable to"
+	@echo "specify which test(s) should be run. This is useful if you are"
+	@echo "debugging a failure in one particular test, or want to reproduce"
+	@echo "a race condition in a single test."
+	@echo
+	@echo "Examples:"
+	@echo
+	@echo "  GST_CHECKS=test_this,test_that  make element/foobar.check"
+	@echo "  GST_CHECKS=test_many_threads    make element/foobar.forever"
+	@echo
 
 # override to _not_ install the test plugins
 install-pluginLTLIBRARIES:

@@ -24,6 +24,7 @@ EXPORTS
 	gst_base_sink_set_qos_enabled
 	gst_base_sink_set_sync
 	gst_base_sink_set_ts_offset
+	gst_base_sink_wait_clock
 	gst_base_sink_wait_eos
 	gst_base_sink_wait_preroll
 	gst_base_src_get_do_timestamp
@@ -55,11 +56,13 @@ EXPORTS
 	gst_collect_pads_peek
 	gst_collect_pads_pop
 	gst_collect_pads_read
+	gst_collect_pads_read_buffer
 	gst_collect_pads_remove_pad
 	gst_collect_pads_set_flushing
 	gst_collect_pads_set_function
 	gst_collect_pads_start
 	gst_collect_pads_stop
+	gst_collect_pads_take_buffer
 	gst_data_queue_drop_head
 	gst_data_queue_flush
 	gst_data_queue_get_level

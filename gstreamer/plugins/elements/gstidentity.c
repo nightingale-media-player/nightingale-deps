@@ -107,6 +107,9 @@ static void gst_identity_get_property (GObject * object, guint prop_id,
 static gboolean gst_identity_event (GstBaseTransform * trans, GstEvent * event);
 static GstFlowReturn gst_identity_transform_ip (GstBaseTransform * trans,
     GstBuffer * buf);
+static GstFlowReturn gst_identity_prepare_output_buffer (GstBaseTransform
+    * trans, GstBuffer * in_buf, gint out_size, GstCaps * out_caps,
+    GstBuffer ** out_buf);
 static gboolean gst_identity_start (GstBaseTransform * trans);
 static gboolean gst_identity_stop (GstBaseTransform * trans);
 
@@ -184,52 +187,57 @@ gst_identity_class_init (GstIdentityClass * klass)
   g_object_class_install_property (gobject_class, PROP_SLEEP_TIME,
       g_param_spec_uint ("sleep-time", "Sleep time",
           "Microseconds to sleep between processing", 0, G_MAXUINT,
-          DEFAULT_SLEEP_TIME, G_PARAM_READWRITE));
+          DEFAULT_SLEEP_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ERROR_AFTER,
-      g_param_spec_int ("error_after", "Error After", "Error after N buffers",
-          G_MININT, G_MAXINT, DEFAULT_ERROR_AFTER, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class,
-      PROP_DROP_PROBABILITY, g_param_spec_float ("drop_probability",
-          "Drop Probability",
+      g_param_spec_int ("error-after", "Error After", "Error after N buffers",
+          G_MININT, G_MAXINT, DEFAULT_ERROR_AFTER,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_DROP_PROBABILITY,
+      g_param_spec_float ("drop-probability", "Drop Probability",
           "The Probability a buffer is dropped", 0.0, 1.0,
-          DEFAULT_DROP_PROBABILITY, G_PARAM_READWRITE));
+          DEFAULT_DROP_PROBABILITY,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_DATARATE,
       g_param_spec_int ("datarate", "Datarate",
           "(Re)timestamps buffers with number of bytes per second (0 = inactive)",
-          0, G_MAXINT, DEFAULT_DATARATE, G_PARAM_READWRITE));
+          0, G_MAXINT, DEFAULT_DATARATE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "silent", "silent", DEFAULT_SILENT,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SINGLE_SEGMENT,
       g_param_spec_boolean ("single-segment", "Single Segment",
           "Timestamp buffers and eat newsegments so as to appear as one segment",
-          DEFAULT_SINGLE_SEGMENT, G_PARAM_READWRITE));
+          DEFAULT_SINGLE_SEGMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_LAST_MESSAGE,
       g_param_spec_string ("last-message", "last-message", "last-message", NULL,
-          G_PARAM_READABLE));
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_DUMP,
       g_param_spec_boolean ("dump", "Dump", "Dump buffer contents to stdout",
-          DEFAULT_DUMP, G_PARAM_READWRITE));
+          DEFAULT_DUMP, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SYNC,
       g_param_spec_boolean ("sync", "Synchronize",
-          "Synchronize to pipeline clock", DEFAULT_SYNC, G_PARAM_READWRITE));
+          "Synchronize to pipeline clock", DEFAULT_SYNC,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CHECK_PERFECT,
       g_param_spec_boolean ("check-perfect", "Check For Perfect Stream",
           "Verify that the stream is time- and data-contiguous. "
           "This only logs in the debug log.  This will be deprecated in favor "
           "of the check-imperfect-timestamp/offset properties.",
-          DEFAULT_CHECK_PERFECT, G_PARAM_READWRITE));
+          DEFAULT_CHECK_PERFECT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class,
       PROP_CHECK_IMPERFECT_TIMESTAMP,
       g_param_spec_boolean ("check-imperfect-timestamp",
           "Check for discontiguous timestamps",
           "Send element messages if timestamps and durations do not match up",
-          DEFAULT_CHECK_IMPERFECT_TIMESTAMP, G_PARAM_READWRITE));
+          DEFAULT_CHECK_IMPERFECT_TIMESTAMP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CHECK_IMPERFECT_OFFSET,
       g_param_spec_boolean ("check-imperfect-offset",
           "Check for discontiguous offset",
           "Send element messages if offset and offset_end do not match up",
-          DEFAULT_CHECK_IMPERFECT_OFFSET, G_PARAM_READWRITE));
+          DEFAULT_CHECK_IMPERFECT_OFFSET,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstIdentity:signal-handoffs
@@ -242,7 +250,7 @@ gst_identity_class_init (GstIdentityClass * klass)
   g_object_class_install_property (gobject_class, PROP_SIGNAL_HANDOFFS,
       g_param_spec_boolean ("signal-handoffs",
           "Signal handoffs", "Send a signal before pushing the buffer",
-          DEFAULT_SIGNAL_HANDOFFS, G_PARAM_READWRITE));
+          DEFAULT_SIGNAL_HANDOFFS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstIdentity::handoff:
@@ -262,6 +270,8 @@ gst_identity_class_init (GstIdentityClass * klass)
   gstbasetrans_class->event = GST_DEBUG_FUNCPTR (gst_identity_event);
   gstbasetrans_class->transform_ip =
       GST_DEBUG_FUNCPTR (gst_identity_transform_ip);
+  gstbasetrans_class->prepare_output_buffer =
+      GST_DEBUG_FUNCPTR (gst_identity_prepare_output_buffer);
   gstbasetrans_class->start = GST_DEBUG_FUNCPTR (gst_identity_start);
   gstbasetrans_class->stop = GST_DEBUG_FUNCPTR (gst_identity_stop);
 }
@@ -269,8 +279,6 @@ gst_identity_class_init (GstIdentityClass * klass)
 static void
 gst_identity_init (GstIdentity * identity, GstIdentityClass * g_class)
 {
-  gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (identity), TRUE);
-
   identity->sleep_time = DEFAULT_SLEEP_TIME;
   identity->error_after = DEFAULT_ERROR_AFTER;
   identity->drop_probability = DEFAULT_DROP_PROBABILITY;
@@ -333,6 +341,13 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
     }
   }
 
+  /* Reset previous timestamp, duration and offsets on NEWSEGMENT
+   * to prevent false warnings when checking for perfect streams */
+  if (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT) {
+    identity->prev_timestamp = identity->prev_duration = GST_CLOCK_TIME_NONE;
+    identity->prev_offset = identity->prev_offset_end = GST_BUFFER_OFFSET_NONE;
+  }
+
   GST_BASE_TRANSFORM_CLASS (parent_class)->event (trans, event);
 
   if (identity->single_segment
@@ -342,6 +357,28 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
   }
 
   return ret;
+}
+
+static GstFlowReturn
+gst_identity_prepare_output_buffer (GstBaseTransform * trans,
+    GstBuffer * in_buf, gint out_size, GstCaps * out_caps, GstBuffer ** out_buf)
+{
+  GstIdentity *identity = GST_IDENTITY (trans);
+
+  /* only bother if we may have to alter metadata */
+  if (identity->datarate > 0 || identity->single_segment) {
+    if (gst_buffer_is_metadata_writable (in_buf))
+      *out_buf = gst_buffer_ref (in_buf);
+    else {
+      /* make even less writable */
+      gst_buffer_ref (in_buf);
+      /* extra ref is dropped going through the official process */
+      *out_buf = gst_buffer_make_metadata_writable (in_buf);
+    }
+  } else
+    *out_buf = gst_buffer_ref (in_buf);
+
+  return GST_FLOW_OK;
 }
 
 static void
@@ -732,8 +769,8 @@ gst_identity_start (GstBaseTransform * trans)
   identity->offset = 0;
   identity->prev_timestamp = GST_CLOCK_TIME_NONE;
   identity->prev_duration = GST_CLOCK_TIME_NONE;
-  identity->prev_offset_end = -1;
-  identity->prev_offset = -1;
+  identity->prev_offset_end = GST_BUFFER_OFFSET_NONE;
+  identity->prev_offset = GST_BUFFER_OFFSET_NONE;
 
   return TRUE;
 }

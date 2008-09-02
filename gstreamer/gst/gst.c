@@ -128,6 +128,7 @@
 #define GST_PLUGIN_SEPARATOR ","
 
 static gboolean gst_initialized = FALSE;
+static gboolean gst_deinitialized = FALSE;
 
 #ifndef GST_DISABLE_REGISTRY
 static GList *plugin_paths = NULL;      /* for delayed processing in post_init */
@@ -138,7 +139,7 @@ extern const gchar *priv_gst_dump_dot_dir;
 #endif
 
 /* defaults */
-#ifdef HAVE_FORK
+#if defined(HAVE_FORK) && !defined(GST_HAVE_UNSAFE_FORK)
 #define DEFAULT_FORK TRUE
 #else
 #define DEFAULT_FORK FALSE
@@ -149,6 +150,9 @@ static gboolean _gst_disable_segtrap = FALSE;
 
 /* control the behaviour of registry rebuild */
 static gboolean _gst_enable_registry_fork = DEFAULT_FORK;
+
+/*set to TRUE when registry needn't to be updated */
+static gboolean _gst_disable_registry_update = FALSE;
 
 static void load_plugin_func (gpointer data, gpointer user_data);
 static gboolean init_pre (GOptionContext * context, GOptionGroup * group,
@@ -189,6 +193,7 @@ enum
   ARG_PLUGIN_PATH,
   ARG_PLUGIN_LOAD,
   ARG_SEGTRAP_DISABLE,
+  ARG_REGISTRY_UPDATE_DISABLE,
   ARG_REGISTRY_FORK_DISABLE
 };
 
@@ -297,7 +302,7 @@ gst_init_get_option_group (void)
 {
 #ifndef GST_DISABLE_OPTION_PARSING
   GOptionGroup *group;
-  const static GOptionEntry gst_args[] = {
+  static const GOptionEntry gst_args[] = {
     {"gst-version", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK,
         (gpointer) parse_goption_arg, N_("Print the GStreamer version"), NULL},
     {"gst-fatal-warnings", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK,
@@ -338,6 +343,11 @@ gst_init_get_option_group (void)
     {"gst-disable-segtrap", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK,
           (gpointer) parse_goption_arg,
           N_("Disable trapping of segmentation faults during plugin loading"),
+        NULL},
+    {"gst-disable-registry-update", 0, G_OPTION_FLAG_NO_ARG,
+          G_OPTION_ARG_CALLBACK,
+          (gpointer) parse_goption_arg,
+          N_("Disable updating the registry"),
         NULL},
     {"gst-disable-registry-fork", 0, G_OPTION_FLAG_NO_ARG,
           G_OPTION_ARG_CALLBACK,
@@ -655,11 +665,17 @@ scan_and_update_registry (GstRegistry * default_registry,
   gboolean changed = FALSE;
   GList *l;
 
+  GST_INFO ("Validating registry cache: %s", registry_file);
+  /* It sounds tempting to just compare the mtime of directories with the mtime
+   * of the registry cache, but it does not work. It would not catch updated
+   * plugins, which might bring more or less features.
+   */
+
   /* scan paths specified via --gst-plugin-path */
   GST_DEBUG ("scanning paths added via --gst-plugin-path");
   for (l = plugin_paths; l != NULL; l = l->next) {
     GST_INFO ("Scanning plugin path: \"%s\"", (gchar *) l->data);
-    /* CHECKME: add changed |= here as well? */
+    /* FIXME: add changed |= here as well? */
     gst_registry_scan_path (default_registry, (gchar *) l->data);
   }
   /* keep plugin_paths around in case a re-scan is forced later on */
@@ -722,7 +738,7 @@ scan_and_update_registry (GstRegistry * default_registry,
   }
 
   if (!write_changes) {
-    GST_INFO ("Registry cached changed, but writing is disabled. Not writing.");
+    GST_INFO ("Registry cache changed, but writing is disabled. Not writing.");
     return REGISTRY_SCAN_AND_UPDATE_FAILURE;
   }
 
@@ -747,12 +763,6 @@ ensure_current_registry_nonforking (GstRegistry * default_registry,
     const gchar * registry_file, GError ** error)
 {
   /* fork() not available */
-  GST_INFO ("reading registry cache: %s", registry_file);
-#ifdef USE_BINARY_REGISTRY
-  gst_registry_binary_read_cache (default_registry, registry_file);
-#else
-  gst_registry_xml_read_cache (default_registry, registry_file);
-#endif
   GST_DEBUG ("Updating registry cache in-process");
   scan_and_update_registry (default_registry, registry_file, TRUE, error);
   return TRUE;
@@ -779,13 +789,6 @@ ensure_current_registry_forking (GstRegistry * default_registry,
         ", could not create pipes. Error", g_strerror (errno));
     return FALSE;
   }
-
-  GST_INFO ("reading registry cache: %s", registry_file);
-#ifdef USE_BINARY_REGISTRY
-  gst_registry_binary_read_cache (default_registry, registry_file);
-#else
-  gst_registry_xml_read_cache (default_registry, registry_file);
-#endif
 
   pid = fork ();
   if (pid == -1) {
@@ -875,10 +878,11 @@ ensure_current_registry_forking (GstRegistry * default_registry,
 static gboolean
 ensure_current_registry (GError ** error)
 {
-  char *registry_file;
+  gchar *registry_file;
   GstRegistry *default_registry;
-  gboolean ret;
+  gboolean ret = TRUE;
   gboolean do_fork;
+  gboolean do_update;
 
   default_registry = gst_registry_get_default ();
   registry_file = g_strdup (g_getenv ("GST_REGISTRY"));
@@ -892,30 +896,50 @@ ensure_current_registry (GError ** error)
 #endif
   }
 
-  /* first see if forking is enabled */
-  do_fork = _gst_enable_registry_fork;
-  if (do_fork) {
-    const gchar *fork_env;
+  GST_INFO ("reading registry cache: %s", registry_file);
+#ifdef USE_BINARY_REGISTRY
+  gst_registry_binary_read_cache (default_registry, registry_file);
+#else
+  gst_registry_xml_read_cache (default_registry, registry_file);
+#endif
 
-    /* forking enabled, see if it is disabled with an env var */
-    if ((fork_env = g_getenv ("GST_REGISTRY_FORK"))) {
-      /* fork enabled for any value different from "no" */
-      do_fork = strcmp (fork_env, "no") != 0;
+  do_update = !_gst_disable_registry_update;
+  if (do_update) {
+    const gchar *update_env;
+
+    if ((update_env = g_getenv ("GST_REGISTRY_UPDATE"))) {
+      /* do update for any value different from "no" */
+      do_update = (strcmp (update_env, "no") != 0);
     }
   }
 
-  /* now check registry with or without forking */
-  if (do_fork) {
-    GST_DEBUG ("forking for registry rebuild");
-    ret = ensure_current_registry_forking (default_registry, registry_file,
-        error);
-  } else {
-    GST_DEBUG ("requested not to fork for registry rebuild");
-    ret = ensure_current_registry_nonforking (default_registry, registry_file,
-        error);
+  if (do_update) {
+    /* first see if forking is enabled */
+    do_fork = _gst_enable_registry_fork;
+    if (do_fork) {
+      const gchar *fork_env;
+
+      /* forking enabled, see if it is disabled with an env var */
+      if ((fork_env = g_getenv ("GST_REGISTRY_FORK"))) {
+        /* fork enabled for any value different from "no" */
+        do_fork = strcmp (fork_env, "no") != 0;
+      }
+    }
+
+    /* now check registry with or without forking */
+    if (do_fork) {
+      GST_DEBUG ("forking for registry rebuild");
+      ret = ensure_current_registry_forking (default_registry, registry_file,
+          error);
+    } else {
+      GST_DEBUG ("requested not to fork for registry rebuild");
+      ret = ensure_current_registry_nonforking (default_registry, registry_file,
+          error);
+    }
   }
 
   g_free (registry_file);
+  GST_INFO ("registry reading and updating done, result = %d", ret);
 
   return ret;
 }
@@ -959,6 +983,9 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   g_type_class_ref (gst_element_get_type ());
   g_type_class_ref (gst_type_find_factory_get_type ());
   g_type_class_ref (gst_bin_get_type ());
+  g_type_class_ref (gst_bus_get_type ());
+  g_type_class_ref (gst_task_get_type ());
+  g_type_class_ref (gst_clock_get_type ());
 
 #ifndef GST_DISABLE_INDEX
   g_type_class_ref (gst_index_factory_get_type ());
@@ -966,6 +993,66 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
 #ifndef GST_DISABLE_URI
   gst_uri_handler_get_type ();
 #endif /* GST_DISABLE_URI */
+
+#ifndef GST_DISABLE_ENUMTYPES
+  g_type_class_ref (gst_object_flags_get_type ());
+  g_type_class_ref (gst_bin_flags_get_type ());
+  g_type_class_ref (gst_buffer_flag_get_type ());
+  g_type_class_ref (gst_buffer_copy_flags_get_type ());
+  g_type_class_ref (gst_bus_flags_get_type ());
+  g_type_class_ref (gst_bus_sync_reply_get_type ());
+  g_type_class_ref (gst_caps_flags_get_type ());
+  g_type_class_ref (gst_clock_return_get_type ());
+  g_type_class_ref (gst_clock_entry_type_get_type ());
+  g_type_class_ref (gst_clock_flags_get_type ());
+  g_type_class_ref (gst_debug_graph_details_get_type ());
+  g_type_class_ref (gst_state_get_type ());
+  g_type_class_ref (gst_state_change_return_get_type ());
+  g_type_class_ref (gst_state_change_get_type ());
+  g_type_class_ref (gst_element_flags_get_type ());
+  g_type_class_ref (gst_core_error_get_type ());
+  g_type_class_ref (gst_library_error_get_type ());
+  g_type_class_ref (gst_resource_error_get_type ());
+  g_type_class_ref (gst_stream_error_get_type ());
+  g_type_class_ref (gst_event_type_flags_get_type ());
+  g_type_class_ref (gst_event_type_get_type ());
+  g_type_class_ref (gst_seek_type_get_type ());
+  g_type_class_ref (gst_seek_flags_get_type ());
+  g_type_class_ref (gst_format_get_type ());
+  g_type_class_ref (gst_index_certainty_get_type ());
+  g_type_class_ref (gst_index_entry_type_get_type ());
+  g_type_class_ref (gst_index_lookup_method_get_type ());
+  g_type_class_ref (gst_assoc_flags_get_type ());
+  g_type_class_ref (gst_index_resolver_method_get_type ());
+  g_type_class_ref (gst_index_flags_get_type ());
+  g_type_class_ref (gst_debug_level_get_type ());
+  g_type_class_ref (gst_debug_color_flags_get_type ());
+  g_type_class_ref (gst_iterator_result_get_type ());
+  g_type_class_ref (gst_iterator_item_get_type ());
+  g_type_class_ref (gst_message_type_get_type ());
+  g_type_class_ref (gst_mini_object_flags_get_type ());
+  g_type_class_ref (gst_pad_link_return_get_type ());
+  g_type_class_ref (gst_flow_return_get_type ());
+  g_type_class_ref (gst_activate_mode_get_type ());
+  g_type_class_ref (gst_pad_direction_get_type ());
+  g_type_class_ref (gst_pad_flags_get_type ());
+  g_type_class_ref (gst_pad_presence_get_type ());
+  g_type_class_ref (gst_pad_template_flags_get_type ());
+  g_type_class_ref (gst_pipeline_flags_get_type ());
+  g_type_class_ref (gst_plugin_error_get_type ());
+  g_type_class_ref (gst_plugin_flags_get_type ());
+  g_type_class_ref (gst_rank_get_type ());
+  g_type_class_ref (gst_query_type_get_type ());
+  g_type_class_ref (gst_buffering_mode_get_type ());
+  g_type_class_ref (gst_tag_merge_mode_get_type ());
+  g_type_class_ref (gst_tag_flag_get_type ());
+  g_type_class_ref (gst_task_state_get_type ());
+  g_type_class_ref (gst_alloc_trace_flags_get_type ());
+  g_type_class_ref (gst_type_find_probability_get_type ());
+  g_type_class_ref (gst_uri_type_get_type ());
+  g_type_class_ref (gst_parse_error_get_type ());
+  g_type_class_ref (gst_parse_flags_get_type ());
+#endif
 
   gst_structure_get_type ();
   _gst_value_initialize ();
@@ -977,6 +1064,8 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   _gst_tag_initialize ();
 
   _gst_plugin_initialize ();
+
+  gst_g_error_get_type ();
 
   /* register core plugins */
   gst_plugin_register_static (GST_VERSION_MAJOR, GST_VERSION_MINOR,
@@ -1135,6 +1224,9 @@ parse_one_option (gint opt, const gchar * arg, GError ** err)
     case ARG_SEGTRAP_DISABLE:
       _gst_disable_segtrap = TRUE;
       break;
+    case ARG_REGISTRY_UPDATE_DISABLE:
+      _gst_disable_registry_update = TRUE;
+      break;
     case ARG_REGISTRY_FORK_DISABLE:
       _gst_enable_registry_fork = FALSE;
       break;
@@ -1172,6 +1264,7 @@ parse_goption_arg (const gchar * opt,
     "--gst-plugin-path", ARG_PLUGIN_PATH}, {
     "--gst-plugin-load", ARG_PLUGIN_LOAD}, {
     "--gst-disable-segtrap", ARG_SEGTRAP_DISABLE}, {
+    "--gst-disable-registry-update", ARG_REGISTRY_UPDATE_DISABLE}, {
     "--gst-disable-registry-fork", ARG_REGISTRY_FORK_DISABLE}, {
     NULL}
   };
@@ -1209,7 +1302,7 @@ gst_deinit (void)
 
   GST_INFO ("deinitializing GStreamer");
 
-  if (!gst_initialized) {
+  if (gst_deinitialized) {
     GST_DEBUG ("already deinitialized");
     return;
   }
@@ -1236,12 +1329,74 @@ gst_deinit (void)
   g_type_class_unref (g_type_class_peek (gst_element_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_type_find_factory_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_bin_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_bus_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_task_get_type ()));
 #ifndef GST_DISABLE_INDEX
   g_type_class_unref (g_type_class_peek (gst_index_factory_get_type ()));
 #endif /* GST_DISABLE_INDEX */
+#ifndef GST_DISABLE_ENUMTYPES
+  g_type_class_unref (g_type_class_peek (gst_object_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_bin_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_buffer_flag_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_buffer_copy_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_bus_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_bus_sync_reply_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_caps_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_clock_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_clock_entry_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_clock_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_debug_graph_details_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_state_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_state_change_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_state_change_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_element_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_core_error_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_library_error_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_resource_error_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_stream_error_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_event_type_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_event_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_seek_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_seek_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_format_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_index_certainty_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_index_entry_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_index_lookup_method_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_assoc_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_index_resolver_method_get_type
+          ()));
+  g_type_class_unref (g_type_class_peek (gst_index_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_debug_level_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_debug_color_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_iterator_result_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_iterator_item_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_message_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_mini_object_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_link_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_flow_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_activate_mode_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_direction_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_presence_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_template_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pipeline_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_plugin_error_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_plugin_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_rank_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_query_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_buffering_mode_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_tag_merge_mode_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_tag_flag_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_task_state_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_alloc_trace_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_type_find_probability_get_type
+          ()));
+  g_type_class_unref (g_type_class_peek (gst_uri_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_parse_error_get_type ()));
+#endif
   g_type_class_unref (g_type_class_peek (gst_param_spec_fraction_get_type ()));
 
-  gst_initialized = FALSE;
+  gst_deinitialized = TRUE;
   GST_INFO ("deinitialized GStreamer");
 }
 

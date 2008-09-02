@@ -56,6 +56,7 @@ enum
 
 static void gst_index_class_init (GstIndexClass * klass);
 static void gst_index_init (GstIndex * index);
+static void gst_index_finalize (GObject * object);
 
 static void gst_index_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -93,12 +94,9 @@ gst_index_resolver_get_type (void)
 {
   static GType index_resolver_type = 0;
   static const GEnumValue index_resolver[] = {
-    {GST_INDEX_RESOLVER_CUSTOM, "GST_INDEX_RESOLVER_CUSTOM",
-        "Use a custom resolver"},
-    {GST_INDEX_RESOLVER_GTYPE, "GST_INDEX_RESOLVER_GTYPE",
-        "Resolve an object to its GType[.padname]"},
-    {GST_INDEX_RESOLVER_PATH, "GST_INDEX_RESOLVER_PATH",
-        "Resolve an object to its path in the pipeline"},
+    {GST_INDEX_RESOLVER_CUSTOM, "GST_INDEX_RESOLVER_CUSTOM", "custom"},
+    {GST_INDEX_RESOLVER_GTYPE, "GST_INDEX_RESOLVER_GTYPE", "gtype"},
+    {GST_INDEX_RESOLVER_PATH, "GST_INDEX_RESOLVER_PATH", "path"},
     {0, NULL, NULL},
   };
 
@@ -171,11 +169,13 @@ gst_index_class_init (GstIndexClass * klass)
 
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_index_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_index_get_property);
+  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_index_finalize);
 
   g_object_class_install_property (gobject_class, ARG_RESOLVER,
       g_param_spec_enum ("resolver", "Resolver",
           "Select a predefined object to string mapper",
-          GST_TYPE_INDEX_RESOLVER, GST_INDEX_RESOLVER_PATH, G_PARAM_READWRITE));
+          GST_TYPE_INDEX_RESOLVER, GST_INDEX_RESOLVER_PATH,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -196,6 +196,42 @@ gst_index_init (GstIndex * index)
   GST_OBJECT_FLAG_SET (index, GST_INDEX_READABLE);
 
   GST_DEBUG ("created new index");
+}
+
+static void
+gst_index_free_writer (gpointer key, gpointer value, gpointer user_data)
+{
+  GstIndexEntry *entry = (GstIndexEntry *) value;
+
+  if (entry) {
+    gst_index_entry_free (entry);
+  }
+}
+
+static void
+gst_index_finalize (GObject * object)
+{
+  GstIndex *index = GST_INDEX (object);
+
+  if (index->groups) {
+    g_list_foreach (index->groups, (GFunc) g_free, NULL);
+    g_list_free (index->groups);
+    index->groups = NULL;
+  }
+
+  if (index->writers) {
+    g_hash_table_foreach (index->writers, gst_index_free_writer, NULL);
+    g_hash_table_destroy (index->writers);
+    index->writers = NULL;
+  }
+
+  if (index->filter_user_data && index->filter_user_data_destroy)
+    index->filter_user_data_destroy (index->filter_user_data);
+
+  if (index->resolver_user_data && index->resolver_user_data_destroy)
+    index->resolver_user_data_destroy (index->resolver_user_data);
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -440,10 +476,33 @@ void
 gst_index_set_resolver (GstIndex * index,
     GstIndexResolver resolver, gpointer user_data)
 {
+  gst_index_set_resolver_full (index, resolver, user_data, NULL);
+}
+
+/**
+ * gst_index_set_resolver_full:
+ * @index: the index to register the resolver on
+ * @resolver: the resolver to register
+ * @user_data: data passed to the resolver function
+ * @user_data_destroy: destroy function for @user_data
+ *
+ * Lets the app register a custom function to map index
+ * ids to writer descriptions.
+ *
+ * Since: 0.10.18
+ */
+void
+gst_index_set_resolver_full (GstIndex * index, GstIndexResolver resolver,
+    gpointer user_data, GDestroyNotify user_data_destroy)
+{
   g_return_if_fail (GST_IS_INDEX (index));
+
+  if (index->resolver_user_data && index->resolver_user_data_destroy)
+    index->resolver_user_data_destroy (index->resolver_user_data);
 
   index->resolver = resolver;
   index->resolver_user_data = user_data;
+  index->resolver_user_data_destroy = user_data_destroy;
   index->method = GST_INDEX_RESOLVER_CUSTOM;
 }
 
@@ -470,6 +529,25 @@ gst_index_entry_copy (GstIndexEntry * entry)
 void
 gst_index_entry_free (GstIndexEntry * entry)
 {
+  switch (entry->type) {
+    case GST_INDEX_ENTRY_ID:
+      if (entry->data.id.description) {
+        g_free (entry->data.id.description);
+        entry->data.id.description = NULL;
+      }
+      break;
+    case GST_INDEX_ENTRY_ASSOCIATION:
+      if (entry->data.assoc.assocs) {
+        g_free (entry->data.assoc.assocs);
+        entry->data.assoc.assocs = NULL;
+      }
+      break;
+    case GST_INDEX_ENTRY_OBJECT:
+      break;
+    case GST_INDEX_ENTRY_FORMAT:
+      break;
+  }
+
   g_free (entry);
 }
 

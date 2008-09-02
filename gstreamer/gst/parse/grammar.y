@@ -12,6 +12,7 @@
 #include "../gstparse.h"
 #include "../gstinfo.h"
 #include "../gsterror.h"
+#include "../gststructure.h"
 #include "../gsturi.h"
 #include "../gstutils.h"
 #include "../gstvalue.h"
@@ -107,6 +108,13 @@ typedef struct {
    * but there is no such signal */
 } DelayedLink;
 
+typedef struct {
+  GstElement *parent;
+  gchar *name;
+  gchar *value_str;
+  gulong signal_id;
+} DelayedSet;
+
 /*** define SET_ERROR and ERROR macros/functions */
 
 #ifdef G_HAVE_ISO_VARARGS
@@ -120,7 +128,7 @@ G_STMT_START { \
 } G_STMT_END
 
 #  define ERROR(type, ...) \
-  SET_ERROR (((graph_t *) graph)->error, (type), __VA_ARGS__ )
+  SET_ERROR (graph->error, (type), __VA_ARGS__ )
 
 #elif defined(G_HAVE_GNUC_VARARGS)
 
@@ -133,7 +141,7 @@ G_STMT_START { \
 } G_STMT_END
 
 #  define ERROR(type, args...) \
-  SET_ERROR (((graph_t *) graph)->error,(type) , args )
+  SET_ERROR (graph->error,(type) , args )
 
 #else
 
@@ -206,13 +214,19 @@ YYPRINTF(const char *format, ...)
 
 #endif /* GST_DISABLE_GST_DEBUG */
 
+#define ADD_MISSING_ELEMENT(graph,name) G_STMT_START {                      \
+    if ((graph)->ctx) {                                                     \
+      (graph)->ctx->missing_elements =                                      \
+          g_list_append ((graph)->ctx->missing_elements, g_strdup (name));  \
+    } } G_STMT_END
+
 #define GST_BIN_MAKE(res, type, chainval, assign, free_string) \
 G_STMT_START { \
   chain_t *chain = chainval; \
   GSList *walk; \
   GstBin *bin = (GstBin *) gst_element_factory_make (type, NULL); \
   if (!chain) { \
-    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_EMPTY_BIN, \
+    SET_ERROR (graph->error, GST_PARSE_ERROR_EMPTY_BIN, \
         _("specified empty bin \"%s\", not allowed"), type); \
     g_slist_foreach (assign, (GFunc) gst_parse_strfree, NULL); \
     g_slist_free (assign); \
@@ -221,7 +235,8 @@ G_STMT_START { \
       gst_parse_strfree (type); /* Need to clean up the string */ \
     YYERROR; \
   } else if (!bin) { \
-    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, \
+    ADD_MISSING_ELEMENT(graph, type); \
+    SET_ERROR (graph->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, \
         _("no bin \"%s\", skipping"), type); \
     g_slist_foreach (assign, (GFunc) gst_parse_strfree, NULL); \
     g_slist_free (assign); \
@@ -265,14 +280,50 @@ G_STMT_START { \
   MAKE_LINK (link, NULL, _src, pads, NULL, NULL, NULL); \
 } G_STMT_END
 
+static void gst_parse_new_child(GstChildProxy *child_proxy, GObject *object,
+                                gpointer data)
+{
+  DelayedSet *set = (DelayedSet *) data;
+  GParamSpec *pspec;
+  GValue v = { 0, }; 
+  GstObject *target = NULL;
+  GType value_type;
+
+  if (gst_child_proxy_lookup (GST_OBJECT (set->parent), set->name, &target, &pspec)) { 
+    value_type = G_PARAM_SPEC_VALUE_TYPE (pspec);
+
+    GST_CAT_LOG (GST_CAT_PIPELINE, "parsing delayed property %s as a %s from %s", pspec->name,
+      g_type_name (value_type), set->value_str);
+    g_value_init (&v, value_type);
+    if (gst_value_deserialize (&v, set->value_str)) {
+      g_object_set_property (G_OBJECT (target), pspec->name, &v);
+    }
+    g_signal_handler_disconnect (child_proxy, set->signal_id);
+    g_free(set->name);
+    g_free(set->value_str);
+    g_free(set);
+  }
+
+  if (G_IS_VALUE (&v))
+    g_value_unset (&v);
+  if (target)
+    gst_object_unref (target);
+  return;
+}
+
+
 static void
 gst_parse_element_set (gchar *value, GstElement *element, graph_t *graph)
 {
   GParamSpec *pspec;
   gchar *pos = value;
   GValue v = { 0, }; 
-  GstObject *target;
+  GstObject *target = NULL;
   GType value_type;
+
+  /* do nothing if assignment is for missing element */
+  if (element == NULL)
+    goto out;
 
   /* parse the string, so the property name is null-terminated an pos points
      to the beginning of the value */
@@ -300,22 +351,33 @@ gst_parse_element_set (gchar *value, GstElement *element, graph_t *graph)
     if (!gst_value_deserialize (&v, pos))
       goto error;
     g_object_set_property (G_OBJECT (target), pspec->name, &v);
-    gst_object_unref (target);
   } else { 
-    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_NO_SUCH_PROPERTY, \
-        _("no property \"%s\" in element \"%s\""), value, \
-        GST_ELEMENT_NAME (element)); 
+    /* do a delayed set */
+    if (GST_IS_CHILD_PROXY (element)) {
+      DelayedSet *data = g_new (DelayedSet, 1);
+      
+      data->parent = element;
+      data->name = g_strdup(value);
+      data->value_str = g_strdup(pos);
+      data->signal_id = g_signal_connect(GST_OBJECT (element),"child-added", G_CALLBACK (gst_parse_new_child), data);
+    }
+    else {
+      SET_ERROR (graph->error, GST_PARSE_ERROR_NO_SUCH_PROPERTY, \
+          _("no property \"%s\" in element \"%s\""), value, \
+          GST_ELEMENT_NAME (element));
+    }
   }
 
 out:
   gst_parse_strfree (value);
   if (G_IS_VALUE (&v))
     g_value_unset (&v);
+  if (target)
+    gst_object_unref (target);
   return;
   
 error:
-  gst_object_unref (target);
-  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_COULD_NOT_SET_PROPERTY,
+  SET_ERROR (graph->error, GST_PARSE_ERROR_COULD_NOT_SET_PROPERTY,
          _("could not set property \"%s\" in element \"%s\" to \"%s\""), 
 	 value, GST_ELEMENT_NAME (element), pos); 
   goto out;
@@ -457,7 +519,7 @@ success:
   return 0;
   
 error:
-  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK,
+  SET_ERROR (graph->error, GST_PARSE_ERROR_LINK,
       _("could not link %s to %s"), GST_ELEMENT_NAME (src),
       GST_ELEMENT_NAME (sink));
   gst_parse_free_link (link);
@@ -505,9 +567,15 @@ static int yyerror (void *scanner, graph_t *graph, const char *s);
 
 element:	IDENTIFIER     		      { $$ = gst_element_factory_make ($1, NULL); 
 						if ($$ == NULL) {
-						  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, _("no element \"%s\""), $1);
-						  gst_parse_strfree ($1);
-						  YYERROR;
+						  ADD_MISSING_ELEMENT (graph, $1);
+						  SET_ERROR (graph->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, _("no element \"%s\""), $1);
+						  /* if FATAL_ERRORS flag is set, we don't have to worry about backwards
+						   * compatibility and can continue parsing and check for other missing
+						   * elements */
+						  if ((graph->flags & GST_PARSE_FLAG_FATAL_ERRORS) == 0) {
+						    gst_parse_strfree ($1);
+						    YYERROR;
+						  }
 						}
 						gst_parse_strfree ($1);
                                               }
@@ -552,7 +620,7 @@ link:		linkpart LINK linkpart	      { $$ = $1;
 						if ($2) {
 						  $$->caps = gst_caps_from_string ($2);
 						  if ($$->caps == NULL)
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("could not parse caps \"%s\""), $2);
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("could not parse caps \"%s\""), $2);
 						  gst_parse_strfree ($2);
 						}
 						$$->sink_name = $3->src_name;
@@ -574,16 +642,16 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 	|	bin			      { $$ = $1; }
 	|	chain chain		      { if ($1->back && $2->front) {
 						  if (!$1->back->sink_name) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without source element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without source element"));
 						    gst_parse_free_link ($1->back);
 						  } else {
-						    ((graph_t *) graph)->links = g_slist_prepend (((graph_t *) graph)->links, $1->back);
+						    graph->links = g_slist_prepend (graph->links, $1->back);
 						  }
 						  if (!$2->front->src_name) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
 						    gst_parse_free_link ($2->front);
 						  } else {
-						    ((graph_t *) graph)->links = g_slist_prepend (((graph_t *) graph)->links, $2->front);
+						    graph->links = g_slist_prepend (graph->links, $2->front);
 						  }
 						  $1->back = NULL;
 						} else if ($1->back) {
@@ -598,7 +666,7 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 						}
 						
 						if ($1->back) {
-						  ((graph_t *) graph)->links = g_slist_prepend (((graph_t *) graph)->links, $1->back);
+						  graph->links = g_slist_prepend (graph->links, $1->back);
 						}
 						$1->last = $2->last;
 						$1->back = $2->back;
@@ -619,14 +687,14 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 						for (walk = $2; walk; walk = walk->next) {
 						  link_t *link = (link_t *) walk->data;
 						  if (!link->sink_name && walk->next) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
 						    gst_parse_free_link (link);
 						  } else if (!link->src_name && !link->src) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without source element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without source element"));
 						    gst_parse_free_link (link);
 						  } else {
 						    if (walk->next) {
-						      ((graph_t *) graph)->links = g_slist_prepend (((graph_t *) graph)->links, link);
+						      graph->links = g_slist_prepend (graph->links, link);
 						    } else {
 						      $1->back = link;
 						    }
@@ -638,10 +706,10 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 	|	chain error		      { $$ = $1; }
 	|	link chain		      { if ($2->front) {
 						  if (!$2->front->src_name) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without source element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without source element"));
 						    gst_parse_free_link ($2->front);
 						  } else {
-						    ((graph_t *) graph)->links = g_slist_prepend (((graph_t *) graph)->links, $2->front);
+						    graph->links = g_slist_prepend (graph->links, $2->front);
 						  }
 						}
 						if (!$1->sink_name) {
@@ -655,17 +723,17 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 						  GstElement *element = 
 							  gst_element_make_from_uri (GST_URI_SRC, $1, NULL);
 						  if (!element) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, 
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, 
 							    _("no source element for URI \"%s\""), $1);
 						  } else {
 						    $$->front->src = element;
-						    ((graph_t *) graph)->links = g_slist_prepend (
-							    ((graph_t *) graph)->links, $$->front);
+						    graph->links = g_slist_prepend (
+							    graph->links, $$->front);
 						    $$->front = NULL;
 						    $$->elements = g_slist_prepend ($$->elements, element);
 						  }
 						} else {
-						  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, 
+						  SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, 
 							  _("no element to link URI \"%s\" to"), $1);
 						}
 						g_free ($1);
@@ -673,14 +741,14 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 	|	link PARSE_URL		      { GstElement *element =
 							  gst_element_make_from_uri (GST_URI_SINK, $2, NULL);
 						if (!element) {
-						  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, 
+						  SET_ERROR (graph->error, GST_PARSE_ERROR_NO_SUCH_ELEMENT, 
 							  _("no sink element for URI \"%s\""), $2);
 						  gst_parse_link_free ($1);
 						  g_free ($2);
 						  YYERROR;
 						} else if ($1->sink_name || $1->sink_pads) {
                                                   gst_object_unref (element);
-						  SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, 
+						  SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, 
 							  _("could not link sink element for URI \"%s\""), $2);
 						  gst_parse_link_free ($1);
 						  g_free ($2);
@@ -695,13 +763,13 @@ chain:   	element			      { $$ = gst_parse_chain_new ();
 						g_free ($2);
 					      }
 	;
-graph:		/* NOP */		      { SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_EMPTY, _("empty pipeline not allowed"));
-						$$ = (graph_t *) graph;
+graph:		/* NOP */		      { SET_ERROR (graph->error, GST_PARSE_ERROR_EMPTY, _("empty pipeline not allowed"));
+						$$ = graph;
 					      }
-	|	chain			      { $$ = (graph_t *) graph;
+	|	chain			      { $$ = graph;
 						if ($1->front) {
 						  if (!$1->front->src_name) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without source element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without source element"));
 						    gst_parse_free_link ($1->front);
 						  } else {
 						    $$->links = g_slist_prepend ($$->links, $1->front);
@@ -710,7 +778,7 @@ graph:		/* NOP */		      { SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERRO
 						}
 						if ($1->back) {
 						  if (!$1->back->sink_name) {
-						    SET_ERROR (((graph_t *) graph)->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
+						    SET_ERROR (graph->error, GST_PARSE_ERROR_LINK, _("link without sink element"));
 						    gst_parse_free_link ($1->back);
 						  } else {
 						    $$->links = g_slist_prepend ($$->links, $1->back);
@@ -734,7 +802,8 @@ yyerror (void *scanner, graph_t *graph, const char *s)
 
 
 GstElement *
-_gst_parse_launch (const gchar *str, GError **error)
+_gst_parse_launch (const gchar *str, GError **error, GstParseContext *ctx,
+    GstParseFlags flags)
 {
   graph_t g;
   gchar *dstr;
@@ -744,10 +813,13 @@ _gst_parse_launch (const gchar *str, GError **error)
   yyscan_t scanner;
 
   g_return_val_if_fail (str != NULL, NULL);
+  g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
   g.chain = NULL;
   g.links = NULL;
   g.error = error;
+  g.ctx = ctx;
+  g.flags = flags;
   
 #ifdef __GST_PARSE_TRACE
   GST_CAT_DEBUG (GST_CAT_PIPELINE, "TRACE: tracing enabled");
@@ -780,10 +852,10 @@ _gst_parse_launch (const gchar *str, GError **error)
   
   if (!g.chain) {
     ret = NULL;
-  } else if (!(((chain_t *) g.chain)->elements->next)) {
+  } else if (!g.chain->elements->next) {
     /* only one toplevel element */  
-    ret = (GstElement *) ((chain_t *) g.chain)->elements->data;
-    g_slist_free (((chain_t *) g.chain)->elements);
+    ret = (GstElement *) g.chain->elements->data;
+    g_slist_free (g.chain->elements);
     if (GST_IS_BIN (ret))
       bin = GST_BIN (ret);
     gst_parse_chain_free (g.chain);
@@ -816,8 +888,12 @@ _gst_parse_launch (const gchar *str, GError **error)
         }
       }
       if (!l->src) {
-        SET_ERROR (error, GST_PARSE_ERROR_NO_SUCH_ELEMENT,
-            "No element named \"%s\" - omitting link", l->src_name);
+        if (l->src_name) {
+          SET_ERROR (error, GST_PARSE_ERROR_NO_SUCH_ELEMENT,
+              "No element named \"%s\" - omitting link", l->src_name);
+        } else {
+          /* probably a missing element which we've handled already */
+        }
         gst_parse_free_link (l);
         continue;
       }
@@ -833,8 +909,12 @@ _gst_parse_launch (const gchar *str, GError **error)
         }
       }
       if (!l->sink) {
-        SET_ERROR (error, GST_PARSE_ERROR_NO_SUCH_ELEMENT,
-            "No element named \"%s\" - omitting link", l->sink_name);
+        if (l->sink_name) {
+          SET_ERROR (error, GST_PARSE_ERROR_NO_SUCH_ELEMENT,
+              "No element named \"%s\" - omitting link", l->sink_name);
+        } else {
+          /* probably a missing element which we've handled already */
+        }
         gst_parse_free_link (l);
         continue;
       }

@@ -959,6 +959,10 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
   }
   gst_iterator_free (pads);
 
+  GST_CAT_DEBUG_OBJECT (GST_CAT_ELEMENT_PADS, element,
+      "Could not find a compatible unlinked always pad to link to %s:%s, now checking request pads",
+      GST_DEBUG_PAD_NAME (pad));
+
   /* try to create a new one */
   /* requesting is a little crazy, we need a template. Let's create one */
   templcaps = gst_pad_get_caps (pad);
@@ -1360,7 +1364,8 @@ gst_element_link_pads (GstElement * src, const gchar * srcpadname,
   /* get a src pad */
   if (srcpadname) {
     /* name specified, look it up */
-    srcpad = gst_element_get_pad (src, srcpadname);
+    if (!(srcpad = gst_element_get_static_pad (src, srcpadname)))
+      srcpad = gst_element_get_request_pad (src, srcpadname);
     if (!srcpad) {
       GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "no pad %s:%s",
           GST_ELEMENT_NAME (src), srcpadname);
@@ -1393,7 +1398,8 @@ gst_element_link_pads (GstElement * src, const gchar * srcpadname,
   /* get a destination pad */
   if (destpadname) {
     /* name specified, look it up */
-    destpad = gst_element_get_pad (dest, destpadname);
+    if (!(destpad = gst_element_get_static_pad (dest, destpadname)))
+      destpad = gst_element_get_request_pad (dest, destpadname);
     if (!destpad) {
       GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "no pad %s:%s",
           GST_ELEMENT_NAME (dest), destpadname);
@@ -1551,7 +1557,8 @@ gst_element_link_pads (GstElement * src, const gchar * srcpadname,
                   gst_element_get_request_pad (src, srctempl->name_template);
               destpad =
                   gst_element_get_request_pad (dest, desttempl->name_template);
-              if (pad_link_maybe_ghosting (srcpad, destpad)) {
+              if (srcpad && destpad
+                  && pad_link_maybe_ghosting (srcpad, destpad)) {
                 GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
                     "linked pad %s:%s to pad %s:%s",
                     GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (destpad));
@@ -1560,8 +1567,10 @@ gst_element_link_pads (GstElement * src, const gchar * srcpadname,
                 return TRUE;
               }
               /* it failed, so we release the request pads */
-              gst_element_release_request_pad (src, srcpad);
-              gst_element_release_request_pad (dest, destpad);
+              if (srcpad)
+                gst_element_release_request_pad (src, srcpad);
+              if (destpad)
+                gst_element_release_request_pad (dest, destpad);
             }
           }
         }
@@ -1741,6 +1750,9 @@ gst_element_unlink_pads (GstElement * src, const gchar * srcpadname,
     GstElement * dest, const gchar * destpadname)
 {
   GstPad *srcpad, *destpad;
+  gboolean srcrequest, destrequest;
+
+  srcrequest = destrequest = FALSE;
 
   g_return_if_fail (src != NULL);
   g_return_if_fail (GST_IS_ELEMENT (src));
@@ -1750,23 +1762,33 @@ gst_element_unlink_pads (GstElement * src, const gchar * srcpadname,
   g_return_if_fail (destpadname != NULL);
 
   /* obtain the pads requested */
-  srcpad = gst_element_get_pad (src, srcpadname);
+  if (!(srcpad = gst_element_get_static_pad (src, srcpadname)))
+    if ((srcpad = gst_element_get_request_pad (src, srcpadname)))
+      srcrequest = TRUE;
   if (srcpad == NULL) {
     GST_WARNING_OBJECT (src, "source element has no pad \"%s\"", srcpadname);
     return;
   }
-  destpad = gst_element_get_pad (dest, destpadname);
+  if (!(destpad = gst_element_get_static_pad (dest, destpadname)))
+    if ((destpad = gst_element_get_request_pad (dest, destpadname)))
+      destrequest = TRUE;
   if (destpad == NULL) {
     GST_WARNING_OBJECT (dest, "destination element has no pad \"%s\"",
         destpadname);
-    gst_object_unref (srcpad);
-    return;
+    goto free_src;
   }
 
   /* we're satisified they can be unlinked, let's do it */
   gst_pad_unlink (srcpad, destpad);
-  gst_object_unref (srcpad);
+
+  if (destrequest)
+    gst_element_release_request_pad (dest, destpad);
   gst_object_unref (destpad);
+
+free_src:
+  if (srcrequest)
+    gst_element_release_request_pad (src, srcpad);
+  gst_object_unref (srcpad);
 }
 
 /**
@@ -1832,8 +1854,7 @@ gst_element_unlink (GstElement * src, GstElement * dest)
         if (GST_PAD_IS_SRC (pad)) {
           GstPad *peerpad = gst_pad_get_peer (pad);
 
-          /* see if the pad is connected and is really a pad
-           * of dest */
+          /* see if the pad is linked and is really a pad of dest */
           if (peerpad) {
             GstElement *peerelem;
 
@@ -2434,7 +2455,7 @@ gst_buffer_stamp (GstBuffer * dest, const GstBuffer * src)
 {
   gst_buffer_copy_metadata (dest, src, GST_BUFFER_COPY_TIMESTAMPS);
 }
-#endif
+#endif /* GST_REMOVE_DEPRECATED */
 
 static gboolean
 intersect_caps_func (GstPad * pad, GValue * ret, GstPad * orig)
@@ -2825,16 +2846,17 @@ gst_pad_query_peer_convert (GstPad * pad, GstFormat src_format, gint64 src_val,
  * @value: value to set
  *
  * Unconditionally sets the atomic integer to @value.
+ * 
+ * Deprecated: Use g_atomic_int_set().
+ *
  */
+#ifndef GST_REMOVE_DEPRECATED
 void
 gst_atomic_int_set (gint * atomic_int, gint value)
 {
-  int ignore;
-
-  *atomic_int = value;
-  /* read acts as a memory barrier */
-  ignore = g_atomic_int_get (atomic_int);
+  g_atomic_int_set (atomic_int, value);
 }
+#endif
 
 /**
  * gst_pad_add_data_probe:
@@ -2845,7 +2867,7 @@ gst_atomic_int_set (gint * atomic_int, gint value)
  * Adds a "data probe" to a pad. This function will be called whenever data
  * passes through a pad. In this case data means both events and buffers. The
  * probe will be called with the data as an argument, meaning @handler should
- * have the same callback signature as the 'have-data' signal of #GstPad.
+ * have the same callback signature as the #GstPad::have-data signal.
  * Note that the data will have a reference count greater than 1, so it will
  * be immutable -- you must not change it.
  *
@@ -2869,13 +2891,60 @@ gst_atomic_int_set (gint * atomic_int, gint value)
 gulong
 gst_pad_add_data_probe (GstPad * pad, GCallback handler, gpointer data)
 {
+  return gst_pad_add_data_probe_full (pad, handler, data, NULL);
+}
+
+/**
+ * gst_pad_add_data_probe_full:
+ * @pad: pad to add the data probe handler to
+ * @handler: function to call when data is passed over pad
+ * @data: data to pass along with the handler
+ * @notify: function to call when the probe is disconnected, or NULL
+ *
+ * Adds a "data probe" to a pad. This function will be called whenever data
+ * passes through a pad. In this case data means both events and buffers. The
+ * probe will be called with the data as an argument, meaning @handler should
+ * have the same callback signature as the #GstPad::have-data signal.
+ * Note that the data will have a reference count greater than 1, so it will
+ * be immutable -- you must not change it.
+ *
+ * For source pads, the probe will be called after the blocking function, if any
+ * (see gst_pad_set_blocked_async()), but before looking up the peer to chain
+ * to. For sink pads, the probe function will be called before configuring the
+ * sink with new caps, if any, and before calling the pad's chain function.
+ *
+ * Your data probe should return TRUE to let the data continue to flow, or FALSE
+ * to drop it. Dropping data is rarely useful, but occasionally comes in handy
+ * with events.
+ *
+ * Although probes are implemented internally by connecting @handler to the
+ * have-data signal on the pad, if you want to remove a probe it is insufficient
+ * to only call g_signal_handler_disconnect on the returned handler id. To
+ * remove a probe, use the appropriate function, such as
+ * gst_pad_remove_data_probe().
+ *
+ * The @notify function is called when the probe is disconnected and usually
+ * used to free @data.
+ *
+ * Returns: The handler id.
+ *
+ * Since: 0.10.20
+ */
+gulong
+gst_pad_add_data_probe_full (GstPad * pad, GCallback handler,
+    gpointer data, GDestroyNotify notify)
+{
   gulong sigid;
 
   g_return_val_if_fail (GST_IS_PAD (pad), 0);
   g_return_val_if_fail (handler != NULL, 0);
 
   GST_OBJECT_LOCK (pad);
-  sigid = g_signal_connect (pad, "have-data", handler, data);
+
+  /* we only expose a GDestroyNotify in our API because that's less confusing */
+  sigid = g_signal_connect_data (pad, "have-data", handler, data,
+      (GClosureNotify) notify, 0);
+
   GST_PAD_DO_EVENT_SIGNALS (pad)++;
   GST_PAD_DO_BUFFER_SIGNALS (pad)++;
   GST_DEBUG ("adding data probe to pad %s:%s, now %d data, %d event probes",
@@ -2889,7 +2958,7 @@ gst_pad_add_data_probe (GstPad * pad, GCallback handler, gpointer data)
 /**
  * gst_pad_add_event_probe:
  * @pad: pad to add the event probe handler to
- * @handler: function to call when data is passed over pad
+ * @handler: function to call when events are passed over pad
  * @data: data to pass along with the handler
  *
  * Adds a probe that will be called for all events passing through a pad. See
@@ -2900,13 +2969,41 @@ gst_pad_add_data_probe (GstPad * pad, GCallback handler, gpointer data)
 gulong
 gst_pad_add_event_probe (GstPad * pad, GCallback handler, gpointer data)
 {
+  return gst_pad_add_event_probe_full (pad, handler, data, NULL);
+}
+
+/**
+ * gst_pad_add_event_probe_full:
+ * @pad: pad to add the event probe handler to
+ * @handler: function to call when events are passed over pad
+ * @data: data to pass along with the handler, or NULL
+ * @notify: function to call when probe is disconnected, or NULL
+ *
+ * Adds a probe that will be called for all events passing through a pad. See
+ * gst_pad_add_data_probe() for more information.
+ *
+ * The @notify function is called when the probe is disconnected and usually
+ * used to free @data.
+ *
+ * Returns: The handler id
+ *
+ * Since: 0.10.20
+ */
+gulong
+gst_pad_add_event_probe_full (GstPad * pad, GCallback handler,
+    gpointer data, GDestroyNotify notify)
+{
   gulong sigid;
 
   g_return_val_if_fail (GST_IS_PAD (pad), 0);
   g_return_val_if_fail (handler != NULL, 0);
 
   GST_OBJECT_LOCK (pad);
-  sigid = g_signal_connect (pad, "have-data::event", handler, data);
+
+  /* we only expose a GDestroyNotify in our API because that's less confusing */
+  sigid = g_signal_connect_data (pad, "have-data::event", handler, data,
+      (GClosureNotify) notify, 0);
+
   GST_PAD_DO_EVENT_SIGNALS (pad)++;
   GST_DEBUG ("adding event probe to pad %s:%s, now %d probes",
       GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_EVENT_SIGNALS (pad));
@@ -2918,7 +3015,7 @@ gst_pad_add_event_probe (GstPad * pad, GCallback handler, gpointer data)
 /**
  * gst_pad_add_buffer_probe:
  * @pad: pad to add the buffer probe handler to
- * @handler: function to call when data is passed over pad
+ * @handler: function to call when buffers are passed over pad
  * @data: data to pass along with the handler
  *
  * Adds a probe that will be called for all buffers passing through a pad. See
@@ -2929,13 +3026,41 @@ gst_pad_add_event_probe (GstPad * pad, GCallback handler, gpointer data)
 gulong
 gst_pad_add_buffer_probe (GstPad * pad, GCallback handler, gpointer data)
 {
+  return gst_pad_add_buffer_probe_full (pad, handler, data, NULL);
+}
+
+/**
+ * gst_pad_add_buffer_probe_full:
+ * @pad: pad to add the buffer probe handler to
+ * @handler: function to call when buffer are passed over pad
+ * @data: data to pass along with the handler
+ * @notify: function to call when the probe is disconnected, or NULL
+ *
+ * Adds a probe that will be called for all buffers passing through a pad. See
+ * gst_pad_add_data_probe() for more information.
+ *
+ * The @notify function is called when the probe is disconnected and usually
+ * used to free @data.
+ *
+ * Returns: The handler id
+ *
+ * Since: 0.10.20
+ */
+gulong
+gst_pad_add_buffer_probe_full (GstPad * pad, GCallback handler,
+    gpointer data, GDestroyNotify notify)
+{
   gulong sigid;
 
   g_return_val_if_fail (GST_IS_PAD (pad), 0);
   g_return_val_if_fail (handler != NULL, 0);
 
   GST_OBJECT_LOCK (pad);
-  sigid = g_signal_connect (pad, "have-data::buffer", handler, data);
+
+  /* we only expose a GDestroyNotify in our API because that's less confusing */
+  sigid = g_signal_connect_data (pad, "have-data::buffer", handler, data,
+      (GClosureNotify) notify, 0);
+
   GST_PAD_DO_BUFFER_SIGNALS (pad)++;
   GST_DEBUG ("adding buffer probe to pad %s:%s, now %d probes",
       GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_BUFFER_SIGNALS (pad));
@@ -3076,10 +3201,10 @@ gst_element_found_tags (GstElement * element, GstTagList * list)
 }
 
 static GstPad *
-element_find_unconnected_pad (GstElement * element, GstPadDirection direction)
+element_find_unlinked_pad (GstElement * element, GstPadDirection direction)
 {
   GstIterator *iter;
-  GstPad *unconnected_pad = NULL;
+  GstPad *unlinked_pad = NULL;
   gboolean done;
 
   switch (direction) {
@@ -3106,11 +3231,11 @@ element_find_unconnected_pad (GstElement * element, GstPadDirection direction)
 
         peer = gst_pad_get_peer (GST_PAD (pad));
         if (peer == NULL) {
-          unconnected_pad = pad;
+          unlinked_pad = pad;
           done = TRUE;
           GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
               "found existing unlinked pad %s:%s",
-              GST_DEBUG_PAD_NAME (unconnected_pad));
+              GST_DEBUG_PAD_NAME (unlinked_pad));
         } else {
           gst_object_unref (pad);
           gst_object_unref (peer);
@@ -3131,26 +3256,26 @@ element_find_unconnected_pad (GstElement * element, GstPadDirection direction)
 
   gst_iterator_free (iter);
 
-  return unconnected_pad;
+  return unlinked_pad;
 }
 
 /**
- * gst_bin_find_unconnected_pad:
- * @bin: bin in which to look for elements with unconnected pads
- * @direction: whether to look for an unconnected source or sink pad
+ * gst_bin_find_unlinked_pad:
+ * @bin: bin in which to look for elements with unlinked pads
+ * @direction: whether to look for an unlinked source or sink pad
  *
- * Recursively looks for elements with an unconnected pad of the given
- * direction within the specified bin and returns an unconnected pad
+ * Recursively looks for elements with an unlinked pad of the given
+ * direction within the specified bin and returns an unlinked pad
  * if one is found, or NULL otherwise. If a pad is found, the caller
  * owns a reference to it and should use gst_object_unref() on the
  * pad when it is not needed any longer.
  *
- * Returns: unconnected pad of the given direction, or NULL.
+ * Returns: unlinked pad of the given direction, or NULL.
  *
- * Since: 0.10.3
+ * Since: 0.10.20
  */
 GstPad *
-gst_bin_find_unconnected_pad (GstBin * bin, GstPadDirection direction)
+gst_bin_find_unlinked_pad (GstBin * bin, GstPadDirection direction)
 {
   GstIterator *iter;
   gboolean done;
@@ -3166,7 +3291,7 @@ gst_bin_find_unconnected_pad (GstBin * bin, GstPadDirection direction)
 
     switch (gst_iterator_next (iter, &element)) {
       case GST_ITERATOR_OK:
-        pad = element_find_unconnected_pad (GST_ELEMENT (element), direction);
+        pad = element_find_unlinked_pad (GST_ELEMENT (element), direction);
         gst_object_unref (element);
         if (pad != NULL)
           done = TRUE;
@@ -3189,20 +3314,44 @@ gst_bin_find_unconnected_pad (GstBin * bin, GstPadDirection direction)
 }
 
 /**
+ * gst_bin_find_unconnected_pad:
+ * @bin: bin in which to look for elements with unlinked pads
+ * @direction: whether to look for an unlinked source or sink pad
+ *
+ * Recursively looks for elements with an unlinked pad of the given
+ * direction within the specified bin and returns an unlinked pad
+ * if one is found, or NULL otherwise. If a pad is found, the caller
+ * owns a reference to it and should use gst_object_unref() on the
+ * pad when it is not needed any longer.
+ *
+ * Returns: unlinked pad of the given direction, or NULL.
+ *
+ * Since: 0.10.3
+ *
+ * Deprecated: use gst_bin_find_unlinked_pad() instead.
+ */
+#ifndef GST_REMOVE_DEPRECATED
+GstPad *
+gst_bin_find_unconnected_pad (GstBin * bin, GstPadDirection direction)
+{
+  return gst_bin_find_unlinked_pad (bin, direction);
+}
+#endif
+
+/**
  * gst_parse_bin_from_description:
  * @bin_description: command line describing the bin
- * @ghost_unconnected_pads: whether to automatically create ghost pads
- *                          for unconnected source or sink pads within
- *                          the bin
+ * @ghost_unlinked_pads: whether to automatically create ghost pads
+ *     for unlinked source or sink pads within the bin
  * @err: where to store the error message in case of an error, or NULL
  *
  * This is a convenience wrapper around gst_parse_launch() to create a
  * #GstBin from a gst-launch-style pipeline description. See
  * gst_parse_launch() and the gst-launch man page for details about the
- * syntax. Ghost pads on the bin for unconnected source or sink pads
+ * syntax. Ghost pads on the bin for unlinked source or sink pads
  * within the bin can automatically be created (but only a maximum of
  * one ghost pad for each direction will be created; if you expect
- * multiple unconnected source pads or multiple unconnected sink pads
+ * multiple unlinked source pads or multiple unlinked sink pads
  * and want them all ghosted, you will have to create the ghost pads
  * yourself).
  *
@@ -3212,7 +3361,39 @@ gst_bin_find_unconnected_pad (GstBin * bin, GstPadDirection direction)
  */
 GstElement *
 gst_parse_bin_from_description (const gchar * bin_description,
-    gboolean ghost_unconnected_pads, GError ** err)
+    gboolean ghost_unlinked_pads, GError ** err)
+{
+  return gst_parse_bin_from_description_full (bin_description,
+      ghost_unlinked_pads, NULL, 0, err);
+}
+
+/**
+ * gst_parse_bin_from_description_full:
+ * @bin_description: command line describing the bin
+ * @ghost_unlinked_pads: whether to automatically create ghost pads
+ *     for unlinked source or sink pads within the bin
+ * @context: a parse context allocated with gst_parse_context_new(), or %NULL
+ * @flags: parsing options, or #GST_PARSE_FLAG_NONE
+ * @err: where to store the error message in case of an error, or NULL
+ *
+ * This is a convenience wrapper around gst_parse_launch() to create a
+ * #GstBin from a gst-launch-style pipeline description. See
+ * gst_parse_launch() and the gst-launch man page for details about the
+ * syntax. Ghost pads on the bin for unlinked source or sink pads
+ * within the bin can automatically be created (but only a maximum of
+ * one ghost pad for each direction will be created; if you expect
+ * multiple unlinked source pads or multiple unlinked sink pads
+ * and want them all ghosted, you will have to create the ghost pads
+ * yourself).
+ *
+ * Returns: a newly-created bin, or NULL if an error occurred.
+ *
+ * Since: 0.10.20
+ */
+GstElement *
+gst_parse_bin_from_description_full (const gchar * bin_description,
+    gboolean ghost_unlinked_pads, GstParseContext * context,
+    GstParseFlags flags, GError ** err)
 {
 #ifndef GST_DISABLE_PARSE
   GstPad *pad = NULL;
@@ -3226,7 +3407,7 @@ gst_parse_bin_from_description (const gchar * bin_description,
 
   /* parse the pipeline to a bin */
   desc = g_strdup_printf ("bin.( %s )", bin_description);
-  bin = (GstBin *) gst_parse_launch (desc, err);
+  bin = (GstBin *) gst_parse_launch_full (desc, context, flags, err);
   g_free (desc);
 
   if (bin == NULL || (err && *err != NULL)) {
@@ -3236,12 +3417,12 @@ gst_parse_bin_from_description (const gchar * bin_description,
   }
 
   /* find pads and ghost them if necessary */
-  if (ghost_unconnected_pads) {
-    if ((pad = gst_bin_find_unconnected_pad (bin, GST_PAD_SRC))) {
+  if (ghost_unlinked_pads) {
+    if ((pad = gst_bin_find_unlinked_pad (bin, GST_PAD_SRC))) {
       gst_element_add_pad (GST_ELEMENT (bin), gst_ghost_pad_new ("src", pad));
       gst_object_unref (pad);
     }
-    if ((pad = gst_bin_find_unconnected_pad (bin, GST_PAD_SINK))) {
+    if ((pad = gst_bin_find_unlinked_pad (bin, GST_PAD_SINK))) {
       gst_element_add_pad (GST_ELEMENT (bin), gst_ghost_pad_new ("sink", pad));
       gst_object_unref (pad);
     }
@@ -3251,7 +3432,7 @@ gst_parse_bin_from_description (const gchar * bin_description,
 #else
   gchar *msg;
 
-  GST_WARNING ("Disabled API called: gst_parse_bin_from_description()");
+  GST_WARNING ("Disabled API called");
 
   msg = gst_error_get_message (GST_CORE_ERROR, GST_CORE_ERROR_DISABLED);
   g_set_error (err, GST_CORE_ERROR, GST_CORE_ERROR_DISABLED, "%s", msg);

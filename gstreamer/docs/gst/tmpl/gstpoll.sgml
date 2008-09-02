@@ -1,0 +1,192 @@
+<!-- ##### SECTION Title ##### -->
+GstPoll
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPoll ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstPollFD ##### -->
+<para>
+
+</para>
+
+@fd: 
+
+<!-- ##### MACRO GST_POLL_FD_INIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_poll_add_fd ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_can_read ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_can_write ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_ctl_read ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@active: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_ctl_write ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@active: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_has_closed ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_has_error ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_ignored ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+
+
+<!-- ##### FUNCTION gst_poll_fd_init ##### -->
+<para>
+
+</para>
+
+@fd: 
+
+
+<!-- ##### FUNCTION gst_poll_free ##### -->
+<para>
+
+</para>
+
+@set: 
+
+
+<!-- ##### FUNCTION gst_poll_new ##### -->
+<para>
+
+</para>
+
+@controllable: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_remove_fd ##### -->
+<para>
+
+</para>
+
+@set: 
+@fd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_restart ##### -->
+<para>
+
+</para>
+
+@set: 
+
+
+<!-- ##### FUNCTION gst_poll_set_controllable ##### -->
+<para>
+
+</para>
+
+@set: 
+@controllable: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_poll_set_flushing ##### -->
+<para>
+
+</para>
+
+@set: 
+@flushing: 
+
+
+<!-- ##### FUNCTION gst_poll_wait ##### -->
+<para>
+
+</para>
+
+@set: 
+@timeout: 
+@Returns: 
+
+

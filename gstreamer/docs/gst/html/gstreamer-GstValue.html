@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstValue</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstUtils.html" title="GstUtils">
 <link rel="next" href="gstreamer-GstVersion.html" title="GstVersion">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,228 +26,209 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstVersion.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2885247" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2887334" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstValue.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-GstValue.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstValue"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2885247"></a><span class="refentrytitle">GstValue</span>
-</h2>
-<p>GstValue &#8212; GValue and GParamSpec implementations specific
+<h2><span class="refentrytitle"><a name="gstreamer-GstValue.top_of_page"></a>GstValue</span></h2>
+<p>GstValue — GValue implementations specific
 to GStreamer</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-GstValue.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FOURCC:CAPS">GST_VALUE_HOLDS_FOURCC</a>              (x)
-#define             <a href="gstreamer-GstValue.html#GST-MAKE-FOURCC:CAPS">GST_MAKE_FOURCC</a>                     (a,b,c,d)
-#define             <a href="gstreamer-GstValue.html#GST-STR-FOURCC:CAPS">GST_STR_FOURCC</a>                      (f)
-#define             <a href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS">GST_FOURCC_FORMAT</a>
-#define             <a href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS">GST_FOURCC_ARGS</a>                     (fourcc)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS">GST_TYPE_FOURCC</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-fourcc">gst_value_set_fourcc</a>                (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FOURCC:CAPS" title="GST_VALUE_HOLDS_FOURCC()">GST_VALUE_HOLDS_FOURCC</a>              (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-MAKE-FOURCC:CAPS" title="GST_MAKE_FOURCC()">GST_MAKE_FOURCC</a>                     (a,b,c,d)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-STR-FOURCC:CAPS" title="GST_STR_FOURCC()">GST_STR_FOURCC</a>                      (f)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS" title="GST_FOURCC_FORMAT">GST_FOURCC_FORMAT</a>
+#define             <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS" title="GST_FOURCC_ARGS()">GST_FOURCC_ARGS</a>                     (fourcc)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC">GST_TYPE_FOURCC</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fourcc" title="gst_value_set_fourcc ()">gst_value_set_fourcc</a>                (GValue *value,
                                                          guint32 fourcc);
-guint32             <a href="gstreamer-GstValue.html#gst-value-get-fourcc">gst_value_get_fourcc</a>                (const GValue *value);
+guint32             <a class="link" href="gstreamer-GstValue.html#gst-value-get-fourcc" title="gst_value_get_fourcc ()">gst_value_get_fourcc</a>                (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-INT-RANGE:CAPS">GST_VALUE_HOLDS_INT_RANGE</a>           (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS">GST_TYPE_INT_RANGE</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-int-range">gst_value_set_int_range</a>             (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-INT-RANGE:CAPS" title="GST_VALUE_HOLDS_INT_RANGE()">GST_VALUE_HOLDS_INT_RANGE</a>           (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS" title="GST_TYPE_INT_RANGE">GST_TYPE_INT_RANGE</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-int-range" title="gst_value_set_int_range ()">gst_value_set_int_range</a>             (GValue *value,
                                                          gint start,
                                                          gint end);
-gint                <a href="gstreamer-GstValue.html#gst-value-get-int-range-min">gst_value_get_int_range_min</a>         (const GValue *value);
-gint                <a href="gstreamer-GstValue.html#gst-value-get-int-range-max">gst_value_get_int_range_max</a>         (const GValue *value);
+gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-min" title="gst_value_get_int_range_min ()">gst_value_get_int_range_min</a>         (const GValue *value);
+gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-max" title="gst_value_get_int_range_max ()">gst_value_get_int_range_max</a>         (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DOUBLE-RANGE:CAPS">GST_VALUE_HOLDS_DOUBLE_RANGE</a>        (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS">GST_TYPE_DOUBLE_RANGE</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-double-range">gst_value_set_double_range</a>          (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DOUBLE-RANGE:CAPS" title="GST_VALUE_HOLDS_DOUBLE_RANGE()">GST_VALUE_HOLDS_DOUBLE_RANGE</a>        (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS" title="GST_TYPE_DOUBLE_RANGE">GST_TYPE_DOUBLE_RANGE</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-double-range" title="gst_value_set_double_range ()">gst_value_set_double_range</a>          (GValue *value,
                                                          gdouble start,
                                                          gdouble end);
-gdouble             <a href="gstreamer-GstValue.html#gst-value-get-double-range-min">gst_value_get_double_range_min</a>      (const GValue *value);
-gdouble             <a href="gstreamer-GstValue.html#gst-value-get-double-range-max">gst_value_get_double_range_max</a>      (const GValue *value);
+gdouble             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-min" title="gst_value_get_double_range_min ()">gst_value_get_double_range_min</a>      (const GValue *value);
+gdouble             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-max" title="gst_value_get_double_range_max ()">gst_value_get_double_range_max</a>      (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-LIST:CAPS">GST_VALUE_HOLDS_LIST</a>                (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS">GST_TYPE_LIST</a>
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-ARRAY:CAPS">GST_VALUE_HOLDS_ARRAY</a>               (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS">GST_TYPE_ARRAY</a>
-void                <a href="gstreamer-GstValue.html#gst-value-list-append-value">gst_value_list_append_value</a>         (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-LIST:CAPS" title="GST_VALUE_HOLDS_LIST()">GST_VALUE_HOLDS_LIST</a>                (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST">GST_TYPE_LIST</a>
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-ARRAY:CAPS" title="GST_VALUE_HOLDS_ARRAY()">GST_VALUE_HOLDS_ARRAY</a>               (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY">GST_TYPE_ARRAY</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-append-value" title="gst_value_list_append_value ()">gst_value_list_append_value</a>         (GValue *value,
                                                          const GValue *append_value);
-void                <a href="gstreamer-GstValue.html#gst-value-list-prepend-value">gst_value_list_prepend_value</a>        (GValue *value,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-prepend-value" title="gst_value_list_prepend_value ()">gst_value_list_prepend_value</a>        (GValue *value,
                                                          const GValue *prepend_value);
-void                <a href="gstreamer-GstValue.html#gst-value-list-concat">gst_value_list_concat</a>               (GValue *dest,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-concat" title="gst_value_list_concat ()">gst_value_list_concat</a>               (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);
-guint               <a href="gstreamer-GstValue.html#gst-value-list-get-size">gst_value_list_get_size</a>             (const GValue *value);
-const GValue*       <a href="gstreamer-GstValue.html#gst-value-list-get-value">gst_value_list_get_value</a>            (const GValue *value,
+guint               <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-size" title="gst_value_list_get_size ()">gst_value_list_get_size</a>             (const GValue *value);
+const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-value" title="gst_value_list_get_value ()">gst_value_list_get_value</a>            (const GValue *value,
                                                          guint index);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION:CAPS">GST_VALUE_HOLDS_FRACTION</a>            (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS">GST_TYPE_FRACTION</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-fraction">gst_value_set_fraction</a>              (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION:CAPS" title="GST_VALUE_HOLDS_FRACTION()">GST_VALUE_HOLDS_FRACTION</a>            (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION">GST_TYPE_FRACTION</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction" title="gst_value_set_fraction ()">gst_value_set_fraction</a>              (GValue *value,
                                                          gint numerator,
                                                          gint denominator);
-gint                <a href="gstreamer-GstValue.html#gst-value-get-fraction-numerator">gst_value_get_fraction_numerator</a>    (const GValue *value);
-gint                <a href="gstreamer-GstValue.html#gst-value-get-fraction-denominator">gst_value_get_fraction_denominator</a>  (const GValue *value);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-fraction-multiply">gst_value_fraction_multiply</a>         (GValue *product,
+gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-numerator" title="gst_value_get_fraction_numerator ()">gst_value_get_fraction_numerator</a>    (const GValue *value);
+gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-denominator" title="gst_value_get_fraction_denominator ()">gst_value_get_fraction_denominator</a>  (const GValue *value);
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-multiply" title="gst_value_fraction_multiply ()">gst_value_fraction_multiply</a>         (GValue *product,
                                                          const GValue *factor1,
                                                          const GValue *factor2);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-fraction-subtract">gst_value_fraction_subtract</a>         (GValue *dest,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-subtract" title="gst_value_fraction_subtract ()">gst_value_fraction_subtract</a>         (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);
 
-                    <a href="gstreamer-GstValue.html#GstParamSpecFraction">GstParamSpecFraction</a>;
-GParamSpec*         <a href="gstreamer-GstValue.html#gst-param-spec-fraction">gst_param_spec_fraction</a>             (const gchar *name,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
-                                                         gint min_num,
-                                                         gint min_denom,
-                                                         gint max_num,
-                                                         gint max_denom,
-                                                         gint default_num,
-                                                         gint default_denom,
-                                                         GParamFlags flags);
-
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION-RANGE:CAPS">GST_VALUE_HOLDS_FRACTION_RANGE</a>      (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS">GST_TYPE_FRACTION_RANGE</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-fraction-range">gst_value_set_fraction_range</a>        (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION-RANGE:CAPS" title="GST_VALUE_HOLDS_FRACTION_RANGE()">GST_VALUE_HOLDS_FRACTION_RANGE</a>      (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS" title="GST_TYPE_FRACTION_RANGE">GST_TYPE_FRACTION_RANGE</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range" title="gst_value_set_fraction_range ()">gst_value_set_fraction_range</a>        (GValue *value,
                                                          const GValue *start,
                                                          const GValue *end);
-const GValue*       <a href="gstreamer-GstValue.html#gst-value-get-fraction-range-min">gst_value_get_fraction_range_min</a>    (const GValue *value);
-const GValue*       <a href="gstreamer-GstValue.html#gst-value-get-fraction-range-max">gst_value_get_fraction_range_max</a>    (const GValue *value);
-void                <a href="gstreamer-GstValue.html#gst-value-set-fraction-range-full">gst_value_set_fraction_range_full</a>   (GValue *value,
+const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-min" title="gst_value_get_fraction_range_min ()">gst_value_get_fraction_range_min</a>    (const GValue *value);
+const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-max" title="gst_value_get_fraction_range_max ()">gst_value_get_fraction_range_max</a>    (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range-full" title="gst_value_set_fraction_range_full ()">gst_value_set_fraction_range_full</a>   (GValue *value,
                                                          gint numerator_start,
                                                          gint denominator_start,
                                                          gint numerator_end,
                                                          gint denominator_end);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DATE:CAPS">GST_VALUE_HOLDS_DATE</a>                (x)
-#define             <a href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS">GST_TYPE_DATE</a>
-void                <a href="gstreamer-GstValue.html#gst-value-set-date">gst_value_set_date</a>                  (GValue *value,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DATE:CAPS" title="GST_VALUE_HOLDS_DATE()">GST_VALUE_HOLDS_DATE</a>                (x)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS" title="GST_TYPE_DATE">GST_TYPE_DATE</a>
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-date" title="gst_value_set_date ()">gst_value_set_date</a>                  (GValue *value,
                                                          const GDate *date);
-const GDate*        <a href="gstreamer-GstValue.html#gst-value-get-date">gst_value_get_date</a>                  (const GValue *value);
+const GDate*        <a class="link" href="gstreamer-GstValue.html#gst-value-get-date" title="gst_value_get_date ()">gst_value_get_date</a>                  (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-CAPS:CAPS">GST_VALUE_HOLDS_CAPS</a>                (x)
-void                <a href="gstreamer-GstValue.html#gst-value-set-caps">gst_value_set_caps</a>                  (GValue *value,
-                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);
-const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a>*      <a href="gstreamer-GstValue.html#gst-value-get-caps">gst_value_get_caps</a>                  (const GValue *value);
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-CAPS:CAPS" title="GST_VALUE_HOLDS_CAPS()">GST_VALUE_HOLDS_CAPS</a>                (x)
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-caps" title="gst_value_set_caps ()">gst_value_set_caps</a>                  (GValue *value,
+                                                         const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      <a class="link" href="gstreamer-GstValue.html#gst-value-get-caps" title="gst_value_get_caps ()">gst_value_get_caps</a>                  (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-STRUCTURE:CAPS">GST_VALUE_HOLDS_STRUCTURE</a>           (x)
-void                <a href="gstreamer-GstValue.html#gst-value-set-structure">gst_value_set_structure</a>             (GValue *value,
-                                                         const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);
-const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* <a href="gstreamer-GstValue.html#gst-value-get-structure">gst_value_get_structure</a>             (const GValue *value);
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-STRUCTURE:CAPS" title="GST_VALUE_HOLDS_STRUCTURE()">GST_VALUE_HOLDS_STRUCTURE</a>           (x)
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-structure" title="gst_value_set_structure ()">gst_value_set_structure</a>             (GValue *value,
+                                                         const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
+const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* <a class="link" href="gstreamer-GstValue.html#gst-value-get-structure" title="gst_value_get_structure ()">gst_value_get_structure</a>             (const GValue *value);
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-MINI-OBJECT:CAPS">GST_VALUE_HOLDS_MINI_OBJECT</a>         (value)
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-HOLDS-BUFFER:CAPS">GST_VALUE_HOLDS_BUFFER</a>              (x)
-#define             <a href="gstreamer-GstValue.html#gst-value-get-buffer">gst_value_get_buffer</a>                (v)
-#define             <a href="gstreamer-GstValue.html#gst-value-set-buffer">gst_value_set_buffer</a>                (v,b)
-#define             <a href="gstreamer-GstValue.html#gst-value-take-buffer">gst_value_take_buffer</a>               (v,b)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-MINI-OBJECT:CAPS" title="GST_VALUE_HOLDS_MINI_OBJECT()">GST_VALUE_HOLDS_MINI_OBJECT</a>         (value)
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-BUFFER:CAPS" title="GST_VALUE_HOLDS_BUFFER()">GST_VALUE_HOLDS_BUFFER</a>              (x)
+#define             <a class="link" href="gstreamer-GstValue.html#gst-value-get-buffer" title="gst_value_get_buffer()">gst_value_get_buffer</a>                (v)
+#define             <a class="link" href="gstreamer-GstValue.html#gst-value-set-buffer" title="gst_value_set_buffer()">gst_value_set_buffer</a>                (v,b)
+#define             <a class="link" href="gstreamer-GstValue.html#gst-value-take-buffer" title="gst_value_take_buffer()">gst_value_take_buffer</a>               (v,b)
 
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-LESS-THAN:CAPS">GST_VALUE_LESS_THAN</a>
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-EQUAL:CAPS">GST_VALUE_EQUAL</a>
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-GREATER-THAN:CAPS">GST_VALUE_GREATER_THAN</a>
-#define             <a href="gstreamer-GstValue.html#GST-VALUE-UNORDERED:CAPS">GST_VALUE_UNORDERED</a>
-gint                (<a href="gstreamer-GstValue.html#GstValueCompareFunc">*GstValueCompareFunc</a>)              (const GValue *value1,
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-LESS-THAN:CAPS" title="GST_VALUE_LESS_THAN">GST_VALUE_LESS_THAN</a>
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-EQUAL:CAPS" title="GST_VALUE_EQUAL">GST_VALUE_EQUAL</a>
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-GREATER-THAN:CAPS" title="GST_VALUE_GREATER_THAN">GST_VALUE_GREATER_THAN</a>
+#define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-UNORDERED:CAPS" title="GST_VALUE_UNORDERED">GST_VALUE_UNORDERED</a>
+gint                (<a class="link" href="gstreamer-GstValue.html#GstValueCompareFunc" title="GstValueCompareFunc ()">*GstValueCompareFunc</a>)              (const GValue *value1,
                                                          const GValue *value2);
-gchar*              (<a href="gstreamer-GstValue.html#GstValueSerializeFunc">*GstValueSerializeFunc</a>)            (const GValue *value1);
-gboolean            (<a href="gstreamer-GstValue.html#GstValueDeserializeFunc">*GstValueDeserializeFunc</a>)          (GValue *dest,
+gchar*              (<a class="link" href="gstreamer-GstValue.html#GstValueSerializeFunc" title="GstValueSerializeFunc ()">*GstValueSerializeFunc</a>)            (const GValue *value1);
+gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueDeserializeFunc" title="GstValueDeserializeFunc ()">*GstValueDeserializeFunc</a>)          (GValue *dest,
                                                          const gchar *s);
-gboolean            (<a href="gstreamer-GstValue.html#GstValueUnionFunc">*GstValueUnionFunc</a>)                (GValue *dest,
+gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">*GstValueUnionFunc</a>)                (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);
-gboolean            (<a href="gstreamer-GstValue.html#GstValueIntersectFunc">*GstValueIntersectFunc</a>)            (GValue *dest,
+gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">*GstValueIntersectFunc</a>)            (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);
-gboolean            (<a href="gstreamer-GstValue.html#GstValueSubtractFunc">*GstValueSubtractFunc</a>)             (GValue *dest,
+gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">*GstValueSubtractFunc</a>)             (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);
-                    <a href="gstreamer-GstValue.html#GstValueTable">GstValueTable</a>;
-gboolean            <a href="gstreamer-GstValue.html#gst-value-is-fixed">gst_value_is_fixed</a>                  (const GValue *value);
-void                <a href="gstreamer-GstValue.html#gst-value-register">gst_value_register</a>                  (const <a href="gstreamer-GstValue.html#GstValueTable">GstValueTable</a> *table);
-void                <a href="gstreamer-GstValue.html#gst-value-init-and-copy">gst_value_init_and_copy</a>             (GValue *dest,
+                    <a class="link" href="gstreamer-GstValue.html#GstValueTable" title="GstValueTable">GstValueTable</a>;
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-is-fixed" title="gst_value_is_fixed ()">gst_value_is_fixed</a>                  (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register" title="gst_value_register ()">gst_value_register</a>                  (const <a class="link" href="gstreamer-GstValue.html#GstValueTable" title="GstValueTable">GstValueTable</a> *table);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-init-and-copy" title="gst_value_init_and_copy ()">gst_value_init_and_copy</a>             (GValue *dest,
                                                          const GValue *src);
-gchar*              <a href="gstreamer-GstValue.html#gst-value-serialize">gst_value_serialize</a>                 (const GValue *value);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-deserialize">gst_value_deserialize</a>               (GValue *dest,
+gchar*              <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()">gst_value_serialize</a>                 (const GValue *value);
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()">gst_value_deserialize</a>               (GValue *dest,
                                                          const gchar *src);
-gint                <a href="gstreamer-GstValue.html#gst-value-compare">gst_value_compare</a>                   (const GValue *value1,
+gint                <a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()">gst_value_compare</a>                   (const GValue *value1,
                                                          const GValue *value2);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-can-compare">gst_value_can_compare</a>               (const GValue *value1,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-compare" title="gst_value_can_compare ()">gst_value_can_compare</a>               (const GValue *value1,
                                                          const GValue *value2);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-union">gst_value_union</a>                     (GValue *dest,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()">gst_value_union</a>                     (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-can-union">gst_value_can_union</a>                 (const GValue *value1,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-union" title="gst_value_can_union ()">gst_value_can_union</a>                 (const GValue *value1,
                                                          const GValue *value2);
-void                <a href="gstreamer-GstValue.html#gst-value-register-union-func">gst_value_register_union_func</a>       (GType type1,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()">gst_value_register_union_func</a>       (GType type1,
                                                          GType type2,
-                                                         <a href="gstreamer-GstValue.html#GstValueUnionFunc">GstValueUnionFunc</a> func);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-subtract">gst_value_subtract</a>                  (GValue *dest,
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">GstValueUnionFunc</a> func);
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()">gst_value_subtract</a>                  (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-can-subtract">gst_value_can_subtract</a>              (const GValue *minuend,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-subtract" title="gst_value_can_subtract ()">gst_value_can_subtract</a>              (const GValue *minuend,
                                                          const GValue *subtrahend);
-void                <a href="gstreamer-GstValue.html#gst-value-register-subtract-func">gst_value_register_subtract_func</a>    (GType minuend_type,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()">gst_value_register_subtract_func</a>    (GType minuend_type,
                                                          GType subtrahend_type,
-                                                         <a href="gstreamer-GstValue.html#GstValueSubtractFunc">GstValueSubtractFunc</a> func);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-intersect">gst_value_intersect</a>                 (GValue *dest,
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">GstValueSubtractFunc</a> func);
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()">gst_value_intersect</a>                 (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);
-gboolean            <a href="gstreamer-GstValue.html#gst-value-can-intersect">gst_value_can_intersect</a>             (const GValue *value1,
+gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-intersect" title="gst_value_can_intersect ()">gst_value_can_intersect</a>             (const GValue *value1,
                                                          const GValue *value2);
-void                <a href="gstreamer-GstValue.html#gst-value-register-intersect-func">gst_value_register_intersect_func</a>   (GType type1,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-intersect-func" title="gst_value_register_intersect_func ()">gst_value_register_intersect_func</a>   (GType type1,
                                                          GType type2,
-                                                         <a href="gstreamer-GstValue.html#GstValueIntersectFunc">GstValueIntersectFunc</a> func);
-void                <a href="gstreamer-GstValue.html#gst-value-array-append-value">gst_value_array_append_value</a>        (GValue *value,
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">GstValueIntersectFunc</a> func);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-append-value" title="gst_value_array_append_value ()">gst_value_array_append_value</a>        (GValue *value,
                                                          const GValue *append_value);
-guint               <a href="gstreamer-GstValue.html#gst-value-array-get-size">gst_value_array_get_size</a>            (const GValue *value);
-const GValue*       <a href="gstreamer-GstValue.html#gst-value-array-get-value">gst_value_array_get_value</a>           (const GValue *value,
+guint               <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-size" title="gst_value_array_get_size ()">gst_value_array_get_size</a>            (const GValue *value);
+const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-value" title="gst_value_array_get_value ()">gst_value_array_get_value</a>           (const GValue *value,
                                                          guint index);
-void                <a href="gstreamer-GstValue.html#gst-value-array-prepend-value">gst_value_array_prepend_value</a>       (GValue *value,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-prepend-value" title="gst_value_array_prepend_value ()">gst_value_array_prepend_value</a>       (GValue *value,
                                                          const GValue *prepend_value);
-
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2887334"></a><h2>Description</h2>
+<a name="gstreamer-GstValue.description"></a><h2>Description</h2>
 <p>
-GValue and GParamSpec implementations specific to GStreamer.
+GValue implementations specific to GStreamer.
 </p>
 <p>
 Note that operations on the same GstValue (or GValue) from multiple
 threads may lead to undefined behaviour. 
 </p>
 <p>
-Last reviewed on 2006-03-07 (0.10.4)</p>
+Last reviewed on 2008-03-11 (0.10.18)</p>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2887362"></a><h2>Details</h2>
+<a name="gstreamer-GstValue.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2887372"></a><h3>
-<a name="GST-VALUE-HOLDS-FOURCC:CAPS"></a>GST_VALUE_HOLDS_FOURCC()</h3>
-<a class="indexterm" name="id2887386"></a><pre class="programlisting">#define GST_VALUE_HOLDS_FOURCC(x)       (G_VALUE_HOLDS(x, gst_fourcc_get_type ()))
+<a name="GST-VALUE-HOLDS-FOURCC:CAPS"></a><h3>GST_VALUE_HOLDS_FOURCC()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_FOURCC(x)       (G_VALUE_HOLDS(x, gst_fourcc_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS"><span class="type">GST_TYPE_FOURCC</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC"><span class="type">GST_TYPE_FOURCC</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -255,9 +236,8 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887449"></a><h3>
-<a name="GST-MAKE-FOURCC:CAPS"></a>GST_MAKE_FOURCC()</h3>
-<a class="indexterm" name="id2887462"></a><pre class="programlisting">#define GST_MAKE_FOURCC(a,b,c,d)        (guint32)((a)|(b)&lt;&lt;8|(c)&lt;&lt;16|(d)&lt;&lt;24)
+<a name="GST-MAKE-FOURCC:CAPS"></a><h3>GST_MAKE_FOURCC()</h3>
+<pre class="programlisting">#define GST_MAKE_FOURCC(a,b,c,d)        (guint32)((a)|(b)&lt;&lt;8|(c)&lt;&lt;16|(d)&lt;&lt;24)
 </pre>
 <p>
 Transform four characters into a <span class="type">guint32</span> fourcc value with host
@@ -273,22 +253,22 @@ guint32 fourcc = GST_MAKE_FOURCC ('M', 'J', 'P', 'G');
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>a</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
 <td> the first character
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
 <td> the second character
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>c</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>c</code></em> :</span></p></td>
 <td> the third character
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d</code></em> :</span></p></td>
 <td> the fourth character
 </td>
 </tr>
@@ -297,9 +277,8 @@ guint32 fourcc = GST_MAKE_FOURCC ('M', 'J', 'P', 'G');
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887560"></a><h3>
-<a name="GST-STR-FOURCC:CAPS"></a>GST_STR_FOURCC()</h3>
-<a class="indexterm" name="id2887573"></a><pre class="programlisting">#define GST_STR_FOURCC(f)               (guint32)(((f)[0])|((f)[1]&lt;&lt;8)|((f)[2]&lt;&lt;16)|((f)[3]&lt;&lt;24))
+<a name="GST-STR-FOURCC:CAPS"></a><h3>GST_STR_FOURCC()</h3>
+<pre class="programlisting">#define GST_STR_FOURCC(f)               (guint32)(((f)[0])|((f)[1]&lt;&lt;8)|((f)[2]&lt;&lt;16)|((f)[3]&lt;&lt;24))
 </pre>
 <p>
 Transform an input string into a <span class="type">guint32</span> fourcc value with host
@@ -316,7 +295,7 @@ guint32 fourcc = GST_STR_FOURCC ("MJPG");
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>f</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>f</code></em> :</span></p></td>
 <td> a string with at least four characters
 </td>
 </tr></tbody>
@@ -324,12 +303,11 @@ guint32 fourcc = GST_STR_FOURCC ("MJPG");
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887631"></a><h3>
-<a name="GST-FOURCC-FORMAT:CAPS"></a>GST_FOURCC_FORMAT</h3>
-<a class="indexterm" name="id2887644"></a><pre class="programlisting">#define GST_FOURCC_FORMAT "c%c%c%c"
+<a name="GST-FOURCC-FORMAT:CAPS"></a><h3>GST_FOURCC_FORMAT</h3>
+<pre class="programlisting">#define GST_FOURCC_FORMAT "c%c%c%c"
 </pre>
 <p>
-Can be used together with <a href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS"><span class="type">GST_FOURCC_ARGS</span></a> to properly output a
+Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS" title="GST_FOURCC_ARGS()"><span class="type">GST_FOURCC_ARGS</span></a> to properly output a
 <span class="type">guint32</span> fourcc value in a <code class="function">printf()</code>-style text message.
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -341,11 +319,10 @@ printf ("fourcc: %" GST_FOURCC_FORMAT "\n", GST_FOURCC_ARGS (fcc));
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887700"></a><h3>
-<a name="GST-FOURCC-ARGS:CAPS"></a>GST_FOURCC_ARGS()</h3>
-<a class="indexterm" name="id2887713"></a><pre class="programlisting">#define             GST_FOURCC_ARGS(fourcc)</pre>
+<a name="GST-FOURCC-ARGS:CAPS"></a><h3>GST_FOURCC_ARGS()</h3>
+<pre class="programlisting">#define             GST_FOURCC_ARGS(fourcc)</pre>
 <p>
-Can be used together with <a href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS"><span class="type">GST_FOURCC_FORMAT</span></a> to properly output a
+Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS" title="GST_FOURCC_FORMAT"><span class="type">GST_FOURCC_FORMAT</span></a> to properly output a
 <span class="type">guint32</span> fourcc value in a <code class="function">printf()</code>-style text message.</p>
 <p>
 
@@ -353,7 +330,7 @@ Can be used together with <a href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAP
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>fourcc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
 <td> a <span class="type">guint32</span> fourcc value to output
 </td>
 </tr></tbody>
@@ -361,21 +338,27 @@ Can be used together with <a href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAP
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887786"></a><h3>
-<a name="GST-TYPE-FOURCC:CAPS"></a>GST_TYPE_FOURCC</h3>
-<a class="indexterm" name="id2887799"></a><pre class="programlisting">#define GST_TYPE_FOURCC                  gst_fourcc_get_type ()
+<a name="GST-TYPE-FOURCC:CAPS"></a><h3>GST_TYPE_FOURCC</h3>
+<pre class="programlisting">#define GST_TYPE_FOURCC                  gst_fourcc_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents 4 byte identifier (e.g. used for codecs)</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstFourcc
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887827"></a><h3>
-<a name="gst-value-set-fourcc"></a>gst_value_set_fourcc ()</h3>
-<a class="indexterm" name="id2887840"></a><pre class="programlisting">void                gst_value_set_fourcc                (GValue *value,
+<a name="gst-value-set-fourcc"></a><h3>gst_value_set_fourcc ()</h3>
+<pre class="programlisting">void                gst_value_set_fourcc                (GValue *value,
                                                          guint32 fourcc);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><code>fourcc</code></em>.</p>
@@ -386,12 +369,12 @@ Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><cod
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS"><span class="type">GST_TYPE_FOURCC</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC"><span class="type">GST_TYPE_FOURCC</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fourcc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
 <td> the <span class="type">guint32</span> fourcc to set
 </td>
 </tr>
@@ -400,9 +383,8 @@ Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><cod
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2887941"></a><h3>
-<a name="gst-value-get-fourcc"></a>gst_value_get_fourcc ()</h3>
-<a class="indexterm" name="id2887954"></a><pre class="programlisting">guint32             gst_value_get_fourcc                (const GValue *value);</pre>
+<a name="gst-value-get-fourcc"></a><h3>gst_value_get_fourcc ()</h3>
+<pre class="programlisting">guint32             gst_value_get_fourcc                (const GValue *value);</pre>
 <p>
 Gets the <span class="type">guint32</span> fourcc contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -412,12 +394,12 @@ Gets the <span class="type">guint32</span> fourcc contained in <em class="parame
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS"><span class="type">GST_TYPE_FOURCC</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC"><span class="type">GST_TYPE_FOURCC</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the <span class="type">guint32</span> fourcc contained in <em class="parameter"><code>value</code></em>.
 </td>
 </tr>
@@ -426,19 +408,18 @@ Gets the <span class="type">guint32</span> fourcc contained in <em class="parame
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888051"></a><h3>
-<a name="GST-VALUE-HOLDS-INT-RANGE:CAPS"></a>GST_VALUE_HOLDS_INT_RANGE()</h3>
-<a class="indexterm" name="id2888064"></a><pre class="programlisting">#define GST_VALUE_HOLDS_INT_RANGE(x)    (G_VALUE_HOLDS(x, gst_int_range_get_type ()))
+<a name="GST-VALUE-HOLDS-INT-RANGE:CAPS"></a><h3>GST_VALUE_HOLDS_INT_RANGE()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_INT_RANGE(x)    (G_VALUE_HOLDS(x, gst_int_range_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS"><span class="type">GST_TYPE_INT_RANGE</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS" title="GST_TYPE_INT_RANGE"><span class="type">GST_TYPE_INT_RANGE</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -446,21 +427,27 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888128"></a><h3>
-<a name="GST-TYPE-INT-RANGE:CAPS"></a>GST_TYPE_INT_RANGE</h3>
-<a class="indexterm" name="id2888141"></a><pre class="programlisting">#define GST_TYPE_INT_RANGE               gst_int_range_get_type ()
+<a name="GST-TYPE-INT-RANGE:CAPS"></a><h3>GST_TYPE_INT_RANGE</h3>
+<pre class="programlisting">#define GST_TYPE_INT_RANGE               gst_int_range_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents an integer range</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstIntRange
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888169"></a><h3>
-<a name="gst-value-set-int-range"></a>gst_value_set_int_range ()</h3>
-<a class="indexterm" name="id2888181"></a><pre class="programlisting">void                gst_value_set_int_range             (GValue *value,
+<a name="gst-value-set-int-range"></a><h3>gst_value_set_int_range ()</h3>
+<pre class="programlisting">void                gst_value_set_int_range             (GValue *value,
                                                          gint start,
                                                          gint end);</pre>
 <p>
@@ -472,17 +459,17 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_INT_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>start</code></em> :</span></p></td>
 <td> the start of the range
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>end</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>end</code></em> :</span></p></td>
 <td> the end of the range
 </td>
 </tr>
@@ -491,9 +478,8 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888293"></a><h3>
-<a name="gst-value-get-int-range-min"></a>gst_value_get_int_range_min ()</h3>
-<a class="indexterm" name="id2888306"></a><pre class="programlisting">gint                gst_value_get_int_range_min         (const GValue *value);</pre>
+<a name="gst-value-get-int-range-min"></a><h3>gst_value_get_int_range_min ()</h3>
+<pre class="programlisting">gint                gst_value_get_int_range_min         (const GValue *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -503,12 +489,12 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_INT_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the minimum of the range
 </td>
 </tr>
@@ -517,9 +503,8 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888373"></a><h3>
-<a name="gst-value-get-int-range-max"></a>gst_value_get_int_range_max ()</h3>
-<a class="indexterm" name="id2888386"></a><pre class="programlisting">gint                gst_value_get_int_range_max         (const GValue *value);</pre>
+<a name="gst-value-get-int-range-max"></a><h3>gst_value_get_int_range_max ()</h3>
+<pre class="programlisting">gint                gst_value_get_int_range_max         (const GValue *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -529,12 +514,12 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_INT_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the maxumum of the range
 </td>
 </tr>
@@ -543,19 +528,18 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888453"></a><h3>
-<a name="GST-VALUE-HOLDS-DOUBLE-RANGE:CAPS"></a>GST_VALUE_HOLDS_DOUBLE_RANGE()</h3>
-<a class="indexterm" name="id2888467"></a><pre class="programlisting">#define GST_VALUE_HOLDS_DOUBLE_RANGE(x) (G_VALUE_HOLDS(x, gst_double_range_get_type ()))
+<a name="GST-VALUE-HOLDS-DOUBLE-RANGE:CAPS"></a><h3>GST_VALUE_HOLDS_DOUBLE_RANGE()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_DOUBLE_RANGE(x) (G_VALUE_HOLDS(x, gst_double_range_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS"><span class="type">GST_TYPE_DOUBLE_RANGE</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS" title="GST_TYPE_DOUBLE_RANGE"><span class="type">GST_TYPE_DOUBLE_RANGE</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -563,21 +547,27 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888530"></a><h3>
-<a name="GST-TYPE-DOUBLE-RANGE:CAPS"></a>GST_TYPE_DOUBLE_RANGE</h3>
-<a class="indexterm" name="id2888543"></a><pre class="programlisting">#define GST_TYPE_DOUBLE_RANGE            gst_double_range_get_type ()
+<a name="GST-TYPE-DOUBLE-RANGE:CAPS"></a><h3>GST_TYPE_DOUBLE_RANGE</h3>
+<pre class="programlisting">#define GST_TYPE_DOUBLE_RANGE            gst_double_range_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents a floating point range with double precission</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstIntRange
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888571"></a><h3>
-<a name="gst-value-set-double-range"></a>gst_value_set_double_range ()</h3>
-<a class="indexterm" name="id2888585"></a><pre class="programlisting">void                gst_value_set_double_range          (GValue *value,
+<a name="gst-value-set-double-range"></a><h3>gst_value_set_double_range ()</h3>
+<pre class="programlisting">void                gst_value_set_double_range          (GValue *value,
                                                          gdouble start,
                                                          gdouble end);</pre>
 <p>
@@ -589,17 +579,17 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_DOUBLE_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>start</code></em> :</span></p></td>
 <td> the start of the range
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>end</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>end</code></em> :</span></p></td>
 <td> the end of the range
 </td>
 </tr>
@@ -608,9 +598,8 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888696"></a><h3>
-<a name="gst-value-get-double-range-min"></a>gst_value_get_double_range_min ()</h3>
-<a class="indexterm" name="id2888709"></a><pre class="programlisting">gdouble             gst_value_get_double_range_min      (const GValue *value);</pre>
+<a name="gst-value-get-double-range-min"></a><h3>gst_value_get_double_range_min ()</h3>
+<pre class="programlisting">gdouble             gst_value_get_double_range_min      (const GValue *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -620,12 +609,12 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_DOUBLE_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the minumum of the range
 </td>
 </tr>
@@ -634,9 +623,8 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888777"></a><h3>
-<a name="gst-value-get-double-range-max"></a>gst_value_get_double_range_max ()</h3>
-<a class="indexterm" name="id2888791"></a><pre class="programlisting">gdouble             gst_value_get_double_range_max      (const GValue *value);</pre>
+<a name="gst-value-get-double-range-max"></a><h3>gst_value_get_double_range_max ()</h3>
+<pre class="programlisting">gdouble             gst_value_get_double_range_max      (const GValue *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -646,12 +634,12 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_DOUBLE_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the maxumum of the range
 </td>
 </tr>
@@ -660,19 +648,18 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888859"></a><h3>
-<a name="GST-VALUE-HOLDS-LIST:CAPS"></a>GST_VALUE_HOLDS_LIST()</h3>
-<a class="indexterm" name="id2888872"></a><pre class="programlisting">#define GST_VALUE_HOLDS_LIST(x)		(G_VALUE_HOLDS(x, gst_value_list_get_type ()))
+<a name="GST-VALUE-HOLDS-LIST:CAPS"></a><h3>GST_VALUE_HOLDS_LIST()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_LIST(x)		(G_VALUE_HOLDS(x, gst_value_list_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -680,9 +667,8 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888934"></a><h3>
-<a name="GST-TYPE-LIST:CAPS"></a>GST_TYPE_LIST</h3>
-<a class="indexterm" name="id2888946"></a><pre class="programlisting">#define GST_TYPE_LIST                    gst_value_list_get_type ()
+<a name="GST-TYPE-LIST:CAPS"></a><h3>GST_TYPE_LIST</h3>
+<pre class="programlisting">#define GST_TYPE_LIST                    gst_value_list_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents an unordered list of <span class="type">GValue</span> values. This
@@ -693,22 +679,29 @@ meaningful on their own.</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstValueList (which is not explicitly typed)
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2888986"></a><h3>
-<a name="GST-VALUE-HOLDS-ARRAY:CAPS"></a>GST_VALUE_HOLDS_ARRAY()</h3>
-<a class="indexterm" name="id2888999"></a><pre class="programlisting">#define GST_VALUE_HOLDS_ARRAY(x)	(G_VALUE_HOLDS(x, gst_value_array_get_type ()))
+<a name="GST-VALUE-HOLDS-ARRAY:CAPS"></a><h3>GST_VALUE_HOLDS_ARRAY()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_ARRAY(x)	(G_VALUE_HOLDS(x, gst_value_array_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS"><span class="type">GST_TYPE_ARRAY</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -716,9 +709,8 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889061"></a><h3>
-<a name="GST-TYPE-ARRAY:CAPS"></a>GST_TYPE_ARRAY</h3>
-<a class="indexterm" name="id2889074"></a><pre class="programlisting">#define GST_TYPE_ARRAY			 gst_value_array_get_type ()
+<a name="GST-TYPE-ARRAY:CAPS"></a><h3>GST_TYPE_ARRAY</h3>
+<pre class="programlisting">#define GST_TYPE_ARRAY			 gst_value_array_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents an ordered list of <span class="type">GValue</span> values. This is
@@ -730,12 +722,19 @@ each channel needs to be mapped to a position in the room.</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstArrayList (which is not explicitly typed)
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889116"></a><h3>
-<a name="gst-value-list-append-value"></a>gst_value_list_append_value ()</h3>
-<a class="indexterm" name="id2889129"></a><pre class="programlisting">void                gst_value_list_append_value         (GValue *value,
+<a name="gst-value-list-append-value"></a><h3>gst_value_list_append_value ()</h3>
+<pre class="programlisting">void                gst_value_list_append_value         (GValue *value,
                                                          const GValue *append_value);</pre>
 <p>
 Appends <em class="parameter"><code>append_value</code></em> to the GstValueList in <em class="parameter"><code>value</code></em>.</p>
@@ -746,12 +745,12 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueList
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>append_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>append_value</code></em> :</span></p></td>
 <td> the value to append
 </td>
 </tr>
@@ -760,9 +759,8 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueList
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889229"></a><h3>
-<a name="gst-value-list-prepend-value"></a>gst_value_list_prepend_value ()</h3>
-<a class="indexterm" name="id2889243"></a><pre class="programlisting">void                gst_value_list_prepend_value        (GValue *value,
+<a name="gst-value-list-prepend-value"></a><h3>gst_value_list_prepend_value ()</h3>
+<pre class="programlisting">void                gst_value_list_prepend_value        (GValue *value,
                                                          const GValue *prepend_value);</pre>
 <p>
 Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueList in <em class="parameter"><code>value</code></em>.</p>
@@ -773,12 +771,12 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueLi
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>prepend_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>prepend_value</code></em> :</span></p></td>
 <td> the value to prepend
 </td>
 </tr>
@@ -787,15 +785,14 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueLi
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889343"></a><h3>
-<a name="gst-value-list-concat"></a>gst_value_list_concat ()</h3>
-<a class="indexterm" name="id2889356"></a><pre class="programlisting">void                gst_value_list_concat               (GValue *dest,
+<a name="gst-value-list-concat"></a><h3>gst_value_list_concat ()</h3>
+<pre class="programlisting">void                gst_value_list_concat               (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
 Concatenates copies of <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> into a list.  Values that are not
-of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a> are treated as if they were lists of length 1.
-<em class="parameter"><code>dest</code></em> will be initialized to the type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a>.</p>
+of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a> are treated as if they were lists of length 1.
+<em class="parameter"><code>dest</code></em> will be initialized to the type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>.</p>
 <p>
 
 </p>
@@ -803,17 +800,17 @@ of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> an uninitialized <span class="type">GValue</span> to take the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span>
 </td>
 </tr>
@@ -822,9 +819,8 @@ of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889510"></a><h3>
-<a name="gst-value-list-get-size"></a>gst_value_list_get_size ()</h3>
-<a class="indexterm" name="id2889522"></a><pre class="programlisting">guint               gst_value_list_get_size             (const GValue *value);</pre>
+<a name="gst-value-list-get-size"></a><h3>gst_value_list_get_size ()</h3>
+<pre class="programlisting">guint               gst_value_list_get_size             (const GValue *value);</pre>
 <p>
 Gets the number of values contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -834,12 +830,12 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the number of values
 </td>
 </tr>
@@ -848,9 +844,8 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889605"></a><h3>
-<a name="gst-value-list-get-value"></a>gst_value_list_get_value ()</h3>
-<a class="indexterm" name="id2889619"></a><pre class="programlisting">const GValue*       gst_value_list_get_value            (const GValue *value,
+<a name="gst-value-list-get-value"></a><h3>gst_value_list_get_value ()</h3>
+<pre class="programlisting">const GValue*       gst_value_list_get_value            (const GValue *value,
                                                          guint index);</pre>
 <p>
 Gets the value that is a member of the list contained in <em class="parameter"><code>value</code></em> and
@@ -862,17 +857,17 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS"><span class="type">GST_TYPE_LIST</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>index</code></em> :</span></p></td>
 <td> index of value to get from the list
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the value at the given index
 </td>
 </tr>
@@ -881,19 +876,18 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889731"></a><h3>
-<a name="GST-VALUE-HOLDS-FRACTION:CAPS"></a>GST_VALUE_HOLDS_FRACTION()</h3>
-<a class="indexterm" name="id2889746"></a><pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION(x)	(G_VALUE_HOLDS(x, gst_fraction_get_type ()))
+<a name="GST-VALUE-HOLDS-FRACTION:CAPS"></a><h3>GST_VALUE_HOLDS_FRACTION()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION(x)	(G_VALUE_HOLDS(x, gst_fraction_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -901,9 +895,8 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889809"></a><h3>
-<a name="GST-TYPE-FRACTION:CAPS"></a>GST_TYPE_FRACTION</h3>
-<a class="indexterm" name="id2889822"></a><pre class="programlisting">#define GST_TYPE_FRACTION                gst_fraction_get_type ()
+<a name="GST-TYPE-FRACTION:CAPS"></a><h3>GST_TYPE_FRACTION</h3>
+<pre class="programlisting">#define GST_TYPE_FRACTION                gst_fraction_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents a fraction of an integer numerator over
@@ -911,12 +904,19 @@ an integer denominator</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstFraction (which is not explicitly typed)
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889850"></a><h3>
-<a name="gst-value-set-fraction"></a>gst_value_set_fraction ()</h3>
-<a class="indexterm" name="id2889863"></a><pre class="programlisting">void                gst_value_set_fraction              (GValue *value,
+<a name="gst-value-set-fraction"></a><h3>gst_value_set_fraction ()</h3>
+<pre class="programlisting">void                gst_value_set_fraction              (GValue *value,
                                                          gint numerator,
                                                          gint denominator);</pre>
 <p>
@@ -930,17 +930,17 @@ and if necessary the sign is moved to the numerator.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>numerator</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>numerator</code></em> :</span></p></td>
 <td> the numerator of the fraction
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>denominator</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>denominator</code></em> :</span></p></td>
 <td> the denominator of the fraction
 </td>
 </tr>
@@ -949,9 +949,8 @@ and if necessary the sign is moved to the numerator.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2889986"></a><h3>
-<a name="gst-value-get-fraction-numerator"></a>gst_value_get_fraction_numerator ()</h3>
-<a class="indexterm" name="id2889998"></a><pre class="programlisting">gint                gst_value_get_fraction_numerator    (const GValue *value);</pre>
+<a name="gst-value-get-fraction-numerator"></a><h3>gst_value_get_fraction_numerator ()</h3>
+<pre class="programlisting">gint                gst_value_get_fraction_numerator    (const GValue *value);</pre>
 <p>
 Gets the numerator of the fraction specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -961,12 +960,12 @@ Gets the numerator of the fraction specified by <em class="parameter"><code>valu
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the numerator of the fraction.
 </td>
 </tr>
@@ -975,9 +974,8 @@ Gets the numerator of the fraction specified by <em class="parameter"><code>valu
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2890075"></a><h3>
-<a name="gst-value-get-fraction-denominator"></a>gst_value_get_fraction_denominator ()</h3>
-<a class="indexterm" name="id2890089"></a><pre class="programlisting">gint                gst_value_get_fraction_denominator  (const GValue *value);</pre>
+<a name="gst-value-get-fraction-denominator"></a><h3>gst_value_get_fraction_denominator ()</h3>
+<pre class="programlisting">gint                gst_value_get_fraction_denominator  (const GValue *value);</pre>
 <p>
 Gets the denominator of the fraction specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -987,12 +985,12 @@ Gets the denominator of the fraction specified by <em class="parameter"><code>va
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the denominator of the fraction.
 </td>
 </tr>
@@ -1001,9 +999,8 @@ Gets the denominator of the fraction specified by <em class="parameter"><code>va
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2890165"></a><h3>
-<a name="gst-value-fraction-multiply"></a>gst_value_fraction_multiply ()</h3>
-<a class="indexterm" name="id2890178"></a><pre class="programlisting">gboolean            gst_value_fraction_multiply         (GValue *product,
+<a name="gst-value-fraction-multiply"></a><h3>gst_value_fraction_multiply ()</h3>
+<pre class="programlisting">gboolean            gst_value_fraction_multiply         (GValue *product,
                                                          const GValue *factor1,
                                                          const GValue *factor2);</pre>
 <p>
@@ -1016,22 +1013,22 @@ to the product of the two fractions.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>product</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>product</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>factor1</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>factor1</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>factor2</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>factor2</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> FALSE in case of an error (like integer overflow), TRUE otherwise.
 </td>
 </tr>
@@ -1040,9 +1037,8 @@ to the product of the two fractions.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2890316"></a><h3>
-<a name="gst-value-fraction-subtract"></a>gst_value_fraction_subtract ()</h3>
-<a class="indexterm" name="id2890329"></a><pre class="programlisting">gboolean            gst_value_fraction_subtract         (GValue *dest,
+<a name="gst-value-fraction-subtract"></a><h3>gst_value_fraction_subtract ()</h3>
+<pre class="programlisting">gboolean            gst_value_fraction_subtract         (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);</pre>
 <p>
@@ -1054,22 +1050,22 @@ Subtracts the <em class="parameter"><code>subtrahend</code></em> from the <em cl
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>minuend</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>minuend</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>subtrahend</code></em>&#160;:</span></td>
-<td> a GValue initialized to <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS"><span class="type">GST_TYPE_FRACTION</span></a>
+<td><p><span class="term"><em class="parameter"><code>subtrahend</code></em> :</span></p></td>
+<td> a GValue initialized to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> FALSE in case of an error (like integer overflow), TRUE otherwise.
 </td>
 </tr>
@@ -1078,164 +1074,18 @@ Subtracts the <em class="parameter"><code>subtrahend</code></em> from the <em cl
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2890479"></a><h3>
-<a name="GstParamSpecFraction"></a>GstParamSpecFraction</h3>
-<a class="indexterm" name="id2890491"></a><pre class="programlisting">typedef struct {
-  GParamSpec    parent_instance;
-  
-  gint          min_num, min_den;
-  gint          max_num, max_den;
-  gint          def_num, def_den;
-} GstParamSpecFraction;
+<a name="GST-VALUE-HOLDS-FRACTION-RANGE:CAPS"></a><h3>GST_VALUE_HOLDS_FRACTION_RANGE()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION_RANGE(x)    (G_VALUE_HOLDS(x, gst_fraction_range_get_type ()))
 </pre>
 <p>
-A GParamSpec derived structure that contains the meta data for fractional
-properties.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">GParamSpec&#160;<em class="structfield"><code>parent_instance</code></em>;</span></td>
-<td> super class
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>min_num</code></em>;</span></td>
-<td> minimal numerator
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>min_den</code></em>;</span></td>
-<td> minimal denominator
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>max_num</code></em>;</span></td>
-<td> maximal numerator
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>max_den</code></em>;</span></td>
-<td> maximal denominator
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>def_num</code></em>;</span></td>
-<td> default numerator
-</td>
-</tr>
-<tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>def_den</code></em>;</span></td>
-<td> default denominator
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2890662"></a><h3>
-<a name="gst-param-spec-fraction"></a>gst_param_spec_fraction ()</h3>
-<a class="indexterm" name="id2890678"></a><pre class="programlisting">GParamSpec*         gst_param_spec_fraction             (const gchar *name,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
-                                                         gint min_num,
-                                                         gint min_denom,
-                                                         gint max_num,
-                                                         gint max_denom,
-                                                         gint default_num,
-                                                         gint default_denom,
-                                                         GParamFlags flags);</pre>
-<p>
-This function creates a fraction GParamSpec for use by objects/elements
-that want to expose properties of fraction type. This function is typically
-used in connection with <code class="function">g_object_class_install_property()</code> in a GObjects's
-instance_init function.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
-<td> canonical name of the property specified
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>nick</code></em>&#160;:</span></td>
-<td> nick name for the property specified
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>blurb</code></em>&#160;:</span></td>
-<td> description of the property specified
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>min_num</code></em>&#160;:</span></td>
-<td> minimum value (fraction numerator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>min_denom</code></em>&#160;:</span></td>
-<td> minimum value (fraction denominator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>max_num</code></em>&#160;:</span></td>
-<td> maximum value (fraction numerator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>max_denom</code></em>&#160;:</span></td>
-<td> maximum value (fraction denominator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>default_num</code></em>&#160;:</span></td>
-<td> default value (fraction numerator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>default_denom</code></em>&#160;:</span></td>
-<td> default value (fraction denominator)
-</td>
-</tr>
-<tr>
-<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
-<td> flags for the property specified
-</td>
-</tr>
-<tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a newly created parameter specification
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since  0.10.14
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2890962"></a><h3>
-<a name="GST-VALUE-HOLDS-FRACTION-RANGE:CAPS"></a>GST_VALUE_HOLDS_FRACTION_RANGE()</h3>
-<a class="indexterm" name="id2890975"></a><pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION_RANGE(x)    (G_VALUE_HOLDS(x, gst_fraction_range_get_type ()))
-</pre>
-<p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS"><span class="type">GST_TYPE_FRACTION_RANGE</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS" title="GST_TYPE_FRACTION_RANGE"><span class="type">GST_TYPE_FRACTION_RANGE</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1243,21 +1093,27 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891039"></a><h3>
-<a name="GST-TYPE-FRACTION-RANGE:CAPS"></a>GST_TYPE_FRACTION_RANGE</h3>
-<a class="indexterm" name="id2891053"></a><pre class="programlisting">#define GST_TYPE_FRACTION_RANGE            gst_fraction_range_get_type ()
+<a name="GST-TYPE-FRACTION-RANGE:CAPS"></a><h3>GST_TYPE_FRACTION_RANGE</h3>
+<pre class="programlisting">#define GST_TYPE_FRACTION_RANGE            gst_fraction_range_get_type ()
 </pre>
 <p>
 a <span class="type">GValue</span> type that represents a GstFraction range</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstFractionRange
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891081"></a><h3>
-<a name="gst-value-set-fraction-range"></a>gst_value_set_fraction_range ()</h3>
-<a class="indexterm" name="id2891094"></a><pre class="programlisting">void                gst_value_set_fraction_range        (GValue *value,
+<a name="gst-value-set-fraction-range"></a><h3>gst_value_set_fraction_range ()</h3>
+<pre class="programlisting">void                gst_value_set_fraction_range        (GValue *value,
                                                          const GValue *start,
                                                          const GValue *end);</pre>
 <p>
@@ -1269,17 +1125,17 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_FRACTION_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>start</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>start</code></em> :</span></p></td>
 <td> the start of the range (a GST_TYPE_FRACTION GValue)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>end</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>end</code></em> :</span></p></td>
 <td> the end of the range (a GST_TYPE_FRACTION GValue)
 </td>
 </tr>
@@ -1288,9 +1144,8 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891207"></a><h3>
-<a name="gst-value-get-fraction-range-min"></a>gst_value_get_fraction_range_min ()</h3>
-<a class="indexterm" name="id2891221"></a><pre class="programlisting">const GValue*       gst_value_get_fraction_range_min    (const GValue *value);</pre>
+<a name="gst-value-get-fraction-range-min"></a><h3>gst_value_get_fraction_range_min ()</h3>
+<pre class="programlisting">const GValue*       gst_value_get_fraction_range_min    (const GValue *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1300,12 +1155,12 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_FRACTION_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the minumum of the range
 </td>
 </tr>
@@ -1314,9 +1169,8 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891290"></a><h3>
-<a name="gst-value-get-fraction-range-max"></a>gst_value_get_fraction_range_max ()</h3>
-<a class="indexterm" name="id2891303"></a><pre class="programlisting">const GValue*       gst_value_get_fraction_range_max    (const GValue *value);</pre>
+<a name="gst-value-get-fraction-range-max"></a><h3>gst_value_get_fraction_range_max ()</h3>
+<pre class="programlisting">const GValue*       gst_value_get_fraction_range_max    (const GValue *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1326,12 +1180,12 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_FRACTION_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the maximum of the range
 </td>
 </tr>
@@ -1340,9 +1194,8 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891372"></a><h3>
-<a name="gst-value-set-fraction-range-full"></a>gst_value_set_fraction_range_full ()</h3>
-<a class="indexterm" name="id2891386"></a><pre class="programlisting">void                gst_value_set_fraction_range_full   (GValue *value,
+<a name="gst-value-set-fraction-range-full"></a><h3>gst_value_set_fraction_range_full ()</h3>
+<pre class="programlisting">void                gst_value_set_fraction_range_full   (GValue *value,
                                                          gint numerator_start,
                                                          gint denominator_start,
                                                          gint numerator_end,
@@ -1357,27 +1210,27 @@ and <em class="parameter"><code>numerator_end</code></em>/<em class="parameter">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_FRACTION_RANGE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>numerator_start</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>numerator_start</code></em> :</span></p></td>
 <td> the numerator start of the range
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>denominator_start</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>denominator_start</code></em> :</span></p></td>
 <td> the denominator start of the range
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>numerator_end</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>numerator_end</code></em> :</span></p></td>
 <td> the numerator end of the range
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>denominator_end</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>denominator_end</code></em> :</span></p></td>
 <td> the denominator end of the range
 </td>
 </tr>
@@ -1386,19 +1239,18 @@ and <em class="parameter"><code>numerator_end</code></em>/<em class="parameter">
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891556"></a><h3>
-<a name="GST-VALUE-HOLDS-DATE:CAPS"></a>GST_VALUE_HOLDS_DATE()</h3>
-<a class="indexterm" name="id2891569"></a><pre class="programlisting">#define GST_VALUE_HOLDS_DATE(x)         (G_VALUE_HOLDS(x, gst_date_get_type ()))
+<a name="GST-VALUE-HOLDS-DATE:CAPS"></a><h3>GST_VALUE_HOLDS_DATE()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_DATE(x)         (G_VALUE_HOLDS(x, gst_date_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS"><span class="type">GST_TYPE_DATE</span></a> value.</p>
+Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS" title="GST_TYPE_DATE"><span class="type">GST_TYPE_DATE</span></a> value.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1406,21 +1258,27 @@ Checks if the given <span class="type">GValue</span> contains a <a href="gstream
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891632"></a><h3>
-<a name="GST-TYPE-DATE:CAPS"></a>GST_TYPE_DATE</h3>
-<a class="indexterm" name="id2891645"></a><pre class="programlisting">#define GST_TYPE_DATE                    gst_date_get_type ()
+<a name="GST-TYPE-DATE:CAPS"></a><h3>GST_TYPE_DATE</h3>
+<pre class="programlisting">#define GST_TYPE_DATE                    gst_date_get_type ()
 </pre>
 <p>
 a boxed <span class="type">GValue</span> type for <span class="type">GDate</span> that represents a date.</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <span class="type">GType</span> of GstDate
+</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891680"></a><h3>
-<a name="gst-value-set-date"></a>gst_value_set_date ()</h3>
-<a class="indexterm" name="id2891694"></a><pre class="programlisting">void                gst_value_set_date                  (GValue *value,
+<a name="gst-value-set-date"></a><h3>gst_value_set_date ()</h3>
+<pre class="programlisting">void                gst_value_set_date                  (GValue *value,
                                                          const GDate *date);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to coorespond to <em class="parameter"><code>date</code></em>.  The actual
@@ -1432,12 +1290,12 @@ Sets the contents of <em class="parameter"><code>value</code></em> to coorespond
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_DATE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>date</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>date</code></em> :</span></p></td>
 <td> the date to set the value to
 </td>
 </tr>
@@ -1446,9 +1304,8 @@ Sets the contents of <em class="parameter"><code>value</code></em> to coorespond
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891787"></a><h3>
-<a name="gst-value-get-date"></a>gst_value_get_date ()</h3>
-<a class="indexterm" name="id2891800"></a><pre class="programlisting">const GDate*        gst_value_get_date                  (const GValue *value);</pre>
+<a name="gst-value-get-date"></a><h3>gst_value_get_date ()</h3>
+<pre class="programlisting">const GDate*        gst_value_get_date                  (const GValue *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1458,12 +1315,12 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_DATE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the contents of <em class="parameter"><code>value</code></em>
 </td>
 </tr>
@@ -1472,9 +1329,8 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891874"></a><h3>
-<a name="GST-VALUE-HOLDS-CAPS:CAPS"></a>GST_VALUE_HOLDS_CAPS()</h3>
-<a class="indexterm" name="id2891887"></a><pre class="programlisting">#define GST_VALUE_HOLDS_CAPS(x)		(G_VALUE_HOLDS(x, GST_TYPE_CAPS))
+<a name="GST-VALUE-HOLDS-CAPS:CAPS"></a><h3>GST_VALUE_HOLDS_CAPS()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_CAPS(x)		(G_VALUE_HOLDS(x, GST_TYPE_CAPS))
 </pre>
 <p>
 Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_CAPS</span> value.</p>
@@ -1484,7 +1340,7 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1492,13 +1348,12 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2891950"></a><h3>
-<a name="gst-value-set-caps"></a>gst_value_set_caps ()</h3>
-<a class="indexterm" name="id2891963"></a><pre class="programlisting">void                gst_value_set_caps                  (GValue *value,
-                                                         const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *caps);</pre>
+<a name="gst-value-set-caps"></a><h3>gst_value_set_caps ()</h3>
+<pre class="programlisting">void                gst_value_set_caps                  (GValue *value,
+                                                         const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to <em class="parameter"><code>caps</code></em>.  The actual
-<a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> structure is copied before it is used.</p>
+<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> structure is copied before it is used.</p>
 <p>
 
 </p>
@@ -1506,12 +1361,12 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_CAPS
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the caps to set the value to
 </td>
 </tr>
@@ -1520,9 +1375,8 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892056"></a><h3>
-<a name="gst-value-get-caps"></a>gst_value_get_caps ()</h3>
-<a class="indexterm" name="id2892069"></a><pre class="programlisting">const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a>*      gst_value_get_caps                  (const GValue *value);</pre>
+<a name="gst-value-get-caps"></a><h3>gst_value_get_caps ()</h3>
+<pre class="programlisting">const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      gst_value_get_caps                  (const GValue *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1532,12 +1386,12 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_CAPS
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the contents of <em class="parameter"><code>value</code></em>
 </td>
 </tr>
@@ -1546,9 +1400,8 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892143"></a><h3>
-<a name="GST-VALUE-HOLDS-STRUCTURE:CAPS"></a>GST_VALUE_HOLDS_STRUCTURE()</h3>
-<a class="indexterm" name="id2892159"></a><pre class="programlisting">#define GST_VALUE_HOLDS_STRUCTURE(x)		(G_VALUE_HOLDS(x, GST_TYPE_STRUCTURE))
+<a name="GST-VALUE-HOLDS-STRUCTURE:CAPS"></a><h3>GST_VALUE_HOLDS_STRUCTURE()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_STRUCTURE(x)		(G_VALUE_HOLDS(x, GST_TYPE_STRUCTURE))
 </pre>
 <p>
 Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_STRUCTURE</span> value.</p>
@@ -1558,7 +1411,7 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1568,10 +1421,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892230"></a><h3>
-<a name="gst-value-set-structure"></a>gst_value_set_structure ()</h3>
-<a class="indexterm" name="id2892245"></a><pre class="programlisting">void                gst_value_set_structure             (GValue *value,
-                                                         const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre>
+<a name="gst-value-set-structure"></a><h3>gst_value_set_structure ()</h3>
+<pre class="programlisting">void                gst_value_set_structure             (GValue *value,
+                                                         const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to <em class="parameter"><code>structure</code></em>.  The actual</p>
 <p>
@@ -1581,12 +1433,12 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_STRUCTURE
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>structure</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>structure</code></em> :</span></p></td>
 <td> the structure to set the value to
 </td>
 </tr>
@@ -1597,9 +1449,8 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892337"></a><h3>
-<a name="gst-value-get-structure"></a>gst_value_get_structure ()</h3>
-<a class="indexterm" name="id2892353"></a><pre class="programlisting">const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_value_get_structure             (const GValue *value);</pre>
+<a name="gst-value-get-structure"></a><h3>gst_value_get_structure ()</h3>
+<pre class="programlisting">const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* gst_value_get_structure             (const GValue *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1609,12 +1460,12 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a GValue initialized to GST_TYPE_STRUCTURE
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the contents of <em class="parameter"><code>value</code></em>
 
 </td>
@@ -1626,9 +1477,8 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892435"></a><h3>
-<a name="GST-VALUE-HOLDS-MINI-OBJECT:CAPS"></a>GST_VALUE_HOLDS_MINI_OBJECT()</h3>
-<a class="indexterm" name="id2892448"></a><pre class="programlisting">#define GST_VALUE_HOLDS_MINI_OBJECT(value)  (G_VALUE_HOLDS(value, GST_TYPE_MINI_OBJECT))
+<a name="GST-VALUE-HOLDS-MINI-OBJECT:CAPS"></a><h3>GST_VALUE_HOLDS_MINI_OBJECT()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_MINI_OBJECT(value)  (G_VALUE_HOLDS(value, GST_TYPE_MINI_OBJECT))
 </pre>
 <p>
 Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_MINI_OBJECT</span> value.</p>
@@ -1638,7 +1488,7 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1646,9 +1496,8 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892511"></a><h3>
-<a name="GST-VALUE-HOLDS-BUFFER:CAPS"></a>GST_VALUE_HOLDS_BUFFER()</h3>
-<a class="indexterm" name="id2892524"></a><pre class="programlisting">#define GST_VALUE_HOLDS_BUFFER(x)       (G_VALUE_HOLDS(x, GST_TYPE_BUFFER))
+<a name="GST-VALUE-HOLDS-BUFFER:CAPS"></a><h3>GST_VALUE_HOLDS_BUFFER()</h3>
+<pre class="programlisting">#define GST_VALUE_HOLDS_BUFFER(x)       (G_VALUE_HOLDS(x, GST_TYPE_BUFFER))
 </pre>
 <p>
 Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_BUFFER</span> value.</p>
@@ -1658,7 +1507,7 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr></tbody>
@@ -1666,12 +1515,11 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892588"></a><h3>
-<a name="gst-value-get-buffer"></a>gst_value_get_buffer()</h3>
-<a class="indexterm" name="id2892600"></a><pre class="programlisting">#define		gst_value_get_buffer(v)		GST_BUFFER_CAST (gst_value_get_mini_object(v))
+<a name="gst-value-get-buffer"></a><h3>gst_value_get_buffer()</h3>
+<pre class="programlisting">#define		gst_value_get_buffer(v)		GST_BUFFER_CAST (gst_value_get_mini_object(v))
 </pre>
 <p>
-Receives a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> as the value of <em class="parameter"><code>v</code></em>. Does not return a reference to
+Receives a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> as the value of <em class="parameter"><code>v</code></em>. Does not return a reference to
 the buffer, so the pointer is only valid for as long as the caller owns
 a reference to <em class="parameter"><code>v</code></em>.</p>
 <p>
@@ -1680,7 +1528,7 @@ a reference to <em class="parameter"><code>v</code></em>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>v</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
 <td> a <span class="type">GstValue</span> to qeury
 </td>
 </tr></tbody>
@@ -1688,9 +1536,8 @@ a reference to <em class="parameter"><code>v</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892668"></a><h3>
-<a name="gst-value-set-buffer"></a>gst_value_set_buffer()</h3>
-<a class="indexterm" name="id2892681"></a><pre class="programlisting">#define		gst_value_set_buffer(v,b)	gst_value_set_mini_object(v, GST_MINI_OBJECT_CAST(b))
+<a name="gst-value-set-buffer"></a><h3>gst_value_set_buffer()</h3>
+<pre class="programlisting">#define		gst_value_set_buffer(v,b)	gst_value_set_mini_object(v, GST_MINI_OBJECT_CAST(b))
 </pre>
 <p>
 Sets <em class="parameter"><code>b</code></em> as the value of <em class="parameter"><code>v</code></em>.  Caller retains reference to buffer.</p>
@@ -1701,13 +1548,13 @@ Sets <em class="parameter"><code>b</code></em> as the value of <em class="parame
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>v</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
 <td> a <span class="type">GstValue</span> to receive the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> to assign to the GstValue
+<td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> to assign to the GstValue
 </td>
 </tr>
 </tbody>
@@ -1715,9 +1562,8 @@ Sets <em class="parameter"><code>b</code></em> as the value of <em class="parame
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892760"></a><h3>
-<a name="gst-value-take-buffer"></a>gst_value_take_buffer()</h3>
-<a class="indexterm" name="id2892774"></a><pre class="programlisting">#define		gst_value_take_buffer(v,b)	gst_value_take_mini_object(v, GST_MINI_OBJECT_CAST(b))
+<a name="gst-value-take-buffer"></a><h3>gst_value_take_buffer()</h3>
+<pre class="programlisting">#define		gst_value_take_buffer(v,b)	gst_value_take_mini_object(v, GST_MINI_OBJECT_CAST(b))
 </pre>
 <p>
 Sets <em class="parameter"><code>b</code></em> as the value of <em class="parameter"><code>v</code></em>.  Caller gives away reference to buffer.</p>
@@ -1728,13 +1574,13 @@ Sets <em class="parameter"><code>b</code></em> as the value of <em class="parame
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>v</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>v</code></em> :</span></p></td>
 <td> a <span class="type">GstValue</span> to receive the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> to assign to the GstValue
+<td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> to assign to the GstValue
 </td>
 </tr>
 </tbody>
@@ -1742,51 +1588,47 @@ Sets <em class="parameter"><code>b</code></em> as the value of <em class="parame
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892853"></a><h3>
-<a name="GST-VALUE-LESS-THAN:CAPS"></a>GST_VALUE_LESS_THAN</h3>
-<a class="indexterm" name="id2892866"></a><pre class="programlisting">#define GST_VALUE_LESS_THAN              (-1)
+<a name="GST-VALUE-LESS-THAN:CAPS"></a><h3>GST_VALUE_LESS_THAN</h3>
+<pre class="programlisting">#define GST_VALUE_LESS_THAN              (-1)
 </pre>
 <p>
 Indicates that the first value provided to a comparison function
-(<a href="gstreamer-GstValue.html#gst-value-compare"><code class="function">gst_value_compare()</code></a>) is lesser than the second one.</p>
+(<a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a>) is lesser than the second one.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892897"></a><h3>
-<a name="GST-VALUE-EQUAL:CAPS"></a>GST_VALUE_EQUAL</h3>
-<a class="indexterm" name="id2892910"></a><pre class="programlisting">#define GST_VALUE_EQUAL                   0
+<a name="GST-VALUE-EQUAL:CAPS"></a><h3>GST_VALUE_EQUAL</h3>
+<pre class="programlisting">#define GST_VALUE_EQUAL                   0
 </pre>
 <p>
 Indicates that the first value provided to a comparison function
-(<a href="gstreamer-GstValue.html#gst-value-compare"><code class="function">gst_value_compare()</code></a>) is equal to the second one.</p>
+(<a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a>) is equal to the second one.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892941"></a><h3>
-<a name="GST-VALUE-GREATER-THAN:CAPS"></a>GST_VALUE_GREATER_THAN</h3>
-<a class="indexterm" name="id2892953"></a><pre class="programlisting">#define GST_VALUE_GREATER_THAN            1
+<a name="GST-VALUE-GREATER-THAN:CAPS"></a><h3>GST_VALUE_GREATER_THAN</h3>
+<pre class="programlisting">#define GST_VALUE_GREATER_THAN            1
 </pre>
 <p>
 Indicates that the first value provided to a comparison function
-(<a href="gstreamer-GstValue.html#gst-value-compare"><code class="function">gst_value_compare()</code></a>) is greater than the second one.</p>
+(<a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a>) is greater than the second one.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2892984"></a><h3>
-<a name="GST-VALUE-UNORDERED:CAPS"></a>GST_VALUE_UNORDERED</h3>
-<a class="indexterm" name="id2892998"></a><pre class="programlisting">#define GST_VALUE_UNORDERED               2
+<a name="GST-VALUE-UNORDERED:CAPS"></a><h3>GST_VALUE_UNORDERED</h3>
+<pre class="programlisting">#define GST_VALUE_UNORDERED               2
 </pre>
 <p>
-Indicates that the comparison function (<a href="gstreamer-GstValue.html#gst-value-compare"><code class="function">gst_value_compare()</code></a>) can not
+Indicates that the comparison function (<a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a>) can not
 determine a order for the two provided values.</p>
 <p>
 
@@ -1794,12 +1636,11 @@ determine a order for the two provided values.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893029"></a><h3>
-<a name="GstValueCompareFunc"></a>GstValueCompareFunc ()</h3>
-<a class="indexterm" name="id2893042"></a><pre class="programlisting">gint                (*GstValueCompareFunc)              (const GValue *value1,
+<a name="GstValueCompareFunc"></a><h3>GstValueCompareFunc ()</h3>
+<pre class="programlisting">gint                (*GstValueCompareFunc)              (const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
-Used together with <a href="gstreamer-GstValue.html#gst-value-compare"><code class="function">gst_value_compare()</code></a> to compare <span class="type">GValues</span>.</p>
+Used together with <a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a> to compare <span class="type">GValues</span>.</p>
 <p>
 
 </p>
@@ -1807,17 +1648,17 @@ Used together with <a href="gstreamer-GstValue.html#gst-value-compare"><code cla
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> first value for comparission
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> second value for comparission
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> one of GST_VALUE_LESS_THAN, GST_VALUE_EQUAL, GST_VALUE_GREATER_THAN
 or GST_VALUE_UNORDERED
 </td>
@@ -1827,11 +1668,10 @@ or GST_VALUE_UNORDERED
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893146"></a><h3>
-<a name="GstValueSerializeFunc"></a>GstValueSerializeFunc ()</h3>
-<a class="indexterm" name="id2893159"></a><pre class="programlisting">gchar*              (*GstValueSerializeFunc)            (const GValue *value1);</pre>
+<a name="GstValueSerializeFunc"></a><h3>GstValueSerializeFunc ()</h3>
+<pre class="programlisting">gchar*              (*GstValueSerializeFunc)            (const GValue *value1);</pre>
 <p>
-Used by <a href="gstreamer-GstValue.html#gst-value-serialize"><code class="function">gst_value_serialize()</code></a> to obtain a non-binary form of the <span class="type">GValue</span>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()"><code class="function">gst_value_serialize()</code></a> to obtain a non-binary form of the <span class="type">GValue</span>.</p>
 <p>
 
 </p>
@@ -1839,12 +1679,12 @@ Used by <a href="gstreamer-GstValue.html#gst-value-serialize"><code class="funct
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the string representation of the value
 </td>
 </tr>
@@ -1853,12 +1693,11 @@ Used by <a href="gstreamer-GstValue.html#gst-value-serialize"><code class="funct
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893246"></a><h3>
-<a name="GstValueDeserializeFunc"></a>GstValueDeserializeFunc ()</h3>
-<a class="indexterm" name="id2893260"></a><pre class="programlisting">gboolean            (*GstValueDeserializeFunc)          (GValue *dest,
+<a name="GstValueDeserializeFunc"></a><h3>GstValueDeserializeFunc ()</h3>
+<pre class="programlisting">gboolean            (*GstValueDeserializeFunc)          (GValue *dest,
                                                          const gchar *s);</pre>
 <p>
-Used by <a href="gstreamer-GstValue.html#gst-value-deserialize"><code class="function">gst_value_deserialize()</code></a> to parse a non-binary form into the <span class="type">GValue</span>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()"><code class="function">gst_value_deserialize()</code></a> to parse a non-binary form into the <span class="type">GValue</span>.</p>
 <p>
 
 </p>
@@ -1866,17 +1705,17 @@ Used by <a href="gstreamer-GstValue.html#gst-value-deserialize"><code class="fun
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s</code></em> :</span></p></td>
 <td> a string
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> for success
 </td>
 </tr>
@@ -1885,14 +1724,13 @@ Used by <a href="gstreamer-GstValue.html#gst-value-deserialize"><code class="fun
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893378"></a><h3>
-<a name="GstValueUnionFunc"></a>GstValueUnionFunc ()</h3>
-<a class="indexterm" name="id2893392"></a><pre class="programlisting">gboolean            (*GstValueUnionFunc)                (GValue *dest,
+<a name="GstValueUnionFunc"></a><h3>GstValueUnionFunc ()</h3>
+<pre class="programlisting">gboolean            (*GstValueUnionFunc)                (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
-Used by <a href="gstreamer-GstValue.html#gst-value-union"><code class="function">gst_value_union()</code></a> to perform unification for a specific <span class="type">GValue</span>
-type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-value-register-union-func"><code class="function">gst_value_register_union_func()</code></a>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()"><code class="function">gst_value_union()</code></a> to perform unification for a specific <span class="type">GValue</span>
+type. Register a new implementation with <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()"><code class="function">gst_value_register_union_func()</code></a>.</p>
 <p>
 
 </p>
@@ -1900,22 +1738,22 @@ type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-va
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if a union was successful
 </td>
 </tr>
@@ -1924,13 +1762,12 @@ type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-va
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893559"></a><h3>
-<a name="GstValueIntersectFunc"></a>GstValueIntersectFunc ()</h3>
-<a class="indexterm" name="id2893573"></a><pre class="programlisting">gboolean            (*GstValueIntersectFunc)            (GValue *dest,
+<a name="GstValueIntersectFunc"></a><h3>GstValueIntersectFunc ()</h3>
+<pre class="programlisting">gboolean            (*GstValueIntersectFunc)            (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
-Used by <a href="gstreamer-GstValue.html#gst-value-intersect"><code class="function">gst_value_intersect()</code></a> to perform intersection for a specific <span class="type">GValue</span>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()"><code class="function">gst_value_intersect()</code></a> to perform intersection for a specific <span class="type">GValue</span>
 type. If the intersection is non-empty, the result is
 placed in <em class="parameter"><code>dest</code></em> and TRUE is returned.  If the intersection is
 empty, <em class="parameter"><code>dest</code></em> is unmodified and FALSE is returned.
@@ -1942,22 +1779,22 @@ Register a new implementation with <code class="function">gst_value_register_int
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the values can intersect
 </td>
 </tr>
@@ -1966,14 +1803,13 @@ Register a new implementation with <code class="function">gst_value_register_int
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893757"></a><h3>
-<a name="GstValueSubtractFunc"></a>GstValueSubtractFunc ()</h3>
-<a class="indexterm" name="id2893771"></a><pre class="programlisting">gboolean            (*GstValueSubtractFunc)             (GValue *dest,
+<a name="GstValueSubtractFunc"></a><h3>GstValueSubtractFunc ()</h3>
+<pre class="programlisting">gboolean            (*GstValueSubtractFunc)             (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);</pre>
 <p>
-Used by <a href="gstreamer-GstValue.html#gst-value-subtract"><code class="function">gst_value_subtract()</code></a> to perform subtraction for a specific <span class="type">GValue</span>
-type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-value-register-subtract-func"><code class="function">gst_value_register_subtract_func()</code></a>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()"><code class="function">gst_value_subtract()</code></a> to perform subtraction for a specific <span class="type">GValue</span>
+type. Register a new implementation with <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()"><code class="function">gst_value_register_subtract_func()</code></a>.</p>
 <p>
 
 </p>
@@ -1981,22 +1817,22 @@ type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-va
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>minuend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>minuend</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>subtrahend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>subtrahend</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> operand
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the subtraction is not empty
 </td>
 </tr>
@@ -2005,9 +1841,8 @@ type. Register a new implementation with <a href="gstreamer-GstValue.html#gst-va
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2893939"></a><h3>
-<a name="GstValueTable"></a>GstValueTable</h3>
-<a class="indexterm" name="id2893952"></a><pre class="programlisting">typedef struct {
+<a name="GstValueTable"></a><h3>GstValueTable</h3>
+<pre class="programlisting">typedef struct {
   GType type;
   GstValueCompareFunc compare;
   GstValueSerializeFunc serialize;
@@ -2023,23 +1858,23 @@ VTable for the <span class="type">GValue</span> <em class="parameter"><code>type
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GType&#160;<em class="structfield"><code>type</code></em>;</span></td>
+<td><p><span class="term">GType <em class="structfield"><code>type</code></em>;</span></p></td>
 <td> a <span class="type">GType</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><a href="gstreamer-GstValue.html#GstValueCompareFunc">GstValueCompareFunc</a>&#160;<em class="structfield"><code>compare</code></em>;</span></td>
-<td> a <a href="gstreamer-GstValue.html#GstValueCompareFunc"><span class="type">GstValueCompareFunc</span></a>
+<td><p><span class="term"><a class="link" href="gstreamer-GstValue.html#GstValueCompareFunc" title="GstValueCompareFunc ()">GstValueCompareFunc</a> <em class="structfield"><code>compare</code></em>;</span></p></td>
+<td> a <a class="link" href="gstreamer-GstValue.html#GstValueCompareFunc" title="GstValueCompareFunc ()"><span class="type">GstValueCompareFunc</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><a href="gstreamer-GstValue.html#GstValueSerializeFunc">GstValueSerializeFunc</a>&#160;<em class="structfield"><code>serialize</code></em>;</span></td>
-<td> a <a href="gstreamer-GstValue.html#GstValueSerializeFunc"><span class="type">GstValueSerializeFunc</span></a>
+<td><p><span class="term"><a class="link" href="gstreamer-GstValue.html#GstValueSerializeFunc" title="GstValueSerializeFunc ()">GstValueSerializeFunc</a> <em class="structfield"><code>serialize</code></em>;</span></p></td>
+<td> a <a class="link" href="gstreamer-GstValue.html#GstValueSerializeFunc" title="GstValueSerializeFunc ()"><span class="type">GstValueSerializeFunc</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><a href="gstreamer-GstValue.html#GstValueDeserializeFunc">GstValueDeserializeFunc</a>&#160;<em class="structfield"><code>deserialize</code></em>;</span></td>
-<td> a <a href="gstreamer-GstValue.html#GstValueDeserializeFunc"><span class="type">GstValueDeserializeFunc</span></a>
+<td><p><span class="term"><a class="link" href="gstreamer-GstValue.html#GstValueDeserializeFunc" title="GstValueDeserializeFunc ()">GstValueDeserializeFunc</a> <em class="structfield"><code>deserialize</code></em>;</span></p></td>
+<td> a <a class="link" href="gstreamer-GstValue.html#GstValueDeserializeFunc" title="GstValueDeserializeFunc ()"><span class="type">GstValueDeserializeFunc</span></a>
 </td>
 </tr>
 </tbody>
@@ -2047,9 +1882,8 @@ VTable for the <span class="type">GValue</span> <em class="parameter"><code>type
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894106"></a><h3>
-<a name="gst-value-is-fixed"></a>gst_value_is_fixed ()</h3>
-<a class="indexterm" name="id2894119"></a><pre class="programlisting">gboolean            gst_value_is_fixed                  (const GValue *value);</pre>
+<a name="gst-value-is-fixed"></a><h3>gst_value_is_fixed ()</h3>
+<pre class="programlisting">gboolean            gst_value_is_fixed                  (const GValue *value);</pre>
 <p>
 Tests if the given GValue, if available in a GstStructure (or any other
 container) contains a "fixed" (which means: one value) or an "unfixed"
@@ -2062,12 +1896,12 @@ ranges) value.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> the <span class="type">GValue</span> to check
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> true if the value is "fixed".
 </td>
 </tr>
@@ -2076,9 +1910,8 @@ ranges) value.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894191"></a><h3>
-<a name="gst-value-register"></a>gst_value_register ()</h3>
-<a class="indexterm" name="id2894204"></a><pre class="programlisting">void                gst_value_register                  (const <a href="gstreamer-GstValue.html#GstValueTable">GstValueTable</a> *table);</pre>
+<a name="gst-value-register"></a><h3>gst_value_register ()</h3>
+<pre class="programlisting">void                gst_value_register                  (const <a class="link" href="gstreamer-GstValue.html#GstValueTable" title="GstValueTable">GstValueTable</a> *table);</pre>
 <p>
 Registers functions to perform calculations on <span class="type">GValues</span> of a given
 type.</p>
@@ -2088,7 +1921,7 @@ type.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>table</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>table</code></em> :</span></p></td>
 <td> structure containing functions to register
 </td>
 </tr></tbody>
@@ -2096,9 +1929,8 @@ type.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894264"></a><h3>
-<a name="gst-value-init-and-copy"></a>gst_value_init_and_copy ()</h3>
-<a class="indexterm" name="id2894276"></a><pre class="programlisting">void                gst_value_init_and_copy             (GValue *dest,
+<a name="gst-value-init-and-copy"></a><h3>gst_value_init_and_copy ()</h3>
+<pre class="programlisting">void                gst_value_init_and_copy             (GValue *dest,
                                                          const GValue *src);</pre>
 <p>
 Initialises the target value to be of the same type as source and then copies
@@ -2110,12 +1942,12 @@ the contents from source to target.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> the target value
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
 <td> the source value
 </td>
 </tr>
@@ -2124,12 +1956,11 @@ the contents from source to target.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894350"></a><h3>
-<a name="gst-value-serialize"></a>gst_value_serialize ()</h3>
-<a class="indexterm" name="id2894363"></a><pre class="programlisting">gchar*              gst_value_serialize                 (const GValue *value);</pre>
+<a name="gst-value-serialize"></a><h3>gst_value_serialize ()</h3>
+<pre class="programlisting">gchar*              gst_value_serialize                 (const GValue *value);</pre>
 <p>
 tries to transform the given <em class="parameter"><code>value</code></em> into a string representation that allows
-getting back this string later on using <a href="gstreamer-GstValue.html#gst-value-deserialize"><code class="function">gst_value_deserialize()</code></a>.</p>
+getting back this string later on using <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()"><code class="function">gst_value_deserialize()</code></a>.</p>
 <p>
 
 </p>
@@ -2137,12 +1968,12 @@ getting back this string later on using <a href="gstreamer-GstValue.html#gst-val
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> a <span class="type">GValue</span> to serialize
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the serialization for <em class="parameter"><code>value</code></em> or NULL if none exists
 </td>
 </tr>
@@ -2151,9 +1982,8 @@ getting back this string later on using <a href="gstreamer-GstValue.html#gst-val
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894456"></a><h3>
-<a name="gst-value-deserialize"></a>gst_value_deserialize ()</h3>
-<a class="indexterm" name="id2894469"></a><pre class="programlisting">gboolean            gst_value_deserialize               (GValue *dest,
+<a name="gst-value-deserialize"></a><h3>gst_value_deserialize ()</h3>
+<pre class="programlisting">gboolean            gst_value_deserialize               (GValue *dest,
                                                          const gchar *src);</pre>
 <p>
 Tries to deserialize a string into the type specified by the given GValue.
@@ -2165,17 +1995,17 @@ If the operation succeeds, TRUE is returned, FALSE otherwise.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> <span class="type">GValue</span> to fill with contents of deserialization
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
 <td> string to deserialize
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE on success
 </td>
 </tr>
@@ -2184,9 +2014,8 @@ If the operation succeeds, TRUE is returned, FALSE otherwise.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894561"></a><h3>
-<a name="gst-value-compare"></a>gst_value_compare ()</h3>
-<a class="indexterm" name="id2894574"></a><pre class="programlisting">gint                gst_value_compare                   (const GValue *value1,
+<a name="gst-value-compare"></a><h3>gst_value_compare ()</h3>
+<pre class="programlisting">gint                gst_value_compare                   (const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
 Compares <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em>.  If <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> cannot be
@@ -2201,17 +2030,17 @@ If the values are equal, GST_VALUE_EQUAL is returned.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to compare
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to compare
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A <span class="type">GstValueCompareType</span> value
 </td>
 </tr>
@@ -2220,9 +2049,8 @@ If the values are equal, GST_VALUE_EQUAL is returned.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894717"></a><h3>
-<a name="gst-value-can-compare"></a>gst_value_can_compare ()</h3>
-<a class="indexterm" name="id2894731"></a><pre class="programlisting">gboolean            gst_value_can_compare               (const GValue *value1,
+<a name="gst-value-can-compare"></a><h3>gst_value_can_compare ()</h3>
+<pre class="programlisting">gboolean            gst_value_can_compare               (const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
 Determines if <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> can be compared.</p>
@@ -2233,17 +2061,17 @@ Determines if <em class="parameter"><code>value1</code></em> and <em class="para
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to compare
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to compare
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the values can be compared
 </td>
 </tr>
@@ -2252,9 +2080,8 @@ Determines if <em class="parameter"><code>value1</code></em> and <em class="para
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894826"></a><h3>
-<a name="gst-value-union"></a>gst_value_union ()</h3>
-<a class="indexterm" name="id2894839"></a><pre class="programlisting">gboolean            gst_value_union                     (GValue *dest,
+<a name="gst-value-union"></a><h3>gst_value_union ()</h3>
+<pre class="programlisting">gboolean            gst_value_union                     (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
@@ -2266,22 +2093,22 @@ Creates a GValue cooresponding to the union of <em class="parameter"><code>value
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> the destination value
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> always returns <code class="literal">TRUE</code>
 </td>
 </tr>
@@ -2290,9 +2117,8 @@ Creates a GValue cooresponding to the union of <em class="parameter"><code>value
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2894966"></a><h3>
-<a name="gst-value-can-union"></a>gst_value_can_union ()</h3>
-<a class="indexterm" name="id2894979"></a><pre class="programlisting">gboolean            gst_value_can_union                 (const GValue *value1,
+<a name="gst-value-can-union"></a><h3>gst_value_can_union ()</h3>
+<pre class="programlisting">gboolean            gst_value_can_union                 (const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
 Determines if <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> can be non-trivially unioned.
@@ -2309,17 +2135,17 @@ be unioned, this function returns TRUE.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if there is a function allowing the two values to
 be unioned.
 </td>
@@ -2329,19 +2155,18 @@ be unioned.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895081"></a><h3>
-<a name="gst-value-register-union-func"></a>gst_value_register_union_func ()</h3>
-<a class="indexterm" name="id2895094"></a><pre class="programlisting">void                gst_value_register_union_func       (GType type1,
+<a name="gst-value-register-union-func"></a><h3>gst_value_register_union_func ()</h3>
+<pre class="programlisting">void                gst_value_register_union_func       (GType type1,
                                                          GType type2,
-                                                         <a href="gstreamer-GstValue.html#GstValueUnionFunc">GstValueUnionFunc</a> func);</pre>
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">GstValueUnionFunc</a> func);</pre>
 <p>
 Registers a union function that can create a union between GValues
 of the type <em class="parameter"><code>type1</code></em> and <em class="parameter"><code>type2</code></em>.
 </p>
 <p>
 Union functions should be registered at startup before any pipelines are
-started, as <a href="gstreamer-GstValue.html#gst-value-register-union-func"><code class="function">gst_value_register_union_func()</code></a> is not thread-safe and cannot
-be used at the same time as <a href="gstreamer-GstValue.html#gst-value-union"><code class="function">gst_value_union()</code></a> or <a href="gstreamer-GstValue.html#gst-value-can-union"><code class="function">gst_value_can_union()</code></a>.</p>
+started, as <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()"><code class="function">gst_value_register_union_func()</code></a> is not thread-safe and cannot
+be used at the same time as <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()"><code class="function">gst_value_union()</code></a> or <a class="link" href="gstreamer-GstValue.html#gst-value-can-union" title="gst_value_can_union ()"><code class="function">gst_value_can_union()</code></a>.</p>
 <p>
 
 </p>
@@ -2349,17 +2174,17 @@ be used at the same time as <a href="gstreamer-GstValue.html#gst-value-union"><c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>type1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type1</code></em> :</span></p></td>
 <td> a type to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type2</code></em> :</span></p></td>
 <td> another type to union
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> a function that implments creating a union between the two types
 </td>
 </tr>
@@ -2368,9 +2193,8 @@ be used at the same time as <a href="gstreamer-GstValue.html#gst-value-union"><c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895240"></a><h3>
-<a name="gst-value-subtract"></a>gst_value_subtract ()</h3>
-<a class="indexterm" name="id2895254"></a><pre class="programlisting">gboolean            gst_value_subtract                  (GValue *dest,
+<a name="gst-value-subtract"></a><h3>gst_value_subtract ()</h3>
+<pre class="programlisting">gboolean            gst_value_subtract                  (GValue *dest,
                                                          const GValue *minuend,
                                                          const GValue *subtrahend);</pre>
 <p>
@@ -2383,22 +2207,22 @@ Note that this means subtraction as in sets, not as in mathematics.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> the destination value for the result if the subtraction is not empty
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>minuend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>minuend</code></em> :</span></p></td>
 <td> the value to subtract from
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>subtrahend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>subtrahend</code></em> :</span></p></td>
 <td> the value to subtract
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the subtraction is not empty
 </td>
 </tr>
@@ -2407,9 +2231,8 @@ Note that this means subtraction as in sets, not as in mathematics.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895389"></a><h3>
-<a name="gst-value-can-subtract"></a>gst_value_can_subtract ()</h3>
-<a class="indexterm" name="id2895402"></a><pre class="programlisting">gboolean            gst_value_can_subtract              (const GValue *minuend,
+<a name="gst-value-can-subtract"></a><h3>gst_value_can_subtract ()</h3>
+<pre class="programlisting">gboolean            gst_value_can_subtract              (const GValue *minuend,
                                                          const GValue *subtrahend);</pre>
 <p>
 Checks if it's possible to subtract <em class="parameter"><code>subtrahend</code></em> from <em class="parameter"><code>minuend</code></em>.</p>
@@ -2420,17 +2243,17 @@ Checks if it's possible to subtract <em class="parameter"><code>subtrahend</code
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>minuend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>minuend</code></em> :</span></p></td>
 <td> the value to subtract from
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>subtrahend</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>subtrahend</code></em> :</span></p></td>
 <td> the value to subtract
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if a subtraction is possible
 </td>
 </tr>
@@ -2439,19 +2262,18 @@ Checks if it's possible to subtract <em class="parameter"><code>subtrahend</code
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895497"></a><h3>
-<a name="gst-value-register-subtract-func"></a>gst_value_register_subtract_func ()</h3>
-<a class="indexterm" name="id2895510"></a><pre class="programlisting">void                gst_value_register_subtract_func    (GType minuend_type,
+<a name="gst-value-register-subtract-func"></a><h3>gst_value_register_subtract_func ()</h3>
+<pre class="programlisting">void                gst_value_register_subtract_func    (GType minuend_type,
                                                          GType subtrahend_type,
-                                                         <a href="gstreamer-GstValue.html#GstValueSubtractFunc">GstValueSubtractFunc</a> func);</pre>
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">GstValueSubtractFunc</a> func);</pre>
 <p>
 Registers <em class="parameter"><code>func</code></em> as a function capable of subtracting the values of
 <em class="parameter"><code>subtrahend_type</code></em> from values of <em class="parameter"><code>minuend_type</code></em>.
 </p>
 <p>
 Subtract functions should be registered at startup before any pipelines are
-started, as <a href="gstreamer-GstValue.html#gst-value-register-subtract-func"><code class="function">gst_value_register_subtract_func()</code></a> is not thread-safe and
-cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-subtract"><code class="function">gst_value_subtract()</code></a>.</p>
+started, as <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()"><code class="function">gst_value_register_subtract_func()</code></a> is not thread-safe and
+cannot be used at the same time as <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()"><code class="function">gst_value_subtract()</code></a>.</p>
 <p>
 
 </p>
@@ -2459,17 +2281,17 @@ cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-su
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>minuend_type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>minuend_type</code></em> :</span></p></td>
 <td> type of the minuend
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>subtrahend_type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>subtrahend_type</code></em> :</span></p></td>
 <td> type of the subtrahend
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> function to use
 </td>
 </tr>
@@ -2478,9 +2300,8 @@ cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-su
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895652"></a><h3>
-<a name="gst-value-intersect"></a>gst_value_intersect ()</h3>
-<a class="indexterm" name="id2895666"></a><pre class="programlisting">gboolean            gst_value_intersect                 (GValue *dest,
+<a name="gst-value-intersect"></a><h3>gst_value_intersect ()</h3>
+<pre class="programlisting">gboolean            gst_value_intersect                 (GValue *dest,
                                                          const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
@@ -2495,23 +2316,23 @@ not modified.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> a uninitialized <span class="type">GValue</span> that will hold the calculated
 intersection value
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the intersection is non-empty
 </td>
 </tr>
@@ -2520,9 +2341,8 @@ intersection value
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895794"></a><h3>
-<a name="gst-value-can-intersect"></a>gst_value_can_intersect ()</h3>
-<a class="indexterm" name="id2895807"></a><pre class="programlisting">gboolean            gst_value_can_intersect             (const GValue *value1,
+<a name="gst-value-can-intersect"></a><h3>gst_value_can_intersect ()</h3>
+<pre class="programlisting">gboolean            gst_value_can_intersect             (const GValue *value1,
                                                          const GValue *value2);</pre>
 <p>
 Determines if intersecting two values will produce a valid result.
@@ -2536,17 +2356,17 @@ type, or if there is a method (registered by
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
 <td> a value to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
 <td> another value to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the values can intersect
 </td>
 </tr>
@@ -2555,20 +2375,19 @@ type, or if there is a method (registered by
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2895906"></a><h3>
-<a name="gst-value-register-intersect-func"></a>gst_value_register_intersect_func ()</h3>
-<a class="indexterm" name="id2895920"></a><pre class="programlisting">void                gst_value_register_intersect_func   (GType type1,
+<a name="gst-value-register-intersect-func"></a><h3>gst_value_register_intersect_func ()</h3>
+<pre class="programlisting">void                gst_value_register_intersect_func   (GType type1,
                                                          GType type2,
-                                                         <a href="gstreamer-GstValue.html#GstValueIntersectFunc">GstValueIntersectFunc</a> func);</pre>
+                                                         <a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">GstValueIntersectFunc</a> func);</pre>
 <p>
 Registers a function that is called to calculate the intersection
 of the values having the types <em class="parameter"><code>type1</code></em> and <em class="parameter"><code>type2</code></em>.
 </p>
 <p>
 Intersect functions should be registered at startup before any pipelines are
-started, as <a href="gstreamer-GstValue.html#gst-value-register-intersect-func"><code class="function">gst_value_register_intersect_func()</code></a> is not thread-safe and
-cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-intersect"><code class="function">gst_value_intersect()</code></a> or
-<a href="gstreamer-GstValue.html#gst-value-can-intersect"><code class="function">gst_value_can_intersect()</code></a>.</p>
+started, as <a class="link" href="gstreamer-GstValue.html#gst-value-register-intersect-func" title="gst_value_register_intersect_func ()"><code class="function">gst_value_register_intersect_func()</code></a> is not thread-safe and
+cannot be used at the same time as <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()"><code class="function">gst_value_intersect()</code></a> or
+<a class="link" href="gstreamer-GstValue.html#gst-value-can-intersect" title="gst_value_can_intersect ()"><code class="function">gst_value_can_intersect()</code></a>.</p>
 <p>
 
 </p>
@@ -2576,17 +2395,17 @@ cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-in
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>type1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type1</code></em> :</span></p></td>
 <td> the first type to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type2</code></em> :</span></p></td>
 <td> the second type to intersect
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> the intersection function
 </td>
 </tr>
@@ -2595,9 +2414,8 @@ cannot be used at the same time as <a href="gstreamer-GstValue.html#gst-value-in
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2896066"></a><h3>
-<a name="gst-value-array-append-value"></a>gst_value_array_append_value ()</h3>
-<a class="indexterm" name="id2896080"></a><pre class="programlisting">void                gst_value_array_append_value        (GValue *value,
+<a name="gst-value-array-append-value"></a><h3>gst_value_array_append_value ()</h3>
+<pre class="programlisting">void                gst_value_array_append_value        (GValue *value,
                                                          const GValue *append_value);</pre>
 <p>
 Appends <em class="parameter"><code>append_value</code></em> to the GstValueArray in <em class="parameter"><code>value</code></em>.</p>
@@ -2608,12 +2426,12 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueArra
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS"><span class="type">GST_TYPE_ARRAY</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>append_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>append_value</code></em> :</span></p></td>
 <td> the value to append
 </td>
 </tr>
@@ -2622,9 +2440,8 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueArra
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2896180"></a><h3>
-<a name="gst-value-array-get-size"></a>gst_value_array_get_size ()</h3>
-<a class="indexterm" name="id2896193"></a><pre class="programlisting">guint               gst_value_array_get_size            (const GValue *value);</pre>
+<a name="gst-value-array-get-size"></a><h3>gst_value_array_get_size ()</h3>
+<pre class="programlisting">guint               gst_value_array_get_size            (const GValue *value);</pre>
 <p>
 Gets the number of values contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -2634,12 +2451,12 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS"><span class="type">GST_TYPE_ARRAY</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the number of values
 </td>
 </tr>
@@ -2648,9 +2465,8 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2896276"></a><h3>
-<a name="gst-value-array-get-value"></a>gst_value_array_get_value ()</h3>
-<a class="indexterm" name="id2896290"></a><pre class="programlisting">const GValue*       gst_value_array_get_value           (const GValue *value,
+<a name="gst-value-array-get-value"></a><h3>gst_value_array_get_value ()</h3>
+<pre class="programlisting">const GValue*       gst_value_array_get_value           (const GValue *value,
                                                          guint index);</pre>
 <p>
 Gets the value that is a member of the array contained in <em class="parameter"><code>value</code></em> and
@@ -2662,17 +2478,17 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS"><span class="type">GST_TYPE_ARRAY</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>index</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>index</code></em> :</span></p></td>
 <td> index of value to get from the array
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the value at the given index
 </td>
 </tr>
@@ -2681,9 +2497,8 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2896402"></a><h3>
-<a name="gst-value-array-prepend-value"></a>gst_value_array_prepend_value ()</h3>
-<a class="indexterm" name="id2896416"></a><pre class="programlisting">void                gst_value_array_prepend_value       (GValue *value,
+<a name="gst-value-array-prepend-value"></a><h3>gst_value_array_prepend_value ()</h3>
+<pre class="programlisting">void                gst_value_array_prepend_value       (GValue *value,
                                                          const GValue *prepend_value);</pre>
 <p>
 Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueArray in <em class="parameter"><code>value</code></em>.</p>
@@ -2694,12 +2509,12 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueAr
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
-<td> a <span class="type">GValue</span> of type <a href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS"><span class="type">GST_TYPE_ARRAY</span></a>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>prepend_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>prepend_value</code></em> :</span></p></td>
 <td> the value to prepend
 </td>
 </tr>
@@ -2708,5 +2523,8 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueAr
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

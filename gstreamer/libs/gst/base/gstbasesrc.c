@@ -125,14 +125,14 @@
  * <para>
  * There is only support in #GstBaseSrc for exactly one source pad, which 
  * should be named "src". A source implementation (subclass of #GstBaseSrc) 
- * should install a pad template in its base_init function, like so:
+ * should install a pad template in its class_init function, like so:
  * </para>
  * <para>
  * <programlisting>
  * static void
- * my_element_base_init (gpointer g_class)
+ * my_element_class_init (GstMyElementClass *klass)
  * {
- *   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+ *   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
  *   // srctemplate should be a #GstStaticPadTemplate with direction
  *   // #GST_PAD_SRC and name "src"
  *   gst_element_class_add_pad_template (gstelement_class,
@@ -155,7 +155,8 @@
  * </para>
  * <para>
  * Since GStreamer 0.10.16 an application may send an EOS event to a source
- * element to make it send an EOS event downstream. This can typically be done
+ * element to make it perform the EOS logic (send EOS event downstream or post a
+ * #GST_MESSAGE_SEGMENT_DONE on the bus). This can typically be done
  * with the gst_element_send_event() function on the element or its parent bin.
  * </para>
  * <para>
@@ -234,8 +235,8 @@ struct _GstBaseSrcPrivate
   GstEvent *close_segment;
   GstEvent *start_segment;
 
-  /* if EOS is pending */
-  gboolean pending_eos;
+  /* if EOS is pending (atomic) */
+  gint pending_eos;
 
   /* startup latency is the time it takes between going to PLAYING and producing
    * the first BUFFER with running_time 0. This value is included in the latency
@@ -345,19 +346,19 @@ gst_base_src_class_init (GstBaseSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_BLOCKSIZE,
       g_param_spec_ulong ("blocksize", "Block size",
           "Size in bytes to read per buffer (0 = default)", 0, G_MAXULONG,
-          DEFAULT_BLOCKSIZE, G_PARAM_READWRITE));
+          DEFAULT_BLOCKSIZE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_NUM_BUFFERS,
       g_param_spec_int ("num-buffers", "num-buffers",
           "Number of buffers to output before sending EOS", -1, G_MAXINT,
-          DEFAULT_NUM_BUFFERS, G_PARAM_READWRITE));
+          DEFAULT_NUM_BUFFERS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_TYPEFIND,
       g_param_spec_boolean ("typefind", "Typefind",
           "Run typefind before negotiating", DEFAULT_TYPEFIND,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_DO_TIMESTAMP,
       g_param_spec_boolean ("do-timestamp", "Do timestamp",
           "Apply current stream time to buffers", DEFAULT_DO_TIMESTAMP,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_base_src_change_state);
@@ -756,6 +757,7 @@ gst_base_src_default_query (GstBaseSrc * src, GstQuery * query)
 
       GST_DEBUG_OBJECT (src, "duration query in format %s",
           gst_format_get_name (format));
+
       switch (format) {
         case GST_FORMAT_PERCENT:
           gst_query_set_duration (query, GST_FORMAT_PERCENT,
@@ -858,6 +860,48 @@ gst_base_src_default_query (GstBaseSrc * src, GstQuery * query)
     }
     case GST_QUERY_JITTER:
     case GST_QUERY_RATE:
+      res = FALSE;
+      break;
+    case GST_QUERY_BUFFERING:
+    {
+      GstFormat format;
+      gint64 start, stop, estimated;
+
+      res = FALSE;
+
+      gst_query_parse_buffering_range (query, &format, NULL, NULL, NULL);
+
+      GST_DEBUG_OBJECT (src, "buffering query in format %s",
+          gst_format_get_name (format));
+
+      if (src->random_access) {
+        estimated = 0;
+        start = 0;
+        if (format == GST_FORMAT_PERCENT)
+          stop = GST_FORMAT_PERCENT_MAX;
+        else
+          stop = src->segment.duration;
+      } else {
+        estimated = -1;
+        start = -1;
+        stop = -1;
+      }
+      /* convert to required format. When the conversion fails, we can't answer
+       * the query. When the value is unknown, we can don't perform conversion
+       * but report TRUE. */
+      if (format != GST_FORMAT_PERCENT && stop != -1) {
+        res = gst_pad_query_convert (src->srcpad, src->segment.format,
+            stop, &format, &stop);
+      } else {
+        res = TRUE;
+      }
+      if (res && format != GST_FORMAT_PERCENT && start != -1)
+        res = gst_pad_query_convert (src->srcpad, src->segment.format,
+            start, &format, &start);
+
+      gst_query_set_buffering_range (query, format, start, stop, estimated);
+      break;
+    }
     default:
       res = FALSE;
       break;
@@ -1206,7 +1250,7 @@ gst_base_src_perform_seek (GstBaseSrc * src, GstEvent * event, gboolean unlock)
           src->segment.rate, src->segment.applied_rate, src->segment.format,
           src->segment.last_stop, stop, src->segment.time);
     } else {
-      /* reverse, we send data from stop to last_stop */
+      /* reverse, we send data from last_stop to start */
       src->priv->start_segment =
           gst_event_new_new_segment_full (FALSE,
           src->segment.rate, src->segment.applied_rate, src->segment.format,
@@ -1263,6 +1307,8 @@ gst_base_src_send_event (GstElement * element, GstEvent * event)
 
   src = GST_BASE_SRC (element);
 
+  GST_DEBUG_OBJECT (src, "reveived %s event", GST_EVENT_TYPE_NAME (event));
+
   switch (GST_EVENT_TYPE (event)) {
       /* bidirectional events */
     case GST_EVENT_FLUSH_START:
@@ -1273,13 +1319,46 @@ gst_base_src_send_event (GstElement * element, GstEvent * event)
 
       /* downstream serialized events */
     case GST_EVENT_EOS:
-      /* queue EOS and make sure the task or pull function 
-       * performs the EOS actions. */
+    {
+      GstBaseSrcClass *bclass;
+
+      bclass = GST_BASE_SRC_GET_CLASS (src);
+
+      /* queue EOS and make sure the task or pull function performs the EOS
+       * actions. 
+       *
+       * We have two possibilities:
+       *
+       *  - Before we are to enter the _create function, we check the pending_eos
+       *    first and do EOS instead of entering it.
+       *  - If we are in the _create function or we did not manage to set the
+       *    flag fast enough and we are about to enter the _create function,
+       *    we unlock it so that we exit with WRONG_STATE immediatly. We then
+       *    check the EOS flag and do the EOS logic.
+       */
+      g_atomic_int_set (&src->priv->pending_eos, TRUE);
+      GST_DEBUG_OBJECT (src, "EOS marked, calling unlock");
+
+      /* unlock the _create function so that we can check the pending_eos flag
+       * and we can do EOS. This will eventually release the LIVE_LOCK again so
+       * that we can grab it and stop the unlock again. We don't take the stream
+       * lock so that this operation is guaranteed to never block. */
+      if (bclass->unlock)
+        bclass->unlock (src);
+
+      GST_DEBUG_OBJECT (src, "unlock called, waiting for LIVE_LOCK");
+
       GST_LIVE_LOCK (src);
-      src->priv->pending_eos = TRUE;
+      GST_DEBUG_OBJECT (src, "LIVE_LOCK acquired, calling unlock_stop");
+      /* now stop the unlock of the streaming thread again. Grabbing the live
+       * lock is enough because that protects the create function. */
+      if (bclass->unlock_stop)
+        bclass->unlock_stop (src);
       GST_LIVE_UNLOCK (src);
+
       result = TRUE;
       break;
+    }
     case GST_EVENT_NEWSEGMENT:
       /* sending random NEWSEGMENT downstream can break sync. */
       break;
@@ -1769,11 +1848,28 @@ gst_base_src_get_range (GstBaseSrc * src, guint64 offset, guint length,
       src->num_buffers_left--;
   }
 
+  /* don't enter the create function if a pending EOS event was set. For the
+   * logic of the pending_eos, check the event function of this class. */
+  if (G_UNLIKELY (g_atomic_int_get (&src->priv->pending_eos)))
+    goto eos;
+
   GST_DEBUG_OBJECT (src,
       "calling create offset %" G_GUINT64_FORMAT " length %u, time %"
       G_GINT64_FORMAT, offset, length, src->segment.time);
 
   ret = bclass->create (src, offset, length, buf);
+
+  /* The create function could be unlocked because we have a pending EOS. It's
+   * possible that we have a valid buffer from create that we need to
+   * discard when the create function returned _OK. */
+  if (G_UNLIKELY (g_atomic_int_get (&src->priv->pending_eos))) {
+    if (ret == GST_FLOW_OK) {
+      gst_buffer_unref (*buf);
+      *buf = NULL;
+    }
+    goto eos;
+  }
+
   if (G_UNLIKELY (ret != GST_FLOW_OK))
     goto not_ok;
 
@@ -1782,15 +1878,16 @@ gst_base_src_get_range (GstBaseSrc * src, guint64 offset, guint length,
       && GST_BUFFER_TIMESTAMP (*buf) == -1)
     GST_BUFFER_TIMESTAMP (*buf) = 0;
 
+  /* set pad caps on the buffer if the buffer had no caps */
+  if (GST_BUFFER_CAPS (*buf) == NULL)
+    gst_buffer_set_caps (*buf, GST_PAD_CAPS (src->srcpad));
+
   /* now sync before pushing the buffer */
   status = gst_base_src_do_sync (src, *buf);
 
   /* waiting for the clock could have made us flushing */
   if (G_UNLIKELY (src->priv->flushing))
     goto flushing;
-
-  if (G_UNLIKELY (src->priv->pending_eos))
-    goto eos;
 
   switch (status) {
     case GST_CLOCK_EARLY:
@@ -1868,8 +1965,6 @@ flushing:
 eos:
   {
     GST_DEBUG_OBJECT (src, "we are EOS");
-    gst_buffer_unref (*buf);
-    *buf = NULL;
     return GST_FLOW_UNEXPECTED;
   }
 }
@@ -1887,10 +1982,6 @@ gst_base_src_pad_get_range (GstPad * pad, guint64 offset, guint length,
   if (G_UNLIKELY (src->priv->flushing))
     goto flushing;
 
-  /* if we're EOS, return right away */
-  if (G_UNLIKELY (src->priv->pending_eos))
-    goto eos;
-
   res = gst_base_src_get_range (src, offset, length, buf);
 
 done:
@@ -1905,12 +1996,6 @@ flushing:
   {
     GST_DEBUG_OBJECT (src, "we are flushing");
     res = GST_FLOW_WRONG_STATE;
-    goto done;
-  }
-eos:
-  {
-    GST_DEBUG_OBJECT (src, "we are EOS");
-    res = GST_FLOW_UNEXPECTED;
     goto done;
   }
 }
@@ -1987,12 +2072,9 @@ gst_base_src_loop (GstPad * pad)
   src = GST_BASE_SRC (GST_OBJECT_PARENT (pad));
 
   GST_LIVE_LOCK (src);
+
   if (G_UNLIKELY (src->priv->flushing))
     goto flushing;
-
-  /* if we're EOS, return right away */
-  if (G_UNLIKELY (src->priv->pending_eos))
-    goto eos;
 
   src->priv->last_sent_eos = FALSE;
 
@@ -2130,13 +2212,6 @@ flushing:
     GST_DEBUG_OBJECT (src, "we are flushing");
     GST_LIVE_UNLOCK (src);
     ret = GST_FLOW_WRONG_STATE;
-    goto pause;
-  }
-eos:
-  {
-    GST_DEBUG_OBJECT (src, "we are EOS");
-    GST_LIVE_UNLOCK (src);
-    ret = GST_FLOW_UNEXPECTED;
     goto pause;
   }
 pause:
@@ -2334,7 +2409,9 @@ gst_base_src_start (GstBaseSrc * basesrc)
   if (basesrc->random_access && basesrc->data.ABI.typefind && size != -1) {
     GstCaps *caps;
 
-    caps = gst_type_find_helper (basesrc->srcpad, size);
+    if (!(caps = gst_type_find_helper (basesrc->srcpad, size)))
+      goto typefind_failed;
+
     gst_pad_set_caps (basesrc->srcpad, caps);
     gst_caps_unref (caps);
   } else {
@@ -2357,6 +2434,14 @@ could_not_negotiate:
     GST_DEBUG_OBJECT (basesrc, "could not negotiate, stopping");
     GST_ELEMENT_ERROR (basesrc, STREAM, FORMAT,
         ("Could not negotiate format"), ("Check your filtered caps, if any"));
+    /* we must call stop */
+    gst_base_src_stop (basesrc);
+    return FALSE;
+  }
+typefind_failed:
+  {
+    GST_DEBUG_OBJECT (basesrc, "could not typefind, stopping");
+    GST_ELEMENT_ERROR (basesrc, STREAM, TYPE_NOT_FOUND, (NULL), (NULL));
     /* we must call stop */
     gst_base_src_stop (basesrc);
     return FALSE;
@@ -2411,8 +2496,9 @@ gst_base_src_set_flushing (GstBaseSrc * basesrc,
   if (flushing) {
     /* if we are locked in the live lock, signal it to make it flush */
     basesrc->live_running = TRUE;
+
     /* clear pending EOS if any */
-    basesrc->priv->pending_eos = FALSE;
+    g_atomic_int_set (&basesrc->priv->pending_eos, FALSE);
 
     /* step 1, now that we have the LIVE lock, clear our unlock request */
     if (bclass->unlock_stop)
@@ -2668,7 +2754,7 @@ gst_base_src_change_state (GstElement * element, GstStateChange transition)
         gst_pad_push_event (basesrc->srcpad, gst_event_new_eos ());
         basesrc->priv->last_sent_eos = TRUE;
       }
-      basesrc->priv->pending_eos = FALSE;
+      g_atomic_int_set (&basesrc->priv->pending_eos, FALSE);
       event_p = &basesrc->data.ABI.pending_seek;
       gst_event_replace (event_p, NULL);
       event_p = &basesrc->priv->close_segment;

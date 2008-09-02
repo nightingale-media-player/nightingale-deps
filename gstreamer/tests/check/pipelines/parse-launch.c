@@ -1,7 +1,6 @@
-/* GStreamer
+/* GStreamer gst_parse_launch unit tests
  * Copyright (C) <2005> Thomas Vander Stichele <thomas at apestaart dot org>
- *
- * cleanup.c: Unit test for cleanup of pipelines
+ * Copyright (C) <2008> Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -369,7 +368,7 @@ run_delayed_test (const gchar * pipe_str, const gchar * peer,
   fail_if (sink == NULL, "Test sink element was not created");
 
   /* The src should not yet have a src pad */
-  srcpad = gst_element_get_pad (src, "src");
+  srcpad = gst_element_get_static_pad (src, "src");
   fail_unless (srcpad == NULL, "Source element already has a source pad");
 
   /* Set the state to PAUSED and wait until the src at least reaches that
@@ -383,7 +382,7 @@ run_delayed_test (const gchar * pipe_str, const gchar * peer,
   /* Now, the source element should have a src pad, and if "peer" was passed, 
    * then the src pad should have gotten linked to the 'sink' pad of that 
    * peer */
-  srcpad = gst_element_get_pad (src, "src");
+  srcpad = gst_element_get_static_pad (src, "src");
   fail_if (srcpad == NULL, "Source element did not create source pad");
 
   peerpad = gst_pad_get_peer (srcpad);
@@ -402,7 +401,7 @@ run_delayed_test (const gchar * pipe_str, const gchar * peer,
 
     fail_if (peer_elem == NULL, "Could not retrieve peer %s", peer);
 
-    sinkpad = gst_element_get_pad (peer_elem, "sink");
+    sinkpad = gst_element_get_static_pad (peer_elem, "sink");
     fail_if (sinkpad == NULL, "Peer element did not have a 'sink' pad");
 
     fail_unless (peerpad == sinkpad,
@@ -521,7 +520,7 @@ gst_parse_test_element_change_state (GstElement * element,
     if (src->fakesrc == NULL)
       return GST_STATE_CHANGE_FAILURE;
 
-    pad = gst_element_get_pad (src->fakesrc, "src");
+    pad = gst_element_get_static_pad (src->fakesrc, "src");
     if (pad == NULL)
       return GST_STATE_CHANGE_FAILURE;
 
@@ -535,6 +534,103 @@ gst_parse_test_element_change_state (GstElement * element,
 
   return GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
 }
+
+GST_START_TEST (test_missing_elements)
+{
+  GstParseContext *ctx;
+  GstElement *element;
+  GError *err = NULL;
+  gchar **arr;
+
+  /* avoid misleading 'no such element' error debug messages when using cvs */
+  if (!g_getenv ("GST_DEBUG"))
+    gst_debug_set_default_threshold (GST_LEVEL_NONE);
+
+  /* one missing element */
+  ctx = gst_parse_context_new ();
+  element = gst_parse_launch_full ("fakesrc ! coffeesink", ctx,
+      GST_PARSE_FLAG_FATAL_ERRORS, &err);
+  fail_unless (err != NULL, "expected error");
+  fail_unless_equals_int (err->code, GST_PARSE_ERROR_NO_SUCH_ELEMENT);
+  fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
+  arr = gst_parse_context_get_missing_elements (ctx);
+  fail_unless (arr != NULL, "expected missing elements");
+  fail_unless_equals_string (arr[0], "coffeesink");
+  fail_unless (arr[1] == NULL);
+  g_strfreev (arr);
+  gst_parse_context_free (ctx);
+  g_error_free (err);
+  err = NULL;
+
+  /* multiple missing elements */
+  ctx = gst_parse_context_new ();
+  element = gst_parse_launch_full ("fakesrc ! bogusenc ! identity ! goomux ! "
+      "fakesink", ctx, GST_PARSE_FLAG_FATAL_ERRORS, &err);
+  fail_unless (err != NULL, "expected error");
+  fail_unless_equals_int (err->code, GST_PARSE_ERROR_NO_SUCH_ELEMENT);
+  fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
+  arr = gst_parse_context_get_missing_elements (ctx);
+  fail_unless (arr != NULL, "expected missing elements");
+  fail_unless_equals_string (arr[0], "bogusenc");
+  fail_unless_equals_string (arr[1], "goomux");
+  fail_unless (arr[2] == NULL);
+  g_strfreev (arr);
+  gst_parse_context_free (ctx);
+  g_error_free (err);
+  err = NULL;
+
+  /* multiple missing elements, different link pattern */
+  ctx = gst_parse_context_new ();
+  element = gst_parse_launch_full ("fakesrc ! bogusenc ! mux.sink "
+      "blahsrc ! goomux name=mux ! fakesink   fakesrc ! goosink", ctx,
+      GST_PARSE_FLAG_FATAL_ERRORS, &err);
+  fail_unless (err != NULL, "expected error");
+  fail_unless_equals_int (err->code, GST_PARSE_ERROR_NO_SUCH_ELEMENT);
+  fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
+  arr = gst_parse_context_get_missing_elements (ctx);
+  fail_unless (arr != NULL, "expected missing elements");
+  fail_unless_equals_string (arr[0], "bogusenc");
+  fail_unless_equals_string (arr[1], "blahsrc");
+  fail_unless_equals_string (arr[2], "goomux");
+  fail_unless_equals_string (arr[3], "goosink");
+  fail_unless (arr[4] == NULL);
+  g_strfreev (arr);
+  gst_parse_context_free (ctx);
+  g_error_free (err);
+  err = NULL;
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_flags)
+{
+  GstElement *element;
+  GError *err = NULL;
+
+  /* avoid misleading 'no such element' error debug messages when using cvs */
+  if (!g_getenv ("GST_DEBUG"))
+    gst_debug_set_default_threshold (GST_LEVEL_NONE);
+
+  /* default behaviour is to return any already constructed bins/elements */
+  element = gst_parse_launch_full ("fakesrc ! coffeesink", NULL, 0, &err);
+  fail_unless (err != NULL, "expected error");
+  fail_unless_equals_int (err->code, GST_PARSE_ERROR_NO_SUCH_ELEMENT);
+  fail_unless (element != NULL, "expected partial pipeline/element");
+  g_error_free (err);
+  err = NULL;
+  gst_object_unref (element);
+
+  /* test GST_PARSE_FLAG_FATAL_ERRORS */
+  element = gst_parse_launch_full ("fakesrc ! coffeesink", NULL,
+      GST_PARSE_FLAG_FATAL_ERRORS, &err);
+  fail_unless (err != NULL, "expected error");
+  fail_unless_equals_int (err->code, GST_PARSE_ERROR_NO_SUCH_ELEMENT);
+  fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
+  g_error_free (err);
+  err = NULL;
+}
+
+GST_END_TEST;
 
 static Suite *
 parse_suite (void)
@@ -551,6 +647,8 @@ parse_suite (void)
   tcase_add_test (tc_chain, expected_to_fail_pipes);
   tcase_add_test (tc_chain, leaking_fail_pipes);
   tcase_add_test (tc_chain, delayed_link);
+  tcase_add_test (tc_chain, test_flags);
+  tcase_add_test (tc_chain, test_missing_elements);
   return s;
 }
 

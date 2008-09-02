@@ -144,7 +144,7 @@ static GstIndexEntry *gst_file_index_get_assoc_entry (GstIndex * index, gint id,
 
 static GstIndex *parent_class = NULL;
 
-GType
+static GType
 gst_file_index_get_type (void)
 {
   static GType file_index_type = 0;
@@ -192,7 +192,8 @@ gst_file_index_class_init (GstFileIndexClass * klass)
 
   g_object_class_install_property (gobject_class, ARG_LOCATION,
       g_param_spec_string ("location", "File Location",
-          "Location of the index file", NULL, G_PARAM_READWRITE));
+          "Location of the index file", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -215,7 +216,7 @@ _file_index_id_free (GstFileIndexId * index_id, gboolean is_mmapped)
       munmap (index_id->array->data, ARRAY_TOTAL_SIZE (index_id));
     g_array_free (index_id->array, !is_mmapped);
   }
-  g_free (index_id);
+  g_slice_free (GstFileIndexId, index_id);
 }
 
 static gboolean
@@ -261,7 +262,7 @@ struct fi_find_writer_context
   GstFileIndexId *ii;
 };
 
-void
+static void
 _fi_find_writer (gpointer key, gpointer val, gpointer data)
 {
   struct fi_find_writer_context *cx = data;
@@ -399,7 +400,7 @@ gst_file_index_load (GstFileIndex * index)
           continue;
         }
 
-        id_index = g_new0 (GstFileIndexId, 1);
+        id_index = g_slice_new0 (GstFileIndexId);
         id_index->id_desc = (char *) xmlGetProp (writer, (xmlChar *) "id");
 
         for (wpart = writer->children; wpart; wpart = wpart->next) {
@@ -495,7 +496,7 @@ static void
 _file_index_id_save_xml (gpointer _key, GstFileIndexId * ii, xmlNodePtr writers)
 {
   const gint bufsize = 16;
-  gchar buf[bufsize];
+  gchar buf[16];
   xmlNodePtr writer;
   xmlNodePtr formats;
   gint xx;
@@ -655,7 +656,7 @@ gst_file_index_add_id (GstIndex * index, GstIndexEntry * entry)
   id_index = g_hash_table_lookup (fileindex->id_index, &entry->id);
 
   if (!id_index) {
-    id_index = g_new0 (GstFileIndexId, 1);
+    id_index = g_slice_new0 (GstFileIndexId);
 
     id_index->id = entry->id;
     id_index->id_desc = g_strdup (entry->data.id.description);
@@ -801,13 +802,13 @@ gst_file_index_add_association (GstIndex * index, GstIndexEntry * entry)
   if (exact) {
     /* maybe overwrite instead? */
     GST_DEBUG_OBJECT (index,
-        "Ignoring duplicate index association at %lld",
+        "Ignoring duplicate index association at %" G_GINT64_FORMAT,
         GST_INDEX_ASSOC_VALUE (entry, 0));
     return;
   }
 
   {
-    gchar row_data[ARRAY_ROW_SIZE (id_index)];
+    gchar *row_data = (gchar *) g_malloc (ARRAY_ROW_SIZE (id_index));
     gint fx;
 
     gint32 flags_host = GST_INDEX_ASSOC_FLAGS (entry);
@@ -821,6 +822,8 @@ gst_file_index_add_association (GstIndex * index, GstIndexEntry * entry)
     }
 
     g_array_insert_vals (id_index->array, mx, row_data, 1);
+
+    g_free (row_data);
   }
 }
 
@@ -844,7 +847,7 @@ show_entry (GstIndexEntry *entry)
 
       g_print ("%d: %08x ", entry->id, GST_INDEX_ASSOC_FLAGS (entry));
       for (i = 0; i < GST_INDEX_NASSOCS (entry); i++) {
-        g_print ("%d %lld ", GST_INDEX_ASSOC_FORMAT (entry, i),
+        g_print ("%d %" G_GINT64_FORMAT, GST_INDEX_ASSOC_FORMAT (entry, i),
                              GST_INDEX_ASSOC_VALUE (entry, i));
       }
       g_print ("\n");
@@ -957,7 +960,7 @@ gst_file_index_get_assoc_entry (GstIndex * index,
 
   /* entry memory management needs improvement FIXME */
   if (!fileindex->ret_entry)
-    fileindex->ret_entry = g_new0 (GstIndexEntry, 1);
+    fileindex->ret_entry = g_slice_new0 (GstIndexEntry);
   entry = fileindex->ret_entry;
   if (entry->data.assoc.assocs) {
     g_free (entry->data.assoc.assocs);

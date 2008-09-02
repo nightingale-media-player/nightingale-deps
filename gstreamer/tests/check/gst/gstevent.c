@@ -22,7 +22,7 @@
 
 #include <gst/check/gstcheck.h>
 
-GST_START_TEST (create_custom_events)
+GST_START_TEST (create_events)
 {
   GstEvent *event, *event2;
   GstStructure *structure;
@@ -136,7 +136,25 @@ GST_START_TEST (create_custom_events)
     gst_event_unref (event);
   }
 
-  /* FIXME: Add tests for QOS when it is implemented. */
+  /* QOS */
+  {
+    gdouble p1 = 1.0, p2;
+    GstClockTimeDiff ctd1 = G_GINT64_CONSTANT (10), ctd2;
+    GstClockTime ct1 = G_GUINT64_CONSTANT (20), ct2;
+
+    event = gst_event_new_qos (p1, ctd1, ct1);
+    fail_if (event == NULL);
+    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_QOS);
+    fail_unless (GST_EVENT_IS_UPSTREAM (event));
+    fail_if (GST_EVENT_IS_DOWNSTREAM (event));
+    fail_if (GST_EVENT_IS_SERIALIZED (event));
+
+    gst_event_parse_qos (event, &p2, &ctd2, &ct2);
+    fail_unless (p1 == p2);
+    fail_unless (ctd1 == ctd2);
+    fail_unless (ct1 == ct2);
+    gst_event_unref (event);
+  }
 
   /* SEEK */
   {
@@ -196,6 +214,7 @@ GST_START_TEST (create_custom_events)
     fail_if (GST_EVENT_IS_DOWNSTREAM (event));
     fail_if (GST_EVENT_IS_SERIALIZED (event));
     fail_unless (gst_event_get_structure (event) == structure);
+    fail_unless (gst_event_has_name (event, "application/x-custom"));
     gst_event_unref (event);
 
     /* Decided not to test the other custom enum types, as they
@@ -213,6 +232,7 @@ GST_START_TEST (create_custom_events)
     event2 = gst_event_copy (event);
     fail_if (event2 == NULL);
     fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_TYPE (event2));
+    fail_unless (gst_event_has_name (event, "application/x-custom"));
 
     /* The structure should have been duplicated */
     fail_if (gst_event_get_structure (event) ==
@@ -233,6 +253,7 @@ GST_START_TEST (create_custom_events)
     /* this should fail if the structure isn't writable */
     ASSERT_CRITICAL (gst_structure_remove_all_fields ((GstStructure *)
             gst_event_get_structure (event)));
+    fail_unless (gst_event_has_name (event, "application/x-custom"));
 
     /* now make writable */
     event2 =
@@ -241,6 +262,7 @@ GST_START_TEST (create_custom_events)
     /* this fail if the structure isn't writable */
     gst_structure_remove_all_fields ((GstStructure *)
         gst_event_get_structure (event2));
+    fail_unless (gst_event_has_name (event2, "application/x-custom"));
 
     gst_event_unref (event);
     gst_event_unref (event);
@@ -250,9 +272,9 @@ GST_START_TEST (create_custom_events)
 
 GST_END_TEST;
 
-GTimeVal sent_event_time;
-GstEvent *got_event_before_q, *got_event_after_q;
-GTimeVal got_event_time;
+static GTimeVal sent_event_time;
+static GstEvent *got_event_before_q, *got_event_after_q;
+static GTimeVal got_event_time;
 
 static gboolean
 event_probe (GstPad * pad, GstMiniObject ** data, gpointer user_data)
@@ -396,11 +418,12 @@ GST_START_TEST (send_custom_events)
       (guint64) GST_SECOND, "max-size-bytes", 0, NULL);
   g_object_set (G_OBJECT (fakesink), "silent", TRUE, "sync", TRUE, NULL);
 
-  fail_if ((srcpad = gst_element_get_pad (fakesrc, "src")) == NULL);
+  /* add pad-probes to faksrc.src and fakesink.sink */
+  fail_if ((srcpad = gst_element_get_static_pad (fakesrc, "src")) == NULL);
   gst_pad_add_event_probe (srcpad, (GCallback) event_probe,
       GINT_TO_POINTER (TRUE));
 
-  fail_if ((sinkpad = gst_element_get_pad (fakesink, "sink")) == NULL);
+  fail_if ((sinkpad = gst_element_get_static_pad (fakesink, "sink")) == NULL);
   gst_pad_add_event_probe (sinkpad, (GCallback) event_probe,
       GINT_TO_POINTER (FALSE));
 
@@ -459,16 +482,16 @@ GST_START_TEST (send_custom_events)
 
 GST_END_TEST;
 
-Suite *
+static Suite *
 gst_event_suite (void)
 {
   Suite *s = suite_create ("GstEvent");
-  TCase *tc_chain = tcase_create ("customevents");
+  TCase *tc_chain = tcase_create ("events");
 
   tcase_set_timeout (tc_chain, 20);
 
   suite_add_tcase (s, tc_chain);
-  tcase_add_test (tc_chain, create_custom_events);
+  tcase_add_test (tc_chain, create_events);
   tcase_add_test (tc_chain, send_custom_events);
   return s;
 }

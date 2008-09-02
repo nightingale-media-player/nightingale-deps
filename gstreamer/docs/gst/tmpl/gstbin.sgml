@@ -198,6 +198,16 @@ GstBin
 @Varargs: 
 
 
+<!-- ##### FUNCTION gst_bin_find_unlinked_pad ##### -->
+<para>
+
+</para>
+
+@bin: 
+@direction: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_bin_find_unconnected_pad ##### -->
 <para>
 

@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>identity</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-filesink.html" title="filesink">
-<link rel="next" href="gstreamer-plugins-queue.html" title="queue">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="next" href="gstreamer-plugins-multiqueue.html" title="multiqueue">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -20,44 +20,36 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-plugins-queue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gstreamer-plugins-multiqueue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2604398" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2579067" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2604357" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2582738" class="shortcut">Properties</a>
-                  &#160;|&#160;
-                  <a href="#id2579041" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-identity.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-plugins-identity.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gstreamer-plugins-identity.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gstreamer-plugins-identity.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gstreamer-plugins-identity.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-identity"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2604398"></a><span class="refentrytitle">identity</span>
-</h2>
-<p>identity &#8212; pass data through without modification</p>
+<h2><span class="refentrytitle"><a name="gstreamer-plugins-identity.top_of_page"></a>identity</span></h2>
+<p>identity — pass data through without modification</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-plugins-identity.synopsis"></a><h2>Synopsis</h2>
 <a name="GstIdentity"></a><pre class="synopsis">
-
-
-
-                    <a href="gstreamer-plugins-identity.html#GstIdentity-struct">GstIdentity</a>;
-
-
+                    <a class="link" href="gstreamer-plugins-identity.html#GstIdentity-struct" title="GstIdentity">GstIdentity</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2604357"></a><h2>Object Hierarchy</h2>
+<a name="gstreamer-plugins-identity.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -66,75 +58,72 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2582738"></a><h2>Properties</h2>
+<a name="gstreamer-plugins-identity.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--check-perfect">check-perfect</a>"            gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--datarate">datarate</a>"                 gint                  : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--drop-probability">drop-probability</a>"         gfloat                : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--dump">dump</a>"                     gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--error-after">error-after</a>"              gint                  : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--last-message">last-message</a>"             gchar*                : Read
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--silent">silent</a>"                   gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--single-segment">single-segment</a>"           gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--sleep-time">sleep-time</a>"               guint                 : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--sync">sync</a>"                     gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-offset">check-imperfect-offset</a>"   gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp">check-imperfect-timestamp</a>" gboolean              : Read / Write
-  "<a href="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs">signal-handoffs</a>"          gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-perfect" title='The "check-perfect" property'>check-perfect</a>"            gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--datarate" title='The "datarate" property'>datarate</a>"                 gint                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--drop-probability" title='The "drop-probability" property'>drop-probability</a>"         gfloat                : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--dump" title='The "dump" property'>dump</a>"                     gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--error-after" title='The "error-after" property'>error-after</a>"              gint                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--last-message" title='The "last-message" property'>last-message</a>"             gchar*                : Read
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--single-segment" title='The "single-segment" property'>single-segment</a>"           gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--sleep-time" title='The "sleep-time" property'>sleep-time</a>"               guint                 : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--sync" title='The "sync" property'>sync</a>"                     gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-offset" title='The "check-imperfect-offset" property'>check-imperfect-offset</a>"   gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp" title='The "check-imperfect-timestamp" property'>check-imperfect-timestamp</a>" gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2579041"></a><h2>Signals</h2>
+<a name="gstreamer-plugins-identity.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gstreamer-plugins-identity.html#GstIdentity-handoff">handoff</a>"                                        : Run Last
+  "<a class="link" href="gstreamer-plugins-identity.html#GstIdentity-handoff" title='The "handoff" signal'>handoff</a>"                                        : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2579067"></a><h2>Description</h2>
+<a name="gstreamer-plugins-identity.description"></a><h2>Description</h2>
 <p>
 Dummy element that passes incomming data through unmodified. I has some
 useful diagnostic functions, such as offset and timestamp checking.</p>
 <div class="refsect2" lang="en">
-<a name="id2579084"></a><h3>Element Information</h3>
+<a name="id2622973"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Generic</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -143,19 +132,19 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -166,122 +155,108 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601328"></a><h2>Details</h2>
+<a name="gstreamer-plugins-identity.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2601338"></a><h3>
-<a name="GstIdentity-struct"></a>GstIdentity</h3>
-<a class="indexterm" name="id2601350"></a><pre class="programlisting">typedef struct _GstIdentity GstIdentity;</pre>
+<a name="GstIdentity-struct"></a><h3>GstIdentity</h3>
+<pre class="programlisting">typedef struct _GstIdentity GstIdentity;</pre>
 <p>
-Opaque <a href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a> data structure</p>
+Opaque <a class="link" href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a> data structure</p>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601377"></a><h2>Property Details</h2>
+<a name="gstreamer-plugins-identity.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2601388"></a><h3>
-<a name="GstIdentity--check-perfect"></a>The "<code class="literal">check-perfect</code>" property</h3>
-<a class="indexterm" name="id2601402"></a><pre class="programlisting">  "check-perfect"            gboolean              : Read / Write</pre>
+<a name="GstIdentity--check-perfect"></a><h3>The <code class="literal">"check-perfect"</code> property</h3>
+<pre class="programlisting">  "check-perfect"            gboolean              : Read / Write</pre>
 <p>Verify that the stream is time- and data-contiguous. This only logs in the debug log.  This will be deprecated in favor of the check-imperfect-timestamp/offset properties.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601793"></a><h3>
-<a name="GstIdentity--datarate"></a>The "<code class="literal">datarate</code>" property</h3>
-<a class="indexterm" name="id2601806"></a><pre class="programlisting">  "datarate"                 gint                  : Read / Write</pre>
+<a name="GstIdentity--datarate"></a><h3>The <code class="literal">"datarate"</code> property</h3>
+<pre class="programlisting">  "datarate"                 gint                  : Read / Write</pre>
 <p>(Re)timestamps buffers with number of bytes per second (0 = inactive).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601836"></a><h3>
-<a name="GstIdentity--drop-probability"></a>The "<code class="literal">drop-probability</code>" property</h3>
-<a class="indexterm" name="id2601852"></a><pre class="programlisting">  "drop-probability"         gfloat                : Read / Write</pre>
+<a name="GstIdentity--drop-probability"></a><h3>The <code class="literal">"drop-probability"</code> property</h3>
+<pre class="programlisting">  "drop-probability"         gfloat                : Read / Write</pre>
 <p>The Probability a buffer is dropped.</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601881"></a><h3>
-<a name="GstIdentity--dump"></a>The "<code class="literal">dump</code>" property</h3>
-<a class="indexterm" name="id2601896"></a><pre class="programlisting">  "dump"                     gboolean              : Read / Write</pre>
+<a name="GstIdentity--dump"></a><h3>The <code class="literal">"dump"</code> property</h3>
+<pre class="programlisting">  "dump"                     gboolean              : Read / Write</pre>
 <p>Dump buffer contents to stdout.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601922"></a><h3>
-<a name="GstIdentity--error-after"></a>The "<code class="literal">error-after</code>" property</h3>
-<a class="indexterm" name="id2601936"></a><pre class="programlisting">  "error-after"              gint                  : Read / Write</pre>
+<a name="GstIdentity--error-after"></a><h3>The <code class="literal">"error-after"</code> property</h3>
+<pre class="programlisting">  "error-after"              gint                  : Read / Write</pre>
 <p>Error after N buffers.</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601962"></a><h3>
-<a name="GstIdentity--last-message"></a>The "<code class="literal">last-message</code>" property</h3>
-<a class="indexterm" name="id2601976"></a><pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<a name="GstIdentity--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
+<pre class="programlisting">  "last-message"             gchar*                : Read</pre>
 <p>last-message.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602001"></a><h3>
-<a name="GstIdentity--silent"></a>The "<code class="literal">silent</code>" property</h3>
-<a class="indexterm" name="id2602016"></a><pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<a name="GstIdentity--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
+<pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
 <p>silent.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602042"></a><h3>
-<a name="GstIdentity--single-segment"></a>The "<code class="literal">single-segment</code>" property</h3>
-<a class="indexterm" name="id2604465"></a><pre class="programlisting">  "single-segment"           gboolean              : Read / Write</pre>
+<a name="GstIdentity--single-segment"></a><h3>The <code class="literal">"single-segment"</code> property</h3>
+<pre class="programlisting">  "single-segment"           gboolean              : Read / Write</pre>
 <p>Timestamp buffers and eat newsegments so as to appear as one segment.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604490"></a><h3>
-<a name="GstIdentity--sleep-time"></a>The "<code class="literal">sleep-time</code>" property</h3>
-<a class="indexterm" name="id2604502"></a><pre class="programlisting">  "sleep-time"               guint                 : Read / Write</pre>
+<a name="GstIdentity--sleep-time"></a><h3>The <code class="literal">"sleep-time"</code> property</h3>
+<pre class="programlisting">  "sleep-time"               guint                 : Read / Write</pre>
 <p>Microseconds to sleep between processing.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604527"></a><h3>
-<a name="GstIdentity--sync"></a>The "<code class="literal">sync</code>" property</h3>
-<a class="indexterm" name="id2604539"></a><pre class="programlisting">  "sync"                     gboolean              : Read / Write</pre>
+<a name="GstIdentity--sync"></a><h3>The <code class="literal">"sync"</code> property</h3>
+<pre class="programlisting">  "sync"                     gboolean              : Read / Write</pre>
 <p>Synchronize to pipeline clock.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604563"></a><h3>
-<a name="GstIdentity--check-imperfect-offset"></a>The "<code class="literal">check-imperfect-offset</code>" property</h3>
-<a class="indexterm" name="id2604578"></a><pre class="programlisting">  "check-imperfect-offset"   gboolean              : Read / Write</pre>
+<a name="GstIdentity--check-imperfect-offset"></a><h3>The <code class="literal">"check-imperfect-offset"</code> property</h3>
+<pre class="programlisting">  "check-imperfect-offset"   gboolean              : Read / Write</pre>
 <p>Send element messages if offset and offset_end do not match up.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604601"></a><h3>
-<a name="GstIdentity--check-imperfect-timestamp"></a>The "<code class="literal">check-imperfect-timestamp</code>" property</h3>
-<a class="indexterm" name="id2604616"></a><pre class="programlisting">  "check-imperfect-timestamp" gboolean              : Read / Write</pre>
+<a name="GstIdentity--check-imperfect-timestamp"></a><h3>The <code class="literal">"check-imperfect-timestamp"</code> property</h3>
+<pre class="programlisting">  "check-imperfect-timestamp" gboolean              : Read / Write</pre>
 <p>Send element messages if timestamps and durations do not match up.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604639"></a><h3>
-<a name="GstIdentity--signal-handoffs"></a>The "<code class="literal">signal-handoffs</code>" property</h3>
-<a class="indexterm" name="id2604654"></a><pre class="programlisting">  "signal-handoffs"          gboolean              : Read / Write</pre>
+<a name="GstIdentity--signal-handoffs"></a><h3>The <code class="literal">"signal-handoffs"</code> property</h3>
+<pre class="programlisting">  "signal-handoffs"          gboolean              : Read / Write</pre>
 <p>
 If set to <span class="type">TRUE</span>, the identity will emit a handoff signal when handling a buffer.
 When set to <span class="type">FALSE</span>, no signal will be emited, which might improve performance.</p>
@@ -294,11 +269,10 @@ When set to <span class="type">FALSE</span>, no signal will be emited, which mig
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2604700"></a><h2>Signal Details</h2>
+<a name="gstreamer-plugins-identity.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2604709"></a><h3>
-<a name="GstIdentity-handoff"></a>The "handoff" signal</h3>
-<a class="indexterm" name="id2604716"></a><pre class="programlisting">void                user_function                      (<a href="gstreamer-plugins-identity.html#GstIdentity">GstIdentity</a> *identity,
+<a name="GstIdentity-handoff"></a><h3>The <code class="literal">"handoff"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-identity.html#GstIdentity">GstIdentity</a> *identity,
                                                         GstBuffer   *buffer,
                                                         gpointer     user_data)      : Run Last</pre>
 <p>
@@ -310,22 +284,22 @@ This signal gets emitted before passing the buffer downstream.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>identity</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>identity</code></em> :</span></p></td>
 <td> the identity instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> the buffer that just has been received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> the pad that received it
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -333,5 +307,8 @@ This signal gets emitted before passing the buffer downstream.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

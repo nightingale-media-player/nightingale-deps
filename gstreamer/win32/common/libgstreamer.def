@@ -58,6 +58,7 @@ EXPORTS
 	gst_bin_add_many
 	gst_bin_child_proxy_get_children_count
 	gst_bin_find_unconnected_pad
+	gst_bin_find_unlinked_pad
 	gst_bin_flags_get_type
 	gst_bin_get_by_interface
 	gst_bin_get_by_name
@@ -89,6 +90,7 @@ EXPORTS
 	gst_buffer_span
 	gst_buffer_stamp
 	gst_buffer_try_new_and_alloc
+	gst_buffering_mode_get_type
 	gst_bus_add_signal_watch
 	gst_bus_add_signal_watch_full
 	gst_bus_add_watch
@@ -315,6 +317,7 @@ EXPORTS
 	gst_error_get_message
 	gst_event_get_structure
 	gst_event_get_type
+	gst_event_has_name
 	gst_event_new_buffer_size
 	gst_event_new_custom
 	gst_event_new_eos
@@ -399,6 +402,7 @@ EXPORTS
 	gst_index_set_filter_full
 	gst_index_set_group
 	gst_index_set_resolver
+	gst_index_set_resolver_full
 	gst_init
 	gst_init_check
 	gst_init_get_option_group
@@ -458,6 +462,7 @@ EXPORTS
 	gst_message_new_warning
 	gst_message_parse_async_start
 	gst_message_parse_buffering
+	gst_message_parse_buffering_stats
 	gst_message_parse_clock_lost
 	gst_message_parse_clock_provide
 	gst_message_parse_duration
@@ -469,6 +474,7 @@ EXPORTS
 	gst_message_parse_state_changed
 	gst_message_parse_tag
 	gst_message_parse_warning
+	gst_message_set_buffering_stats
 	gst_message_type_get_name
 	gst_message_type_get_type
 	gst_message_type_to_quark
@@ -505,8 +511,11 @@ EXPORTS
 	gst_pad_activate_pull
 	gst_pad_activate_push
 	gst_pad_add_buffer_probe
+	gst_pad_add_buffer_probe_full
 	gst_pad_add_data_probe
+	gst_pad_add_data_probe_full
 	gst_pad_add_event_probe
+	gst_pad_add_event_probe_full
 	gst_pad_alloc_buffer
 	gst_pad_alloc_buffer_and_set_caps
 	gst_pad_can_link
@@ -599,11 +608,19 @@ EXPORTS
 	gst_param_spec_fraction
 	gst_param_spec_fraction_get_type
 	gst_param_spec_mini_object
+	gst_param_spec_mini_object_get_type
 	gst_parse_bin_from_description
+	gst_parse_bin_from_description_full
+	gst_parse_context_free
+	gst_parse_context_get_missing_elements
+	gst_parse_context_new
 	gst_parse_error_get_type
 	gst_parse_error_quark
+	gst_parse_flags_get_type
 	gst_parse_launch
+	gst_parse_launch_full
 	gst_parse_launchv
+	gst_parse_launchv_full
 	gst_pipeline_auto_clock
 	gst_pipeline_flags_get_type
 	gst_pipeline_get_auto_flush_bus
@@ -647,11 +664,37 @@ EXPORTS
 	gst_plugin_load_file
 	gst_plugin_name_filter
 	gst_plugin_register_static
+	gst_poll_add_fd
+	gst_poll_fd_can_read
+	gst_poll_fd_can_write
+	gst_poll_fd_ctl_read
+	gst_poll_fd_ctl_write
+	gst_poll_fd_has_closed
+	gst_poll_fd_has_error
+	gst_poll_fd_ignored
+	gst_poll_fd_init
+	gst_poll_free
+	gst_poll_new
+	gst_poll_remove_fd
+	gst_poll_restart
+	gst_poll_set_controllable
+	gst_poll_set_flushing
+	gst_poll_wait
+	gst_preset_delete_preset
+	gst_preset_get_meta
+	gst_preset_get_preset_names
+	gst_preset_get_property_names
+	gst_preset_get_type
+	gst_preset_load_preset
+	gst_preset_rename_preset
+	gst_preset_save_preset
+	gst_preset_set_meta
 	gst_print_element_args
 	gst_print_pad_caps
 	gst_query_get_structure
 	gst_query_get_type
 	gst_query_new_application
+	gst_query_new_buffering
 	gst_query_new_convert
 	gst_query_new_duration
 	gst_query_new_formats
@@ -659,6 +702,9 @@ EXPORTS
 	gst_query_new_position
 	gst_query_new_seeking
 	gst_query_new_segment
+	gst_query_parse_buffering_percent
+	gst_query_parse_buffering_range
+	gst_query_parse_buffering_stats
 	gst_query_parse_convert
 	gst_query_parse_duration
 	gst_query_parse_formats_length
@@ -667,6 +713,9 @@ EXPORTS
 	gst_query_parse_position
 	gst_query_parse_seeking
 	gst_query_parse_segment
+	gst_query_set_buffering_percent
+	gst_query_set_buffering_range
+	gst_query_set_buffering_stats
 	gst_query_set_convert
 	gst_query_set_duration
 	gst_query_set_formats
@@ -687,6 +736,8 @@ EXPORTS
 	gst_registry_add_feature
 	gst_registry_add_path
 	gst_registry_add_plugin
+	gst_registry_binary_read_cache
+	gst_registry_binary_write_cache
 	gst_registry_feature_filter
 	gst_registry_find_feature
 	gst_registry_find_plugin
@@ -711,6 +762,7 @@ EXPORTS
 	gst_seek_flags_get_type
 	gst_seek_type_get_type
 	gst_segment_clip
+	gst_segment_copy
 	gst_segment_free
 	gst_segment_get_type
 	gst_segment_init
@@ -874,6 +926,7 @@ EXPORTS
 	gst_type_find_probability_get_type
 	gst_type_find_register
 	gst_type_find_suggest
+	gst_type_find_suggest_simple
 	gst_type_register_static_full
 	gst_update_registry
 	gst_uri_construct
@@ -909,6 +962,7 @@ EXPORTS
 	gst_value_can_union
 	gst_value_compare
 	gst_value_deserialize
+	gst_value_dup_mini_object
 	gst_value_fraction_multiply
 	gst_value_fraction_subtract
 	gst_value_get_caps

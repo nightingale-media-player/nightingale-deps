@@ -38,14 +38,14 @@ static char *_name = NULL;
 static int print_element_info (GstElementFactory * factory,
     gboolean print_names);
 
-void
+static void
 n_print (const char *format, ...)
 {
   va_list args;
   gint retval;
 
   if (_name)
-    g_print (_name);
+    g_print ("%s", _name);
 
   va_start (args, format);
   retval = g_vprintf (format, args);
@@ -225,7 +225,7 @@ print_hierarchy (GType type, gint level, gint * maxlevel)
     print_hierarchy (parent, level, maxlevel);
 
   if (_name)
-    g_print (_name);
+    g_print ("%s", _name);
 
   for (i = 1; i < *maxlevel - level; i++)
     g_print ("      ");
@@ -247,20 +247,20 @@ print_interfaces (GType type)
   if (ifaces) {
     if (n_ifaces) {
       if (_name)
-        g_print (_name);
+        g_print ("%s", _name);
       g_print (_("Implemented Interfaces:\n"));
       iface = ifaces;
       while (*iface) {
         if (_name)
-          g_print (_name);
+          g_print ("%s", _name);
         g_print ("  %s\n", g_type_name (*iface));
         iface++;
       }
       if (_name)
-        g_print (_name);
+        g_print ("%s", _name);
       g_print ("\n");
-      g_free (ifaces);
     }
+    g_free (ifaces);
   }
 }
 
@@ -474,7 +474,7 @@ print_element_properties_info (GstElement * element)
           while (values[j].value_name) {
             g_print ("\n");
             if (_name)
-              g_print (_name);
+              g_print ("%s", _name);
             g_print ("%-23.23s    (%d): %-16s - %s", "",
                 values[j].value, values[j].value_nick, values[j].value_name);
             j++;
@@ -520,7 +520,7 @@ print_element_properties_info (GstElement * element)
           while (values[j].value_name) {
             g_print ("\n");
             if (_name)
-              g_print (_name);
+              g_print ("%s", _name);
             g_print ("%-23.23s    (0x%08x): %-16s - %s", "",
                 values[j].value, values[j].value_nick, values[j].value_name);
             j++;
@@ -544,7 +544,14 @@ print_element_properties_info (GstElement * element)
             n_print ("%-23.23s Pointer.", "");
           }
         } else if (param->value_type == G_TYPE_VALUE_ARRAY) {
-          n_print ("%-23.23s Array of GValues", "");
+          GParamSpecValueArray *pvarray = G_PARAM_SPEC_VALUE_ARRAY (param);
+
+          if (pvarray->element_spec) {
+            n_print ("%-23.23s Array of GValues of type \"%s\"", "",
+                g_type_name (pvarray->element_spec->value_type));
+          } else {
+            n_print ("%-23.23s Array of GValues", "");
+          }
         } else if (GST_IS_PARAM_SPEC_FRACTION (param)) {
           GstParamSpecFraction *pfraction = GST_PARAM_SPEC_FRACTION (param);
 
@@ -559,6 +566,9 @@ print_element_properties_info (GstElement * element)
                 gst_value_get_fraction_numerator (&value),
                 gst_value_get_fraction_denominator (&value));
 
+        } else if (GST_IS_PARAM_SPEC_MINI_OBJECT (param)) {
+          n_print ("%-23.23s MiniObject of type \"%s\"", "",
+              g_type_name (param->value_type));
         } else {
           n_print ("%-23.23s Unknown type %ld \"%s\"", "", param->value_type,
               g_type_name (param->value_type));
@@ -569,6 +579,8 @@ print_element_properties_info (GstElement * element)
       g_print (" Write only\n");
     else
       g_print ("\n");
+
+    g_value_reset (&value);
   }
   if (num_properties == 0)
     n_print ("  none\n");
@@ -713,6 +725,39 @@ print_index_info (GstElement * element)
 #endif
 
 static void
+print_uri_handler_info (GstElement * element)
+{
+  if (GST_IS_URI_HANDLER (element)) {
+    const gchar *uri_type;
+    gchar **uri_protocols;
+
+    if (gst_uri_handler_get_uri_type (GST_URI_HANDLER (element)) == GST_URI_SRC)
+      uri_type = "source";
+    else if (gst_uri_handler_get_uri_type (GST_URI_HANDLER (element)) ==
+        GST_URI_SINK)
+      uri_type = "sink";
+    else
+      uri_type = "unknown";
+
+    uri_protocols = gst_uri_handler_get_protocols (GST_URI_HANDLER (element));
+
+    n_print ("\n");
+    n_print ("URI handling capabilities:\n");
+    n_print ("  Element can act as %s.\n", uri_type);
+
+    if (uri_protocols && *uri_protocols) {
+      n_print ("  Supported URI protocols:\n");
+      for (; *uri_protocols != NULL; uri_protocols++)
+        n_print ("    %s\n", *uri_protocols);
+    } else {
+      n_print ("  No supported URI protocols\n");
+    }
+  } else {
+    n_print ("Element has no URI handling capabilities.\n");
+  }
+}
+
+static void
 print_pad_info (GstElement * element)
 {
   const GList *pads;
@@ -728,17 +773,22 @@ print_pad_info (GstElement * element)
 
   pads = element->pads;
   while (pads) {
+    gchar *name;
+
     pad = GST_PAD (pads->data);
     pads = g_list_next (pads);
 
     n_print ("");
 
+    name = gst_pad_get_name (pad);
     if (gst_pad_get_direction (pad) == GST_PAD_SRC)
-      g_print ("  SRC: '%s'", gst_pad_get_name (pad));
+      g_print ("  SRC: '%s'", name);
     else if (gst_pad_get_direction (pad) == GST_PAD_SINK)
-      g_print ("  SINK: '%s'", gst_pad_get_name (pad));
+      g_print ("  SINK: '%s'", name);
     else
-      g_print ("  UNKNOWN!!!: '%s'", gst_pad_get_name (pad));
+      g_print ("  UNKNOWN!!!: '%s'", name);
+
+    g_free (name);
 
     g_print ("\n");
 
@@ -814,7 +864,11 @@ print_signal_info (GstElement * element)
         if ((k == 0 && !(query->signal_flags & G_SIGNAL_ACTION)) ||
             (k == 1 && (query->signal_flags & G_SIGNAL_ACTION)))
           found_signals = g_slist_append (found_signals, query);
+        else
+          g_free (query);
       }
+      g_free (signals);
+      signals = NULL;
     }
 
     if (found_signals) {
@@ -844,7 +898,7 @@ print_signal_info (GstElement * element)
 
       for (j = 0; j < query->n_params; j++) {
         if (_name)
-          g_print (_name);
+          g_print ("%s", _name);
         if (G_TYPE_IS_FUNDAMENTAL (query->param_types[j])) {
           g_print (",\n%s%s arg%d", indent,
               g_type_name (query->param_types[j]), j);
@@ -859,7 +913,7 @@ print_signal_info (GstElement * element)
 
       if (k == 0) {
         if (_name)
-          g_print (_name);
+          g_print ("%s", _name);
         g_print (",\n%sgpointer user_data);\n", indent);
       } else
         g_print (");\n");
@@ -1145,11 +1199,13 @@ print_element_info (GstElementFactory * factory, gboolean print_names)
   print_implementation_info (element);
   print_clocking_info (element);
   print_index_info (element);
+  print_uri_handler_info (element);
   print_pad_info (element);
   print_element_properties_info (element);
   print_signal_info (element);
   print_children_info (element);
 
+  gst_object_unref (element);
   gst_object_unref (factory);
   g_free (_name);
 

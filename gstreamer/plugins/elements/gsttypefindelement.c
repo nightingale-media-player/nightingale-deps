@@ -25,8 +25,8 @@
  * 1) get a list of all typefind functions sorted best to worst
  * 2) if all elements have been called with all requested data goto 8
  * 3) call all functions once with all available data
- * 4) if a function returns a value >= ARG_MAXIMUM goto 8
- * 5) all functions with a result > ARG_MINIMUM or functions that did not get
+ * 4) if a function returns a value >= PROP_MAXIMUM goto 8
+ * 5) all functions with a result > PROP_MINIMUM or functions that did not get
  *    all requested data (where peek returned NULL) stay in list
  * 6) seek to requested offset of best function that still has open data
  *    requests
@@ -64,13 +64,13 @@ GST_DEBUG_CATEGORY_STATIC (gst_type_find_element_debug);
 #define GST_CAT_DEFAULT gst_type_find_element_debug
 
 /* generic templates */
-GstStaticPadTemplate type_find_element_sink_template =
+static GstStaticPadTemplate type_find_element_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
-GstStaticPadTemplate type_find_element_src_template =
+static GstStaticPadTemplate type_find_element_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -89,10 +89,12 @@ enum
 };
 enum
 {
-  ARG_0,
-  ARG_CAPS,
-  ARG_MINIMUM,
-  ARG_MAXIMUM
+  PROP_0,
+  PROP_CAPS,
+  PROP_MINIMUM,
+  PROP_MAXIMUM,
+  PROP_FORCE_CAPS,
+  PROP_LAST
 };
 enum
 {
@@ -188,19 +190,24 @@ gst_type_find_element_class_init (GstTypeFindElementClass * typefind_class)
 
   typefind_class->have_type = gst_type_find_element_have_type;
 
-  g_object_class_install_property (gobject_class, ARG_CAPS,
+  g_object_class_install_property (gobject_class, PROP_CAPS,
       g_param_spec_boxed ("caps", _("caps"),
           _("detected capabilities in stream"), gst_caps_get_type (),
-          G_PARAM_READABLE));
-  g_object_class_install_property (gobject_class, ARG_MINIMUM,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_MINIMUM,
       g_param_spec_uint ("minimum", _("minimum"),
           "minimum probability required to accept caps", GST_TYPE_FIND_MINIMUM,
-          GST_TYPE_FIND_MAXIMUM, GST_TYPE_FIND_MINIMUM, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_MAXIMUM,
+          GST_TYPE_FIND_MAXIMUM, GST_TYPE_FIND_MINIMUM,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_MAXIMUM,
       g_param_spec_uint ("maximum", _("maximum"),
           "probability to stop typefinding (deprecated; non-functional)",
           GST_TYPE_FIND_MINIMUM, GST_TYPE_FIND_MAXIMUM, GST_TYPE_FIND_MAXIMUM,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_FORCE_CAPS,
+      g_param_spec_boxed ("force-caps", _("force caps"),
+          _("force caps without doing a typefind"), gst_caps_get_type (),
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstTypeFindElement::have-type:
    * @typefind: the typefind instance
@@ -283,11 +290,18 @@ gst_type_find_element_set_property (GObject * object, guint prop_id,
   typefind = GST_TYPE_FIND_ELEMENT (object);
 
   switch (prop_id) {
-    case ARG_MINIMUM:
+    case PROP_MINIMUM:
       typefind->min_probability = g_value_get_uint (value);
       break;
-    case ARG_MAXIMUM:
+    case PROP_MAXIMUM:
       typefind->max_probability = g_value_get_uint (value);
+      break;
+    case PROP_FORCE_CAPS:
+      GST_OBJECT_LOCK (typefind);
+      if (typefind->force_caps)
+        gst_caps_unref (typefind->force_caps);
+      typefind->force_caps = g_value_dup_boxed (value);
+      GST_OBJECT_UNLOCK (typefind);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -303,14 +317,19 @@ gst_type_find_element_get_property (GObject * object, guint prop_id,
   typefind = GST_TYPE_FIND_ELEMENT (object);
 
   switch (prop_id) {
-    case ARG_CAPS:
+    case PROP_CAPS:
       g_value_set_boxed (value, typefind->caps);
       break;
-    case ARG_MINIMUM:
+    case PROP_MINIMUM:
       g_value_set_uint (value, typefind->min_probability);
       break;
-    case ARG_MAXIMUM:
+    case PROP_MAXIMUM:
       g_value_set_uint (value, typefind->max_probability);
+      break;
+    case PROP_FORCE_CAPS:
+      GST_OBJECT_LOCK (typefind);
+      g_value_set_boxed (value, typefind->force_caps);
+      GST_OBJECT_UNLOCK (typefind);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -349,7 +368,7 @@ gst_type_find_handle_src_query (GstPad * pad, GstQuery * query)
       /* FIXME: this code assumes that there's no discont in the queue */
       switch (format) {
         case GST_FORMAT_BYTES:
-          peer_pos -= typefind->store->size;
+          peer_pos -= GST_BUFFER_SIZE (typefind->store);
           break;
         default:
           /* FIXME */
@@ -393,7 +412,7 @@ gst_type_find_element_src_event (GstPad * pad, GstEvent * event)
     gst_mini_object_unref (GST_MINI_OBJECT (event));
     return FALSE;
   }
-  return gst_pad_event_default (pad, event);
+  return gst_pad_push_event (typefind->sink, event);
 }
 
 static void
@@ -495,9 +514,19 @@ gst_type_find_element_handle_event (GstPad * pad, GstEvent * event)
           }
 
           stop_typefinding (typefind);
-          res = gst_pad_event_default (pad, event);
+          res = gst_pad_push_event (typefind->src, event);
           break;
         }
+        case GST_EVENT_FLUSH_STOP:
+          g_list_foreach (typefind->cached_events,
+              (GFunc) gst_mini_object_unref, NULL);
+          g_list_free (typefind->cached_events);
+          typefind->cached_events = NULL;
+          gst_buffer_replace (&typefind->store, NULL);
+          /* fall through */
+        case GST_EVENT_FLUSH_START:
+          res = gst_pad_push_event (typefind->src, event);
+          break;
         default:
           GST_DEBUG_OBJECT (typefind, "Saving %s event to send later",
               GST_EVENT_TYPE_NAME (event));
@@ -508,7 +537,7 @@ gst_type_find_element_handle_event (GstPad * pad, GstEvent * event)
       }
       break;
     case MODE_NORMAL:
-      res = gst_pad_event_default (pad, event);
+      res = gst_pad_push_event (typefind->src, event);
       break;
     case MODE_ERROR:
       break;
@@ -702,6 +731,13 @@ gst_type_find_element_activate (GstPad * pad)
 
   typefind = GST_TYPE_FIND_ELEMENT (GST_OBJECT_PARENT (pad));
 
+  /* if we have force caps, use those */
+  if (typefind->force_caps) {
+    found_caps = gst_caps_ref (typefind->force_caps);
+    probability = GST_TYPE_FIND_MAXIMUM;
+    goto done;
+  }
+
   /* 1. try to activate in pull mode. if not, switch to push and succeed.
      2. try to pull type find.
      3. deactivate pull mode.
@@ -729,18 +765,22 @@ gst_type_find_element_activate (GstPad * pad)
 
       if (!gst_pad_query_duration (peer, &format, &size)) {
         GST_WARNING_OBJECT (typefind, "Could not query upstream length!");
+        gst_object_unref (peer);
         return FALSE;
       }
 
-      if (size > 0) {
-        found_caps = gst_type_find_helper_get_range (GST_OBJECT_CAST (peer),
-            (GstTypeFindHelperGetRangeFunction) (GST_PAD_GETRANGEFUNC (peer)),
-            (guint64) size, &probability);
-      } else {
+      /* the size if 0, we cannot continue */
+      if (size == 0) {
         /* keep message in sync with message in sink event handler */
         GST_ELEMENT_ERROR (typefind, STREAM, TYPE_NOT_FOUND,
             (_("Stream contains no data.")), ("Can't typefind empty stream"));
+        gst_object_unref (peer);
+        return FALSE;
       }
+
+      found_caps = gst_type_find_helper_get_range (GST_OBJECT_CAST (peer),
+          (GstTypeFindHelperGetRangeFunction) (GST_PAD_GETRANGEFUNC (peer)),
+          (guint64) size, &probability);
 
       gst_object_unref (peer);
     }
@@ -759,6 +799,7 @@ gst_type_find_element_activate (GstPad * pad)
     return FALSE;
   }
 
+done:
   /* 6 */
   g_signal_emit (typefind, gst_type_find_element_signals[HAVE_TYPE],
       0, probability, found_caps);
@@ -793,6 +834,7 @@ gst_type_find_element_change_state (GstElement * element,
     case GST_STATE_CHANGE_PAUSED_TO_READY:
     case GST_STATE_CHANGE_READY_TO_NULL:
       gst_caps_replace (&typefind->caps, NULL);
+
       g_list_foreach (typefind->cached_events,
           (GFunc) gst_mini_object_unref, NULL);
       g_list_free (typefind->cached_events);

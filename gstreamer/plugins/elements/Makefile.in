@@ -14,12 +14,6 @@
 
 @SET_MAKE@
 
-# FIXME:
-# need to get gstbufferstore.[ch] into its own lib, preferably
-# libs/gst/bufferstore
-# This requires building libs/gst before this dir, which we currently don't
-# do.
-
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -98,17 +92,15 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-am__libgstcoreelements_la_SOURCES_DIST = gstbufferstore.c \
-	gstcapsfilter.c gstelements.c gstfakesrc.c gstfakesink.c \
-	gstfdsrc.c gstfdsink.c gstfilesink.c gstfilesrc.c \
-	gstidentity.c gstqueue.c gsttee.c gsttypefindelement.c \
-	gstmultiqueue.c
+am__libgstcoreelements_la_SOURCES_DIST = gstcapsfilter.c gstelements.c \
+	gstfakesrc.c gstfakesink.c gstfdsrc.c gstfdsink.c \
+	gstfilesink.c gstfilesrc.c gstidentity.c gstqueue.c gsttee.c \
+	gsttypefindelement.c gstmultiqueue.c
 @HAVE_SYS_SOCKET_H_TRUE@am__objects_1 =  \
 @HAVE_SYS_SOCKET_H_TRUE@	libgstcoreelements_la-gstfdsrc.lo
 @HAVE_SYS_SOCKET_H_TRUE@am__objects_2 =  \
 @HAVE_SYS_SOCKET_H_TRUE@	libgstcoreelements_la-gstfdsink.lo
 am_libgstcoreelements_la_OBJECTS =  \
-	libgstcoreelements_la-gstbufferstore.lo \
 	libgstcoreelements_la-gstcapsfilter.lo \
 	libgstcoreelements_la-gstelements.lo \
 	libgstcoreelements_la-gstfakesrc.lo \
@@ -147,6 +139,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -171,9 +164,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -201,8 +196,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -216,7 +209,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -237,6 +229,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -366,6 +361,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -465,7 +461,6 @@ plugin_LTLIBRARIES = libgstcoreelements.la
 @HAVE_SYS_SOCKET_H_TRUE@GSTFDSINK = gstfdsink.c
 libgstcoreelements_la_DEPENDENCIES = $(top_builddir)/gst/libgstreamer-@GST_MAJORMINOR@.la
 libgstcoreelements_la_SOURCES = \
-	gstbufferstore.c	\
 	gstcapsfilter.c		\
 	gstelements.c		\
 	gstfakesrc.c		\
@@ -487,7 +482,6 @@ libgstcoreelements_la_LIBADD = \
 
 libgstcoreelements_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 noinst_HEADERS = \
-	gstbufferstore.h	\
 	gstcapsfilter.h		\
 	gstfakesink.h		\
 	gstfakesrc.h		\
@@ -574,7 +568,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstbufferstore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstcapsfilter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstelements.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstfakesink.Plo@am__quote@
@@ -609,13 +602,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libgstcoreelements_la-gstbufferstore.lo: gstbufferstore.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -MT libgstcoreelements_la-gstbufferstore.lo -MD -MP -MF "$(DEPDIR)/libgstcoreelements_la-gstbufferstore.Tpo" -c -o libgstcoreelements_la-gstbufferstore.lo `test -f 'gstbufferstore.c' || echo '$(srcdir)/'`gstbufferstore.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstcoreelements_la-gstbufferstore.Tpo" "$(DEPDIR)/libgstcoreelements_la-gstbufferstore.Plo"; else rm -f "$(DEPDIR)/libgstcoreelements_la-gstbufferstore.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstbufferstore.c' object='libgstcoreelements_la-gstbufferstore.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -c -o libgstcoreelements_la-gstbufferstore.lo `test -f 'gstbufferstore.c' || echo '$(srcdir)/'`gstbufferstore.c
 
 libgstcoreelements_la-gstcapsfilter.lo: gstcapsfilter.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -MT libgstcoreelements_la-gstcapsfilter.lo -MD -MP -MF "$(DEPDIR)/libgstcoreelements_la-gstcapsfilter.Tpo" -c -o libgstcoreelements_la-gstcapsfilter.lo `test -f 'gstcapsfilter.c' || echo '$(srcdir)/'`gstcapsfilter.c; \

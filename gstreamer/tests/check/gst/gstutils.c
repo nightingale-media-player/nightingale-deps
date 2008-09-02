@@ -29,6 +29,12 @@ static int n_buffer_probes = 0;
 static int n_event_probes = 0;
 
 static gboolean
+probe_do_nothing (GstPad * pad, GstMiniObject * obj, gpointer data)
+{
+  return TRUE;
+}
+
+static gboolean
 data_probe (GstPad * pad, GstMiniObject * obj, gpointer data)
 {
   n_data_probes++;
@@ -74,11 +80,23 @@ GST_START_TEST (test_buffer_probe_n_times)
   gst_bin_add_many (GST_BIN (pipeline), fakesrc, fakesink, NULL);
   gst_element_link (fakesrc, fakesink);
 
-  pad = gst_element_get_pad (fakesink, "sink");
+  pad = gst_element_get_static_pad (fakesink, "sink");
+
+  /* add the probes we need for the test */
   gst_pad_add_data_probe (pad, G_CALLBACK (data_probe), SPECIAL_POINTER (0));
   gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe),
       SPECIAL_POINTER (1));
   gst_pad_add_event_probe (pad, G_CALLBACK (event_probe), SPECIAL_POINTER (2));
+
+  /* add some probes just to test that _full works and the data is free'd
+   * properly as it should be */
+  gst_pad_add_data_probe_full (pad, G_CALLBACK (probe_do_nothing),
+      g_strdup ("data probe string"), (GDestroyNotify) g_free);
+  gst_pad_add_buffer_probe_full (pad, G_CALLBACK (probe_do_nothing),
+      g_strdup ("buffer probe string"), (GDestroyNotify) g_free);
+  gst_pad_add_event_probe_full (pad, G_CALLBACK (probe_do_nothing),
+      g_strdup ("event probe string"), (GDestroyNotify) g_free);
+
   gst_object_unref (pad);
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
@@ -155,7 +173,7 @@ GST_START_TEST (test_buffer_probe_once)
   gst_bin_add_many (GST_BIN (pipeline), fakesrc, fakesink, NULL);
   gst_element_link (fakesrc, fakesink);
 
-  pad = gst_element_get_pad (fakesink, "sink");
+  pad = gst_element_get_static_pad (fakesink, "sink");
   id1 = gst_pad_add_data_probe (pad, G_CALLBACK (data_probe_once), &id1);
   id2 = gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe_once), &id2);
   id3 = gst_pad_add_event_probe (pad, G_CALLBACK (event_probe_once), &id3);
@@ -364,7 +382,7 @@ GST_START_TEST (test_parse_bin_from_description)
     g_assert (bin != NULL);
 
     s = g_string_new ("");
-    if ((ghost_pad = gst_element_get_pad (bin, "sink"))) {
+    if ((ghost_pad = gst_element_get_static_pad (bin, "sink"))) {
       g_assert (GST_IS_GHOST_PAD (ghost_pad));
 
       target_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (ghost_pad));
@@ -381,7 +399,7 @@ GST_START_TEST (test_parse_bin_from_description)
       gst_object_unref (ghost_pad);
     }
 
-    if ((ghost_pad = gst_element_get_pad (bin, "src"))) {
+    if ((ghost_pad = gst_element_get_static_pad (bin, "src"))) {
       g_assert (GST_IS_GHOST_PAD (ghost_pad));
 
       target_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (ghost_pad));
@@ -590,7 +608,7 @@ GST_START_TEST (test_set_value_from_string)
 
 GST_END_TEST;
 
-Suite *
+static Suite *
 gst_utils_suite (void)
 {
   Suite *s = suite_create ("GstUtils");

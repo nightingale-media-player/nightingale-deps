@@ -4,9 +4,19 @@ else
 SUBDIRS_DOCBOOK =
 endif
 
+if ENABLE_GTK_DOC
+if ENABLE_PLUGIN_DOCS
+PLUGIN_DOCS_DIRS = plugins
+else
+PLUGIN_DOCS_DIRS =
+endif
+else
+PLUGIN_DOCS_DIRS = plugins
+endif
+
 BUILT_SOURCES = version.entities
 
-SUBDIRS = design gst libs plugins $(SUBDIRS_DOCBOOK)
+SUBDIRS = design gst libs $(PLUGIN_DOCS_DIRS) $(SUBDIRS_DOCBOOK)
 DIST_SUBDIRS = design gst libs plugins faq manual pwg slides xsl
 
 EXTRA_DIST = \

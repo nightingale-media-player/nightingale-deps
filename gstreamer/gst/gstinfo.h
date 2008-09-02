@@ -213,9 +213,12 @@ struct _GstDebugCategory {
  * be defined when configuring your project, as it is compiler dependant. If it
  * is not defined, some default value is used. It is used to provide debugging
  * output with the function name of the message.
+ *
+ * Note that this is different from G_STRFUNC as we do not want the full
+ * function signature in C++ code.
  */
 #ifndef GST_FUNCTION
-#if defined (__GNUC__)
+#if defined (__GNUC__) || (defined (_MSC_VER) && _MSC_VER >= 1300)
 #  define GST_FUNCTION     ((const char*) (__FUNCTION__))
 #elif defined (G_HAVE_ISO_VARARGS)
 #  define GST_FUNCTION     ((const char*) (__func__))

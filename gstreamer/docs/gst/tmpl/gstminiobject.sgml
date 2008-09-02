@@ -164,6 +164,13 @@ GstMiniObject
 @newdata: 
 
 
+<!-- ##### STRUCT GstParamSpecMiniObject ##### -->
+<para>
+
+</para>
+
+@parent_instance: 
+
 <!-- ##### FUNCTION gst_param_spec_mini_object ##### -->
 <para>
 
@@ -196,6 +203,15 @@ GstMiniObject
 
 
 <!-- ##### FUNCTION gst_value_get_mini_object ##### -->
+<para>
+
+</para>
+
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_value_dup_mini_object ##### -->
 <para>
 
 </para>

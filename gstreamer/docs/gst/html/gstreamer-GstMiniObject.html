@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstMiniObject</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstMessage.html" title="GstMessage">
 <link rel="next" href="GstObject.html" title="GstObject">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,64 +26,61 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstObject.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2714847" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2715301" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstMiniObject.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-GstMiniObject.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstMiniObject"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2714847"></a><span class="refentrytitle">GstMiniObject</span>
-</h2>
-<p>GstMiniObject &#8212; Lightweight base class for the GStreamer object hierarchy</p>
+<h2><span class="refentrytitle"><a name="gstreamer-GstMiniObject.top_of_page"></a>GstMiniObject</span></h2>
+<p>GstMiniObject — Lightweight base class for the GStreamer object hierarchy</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-GstMiniObject.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-                    <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>;
-enum                <a href="gstreamer-GstMiniObject.html#GstMiniObjectFlags">GstMiniObjectFlags</a>;
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      (<a href="gstreamer-GstMiniObject.html#GstMiniObjectCopyFunction">*GstMiniObjectCopyFunction</a>)        (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *obj);
-void                (<a href="gstreamer-GstMiniObject.html#GstMiniObjectFinalizeFunction">*GstMiniObjectFinalizeFunction</a>)    (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *obj);
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAGS:CAPS">GST_MINI_OBJECT_FLAGS</a>               (obj)
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-IS-SET:CAPS">GST_MINI_OBJECT_FLAG_IS_SET</a>         (obj,flag)
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-SET:CAPS">GST_MINI_OBJECT_FLAG_SET</a>            (obj,flag)
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-UNSET:CAPS">GST_MINI_OBJECT_FLAG_UNSET</a>          (obj,flag)
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-REFCOUNT:CAPS">GST_MINI_OBJECT_REFCOUNT</a>            (obj)
-#define             <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-REFCOUNT-VALUE:CAPS">GST_MINI_OBJECT_REFCOUNT_VALUE</a>      (obj)
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      <a href="gstreamer-GstMiniObject.html#gst-mini-object-new">gst_mini_object_new</a>                 (GType type);
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      <a href="gstreamer-GstMiniObject.html#gst-mini-object-copy">gst_mini_object_copy</a>                (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-gboolean            <a href="gstreamer-GstMiniObject.html#gst-mini-object-is-writable">gst_mini_object_is_writable</a>         (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      <a href="gstreamer-GstMiniObject.html#gst-mini-object-make-writable">gst_mini_object_make_writable</a>       (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      <a href="gstreamer-GstMiniObject.html#gst-mini-object-ref">gst_mini_object_ref</a>                 (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-void                <a href="gstreamer-GstMiniObject.html#gst-mini-object-unref">gst_mini_object_unref</a>               (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-void                <a href="gstreamer-GstMiniObject.html#gst-mini-object-replace">gst_mini_object_replace</a>             (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> **olddata,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *newdata);
-GParamSpec*         <a href="gstreamer-GstMiniObject.html#gst-param-spec-mini-object">gst_param_spec_mini_object</a>          (const char *name,
+                    <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>;
+enum                <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObjectFlags" title="enum GstMiniObjectFlags">GstMiniObjectFlags</a>;
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObjectCopyFunction" title="GstMiniObjectCopyFunction ()">*GstMiniObjectCopyFunction</a>)        (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *obj);
+void                (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObjectFinalizeFunction" title="GstMiniObjectFinalizeFunction ()">*GstMiniObjectFinalizeFunction</a>)    (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *obj);
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAGS:CAPS" title="GST_MINI_OBJECT_FLAGS()">GST_MINI_OBJECT_FLAGS</a>               (obj)
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-IS-SET:CAPS" title="GST_MINI_OBJECT_FLAG_IS_SET()">GST_MINI_OBJECT_FLAG_IS_SET</a>         (obj,flag)
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-SET:CAPS" title="GST_MINI_OBJECT_FLAG_SET()">GST_MINI_OBJECT_FLAG_SET</a>            (obj,flag)
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-UNSET:CAPS" title="GST_MINI_OBJECT_FLAG_UNSET()">GST_MINI_OBJECT_FLAG_UNSET</a>          (obj,flag)
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-REFCOUNT:CAPS" title="GST_MINI_OBJECT_REFCOUNT()">GST_MINI_OBJECT_REFCOUNT</a>            (obj)
+#define             <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-REFCOUNT-VALUE:CAPS" title="GST_MINI_OBJECT_REFCOUNT_VALUE()">GST_MINI_OBJECT_REFCOUNT_VALUE</a>      (obj)
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-new" title="gst_mini_object_new ()">gst_mini_object_new</a>                 (GType type);
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-copy" title="gst_mini_object_copy ()">gst_mini_object_copy</a>                (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+gboolean            <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-is-writable" title="gst_mini_object_is_writable ()">gst_mini_object_is_writable</a>         (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-make-writable" title="gst_mini_object_make_writable ()">gst_mini_object_make_writable</a>       (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-ref" title="gst_mini_object_ref ()">gst_mini_object_ref</a>                 (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+void                <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-unref" title="gst_mini_object_unref ()">gst_mini_object_unref</a>               (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+void                <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-replace" title="gst_mini_object_replace ()">gst_mini_object_replace</a>             (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> **olddata,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *newdata);
+                    <a class="link" href="gstreamer-GstMiniObject.html#GstParamSpecMiniObject" title="GstParamSpecMiniObject">GstParamSpecMiniObject</a>;
+GParamSpec*         <a class="link" href="gstreamer-GstMiniObject.html#gst-param-spec-mini-object" title="gst_param_spec_mini_object ()">gst_param_spec_mini_object</a>          (const char *name,
                                                          const char *nick,
                                                          const char *blurb,
                                                          GType object_type,
                                                          GParamFlags flags);
-void                <a href="gstreamer-GstMiniObject.html#gst-value-set-mini-object">gst_value_set_mini_object</a>           (GValue *value,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-void                <a href="gstreamer-GstMiniObject.html#gst-value-take-mini-object">gst_value_take_mini_object</a>          (GValue *value,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);
-<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      <a href="gstreamer-GstMiniObject.html#gst-value-get-mini-object">gst_value_get_mini_object</a>           (const GValue *value);
-
-
+void                <a class="link" href="gstreamer-GstMiniObject.html#gst-value-set-mini-object" title="gst_value_set_mini_object ()">gst_value_set_mini_object</a>           (GValue *value,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+void                <a class="link" href="gstreamer-GstMiniObject.html#gst-value-take-mini-object" title="gst_value_take_mini_object ()">gst_value_take_mini_object</a>          (GValue *value,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-value-get-mini-object" title="gst_value_get_mini_object ()">gst_value_get_mini_object</a>           (const GValue *value);
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      <a class="link" href="gstreamer-GstMiniObject.html#gst-value-dup-mini-object" title="gst_value_dup_mini_object ()">gst_value_dup_mini_object</a>           (const GValue *value);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2715301"></a><h2>Description</h2>
+<a name="gstreamer-GstMiniObject.description"></a><h2>Description</h2>
 <p>
-<a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a> is a baseclass like <span class="type">GObject</span>, but has been stripped down of 
+<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject"><span class="type">GstMiniObject</span></a> is a baseclass like <span class="type">GObject</span>, but has been stripped down of 
 features to be fast and small.
 It offers sub-classing and ref-counting in the same way as <span class="type">GObject</span> does.
 It has no properties and no signal-support though.
@@ -95,11 +92,10 @@ Last reviewed on 2005-11-23 (0.9.5)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2715350"></a><h2>Details</h2>
+<a name="gstreamer-GstMiniObject.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2715360"></a><h3>
-<a name="GstMiniObject"></a>GstMiniObject</h3>
-<a class="indexterm" name="id2715373"></a><pre class="programlisting">typedef struct {
+<a name="GstMiniObject"></a><h3>GstMiniObject</h3>
+<pre class="programlisting">typedef struct {
   GTypeInstance instance;
   gint refcount;
   guint flags;
@@ -114,17 +110,17 @@ Base class for refcounted lightweight objects.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GTypeInstance&#160;<em class="structfield"><code>instance</code></em>;</span></td>
+<td><p><span class="term">GTypeInstance <em class="structfield"><code>instance</code></em>;</span></p></td>
 <td> type instance
 </td>
 </tr>
 <tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>refcount</code></em>;</span></td>
+<td><p><span class="term">gint <em class="structfield"><code>refcount</code></em>;</span></p></td>
 <td> atomic refcount
 </td>
 </tr>
 <tr>
-<td><span class="term">guint&#160;<em class="structfield"><code>flags</code></em>;</span></td>
+<td><p><span class="term">guint <em class="structfield"><code>flags</code></em>;</span></p></td>
 <td> extra flags.
 </td>
 </tr>
@@ -133,9 +129,8 @@ Base class for refcounted lightweight objects.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715461"></a><h3>
-<a name="GstMiniObjectFlags"></a>enum GstMiniObjectFlags</h3>
-<a class="indexterm" name="id2715474"></a><pre class="programlisting">typedef enum
+<a name="GstMiniObjectFlags"></a><h3>enum GstMiniObjectFlags</h3>
+<pre class="programlisting">typedef enum
 {
   GST_MINI_OBJECT_FLAG_READONLY = (1&lt;&lt;0),
   /* padding */
@@ -151,12 +146,12 @@ Flags for the padtemplate</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-MINI-OBJECT-FLAG-READONLY:CAPS"></a><code class="literal">GST_MINI_OBJECT_FLAG_READONLY</code></span></td>
+<td><p><a name="GST-MINI-OBJECT-FLAG-READONLY:CAPS"></a><span class="term"><code class="literal">GST_MINI_OBJECT_FLAG_READONLY</code></span></p></td>
 <td> is the miniobject readonly or writable
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MINI-OBJECT-FLAG-LAST:CAPS"></a><code class="literal">GST_MINI_OBJECT_FLAG_LAST</code></span></td>
+<td><p><a name="GST-MINI-OBJECT-FLAG-LAST:CAPS"></a><span class="term"><code class="literal">GST_MINI_OBJECT_FLAG_LAST</code></span></p></td>
 <td> first flag that can be used by subclasses.
 </td>
 </tr>
@@ -165,9 +160,8 @@ Flags for the padtemplate</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715548"></a><h3>
-<a name="GstMiniObjectCopyFunction"></a>GstMiniObjectCopyFunction ()</h3>
-<a class="indexterm" name="id2715562"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      (*GstMiniObjectCopyFunction)        (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *obj);</pre>
+<a name="GstMiniObjectCopyFunction"></a><h3>GstMiniObjectCopyFunction ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      (*GstMiniObjectCopyFunction)        (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *obj);</pre>
 <p>
 Virtual function prototype for methods to create copies of instances.</p>
 <p>
@@ -177,12 +171,12 @@ Virtual function prototype for methods to create copies of instances.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to copy
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> reference to cloned instance.
 </td>
 </tr>
@@ -191,13 +185,12 @@ Virtual function prototype for methods to create copies of instances.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715624"></a><h3>
-<a name="GstMiniObjectFinalizeFunction"></a>GstMiniObjectFinalizeFunction ()</h3>
-<a class="indexterm" name="id2715637"></a><pre class="programlisting">void                (*GstMiniObjectFinalizeFunction)    (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *obj);</pre>
+<a name="GstMiniObjectFinalizeFunction"></a><h3>GstMiniObjectFinalizeFunction ()</h3>
+<pre class="programlisting">void                (*GstMiniObjectFinalizeFunction)    (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *obj);</pre>
 <p>
 Virtual function prototype for methods to free ressources used by
 mini-objects. Subclasses of the mini object are allowed to revive the
-passed object by doing a <a href="gstreamer-GstMiniObject.html#gst-mini-object-ref"><code class="function">gst_mini_object_ref()</code></a>. If the object is not
+passed object by doing a <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-ref" title="gst_mini_object_ref ()"><code class="function">gst_mini_object_ref()</code></a>. If the object is not
 revived after the finalize function, the memory associated with the
 object is freed.</p>
 <p>
@@ -206,7 +199,7 @@ object is freed.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to finalize
 </td>
 </tr></tbody>
@@ -214,9 +207,8 @@ object is freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715703"></a><h3>
-<a name="GST-MINI-OBJECT-FLAGS:CAPS"></a>GST_MINI_OBJECT_FLAGS()</h3>
-<a class="indexterm" name="id2715717"></a><pre class="programlisting">#define GST_MINI_OBJECT_FLAGS(obj)  (GST_MINI_OBJECT_CAST(obj)-&gt;flags)
+<a name="GST-MINI-OBJECT-FLAGS:CAPS"></a><h3>GST_MINI_OBJECT_FLAGS()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_FLAGS(obj)  (GST_MINI_OBJECT_CAST(obj)-&gt;flags)
 </pre>
 <p>
 This macro returns the entire set of flags for the mini-object.</p>
@@ -226,7 +218,7 @@ This macro returns the entire set of flags for the mini-object.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to return flags for.
 </td>
 </tr></tbody>
@@ -234,9 +226,8 @@ This macro returns the entire set of flags for the mini-object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715756"></a><h3>
-<a name="GST-MINI-OBJECT-FLAG-IS-SET:CAPS"></a>GST_MINI_OBJECT_FLAG_IS_SET()</h3>
-<a class="indexterm" name="id2715770"></a><pre class="programlisting">#define GST_MINI_OBJECT_FLAG_IS_SET(obj,flag)        !!(GST_MINI_OBJECT_FLAGS (obj) &amp; (flag))
+<a name="GST-MINI-OBJECT-FLAG-IS-SET:CAPS"></a><h3>GST_MINI_OBJECT_FLAG_IS_SET()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_FLAG_IS_SET(obj,flag)        !!(GST_MINI_OBJECT_FLAGS (obj) &amp; (flag))
 </pre>
 <p>
 This macro checks to see if the given flag is set.</p>
@@ -247,12 +238,12 @@ This macro checks to see if the given flag is set.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to check for flags.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flag</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flag</code></em> :</span></p></td>
 <td> Flag to check for
 </td>
 </tr>
@@ -261,9 +252,8 @@ This macro checks to see if the given flag is set.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715824"></a><h3>
-<a name="GST-MINI-OBJECT-FLAG-SET:CAPS"></a>GST_MINI_OBJECT_FLAG_SET()</h3>
-<a class="indexterm" name="id2715838"></a><pre class="programlisting">#define GST_MINI_OBJECT_FLAG_SET(obj,flag)           (GST_MINI_OBJECT_FLAGS (obj) |= (flag))
+<a name="GST-MINI-OBJECT-FLAG-SET:CAPS"></a><h3>GST_MINI_OBJECT_FLAG_SET()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_FLAG_SET(obj,flag)           (GST_MINI_OBJECT_FLAGS (obj) |= (flag))
 </pre>
 <p>
 This macro sets the given bits.</p>
@@ -274,12 +264,12 @@ This macro sets the given bits.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to set flag in.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flag</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flag</code></em> :</span></p></td>
 <td> Flag to set, can by any number of bits in guint32.
 </td>
 </tr>
@@ -288,9 +278,8 @@ This macro sets the given bits.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715890"></a><h3>
-<a name="GST-MINI-OBJECT-FLAG-UNSET:CAPS"></a>GST_MINI_OBJECT_FLAG_UNSET()</h3>
-<a class="indexterm" name="id2715904"></a><pre class="programlisting">#define GST_MINI_OBJECT_FLAG_UNSET(obj,flag)         (GST_MINI_OBJECT_FLAGS (obj) &amp;= ~(flag))
+<a name="GST-MINI-OBJECT-FLAG-UNSET:CAPS"></a><h3>GST_MINI_OBJECT_FLAG_UNSET()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_FLAG_UNSET(obj,flag)         (GST_MINI_OBJECT_FLAGS (obj) &amp;= ~(flag))
 </pre>
 <p>
 This macro usets the given bits.</p>
@@ -301,12 +290,12 @@ This macro usets the given bits.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> MiniObject to unset flag in.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flag</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flag</code></em> :</span></p></td>
 <td> Flag to set, must be a single bit in guint32.
 </td>
 </tr>
@@ -315,9 +304,8 @@ This macro usets the given bits.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2715958"></a><h3>
-<a name="GST-MINI-OBJECT-REFCOUNT:CAPS"></a>GST_MINI_OBJECT_REFCOUNT()</h3>
-<a class="indexterm" name="id2715973"></a><pre class="programlisting">#define GST_MINI_OBJECT_REFCOUNT(obj)           ((GST_MINI_OBJECT_CAST(obj))-&gt;refcount)
+<a name="GST-MINI-OBJECT-REFCOUNT:CAPS"></a><h3>GST_MINI_OBJECT_REFCOUNT()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_REFCOUNT(obj)           ((GST_MINI_OBJECT_CAST(obj))-&gt;refcount)
 </pre>
 <p>
 Get access to the reference count field of the mini-object.</p>
@@ -327,17 +315,16 @@ Get access to the reference count field of the mini-object.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject"><span class="type">GstMiniObject</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716020"></a><h3>
-<a name="GST-MINI-OBJECT-REFCOUNT-VALUE:CAPS"></a>GST_MINI_OBJECT_REFCOUNT_VALUE()</h3>
-<a class="indexterm" name="id2716034"></a><pre class="programlisting">#define GST_MINI_OBJECT_REFCOUNT_VALUE(obj)     (g_atomic_int_get (&amp;(GST_MINI_OBJECT_CAST(obj))-&gt;refcount))
+<a name="GST-MINI-OBJECT-REFCOUNT-VALUE:CAPS"></a><h3>GST_MINI_OBJECT_REFCOUNT_VALUE()</h3>
+<pre class="programlisting">#define GST_MINI_OBJECT_REFCOUNT_VALUE(obj)     (g_atomic_int_get (&amp;(GST_MINI_OBJECT_CAST(obj))-&gt;refcount))
 </pre>
 <p>
 Get the reference count value of the mini-object.</p>
@@ -347,17 +334,16 @@ Get the reference count value of the mini-object.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject"><span class="type">GstMiniObject</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716081"></a><h3>
-<a name="gst-mini-object-new"></a>gst_mini_object_new ()</h3>
-<a class="indexterm" name="id2716094"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      gst_mini_object_new                 (GType type);</pre>
+<a name="gst-mini-object-new"></a><h3>gst_mini_object_new ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_mini_object_new                 (GType type);</pre>
 <p>
 Creates a new mini-object of the desired type.
 </p>
@@ -370,12 +356,12 @@ MT safe</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> the <span class="type">GType</span> of the mini-object to create
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the new mini-object.
 </td>
 </tr>
@@ -384,9 +370,8 @@ MT safe</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716167"></a><h3>
-<a name="gst-mini-object-copy"></a>gst_mini_object_copy ()</h3>
-<a class="indexterm" name="id2716180"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      gst_mini_object_copy                (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-mini-object-copy"></a><h3>gst_mini_object_copy ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_mini_object_copy                (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Creates a copy of the mini-object.
 </p>
@@ -399,12 +384,12 @@ MT safe</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> the mini-object to copy
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the new mini-object.
 </td>
 </tr>
@@ -413,12 +398,11 @@ MT safe</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716246"></a><h3>
-<a name="gst-mini-object-is-writable"></a>gst_mini_object_is_writable ()</h3>
-<a class="indexterm" name="id2716260"></a><pre class="programlisting">gboolean            gst_mini_object_is_writable         (const <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-mini-object-is-writable"></a><h3>gst_mini_object_is_writable ()</h3>
+<pre class="programlisting">gboolean            gst_mini_object_is_writable         (const <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Checks if a mini-object is writable.  A mini-object is writable
-if the reference count is one and the <a href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-READONLY:CAPS"><span class="type">GST_MINI_OBJECT_FLAG_READONLY</span></a>
+if the reference count is one and the <a class="link" href="gstreamer-GstMiniObject.html#GST-MINI-OBJECT-FLAG-READONLY:CAPS"><span class="type">GST_MINI_OBJECT_FLAG_READONLY</span></a>
 flag is not set.  Modification of a mini-object should only be
 done after verifying that it is writable.
 </p>
@@ -431,12 +415,12 @@ MT safe</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> the mini-object to check
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the object is writable.
 </td>
 </tr>
@@ -445,9 +429,8 @@ MT safe</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716338"></a><h3>
-<a name="gst-mini-object-make-writable"></a>gst_mini_object_make_writable ()</h3>
-<a class="indexterm" name="id2716352"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      gst_mini_object_make_writable       (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-mini-object-make-writable"></a><h3>gst_mini_object_make_writable ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_mini_object_make_writable       (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Checks if a mini-object is writable.  If not, a writable copy is made and
 returned.  This gives away the reference to the original mini object,
@@ -462,12 +445,12 @@ MT safe</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> the mini-object to make writable
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a mini-object (possibly the same pointer) that is writable.
 </td>
 </tr>
@@ -476,19 +459,18 @@ MT safe</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716421"></a><h3>
-<a name="gst-mini-object-ref"></a>gst_mini_object_ref ()</h3>
-<a class="indexterm" name="id2716435"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      gst_mini_object_ref                 (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-mini-object-ref"></a><h3>gst_mini_object_ref ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_mini_object_ref                 (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Increase the reference count of the mini-object.
 </p>
 <p>
 Note that the refcount affects the writeability
-of <em class="parameter"><code>mini</code></em>-object, see <a href="gstreamer-GstMiniObject.html#gst-mini-object-is-writable"><code class="function">gst_mini_object_is_writable()</code></a>. It is 
+of <em class="parameter"><code>mini</code></em>-object, see <a class="link" href="gstreamer-GstMiniObject.html#gst-mini-object-is-writable" title="gst_mini_object_is_writable ()"><code class="function">gst_mini_object_is_writable()</code></a>. It is 
 important to note that keeping additional references to
 GstMiniObject instances can potentially increase the number
 of memcpy operations in a pipeline, especially if the miniobject
-is a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a>.</p>
+is a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>.</p>
 <p>
 
 </p>
@@ -496,12 +478,12 @@ is a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> the mini-object
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the mini-object.
 </td>
 </tr>
@@ -510,9 +492,8 @@ is a <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716529"></a><h3>
-<a name="gst-mini-object-unref"></a>gst_mini_object_unref ()</h3>
-<a class="indexterm" name="id2716542"></a><pre class="programlisting">void                gst_mini_object_unref               (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-mini-object-unref"></a><h3>gst_mini_object_unref ()</h3>
+<pre class="programlisting">void                gst_mini_object_unref               (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Decreases the reference count of the mini-object, possibly freeing
 the mini-object.</p>
@@ -522,7 +503,7 @@ the mini-object.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> the mini-object
 </td>
 </tr></tbody>
@@ -530,10 +511,9 @@ the mini-object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716594"></a><h3>
-<a name="gst-mini-object-replace"></a>gst_mini_object_replace ()</h3>
-<a class="indexterm" name="id2716607"></a><pre class="programlisting">void                gst_mini_object_replace             (<a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> **olddata,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *newdata);</pre>
+<a name="gst-mini-object-replace"></a><h3>gst_mini_object_replace ()</h3>
+<pre class="programlisting">void                gst_mini_object_replace             (<a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> **olddata,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *newdata);</pre>
 <p>
 Modifies a pointer to point to a new mini-object.  The modification
 is done atomically, and the reference counts are updated correctly.
@@ -545,12 +525,12 @@ Either <em class="parameter"><code>newdata</code></em> and the value pointed to 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>olddata</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>olddata</code></em> :</span></p></td>
 <td> pointer to a pointer to a mini-object to be replaced
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>newdata</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>newdata</code></em> :</span></p></td>
 <td> pointer to new mini-object
 </td>
 </tr>
@@ -559,15 +539,36 @@ Either <em class="parameter"><code>newdata</code></em> and the value pointed to 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716696"></a><h3>
-<a name="gst-param-spec-mini-object"></a>gst_param_spec_mini_object ()</h3>
-<a class="indexterm" name="id2716710"></a><pre class="programlisting">GParamSpec*         gst_param_spec_mini_object          (const char *name,
+<a name="GstParamSpecMiniObject"></a><h3>GstParamSpecMiniObject</h3>
+<pre class="programlisting">typedef struct {
+  GParamSpec parent_instance;
+} GstParamSpecMiniObject;
+</pre>
+<p>
+A <code class="literal">GParamSpec</code> derived structure that contains the meta data
+for <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject"><code class="literal">GstMiniObject</code></a> properties.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term">GParamSpec <em class="structfield"><code>parent_instance</code></em>;</span></p></td>
+<td> private <code class="literal">GParamSpec</code> portion
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-param-spec-mini-object"></a><h3>gst_param_spec_mini_object ()</h3>
+<pre class="programlisting">GParamSpec*         gst_param_spec_mini_object          (const char *name,
                                                          const char *nick,
                                                          const char *blurb,
                                                          GType object_type,
                                                          GParamFlags flags);</pre>
 <p>
-Creates a new <span class="type">GParamSpec</span> instance that hold <a href="gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a> references.</p>
+Creates a new <span class="type">GParamSpec</span> instance that hold <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject"><span class="type">GstMiniObject</span></a> references.</p>
 <p>
 
 </p>
@@ -575,32 +576,32 @@ Creates a new <span class="type">GParamSpec</span> instance that hold <a href="g
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the canonical name of the property
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>nick</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nick</code></em> :</span></p></td>
 <td> the nickname of the property
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>blurb</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>blurb</code></em> :</span></p></td>
 <td> a short description of the property
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>object_type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>object_type</code></em> :</span></p></td>
 <td> the <span class="type">GstMiniObjectType</span> for the property
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
 <td> a combination of <span class="type">GParamFlags</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly allocated <span class="type">GParamSpec</span> instance
 </td>
 </tr>
@@ -609,10 +610,9 @@ Creates a new <span class="type">GParamSpec</span> instance that hold <a href="g
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2716901"></a><h3>
-<a name="gst-value-set-mini-object"></a>gst_value_set_mini_object ()</h3>
-<a class="indexterm" name="id2716915"></a><pre class="programlisting">void                gst_value_set_mini_object           (GValue *value,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-value-set-mini-object"></a><h3>gst_value_set_mini_object ()</h3>
+<pre class="programlisting">void                gst_value_set_mini_object           (GValue *value,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Set the contents of a <code class="literal">GST_TYPE_MINI_OBJECT</code> derived <span class="type">GValue</span> to
 <em class="parameter"><code>mini_object</code></em>.
@@ -624,12 +624,12 @@ The caller retains ownership of the reference.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td>       a valid <span class="type">GValue</span> of <code class="literal">GST_TYPE_MINI_OBJECT</code> derived type
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> mini object value to set
 </td>
 </tr>
@@ -638,10 +638,9 @@ The caller retains ownership of the reference.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2717034"></a><h3>
-<a name="gst-value-take-mini-object"></a>gst_value_take_mini_object ()</h3>
-<a class="indexterm" name="id2717048"></a><pre class="programlisting">void                gst_value_take_mini_object          (GValue *value,
-                                                         <a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a> *mini_object);</pre>
+<a name="gst-value-take-mini-object"></a><h3>gst_value_take_mini_object ()</h3>
+<pre class="programlisting">void                gst_value_take_mini_object          (GValue *value,
+                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_object);</pre>
 <p>
 Set the contents of a <code class="literal">GST_TYPE_MINI_OBJECT</code> derived <span class="type">GValue</span> to
 <em class="parameter"><code>mini_object</code></em>.
@@ -654,12 +653,12 @@ the caller doesn't have to unref it any more.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td>       a valid <span class="type">GValue</span> of <code class="literal">GST_TYPE_MINI_OBJECT</code> derived type
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mini_object</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mini_object</code></em> :</span></p></td>
 <td> mini object value to take
 </td>
 </tr>
@@ -668,9 +667,8 @@ the caller doesn't have to unref it any more.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2717172"></a><h3>
-<a name="gst-value-get-mini-object"></a>gst_value_get_mini_object ()</h3>
-<a class="indexterm" name="id2717186"></a><pre class="programlisting"><a href="gstreamer-GstMiniObject.html#GstMiniObject">GstMiniObject</a>*      gst_value_get_mini_object           (const GValue *value);</pre>
+<a name="gst-value-get-mini-object"></a><h3>gst_value_get_mini_object ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_value_get_mini_object           (const GValue *value);</pre>
 <p>
 Get the contents of a <code class="literal">GST_TYPE_MINI_OBJECT</code> derived <span class="type">GValue</span>.
 Does not increase the refcount of the returned object.</p>
@@ -681,19 +679,51 @@ Does not increase the refcount of the returned object.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td>   a valid <span class="type">GValue</span> of <code class="literal">GST_TYPE_MINI_OBJECT</code> derived type
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> mini object contents of <em class="parameter"><code>value</code></em>
 </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-value-dup-mini-object"></a><h3>gst_value_dup_mini_object ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a>*      gst_value_dup_mini_object           (const GValue *value);</pre>
+<p>
+Get the contents of a <code class="literal">GST_TYPE_MINI_OBJECT</code> derived <span class="type">GValue</span>,
+increasing its reference count.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>   a valid <span class="type">GValue</span> of <code class="literal">GST_TYPE_MINI_OBJECT</code> derived type
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> mini object contents of <em class="parameter"><code>value</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.20
+</p>
 </div>
 </div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

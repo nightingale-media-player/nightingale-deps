@@ -1,22 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstBaseTransform</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="prev" href="GstBaseSink.html" title="GstBaseSink">
 <link rel="next" href="GstPushSrc.html" title="GstPushSrc">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-libs.html" title="Part&#160;I.&#160;GStreamer Libraries">
+<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
 <link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 <link rel="index" href="ix02.html" title="Index of deprecated symbols">
 </head>
@@ -29,64 +29,58 @@
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="GstPushSrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2568188" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2568601" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2568529" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2568568" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstBaseTransform.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstBaseTransform.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstBaseTransform.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstBaseTransform.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstBaseTransform"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2568188"></a><span class="refentrytitle">GstBaseTransform</span>
-</h2>
-<p>GstBaseTransform &#8212; Base class for simple transform filters</p>
+<h2><span class="refentrytitle"><a name="GstBaseTransform.top_of_page"></a>GstBaseTransform</span></h2>
+<p>GstBaseTransform — Base class for simple transform filters</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="GstBaseTransform.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/base/gstbasetransform.h&gt;
 
-
-                    <a href="GstBaseTransform.html#GstBaseTransform-struct">GstBaseTransform</a>;
-                    <a href="GstBaseTransform.html#GstBaseTransformClass">GstBaseTransformClass</a>;
-gboolean            <a href="GstBaseTransform.html#gst-base-transform-is-passthrough">gst_base_transform_is_passthrough</a>   (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
-void                <a href="GstBaseTransform.html#gst-base-transform-set-passthrough">gst_base_transform_set_passthrough</a>  (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+                    <a class="link" href="GstBaseTransform.html#GstBaseTransform-struct" title="GstBaseTransform">GstBaseTransform</a>;
+                    <a class="link" href="GstBaseTransform.html#GstBaseTransformClass" title="GstBaseTransformClass">GstBaseTransformClass</a>;
+gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-passthrough" title="gst_base_transform_is_passthrough ()">gst_base_transform_is_passthrough</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-passthrough" title="gst_base_transform_set_passthrough ()">gst_base_transform_set_passthrough</a>  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean passthrough);
-gboolean            <a href="GstBaseTransform.html#gst-base-transform-is-in-place">gst_base_transform_is_in_place</a>      (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
-void                <a href="GstBaseTransform.html#gst-base-transform-set-in-place">gst_base_transform_set_in_place</a>     (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-in-place" title="gst_base_transform_is_in_place ()">gst_base_transform_is_in_place</a>      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-in-place" title="gst_base_transform_set_in_place ()">gst_base_transform_set_in_place</a>     (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean in_place);
-gboolean            <a href="GstBaseTransform.html#gst-base-transform-is-qos-enabled">gst_base_transform_is_qos_enabled</a>   (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
-void                <a href="GstBaseTransform.html#gst-base-transform-set-qos-enabled">gst_base_transform_set_qos_enabled</a>  (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-qos-enabled" title="gst_base_transform_is_qos_enabled ()">gst_base_transform_is_qos_enabled</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-qos-enabled" title="gst_base_transform_set_qos_enabled ()">gst_base_transform_set_qos_enabled</a>  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean enabled);
-void                <a href="GstBaseTransform.html#gst-base-transform-update-qos">gst_base_transform_update_qos</a>       (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-update-qos" title="gst_base_transform_update_qos ()">gst_base_transform_update_qos</a>       (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gdouble proportion,
                                                          GstClockTimeDiff diff,
                                                          GstClockTime timestamp);
-void                <a href="GstBaseTransform.html#gst-base-transform-set-gap-aware">gst_base_transform_set_gap_aware</a>    (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-gap-aware" title="gst_base_transform_set_gap_aware ()">gst_base_transform_set_gap_aware</a>    (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean gap_aware);
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-NAME:CAPS">GST_BASE_TRANSFORM_SINK_NAME</a>
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-NAME:CAPS">GST_BASE_TRANSFORM_SRC_NAME</a>
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-PAD:CAPS">GST_BASE_TRANSFORM_SINK_PAD</a>         (obj)
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-PAD:CAPS">GST_BASE_TRANSFORM_SRC_PAD</a>          (obj)
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-FLOW-DROPPED:CAPS">GST_BASE_TRANSFORM_FLOW_DROPPED</a>
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-LOCK:CAPS">GST_BASE_TRANSFORM_LOCK</a>             (obj)
-#define             <a href="GstBaseTransform.html#GST-BASE-TRANSFORM-UNLOCK:CAPS">GST_BASE_TRANSFORM_UNLOCK</a>           (obj)
-
-
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-NAME:CAPS" title="GST_BASE_TRANSFORM_SINK_NAME">GST_BASE_TRANSFORM_SINK_NAME</a>
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-NAME:CAPS" title="GST_BASE_TRANSFORM_SRC_NAME">GST_BASE_TRANSFORM_SRC_NAME</a>
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-PAD:CAPS" title="GST_BASE_TRANSFORM_SINK_PAD()">GST_BASE_TRANSFORM_SINK_PAD</a>         (obj)
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-PAD:CAPS" title="GST_BASE_TRANSFORM_SRC_PAD()">GST_BASE_TRANSFORM_SRC_PAD</a>          (obj)
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-FLOW-DROPPED:CAPS" title="GST_BASE_TRANSFORM_FLOW_DROPPED">GST_BASE_TRANSFORM_FLOW_DROPPED</a>
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-LOCK:CAPS" title="GST_BASE_TRANSFORM_LOCK()">GST_BASE_TRANSFORM_LOCK</a>             (obj)
+#define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-UNLOCK:CAPS" title="GST_BASE_TRANSFORM_UNLOCK()">GST_BASE_TRANSFORM_UNLOCK</a>           (obj)
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2568529"></a><h2>Object Hierarchy</h2>
+<a name="GstBaseTransform.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -94,14 +88,13 @@ void                <a href="GstBaseTransform.html#gst-base-transform-set-gap-aw
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2568568"></a><h2>Properties</h2>
+<a name="GstBaseTransform.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="GstBaseTransform.html#GstBaseTransform--qos">qos</a>"                      gboolean              : Read / Write
+  "<a class="link" href="GstBaseTransform.html#GstBaseTransform--qos" title='The "qos" property'>qos</a>"                      gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2568601"></a><h2>Description</h2>
+<a name="GstBaseTransform.description"></a><h2>Description</h2>
 <p>
 This base class is for filter elements that process data.
 </p>
@@ -312,22 +305,24 @@ Use Cases:
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2568943"></a><h2>Details</h2>
+<a name="GstBaseTransform.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2568953"></a><h3>
-<a name="GstBaseTransform-struct"></a>GstBaseTransform</h3>
-<a class="indexterm" name="id2568966"></a><pre class="programlisting">typedef struct _GstBaseTransform GstBaseTransform;</pre>
+<a name="GstBaseTransform-struct"></a><h3>GstBaseTransform</h3>
+<pre class="programlisting">typedef struct _GstBaseTransform GstBaseTransform;</pre>
 <p>
-The opaque <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> data structure.</p>
+The opaque <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> data structure.</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2568994"></a><h3>
-<a name="GstBaseTransformClass"></a>GstBaseTransformClass</h3>
-<a class="indexterm" name="id2569006"></a><pre class="programlisting">typedef struct {
+<a name="GstBaseTransformClass"></a><h3>GstBaseTransformClass</h3>
+<pre class="programlisting">typedef struct {
   GstElementClass parent_class;
 
   /* virtual methods for subclasses */
@@ -382,26 +377,26 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GstElementClass&#160;<em class="structfield"><code>parent_class</code></em>;</span></td>
+<td><p><span class="term">GstElementClass <em class="structfield"><code>parent_class</code></em>;</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>transform_caps</code></em>&#160;()</span></td>
-<td> Optional.  given the pad in this direction and the given
+<td><p><span class="term"><em class="structfield"><code>transform_caps</code></em> ()</span></p></td>
+<td> Optional.  Given the pad in this direction and the given
                  caps, what caps are allowed on the other pad in this
                  element ?
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>fixate_caps</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>fixate_caps</code></em> ()</span></p></td>
 <td>    Optional. Given the pad in this direction and the given
                  caps, fixate the caps on the other pad.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>transform_size</code></em>&#160;()</span></td>
-<td> Optional. given the size of a buffer in the given direction
+<td><p><span class="term"><em class="structfield"><code>transform_size</code></em> ()</span></p></td>
+<td> Optional. Given the size of a buffer in the given direction
                  with the given caps, calculate the size in bytes of a buffer
                  on the other pad with the given other caps.
                  The default implementation uses get_unit_size and keeps
@@ -409,39 +404,39 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>get_unit_size</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>get_unit_size</code></em> ()</span></p></td>
 <td>  Required if the transform is not in-place.
                  get the size in bytes of one unit for the given caps.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>set_caps</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>set_caps</code></em> ()</span></p></td>
 <td>       allows the subclass to be notified of the actual caps set.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>start</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>start</code></em> ()</span></p></td>
 <td>          Optional.
                  Called when the element starts processing.
                  Allows opening external resources.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>stop</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>stop</code></em> ()</span></p></td>
 <td>           Optional.
                  Called when the element stops processing.
                  Allows closing external resources.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>event</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>event</code></em> ()</span></p></td>
 <td>          Optional.
                  Event handler on the sink pad. This function should return
                  TRUE if the base class should forward the event. 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>transform</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>transform</code></em> ()</span></p></td>
 <td>      Required if the element does not operate in-place.
                  Transforms one incoming buffer to one outgoing buffer.
                  The function is allowed to change size/timestamp/duration
@@ -449,19 +444,19 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>transform_ip</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>transform_ip</code></em> ()</span></p></td>
 <td>   Required if the element operates in-place.
                  Transform the incoming buffer in-place.
 </td>
 </tr>
 <tr>
-<td><span class="term">gboolean&#160;<em class="structfield"><code>passthrough_on_same_caps</code></em>;</span></td>
+<td><p><span class="term">gboolean <em class="structfield"><code>passthrough_on_same_caps</code></em>;</span></p></td>
 <td> If set to TRUE, passthrough mode will be
                            automatically enabled if the caps are the same.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>prepare_output_buffer</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>prepare_output_buffer</code></em> ()</span></p></td>
 <td> Optional.
                         Subclasses can override this to do their own
                         allocation of output buffers.  Elements that only do
@@ -471,7 +466,7 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>src_event</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>src_event</code></em> ()</span></p></td>
 <td>      Optional.
                  Event handler on the source pad.
 </td>
@@ -481,9 +476,8 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569347"></a><h3>
-<a name="gst-base-transform-is-passthrough"></a>gst_base_transform_is_passthrough ()</h3>
-<a class="indexterm" name="id2569361"></a><pre class="programlisting">gboolean            gst_base_transform_is_passthrough   (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<a name="gst-base-transform-is-passthrough"></a><h3>gst_base_transform_is_passthrough ()</h3>
+<pre class="programlisting">gboolean            gst_base_transform_is_passthrough   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 See if <em class="parameter"><code>trans</code></em> is configured as a passthrough transform.</p>
 <p>
@@ -493,12 +487,12 @@ See if <em class="parameter"><code>trans</code></em> is configured as a passthro
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> the <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to query
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> the <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to query
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE is the transform is configured in passthrough mode.
 
 MT safe.
@@ -509,9 +503,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569437"></a><h3>
-<a name="gst-base-transform-set-passthrough"></a>gst_base_transform_set_passthrough ()</h3>
-<a class="indexterm" name="id2569451"></a><pre class="programlisting">void                gst_base_transform_set_passthrough  (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+<a name="gst-base-transform-set-passthrough"></a><h3>gst_base_transform_set_passthrough ()</h3>
+<pre class="programlisting">void                gst_base_transform_set_passthrough  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean passthrough);</pre>
 <p>
 Set passthrough mode for this filter by default. This is mostly
@@ -530,12 +523,12 @@ MT safe.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> the <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to set
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> the <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to set
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>passthrough</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>passthrough</code></em> :</span></p></td>
 <td> boolean indicating passthrough mode.
 </td>
 </tr>
@@ -544,9 +537,8 @@ MT safe.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569542"></a><h3>
-<a name="gst-base-transform-is-in-place"></a>gst_base_transform_is_in_place ()</h3>
-<a class="indexterm" name="id2569555"></a><pre class="programlisting">gboolean            gst_base_transform_is_in_place      (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<a name="gst-base-transform-is-in-place"></a><h3>gst_base_transform_is_in_place ()</h3>
+<pre class="programlisting">gboolean            gst_base_transform_is_in_place      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 See if <em class="parameter"><code>trans</code></em> is configured as a in_place transform.</p>
 <p>
@@ -556,12 +548,12 @@ See if <em class="parameter"><code>trans</code></em> is configured as a in_place
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> the <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to query
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> the <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to query
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE is the transform is configured in in_place mode.
 
 MT safe.
@@ -572,9 +564,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569632"></a><h3>
-<a name="gst-base-transform-set-in-place"></a>gst_base_transform_set_in_place ()</h3>
-<a class="indexterm" name="id2569645"></a><pre class="programlisting">void                gst_base_transform_set_in_place     (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+<a name="gst-base-transform-set-in-place"></a><h3>gst_base_transform_set_in_place ()</h3>
+<pre class="programlisting">void                gst_base_transform_set_in_place     (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean in_place);</pre>
 <p>
 Determines whether a non-writable buffer will be copied before passing
@@ -582,7 +573,7 @@ to the transform_ip function.
 </p>
 <div class="itemizedlist"><ul type="disc">
 <li>Always TRUE if no transform function is implemented.</li>
-<li>Always FALSE if ONLY transform_ip function is implemented.</li>
+<li>Always FALSE if ONLY transform function is implemented.</li>
 </ul></div>
 <p>
 </p>
@@ -595,12 +586,12 @@ MT safe.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> the <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to modify
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> the <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a> to modify
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>in_place</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>in_place</code></em> :</span></p></td>
 <td> Boolean value indicating that we would like to operate
 on in_place buffers.
 </td>
@@ -610,9 +601,8 @@ on in_place buffers.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569744"></a><h3>
-<a name="gst-base-transform-is-qos-enabled"></a>gst_base_transform_is_qos_enabled ()</h3>
-<a class="indexterm" name="id2569762"></a><pre class="programlisting">gboolean            gst_base_transform_is_qos_enabled   (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<a name="gst-base-transform-is-qos-enabled"></a><h3>gst_base_transform_is_qos_enabled ()</h3>
+<pre class="programlisting">gboolean            gst_base_transform_is_qos_enabled   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 Queries if the transform will handle QoS.</p>
 <p>
@@ -622,12 +612,12 @@ Queries if the transform will handle QoS.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if QoS is enabled.
 
 </td>
@@ -641,9 +631,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569836"></a><h3>
-<a name="gst-base-transform-set-qos-enabled"></a>gst_base_transform_set_qos_enabled ()</h3>
-<a class="indexterm" name="id2569854"></a><pre class="programlisting">void                gst_base_transform_set_qos_enabled  (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+<a name="gst-base-transform-set-qos-enabled"></a><h3>gst_base_transform_set_qos_enabled ()</h3>
+<pre class="programlisting">void                gst_base_transform_set_qos_enabled  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean enabled);</pre>
 <p>
 Enable or disable QoS handling in the transform.</p>
@@ -654,12 +643,12 @@ Enable or disable QoS handling in the transform.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>enabled</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>enabled</code></em> :</span></p></td>
 <td> new state
 </td>
 </tr>
@@ -672,9 +661,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2569940"></a><h3>
-<a name="gst-base-transform-update-qos"></a>gst_base_transform_update_qos ()</h3>
-<a class="indexterm" name="id2569957"></a><pre class="programlisting">void                gst_base_transform_update_qos       (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+<a name="gst-base-transform-update-qos"></a><h3>gst_base_transform_update_qos ()</h3>
+<pre class="programlisting">void                gst_base_transform_update_qos       (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gdouble proportion,
                                                          GstClockTimeDiff diff,
                                                          GstClockTime timestamp);</pre>
@@ -687,22 +675,22 @@ Set the QoS parameters in the transform.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>proportion</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>proportion</code></em> :</span></p></td>
 <td> the proportion
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>diff</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>diff</code></em> :</span></p></td>
 <td> the diff against the clock
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timestamp</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
 <td> the timestamp of the buffer generating the QoS
 </td>
 </tr>
@@ -715,18 +703,17 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570089"></a><h3>
-<a name="gst-base-transform-set-gap-aware"></a>gst_base_transform_set_gap_aware ()</h3>
-<a class="indexterm" name="id2570106"></a><pre class="programlisting">void                gst_base_transform_set_gap_aware    (<a href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+<a name="gst-base-transform-set-gap-aware"></a><h3>gst_base_transform_set_gap_aware ()</h3>
+<pre class="programlisting">void                gst_base_transform_set_gap_aware    (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
                                                          gboolean gap_aware);</pre>
 <p>
-If <em class="parameter"><code>gap_aware</code></em> is <code class="literal">FALSE</code> (as it is by default) subclasses will never get
-output buffers with the <code class="literal">GST_BUFFER_FLAG_GAP</code> flag set.
+If <em class="parameter"><code>gap_aware</code></em> is <code class="literal">FALSE</code> (the default), output buffers will have the
+<code class="literal">GST_BUFFER_FLAG_GAP</code> flag unset.
 </p>
 <p>
-If set to <code class="literal">TRUE</code> elements must handle output buffers with this flag set
-correctly, i.e. they can assume that the buffer contains neutral data
-but must unset the flag if the output is no neutral data.</p>
+If set to <code class="literal">TRUE</code>, the element must handle output buffers with this flag set
+correctly, i.e. it can assume that the buffer contains neutral data but must
+unset the flag if the output is no neutral data.</p>
 <p>
 
 </p>
@@ -734,12 +721,12 @@ but must unset the flag if the output is no neutral data.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>gap_aware</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gap_aware</code></em> :</span></p></td>
 <td> New state
 </td>
 </tr>
@@ -752,33 +739,30 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570238"></a><h3>
-<a name="GST-BASE-TRANSFORM-SINK-NAME:CAPS"></a>GST_BASE_TRANSFORM_SINK_NAME</h3>
-<a class="indexterm" name="id2570251"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_SINK_NAME	"sink"
+<a name="GST-BASE-TRANSFORM-SINK-NAME:CAPS"></a><h3>GST_BASE_TRANSFORM_SINK_NAME</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_SINK_NAME	"sink"
 </pre>
 <p>
-the name of the templates for the sink pad</p>
+The name of the templates for the sink pad.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570271"></a><h3>
-<a name="GST-BASE-TRANSFORM-SRC-NAME:CAPS"></a>GST_BASE_TRANSFORM_SRC_NAME</h3>
-<a class="indexterm" name="id2570286"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_SRC_NAME	"src"
+<a name="GST-BASE-TRANSFORM-SRC-NAME:CAPS"></a><h3>GST_BASE_TRANSFORM_SRC_NAME</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_SRC_NAME	"src"
 </pre>
 <p>
-the name of the templates for the source pad</p>
+The name of the templates for the source pad.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570305"></a><h3>
-<a name="GST-BASE-TRANSFORM-SINK-PAD:CAPS"></a>GST_BASE_TRANSFORM_SINK_PAD()</h3>
-<a class="indexterm" name="id2570321"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_SINK_PAD(obj)	(GST_BASE_TRANSFORM_CAST (obj)-&gt;sinkpad)
+<a name="GST-BASE-TRANSFORM-SINK-PAD:CAPS"></a><h3>GST_BASE_TRANSFORM_SINK_PAD()</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_SINK_PAD(obj)	(GST_BASE_TRANSFORM_CAST (obj)-&gt;sinkpad)
 </pre>
 <p>
 Gives the pointer to the sink <span class="type">GstPad</span> object of the element.</p>
@@ -788,7 +772,7 @@ Gives the pointer to the sink <span class="type">GstPad</span> object of the ele
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> base transform instance
 </td>
 </tr></tbody>
@@ -798,9 +782,8 @@ Gives the pointer to the sink <span class="type">GstPad</span> object of the ele
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570375"></a><h3>
-<a name="GST-BASE-TRANSFORM-SRC-PAD:CAPS"></a>GST_BASE_TRANSFORM_SRC_PAD()</h3>
-<a class="indexterm" name="id2570391"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_SRC_PAD(obj)		(GST_BASE_TRANSFORM_CAST (obj)-&gt;srcpad)
+<a name="GST-BASE-TRANSFORM-SRC-PAD:CAPS"></a><h3>GST_BASE_TRANSFORM_SRC_PAD()</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_SRC_PAD(obj)		(GST_BASE_TRANSFORM_CAST (obj)-&gt;srcpad)
 </pre>
 <p>
 Gives the pointer to the source <span class="type">GstPad</span> object of the element.</p>
@@ -810,7 +793,7 @@ Gives the pointer to the source <span class="type">GstPad</span> object of the e
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> base transform instance
 </td>
 </tr></tbody>
@@ -820,9 +803,8 @@ Gives the pointer to the source <span class="type">GstPad</span> object of the e
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570446"></a><h3>
-<a name="GST-BASE-TRANSFORM-FLOW-DROPPED:CAPS"></a>GST_BASE_TRANSFORM_FLOW_DROPPED</h3>
-<a class="indexterm" name="id2570463"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_FLOW_DROPPED   GST_FLOW_CUSTOM_SUCCESS
+<a name="GST-BASE-TRANSFORM-FLOW-DROPPED:CAPS"></a><h3>GST_BASE_TRANSFORM_FLOW_DROPPED</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_FLOW_DROPPED   GST_FLOW_CUSTOM_SUCCESS
 </pre>
 <p>
 A <span class="type">GstFlowReturn</span> that can be returned from transform and transform_ip to
@@ -835,9 +817,8 @@ indicate that no output buffer was generated.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570499"></a><h3>
-<a name="GST-BASE-TRANSFORM-LOCK:CAPS"></a>GST_BASE_TRANSFORM_LOCK()</h3>
-<a class="indexterm" name="id2570515"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_LOCK(obj)   g_mutex_lock (GST_BASE_TRANSFORM_CAST (obj)-&gt;transform_lock)
+<a name="GST-BASE-TRANSFORM-LOCK:CAPS"></a><h3>GST_BASE_TRANSFORM_LOCK()</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_LOCK(obj)   g_mutex_lock (GST_BASE_TRANSFORM_CAST (obj)-&gt;transform_lock)
 </pre>
 <p>
 Obtain a lock to protect the transform function from concurrent access.</p>
@@ -847,7 +828,7 @@ Obtain a lock to protect the transform function from concurrent access.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> base transform instance
 </td>
 </tr></tbody>
@@ -857,9 +838,8 @@ Obtain a lock to protect the transform function from concurrent access.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2570563"></a><h3>
-<a name="GST-BASE-TRANSFORM-UNLOCK:CAPS"></a>GST_BASE_TRANSFORM_UNLOCK()</h3>
-<a class="indexterm" name="id2570578"></a><pre class="programlisting">#define GST_BASE_TRANSFORM_UNLOCK(obj) g_mutex_unlock (GST_BASE_TRANSFORM_CAST (obj)-&gt;transform_lock)
+<a name="GST-BASE-TRANSFORM-UNLOCK:CAPS"></a><h3>GST_BASE_TRANSFORM_UNLOCK()</h3>
+<pre class="programlisting">#define GST_BASE_TRANSFORM_UNLOCK(obj) g_mutex_unlock (GST_BASE_TRANSFORM_CAST (obj)-&gt;transform_lock)
 </pre>
 <p>
 Release the lock that protects the transform function from concurrent access.</p>
@@ -869,7 +849,7 @@ Release the lock that protects the transform function from concurrent access.</p
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> base transform instance
 </td>
 </tr></tbody>
@@ -879,19 +859,21 @@ Release the lock that protects the transform function from concurrent access.</p
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2570627"></a><h2>Property Details</h2>
+<a name="GstBaseTransform.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2570638"></a><h3>
-<a name="GstBaseTransform--qos"></a>The "<code class="literal">qos</code>" property</h3>
-<a class="indexterm" name="id2570654"></a><pre class="programlisting">  "qos"                      gboolean              : Read / Write</pre>
+<a name="GstBaseTransform--qos"></a><h3>The <code class="literal">"qos"</code> property</h3>
+<pre class="programlisting">  "qos"                      gboolean              : Read / Write</pre>
 <p>Handle Quality-of-Service events.</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2570681"></a><h2>See Also</h2>
-<a href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a>, <a href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a>
+<a name="GstBaseTransform.see-also"></a><h2>See Also</h2>
+<a class="link" href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a>, <a class="link" href="GstBaseSink.html" title="GstBaseSink"><span class="type">GstBaseSink</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

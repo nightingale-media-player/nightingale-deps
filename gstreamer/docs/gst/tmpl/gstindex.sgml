@@ -310,6 +310,17 @@ GstIndex
 @user_data: 
 
 
+<!-- ##### FUNCTION gst_index_set_resolver_full ##### -->
+<para>
+
+</para>
+
+@index: 
+@resolver: 
+@user_data: 
+@user_data_destroy: 
+
+
 <!-- ##### FUNCTION gst_index_get_writer_id ##### -->
 <para>
 

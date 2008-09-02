@@ -310,46 +310,49 @@ gst_queue_class_init (GstQueueClass * klass)
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_BYTES,
       g_param_spec_uint ("current-level-bytes", "Current level (kB)",
           "Current amount of data in the queue (bytes)",
-          0, G_MAXUINT, 0, G_PARAM_READABLE));
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_BUFFERS,
       g_param_spec_uint ("current-level-buffers", "Current level (buffers)",
           "Current number of buffers in the queue",
-          0, G_MAXUINT, 0, G_PARAM_READABLE));
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_TIME,
       g_param_spec_uint64 ("current-level-time", "Current level (ns)",
           "Current amount of data in the queue (in ns)",
-          0, G_MAXUINT64, 0, G_PARAM_READABLE));
+          0, G_MAXUINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_BYTES,
       g_param_spec_uint ("max-size-bytes", "Max. size (kB)",
           "Max. amount of data in the queue (bytes, 0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_BUFFERS,
       g_param_spec_uint ("max-size-buffers", "Max. size (buffers)",
-          "Max. number of buffers in the queue (0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BUFFERS, G_PARAM_READWRITE));
+          "Max. number of buffers in the queue (0=disable)", 0, G_MAXUINT,
+          DEFAULT_MAX_SIZE_BUFFERS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_TIME,
       g_param_spec_uint64 ("max-size-time", "Max. size (ns)",
-          "Max. amount of data in the queue (in ns, 0=disable)",
-          0, G_MAXUINT64, DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE));
+          "Max. amount of data in the queue (in ns, 0=disable)", 0, G_MAXUINT64,
+          DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, ARG_MIN_THRESHOLD_BYTES,
       g_param_spec_uint ("min-threshold-bytes", "Min. threshold (kB)",
           "Min. amount of data in the queue to allow reading (bytes, 0=disable)",
-          0, G_MAXUINT, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MIN_THRESHOLD_BUFFERS,
       g_param_spec_uint ("min-threshold-buffers", "Min. threshold (buffers)",
           "Min. number of buffers in the queue to allow reading (0=disable)",
-          0, G_MAXUINT, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MIN_THRESHOLD_TIME,
       g_param_spec_uint64 ("min-threshold-time", "Min. threshold (ns)",
           "Min. amount of data in the queue to allow reading (in ns, 0=disable)",
-          0, G_MAXUINT64, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, ARG_LEAKY,
       g_param_spec_enum ("leaky", "Leaky",
           "Where the queue leaks, if at all",
-          GST_TYPE_QUEUE_LEAKY, GST_QUEUE_NO_LEAK, G_PARAM_READWRITE));
+          GST_TYPE_QUEUE_LEAKY, GST_QUEUE_NO_LEAK,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* set several parent class virtual functions */
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_queue_finalize);
@@ -398,6 +401,7 @@ gst_queue_init (GstQueue * queue, GstQueueClass * g_class)
   GST_QUEUE_CLEAR_LEVEL (queue->orig_min_threshold);
   gst_segment_init (&queue->sink_segment, GST_FORMAT_TIME);
   gst_segment_init (&queue->src_segment, GST_FORMAT_TIME);
+  queue->head_needs_discont = queue->tail_needs_discont = FALSE;
 
   queue->leaky = GST_QUEUE_NO_LEAK;
   queue->srcresult = GST_FLOW_WRONG_STATE;
@@ -601,6 +605,7 @@ gst_queue_locked_flush (GstQueue * queue)
   queue->min_threshold.time = queue->orig_min_threshold.time;
   gst_segment_init (&queue->sink_segment, GST_FORMAT_TIME);
   gst_segment_init (&queue->src_segment, GST_FORMAT_TIME);
+  queue->head_needs_discont = queue->tail_needs_discont = FALSE;
 
   /* we deleted a lot of something */
   GST_QUEUE_SIGNAL_DEL (queue);
@@ -826,6 +831,27 @@ gst_queue_is_filled (GstQueue * queue)
               queue->cur_level.time >= queue->max_size.time)));
 }
 
+static void
+gst_queue_leak_downstream (GstQueue * queue)
+{
+  /* for as long as the queue is filled, dequeue an item and discard it */
+  while (gst_queue_is_filled (queue)) {
+    GstMiniObject *leak;
+
+    leak = gst_queue_locked_dequeue (queue);
+    /* there is nothing to dequeue and the queue is still filled.. This should
+     * not happen */
+    g_assert (leak != NULL);
+
+    GST_CAT_DEBUG_OBJECT (queue_dataflow, queue,
+        "queue is full, leaking item %p on downstream end", leak);
+    gst_buffer_unref (leak);
+
+    /* last buffer needs to get a DISCONT flag */
+    queue->head_needs_discont = TRUE;
+  }
+}
+
 static GstFlowReturn
 gst_queue_chain (GstPad * pad, GstBuffer * buffer)
 {
@@ -865,29 +891,16 @@ gst_queue_chain (GstPad * pad, GstBuffer * buffer)
     /* how are we going to make space for this buffer? */
     switch (queue->leaky) {
       case GST_QUEUE_LEAK_UPSTREAM:
+        /* next buffer needs to get a DISCONT flag */
+        queue->tail_needs_discont = TRUE;
         /* leak current buffer */
         GST_CAT_DEBUG_OBJECT (queue_dataflow, queue,
             "queue is full, leaking buffer on upstream end");
         /* now we can clean up and exit right away */
         goto out_unref;
       case GST_QUEUE_LEAK_DOWNSTREAM:
-      {
-        /* for as long as the queue is filled, dequeue an item and discard 
-         * it. */
-        do {
-          GstMiniObject *leak;
-
-          leak = gst_queue_locked_dequeue (queue);
-          /* there is nothing to dequeue and the queue is still filled.. This
-           * should not happen. */
-          g_assert (leak != NULL);
-
-          GST_CAT_DEBUG_OBJECT (queue_dataflow, queue,
-              "queue is full, leaking item %p on downstream end", leak);
-          gst_buffer_unref (leak);
-        } while (gst_queue_is_filled (queue));
+        gst_queue_leak_downstream (queue);
         break;
-      }
       default:
         g_warning ("Unknown leaky type, using default");
         /* fall-through */
@@ -910,6 +923,18 @@ gst_queue_chain (GstPad * pad, GstBuffer * buffer)
         break;
       }
     }
+  }
+
+  if (queue->tail_needs_discont) {
+    GstBuffer *subbuffer = gst_buffer_make_metadata_writable (buffer);
+
+    if (subbuffer) {
+      buffer = subbuffer;
+      GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DISCONT);
+    } else {
+      GST_DEBUG_OBJECT (queue, "Could not mark buffer as DISCONT");
+    }
+    queue->tail_needs_discont = FALSE;
   }
 
   /* put buffer in queue now */
@@ -978,6 +1003,18 @@ next:
 
     buffer = GST_BUFFER_CAST (data);
     caps = GST_BUFFER_CAPS (buffer);
+
+    if (queue->head_needs_discont) {
+      GstBuffer *subbuffer = gst_buffer_make_metadata_writable (buffer);
+
+      if (subbuffer) {
+        buffer = subbuffer;
+        GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DISCONT);
+      } else {
+        GST_DEBUG_OBJECT (queue, "Could not mark buffer as DISCONT");
+      }
+      queue->head_needs_discont = FALSE;
+    }
 
     GST_QUEUE_MUTEX_UNLOCK (queue);
     /* set the right caps on the pad now. We do this before pushing the buffer
@@ -1184,6 +1221,10 @@ gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
       else
         max = -1;
 
+      /* adjust for min-threshold */
+      if (queue->min_threshold.time > 0 && min != -1)
+        min += queue->min_threshold.time;
+
       gst_query_set_latency (query, live, min, max);
       break;
     }
@@ -1295,11 +1336,18 @@ gst_queue_change_state (GstElement * element, GstStateChange transition)
   return ret;
 }
 
-/* changing the capacity of the queue must wake up
- * the _chain function, it might have more room now
- * to store the buffer/event in the queue */
-#define QUEUE_CAPACITY_CHANGE(q)\
-  GST_QUEUE_SIGNAL_DEL (q);
+static void
+queue_capacity_change (GstQueue * queue)
+{
+  if (queue->leaky == GST_QUEUE_LEAK_DOWNSTREAM) {
+    gst_queue_leak_downstream (queue);
+  }
+
+  /* changing the capacity of the queue must wake up
+   * the _chain function, it might have more room now
+   * to store the buffer/event in the queue */
+  GST_QUEUE_SIGNAL_DEL (queue);
+}
 
 /* Changing the minimum required fill level must
  * wake up the _loop function as it might now
@@ -1321,15 +1369,15 @@ gst_queue_set_property (GObject * object,
   switch (prop_id) {
     case ARG_MAX_SIZE_BYTES:
       queue->max_size.bytes = g_value_get_uint (value);
-      QUEUE_CAPACITY_CHANGE (queue);
+      queue_capacity_change (queue);
       break;
     case ARG_MAX_SIZE_BUFFERS:
       queue->max_size.buffers = g_value_get_uint (value);
-      QUEUE_CAPACITY_CHANGE (queue);
+      queue_capacity_change (queue);
       break;
     case ARG_MAX_SIZE_TIME:
       queue->max_size.time = g_value_get_uint64 (value);
-      QUEUE_CAPACITY_CHANGE (queue);
+      queue_capacity_change (queue);
       break;
     case ARG_MIN_THRESHOLD_BYTES:
       queue->min_threshold.bytes = g_value_get_uint (value);

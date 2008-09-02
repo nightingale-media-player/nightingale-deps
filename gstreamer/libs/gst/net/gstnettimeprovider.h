@@ -57,6 +57,8 @@ G_BEGIN_DECLS
 
 typedef struct _GstNetTimeProvider GstNetTimeProvider;
 typedef struct _GstNetTimeProviderClass GstNetTimeProviderClass;
+typedef struct _GstNetTimeProviderPrivate GstNetTimeProviderPrivate;
+
 
 /**
  * GstNetTimeProvider:
@@ -83,9 +85,11 @@ struct _GstNetTimeProvider {
     /* has to be a gint, we use atomic ops here */
     gint active;
   } active;
-  
+
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING - 1];
+  GstNetTimeProviderPrivate *priv;
+
+  gpointer _gst_reserved[GST_PADDING - 2];
 };
 
 struct _GstNetTimeProviderClass {

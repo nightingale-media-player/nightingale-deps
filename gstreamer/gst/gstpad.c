@@ -308,16 +308,16 @@ gst_pad_class_init (GstPadClass * klass)
 
   g_object_class_install_property (gobject_class, PAD_PROP_CAPS,
       g_param_spec_boxed ("caps", "Caps", "The capabilities of the pad",
-          GST_TYPE_CAPS, G_PARAM_READABLE));
+          GST_TYPE_CAPS, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PAD_PROP_DIRECTION,
       g_param_spec_enum ("direction", "Direction", "The direction of the pad",
           GST_TYPE_PAD_DIRECTION, GST_PAD_UNKNOWN,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
   /* FIXME, Make G_PARAM_CONSTRUCT_ONLY when we fix ghostpads. */
   g_object_class_install_property (gobject_class, PAD_PROP_TEMPLATE,
       g_param_spec_object ("template", "Template",
           "The GstPadTemplate of this pad", GST_TYPE_PAD_TEMPLATE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 #ifndef GST_DISABLE_LOADSAVE
   gstobject_class->save_thyself = GST_DEBUG_FUNCPTR (gst_pad_save_thyself);
@@ -1529,8 +1529,8 @@ gst_pad_set_bufferalloc_function (GstPad * pad,
  * @srcpad: the source #GstPad to unlink.
  * @sinkpad: the sink #GstPad to unlink.
  *
- * Unlinks the source pad from the sink pad. Will emit the "unlinked" signal on
- * both pads.
+ * Unlinks the source pad from the sink pad. Will emit the #GstPad::unlinked
+ * signal on both pads.
  *
  * Returns: TRUE if the pads were unlinked. This function returns FALSE if
  * the pads were not linked together.
@@ -2038,7 +2038,7 @@ done:
  *
  * Gets the capabilities this pad can produce or consume.
  * Note that this method doesn't necessarily return the caps set by
- * gst_pad_set_caps() - use #GST_PAD_CAPS for that instead.
+ * gst_pad_set_caps() - use GST_PAD_CAPS() for that instead.
  * gst_pad_get_caps returns all possible caps a pad can operate with, using
  * the pad's get_caps function;
  * this returns the pad template caps if not explicitly set.
@@ -2059,6 +2059,11 @@ gst_pad_get_caps (GstPad * pad)
   GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, pad, "get pad caps");
 
   result = gst_pad_get_caps_unlocked (pad);
+
+  /* be sure that we have a copy */
+  if (result)
+    result = gst_caps_make_writable (result);
+
   GST_OBJECT_UNLOCK (pad);
 
   return result;
@@ -2322,8 +2327,13 @@ gst_pad_peer_accept_caps (GstPad * pad, GstCaps * caps)
   if (G_UNLIKELY (peerpad == NULL))
     goto no_peer;
 
-  result = gst_pad_accept_caps (peerpad, caps);
+  gst_object_ref (peerpad);
+  /* release lock before calling external methods but keep ref to pad */
   GST_OBJECT_UNLOCK (pad);
+
+  result = gst_pad_accept_caps (peerpad, caps);
+
+  gst_object_unref (peerpad);
 
   return result;
 
@@ -2661,8 +2671,10 @@ gst_pad_buffer_alloc_unchecked (GstPad * pad, guint64 offset, gint size,
     goto fallback;
 
   ret = bufferallocfunc (pad, offset, size, caps, buf);
+
   if (G_UNLIKELY (ret != GST_FLOW_OK))
     goto error;
+
   /* no error, but NULL buffer means fallback to the default */
   if (G_UNLIKELY (*buf == NULL))
     goto fallback;
@@ -2694,14 +2706,19 @@ fallback:
     /* fallback case, allocate a buffer of our own, add pad caps. */
     GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "fallback buffer alloc");
 
-    *buf = gst_buffer_new_and_alloc (size);
-    GST_BUFFER_OFFSET (*buf) = offset;
-    gst_buffer_set_caps (*buf, caps);
-
-    return GST_FLOW_OK;
+    if ((*buf = gst_buffer_try_new_and_alloc (size))) {
+      GST_BUFFER_OFFSET (*buf) = offset;
+      gst_buffer_set_caps (*buf, caps);
+      return GST_FLOW_OK;
+    } else {
+      GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+          "out of memory allocating %d bytes", size);
+      return GST_FLOW_ERROR;
+    }
   }
 }
 
+/* FIXME 0.11: size should be unsigned */
 static GstFlowReturn
 gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
     GstCaps * caps, GstBuffer ** buf, gboolean setcaps)
@@ -2713,6 +2730,7 @@ gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (GST_PAD_IS_SRC (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
+  g_return_val_if_fail (size >= 0, GST_FLOW_ERROR);
 
   GST_DEBUG_OBJECT (pad, "offset %" G_GUINT64_FORMAT ", size %d", offset, size);
 
@@ -2751,7 +2769,12 @@ gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
         GST_PAD_CAPS (pad), caps, caps);
     if (G_UNLIKELY (!gst_pad_configure_src (pad, caps, setcaps)))
       goto not_negotiated;
+  } else {
+    /* sanity check (only if caps haven't changed) */
+    if (G_UNLIKELY (GST_BUFFER_SIZE (*buf) < size))
+      goto wrong_size_fallback;
   }
+
   return ret;
 
 flushed:
@@ -2782,6 +2805,24 @@ not_negotiated:
         "alloc function returned unacceptable buffer");
     return GST_FLOW_NOT_NEGOTIATED;
   }
+wrong_size_fallback:
+  {
+    GST_CAT_ERROR_OBJECT (GST_CAT_PADS, pad, "buffer returned by alloc "
+        "function is too small (%u < %d), doing fallback buffer alloc",
+        GST_BUFFER_SIZE (*buf), size);
+
+    gst_buffer_unref (*buf);
+
+    if ((*buf = gst_buffer_try_new_and_alloc (size))) {
+      GST_BUFFER_OFFSET (*buf) = offset;
+      gst_buffer_set_caps (*buf, caps);
+      return GST_FLOW_OK;
+    } else {
+      GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+          "out of memory allocating %d bytes", size);
+      return GST_FLOW_ERROR;
+    }
+  }
 }
 
 /**
@@ -2807,6 +2848,8 @@ not_negotiated:
  *
  * MT safe.
  */
+
+/* FIXME 0.11: size should be unsigned */
 GstFlowReturn
 gst_pad_alloc_buffer (GstPad * pad, guint64 offset, gint size, GstCaps * caps,
     GstBuffer ** buf)
@@ -2834,6 +2877,8 @@ gst_pad_alloc_buffer (GstPad * pad, guint64 offset, gint size, GstCaps * caps,
  *
  * MT safe.
  */
+
+/* FIXME 0.11: size should be unsigned */
 GstFlowReturn
 gst_pad_alloc_buffer_and_set_caps (GstPad * pad, guint64 offset, gint size,
     GstCaps * caps, GstBuffer ** buf)
@@ -2927,9 +2972,18 @@ gst_pad_event_default_dispatch (GstPad * pad, GstEvent * event)
   GST_INFO_OBJECT (pad, "Sending event %p (%s) to all internally linked pads",
       event, GST_EVENT_TYPE_NAME (event));
 
-  result = (GST_PAD_DIRECTION (pad) == GST_PAD_SINK);
-
   orig = pads = gst_pad_get_internal_links (pad);
+
+  if (!pads) {
+    /* If this is a sinkpad and we don't have pads to send the event to, we
+     * return TRUE. This is so that when using the default handler on a sink
+     * element, we don't fail to push it. */
+    result = (GST_PAD_DIRECTION (pad) == GST_PAD_SINK);
+  } else {
+    /* we have pads, the result will be TRUE if one of the pads handled the
+     * event in the code below. */
+    result = FALSE;
+  }
 
   while (pads) {
     GstPad *eventpad = GST_PAD_CAST (pads->data);
@@ -2942,7 +2996,7 @@ gst_pad_event_default_dispatch (GstPad * pad, GstEvent * event)
       GST_LOG_OBJECT (pad, "Reffing and sending event %p (%s) to %s:%s",
           event, GST_EVENT_TYPE_NAME (event), GST_DEBUG_PAD_NAME (eventpad));
       gst_event_ref (event);
-      gst_pad_push_event (eventpad, event);
+      result |= gst_pad_push_event (eventpad, event);
     } else {
       /* we only send the event on one pad, multi-sinkpad elements
        * should implement a handler */
@@ -3183,7 +3237,9 @@ gst_pad_load_and_link (xmlNodePtr self, GstObject * parent)
   while (field) {
     if (!strcmp ((char *) field->name, "name")) {
       name = (gchar *) xmlNodeGetContent (field);
-      pad = gst_element_get_pad (GST_ELEMENT (parent), name);
+      pad = gst_element_get_static_pad (GST_ELEMENT (parent), name);
+      if (!pad)
+        pad = gst_element_get_request_pad (GST_ELEMENT (parent), name);
       g_free (name);
     } else if (!strcmp ((char *) field->name, "peer")) {
       peer = (gchar *) xmlNodeGetContent (field);
@@ -3219,7 +3275,9 @@ gst_pad_load_and_link (xmlNodePtr self, GstObject * parent)
   if (target == NULL)
     goto cleanup;
 
-  targetpad = gst_element_get_pad (target, split[1]);
+  targetpad = gst_element_get_static_pad (target, split[1]);
+  if (!pad)
+    targetpad = gst_element_get_request_pad (target, split[1]);
 
   if (targetpad == NULL)
     goto cleanup;

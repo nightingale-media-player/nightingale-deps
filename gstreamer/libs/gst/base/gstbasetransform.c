@@ -240,7 +240,6 @@ struct _GstBaseTransformPrivate
 
 static GstElementClass *parent_class = NULL;
 
-static void gst_base_transform_base_init (gpointer g_class);
 static void gst_base_transform_class_init (GstBaseTransformClass * klass);
 static void gst_base_transform_init (GstBaseTransform * trans,
     GstBaseTransformClass * klass);
@@ -255,7 +254,7 @@ gst_base_transform_get_type (void)
   if (!base_transform_type) {
     static const GTypeInfo base_transform_info = {
       sizeof (GstBaseTransformClass),
-      (GBaseInitFunc) gst_base_transform_base_init,
+      NULL,
       NULL,
       (GClassInitFunc) gst_base_transform_class_init,
       NULL,
@@ -304,13 +303,6 @@ static GstFlowReturn gst_base_transform_buffer_alloc (GstPad * pad,
 /* static guint gst_base_transform_signals[LAST_SIGNAL] = { 0 }; */
 
 static void
-gst_base_transform_base_init (gpointer g_class)
-{
-  GST_DEBUG_CATEGORY_INIT (gst_base_transform_debug, "basetransform", 0,
-      "basetransform element");
-}
-
-static void
 gst_base_transform_finalize (GObject * object)
 {
   GstBaseTransform *trans;
@@ -329,6 +321,9 @@ gst_base_transform_class_init (GstBaseTransformClass * klass)
 
   gobject_class = G_OBJECT_CLASS (klass);
 
+  GST_DEBUG_CATEGORY_INIT (gst_base_transform_debug, "basetransform", 0,
+      "basetransform element");
+
   g_type_class_add_private (klass, sizeof (GstBaseTransformPrivate));
 
   parent_class = g_type_class_peek_parent (klass);
@@ -340,7 +335,7 @@ gst_base_transform_class_init (GstBaseTransformClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_QOS,
       g_param_spec_boolean ("qos", "QoS", "Handle Quality-of-Service events",
-          DEFAULT_PROP_QOS, G_PARAM_READWRITE));
+          DEFAULT_PROP_QOS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_base_transform_finalize);
 
@@ -889,6 +884,8 @@ failed_configure:
  * inbuf, the caller should be prepared for this and perform 
  * appropriate refcounting.
  */
+
+/* FIXME 0.11: out_size should be unsigned */
 static GstFlowReturn
 gst_base_transform_prepare_output_buffer (GstBaseTransform * trans,
     GstBuffer * in_buf, gint out_size, GstCaps * out_caps, GstBuffer ** out_buf)
@@ -896,6 +893,8 @@ gst_base_transform_prepare_output_buffer (GstBaseTransform * trans,
   GstBaseTransformClass *bclass;
   GstFlowReturn ret = GST_FLOW_OK;
   gboolean copy_inbuf = FALSE;
+
+  g_return_val_if_fail (out_size >= 0, GST_FLOW_ERROR);
 
   bclass = GST_BASE_TRANSFORM_GET_CLASS (trans);
 
@@ -918,7 +917,8 @@ gst_base_transform_prepare_output_buffer (GstBaseTransform * trans,
     if (ret != GST_FLOW_OK)
       goto done;
 
-    /* decrease refcount again if vmethod returned refcounted in_buf. This
+    /* FIXME 0.11:
+     * decrease refcount again if vmethod returned refcounted in_buf. This
      * is because we need to make sure that the buffer is writable for the
      * in_place transform. The docs of the vmethod say that you should return
      * a reffed inbuf, which is exactly what we don't want :), oh well.. */
@@ -930,17 +930,27 @@ gst_base_transform_prepare_output_buffer (GstBaseTransform * trans,
   if (*out_buf == NULL && GST_BUFFER_SIZE (in_buf) == out_size
       && bclass->transform_ip) {
     if (gst_buffer_is_writable (in_buf)) {
-      if (trans->have_same_caps) {
-        /* Input buffer is already writable and caps are the same, return input as
-         * output buffer. We don't take an additional ref since that would make the
-         * output buffer not writable anymore. Caller should be prepared to deal
-         * with proper refcounting of input/output buffers. */
+      if (trans->have_same_caps &&
+          (trans->priv->gap_aware
+              || !GST_BUFFER_FLAG_IS_SET (in_buf, GST_BUFFER_FLAG_GAP))) {
+        /* Input buffer is already writable, caps are the same and it's not necessary
+         * to change the GAP flag, return input as output buffer.
+         * We don't take an additional ref since that would make the output buffer
+         * not writable anymore. Caller should be prepared to deal with proper
+         * refcounting of input/output buffers. */
         *out_buf = in_buf;
         GST_LOG_OBJECT (trans, "reuse input buffer");
       } else {
-        /* Writable buffer, but need to change caps => subbuffer */
+        /* Writable buffer, but need to change caps or flags => subbuffer */
         *out_buf = gst_buffer_create_sub (in_buf, 0, GST_BUFFER_SIZE (in_buf));
         gst_caps_replace (&GST_BUFFER_CAPS (*out_buf), out_caps);
+
+        /* Unset the GAP flag if the element is _not_ GAP aware. Otherwise
+         * it might create an output buffer that does not contain neutral data
+         * but still has the GAP flag on it! */
+        if (!trans->priv->gap_aware)
+          GST_BUFFER_FLAG_UNSET (*out_buf, GST_BUFFER_FLAG_GAP);
+
         GST_LOG_OBJECT (trans, "created sub-buffer of input buffer");
       }
       /* we are done now */
@@ -1199,12 +1209,21 @@ not_configured:
     /* let the default allocator handle it... */
     GST_DEBUG_OBJECT (trans, "not configured");
     gst_buffer_replace (buf, NULL);
-    if (trans->passthrough) {
-      /* ...by calling alloc_buffer without setting caps on the src pad, which
-       * will force negotiation in the chain function. */
+
+    if (gst_pad_accept_caps (trans->srcpad, caps)
+        && gst_pad_peer_accept_caps (trans->srcpad, caps)) {
+      /* ...by seeing if the downstream elements can handle this */
       res = gst_pad_alloc_buffer (trans->srcpad, offset, size, caps, buf);
+
+      if (res == GST_FLOW_OK
+          && !gst_caps_is_equal (caps, GST_BUFFER_CAPS (*buf))) {
+        /* In case downstream wants to see something different, ignore this
+         * buffer and leave it to the chain function to renegotiate */
+        gst_buffer_replace (buf, NULL);
+      }
     } else {
-      /* ...by letting the default handler create a buffer */
+      /* If not fall back on the default handler and let things be
+       * renegotiated in the chain function */
       res = GST_FLOW_OK;
     }
     goto done;
@@ -1244,6 +1263,8 @@ gst_base_transform_sink_event (GstPad * pad, GstEvent * event)
    * something different. */
   if (forward)
     ret = gst_pad_push_event (trans->srcpad, event);
+  else
+    gst_event_unref (event);
 
   gst_object_unref (trans);
 
@@ -1822,7 +1843,7 @@ gst_base_transform_is_passthrough (GstBaseTransform * trans)
  * to the transform_ip function.
  * <itemizedlist>
  *   <listitem>Always TRUE if no transform function is implemented.</listitem>
- *   <listitem>Always FALSE if ONLY transform_ip function is implemented.</listitem>
+ *   <listitem>Always FALSE if ONLY transform function is implemented.</listitem>
  * </itemizedlist>
  *
  * MT safe.
@@ -1961,12 +1982,13 @@ gst_base_transform_is_qos_enabled (GstBaseTransform * trans)
  * @trans: a #GstBaseTransform
  * @gap_aware: New state
  *
- * If @gap_aware is %FALSE (as it is by default) subclasses will never get
- * output buffers with the %GST_BUFFER_FLAG_GAP flag set.
+ * If @gap_aware is %FALSE (the default), output buffers will have the
+ * %GST_BUFFER_FLAG_GAP flag unset.
  *
- * If set to %TRUE elements must handle output buffers with this flag set
- * correctly, i.e. they can assume that the buffer contains neutral data
- * but must unset the flag if the output is no neutral data.
+ * If set to %TRUE, the element must handle output buffers with this flag set
+ * correctly, i.e. it can assume that the buffer contains neutral data but must
+ * unset the flag if the output is no neutral data.
+ *
  * Since: 0.10.16
  *
  * MT safe.

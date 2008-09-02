@@ -187,6 +187,20 @@ gst_mini_object_new (GType type)
   return mini_object;
 }
 
+/* FIXME 0.11: Current way of doing the copy makes it impossible
+ * to currectly chain to the parent classes and do a copy in a
+ * subclass without knowing all internals of the parent classes.
+ *
+ * For 0.11 we should do something like the following:
+ *  - The GstMiniObjectClass::copy() implementation of GstMiniObject
+ *    should call g_type_create_instance() with the type of the source
+ *    object.
+ *  - All GstMiniObjectClass::copy() implementations should as first
+ *    thing chain up to the parent class and then do whatever they need
+ *    to do to copy their type specific data. Note that this way the
+ *    instance_init() functions are called!
+ */
+
 /**
  * gst_mini_object_copy:
  * @mini_object: the mini-object to copy
@@ -364,13 +378,18 @@ gst_mini_object_replace (GstMiniObject ** olddata, GstMiniObject * newdata)
       newdata, newdata ? newdata->refcount : 0);
 #endif
 
+  olddata_val = g_atomic_pointer_get ((gpointer *) olddata);
+
+  if (olddata_val == newdata)
+    return;
+
   if (newdata)
     gst_mini_object_ref (newdata);
 
-  do {
+  while (!g_atomic_pointer_compare_and_exchange ((gpointer *) olddata,
+          olddata_val, newdata)) {
     olddata_val = g_atomic_pointer_get ((gpointer *) olddata);
-  } while (!g_atomic_pointer_compare_and_exchange ((gpointer *) olddata,
-          olddata_val, newdata));
+  }
 
   if (olddata_val)
     gst_mini_object_unref (olddata_val);
@@ -502,18 +521,27 @@ gst_value_get_mini_object (const GValue * value)
   return value->data[0].v_pointer;
 }
 
-/* param spec */
-
-static GType gst_param_spec_mini_object_get_type (void);
-
-#define GST_TYPE_PARAM_SPEC_MINI_OBJECT (gst_param_spec_mini_object_get_type())
-#define GST_PARAM_SPEC_MINI_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), GST_TYPE_PARAM_SPEC_MINI_OBJECT, GstParamSpecMiniObject))
-
-typedef struct _GstParamSpecMiniObject GstParamSpecMiniObject;
-struct _GstParamSpecMiniObject
+/**
+ * gst_value_dup_mini_object:
+ * @value:   a valid #GValue of %GST_TYPE_MINI_OBJECT derived type
+ *
+ * Get the contents of a %GST_TYPE_MINI_OBJECT derived #GValue,
+ * increasing its reference count.
+ *
+ * Returns: mini object contents of @value
+ *
+ * Since: 0.10.20
+ */
+GstMiniObject *
+gst_value_dup_mini_object (const GValue * value)
 {
-  GParamSpec parent_instance;
-};
+  g_return_val_if_fail (GST_VALUE_HOLDS_MINI_OBJECT (value), NULL);
+
+  return gst_mini_object_ref (value->data[0].v_pointer);
+}
+
+
+/* param spec */
 
 static void
 param_mini_object_init (GParamSpec * pspec)
@@ -557,7 +585,7 @@ param_mini_object_values_cmp (GParamSpec * pspec,
   return p1 < p2 ? -1 : p1 > p2;
 }
 
-static GType
+GType
 gst_param_spec_mini_object_get_type (void)
 {
   static GType type;
@@ -600,7 +628,7 @@ gst_param_spec_mini_object (const char *name, const char *nick,
 
   g_return_val_if_fail (g_type_is_a (object_type, GST_TYPE_MINI_OBJECT), NULL);
 
-  ospec = g_param_spec_internal (GST_TYPE_PARAM_SPEC_MINI_OBJECT,
+  ospec = g_param_spec_internal (GST_TYPE_PARAM_MINI_OBJECT,
       name, nick, blurb, flags);
   G_PARAM_SPEC (ospec)->value_type = object_type;
 

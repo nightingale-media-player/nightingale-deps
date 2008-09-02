@@ -24,9 +24,9 @@
         <sub name="gstdataprotocol" link="gstreamer-libs-gstdataprotocol.html"/>
       </sub>
       <sub name="GStreamer Network Classes" link="gstreamer-net.html">
-        <sub name="GstNetClientClock" link="gstreamer-libs-GstNetClientClock.html"/>
+        <sub name="GstNetClientClock" link="GstNetClientClock.html"/>
         <sub name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html"/>
-        <sub name="GstNetTimeProvider" link="gstreamer-libs-GstNetTimeProvider.html"/>
+        <sub name="GstNetTimeProvider" link="GstNetTimeProvider.html"/>
       </sub>
       <sub name="GStreamer Check Unit Testing" link="gstreamer-check.html">
         <sub name="GstCheck" link="gstreamer-libs-GstCheck.html"/>
@@ -38,7 +38,7 @@
     <sub name="Index of deprecated symbols" link="ix02.html"/>
   </chapters>
   <functions>
-    <function name="Controlled shutdown of live sources in applications" link="GstBaseSrc.html#id2556386"/>
+    <function name="Controlled shutdown of live sources in applications" link="GstBaseSrc.html#id2576476"/>
     <function name="GstBaseSrc" link="GstBaseSrc.html#GstBaseSrc-struct"/>
     <function name="GstBaseSrcClass" link="GstBaseSrc.html#GstBaseSrcClass"/>
     <function name="enum GstBaseSrcFlags" link="GstBaseSrc.html#GstBaseSrcFlags"/>
@@ -59,6 +59,7 @@
     <function name="gst_base_sink_query_latency ()" link="GstBaseSink.html#gst-base-sink-query-latency"/>
     <function name="gst_base_sink_get_latency ()" link="GstBaseSink.html#gst-base-sink-get-latency"/>
     <function name="gst_base_sink_wait_preroll ()" link="GstBaseSink.html#gst-base-sink-wait-preroll"/>
+    <function name="gst_base_sink_wait_clock ()" link="GstBaseSink.html#gst-base-sink-wait-clock"/>
     <function name="gst_base_sink_wait_eos ()" link="GstBaseSink.html#gst-base-sink-wait-eos"/>
     <function name="gst_base_sink_set_sync ()" link="GstBaseSink.html#gst-base-sink-set-sync"/>
     <function name="gst_base_sink_get_sync ()" link="GstBaseSink.html#gst-base-sink-get-sync"/>
@@ -128,6 +129,8 @@
     <function name="gst_collect_pads_pop ()" link="GstCollectPads.html#gst-collect-pads-pop"/>
     <function name="gst_collect_pads_available ()" link="GstCollectPads.html#gst-collect-pads-available"/>
     <function name="gst_collect_pads_read ()" link="GstCollectPads.html#gst-collect-pads-read"/>
+    <function name="gst_collect_pads_read_buffer ()" link="GstCollectPads.html#gst-collect-pads-read-buffer"/>
+    <function name="gst_collect_pads_take_buffer ()" link="GstCollectPads.html#gst-collect-pads-take-buffer"/>
     <function name="gst_collect_pads_flush ()" link="GstCollectPads.html#gst-collect-pads-flush"/>
     <function name="gst_type_find_helper ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper"/>
     <function name="gst_type_find_helper_for_buffer ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer"/>
@@ -170,7 +173,6 @@
     <function name="gst_controller_unset_all ()" link="GstController.html#gst-controller-unset-all"/>
     <function name="gst_controller_get_all ()" link="GstController.html#gst-controller-get-all"/>
     <function name="gst_controller_set_interpolation_mode ()" link="GstController.html#gst-controller-set-interpolation-mode"/>
-    <function name="GST_PARAM_CONTROLLABLE" link="GstController.html#GST-PARAM-CONTROLLABLE:CAPS"/>
     <function name="The &quot;control-rate&quot; property" link="GstController.html#GstController--control-rate"/>
     <function name="GstControlSource" link="GstControlSource.html#GstControlSource-struct"/>
     <function name="GstControlSourceClass" link="GstControlSource.html#GstControlSourceClass"/>
@@ -237,16 +239,22 @@
     <function name="gst_dp_validate_header ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-header"/>
     <function name="gst_dp_validate_payload ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-payload"/>
     <function name="gst_dp_validate_packet ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-packet"/>
-    <function name="GstNetClientClock" link="gstreamer-libs-GstNetClientClock.html#GstNetClientClock"/>
-    <function name="gst_net_client_clock_new ()" link="gstreamer-libs-GstNetClientClock.html#gst-net-client-clock-new"/>
+    <function name="GstNetClientClock" link="GstNetClientClock.html#GstNetClientClock-struct"/>
+    <function name="gst_net_client_clock_new ()" link="GstNetClientClock.html#gst-net-client-clock-new"/>
+    <function name="The &quot;address&quot; property" link="GstNetClientClock.html#GstNetClientClock--address"/>
+    <function name="The &quot;port&quot; property" link="GstNetClientClock.html#GstNetClientClock--port"/>
     <function name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html#GstNetTimePacket"/>
     <function name="GST_NET_TIME_PACKET_SIZE" link="gstreamer-libs-GstNetTimePacket.html#GST-NET-TIME-PACKET-SIZE:CAPS"/>
     <function name="gst_net_time_packet_new ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-new"/>
     <function name="gst_net_time_packet_receive ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-receive"/>
     <function name="gst_net_time_packet_send ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-send"/>
     <function name="gst_net_time_packet_serialize ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-serialize"/>
-    <function name="GstNetTimeProvider" link="gstreamer-libs-GstNetTimeProvider.html#GstNetTimeProvider"/>
-    <function name="gst_net_time_provider_new ()" link="gstreamer-libs-GstNetTimeProvider.html#gst-net-time-provider-new"/>
+    <function name="GstNetTimeProvider" link="GstNetTimeProvider.html#GstNetTimeProvider-struct"/>
+    <function name="gst_net_time_provider_new ()" link="GstNetTimeProvider.html#gst-net-time-provider-new"/>
+    <function name="The &quot;active&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--active"/>
+    <function name="The &quot;address&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--address"/>
+    <function name="The &quot;clock&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--clock"/>
+    <function name="The &quot;port&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--port"/>
     <function name="GST_START_TEST()" link="gstreamer-libs-GstCheck.html#GST-START-TEST:CAPS"/>
     <function name="GST_END_TEST" link="gstreamer-libs-GstCheck.html#GST-END-TEST:CAPS"/>
     <function name="ASSERT_BUFFER_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-BUFFER-REFCOUNT:CAPS"/>
@@ -275,6 +283,10 @@
     <function name="gst_check_teardown_element ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-element"/>
     <function name="gst_check_teardown_sink_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-sink-pad"/>
     <function name="gst_check_teardown_src_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-src-pad"/>
+    <function name="gst_check_drop_buffers ()" link="gstreamer-libs-GstCheck.html#gst-check-drop-buffers"/>
+    <function name="gst_check_caps_equal ()" link="gstreamer-libs-GstCheck.html#gst-check-caps-equal"/>
+    <function name="gst_check_element_push_buffer_list ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer-list"/>
+    <function name="gst_check_element_push_buffer ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer"/>
     <function name="gst_check_run_suite ()" link="gstreamer-libs-GstCheck.html#gst-check-run-suite"/>
     <function name="gst_buffer_straw_start_pipeline ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-start-pipeline"/>
     <function name="gst_buffer_straw_get_buffer ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-get-buffer"/>

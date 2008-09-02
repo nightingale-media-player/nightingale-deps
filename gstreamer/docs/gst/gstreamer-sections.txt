@@ -59,6 +59,7 @@ gst_bin_iterate_all_by_interface
 <SUBSECTION>
 gst_bin_add_many
 gst_bin_remove_many
+gst_bin_find_unlinked_pad
 gst_bin_find_unconnected_pad
 
 <SUBSECTION>
@@ -636,49 +637,65 @@ gst_stream_error_quark
 <FILE>gstevent</FILE>
 <TITLE>GstEvent</TITLE>
 GstEvent
-GstEventType
-GST_EVENT_TRACE_NAME
-GST_EVENT_TYPE
-GST_EVENT_TYPE_NAME
-GST_EVENT_TYPE_BOTH
-GST_EVENT_TIMESTAMP
-GST_EVENT_SRC
-GST_EVENT_IS_DOWNSTREAM
-GST_EVENT_IS_SERIALIZED
-GST_EVENT_IS_UPSTREAM
-GstSeekType
-GstSeekFlags
-GstEventTypeFlags
 
+GstEventTypeFlags
+GST_EVENT_TYPE_BOTH
 GST_EVENT_MAKE_TYPE
 
-gst_event_copy
-gst_event_get_structure
-gst_event_new_buffer_size
-gst_event_new_custom
-gst_event_new_eos
-gst_event_new_flush_start
-gst_event_new_flush_stop
-gst_event_new_latency
-gst_event_new_navigation
-gst_event_new_new_segment
-gst_event_new_new_segment_full
-gst_event_new_qos
-gst_event_new_seek
-gst_event_new_tag
-gst_event_parse_buffer_size
-gst_event_parse_latency
-gst_event_parse_new_segment
-gst_event_parse_new_segment_full
-gst_event_parse_qos
-gst_event_parse_seek
-gst_event_parse_tag
-gst_event_ref
-gst_event_unref
-gst_event_replace
+GstEventType
+
+GST_EVENT_TRACE_NAME
+
+GST_EVENT_TYPE
+GST_EVENT_TYPE_NAME
+GST_EVENT_TIMESTAMP
+GST_EVENT_SRC
+GST_EVENT_IS_UPSTREAM
+GST_EVENT_IS_DOWNSTREAM
+GST_EVENT_IS_SERIALIZED
+
 gst_event_type_get_flags
 gst_event_type_get_name
 gst_event_type_to_quark
+
+gst_event_ref
+gst_event_unref
+gst_event_replace
+gst_event_copy
+
+
+gst_event_new_custom
+gst_event_get_structure
+gst_event_has_name
+
+gst_event_new_flush_start
+gst_event_new_flush_stop
+
+gst_event_new_eos
+
+gst_event_new_new_segment
+gst_event_new_new_segment_full
+gst_event_parse_new_segment
+gst_event_parse_new_segment_full
+
+gst_event_new_tag
+gst_event_parse_tag
+
+gst_event_new_buffer_size
+gst_event_parse_buffer_size
+
+gst_event_new_qos
+gst_event_parse_qos
+
+GstSeekType
+GstSeekFlags
+gst_event_new_seek
+gst_event_parse_seek
+
+gst_event_new_navigation
+
+gst_event_new_latency
+gst_event_parse_latency
 <SUBSECTION Standard>
 GstEventClass
 GST_EVENT
@@ -791,6 +808,7 @@ gst_index_get_certainty
 gst_index_set_filter
 gst_index_set_filter_full
 gst_index_set_resolver
+gst_index_set_resolver_full
 gst_index_get_writer_id
 gst_index_add_format
 gst_index_add_association
@@ -1013,44 +1031,47 @@ GST_MESSAGE_TYPE_NAME
 GST_MESSAGE_TRACE_NAME
 gst_message_type_to_quark
 gst_message_type_get_name
+gst_message_ref
+gst_message_unref
 gst_message_copy
 gst_message_get_structure
 gst_message_make_writable
-gst_message_new_application
-gst_message_new_clock_provide
-gst_message_new_clock_lost
-gst_message_new_custom
-gst_message_new_element
+
 gst_message_new_eos
 gst_message_new_error
-gst_message_new_info
-gst_message_new_new_clock
-gst_message_new_segment_done
-gst_message_new_segment_start
-gst_message_new_state_changed
-gst_message_new_tag
-gst_message_new_buffering
-gst_message_new_warning
-gst_message_new_duration
-gst_message_new_state_dirty
-gst_message_new_async_start
-gst_message_new_async_done
-gst_message_new_latency
-gst_message_parse_clock_lost
-gst_message_parse_clock_provide
 gst_message_parse_error
-gst_message_parse_info
-gst_message_parse_new_clock
-gst_message_parse_segment_done
-gst_message_parse_segment_start
-gst_message_parse_state_changed
-gst_message_parse_tag
-gst_message_parse_buffering
+gst_message_new_warning
 gst_message_parse_warning
+gst_message_new_info
+gst_message_parse_info
+gst_message_new_tag
+gst_message_parse_tag
+gst_message_new_buffering
+gst_message_parse_buffering
+gst_message_set_buffering_stats
+gst_message_parse_buffering_stats
+gst_message_new_state_changed
+gst_message_parse_state_changed
+gst_message_new_state_dirty
+gst_message_new_clock_provide
+gst_message_parse_clock_provide
+gst_message_new_clock_lost
+gst_message_parse_clock_lost
+gst_message_new_new_clock
+gst_message_parse_new_clock
+gst_message_new_application
+gst_message_new_element
+gst_message_new_custom
+gst_message_new_segment_start
+gst_message_parse_segment_start
+gst_message_new_segment_done
+gst_message_parse_segment_done
+gst_message_new_duration
 gst_message_parse_duration
+gst_message_new_latency
+gst_message_new_async_start
 gst_message_parse_async_start
-gst_message_ref
-gst_message_unref
+gst_message_new_async_done
 
 <SUBSECTION Standard>
 GstMessageClass
@@ -1098,10 +1119,13 @@ gst_mini_object_ref
 gst_mini_object_unref
 gst_mini_object_replace
 
+GstParamSpecMiniObject
 gst_param_spec_mini_object
+
 gst_value_set_mini_object
 gst_value_take_mini_object
 gst_value_get_mini_object
+gst_value_dup_mini_object
 
 <SUBSECTION Standard>
 GstMiniObjectClass
@@ -1113,9 +1137,14 @@ GST_MINI_OBJECT_GET_CLASS
 GST_TYPE_MINI_OBJECT
 GST_TYPE_MINI_OBJECT_FLAGS
 GST_MINI_OBJECT_CAST
+
+GST_IS_PARAM_SPEC_MINI_OBJECT
+GST_PARAM_SPEC_MINI_OBJECT
+GST_TYPE_PARAM_MINI_OBJECT
 <SUBSECTION Private>
 gst_mini_object_get_type
 gst_mini_object_flags_get_type
+gst_param_spec_mini_object_get_type
 </SECTION>
 
 
@@ -1225,8 +1254,11 @@ gst_pad_is_blocked
 gst_pad_is_blocking
 
 gst_pad_add_data_probe
+gst_pad_add_data_probe_full
 gst_pad_add_buffer_probe
+gst_pad_add_buffer_probe_full
 gst_pad_add_event_probe
+gst_pad_add_event_probe_full
 gst_pad_remove_data_probe
 gst_pad_remove_buffer_probe
 gst_pad_remove_event_probe
@@ -1332,6 +1364,8 @@ gst_pad_stop_task
 
 gst_pad_set_active
 
+GST_PAD_CAPS
+
 GST_PAD_GET_STREAM_LOCK
 GST_PAD_STREAM_LOCK
 GST_PAD_STREAM_LOCK_FULL
@@ -1370,7 +1404,6 @@ GST_PAD_PARENT
 GST_PAD_ELEMENT_PRIVATE
 GST_PAD_PAD_TEMPLATE
 GST_PAD_DIRECTION
-GST_PAD_CAPS
 GST_PAD_PEER
 GST_PAD_IS_LINKED
 GST_PAD_IS_SRC
@@ -1464,18 +1497,49 @@ gst_static_caps_get_type
 
 
 <SECTION>
+<FILE>gstparamspec</FILE>
+<TITLE>GstParamSpec</TITLE>
+
+GST_PARAM_CONTROLLABLE
+GST_PARAM_USER_SHIFT
+
+<SUBSECTION paramspecfraction>
+GstParamSpecFraction
+gst_param_spec_fraction
+
+<SUBSECTION Standard>
+GST_IS_PARAM_SPEC_FRACTION
+GST_PARAM_SPEC_FRACTION
+GST_TYPE_PARAM_FRACTION
+gst_param_spec_fraction_get_type
+
+</SECTION>
+
+
+<SECTION>
 <FILE>gstparse</FILE>
 <TITLE>GstParse</TITLE>
 gst_parse_error_quark
 GST_PARSE_ERROR
 GstParseError
+GstParseContext
+GstParseFlags
 gst_parse_launch
+gst_parse_launch_full
 gst_parse_launchv
+gst_parse_launchv_full
 gst_parse_bin_from_description
+gst_parse_bin_from_description_full
+<SUBSECTION>
+gst_parse_context_new
+gst_parse_context_free
+gst_parse_context_get_missing_elements
 <SUBSECTION Standard>
 GST_TYPE_PARSE_ERROR
+GST_TYPE_PARSE_FLAGS
 <SUBSECTION Private>
 gst_parse_error_get_type
+gst_parse_flags_get_type
 </SECTION>
 
 
@@ -1604,6 +1668,51 @@ gst_rank_get_type
 
 
 <SECTION>
+<FILE>gstpoll</FILE>
+<TITLE>GstPoll</TITLE>
+GstPoll
+GstPollFD
+GST_POLL_FD_INIT
+gst_poll_add_fd
+gst_poll_fd_can_read
+gst_poll_fd_can_write
+gst_poll_fd_ctl_read
+gst_poll_fd_ctl_write
+gst_poll_fd_has_closed
+gst_poll_fd_has_error
+gst_poll_fd_ignored
+gst_poll_fd_init
+gst_poll_free
+gst_poll_new
+gst_poll_remove_fd
+gst_poll_restart
+gst_poll_set_controllable
+gst_poll_set_flushing
+gst_poll_wait
+</SECTION>
+
+<SECTION>
+<FILE>gstpreset</FILE>
+<TITLE>GstPreset</TITLE>
+GstPreset
+gst_preset_get_preset_names
+gst_preset_get_property_names
+gst_preset_load_preset
+gst_preset_save_preset
+gst_preset_rename_preset
+gst_preset_delete_preset
+gst_preset_set_meta
+gst_preset_get_meta
+<SUBSECTION Standard>
+GstPresetInterface
+GST_PRESET
+GST_IS_PRESET
+GST_TYPE_PRESET
+GST_PRESET_GET_INTERFACE
+gst_preset_get_type
+</SECTION>
+
+<SECTION>
 <FILE>gstquery</FILE>
 <TITLE>GstQuery</TITLE>
 GstQuery
@@ -1658,6 +1767,15 @@ gst_query_new_segment
 gst_query_set_segment
 gst_query_parse_segment
 
+GstBufferingMode
+gst_query_new_buffering
+gst_query_set_buffering_percent
+gst_query_parse_buffering_percent
+gst_query_set_buffering_stats
+gst_query_parse_buffering_stats
+gst_query_set_buffering_range
+gst_query_parse_buffering_range
+
 <SUBSECTION Standard>
 GstQueryClass
 GST_QUERY
@@ -1668,9 +1786,11 @@ GST_TYPE_QUERY
 GST_TYPE_QUERY_TYPE
 GST_QUERY_GET_CLASS
 GST_QUERY_TYPE
+GST_TYPE_BUFFERING_MODE
 <SUBSECTION Private>
 gst_query_get_type
 gst_query_type_get_type
+gst_buffering_mode_get_type
 </SECTION>
 
 
@@ -1719,6 +1839,7 @@ GST_TYPE_REGISTRY
 <SUBSECTION Private>
 GST_MAGIC_BINARY_REGISTRY_LEN
 GST_MAGIC_BINARY_REGISTRY_STR
+GST_MAGIC_BINARY_VERSION_STR
 GST_MAGIC_BINARY_VERSION_LEN
 gst_registry_get_type
 </SECTION>
@@ -1731,6 +1852,7 @@ GstSegment
 gst_segment_clip
 gst_segment_init
 gst_segment_new
+gst_segment_copy
 gst_segment_free
 gst_segment_set_duration
 gst_segment_set_last_stop
@@ -2054,6 +2176,7 @@ GstTypeFindFunction
 GstTypeFindProbability
 gst_type_find_peek
 gst_type_find_suggest
+gst_type_find_suggest_simple
 gst_type_find_get_length
 gst_type_find_register
 <SUBSECTION Standard>
@@ -2223,10 +2346,6 @@ gst_value_get_fraction_denominator
 gst_value_fraction_multiply
 gst_value_fraction_subtract
 
-<SUBSECTION paramspecfraction>
-GstParamSpecFraction
-gst_param_spec_fraction
-
 <SUBSECTION fractionrange>
 GST_VALUE_HOLDS_FRACTION_RANGE
 GST_TYPE_FRACTION_RANGE
@@ -2294,11 +2413,6 @@ gst_value_array_get_size
 gst_value_array_get_value
 gst_value_array_prepend_value
 
-<SUBSECTION Standard>
-GST_IS_PARAM_SPEC_FRACTION
-GST_PARAM_SPEC_FRACTION
-GST_TYPE_PARAM_FRACTION
-gst_param_spec_fraction_get_type
 
 <SUBSECTION Private>
 gst_date_get_type
@@ -2318,6 +2432,7 @@ GST_VERSION_MAJOR
 GST_VERSION_MINOR
 GST_VERSION_MICRO
 GST_VERSION_NANO
+GST_CHECK_VERSION
 </SECTION>
 
 

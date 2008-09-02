@@ -240,18 +240,19 @@ gst_file_src_class_init (GstFileSrcClass * klass)
   g_object_class_install_property (gobject_class, ARG_FD,
       g_param_spec_int ("fd", "File-descriptor",
           "File-descriptor for the file being mmap()d", 0, G_MAXINT, 0,
-          G_PARAM_READABLE));
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_LOCATION,
       g_param_spec_string ("location", "File Location",
-          "Location of the file to read", NULL, G_PARAM_READWRITE));
+          "Location of the file to read", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MMAPSIZE,
       g_param_spec_ulong ("mmapsize", "mmap() Block Size",
           "Size in bytes of mmap()d regions", 0, G_MAXULONG, DEFAULT_MMAPSIZE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_TOUCH,
       g_param_spec_boolean ("touch", "Touch mapped region read data",
           "Touch mmapped data regions to force them to be read from disk",
-          DEFAULT_TOUCH, G_PARAM_READWRITE));
+          DEFAULT_TOUCH, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstFileSrc:use-mmap
    *
@@ -273,12 +274,12 @@ gst_file_src_class_init (GstFileSrcClass * klass)
   g_object_class_install_property (gobject_class, ARG_USEMMAP,
       g_param_spec_boolean ("use-mmap", "Use mmap to read data",
           "Whether to use mmap() instead of read()",
-          DEFAULT_USEMMAP, G_PARAM_READWRITE));
+          DEFAULT_USEMMAP, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_SEQUENTIAL,
       g_param_spec_boolean ("sequential", "Optimise for sequential mmap access",
           "Whether to use madvise to hint to the kernel that access to "
           "mmap pages will be sequential",
-          DEFAULT_SEQUENTIAL, G_PARAM_READWRITE));
+          DEFAULT_SEQUENTIAL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_file_src_finalize);
 
@@ -348,6 +349,8 @@ gst_file_src_set_location (GstFileSrc * src, const gchar * location)
     src->filename = NULL;
     src->uri = NULL;
   } else {
+    /* we store the filename as received by the application. On Windoes this
+     * should be UTF8 */
     src->filename = g_strdup (location);
     src->uri = gst_uri_construct ("file", src->filename);
   }
@@ -474,6 +477,7 @@ struct _GstMmapBufferClass
 static void gst_mmap_buffer_init (GTypeInstance * instance, gpointer g_class);
 static void gst_mmap_buffer_class_init (gpointer g_class, gpointer class_data);
 static void gst_mmap_buffer_finalize (GstMmapBuffer * mmap_buffer);
+static GstBufferClass *mmap_buffer_parent_class = NULL;
 
 static GType
 gst_mmap_buffer_get_type (void)
@@ -504,6 +508,8 @@ static void
 gst_mmap_buffer_class_init (gpointer g_class, gpointer class_data)
 {
   GstMiniObjectClass *mini_object_class = GST_MINI_OBJECT_CLASS (g_class);
+
+  mmap_buffer_parent_class = g_type_class_peek_parent (g_class);
 
   mini_object_class->finalize =
       (GstMiniObjectFinalizeFunction) gst_mmap_buffer_finalize;
@@ -553,10 +559,13 @@ gst_mmap_buffer_finalize (GstMmapBuffer * mmap_buffer)
    * guint64 as hex */
   GST_LOG ("unmapped region %08lx+%08lx at %p",
       (gulong) offset, (gulong) size, data);
+
+  GST_MINI_OBJECT_CLASS (mmap_buffer_parent_class)->
+      finalize (GST_MINI_OBJECT (mmap_buffer));
 }
 
 static GstBuffer *
-gst_file_src_map_region (GstFileSrc * src, off_t offset, size_t size,
+gst_file_src_map_region (GstFileSrc * src, off_t offset, gsize size,
     gboolean testonly)
 {
   GstBuffer *buf;
@@ -603,16 +612,16 @@ gst_file_src_map_region (GstFileSrc * src, off_t offset, size_t size,
 mmap_failed:
   {
     if (!testonly) {
-      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
-          ("mmap (0x%08lx, %d, 0x%llx) failed: %s",
-              (gulong) size, src->fd, offset, g_strerror (errno)));
+      GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
+          ("mmap (0x%08lx, %d, 0x%" G_GINT64_MODIFIER "x) failed: %s",
+              (gulong) size, src->fd, (guint64) offset, g_strerror (errno)));
     }
     return NULL;
   }
 }
 
 static GstBuffer *
-gst_file_src_map_small_region (GstFileSrc * src, off_t offset, size_t size)
+gst_file_src_map_small_region (GstFileSrc * src, off_t offset, gsize size)
 {
   GstBuffer *ret;
   off_t mod;
@@ -628,7 +637,7 @@ gst_file_src_map_small_region (GstFileSrc * src, off_t offset, size_t size)
 
   /* if the offset starts at a non-page boundary, we have to special case */
   if (mod != 0) {
-    size_t mapsize;
+    gsize mapsize;
     off_t mapbase;
     GstBuffer *map;
 
@@ -659,7 +668,7 @@ gst_file_src_create_mmap (GstFileSrc * src, guint64 offset, guint length,
     GstBuffer ** buffer)
 {
   GstBuffer *buf = NULL;
-  size_t readsize, mapsize;
+  gsize readsize, mapsize;
   off_t readend, mapstart, mapend;
   int i;
 
@@ -715,21 +724,21 @@ gst_file_src_create_mmap (GstFileSrc * src, guint64 offset, guint length,
   /* then deal with the case where the read buffer is totally outside */
   if (buf == NULL) {
     /* first check to see if there's a map that covers the right region already */
-    GST_LOG_OBJECT (src, "searching for mapbuf to cover %llu+%d",
-        offset, (int) readsize);
+    GST_LOG_OBJECT (src, "searching for mapbuf to cover %" G_GUINT64_FORMAT
+        "+%d", offset, (int) readsize);
 
     /* if the read buffer crosses a mmap region boundary, create a one-off region */
     if ((offset / src->mapsize) != (readend / src->mapsize)) {
-      GST_LOG_OBJECT (src,
-          "read buf %llu+%d crosses a %d-byte boundary, creating a one-off",
-          offset, (int) readsize, (int) src->mapsize);
+      GST_LOG_OBJECT (src, "read buf %" G_GUINT64_FORMAT "+%d crosses a "
+          "%d-byte boundary, creating a one-off", offset, (int) readsize,
+          (int) src->mapsize);
       buf = gst_file_src_map_small_region (src, offset, readsize);
       if (buf == NULL)
         goto could_not_mmap;
 
       /* otherwise we will create a new mmap region and set it to the default */
     } else {
-      size_t mapsize;
+      gsize mapsize;
 
       off_t nextmap = offset - (offset % src->mapsize);
 
@@ -934,6 +943,7 @@ gst_file_src_start (GstBaseSrc * basesrc)
 
   /* open the file */
   src->fd = gst_open (src->filename, O_RDONLY | O_BINARY, 0);
+
   if (src->fd < 0)
     goto open_failed;
 

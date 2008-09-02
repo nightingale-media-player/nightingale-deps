@@ -90,12 +90,6 @@
 GST_DEBUG_CATEGORY_STATIC (pipeline_debug);
 #define GST_CAT_DEFAULT pipeline_debug
 
-static const GstElementDetails gst_pipeline_details =
-GST_ELEMENT_DETAILS ("Pipeline object",
-    "Generic/Bin",
-    "Complete pipeline object",
-    "Erik Walthinsen <omega@cse.ogi.edu>, Wim Taymans <wim@fluendo.com>");
-
 /* Pipeline signals and args */
 enum
 {
@@ -181,7 +175,10 @@ gst_pipeline_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (gstelement_class, &gst_pipeline_details);
+  gst_element_class_set_details_simple (gstelement_class, "Pipeline object",
+      "Generic/Bin",
+      "Complete pipeline object",
+      "Erik Walthinsen <omega@cse.ogi.edu>, Wim Taymans <wim@fluendo.com>");
 }
 
 static void
@@ -212,7 +209,7 @@ gst_pipeline_class_init (gpointer g_class, gpointer class_data)
       g_param_spec_uint64 ("delay", "Delay",
           "Expected delay needed for elements "
           "to spin up to PLAYING in nanoseconds", 0, G_MAXUINT64, DEFAULT_DELAY,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstPipeline:auto-flush-bus:
@@ -227,7 +224,7 @@ gst_pipeline_class_init (gpointer g_class, gpointer class_data)
       g_param_spec_boolean ("auto-flush-bus", "Auto Flush Bus",
           "Whether to automatically flush the pipeline's bus when going "
           "from READY into NULL state", DEFAULT_AUTO_FLUSH_BUS,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_pipeline_dispose);
 
@@ -566,7 +563,7 @@ gst_pipeline_handle_message (GstBin * bin, GstMessage * message)
  * gst_pipeline_get_bus:
  * @pipeline: a #GstPipeline
  *
- * Gets the #GstBus of @pipeline.
+ * Gets the #GstBus of @pipeline. The bus allows applications to receive #GstMessages.
  *
  * Returns: a #GstBus, unref after usage.
  *

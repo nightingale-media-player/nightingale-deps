@@ -59,6 +59,7 @@ G_BEGIN_DECLS
 
 typedef struct _GstNetClientClock GstNetClientClock;
 typedef struct _GstNetClientClockClass GstNetClientClockClass;
+typedef struct _GstNetClientClockPrivate GstNetClientClockPrivate;
 
 /**
  * GstNetClientClock:
@@ -72,7 +73,7 @@ struct _GstNetClientClock {
   /*< protected >*/
   gchar *address;
   gint port;
-  
+
   /*< private >*/
   int sock;
   int control_sock[2];
@@ -84,7 +85,9 @@ struct _GstNetClientClock {
   GThread *thread;
 
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  GstNetClientClockPrivate *priv;
+
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstNetClientClockClass {

@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>fakesink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-fakesrc.html" title="fakesrc">
 <link rel="next" href="gstreamer-plugins-fdsink.html" title="fdsink">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gstreamer Elements">
 <link rel="chapter" href="ch02.html" title="gstreamer Plugins">
@@ -22,43 +22,35 @@
 <th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-plugins-fdsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2575141" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2581375" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2588587" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2597514" class="shortcut">Properties</a>
-                  &#160;|&#160;
-                  <a href="#id2581343" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-plugins-fakesink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-plugins-fakesink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gstreamer-plugins-fakesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gstreamer-plugins-fakesink.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gstreamer-plugins-fakesink.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-plugins-fakesink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2575141"></a><span class="refentrytitle">fakesink</span>
-</h2>
-<p>fakesink &#8212; black hole for data</p>
+<h2><span class="refentrytitle"><a name="gstreamer-plugins-fakesink.top_of_page"></a>fakesink</span></h2>
+<p>fakesink — black hole for data</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-plugins-fakesink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstFakeSink"></a><pre class="synopsis">
-
-
-
-                    <a href="gstreamer-plugins-fakesink.html#GstFakeSink-struct">GstFakeSink</a>;
-enum                <a href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError">GstFakeSinkStateError</a>;
-
-
+                    <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink-struct" title="GstFakeSink">GstFakeSink</a>;
+enum                <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError" title="enum GstFakeSinkStateError">GstFakeSinkStateError</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2588587"></a><h2>Object Hierarchy</h2>
+<a name="gstreamer-plugins-fakesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -67,70 +59,67 @@ enum                <a href="gstreamer-plugins-fakesink.html#GstFakeSinkStateErr
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597514"></a><h2>Properties</h2>
+<a name="gstreamer-plugins-fakesink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull">can-activate-pull</a>"        gboolean              : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-push">can-activate-push</a>"        gboolean              : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--dump">dump</a>"                     gboolean              : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--last-message">last-message</a>"             gchar*                : Read
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--signal-handoffs">signal-handoffs</a>"          gboolean              : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--silent">silent</a>"                   gboolean              : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--state-error">state-error</a>"              <a href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError">GstFakeSinkStateError</a>  : Read / Write
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers">num-buffers</a>"              gint                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull" title='The "can-activate-pull" property'>can-activate-pull</a>"        gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-push" title='The "can-activate-push" property'>can-activate-push</a>"        gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--dump" title='The "dump" property'>dump</a>"                     gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--last-message" title='The "last-message" property'>last-message</a>"             gchar*                : Read
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--state-error" title='The "state-error" property'>state-error</a>"              <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError" title="enum GstFakeSinkStateError">GstFakeSinkStateError</a>  : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers" title='The "num-buffers" property'>num-buffers</a>"              gint                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2581343"></a><h2>Signals</h2>
+<a name="gstreamer-plugins-fakesink.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink-handoff">handoff</a>"                                        : Run Last
-  "<a href="gstreamer-plugins-fakesink.html#GstFakeSink-preroll-handoff">preroll-handoff</a>"                                : Run Last
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink-handoff" title='The "handoff" signal'>handoff</a>"                                        : Run Last
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink-preroll-handoff" title='The "preroll-handoff" signal'>preroll-handoff</a>"                                : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2581375"></a><h2>Description</h2>
+<a name="gstreamer-plugins-fakesink.description"></a><h2>Description</h2>
 <p>
 Dummy sink that swallows everything.</p>
 <div class="refsect2" lang="en">
-<a name="id2581390"></a><h3>Element Information</h3>
+<a name="id2606417"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Wim Taymans &lt;wim@fluendo.com&gt;, Mr. 'frag-me-more' Vanderwingo &lt;wingo@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -141,22 +130,20 @@ Dummy sink that swallows everything.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2575249"></a><h2>Details</h2>
+<a name="gstreamer-plugins-fakesink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2575260"></a><h3>
-<a name="GstFakeSink-struct"></a>GstFakeSink</h3>
-<a class="indexterm" name="id2575272"></a><pre class="programlisting">typedef struct _GstFakeSink GstFakeSink;</pre>
+<a name="GstFakeSink-struct"></a><h3>GstFakeSink</h3>
+<pre class="programlisting">typedef struct _GstFakeSink GstFakeSink;</pre>
 <p>
-The opaque <a href="gstreamer-plugins-fakesink.html#GstFakeSink"><span class="type">GstFakeSink</span></a> data structure.</p>
+The opaque <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink"><span class="type">GstFakeSink</span></a> data structure.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2575298"></a><h3>
-<a name="GstFakeSinkStateError"></a>enum GstFakeSinkStateError</h3>
-<a class="indexterm" name="id2575310"></a><pre class="programlisting">typedef enum {
+<a name="GstFakeSinkStateError"></a><h3>enum GstFakeSinkStateError</h3>
+<pre class="programlisting">typedef enum {
   FAKE_SINK_STATE_ERROR_NONE = 0,
   FAKE_SINK_STATE_ERROR_NULL_READY,
   FAKE_SINK_STATE_ERROR_READY_PAUSED,
@@ -175,37 +162,37 @@ Possible state change errors for the state-error property.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-NONE:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_NONE</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-NONE:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_NONE</code></span></p></td>
 <td> no error
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-NULL-READY:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_NULL_READY</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-NULL-READY:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_NULL_READY</code></span></p></td>
 <td> cause the NULL to READY state change to fail
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-READY-PAUSED:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_READY_PAUSED</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-READY-PAUSED:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_READY_PAUSED</code></span></p></td>
 <td> cause the READY to PAUSED state change to fail:
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-PAUSED-PLAYING:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_PAUSED_PLAYING</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-PAUSED-PLAYING:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_PAUSED_PLAYING</code></span></p></td>
 <td> cause the PAUSED to PLAYING state change to fail:
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-PLAYING-PAUSED:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_PLAYING_PAUSED</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-PLAYING-PAUSED:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_PLAYING_PAUSED</code></span></p></td>
 <td> cause the PLAYING to PAUSED state change to fail:
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-PAUSED-READY:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_PAUSED_READY</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-PAUSED-READY:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_PAUSED_READY</code></span></p></td>
 <td> cause the PAUSED to READY state change to fail:
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="FAKE-SINK-STATE-ERROR-READY-NULL:CAPS"></a><code class="literal">FAKE_SINK_STATE_ERROR_READY_NULL</code></span></td>
+<td><p><a name="FAKE-SINK-STATE-ERROR-READY-NULL:CAPS"></a><span class="term"><code class="literal">FAKE_SINK_STATE_ERROR_READY_NULL</code></span></p></td>
 <td> cause the READY to NULL state change to fail:
 </td>
 </tr>
@@ -214,78 +201,69 @@ Possible state change errors for the state-error property.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2560885"></a><h2>Property Details</h2>
+<a name="gstreamer-plugins-fakesink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2560895"></a><h3>
-<a name="GstFakeSink--can-activate-pull"></a>The "<code class="literal">can-activate-pull</code>" property</h3>
-<a class="indexterm" name="id2560911"></a><pre class="programlisting">  "can-activate-pull"        gboolean              : Read / Write</pre>
+<a name="GstFakeSink--can-activate-pull"></a><h3>The <code class="literal">"can-activate-pull"</code> property</h3>
+<pre class="programlisting">  "can-activate-pull"        gboolean              : Read / Write</pre>
 <p>Can activate in pull mode.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2560936"></a><h3>
-<a name="GstFakeSink--can-activate-push"></a>The "<code class="literal">can-activate-push</code>" property</h3>
-<a class="indexterm" name="id2560952"></a><pre class="programlisting">  "can-activate-push"        gboolean              : Read / Write</pre>
+<a name="GstFakeSink--can-activate-push"></a><h3>The <code class="literal">"can-activate-push"</code> property</h3>
+<pre class="programlisting">  "can-activate-push"        gboolean              : Read / Write</pre>
 <p>Can activate in push mode.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2560978"></a><h3>
-<a name="GstFakeSink--dump"></a>The "<code class="literal">dump</code>" property</h3>
-<a class="indexterm" name="id2560993"></a><pre class="programlisting">  "dump"                     gboolean              : Read / Write</pre>
+<a name="GstFakeSink--dump"></a><h3>The <code class="literal">"dump"</code> property</h3>
+<pre class="programlisting">  "dump"                     gboolean              : Read / Write</pre>
 <p>Dump buffer contents to stdout.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2561019"></a><h3>
-<a name="GstFakeSink--last-message"></a>The "<code class="literal">last-message</code>" property</h3>
-<a class="indexterm" name="id2561033"></a><pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<a name="GstFakeSink--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
+<pre class="programlisting">  "last-message"             gchar*                : Read</pre>
 <p>The message describing current status.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600749"></a><h3>
-<a name="GstFakeSink--signal-handoffs"></a>The "<code class="literal">signal-handoffs</code>" property</h3>
-<a class="indexterm" name="id2600764"></a><pre class="programlisting">  "signal-handoffs"          gboolean              : Read / Write</pre>
+<a name="GstFakeSink--signal-handoffs"></a><h3>The <code class="literal">"signal-handoffs"</code> property</h3>
+<pre class="programlisting">  "signal-handoffs"          gboolean              : Read / Write</pre>
 <p>Send a signal before unreffing the buffer.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600787"></a><h3>
-<a name="GstFakeSink--silent"></a>The "<code class="literal">silent</code>" property</h3>
-<a class="indexterm" name="id2600800"></a><pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<a name="GstFakeSink--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
+<pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
 <p>Don't produce last_message events.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600824"></a><h3>
-<a name="GstFakeSink--state-error"></a>The "<code class="literal">state-error</code>" property</h3>
-<a class="indexterm" name="id2600836"></a><pre class="programlisting">  "state-error"              <a href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError">GstFakeSinkStateError</a>  : Read / Write</pre>
+<a name="GstFakeSink--state-error"></a><h3>The <code class="literal">"state-error"</code> property</h3>
+<pre class="programlisting">  "state-error"              <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError" title="enum GstFakeSinkStateError">GstFakeSinkStateError</a>  : Read / Write</pre>
 <p>Generate a state change error.</p>
 <p>Default value: No state change errors</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600860"></a><h3>
-<a name="GstFakeSink--num-buffers"></a>The "<code class="literal">num-buffers</code>" property</h3>
-<a class="indexterm" name="id2600873"></a><pre class="programlisting">  "num-buffers"              gint                  : Read / Write</pre>
+<a name="GstFakeSink--num-buffers"></a><h3>The <code class="literal">"num-buffers"</code> property</h3>
+<pre class="programlisting">  "num-buffers"              gint                  : Read / Write</pre>
 <p>Number of buffers to accept going EOS.</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2600901"></a><h2>Signal Details</h2>
+<a name="gstreamer-plugins-fakesink.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2600911"></a><h3>
-<a name="GstFakeSink-handoff"></a>The "handoff" signal</h3>
-<a class="indexterm" name="id2600918"></a><pre class="programlisting">void                user_function                      (<a href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
+<a name="GstFakeSink-handoff"></a><h3>The <code class="literal">"handoff"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
                                                         GstBuffer   *buffer,
                                                         GstPad      *pad,
                                                         gpointer     user_data)      : Run Last</pre>
@@ -298,22 +276,22 @@ This signal gets emitted before unreffing the buffer.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>fakesink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fakesink</code></em> :</span></p></td>
 <td> the fakesink instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> the buffer that just has been received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> the pad that received it
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -321,9 +299,8 @@ This signal gets emitted before unreffing the buffer.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601022"></a><h3>
-<a name="GstFakeSink-preroll-handoff"></a>The "preroll-handoff" signal</h3>
-<a class="indexterm" name="id2601030"></a><pre class="programlisting">void                user_function                      (<a href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
+<a name="GstFakeSink-preroll-handoff"></a><h3>The <code class="literal">"preroll-handoff"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
                                                         GstBuffer   *buffer,
                                                         GstPad      *pad,
                                                         gpointer     user_data)      : Run Last</pre>
@@ -336,22 +313,22 @@ This signal gets emitted before unreffing the buffer.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>fakesink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fakesink</code></em> :</span></p></td>
 <td> the fakesink instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> the buffer that just has been received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> the pad that received it
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -361,9 +338,12 @@ This signal gets emitted before unreffing the buffer.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601141"></a><h2>See Also</h2>
-<a href="gstreamer-plugins-fakesrc.html#GstFakeSrc"><span class="type">GstFakeSrc</span></a>
+<a name="gstreamer-plugins-fakesink.see-also"></a><h2>See Also</h2>
+<a class="link" href="gstreamer-plugins-fakesrc.html#GstFakeSrc"><span class="type">GstFakeSrc</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -2,6 +2,7 @@ dnl Perform a check for a feature for GStreamer
 dnl Richard Boulton <richard-alsa@tartarus.org>
 dnl Thomas Vander Stichele <thomas@apestaart.org> added useful stuff
 dnl Last modification: 25/06/2001
+dnl
 dnl AG_GST_CHECK_FEATURE(FEATURE-NAME, FEATURE-DESCRIPTION,
 dnl                   DEPENDENT-PLUGINS, TEST-FOR-FEATURE,
 dnl                   DISABLE-BY-DEFAULT, ACTION-IF-USE, ACTION-IF-NOTUSE)
@@ -18,7 +19,7 @@ dnl whether the feature is to be used.
 dnl Thomas changed this, so that when USE_<FEATURE-NAME> was already set
 dnl to no, then it stays that way.
 dnl
-dnl The macro will call AM_CONDITIONAL(USE_<<FEATURE-NAME>, ...) to allow
+dnl The macro will call AM_CONDITIONAL(USE_<FEATURE-NAME>, ...) to allow
 dnl the feature to control what is built in Makefile.ams.  If you want
 dnl additional actions resulting from the test, you can add them with the
 dnl ACTION-IF-USE and ACTION-IF-NOTUSE parameters.
@@ -109,7 +110,7 @@ if test x$USE_[$1] = xyes; then
   if test "x$3" != "x"; then
     GST_PLUGINS_YES="\t[$3]\n$GST_PLUGINS_YES"
   fi
-  AC_DEFINE(HAVE_[$1], , [support for features: $3])
+  AC_DEFINE(HAVE_[$1], , [Define to enable $2]ifelse($3,,, [ (used by $3)]).)
 else
   ifelse([$3], , :, [AC_MSG_NOTICE(*** These plugins will not be built: [$3])])
   if test "x$3" != "x"; then
@@ -255,31 +256,31 @@ dnl relies on GST_PLUGINS_ALL, GST_PLUGINS_SELECTED, GST_PLUGINS_YES,
 dnl GST_PLUGINS_NO, and BUILD_EXTERNAL
 AC_DEFUN([AG_GST_OUTPUT_PLUGINS], [
 
-echo "configure: *** Plug-ins without external dependencies that will be built:"
-( for i in $GST_PLUGINS_SELECTED; do /bin/echo -e '\t'$i; done ) | sort
-echo
+printf "configure: *** Plug-ins without external dependencies that will be built:\n"
+( for i in $GST_PLUGINS_SELECTED; do printf '\t'$i'\n'; done ) | sort
+printf "\n"
 
-echo "configure: *** Plug-ins without external dependencies that will NOT be built:"
+printf "configure: *** Plug-ins without external dependencies that will NOT be built:\n"
 ( for i in $GST_PLUGINS_ALL; do
-    case $GST_PLUGINS_SELECTED in
-      *$i*)
+    case " $GST_PLUGINS_SELECTED " in
+      *\ $i\ *)
 	;;
       *)
-	/bin/echo -e '\t'$i
+	printf '\t'$i'\n'
 	;;
     esac
   done ) | sort
-echo
+printf "\n"
 
 if test "x$BUILD_EXTERNAL" = "xno"; then
-  echo "configure: *** No plug-ins with external dependencies will be built"
+  printf "configure: *** No plug-ins with external dependencies will be built\n"
 else
-  /bin/echo -n "configure: *** Plug-ins with dependencies that will be built:"
-  /bin/echo -e "$GST_PLUGINS_YES" | sort
-  /bin/echo
-  /bin/echo -n "configure: *** Plug-ins with dependencies that will NOT be built:"
-  /bin/echo -e "$GST_PLUGINS_NO" | sort
-  /bin/echo
+  printf "configure: *** Plug-ins with dependencies that will be built:"
+  printf "$GST_PLUGINS_YES\n" | sort
+  printf "\n"
+  printf "configure: *** Plug-ins with dependencies that will NOT be built:"
+  printf "$GST_PLUGINS_NO\n" | sort
+  printf "\n"
 fi
 ])
 

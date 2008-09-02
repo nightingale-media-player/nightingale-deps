@@ -89,6 +89,8 @@ static void gst_event_class_init (gpointer g_class, gpointer class_data);
 static void gst_event_finalize (GstEvent * event);
 static GstEvent *_gst_event_copy (GstEvent * event);
 
+static GstMiniObjectClass *parent_class = NULL;
+
 void
 _gst_event_initialize (void)
 {
@@ -219,6 +221,8 @@ gst_event_class_init (gpointer g_class, gpointer class_data)
 {
   GstEventClass *event_class = GST_EVENT_CLASS (g_class);
 
+  parent_class = g_type_class_peek_parent (g_class);
+
   event_class->mini_object_class.copy =
       (GstMiniObjectCopyFunction) _gst_event_copy;
   event_class->mini_object_class.finalize =
@@ -252,6 +256,8 @@ gst_event_finalize (GstEvent * event)
     gst_structure_set_parent_refcount (event->structure, NULL);
     gst_structure_free (event->structure);
   }
+
+  GST_MINI_OBJECT_CLASS (parent_class)->finalize (GST_MINI_OBJECT (event));
 }
 
 static GstEvent *
@@ -346,6 +352,29 @@ gst_event_get_structure (GstEvent * event)
   g_return_val_if_fail (GST_IS_EVENT (event), NULL);
 
   return event->structure;
+}
+
+/**
+ * gst_event_has_name:
+ * @event: The #GstEvent.
+ * @name: name to check
+ *
+ * Checks if @event has the given @name. This function is usually used to
+ * check the name of a custom event.
+ *
+ * Returns: %TRUE if @name matches the name of the event structure.
+ *
+ * Since: 0.10.20
+ */
+gboolean
+gst_event_has_name (GstEvent * event, const gchar * name)
+{
+  g_return_val_if_fail (GST_IS_EVENT (event), FALSE);
+
+  if (event->structure == NULL)
+    return FALSE;
+
+  return gst_structure_has_name (event->structure, name);
 }
 
 /**
@@ -599,7 +628,7 @@ gst_event_parse_new_segment_full (GstEvent * event, gboolean * update,
 
 /**
  * gst_event_new_tag:
- * @taglist: metadata list
+ * @taglist: metadata list. The event will take ownership of @taglist.
  *
  * Generates a metadata tag event from the given @taglist.
  *
@@ -728,7 +757,8 @@ gst_event_parse_buffer_size (GstEvent * event, GstFormat * format,
  * The upstream element can use the @diff and @timestamp values to decide
  * whether to process more buffers. For possitive @diff, all buffers with
  * timestamp <= @timestamp + @diff will certainly arrive late in the sink
- * as well. 
+ * as well. A (negative) @diff value so that @timestamp + @diff would yield a
+ * result smaller than 0 is not allowed.
  *
  * The application can use general event probes to intercept the QoS
  * event and implement custom application specific QoS handling.
@@ -739,6 +769,9 @@ GstEvent *
 gst_event_new_qos (gdouble proportion, GstClockTimeDiff diff,
     GstClockTime timestamp)
 {
+  /* diff must be positive or timestamp + diff must be positive */
+  g_return_val_if_fail (diff >= 0 || -diff <= timestamp, NULL);
+
   GST_CAT_INFO (GST_CAT_EVENT,
       "creating qos proportion %lf, diff %" G_GINT64_FORMAT
       ", timestamp %" GST_TIME_FORMAT, proportion,
@@ -900,7 +933,8 @@ gst_event_parse_seek (GstEvent * event, gdouble * rate,
 
 /**
  * gst_event_new_navigation:
- * @structure: description of the event
+ * @structure: description of the event. The event will take ownership of the
+ *     structure.
  *
  * Create a new navigation event from the given description.
  *

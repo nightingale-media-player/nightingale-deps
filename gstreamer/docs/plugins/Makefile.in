@@ -110,6 +110,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -134,9 +135,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -164,8 +167,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -179,7 +180,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -200,6 +200,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -329,6 +332,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -504,6 +508,7 @@ EXTRA_HFILES = \
 	$(top_srcdir)/plugins/elements/gstfilesrc.h \
 	$(top_srcdir)/plugins/elements/gstfilesink.h \
 	$(top_srcdir)/plugins/elements/gstidentity.h \
+	$(top_srcdir)/plugins/elements/gstmultiqueue.h \
 	$(top_srcdir)/plugins/elements/gstqueue.h \
 	$(top_srcdir)/plugins/elements/gsttypefindelement.h \
 	$(top_srcdir)/plugins/elements/gsttee.h
@@ -611,12 +616,15 @@ CLEANFILES = \
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
+@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(builddir)/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
-@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src \
+@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
 @ENABLE_GTK_DOC_TRUE@        GST_REGISTRY=$(INSPECT_REGISTRY)
 
+
+# wildcard is apparently not portable to other makes, hence the use of find
+inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
 all: all-am
 
 .SUFFIXES:
@@ -800,8 +808,15 @@ upload: $(FORMATS)
 	echo Done
 
 help:
+	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
 	@echo "the documentation files maintained in CVS"
+	@echo
+	@echo Other useful make targets:
+	@echo
+	@echo  check-inspected-versions: make sure the inspected plugin info
+	@echo                            is up to date before a release
+	@echo
 
 # update the stuff maintained by doc maintainers
 update:
@@ -848,12 +863,11 @@ update:
 @ENABLE_GTK_DOC_TRUE@	mkdir inspect
 
 @ENABLE_GTK_DOC_TRUE@inspect-update: inspect
-@ENABLE_GTK_DOC_TRUE@	-rm $(INSPECT_REGISTRY)
-@ENABLE_GTK_DOC_TRUE@	-rm inspect-build.stamp
+@ENABLE_GTK_DOC_TRUE@	-rm -f $(INSPECT_REGISTRY) inspect-build.stamp
 @ENABLE_GTK_DOC_TRUE@	$(MAKE) inspect-build.stamp
 
 # FIXME: inspect.stamp should be written to by gst-xmlinspect.py
-# IFF the output changed; see gtkdoc-mktmpl
+# IF the output changed; see gtkdoc-mktmpl
 @ENABLE_GTK_DOC_TRUE@inspect-build.stamp:
 @ENABLE_GTK_DOC_TRUE@	@echo '*** Rebuilding plugin inspection files ***'
 @ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
@@ -945,6 +959,9 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@if grep "warning:" html-build.log > /dev/null; then \
 @ENABLE_GTK_DOC_TRUE@		echo "ERROR"; grep "warning:" html-build.log; exit 1; fi
 @ENABLE_GTK_DOC_TRUE@	@rm html-build.log
+@ENABLE_GTK_DOC_TRUE@	mv html/index.sgml html/index.sgml.bak
+@ENABLE_GTK_DOC_TRUE@	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
+@ENABLE_GTK_DOC_TRUE@	rm -f html/index.sgml.bak
 @ENABLE_GTK_DOC_TRUE@	rm -f html/$(DOC_MAIN_SGML_FILE)
 @ENABLE_GTK_DOC_TRUE@	rm -rf html/xml
 @ENABLE_GTK_DOC_TRUE@	rm -f html/version.entities
@@ -953,22 +970,19 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@echo '-- Fixing Crossreferences' 
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 @ENABLE_GTK_DOC_TRUE@	touch html-build.stamp
-@ENABLE_GTK_DOC_FALSE@all-local:
 
-# FIXME: these rules need a little cleaning up
-clean-local:
+@ENABLE_GTK_DOC_TRUE@clean-local-gtkdoc:
+@ENABLE_GTK_DOC_TRUE@	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+@ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
+@ENABLE_GTK_DOC_TRUE@	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES); \
+@ENABLE_GTK_DOC_TRUE@	fi
+@ENABLE_GTK_DOC_FALSE@all-local:
+@ENABLE_GTK_DOC_FALSE@clean-local-gtkdoc:
+
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
-# clean files generated for tmpl build
-	-rm -rf tmpl
-# clean files copied/generated for nonsrcdir tmpl build
-	if test x"$(srcdir)" != x. ; then \
-	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES);			\
-	fi
-# clean files generated for xml build
-	-rm -rf xml
-# clean files generate for html build
-	-rm -rf html
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
@@ -1050,6 +1064,19 @@ check-hierarchy: $(DOC_MODULE).hierarchy
 
 check: check-hierarchy
 
+check-inspected-versions:
+	@echo Checking plugin versions of inspected plugin data ...; \
+	fail=0 ; \
+	for each in $(inspect_files) ; do \
+	  if (grep -H '<version>' $$each | grep -v '<version>$(VERSION)'); then \
+	    echo $$each should be fixed to say version $(VERSION) or be removed ; \
+	    echo "sed -i -e 's/<version.*version>/<version>$(VERSION)<\/version>/'" $$each; \
+	    echo ; \
+	    fail=1; \
+	  fi ; \
+	done ; \
+	exit $$fail
+
 #
 # Require gtk-doc when making dist
 #
@@ -1066,7 +1093,7 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
 	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
+	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
 	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
 
 	images=$(HTML_IMAGES) ;    	      \

@@ -37,7 +37,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = caps$(EXEEXT) mass-elements$(EXEEXT) \
-	complexity$(EXEEXT)
+	complexity$(EXEEXT) gstpollstress$(EXEEXT)
 subdir = tests/benchmarks
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -92,6 +92,10 @@ complexity_SOURCES = complexity.c
 complexity_OBJECTS = complexity.$(OBJEXT)
 complexity_LDADD = $(LDADD)
 complexity_DEPENDENCIES = $(am__DEPENDENCIES_1)
+gstpollstress_SOURCES = gstpollstress.c
+gstpollstress_OBJECTS = gstpollstress.$(OBJEXT)
+gstpollstress_LDADD = $(LDADD)
+gstpollstress_DEPENDENCIES = $(am__DEPENDENCIES_1)
 mass_elements_SOURCES = mass-elements.c
 mass_elements_OBJECTS = mass-elements.$(OBJEXT)
 mass_elements_LDADD = $(LDADD)
@@ -107,8 +111,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = caps.c complexity.c mass-elements.c
-DIST_SOURCES = caps.c complexity.c mass-elements.c
+SOURCES = caps.c complexity.c gstpollstress.c mass-elements.c
+DIST_SOURCES = caps.c complexity.c gstpollstress.c mass-elements.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -121,6 +125,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -145,9 +150,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -175,8 +182,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -190,7 +195,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -211,6 +215,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -340,6 +347,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -480,6 +488,9 @@ caps$(EXEEXT): $(caps_OBJECTS) $(caps_DEPENDENCIES)
 complexity$(EXEEXT): $(complexity_OBJECTS) $(complexity_DEPENDENCIES) 
 	@rm -f complexity$(EXEEXT)
 	$(LINK) $(complexity_LDFLAGS) $(complexity_OBJECTS) $(complexity_LDADD) $(LIBS)
+gstpollstress$(EXEEXT): $(gstpollstress_OBJECTS) $(gstpollstress_DEPENDENCIES) 
+	@rm -f gstpollstress$(EXEEXT)
+	$(LINK) $(gstpollstress_LDFLAGS) $(gstpollstress_OBJECTS) $(gstpollstress_LDADD) $(LIBS)
 mass-elements$(EXEEXT): $(mass_elements_OBJECTS) $(mass_elements_DEPENDENCIES) 
 	@rm -f mass-elements$(EXEEXT)
 	$(LINK) $(mass_elements_LDFLAGS) $(mass_elements_OBJECTS) $(mass_elements_LDADD) $(LIBS)
@@ -492,6 +503,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/caps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/complexity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gstpollstress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mass-elements.Po@am__quote@
 
 .c.o:

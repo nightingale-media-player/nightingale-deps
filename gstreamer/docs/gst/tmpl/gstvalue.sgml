@@ -312,37 +312,6 @@ GstValue
 @Returns: 
 
 
-<!-- ##### STRUCT GstParamSpecFraction ##### -->
-<para>
-
-</para>
-
-@parent_instance: 
-@min_num: 
-@min_den: 
-@max_num: 
-@max_den: 
-@def_num: 
-@def_den: 
-
-<!-- ##### FUNCTION gst_param_spec_fraction ##### -->
-<para>
-
-</para>
-
-@name: 
-@nick: 
-@blurb: 
-@min_num: 
-@min_denom: 
-@max_num: 
-@max_denom: 
-@default_num: 
-@default_denom: 
-@flags: 
-@Returns: 
-
-
 <!-- ##### MACRO GST_VALUE_HOLDS_FRACTION_RANGE ##### -->
 <para>
 

@@ -28,6 +28,31 @@ GstEvent
 @src: 
 @structure: 
 
+<!-- ##### ENUM GstEventTypeFlags ##### -->
+<para>
+
+</para>
+
+@GST_EVENT_TYPE_UPSTREAM: 
+@GST_EVENT_TYPE_DOWNSTREAM: 
+@GST_EVENT_TYPE_SERIALIZED: 
+
+<!-- ##### MACRO GST_EVENT_TYPE_BOTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_EVENT_MAKE_TYPE ##### -->
+<para>
+
+</para>
+
+@num: 
+@flags: 
+
+
 <!-- ##### ENUM GstEventType ##### -->
 <para>
 
@@ -73,13 +98,6 @@ GstEvent
 @event: 
 
 
-<!-- ##### MACRO GST_EVENT_TYPE_BOTH ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO GST_EVENT_TIMESTAMP ##### -->
 <para>
 
@@ -94,6 +112,14 @@ GstEvent
 </para>
 
 @event: 
+
+
+<!-- ##### MACRO GST_EVENT_IS_UPSTREAM ##### -->
+<para>
+
+</para>
+
+@ev: 
 
 
 <!-- ##### MACRO GST_EVENT_IS_DOWNSTREAM ##### -->
@@ -112,62 +138,34 @@ GstEvent
 @ev: 
 
 
-<!-- ##### MACRO GST_EVENT_IS_UPSTREAM ##### -->
+<!-- ##### FUNCTION gst_event_type_get_flags ##### -->
 <para>
 
 </para>
 
-@ev: 
+@type: 
+@Returns: 
 
 
-<!-- ##### ENUM GstSeekType ##### -->
+<!-- ##### FUNCTION gst_event_type_get_name ##### -->
 <para>
 
 </para>
 
-@GST_SEEK_TYPE_NONE: 
-@GST_SEEK_TYPE_CUR: 
-@GST_SEEK_TYPE_SET: 
-@GST_SEEK_TYPE_END: 
+@type: 
+@Returns: 
 
-<!-- ##### ENUM GstSeekFlags ##### -->
+
+<!-- ##### FUNCTION gst_event_type_to_quark ##### -->
 <para>
 
 </para>
 
-@GST_SEEK_FLAG_NONE: 
-@GST_SEEK_FLAG_FLUSH: 
-@GST_SEEK_FLAG_ACCURATE: 
-@GST_SEEK_FLAG_KEY_UNIT: 
-@GST_SEEK_FLAG_SEGMENT: 
-
-<!-- ##### ENUM GstEventTypeFlags ##### -->
-<para>
-
-</para>
-
-@GST_EVENT_TYPE_UPSTREAM: 
-@GST_EVENT_TYPE_DOWNSTREAM: 
-@GST_EVENT_TYPE_SERIALIZED: 
-
-<!-- ##### MACRO GST_EVENT_MAKE_TYPE ##### -->
-<para>
-
-</para>
-
-@num: 
-@flags: 
+@type: 
+@Returns: 
 
 
-<!-- ##### MACRO gst_event_copy ##### -->
-<para>
-
-</para>
-
-@ev: 
-
-
-<!-- ##### FUNCTION gst_event_get_structure ##### -->
+<!-- ##### FUNCTION gst_event_ref ##### -->
 <para>
 
 </para>
@@ -176,16 +174,29 @@ GstEvent
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_event_new_buffer_size ##### -->
+<!-- ##### MACRO gst_event_unref ##### -->
 <para>
 
 </para>
 
-@format: 
-@minsize: 
-@maxsize: 
-@async: 
-@Returns: 
+@ev: 
+
+
+<!-- ##### MACRO gst_event_replace ##### -->
+<para>
+
+</para>
+
+@old_event: 
+@new_event: 
+
+
+<!-- ##### MACRO gst_event_copy ##### -->
+<para>
+
+</para>
+
+@ev: 
 
 
 <!-- ##### FUNCTION gst_event_new_custom ##### -->
@@ -198,11 +209,22 @@ GstEvent
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_event_new_eos ##### -->
+<!-- ##### FUNCTION gst_event_get_structure ##### -->
 <para>
 
 </para>
 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_has_name ##### -->
+<para>
+
+</para>
+
+@event: 
+@name: 
 @Returns: 
 
 
@@ -222,21 +244,11 @@ GstEvent
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_event_new_latency ##### -->
+<!-- ##### FUNCTION gst_event_new_eos ##### -->
 <para>
 
 </para>
 
-@latency: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_new_navigation ##### -->
-<para>
-
-</para>
-
-@structure: 
 @Returns: 
 
 
@@ -269,62 +281,6 @@ GstEvent
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_event_new_qos ##### -->
-<para>
-
-</para>
-
-@proportion: 
-@diff: 
-@timestamp: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_new_seek ##### -->
-<para>
-
-</para>
-
-@rate: 
-@format: 
-@flags: 
-@start_type: 
-@start: 
-@stop_type: 
-@stop: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_new_tag ##### -->
-<para>
-
-</para>
-
-@taglist: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_parse_buffer_size ##### -->
-<para>
-
-</para>
-
-@event: 
-@format: 
-@minsize: 
-@maxsize: 
-@async: 
-
-
-<!-- ##### FUNCTION gst_event_parse_latency ##### -->
-<para>
-
-</para>
-
-@event: 
-@latency: 
-
-
 <!-- ##### FUNCTION gst_event_parse_new_segment ##### -->
 <para>
 
@@ -354,6 +310,59 @@ GstEvent
 @position: 
 
 
+<!-- ##### FUNCTION gst_event_new_tag ##### -->
+<para>
+
+</para>
+
+@taglist: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_parse_tag ##### -->
+<para>
+
+</para>
+
+@event: 
+@taglist: 
+
+
+<!-- ##### FUNCTION gst_event_new_buffer_size ##### -->
+<para>
+
+</para>
+
+@format: 
+@minsize: 
+@maxsize: 
+@async: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_parse_buffer_size ##### -->
+<para>
+
+</para>
+
+@event: 
+@format: 
+@minsize: 
+@maxsize: 
+@async: 
+
+
+<!-- ##### FUNCTION gst_event_new_qos ##### -->
+<para>
+
+</para>
+
+@proportion: 
+@diff: 
+@timestamp: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_event_parse_qos ##### -->
 <para>
 
@@ -363,6 +372,42 @@ GstEvent
 @proportion: 
 @diff: 
 @timestamp: 
+
+
+<!-- ##### ENUM GstSeekType ##### -->
+<para>
+
+</para>
+
+@GST_SEEK_TYPE_NONE: 
+@GST_SEEK_TYPE_CUR: 
+@GST_SEEK_TYPE_SET: 
+@GST_SEEK_TYPE_END: 
+
+<!-- ##### ENUM GstSeekFlags ##### -->
+<para>
+
+</para>
+
+@GST_SEEK_FLAG_NONE: 
+@GST_SEEK_FLAG_FLUSH: 
+@GST_SEEK_FLAG_ACCURATE: 
+@GST_SEEK_FLAG_KEY_UNIT: 
+@GST_SEEK_FLAG_SEGMENT: 
+
+<!-- ##### FUNCTION gst_event_new_seek ##### -->
+<para>
+
+</para>
+
+@rate: 
+@format: 
+@flags: 
+@start_type: 
+@start: 
+@stop_type: 
+@stop: 
+@Returns: 
 
 
 <!-- ##### FUNCTION gst_event_parse_seek ##### -->
@@ -380,65 +425,30 @@ GstEvent
 @stop: 
 
 
-<!-- ##### FUNCTION gst_event_parse_tag ##### -->
+<!-- ##### FUNCTION gst_event_new_navigation ##### -->
+<para>
+
+</para>
+
+@structure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_new_latency ##### -->
+<para>
+
+</para>
+
+@latency: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_event_parse_latency ##### -->
 <para>
 
 </para>
 
 @event: 
-@taglist: 
-
-
-<!-- ##### FUNCTION gst_event_ref ##### -->
-<para>
-
-</para>
-
-@event: 
-@Returns: 
-
-
-<!-- ##### MACRO gst_event_unref ##### -->
-<para>
-
-</para>
-
-@ev: 
-
-
-<!-- ##### MACRO gst_event_replace ##### -->
-<para>
-
-</para>
-
-@old_event: 
-@new_event: 
-
-
-<!-- ##### FUNCTION gst_event_type_get_flags ##### -->
-<para>
-
-</para>
-
-@type: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_type_get_name ##### -->
-<para>
-
-</para>
-
-@type: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_event_type_to_quark ##### -->
-<para>
-
-</para>
-
-@type: 
-@Returns: 
+@latency: 
 
 

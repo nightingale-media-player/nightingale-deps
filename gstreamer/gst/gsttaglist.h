@@ -40,12 +40,11 @@ G_BEGIN_DECLS
  * @GST_TAG_MERGE_COUNT: the number of merge modes
  *
  * The different tag merging modes are basically replace, overwrite and append,
- * but they can be seen from two directions.
- * Given two taglists: A - the one that are supplied to
- * gst_tag_setter_merge_tags() or gst_tag_setter_add_tags() and B - the tags
- * already in the element, how are the tags merged? In the table below this is
- * shown for the cases that a tag exists in the list (A) or does not exists (!A)
- * and combination thereof.
+ * but they can be seen from two directions.  Given two taglists: (A) the tags
+ * already in the element and (B) the ones that are supplied to
+ * gst_tag_setter_merge_tags() or gst_tag_setter_add_tags(), how are these tags
+ * merged? In the table below this is shown for the cases that a tag exists in
+ * the list (A) or does not exists (!A) and combinations thereof.
  *
  * <table frame="all" colsep="1" rowsep="1">
  *   <title>merge mode</title>
@@ -633,13 +632,14 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
 /**
  * GST_TAG_LANGUAGE_CODE:
  *
- * Language code (ISO-639-1) (string)
+ * Language code (ISO-639-1) (string) of the content
  */
 #define GST_TAG_LANGUAGE_CODE          "language-code"
 /**
  * GST_TAG_IMAGE:
  *
- * image (buffer) (buffer caps should specify the content type)
+ * image (buffer) (buffer caps should specify the content type and preferably
+ * also set "image-type" field as #GstTagImageType)
  *
  * Since: 0.10.6
  */
@@ -647,8 +647,8 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
 /**
  * GST_TAG_PREVIEW_IMAGE:
  *
- * image that is meant for preview purposes (buffer)
- * (buffer caps should specify the content type)
+ * image that is meant for preview purposes, e.g. small icon-sized version
+ * (buffer) (buffer caps should specify the content type)
  *
  * Since: 0.10.7
  */

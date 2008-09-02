@@ -19,15 +19,15 @@
 
 /**
  * SECTION:gstvalue
- * @short_description: GValue and GParamSpec implementations specific
+ * @short_description: GValue implementations specific
  * to GStreamer
  *
- * GValue and GParamSpec implementations specific to GStreamer.
+ * GValue implementations specific to GStreamer.
  *
  * Note that operations on the same GstValue (or GValue) from multiple
  * threads may lead to undefined behaviour. 
  *
- * Last reviewed on 2006-03-07 (0.10.4)
+ * Last reviewed on 2008-03-11 (0.10.18)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1280,7 +1280,7 @@ gst_value_deserialize_caps (GValue * dest, const gchar * s)
   caps = gst_caps_from_string (s);
 
   if (caps) {
-    g_value_set_boxed (dest, caps);
+    g_value_take_boxed (dest, caps);
     return TRUE;
   }
   return FALSE;
@@ -3888,9 +3888,15 @@ gst_value_transform_object_string (const GValue * src_value,
   gchar *str;
 
   obj = g_value_get_object (src_value);
-  str = obj ? GST_OBJECT_NAME (obj) : "NULL";
+  if (obj) {
+    str =
+        g_strdup_printf ("(%s) %s", G_OBJECT_TYPE_NAME (obj),
+        GST_OBJECT_NAME (obj));
+  } else {
+    str = g_strdup ("NULL");
+  }
 
-  dest_value->data[0].v_pointer = g_strdup (str);
+  dest_value->data[0].v_pointer = str;
 }
 
 static GTypeInfo _info = {

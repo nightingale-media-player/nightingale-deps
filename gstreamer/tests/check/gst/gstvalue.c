@@ -99,10 +99,14 @@ GST_START_TEST (test_deserialize_gint64)
   const char *strings[] = {
     "12345678901",
     "-12345678901",
+    "1152921504606846976",
+    "-1152921504606846976",
   };
   gint64 results[] = {
     12345678901LL,
     -12345678901LL,
+    1152921504606846976LL,
+    -1152921504606846976LL,
   };
   int i;
 
@@ -114,6 +118,41 @@ GST_START_TEST (test_deserialize_gint64)
     fail_unless (g_value_get_int64 (&value) == results[i],
         "resulting value is %" G_GINT64_FORMAT ", not %" G_GINT64_FORMAT
         ", for string %s (%d)", g_value_get_int64 (&value),
+        results[i], strings[i], i);
+  }
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_deserialize_guint64)
+{
+  GValue value = { 0 };
+  const char *strings[] = {
+    "0xffffffffffffffff",
+    "9223372036854775810",
+    "-9223372036854775810",
+    "-1",
+    "1",
+    "-0",
+  };
+  guint64 results[] = {
+    0xffffffffffffffffULL,
+    9223372036854775810ULL,
+    9223372036854775806ULL,
+    -1,
+    1,
+    0,
+  };
+  int i;
+
+  g_value_init (&value, G_TYPE_UINT64);
+
+  for (i = 0; i < G_N_ELEMENTS (strings); ++i) {
+    fail_unless (gst_value_deserialize (&value, strings[i]),
+        "could not deserialize %s (%d)", strings[i], i);
+    fail_unless (g_value_get_uint64 (&value) == results[i],
+        "resulting value is %" G_GUINT64_FORMAT ", not %" G_GUINT64_FORMAT
+        ", for string %s (%d)", g_value_get_uint64 (&value),
         results[i], strings[i], i);
   }
 }
@@ -1618,7 +1657,49 @@ GST_START_TEST (test_serialize_deserialize_format_enum)
 
 GST_END_TEST;
 
-Suite *
+GST_START_TEST (test_serialize_deserialize_caps)
+{
+  GValue value = { 0 }, value2 = {
+  0};
+  GstCaps *caps, *caps2;
+  gchar *serialized;
+
+  caps = gst_caps_new_simple ("test/caps",
+      "foo", G_TYPE_INT, 10, "bar", G_TYPE_STRING, "test", NULL);
+  fail_if (GST_CAPS_REFCOUNT_VALUE (caps) != 1);
+
+  /* and assign caps to gvalue */
+  g_value_init (&value, GST_TYPE_CAPS);
+  g_value_take_boxed (&value, caps);
+  fail_if (GST_CAPS_REFCOUNT_VALUE (caps) != 1);
+
+  /* now serialize it */
+  serialized = gst_value_serialize (&value);
+  GST_DEBUG ("serialized caps to %s", serialized);
+  fail_unless (serialized != NULL);
+
+  /* refcount should not change */
+  fail_if (GST_CAPS_REFCOUNT_VALUE (caps) != 1);
+
+  /* now deserialize again */
+  g_value_init (&value2, GST_TYPE_CAPS);
+  gst_value_deserialize (&value2, serialized);
+
+  caps2 = g_value_get_boxed (&value2);
+  fail_if (GST_CAPS_REFCOUNT_VALUE (caps2) != 1);
+
+  /* they should be equal */
+  fail_unless (gst_caps_is_equal (caps, caps2));
+
+  /* cleanup */
+  g_value_unset (&value);
+  g_value_unset (&value2);
+  g_free (serialized);
+}
+
+GST_END_TEST;
+
+static Suite *
 gst_value_suite (void)
 {
   Suite *s = suite_create ("GstValue");
@@ -1632,6 +1713,7 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_deserialize_guint);
   tcase_add_test (tc_chain, test_deserialize_guint_failures);
   tcase_add_test (tc_chain, test_deserialize_gint64);
+  tcase_add_test (tc_chain, test_deserialize_guint64);
   tcase_add_test (tc_chain, test_deserialize_gstfraction);
   tcase_add_test (tc_chain, test_serialize_flags);
   tcase_add_test (tc_chain, test_deserialize_flags);
@@ -1646,6 +1728,7 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_value_subtract_fraction_range);
   tcase_add_test (tc_chain, test_date);
   tcase_add_test (tc_chain, test_fraction_range);
+  tcase_add_test (tc_chain, test_serialize_deserialize_caps);
 
   return s;
 }

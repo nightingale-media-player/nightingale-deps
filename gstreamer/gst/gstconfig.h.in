@@ -37,7 +37,7 @@
  *
  * If a subsystem is disabled in GStreamer, a value is defined in
  * &lt;gst/gst.h&gt;. You can check this if you do subsystem-specific stuff.
- * <example>
+ * <example id="example-gstconfig">
  * <title>Doing subsystem specific things</title>
  * <programlisting>
  * &hash;ifndef GST_DISABLE_GST_DEBUG
@@ -70,7 +70,7 @@
 
 /***** default padding of structures *****/
 #define GST_PADDING		4
-#define GST_PADDING_INIT	{0}
+#define GST_PADDING_INIT	{ NULL }
 
 /***** padding for very extensible base classes *****/
 #define GST_PADDING_LARGE	20
@@ -120,7 +120,7 @@
  *
  * Configures the use of the plugin registry.
  * If one disables this, required plugins need to be loaded and registered
- * manualy
+ * manually
  */
 @GST_DISABLE_REGISTRY_DEFINE@
 

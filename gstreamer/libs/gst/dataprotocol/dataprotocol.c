@@ -558,7 +558,7 @@ gst_dp_packet_from_event_1_0 (const GstEvent * event, GstDPHeaderFlag flags,
   /* timestamp */
   GST_WRITE_UINT64_BE (h + 10, GST_EVENT_TIMESTAMP (event));
 
-  GST_DP_SET_CRC (h, flags, *payload, pl_length);
+  GST_DP_SET_CRC (h, flags, string, pl_length);
 
   GST_LOG ("created header from event:");
   gst_dp_dump_byte_array (h, GST_DP_HEADER_LENGTH);
@@ -654,7 +654,7 @@ gst_dp_event_from_packet_0_2 (guint header_length, const guint8 * header,
   switch (type) {
     case GST_EVENT_UNKNOWN:
       GST_WARNING ("Unknown event, ignoring");
-      return FALSE;
+      return NULL;
     case GST_EVENT_EOS:
     case GST_EVENT_FLUSH_START:
     case GST_EVENT_FLUSH_STOP:
@@ -690,10 +690,10 @@ gst_dp_event_from_packet_0_2 (guint header_length, const guint8 * header,
     case GST_EVENT_NAVIGATION:
     case GST_EVENT_TAG:
       GST_WARNING ("Unhandled event type %d, ignoring", type);
-      return FALSE;
+      return NULL;
     default:
       GST_WARNING ("Unknown event type %d, ignoring", type);
-      return FALSE;
+      return NULL;
   }
 
   return event;

@@ -34,9 +34,7 @@
 
 #include <gst/check/gstcheck.h>
 
-gboolean have_eos = FALSE;
-
-GstPad *mysrcpad;
+static GstPad *mysrcpad;
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -44,7 +42,7 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS_ANY);
 
 static GstElement *
-setup_filesink ()
+setup_filesink (void)
 {
   GstElement *filesink;
 
@@ -78,7 +76,7 @@ cleanup_filesink (GstElement * filesink)
       GstFormat fmt = format;                                            \
       GstPad *pad;                                                       \
       gint64 pos;                                                        \
-      pad = gst_element_get_pad (filesink, "sink");                      \
+      pad = gst_element_get_static_pad (filesink, "sink");               \
       fail_unless (gst_pad_query_position (pad, &fmt, &pos));            \
       fail_unless_equals_int (pos, position);                            \
       gst_object_unref (pad);                                            \

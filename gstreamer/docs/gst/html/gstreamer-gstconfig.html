@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstconfig</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstClock.html" title="GstClock">
 <link rel="next" href="GstElement.html" title="GstElement">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,44 +26,40 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstElement.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2620050" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2620165" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-gstconfig.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-gstconfig.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-gstconfig"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2620050"></a><span class="refentrytitle">gstconfig</span>
-</h2>
-<p>gstconfig &#8212; Build configuration options</p>
+<h2><span class="refentrytitle"><a name="gstreamer-gstconfig.top_of_page"></a>gstconfig</span></h2>
+<p>gstconfig — Build configuration options</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-gstconfig.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-GST-DEBUG:CAPS">GST_DISABLE_GST_DEBUG</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS">GST_DISABLE_LOADSAVE</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-PARSE:CAPS">GST_DISABLE_PARSE</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-TRACE:CAPS">GST_DISABLE_TRACE</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-ALLOC-TRACE:CAPS">GST_DISABLE_ALLOC_TRACE</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS">GST_DISABLE_REGISTRY</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-ENUMTYPES:CAPS">GST_DISABLE_ENUMTYPES</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-INDEX:CAPS">GST_DISABLE_INDEX</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-PLUGIN:CAPS">GST_DISABLE_PLUGIN</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-URI:CAPS">GST_DISABLE_URI</a>
-#define             <a href="gstreamer-gstconfig.html#GST-DISABLE-XML:CAPS">GST_DISABLE_XML</a>
-
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-GST-DEBUG:CAPS" title="GST_DISABLE_GST_DEBUG">GST_DISABLE_GST_DEBUG</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS" title="GST_DISABLE_LOADSAVE">GST_DISABLE_LOADSAVE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PARSE:CAPS" title="GST_DISABLE_PARSE">GST_DISABLE_PARSE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-TRACE:CAPS" title="GST_DISABLE_TRACE">GST_DISABLE_TRACE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-ALLOC-TRACE:CAPS" title="GST_DISABLE_ALLOC_TRACE">GST_DISABLE_ALLOC_TRACE</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS" title="GST_DISABLE_REGISTRY">GST_DISABLE_REGISTRY</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-ENUMTYPES:CAPS" title="GST_DISABLE_ENUMTYPES">GST_DISABLE_ENUMTYPES</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-INDEX:CAPS" title="GST_DISABLE_INDEX">GST_DISABLE_INDEX</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-PLUGIN:CAPS" title="GST_DISABLE_PLUGIN">GST_DISABLE_PLUGIN</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-URI:CAPS" title="GST_DISABLE_URI">GST_DISABLE_URI</a>
+#define             <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-XML:CAPS" title="GST_DISABLE_XML">GST_DISABLE_XML</a>
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2620165"></a><h2>Description</h2>
+<a name="gstreamer-gstconfig.description"></a><h2>Description</h2>
 <p>
 This describes the configuration options for GStreamer. When building
 GStreamer there are a lot of parts (known internally as "subsystems" ) that
@@ -82,7 +78,7 @@ If a subsystem is disabled in GStreamer, a value is defined in
 &lt;gst/gst.h&gt;. You can check this if you do subsystem-specific stuff.
 </p>
 <div class="example">
-<a name="id2620201"></a><p class="title"><b>Example&#160;5.&#160;Doing subsystem specific things</b></p>
+<a name="example-gstconfig"></a><p class="title"><b>Example 5. Doing subsystem specific things</b></p>
 <div class="example-contents"><pre class="programlisting">
 #ifndef GST_DISABLE_GST_DEBUG
 // do stuff specific to the debugging subsystem
@@ -95,11 +91,10 @@ If a subsystem is disabled in GStreamer, a value is defined in
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2620221"></a><h2>Details</h2>
+<a name="gstreamer-gstconfig.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2620229"></a><h3>
-<a name="GST-DISABLE-GST-DEBUG:CAPS"></a>GST_DISABLE_GST_DEBUG</h3>
-<a class="indexterm" name="id2620242"></a><pre class="programlisting">#define GST_DISABLE_GST_DEBUG 1
+<a name="GST-DISABLE-GST-DEBUG:CAPS"></a><h3>GST_DISABLE_GST_DEBUG</h3>
+<pre class="programlisting">#define GST_DISABLE_GST_DEBUG 1
 </pre>
 <p>
 Configures the inclusion of the debugging subsystem</p>
@@ -109,9 +104,8 @@ Configures the inclusion of the debugging subsystem</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620264"></a><h3>
-<a name="GST-DISABLE-LOADSAVE:CAPS"></a>GST_DISABLE_LOADSAVE</h3>
-<a class="indexterm" name="id2620278"></a><pre class="programlisting">#define GST_DISABLE_LOADSAVE 1
+<a name="GST-DISABLE-LOADSAVE:CAPS"></a><h3>GST_DISABLE_LOADSAVE</h3>
+<pre class="programlisting">#define GST_DISABLE_LOADSAVE 1
 </pre>
 <p>
 Configures the inclusion of the plugin graph xml-serialisation
@@ -122,9 +116,8 @@ Configures the inclusion of the plugin graph xml-serialisation
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620298"></a><h3>
-<a name="GST-DISABLE-PARSE:CAPS"></a>GST_DISABLE_PARSE</h3>
-<a class="indexterm" name="id2620312"></a><pre class="programlisting">#define GST_DISABLE_PARSE 1
+<a name="GST-DISABLE-PARSE:CAPS"></a><h3>GST_DISABLE_PARSE</h3>
+<pre class="programlisting">#define GST_DISABLE_PARSE 1
 </pre>
 <p>
 Configures the inclusion of the gst-lauch parser</p>
@@ -134,9 +127,8 @@ Configures the inclusion of the gst-lauch parser</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620331"></a><h3>
-<a name="GST-DISABLE-TRACE:CAPS"></a>GST_DISABLE_TRACE</h3>
-<a class="indexterm" name="id2620344"></a><pre class="programlisting">#define GST_DISABLE_TRACE 1
+<a name="GST-DISABLE-TRACE:CAPS"></a><h3>GST_DISABLE_TRACE</h3>
+<pre class="programlisting">#define GST_DISABLE_TRACE 1
 </pre>
 <p>
 Configures the inclusion of a resource tracing facillity
@@ -147,9 +139,8 @@ Configures the inclusion of a resource tracing facillity
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620364"></a><h3>
-<a name="GST-DISABLE-ALLOC-TRACE:CAPS"></a>GST_DISABLE_ALLOC_TRACE</h3>
-<a class="indexterm" name="id2620378"></a><pre class="programlisting">#define GST_DISABLE_ALLOC_TRACE 1
+<a name="GST-DISABLE-ALLOC-TRACE:CAPS"></a><h3>GST_DISABLE_ALLOC_TRACE</h3>
+<pre class="programlisting">#define GST_DISABLE_ALLOC_TRACE 1
 </pre>
 <p>
 Configures the use of a memory tracer based on the resource tracer
@@ -160,23 +151,21 @@ if TRACE is disabled, ALLOC_TRACE is disabled as well</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620399"></a><h3>
-<a name="GST-DISABLE-REGISTRY:CAPS"></a>GST_DISABLE_REGISTRY</h3>
-<a class="indexterm" name="id2620412"></a><pre class="programlisting">#define GST_DISABLE_REGISTRY 1
+<a name="GST-DISABLE-REGISTRY:CAPS"></a><h3>GST_DISABLE_REGISTRY</h3>
+<pre class="programlisting">#define GST_DISABLE_REGISTRY 1
 </pre>
 <p>
 Configures the use of the plugin registry.
 If one disables this, required plugins need to be loaded and registered
-manualy</p>
+manually</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620433"></a><h3>
-<a name="GST-DISABLE-ENUMTYPES:CAPS"></a>GST_DISABLE_ENUMTYPES</h3>
-<a class="indexterm" name="id2620446"></a><pre class="programlisting">#define GST_DISABLE_ENUMTYPES 1
+<a name="GST-DISABLE-ENUMTYPES:CAPS"></a><h3>GST_DISABLE_ENUMTYPES</h3>
+<pre class="programlisting">#define GST_DISABLE_ENUMTYPES 1
 </pre>
 <p>
 
@@ -184,9 +173,8 @@ manualy</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620462"></a><h3>
-<a name="GST-DISABLE-INDEX:CAPS"></a>GST_DISABLE_INDEX</h3>
-<a class="indexterm" name="id2620475"></a><pre class="programlisting">#define GST_DISABLE_INDEX 1
+<a name="GST-DISABLE-INDEX:CAPS"></a><h3>GST_DISABLE_INDEX</h3>
+<pre class="programlisting">#define GST_DISABLE_INDEX 1
 </pre>
 <p>
 
@@ -194,9 +182,8 @@ manualy</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620490"></a><h3>
-<a name="GST-DISABLE-PLUGIN:CAPS"></a>GST_DISABLE_PLUGIN</h3>
-<a class="indexterm" name="id2620504"></a><pre class="programlisting">#define GST_DISABLE_PLUGIN 1
+<a name="GST-DISABLE-PLUGIN:CAPS"></a><h3>GST_DISABLE_PLUGIN</h3>
+<pre class="programlisting">#define GST_DISABLE_PLUGIN 1
 </pre>
 <p>
 
@@ -204,9 +191,8 @@ manualy</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620519"></a><h3>
-<a name="GST-DISABLE-URI:CAPS"></a>GST_DISABLE_URI</h3>
-<a class="indexterm" name="id2620532"></a><pre class="programlisting">#define GST_DISABLE_URI 1
+<a name="GST-DISABLE-URI:CAPS"></a><h3>GST_DISABLE_URI</h3>
+<pre class="programlisting">#define GST_DISABLE_URI 1
 </pre>
 <p>
 
@@ -214,18 +200,20 @@ manualy</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620547"></a><h3>
-<a name="GST-DISABLE-XML:CAPS"></a>GST_DISABLE_XML</h3>
-<a class="indexterm" name="id2620560"></a><pre class="programlisting">#define GST_DISABLE_XML 1
+<a name="GST-DISABLE-XML:CAPS"></a><h3>GST_DISABLE_XML</h3>
+<pre class="programlisting">#define GST_DISABLE_XML 1
 </pre>
 <p>
 Configures the use libxml2. This setting is derived from the settings of
-<a href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS"><code class="literal">GST_DISABLE_LOADSAVE</code></a> and <a href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS"><code class="literal">GST_DISABLE_REGISTRY</code></a> (in the xml registry case).</p>
+<a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE:CAPS" title="GST_DISABLE_LOADSAVE"><code class="literal">GST_DISABLE_LOADSAVE</code></a> and <a class="link" href="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS" title="GST_DISABLE_REGISTRY"><code class="literal">GST_DISABLE_REGISTRY</code></a> (in the xml registry case).</p>
 <p>
 
 </p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

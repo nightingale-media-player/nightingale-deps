@@ -239,6 +239,15 @@ gst_element_base_class_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
+  /* FIXME 0.11: Copy the element details and instead of clearing the
+   * pad template list copy the list and increase the refcount of
+   * the pad templates by one.
+   *
+   * This will make it possible to add pad templates and set element
+   * details in the class_init functions and is the real GObject way
+   * of doing things.
+   * See http://bugzilla.gnome.org/show_bug.cgi?id=491501
+   */
   memset (&element_class->details, 0, sizeof (GstElementDetails));
   element_class->padtemplates = NULL;
 }
@@ -994,13 +1003,15 @@ gst_element_get_request_pad (GstElement * element, const gchar * name)
  * Retrieves a pad from @element by name. Tries gst_element_get_static_pad()
  * first, then gst_element_get_request_pad().
  *
- * <note>Usage of this function is not recommended as it is unclear if the reference
+ * Deprecated: This function is deprecated as it's unclear if the reference
  * to the result pad should be released with gst_object_unref() in case of a static pad
- * or gst_element_release_request_pad() in case of a request pad.</note>
+ * or gst_element_release_request_pad() in case of a request pad.
+ * Use gst_element_get_static_pad() or gst_element_get_request_pad() instead.
  *
  * Returns: the #GstPad if found, otherwise %NULL. Unref or Release after usage,
  * depending on the type of the pad.
  */
+#ifndef GST_REMOVE_DEPRECATED
 GstPad *
 gst_element_get_pad (GstElement * element, const gchar * name)
 {
@@ -1015,6 +1026,7 @@ gst_element_get_pad (GstElement * element, const gchar * name)
 
   return pad;
 }
+#endif /* GST_REMOVE_DEPRECATED */
 
 static GstIteratorItem
 iterate_pad (GstIterator * it, GstPad * pad)
@@ -1112,6 +1124,12 @@ gst_element_class_add_pad_template (GstElementClass * klass,
   g_return_if_fail (GST_IS_ELEMENT_CLASS (klass));
   g_return_if_fail (GST_IS_PAD_TEMPLATE (templ));
 
+  /* FIXME 0.11: allow replacing the pad templates by
+   * calling this with the same name as an already existing pad
+   * template. For this we _must_ _not_ ref the added pad template
+   * a second time and _must_ document that this function takes
+   * ownership of the pad template. Otherwise we will leak pad templates
+   * or the caller unref's the pad template and it disappears */
   /* avoid registering pad templates with the same name */
   g_return_if_fail (gst_element_class_get_pad_template (klass,
           templ->name_template) == NULL);

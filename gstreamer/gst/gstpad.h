@@ -95,7 +95,7 @@ typedef enum {
  *                               this to define custom success codes.
  *                               Since 0.10.7.
  * @GST_FLOW_RESEND:		 Resend buffer, possibly with new caps (not
- *                                 send yet).
+ *                                 sent yet) (unused/unimplemented).
  * @GST_FLOW_OK:		 Data passing was ok.
  * @GST_FLOW_NOT_LINKED:	 Pad is not linked.
  * @GST_FLOW_WRONG_STATE:	 Pad is in wrong state.
@@ -647,6 +647,12 @@ struct _GstPadClass {
 #define GST_PAD_LINKFUNC(pad)		(GST_PAD_CAST(pad)->linkfunc)
 #define GST_PAD_UNLINKFUNC(pad)		(GST_PAD_CAST(pad)->unlinkfunc)
 
+/**
+ * GST_PAD_CAPS:
+ * @pad: a #GstPad.
+ *
+ * The caps for this pad.
+ */
 #define GST_PAD_CAPS(pad)		(GST_PAD_CAST(pad)->caps)
 #define GST_PAD_GETCAPSFUNC(pad)	(GST_PAD_CAST(pad)->getcapsfunc)
 #define GST_PAD_SETCAPSFUNC(pad)	(GST_PAD_CAST(pad)->setcapsfunc)
@@ -818,7 +824,7 @@ void			gst_pad_set_setcaps_function		(GstPad *pad, GstPadSetCapsFunction setcaps
 
 G_CONST_RETURN GstCaps*	gst_pad_get_pad_template_caps		(GstPad *pad);
 
-/* capsnego function for connected/unconnected pads */
+/* capsnego function for linked/unlinked pads */
 GstCaps *		gst_pad_get_caps			(GstPad * pad);
 void			gst_pad_fixate_caps			(GstPad * pad, GstCaps *caps);
 gboolean		gst_pad_accept_caps			(GstPad * pad, GstCaps *caps);
@@ -827,7 +833,7 @@ gboolean		gst_pad_set_caps			(GstPad * pad, GstCaps *caps);
 GstCaps *		gst_pad_peer_get_caps			(GstPad * pad);
 gboolean		gst_pad_peer_accept_caps		(GstPad * pad, GstCaps *caps);
 
-/* capsnego for connected pads */
+/* capsnego for linked pads */
 GstCaps *		gst_pad_get_allowed_caps		(GstPad * pad);
 GstCaps *		gst_pad_get_negotiated_caps		(GstPad * pad);
 

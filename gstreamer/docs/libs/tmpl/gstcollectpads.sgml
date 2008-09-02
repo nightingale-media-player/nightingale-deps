@@ -200,6 +200,28 @@ GstCollectPads
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_collect_pads_read_buffer ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_collect_pads_take_buffer ##### -->
+<para>
+
+</para>
+
+@pads: 
+@data: 
+@size: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_collect_pads_flush ##### -->
 <para>
 

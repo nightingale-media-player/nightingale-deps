@@ -113,6 +113,11 @@ Push empty (no data) buffers around
 
 </para>
 
+<!-- ##### ARG GstFakeSrc:format ##### -->
+<para>
+
+</para>
+
 <!-- ##### ENUM GstFakeSrcDataType ##### -->
 <para>
 

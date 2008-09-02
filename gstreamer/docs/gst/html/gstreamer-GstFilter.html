@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstFilter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstEvent.html" title="GstEvent">
 <link rel="next" href="gstreamer-GstFormat.html" title="GstFormat">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,42 +26,39 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstFormat.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2674544" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2674634" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstFilter.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-GstFilter.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstFilter"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2674544"></a><span class="refentrytitle">GstFilter</span>
-</h2>
-<p>GstFilter &#8212; A utility function to filter GLists.</p>
+<h2><span class="refentrytitle"><a name="gstreamer-GstFilter.top_of_page"></a>GstFilter</span></h2>
+<p>GstFilter — A utility function to filter GLists.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-GstFilter.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-gboolean            (<a href="gstreamer-GstFilter.html#GstFilterFunc">*GstFilterFunc</a>)                    (gpointer obj,
+gboolean            (<a class="link" href="gstreamer-GstFilter.html#GstFilterFunc" title="GstFilterFunc ()">*GstFilterFunc</a>)                    (gpointer obj,
                                                          gpointer user_data);
-GList*              <a href="gstreamer-GstFilter.html#gst-filter-run">gst_filter_run</a>                      (const GList *list,
-                                                         <a href="gstreamer-GstFilter.html#GstFilterFunc">GstFilterFunc</a> func,
+GList*              <a class="link" href="gstreamer-GstFilter.html#gst-filter-run" title="gst_filter_run ()">gst_filter_run</a>                      (const GList *list,
+                                                         <a class="link" href="gstreamer-GstFilter.html#GstFilterFunc" title="GstFilterFunc ()">GstFilterFunc</a> func,
                                                          gboolean first,
                                                          gpointer user_data);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2674634"></a><h2>Description</h2>
+<a name="gstreamer-GstFilter.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="example">
-<a name="id2674646"></a><p class="title"><b>Example&#160;9.&#160;Filtering a list</b></p>
+<a name="id2697104"></a><p class="title"><b>Example 9. Filtering a list</b></p>
 <div class="example-contents"><pre class="programlisting">
     GList *node;
     GstObject *result = NULL;
@@ -80,16 +77,15 @@ GList*              <a href="gstreamer-GstFilter.html#gst-filter-run">gst_filter
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2674667"></a><h2>Details</h2>
+<a name="gstreamer-GstFilter.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2674677"></a><h3>
-<a name="GstFilterFunc"></a>GstFilterFunc ()</h3>
-<a class="indexterm" name="id2674690"></a><pre class="programlisting">gboolean            (*GstFilterFunc)                    (gpointer obj,
+<a name="GstFilterFunc"></a><h3>GstFilterFunc ()</h3>
+<pre class="programlisting">gboolean            (*GstFilterFunc)                    (gpointer obj,
                                                          gpointer user_data);</pre>
 <p>
-Function prototype for a filter callback taht can be use in <a href="gstreamer-GstFilter.html#gst-filter-run"><code class="function">gst_filter_run()</code></a>.
+Function prototype for a filter callback taht can be use in <a class="link" href="gstreamer-GstFilter.html#gst-filter-run" title="gst_filter_run ()"><code class="function">gst_filter_run()</code></a>.
 The function should apply its filtering to <em class="parameter"><code>obj</code></em>. Additional data passed to
-<a href="gstreamer-GstFilter.html#gst-filter-run"><code class="function">gst_filter_run()</code></a> are in <em class="parameter"><code>data</code></em>.</p>
+<a class="link" href="gstreamer-GstFilter.html#gst-filter-run" title="gst_filter_run ()"><code class="function">gst_filter_run()</code></a> are in <em class="parameter"><code>data</code></em>.</p>
 <p>
 
 </p>
@@ -97,17 +93,17 @@ The function should apply its filtering to <em class="parameter"><code>obj</code
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td> the object
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td> filter data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> for success.
 </td>
 </tr>
@@ -116,17 +112,22 @@ The function should apply its filtering to <em class="parameter"><code>obj</code
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674817"></a><h3>
-<a name="gst-filter-run"></a>gst_filter_run ()</h3>
-<a class="indexterm" name="id2674830"></a><pre class="programlisting">GList*              gst_filter_run                      (const GList *list,
-                                                         <a href="gstreamer-GstFilter.html#GstFilterFunc">GstFilterFunc</a> func,
+<a name="gst-filter-run"></a><h3>gst_filter_run ()</h3>
+<pre class="programlisting">GList*              gst_filter_run                      (const GList *list,
+                                                         <a class="link" href="gstreamer-GstFilter.html#GstFilterFunc" title="GstFilterFunc ()">GstFilterFunc</a> func,
                                                          gboolean first,
                                                          gpointer user_data);</pre>
 <p>
 Iterates over the elements in <em class="parameter"><code>list</code></em>, calling <em class="parameter"><code>func</code></em> with the
 list item data for each item.  If <em class="parameter"><code>func</code></em> returns TRUE, <em class="parameter"><code>data</code></em> is
 prepended to the list of results returned.  If <em class="parameter"><code>first</code></em> is true,
-the search is halted after the first result is found.</p>
+the search is halted after the first result is found.
+</p>
+<p>
+Since <a class="link" href="gstreamer-GstFilter.html#gst-filter-run" title="gst_filter_run ()"><code class="function">gst_filter_run()</code></a> knows nothing about the type of <em class="parameter"><code>data</code></em>, no
+reference will be taken (if <em class="parameter"><code>data</code></em> refers to an object) and no copy of
+<em class="parameter"><code>data</code></em> wil be made in any other way when prepending <em class="parameter"><code>data</code></em> to the list of
+results.</p>
 <p>
 
 </p>
@@ -134,28 +135,30 @@ the search is halted after the first result is found.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>list</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
 <td> a linked list
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> the function to execute for each item
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>first</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>first</code></em> :</span></p></td>
 <td> flag to stop execution after a successful item
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td> user data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the list of results
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the list of results. Free with <code class="function">g_list_free()</code> when no longer needed
+(the data contained in the list is a flat copy and does need to be
+unreferenced or freed).
 </td>
 </tr>
 </tbody>
@@ -163,5 +166,8 @@ the search is halted after the first result is found.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

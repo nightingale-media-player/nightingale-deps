@@ -87,7 +87,6 @@ enum
                q->cur_level.time,                                       \
                q->queue->length)
 
-static void gst_data_queue_base_init (GstDataQueueClass * klass);
 static void gst_data_queue_class_init (GstDataQueueClass * klass);
 static void gst_data_queue_init (GstDataQueue * queue);
 static void gst_data_queue_finalize (GObject * object);
@@ -108,7 +107,7 @@ gst_data_queue_get_type (void)
   if (!queue_type) {
     static const GTypeInfo queue_info = {
       sizeof (GstDataQueueClass),
-      (GBaseInitFunc) gst_data_queue_base_init,
+      NULL,
       NULL,
       (GClassInitFunc) gst_data_queue_class_init,
       NULL,
@@ -128,13 +127,6 @@ gst_data_queue_get_type (void)
   }
 
   return queue_type;
-}
-
-static void
-gst_data_queue_base_init (GstDataQueueClass * klass)
-{
-  /* Do we need anything here ?? */
-  return;
 }
 
 static void
@@ -180,16 +172,16 @@ gst_data_queue_class_init (GstDataQueueClass * klass)
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_BYTES,
       g_param_spec_uint ("current-level-bytes", "Current level (kB)",
           "Current amount of data in the queue (bytes)",
-          0, G_MAXUINT, 0, G_PARAM_READABLE));
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_VISIBLE,
       g_param_spec_uint ("current-level-visible",
           "Current level (visible items)",
           "Current number of visible items in the queue", 0, G_MAXUINT, 0,
-          G_PARAM_READABLE));
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_CUR_LEVEL_TIME,
       g_param_spec_uint64 ("current-level-time", "Current level (ns)",
           "Current amount of data in the queue (in ns)", 0, G_MAXUINT64, 0,
-          G_PARAM_READABLE));
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   /* set several parent class virtual functions */
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_data_queue_finalize);

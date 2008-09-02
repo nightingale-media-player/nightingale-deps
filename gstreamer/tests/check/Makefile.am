@@ -49,7 +49,10 @@ REGISTRY_CHECKS =				\
 	gst/gstelement				\
 	gst/gstevent				\
 	gst/gstghostpad				\
+	gst/gstindex				\
+	gst/gstinterface				\
 	gst/gstplugin				\
+	gst/gstpreset				\
 	gst/gstquery				\
 	gst/gstregistry				\
 	gst/gsturi  				\
@@ -81,6 +84,7 @@ check_PROGRAMS =				\
 	gst/gstobject				\
 	gst/gstpad				\
 	gst/gstparamspecs			\
+	gst/gstpoll     			\
 	gst/gstsegment				\
 	gst/gstsystemclock			\
 	gst/gststructure			\
@@ -164,7 +168,8 @@ libs_typefindhelper_LDADD = \
 # these just need valgrind fixing, period
 VALGRIND_TO_FIX = \
 	gst/gstinfo \
-	libs/collectpads
+	libs/collectpads \
+	pipelines/parse-launch
 
 VALGRIND_IGNORE = \
 	pipelines/stress

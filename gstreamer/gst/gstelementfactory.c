@@ -472,10 +472,10 @@ gst_element_factory_make (const gchar * factoryname, const gchar * name)
 
   GST_LOG_OBJECT (factory, "found factory %p", factory);
   element = gst_element_factory_create (factory, name);
-  gst_object_unref (factory);
   if (element == NULL)
     goto create_failed;
 
+  gst_object_unref (factory);
   return element;
 
   /* ERRORS */
@@ -487,6 +487,7 @@ no_factory:
 create_failed:
   {
     GST_INFO_OBJECT (factory, "couldn't create instance!");
+    gst_object_unref (factory);
     return NULL;
   }
 }
@@ -642,7 +643,7 @@ gst_element_factory_get_static_pad_templates (GstElementFactory * factory)
  * gst_element_factory_get_uri_type:
  * @factory: a #GstElementFactory
  *
- * Gets the type of URIs the element supports or GST_URI_UNKNOWN if none.
+ * Gets the type of URIs the element supports or #GST_URI_UNKNOWN if none.
  *
  * Returns: type of URIs this element supports
  */

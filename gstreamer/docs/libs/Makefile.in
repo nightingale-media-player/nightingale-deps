@@ -112,6 +112,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -136,9 +137,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -166,8 +169,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -181,7 +182,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -202,6 +202,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -331,6 +334,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -487,8 +491,10 @@ HFILE_GLOB = $(DOC_SOURCE_DIR)/*/*.h
 CFILE_GLOB = $(DOC_SOURCE_DIR)/*/*.c
 
 # Dependencies for the intermediate scanobj tool
-SCANOBJ_DEPS = $(top_builddir)/libs/gst/controller/libgstcontroller-@GST_MAJORMINOR@.la \
-	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la
+SCANOBJ_DEPS = \
+	$(top_builddir)/libs/gst/controller/libgstcontroller-@GST_MAJORMINOR@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(top_builddir)/libs/gst/net/libgstnet-@GST_MAJORMINOR@.la
 
 
 # Extra options to pass to gtkdoc-scanobj or gtkdoc-scangobj.
@@ -496,6 +502,9 @@ SCANOBJ_OPTIONS = --type-init-func="g_type_init();gst_init(&argc,&argv)"
 
 # Header files to ignore when scanning.
 IGNORE_HFILES = \
+	gstinterpolationcontrolsourceprivate.h \
+	gstlfocontrolsourceprivate.h \
+	gstcontrollerprivate.h \
 	gstgetbits_inl.h \
 	dp-private.h
 
@@ -806,7 +815,7 @@ upload: $(FORMATS)
 
 #### xml ####
 
-### FIXME: make this error out again when docs are fixed for 0.9
+### FIXME: make this error out again when docs are complete
 @ENABLE_GTK_DOC_TRUE@sgml-build.stamp: tmpl.stamp $(CFILE_GLOB)
 @ENABLE_GTK_DOC_TRUE@	@echo '*** Building XML ***'
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --main-sgml-file=$(srcdir)/$(DOC_MAIN_SGML_FILE) --output-format=xml $(MKDB_OPTIONS) | tee sgml-build.log
@@ -828,6 +837,9 @@ upload: $(FORMATS)
 @ENABLE_GTK_DOC_TRUE@	cp -pr xml html
 @ENABLE_GTK_DOC_TRUE@	cp ../version.entities html
 @ENABLE_GTK_DOC_TRUE@	cd html && gtkdoc-mkhtml $(DOC_MODULE) $(DOC_MAIN_SGML_FILE)
+@ENABLE_GTK_DOC_TRUE@	mv html/index.sgml html/index.sgml.bak
+@ENABLE_GTK_DOC_TRUE@	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
+@ENABLE_GTK_DOC_TRUE@	rm -f html/index.sgml.bak
 @ENABLE_GTK_DOC_TRUE@	rm -f html/$(DOC_MAIN_SGML_FILE)
 @ENABLE_GTK_DOC_TRUE@	rm -rf html/xml
 @ENABLE_GTK_DOC_TRUE@	rm -f html/version.entities
@@ -836,11 +848,18 @@ upload: $(FORMATS)
 @ENABLE_GTK_DOC_TRUE@	@echo '-- Fixing Crossreferences' 
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 @ENABLE_GTK_DOC_TRUE@	touch html-build.stamp
-@ENABLE_GTK_DOC_FALSE@all-local:
 
-clean-local:
+@ENABLE_GTK_DOC_TRUE@clean-local-gtkdoc:
+@ENABLE_GTK_DOC_TRUE@	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+@ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
+@ENABLE_GTK_DOC_TRUE@	        rm -rf $(DOC_MODULE).types; \
+@ENABLE_GTK_DOC_TRUE@	fi
+@ENABLE_GTK_DOC_FALSE@all-local:
+@ENABLE_GTK_DOC_FALSE@clean-local-gtkdoc:
+
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
-	rm -rf xml html
 	rm -rf .libs
 
 maintainer-clean-local: clean
@@ -953,6 +972,11 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	for i in "" $$images ; do		      \
 	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
 	done
+	images="$(srcdir)/html/*.png" ;		      \
+	for i in "" $$images ; do		      \
+	  fname=`basename $$i` ; 		      \
+	  if test ! -f "$(distdir)/html/$$fname"; then cp $$i $(distdir)/html ; fi; \
+	done 
 
 .PHONY : dist-hook-local
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

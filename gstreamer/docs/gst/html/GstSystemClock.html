@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstSystemClock</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstStructure.html" title="GstStructure">
 <link rel="next" href="gstreamer-GstTagList.html" title="GstTagList">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,47 +26,42 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstTagList.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2836718" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2836794" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2836756" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstSystemClock.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstSystemClock.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstSystemClock.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstSystemClock"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2836718"></a><span class="refentrytitle">GstSystemClock</span>
-</h2>
-<p>GstSystemClock &#8212; Default clock that uses the current system time</p>
+<h2><span class="refentrytitle"><a name="GstSystemClock.top_of_page"></a>GstSystemClock</span></h2>
+<p>GstSystemClock — Default clock that uses the current system time</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="GstSystemClock.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-                    <a href="GstSystemClock.html#GstSystemClock-struct">GstSystemClock</a>;
-<a href="GstClock.html" title="GstClock">GstClock</a>*           <a href="GstSystemClock.html#gst-system-clock-obtain">gst_system_clock_obtain</a>             (void);
-
+                    <a class="link" href="GstSystemClock.html#GstSystemClock-struct" title="GstSystemClock">GstSystemClock</a>;
+<a class="link" href="GstClock.html" title="GstClock">GstClock</a>*           <a class="link" href="GstSystemClock.html#gst-system-clock-obtain" title="gst_system_clock_obtain ()">gst_system_clock_obtain</a>             (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2836756"></a><h2>Object Hierarchy</h2>
+<a name="GstSystemClock.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
-   +----<a href="GstObject.html" title="GstObject">GstObject</a>
-         +----<a href="GstClock.html" title="GstClock">GstClock</a>
+   +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
+         +----<a class="link" href="GstClock.html" title="GstClock">GstClock</a>
                +----GstSystemClock
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2836794"></a><h2>Description</h2>
+<a name="GstSystemClock.description"></a><h2>Description</h2>
 <p>
 The GStreamer core provides a GstSystemClock based on the system time.
 Asynchronous callbacks are scheduled from an internal thread.
@@ -87,22 +82,24 @@ Last reviewed on 2006-03-08 (0.10.4)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2836830"></a><h2>Details</h2>
+<a name="GstSystemClock.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2836840"></a><h3>
-<a name="GstSystemClock-struct"></a>GstSystemClock</h3>
-<a class="indexterm" name="id2836854"></a><pre class="programlisting">typedef struct _GstSystemClock GstSystemClock;</pre>
+<a name="GstSystemClock-struct"></a><h3>GstSystemClock</h3>
+<pre class="programlisting">typedef struct _GstSystemClock GstSystemClock;</pre>
 <p>
-The default implementation of a <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> that uses the system time.</p>
+The default implementation of a <a class="link" href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> that uses the system time.</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2836881"></a><h3>
-<a name="gst-system-clock-obtain"></a>gst_system_clock_obtain ()</h3>
-<a class="indexterm" name="id2836894"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*           gst_system_clock_obtain             (void);</pre>
+<a name="gst-system-clock-obtain"></a><h3>gst_system_clock_obtain ()</h3>
+<pre class="programlisting"><a class="link" href="GstClock.html" title="GstClock">GstClock</a>*           gst_system_clock_obtain             (void);</pre>
 <p>
 Get a handle to the default system clock. The refcount of the
 clock will be increased so you need to unref the clock after
@@ -113,7 +110,7 @@ usage.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the default clock.
 
 MT safe.
@@ -123,9 +120,12 @@ MT safe.
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2836937"></a><h2>See Also</h2>
-<a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a>
+<a name="GstSystemClock.see-also"></a><h2>See Also</h2>
+<a class="link" href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

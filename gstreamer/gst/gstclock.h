@@ -50,14 +50,14 @@ typedef guint64	GstClockTime;
 /**
  * GST_TYPE_CLOCK_TIME:
  *
- * The GType of a GstClockTime.
+ * The #GType of a #GstClockTime.
  */
 #define GST_TYPE_CLOCK_TIME G_TYPE_UINT64
 
 /**
  * GstClockTimeDiff:
  *
- * A datatype to hold a timedifference, measured in nanoseconds.
+ * A datatype to hold a time difference, measured in nanoseconds.
  */
 typedef gint64 GstClockTimeDiff;
 /**
@@ -118,6 +118,7 @@ typedef gpointer GstClockID;
 #define GST_TIME_AS_SECONDS(time)  ((time) / GST_SECOND)
 /**
  * GST_TIME_AS_MSECONDS:
+ * @time: the time
  *
  * Convert a #GstClockTime to milliseconds (1/1000 of a second).
  *
@@ -125,7 +126,8 @@ typedef gpointer GstClockID;
  */
 #define GST_TIME_AS_MSECONDS(time) ((time) / G_GINT64_CONSTANT (1000000))
 /**
- * GST_TIME_TO_USECONDS:
+ * GST_TIME_AS_USECONDS:
+ * @time: the time
  *
  * Convert a #GstClockTime to microseconds (1/1000000 of a second).
  *
@@ -133,7 +135,8 @@ typedef gpointer GstClockID;
  */
 #define GST_TIME_AS_USECONDS(time) ((time) / G_GINT64_CONSTANT (1000))
 /**
- * GST_TIME_TO_NSECONDS:
+ * GST_TIME_AS_NSECONDS:
+ * @time: the time
  *
  * Convert a #GstClockTime to nanoseconds (1/1000000000 of a second).
  *
@@ -155,20 +158,20 @@ typedef gpointer GstClockID;
  * GST_TIMEVAL_TO_TIME:
  * @tv: the timeval to convert
  *
- * Convert a GTimeVal to a #GstClockTime.
+ * Convert a #GTimeVal to a #GstClockTime.
  */
 #define GST_TIMEVAL_TO_TIME(tv)		(GstClockTime)((tv).tv_sec * GST_SECOND + (tv).tv_usec * GST_USECOND)
 
 /**
  * GST_TIME_TO_TIMEVAL:
- * @t: The GstClockTime to convert
+ * @t: The #GstClockTime to convert
  * @tv: The target timeval
  *
  * Note: on 32-bit systems, a timeval has a range of only 2^32 - 1 seconds,
  * which is about 68 years.  Expect trouble if you want to schedule stuff
  * in your pipeline for 2038.
  *
- * Convert a GstClockTime to a GTimeVal
+ * Convert a #GstClockTime to a #GTimeVal
  */
 #define GST_TIME_TO_TIMEVAL(t,tv)				\
 G_STMT_START {							\
@@ -187,7 +190,7 @@ G_STMT_START {							\
 #define GST_TIMESPEC_TO_TIME(ts)	(GstClockTime)((ts).tv_sec * GST_SECOND + (ts).tv_nsec * GST_NSECOND)
 /**
  * GST_TIME_TO_TIMESPEC:
- * @t: The GstClockTime to convert
+ * @t: The #GstClockTime to convert
  * @ts: The target timespec
  *
  * Convert a #GstClockTime to a struct timespec (see man pselect)
@@ -203,7 +206,7 @@ G_STMT_START {						\
  * GST_TIME_FORMAT:
  *
  * A format that can be used in printf like format strings to format
- * a GstClockTime value.
+ * a #GstClockTime value.
  */
 #define GST_TIME_FORMAT "u:%02u:%02u.%09u"
 /**
@@ -249,12 +252,12 @@ typedef gboolean	(*GstClockCallback)	(GstClock *clock, GstClockTime time,
 						 GstClockID id, gpointer user_data);
 /**
  * GstClockReturn:
- * @GST_CLOCK_OK: The operation succeded.
+ * @GST_CLOCK_OK: The operation succeeded.
  * @GST_CLOCK_EARLY: The operation was scheduled too late.
  * @GST_CLOCK_UNSCHEDULED: The clockID was unscheduled
  * @GST_CLOCK_BUSY: The ClockID is busy
  * @GST_CLOCK_BADTIME: A bad time was provided to a function.
- * @GST_CLOCK_ERROR: An error occured
+ * @GST_CLOCK_ERROR: An error occurred
  * @GST_CLOCK_UNSUPPORTED: Operation is not supported
  *
  * The return value of a clock operation.
@@ -379,7 +382,7 @@ typedef enum {
  * GST_CLOCK_COND:
  * @clock: the clock to query
  *
- * Gets the #GCond that gets signaled when the entries of the clock
+ * Gets the #GCond that gets signalled when the entries of the clock
  * changed.
  */
 #define GST_CLOCK_COND(clock)            (GST_CLOCK_CAST(clock)->entries_changed)
@@ -393,10 +396,10 @@ typedef enum {
 /**
  * GST_CLOCK_TIMED_WAIT:
  * @clock: the clock to wait on
- * @tv: a GTimeVal to wait.
+ * @tv: a #GTimeVal to wait.
  *
  * Wait on the clock until the entries changed or the specified timeout
- * occured. 
+ * occurred. 
  */
 #define GST_CLOCK_TIMED_WAIT(clock,tv)   g_cond_timed_wait(GST_CLOCK_COND(clock),GST_OBJECT_GET_LOCK(clock),tv)
 /**
@@ -410,7 +413,7 @@ typedef enum {
 /**
  * GstClock:
  *
- * GstClock base structure. The values of this structure are
+ * #GstClock base structure. The values of this structure are
  * protected for subclasses, use the methods to use the #GstClock.
  */
 struct _GstClock {
@@ -454,11 +457,11 @@ struct _GstClock {
  *                     be acceptable. The new resolution should be returned.
  * @get_resolution: get the resolution of the clock.
  * @get_internal_time: get the internal unadjusted time of the clock.
- * @wait: perform a blocking wait for the given GstClockEntry. Deprecated,
+ * @wait: perform a blocking wait for the given #GstClockEntry. Deprecated,
  *        implement @wait_jitter instead.
- * @wait_async: perform an asynchronous wait for the given GstClockEntry.
+ * @wait_async: perform an asynchronous wait for the given #GstClockEntry.
  * @unschedule: unblock a blocking or async wait operation.
- * @wait_jitter: perform a blocking wait on the given GstClockEntry and return
+ * @wait_jitter: perform a blocking wait on the given #GstClockEntry and return
  *               the jitter. (Since: 0.10.10)
  *
  * GStreamer clock class. Override the vmethods to implement the clock

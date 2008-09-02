@@ -228,7 +228,10 @@ typedef struct _GstEventClass GstEventClass;
 /**
  * GstSeekType:
  * @GST_SEEK_TYPE_NONE: no change in position is required
- * @GST_SEEK_TYPE_CUR: change relative to current position
+ * @GST_SEEK_TYPE_CUR: change relative to currently configured segment. This
+ *    can't be used to seek relative to the current playback position - do a
+ *    position query, calculate the desired position and then do an absolute
+ *    position seek instead if that's what you want to do.
  * @GST_SEEK_TYPE_SET: absolute position is requested
  * @GST_SEEK_TYPE_END: relative position to duration is requested
  *
@@ -363,6 +366,8 @@ GstEvent*	gst_event_new_custom		(GstEventType type, GstStructure *structure);
 
 const GstStructure *
 		gst_event_get_structure		(GstEvent *event);
+
+gboolean        gst_event_has_name              (GstEvent *event, const gchar *name);
 
 /* flush events */
 GstEvent *	gst_event_new_flush_start	(void);

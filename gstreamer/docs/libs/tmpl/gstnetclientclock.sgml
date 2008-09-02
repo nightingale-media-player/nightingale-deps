@@ -22,7 +22,16 @@ GstNetClientClock
 
 </para>
 
-@clock: 
+
+<!-- ##### ARG GstNetClientClock:address ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstNetClientClock:port ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION gst_net_client_clock_new ##### -->
 <para>

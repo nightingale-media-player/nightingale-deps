@@ -21,6 +21,90 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-multiqueue
+ * @short_description: Asynchronous data queues
+ * @see_also: #GstQueue
+ *
+ * <refsect2>
+ * <para>
+ * Multiqueue is similar to a normal #GstQueue with the following additional
+ * features:
+ * <orderedlist>
+ * <listitem>
+ *   <itemizedlist><title>Multiple streamhandling</title>
+ *   <listitem><para>
+ *     The element handles queueing data on more than one stream at once. To
+ *     achieve such a feature it has request sink pads (sink%d) and
+ *     'sometimes' src pads (src%d).
+ *   </para><para>
+ *     When requesting a given sinkpad with gst_element_get_request_pad(),
+ *     the associated srcpad for that stream will be created.
+ *     Example: requesting sink1 will generate src1.
+ *   </para></listitem>
+ *   </itemizedlist>
+ * </listitem>
+ * <listitem>
+ *   <itemizedlist><title>Non-starvation on multiple streams</title>
+ *   <listitem><para>
+ *     If more than one stream is used with the element, the streams' queues
+ *     will be dynamically grown (up to a limit), in order to ensure that no
+ *     stream is risking data starvation. This guarantees that at any given
+ *     time there are at least N bytes queued and available for each individual
+ *     stream.
+ *   </para><para>
+ *     If an EOS event comes through a srcpad, the associated queue will be
+ *     considered as 'not-empty' in the queue-size-growing algorithm.
+ *   </para></listitem>
+ *   </itemizedlist>
+ * </listitem>
+ * <listitem>
+ *   <itemizedlist><title>Non-linked srcpads graceful handling</title>
+ *   <listitem><para>
+ *     In order to better support dynamic switching between streams, the multiqueue
+ *     (unlike the current GStreamer queue) continues to push buffers on non-linked
+ *     pads rather than shutting down.
+ *   </para><para>
+ *     In addition, to prevent a non-linked stream from very quickly consuming all
+ *     available buffers and thus 'racing ahead' of the other streams, the element
+ *     must ensure that buffers and inlined events for a non-linked stream are pushed
+ *     in the same order as they were received, relative to the other streams
+ *     controlled by the element. This means that a buffer cannot be pushed to a
+ *     non-linked pad any sooner than buffers in any other stream which were received
+ *     before it.
+ *   </para></listitem>
+ *   </itemizedlist>
+ * </listitem>
+ * </orderedlist>
+ * </para>
+ * <para>
+ *   Data is queued until one of the limits specified by the
+ *   #GstMultiQueue:max-size-buffers, #GstMultiQueue:max-size-bytes and/or
+ *   #GstMultiQueue:max-size-time properties has been reached. Any attempt to push
+ *   more buffers into the queue will block the pushing thread until more space
+ *   becomes available. #GstMultiQueue:extra-size-buffers,
+ * </para>
+ * <para>
+ *   #GstMultiQueue:extra-size-bytes and #GstMultiQueue:extra-size-time are
+ *   currently unused.
+ * </para>
+ * <para>
+ *   The default queue size limits are 5 buffers, 10MB of data, or
+ *   two second worth of data, whichever is reached first. Note that the number
+ *   of buffers will dynamically grow depending on the fill level of 
+ *   other queues.
+ * </para>
+ * <para>
+ *   The #GstMultiQueue::underrun signal is emitted when all of the queues
+ *   are empty. The #GstMultiQueue::overrun signal is emitted when one of the
+ *   queues is filled.
+ *   Both signals are emitted from the context of the streaming thread.
+ * </para>
+ * </refsect2>
+ *
+ * Last reviewed on 2008-01-25 (0.10.17)
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -188,11 +272,32 @@ gst_multi_queue_class_init (GstMultiQueueClass * klass)
       GST_DEBUG_FUNCPTR (gst_multi_queue_get_property);
 
   /* SIGNALS */
+
+  /**
+   * GstMultiQueue::underrun:
+   * @multiqueue: the multqueue instance
+   *
+   * This signal is emitted from the streaming thread when there is
+   * no data in any of the queues inside the multiqueue instance (underrun).
+   *
+   * This indicates either starvation or EOS from the upstream data sources.
+   */
   gst_multi_queue_signals[SIGNAL_UNDERRUN] =
       g_signal_new ("underrun", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_FIRST,
       G_STRUCT_OFFSET (GstMultiQueueClass, underrun), NULL, NULL,
       g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
+  /**
+   * GstMultiQueue::overrun:
+   * @multiqueue: the multiqueue instance
+   *
+   * Reports that one of the queues in the multiqueue is full (overrun).
+   * A queue is full if the total amount of data inside it (num-buffers, time,
+   * size) is higher than the boundary values which can be set through the
+   * GObject properties.
+   *
+   * This can be used as an indicator of pre-roll. 
+   */
   gst_multi_queue_signals[SIGNAL_OVERRUN] =
       g_signal_new ("overrun", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_FIRST,
       G_STRUCT_OFFSET (GstMultiQueueClass, overrun), NULL, NULL,
@@ -203,28 +308,33 @@ gst_multi_queue_class_init (GstMultiQueueClass * klass)
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_BYTES,
       g_param_spec_uint ("max-size-bytes", "Max. size (kB)",
           "Max. amount of data in the queue (bytes, 0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_BUFFERS,
       g_param_spec_uint ("max-size-buffers", "Max. size (buffers)",
-          "Max. number of buffers in the queue (0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BUFFERS, G_PARAM_READWRITE));
+          "Max. number of buffers in the queue (0=disable)", 0, G_MAXUINT,
+          DEFAULT_MAX_SIZE_BUFFERS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MAX_SIZE_TIME,
       g_param_spec_uint64 ("max-size-time", "Max. size (ns)",
-          "Max. amount of data in the queue (in ns, 0=disable)",
-          0, G_MAXUINT64, DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE));
+          "Max. amount of data in the queue (in ns, 0=disable)", 0, G_MAXUINT64,
+          DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, ARG_EXTRA_SIZE_BYTES,
       g_param_spec_uint ("extra-size-bytes", "Extra Size (kB)",
           "Amount of data the queues can grow if one of them is empty (bytes, 0=disable)",
-          0, G_MAXUINT, DEFAULT_EXTRA_SIZE_BYTES, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_EXTRA_SIZE_BYTES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_EXTRA_SIZE_BUFFERS,
       g_param_spec_uint ("extra-size-buffers", "Extra Size (buffers)",
           "Amount of buffers the queues can grow if one of them is empty (0=disable)",
-          0, G_MAXUINT, DEFAULT_EXTRA_SIZE_BUFFERS, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_EXTRA_SIZE_BUFFERS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_EXTRA_SIZE_TIME,
       g_param_spec_uint64 ("extra-size-time", "Extra Size (ns)",
           "Amount of time the queues can grow if one of them is empty (in ns, 0=disable)",
-          0, G_MAXUINT64, DEFAULT_EXTRA_SIZE_TIME, G_PARAM_READWRITE));
+          0, G_MAXUINT64, DEFAULT_EXTRA_SIZE_TIME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_multi_queue_finalize);
 
@@ -354,7 +464,7 @@ gst_multi_queue_get_property (GObject * object, guint prop_id,
   GST_MULTI_QUEUE_MUTEX_UNLOCK (mq);
 }
 
-GList *
+static GList *
 gst_multi_queue_get_internal_links (GstPad * pad)
 {
   GList *res = NULL;
@@ -1178,7 +1288,7 @@ single_queue_overrun_cb (GstDataQueue * dq, GstSingleQueue * sq)
     if (gst_data_queue_is_empty (ssq->queue)) {
       GST_LOG_OBJECT (mq, "Queue %d is empty", ssq->id);
       if (IS_FILLED (visible, size.visible)) {
-        sq->max_size.visible++;
+        sq->max_size.visible = size.visible + 1;
         GST_DEBUG_OBJECT (mq,
             "Another queue is empty, bumping single queue %d max visible to %d",
             sq->id, sq->max_size.visible);
@@ -1232,7 +1342,7 @@ single_queue_underrun_cb (GstDataQueue * dq, GstSingleQueue * sq)
 
       gst_data_queue_get_level (sq->queue, &size);
       if (IS_FILLED (visible, size.visible)) {
-        sq->max_size.visible++;
+        sq->max_size.visible = size.visible + 1;
         GST_DEBUG_OBJECT (mq,
             "queue %d is filled, bumping its max visible to %d", sq->id,
             sq->max_size.visible);

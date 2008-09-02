@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstImplementsInterface</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstGhostPad.html" title="GstGhostPad">
 <link rel="next" href="GstIndex.html" title="GstIndex">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,60 +26,54 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstIndex.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2680390" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2680568" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2680514" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2680539" class="shortcut">Prerequisites</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstImplementsInterface.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstImplementsInterface.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstImplementsInterface.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstImplementsInterface.prerequisites" class="shortcut">Prerequisites</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstImplementsInterface"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2680390"></a><span class="refentrytitle">GstImplementsInterface</span>
-</h2>
-<p>GstImplementsInterface &#8212; Core interface implemented by <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> instances that
+<h2><span class="refentrytitle"><a name="GstImplementsInterface.top_of_page"></a>GstImplementsInterface</span></h2>
+<p>GstImplementsInterface — Core interface implemented by <a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> instances that
 allows runtime querying of interface availabillity</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="GstImplementsInterface.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-                    <a href="GstImplementsInterface.html#GstImplementsInterface-struct">GstImplementsInterface</a>;
-gboolean            <a href="GstImplementsInterface.html#gst-element-implements-interface">gst_element_implements_interface</a>    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                    <a class="link" href="GstImplementsInterface.html#GstImplementsInterface-struct" title="GstImplementsInterface">GstImplementsInterface</a>;
+gboolean            <a class="link" href="GstImplementsInterface.html#gst-element-implements-interface" title="gst_element_implements_interface ()">gst_element_implements_interface</a>    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
                                                          GType iface_type);
-gpointer            <a href="GstImplementsInterface.html#gst-implements-interface-cast">gst_implements_interface_cast</a>       (gpointer from,
+gpointer            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-cast" title="gst_implements_interface_cast ()">gst_implements_interface_cast</a>       (gpointer from,
                                                          GType type);
-gboolean            <a href="GstImplementsInterface.html#gst-implements-interface-check">gst_implements_interface_check</a>      (gpointer from,
+gboolean            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-check" title="gst_implements_interface_check ()">gst_implements_interface_check</a>      (gpointer from,
                                                          GType type);
-
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2680514"></a><h2>Object Hierarchy</h2>
+<a name="GstImplementsInterface.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GInterface
    +----GstImplementsInterface
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2680539"></a><h2>Prerequisites</h2>
+<a name="GstImplementsInterface.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstImplementsInterface requires
- <a href="GstObject.html" title="GstObject">GstObject</a> and  <a href="GstElement.html" title="GstElement">GstElement</a>.</p>
+ <a class="link" href="GstObject.html" title="GstObject">GstObject</a> and  <a class="link" href="GstElement.html" title="GstElement">GstElement</a>.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2680568"></a><h2>Description</h2>
+<a name="GstImplementsInterface.description"></a><h2>Description</h2>
 <p>
 Provides interface functionality on per instance basis and not per class
 basis, which is the case for gobject.</p>
@@ -88,22 +82,20 @@ basis, which is the case for gobject.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2680587"></a><h2>Details</h2>
+<a name="GstImplementsInterface.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2680598"></a><h3>
-<a name="GstImplementsInterface-struct"></a>GstImplementsInterface</h3>
-<a class="indexterm" name="id2680612"></a><pre class="programlisting">typedef struct _GstImplementsInterface GstImplementsInterface;</pre>
+<a name="GstImplementsInterface-struct"></a><h3>GstImplementsInterface</h3>
+<pre class="programlisting">typedef struct _GstImplementsInterface GstImplementsInterface;</pre>
 <p>
-Opaque <a href="GstImplementsInterface.html" title="GstImplementsInterface"><span class="type">GstImplementsInterface</span></a> structure.</p>
+Opaque <a class="link" href="GstImplementsInterface.html" title="GstImplementsInterface"><span class="type">GstImplementsInterface</span></a> structure.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2680640"></a><h3>
-<a name="gst-element-implements-interface"></a>gst_element_implements_interface ()</h3>
-<a class="indexterm" name="id2680653"></a><pre class="programlisting">gboolean            gst_element_implements_interface    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+<a name="gst-element-implements-interface"></a><h3>gst_element_implements_interface ()</h3>
+<pre class="programlisting">gboolean            gst_element_implements_interface    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
                                                          GType iface_type);</pre>
 <p>
 Test whether the given element implements a certain interface of type
@@ -115,17 +107,17 @@ iface_type, and test whether it is supported for this specific instance.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
-<td> <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to check for the implementation of the interface
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
+<td> <a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to check for the implementation of the interface
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>iface_type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>iface_type</code></em> :</span></p></td>
 <td> (final) type of the interface which we want to be implemented
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> whether or not the element implements the interface.
 </td>
 </tr>
@@ -134,9 +126,8 @@ iface_type, and test whether it is supported for this specific instance.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2680748"></a><h3>
-<a name="gst-implements-interface-cast"></a>gst_implements_interface_cast ()</h3>
-<a class="indexterm" name="id2680762"></a><pre class="programlisting">gpointer            gst_implements_interface_cast       (gpointer from,
+<a name="gst-implements-interface-cast"></a><h3>gst_implements_interface_cast ()</h3>
+<pre class="programlisting">gpointer            gst_implements_interface_cast       (gpointer from,
                                                          GType type);</pre>
 <p>
 cast a given object to an interface type, and check whether this
@@ -148,17 +139,17 @@ interface is supported for this specific instance.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>from</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
 <td> the object (any sort) from which to cast to the interface
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> the interface type to cast to
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a gpointer to the interface type
 </td>
 </tr>
@@ -167,9 +158,8 @@ interface is supported for this specific instance.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2680847"></a><h3>
-<a name="gst-implements-interface-check"></a>gst_implements_interface_check ()</h3>
-<a class="indexterm" name="id2680861"></a><pre class="programlisting">gboolean            gst_implements_interface_check      (gpointer from,
+<a name="gst-implements-interface-check"></a><h3>gst_implements_interface_check ()</h3>
+<pre class="programlisting">gboolean            gst_implements_interface_check      (gpointer from,
                                                          GType type);</pre>
 <p>
 check a given object for an interface implementation, and check
@@ -181,17 +171,17 @@ whether this interface is supported for this specific instance.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>from</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>from</code></em> :</span></p></td>
 <td> the object (any sort) from which to check from for the interface
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> the interface type to check for
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> whether or not the object implements the given interface
 </td>
 </tr>
@@ -200,9 +190,12 @@ whether this interface is supported for this specific instance.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2680948"></a><h2>See Also</h2>
-<a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
+<a name="GstImplementsInterface.see-also"></a><h2>See Also</h2>
+<a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

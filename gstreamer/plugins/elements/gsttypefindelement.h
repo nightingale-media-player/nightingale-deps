@@ -25,7 +25,6 @@
 
 #include <gst/gstinfo.h>
 #include <gst/gstelement.h>
-#include "gstbufferstore.h"
 
 G_BEGIN_DECLS
 
@@ -60,6 +59,7 @@ struct _GstTypeFindElement {
   GstBuffer *		store;
 
   GList *               cached_events;
+  GstCaps *             force_caps;
 };
 
 struct _GstTypeFindElementClass {

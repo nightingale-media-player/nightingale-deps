@@ -48,3 +48,8 @@ Finds the media type of a stream
 
 </para>
 
+<!-- ##### ARG GstTypeFindElement:force-caps ##### -->
+<para>
+
+</para>
+

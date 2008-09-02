@@ -17,7 +17,6 @@ GST_IS_FAKE_SRC_CLASS
 gst_fake_src_get_type
 </SECTION>
 
-
 <SECTION>
 <FILE>element-fakesink</FILE>
 <TITLE>fakesink</TITLE>
@@ -80,7 +79,6 @@ GST_IS_FILE_SRC_CLASS
 gst_file_src_get_type
 </SECTION>
 
-
 <SECTION>
 <FILE>element-filesink</FILE>
 <TITLE>filesink</TITLE>
@@ -141,6 +139,21 @@ GST_TYPE_QUEUE
 <SUBSECTION Private>
 gst_queue_get_type
 GST_QUEUE_CLEAR_LEVEL
+</SECTION>
+
+<SECTION>
+<FILE>element-multiqueue</FILE>
+<TITLE>multiqueue</TITLE>
+GstMultiQueue
+<SUBSECTION Standard>
+GstMultiQueueClass
+GST_MULTI_QUEUE
+GST_IS_MULTI_QUEUE
+GST_MULTI_QUEUE_CLASS
+GST_IS_MULTI_QUEUE_CLASS
+GST_TYPE_MULTI_QUEUE
+<SUBSECTION Private>
+gst_multi_queue_get_type
 </SECTION>
 
 <SECTION>

@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstFormat</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="gstreamer-GstFilter.html" title="GstFilter">
 <link rel="next" href="GstGhostPad.html" title="GstGhostPad">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,47 +26,42 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstGhostPad.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2674341" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2675729" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-GstFormat.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-GstFormat.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-GstFormat"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2674341"></a><span class="refentrytitle">GstFormat</span>
-</h2>
-<p>GstFormat &#8212; Dynamically register new data formats</p>
+<h2><span class="refentrytitle"><a name="gstreamer-GstFormat.top_of_page"></a>GstFormat</span></h2>
+<p>GstFormat — Dynamically register new data formats</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-GstFormat.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-enum                <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>;
-#define             <a href="gstreamer-GstFormat.html#GST-FORMAT-PERCENT-MAX:CAPS">GST_FORMAT_PERCENT_MAX</a>
-#define             <a href="gstreamer-GstFormat.html#GST-FORMAT-PERCENT-SCALE:CAPS">GST_FORMAT_PERCENT_SCALE</a>
-                    <a href="gstreamer-GstFormat.html#GstFormatDefinition">GstFormatDefinition</a>;
-const gchar*        <a href="gstreamer-GstFormat.html#gst-format-get-name">gst_format_get_name</a>                 (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
-GQuark              <a href="gstreamer-GstFormat.html#gst-format-to-quark">gst_format_to_quark</a>                 (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
-<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>           <a href="gstreamer-GstFormat.html#gst-format-register">gst_format_register</a>                 (const gchar *nick,
+enum                <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a>;
+#define             <a class="link" href="gstreamer-GstFormat.html#GST-FORMAT-PERCENT-MAX:CAPS" title="GST_FORMAT_PERCENT_MAX">GST_FORMAT_PERCENT_MAX</a>
+#define             <a class="link" href="gstreamer-GstFormat.html#GST-FORMAT-PERCENT-SCALE:CAPS" title="GST_FORMAT_PERCENT_SCALE">GST_FORMAT_PERCENT_SCALE</a>
+                    <a class="link" href="gstreamer-GstFormat.html#GstFormatDefinition" title="GstFormatDefinition">GstFormatDefinition</a>;
+const gchar*        <a class="link" href="gstreamer-GstFormat.html#gst-format-get-name" title="gst_format_get_name ()">gst_format_get_name</a>                 (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
+GQuark              <a class="link" href="gstreamer-GstFormat.html#gst-format-to-quark" title="gst_format_to_quark ()">gst_format_to_quark</a>                 (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
+<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a>           <a class="link" href="gstreamer-GstFormat.html#gst-format-register" title="gst_format_register ()">gst_format_register</a>                 (const gchar *nick,
                                                          const gchar *description);
-<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>           <a href="gstreamer-GstFormat.html#gst-format-get-by-nick">gst_format_get_by_nick</a>              (const gchar *nick);
-gboolean            <a href="gstreamer-GstFormat.html#gst-formats-contains">gst_formats_contains</a>                (const <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *formats,
-                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
-const <a href="gstreamer-GstFormat.html#GstFormatDefinition">GstFormatDefinition</a>* <a href="gstreamer-GstFormat.html#gst-format-get-details">gst_format_get_details</a>       (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);
-<a href="gstreamer-GstIterator.html#GstIterator">GstIterator</a>*        <a href="gstreamer-GstFormat.html#gst-format-iterate-definitions">gst_format_iterate_definitions</a>      (void);
-
-
+<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a>           <a class="link" href="gstreamer-GstFormat.html#gst-format-get-by-nick" title="gst_format_get_by_nick ()">gst_format_get_by_nick</a>              (const gchar *nick);
+gboolean            <a class="link" href="gstreamer-GstFormat.html#gst-formats-contains" title="gst_formats_contains ()">gst_formats_contains</a>                (const <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *formats,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
+const <a class="link" href="gstreamer-GstFormat.html#GstFormatDefinition" title="GstFormatDefinition">GstFormatDefinition</a>* <a class="link" href="gstreamer-GstFormat.html#gst-format-get-details" title="gst_format_get_details ()">gst_format_get_details</a>       (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstFormat.html#gst-format-iterate-definitions" title="gst_format_iterate_definitions ()">gst_format_iterate_definitions</a>      (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2675729"></a><h2>Description</h2>
+<a name="gstreamer-GstFormat.description"></a><h2>Description</h2>
 <p>
 GstFormats functions are used to register a new format to the gstreamer
 core.  Formats can be used to perform seeking or conversions/query
@@ -76,11 +71,10 @@ operations.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2675749"></a><h2>Details</h2>
+<a name="gstreamer-GstFormat.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2675760"></a><h3>
-<a name="GstFormat"></a>enum GstFormat</h3>
-<a class="indexterm" name="id2675772"></a><pre class="programlisting">typedef enum {
+<a name="GstFormat"></a><h3>enum GstFormat</h3>
+<pre class="programlisting">typedef enum {
   GST_FORMAT_UNDEFINED 	=  0, /* must be first in list */
   GST_FORMAT_DEFAULT   	=  1,
   GST_FORMAT_BYTES   	=  2,
@@ -98,33 +92,33 @@ Standard predefined formats</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-UNDEFINED:CAPS"></a><code class="literal">GST_FORMAT_UNDEFINED</code></span></td>
+<td><p><a name="GST-FORMAT-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_UNDEFINED</code></span></p></td>
 <td> undefined format
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-DEFAULT:CAPS"></a><code class="literal">GST_FORMAT_DEFAULT</code></span></td>
+<td><p><a name="GST-FORMAT-DEFAULT:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_DEFAULT</code></span></p></td>
 <td> the default format of the pad/element. This can be
    samples for raw audio, frames/fields for raw video.
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-BYTES:CAPS"></a><code class="literal">GST_FORMAT_BYTES</code></span></td>
+<td><p><a name="GST-FORMAT-BYTES:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_BYTES</code></span></p></td>
 <td> bytes
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-TIME:CAPS"></a><code class="literal">GST_FORMAT_TIME</code></span></td>
+<td><p><a name="GST-FORMAT-TIME:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_TIME</code></span></p></td>
 <td> time in nanoseconds
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-BUFFERS:CAPS"></a><code class="literal">GST_FORMAT_BUFFERS</code></span></td>
+<td><p><a name="GST-FORMAT-BUFFERS:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_BUFFERS</code></span></p></td>
 <td> buffers
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-FORMAT-PERCENT:CAPS"></a><code class="literal">GST_FORMAT_PERCENT</code></span></td>
+<td><p><a name="GST-FORMAT-PERCENT:CAPS"></a><span class="term"><code class="literal">GST_FORMAT_PERCENT</code></span></p></td>
 <td> percentage of stream
 </td>
 </tr>
@@ -133,9 +127,8 @@ Standard predefined formats</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675936"></a><h3>
-<a name="GST-FORMAT-PERCENT-MAX:CAPS"></a>GST_FORMAT_PERCENT_MAX</h3>
-<a class="indexterm" name="id2675949"></a><pre class="programlisting">#define	GST_FORMAT_PERCENT_MAX		G_GINT64_CONSTANT (1000000)
+<a name="GST-FORMAT-PERCENT-MAX:CAPS"></a><h3>GST_FORMAT_PERCENT_MAX</h3>
+<pre class="programlisting">#define	GST_FORMAT_PERCENT_MAX		G_GINT64_CONSTANT (1000000)
 </pre>
 <p>
 The PERCENT format is between 0 and this value</p>
@@ -145,9 +138,8 @@ The PERCENT format is between 0 and this value</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675970"></a><h3>
-<a name="GST-FORMAT-PERCENT-SCALE:CAPS"></a>GST_FORMAT_PERCENT_SCALE</h3>
-<a class="indexterm" name="id2675983"></a><pre class="programlisting">#define	GST_FORMAT_PERCENT_SCALE	G_GINT64_CONSTANT (10000)
+<a name="GST-FORMAT-PERCENT-SCALE:CAPS"></a><h3>GST_FORMAT_PERCENT_SCALE</h3>
+<pre class="programlisting">#define	GST_FORMAT_PERCENT_SCALE	G_GINT64_CONSTANT (10000)
 </pre>
 <p>
 The value used to scale down the reported PERCENT format value to
@@ -158,9 +150,8 @@ its real value.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676004"></a><h3>
-<a name="GstFormatDefinition"></a>GstFormatDefinition</h3>
-<a class="indexterm" name="id2676017"></a><pre class="programlisting">typedef struct {
+<a name="GstFormatDefinition"></a><h3>GstFormatDefinition</h3>
+<pre class="programlisting">typedef struct {
   GstFormat  value;
   gchar     *nick;
   gchar     *description;
@@ -176,22 +167,22 @@ A format definition</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>&#160;<em class="structfield"><code>value</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> <em class="structfield"><code>value</code></em>;</span></p></td>
 <td> The unique id of this format
 </td>
 </tr>
 <tr>
-<td><span class="term">gchar&#160;*<em class="structfield"><code>nick</code></em>;</span></td>
+<td><p><span class="term">gchar *<em class="structfield"><code>nick</code></em>;</span></p></td>
 <td> A short nick of the format
 </td>
 </tr>
 <tr>
-<td><span class="term">gchar&#160;*<em class="structfield"><code>description</code></em>;</span></td>
+<td><p><span class="term">gchar *<em class="structfield"><code>description</code></em>;</span></p></td>
 <td> A longer description of the format
 </td>
 </tr>
 <tr>
-<td><span class="term">GQuark&#160;<em class="structfield"><code>quark</code></em>;</span></td>
+<td><p><span class="term">GQuark <em class="structfield"><code>quark</code></em>;</span></p></td>
 <td> A quark for the nick
 </td>
 </tr>
@@ -200,9 +191,8 @@ A format definition</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676124"></a><h3>
-<a name="gst-format-get-name"></a>gst_format_get_name ()</h3>
-<a class="indexterm" name="id2676137"></a><pre class="programlisting">const gchar*        gst_format_get_name                 (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<a name="gst-format-get-name"></a><h3>gst_format_get_name ()</h3>
+<pre class="programlisting">const gchar*        gst_format_get_name                 (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 Get a printable name for the given format. Do not modify or free.</p>
 <p>
@@ -212,12 +202,12 @@ Get a printable name for the given format. Do not modify or free.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a reference to the static name of the format or NULL if
 the format is unknown.
 </td>
@@ -227,9 +217,8 @@ the format is unknown.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676208"></a><h3>
-<a name="gst-format-to-quark"></a>gst_format_to_quark ()</h3>
-<a class="indexterm" name="id2676221"></a><pre class="programlisting">GQuark              gst_format_to_quark                 (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<a name="gst-format-to-quark"></a><h3>gst_format_to_quark ()</h3>
+<pre class="programlisting">GQuark              gst_format_to_quark                 (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 Get the unique quark for the given format.</p>
 <p>
@@ -239,12 +228,12 @@ Get the unique quark for the given format.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the quark associated with the format or 0 if the format
 is unknown.
 </td>
@@ -254,9 +243,8 @@ is unknown.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676290"></a><h3>
-<a name="gst-format-register"></a>gst_format_register ()</h3>
-<a class="indexterm" name="id2676304"></a><pre class="programlisting"><a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>           gst_format_register                 (const gchar *nick,
+<a name="gst-format-register"></a><h3>gst_format_register ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a>           gst_format_register                 (const gchar *nick,
                                                          const gchar *description);</pre>
 <p>
 Create a new GstFormat based on the nick or return an
@@ -268,17 +256,17 @@ already registered format with that nick.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>nick</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nick</code></em> :</span></p></td>
 <td> The nick of the new format
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>description</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>description</code></em> :</span></p></td>
 <td> The description of the new format
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A new GstFormat or an already registered format
 with the same nick.
 
@@ -290,9 +278,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676389"></a><h3>
-<a name="gst-format-get-by-nick"></a>gst_format_get_by_nick ()</h3>
-<a class="indexterm" name="id2676402"></a><pre class="programlisting"><a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>           gst_format_get_by_nick              (const gchar *nick);</pre>
+<a name="gst-format-get-by-nick"></a><h3>gst_format_get_by_nick ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a>           gst_format_get_by_nick              (const gchar *nick);</pre>
 <p>
 Return the format registered with the given nick.</p>
 <p>
@@ -302,12 +289,12 @@ Return the format registered with the given nick.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>nick</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nick</code></em> :</span></p></td>
 <td> The nick of the format
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The format with <em class="parameter"><code>nick</code></em> or GST_FORMAT_UNDEFINED
 if the format was not registered.
 </td>
@@ -317,10 +304,9 @@ if the format was not registered.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676470"></a><h3>
-<a name="gst-formats-contains"></a>gst_formats_contains ()</h3>
-<a class="indexterm" name="id2676484"></a><pre class="programlisting">gboolean            gst_formats_contains                (const <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *formats,
-                                                         <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<a name="gst-formats-contains"></a><h3>gst_formats_contains ()</h3>
+<pre class="programlisting">gboolean            gst_formats_contains                (const <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *formats,
+                                                         <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 See if the given format is inside the format array.</p>
 <p>
@@ -330,17 +316,17 @@ See if the given format is inside the format array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>formats</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>formats</code></em> :</span></p></td>
 <td> The format array to search
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
 <td> the format to find
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the format is found inside the array
 </td>
 </tr>
@@ -349,9 +335,8 @@ See if the given format is inside the format array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676568"></a><h3>
-<a name="gst-format-get-details"></a>gst_format_get_details ()</h3>
-<a class="indexterm" name="id2676581"></a><pre class="programlisting">const <a href="gstreamer-GstFormat.html#GstFormatDefinition">GstFormatDefinition</a>* gst_format_get_details       (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format);</pre>
+<a name="gst-format-get-details"></a><h3>gst_format_get_details ()</h3>
+<pre class="programlisting">const <a class="link" href="gstreamer-GstFormat.html#GstFormatDefinition" title="GstFormatDefinition">GstFormatDefinition</a>* gst_format_get_details       (<a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 Get details about the given format.</p>
 <p>
@@ -361,13 +346,13 @@ Get details about the given format.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
 <td> The format to get details of
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> The <a href="gstreamer-GstFormat.html#GstFormatDefinition"><span class="type">GstFormatDefinition</span></a> for <em class="parameter"><code>format</code></em> or NULL on failure.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gstreamer-GstFormat.html#GstFormatDefinition" title="GstFormatDefinition"><span class="type">GstFormatDefinition</span></a> for <em class="parameter"><code>format</code></em> or NULL on failure.
 
 MT safe.
 </td>
@@ -377,9 +362,8 @@ MT safe.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2676659"></a><h3>
-<a name="gst-format-iterate-definitions"></a>gst_format_iterate_definitions ()</h3>
-<a class="indexterm" name="id2676673"></a><pre class="programlisting"><a href="gstreamer-GstIterator.html#GstIterator">GstIterator</a>*        gst_format_iterate_definitions      (void);</pre>
+<a name="gst-format-iterate-definitions"></a><h3>gst_format_iterate_definitions ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_format_iterate_definitions      (void);</pre>
 <p>
 Iterate all the registered formats. The format definition is read
 only.</p>
@@ -389,17 +373,20 @@ only.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> A GstIterator of <a href="gstreamer-GstFormat.html#GstFormatDefinition"><span class="type">GstFormatDefinition</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> A GstIterator of <a class="link" href="gstreamer-GstFormat.html#GstFormatDefinition" title="GstFormatDefinition"><span class="type">GstFormatDefinition</span></a>.
 </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2676723"></a><h2>See Also</h2>
-<a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
+<a name="gstreamer-GstFormat.see-also"></a><h2>See Also</h2>
+<a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a class="link" href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -83,14 +83,26 @@
  * Last reviewed on 2007-05-17 (0.10.13)
  */
 
-static GstSegment *
+/**
+ * gst_segment_copy:
+ * @segment: a #GstSegment
+ *
+ * Create a copy of given @segment.
+ *
+ * Returns: a new #GstSegment, free with gst_segment_free().
+ *
+ * Since: 0.10.20
+ */
+GstSegment *
 gst_segment_copy (GstSegment * segment)
 {
   GstSegment *result = NULL;
 
   if (segment) {
-    result = gst_segment_new ();
-    memcpy (result, segment, sizeof (GstSegment));
+    /* we do not use g_slice_dup or g_slice_copy here because those were
+     * added in GLib 2.14 and we require only >= 2.12 */
+    result = g_slice_new (GstSegment);
+    *result = *segment;
   }
   return result;
 }
@@ -121,7 +133,7 @@ gst_segment_new (void)
 {
   GstSegment *result;
 
-  result = g_new0 (GstSegment, 1);
+  result = g_slice_new0 (GstSegment);
   gst_segment_init (result, GST_FORMAT_UNDEFINED);
 
   return result;
@@ -136,7 +148,7 @@ gst_segment_new (void)
 void
 gst_segment_free (GstSegment * segment)
 {
-  g_free (segment);
+  g_slice_free (GstSegment, segment);
 }
 
 /**
@@ -362,6 +374,9 @@ gst_segment_set_seek (GstSegment * segment, gdouble rate,
   segment->applied_rate = 1.0;
   segment->flags = flags;
   segment->start = start;
+  segment->stop = stop;
+  segment->time = start;
+
   last_stop = segment->last_stop;
   if (update_start && rate > 0.0) {
     last_stop = start;
@@ -382,9 +397,6 @@ gst_segment_set_seek (GstSegment * segment, gdouble rate,
 
   /* update new position */
   segment->last_stop = last_stop;
-
-  segment->time = start;
-  segment->stop = stop;
 }
 
 /**
@@ -574,7 +586,9 @@ gst_segment_to_stream_time (GstSegment * segment, GstFormat format,
     /* correct for segment time */
     result += time;
   } else {
-    /* correct for segment time, clamp at 0 */
+    /* correct for segment time, clamp at 0. Streams with a negative
+     * applied_rate have timestamps between start and stop, as usual, but have
+     * the time member starting high and going backwards.  */
     if (time > result)
       result = time - result;
     else

@@ -63,28 +63,9 @@
 GST_DEBUG_CATEGORY_STATIC (ntp_debug);
 #define GST_CAT_DEFAULT (ntp_debug)
 
-/* the select call is also performed on the control sockets, that way
- * we can send special commands to unblock or restart the select call */
-#define CONTROL_RESTART        'R'      /* restart the select call */
-#define CONTROL_STOP           'S'      /* stop the select call */
-#define CONTROL_SOCKETS(self)   self->control_sock
-#define WRITE_SOCKET(self)      self->control_sock[1]
-#define READ_SOCKET(self)       self->control_sock[0]
-
 #ifdef G_OS_WIN32
 #define close(sock) closesocket(sock)
 #endif
-
-#define SEND_COMMAND(self, command)                     \
-G_STMT_START {                                  \
-  unsigned char c; c = command;                 \
-  write (WRITE_SOCKET(self), &c, 1);            \
-} G_STMT_END
-
-#define READ_COMMAND(self, command, res)                \
-G_STMT_START {                                  \
-  res = read(READ_SOCKET(self), &command, 1);    \
-} G_STMT_END
 
 #define DEFAULT_ADDRESS         "0.0.0.0"
 #define DEFAULT_PORT            5637
@@ -102,6 +83,15 @@ enum
   PROP_CLOCK,
   PROP_ACTIVE
       /* FILL ME */
+};
+
+#define GST_NET_TIME_PROVIDER_GET_PRIVATE(obj)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_NET_TIME_PROVIDER, GstNetTimeProviderPrivate))
+
+struct _GstNetTimeProviderPrivate
+{
+  GstPollFD sock;
+  GstPoll *fdset;
 };
 
 static gboolean gst_net_time_provider_start (GstNetTimeProvider * bself);
@@ -136,7 +126,7 @@ inet_aton (const char *c, struct in_addr *paddr)
 static void
 gst_net_time_provider_base_init (gpointer g_class)
 {
-  g_assert (sizeof (GstClockTime) == 8);
+  /* Do nothing here */
 }
 
 static void
@@ -146,6 +136,10 @@ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
 
   gobject_class = G_OBJECT_CLASS (klass);
 
+  g_assert (sizeof (GstClockTime) == 8);
+
+  g_type_class_add_private (klass, sizeof (GstNetTimeProviderPrivate));
+
   gobject_class->finalize = gst_net_time_provider_finalize;
   gobject_class->set_property = gst_net_time_provider_set_property;
   gobject_class->get_property = gst_net_time_provider_get_property;
@@ -153,19 +147,19 @@ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
   g_object_class_install_property (gobject_class, PROP_PORT,
       g_param_spec_int ("port", "port",
           "The port to receive the packets from, 0=allocate", 0, G_MAXUINT16,
-          DEFAULT_PORT, G_PARAM_READWRITE));
+          DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ADDRESS,
       g_param_spec_string ("address", "address",
           "The address to bind on, as a dotted quad (x.x.x.x)",
-          DEFAULT_ADDRESS, G_PARAM_READWRITE));
+          DEFAULT_ADDRESS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CLOCK,
       g_param_spec_object ("clock", "Clock",
           "The clock to export over the network", GST_TYPE_CLOCK,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ACTIVE,
       g_param_spec_boolean ("active", "Active",
           "TRUE if the clock will respond to queries over the network", TRUE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -183,15 +177,13 @@ gst_net_time_provider_init (GstNetTimeProvider * self,
     WSACleanup ();
   }
 #endif
+  self->priv = GST_NET_TIME_PROVIDER_GET_PRIVATE (self);
 
   self->port = DEFAULT_PORT;
-  self->sock = -1;
+  self->priv->sock.fd = -1;
   self->address = g_strdup (DEFAULT_ADDRESS);
   self->thread = NULL;
   self->active.active = TRUE;
-
-  READ_SOCKET (self) = -1;
-  WRITE_SOCKET (self) = -1;
 }
 
 static void
@@ -204,11 +196,9 @@ gst_net_time_provider_finalize (GObject * object)
     g_assert (self->thread == NULL);
   }
 
-  if (READ_SOCKET (self) != -1) {
-    close (READ_SOCKET (self));
-    close (WRITE_SOCKET (self));
-    READ_SOCKET (self) = -1;
-    WRITE_SOCKET (self) = -1;
+  if (self->priv->fdset) {
+    gst_poll_free (self->priv->fdset);
+    self->priv->fdset = NULL;
   }
 
   g_free (self->address);
@@ -231,67 +221,27 @@ gst_net_time_provider_thread (gpointer data)
   GstNetTimeProvider *self = data;
   struct sockaddr_in tmpaddr;
   socklen_t len;
-  fd_set read_fds;
-  guint max_sock;
   GstNetTimePacket *packet;
   gint ret;
 
   while (TRUE) {
-    FD_ZERO (&read_fds);
-    FD_SET (self->sock, &read_fds);
-    FD_SET (READ_SOCKET (self), &read_fds);
-    max_sock = MAX (self->sock, READ_SOCKET (self));
-
     GST_LOG_OBJECT (self, "doing select");
-#ifdef G_OS_WIN32
-    if (((max_sock + 1) != READ_SOCKET (self)) ||
-        ((max_sock + 1) != WRITE_SOCKET (self))) {
-      ret = select (max_sock + 1, &read_fds, NULL, NULL, NULL);
-    } else {
-      ret = 1;
-    }
-#else
-    ret = select (max_sock + 1, &read_fds, NULL, NULL, NULL);
-#endif
+    ret = gst_poll_wait (self->priv->fdset, GST_CLOCK_TIME_NONE);
     GST_LOG_OBJECT (self, "select returned %d", ret);
 
     if (ret <= 0) {
-      if (errno != EAGAIN && errno != EINTR)
+      if (errno == EBUSY) {
+        GST_LOG_OBJECT (self, "stop");
+        goto stopped;
+      } else if (errno != EAGAIN && errno != EINTR)
         goto select_error;
       else
         continue;
-    } else if (FD_ISSET (READ_SOCKET (self), &read_fds)) {
-      /* got control message */
-      while (TRUE) {
-        gchar command;
-        int res;
-
-        READ_COMMAND (self, command, res);
-        if (res <= 0) {
-          GST_LOG_OBJECT (self, "no more commands");
-          break;
-        }
-
-        switch (command) {
-          case CONTROL_STOP:
-            /* break out of the select loop */
-            GST_LOG_OBJECT (self, "stop");
-            goto stopped;
-          default:
-            GST_WARNING_OBJECT (self, "unkown");
-            g_warning ("nettimeprovider: unknown control message received");
-            continue;
-        }
-
-        g_assert_not_reached ();
-      }
-
-      continue;
     } else {
       /* got data in */
       len = sizeof (struct sockaddr);
 
-      packet = gst_net_time_packet_receive (self->sock,
+      packet = gst_net_time_packet_receive (self->priv->sock.fd,
           (struct sockaddr *) &tmpaddr, &len);
 
       if (!packet)
@@ -302,7 +252,7 @@ gst_net_time_provider_thread (gpointer data)
         packet->remote_time = gst_clock_get_time (self->clock);
 
         /* ignore errors */
-        gst_net_time_packet_send (packet, self->sock,
+        gst_net_time_packet_send (packet, self->priv->sock.fd,
             (struct sockaddr *) &tmpaddr, len);
       }
 
@@ -364,7 +314,7 @@ gst_net_time_provider_set_property (GObject * object, guint prop_id,
           (GstObject *) g_value_get_object (value));
       break;
     case PROP_ACTIVE:
-      gst_atomic_int_set (&self->active.active, g_value_get_boolean (value));
+      g_atomic_int_set (&self->active.active, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -410,10 +360,12 @@ gst_net_time_provider_start (GstNetTimeProvider * self)
   if ((ret = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
     goto no_socket;
 
-  self->sock = ret;
+  self->priv->sock.fd = ret;
 
   ru = 1;
-  ret = setsockopt (self->sock, SOL_SOCKET, SO_REUSEADDR, &ru, sizeof (ru));
+  ret =
+      setsockopt (self->priv->sock.fd, SOL_SOCKET, SO_REUSEADDR, &ru,
+      sizeof (ru));
   if (ret < 0)
     goto setsockopt_error;
 
@@ -425,12 +377,14 @@ gst_net_time_provider_start (GstNetTimeProvider * self)
     inet_aton (self->address, &my_addr.sin_addr);
 
   GST_DEBUG_OBJECT (self, "binding on port %d", self->port);
-  ret = bind (self->sock, (struct sockaddr *) &my_addr, sizeof (my_addr));
+  ret =
+      bind (self->priv->sock.fd, (struct sockaddr *) &my_addr,
+      sizeof (my_addr));
   if (ret < 0)
     goto bind_error;
 
   len = sizeof (my_addr);
-  ret = getsockname (self->sock, (struct sockaddr *) &my_addr, &len);
+  ret = getsockname (self->priv->sock.fd, (struct sockaddr *) &my_addr, &len);
   if (ret < 0)
     goto getsockname_error;
 
@@ -442,6 +396,9 @@ gst_net_time_provider_start (GstNetTimeProvider * self)
     GST_DEBUG_OBJECT (self, "notifying %d", port);
     g_object_notify (G_OBJECT (self), "port");
   }
+
+  gst_poll_add_fd (self->priv->fdset, &self->priv->sock);
+  gst_poll_fd_ctl_read (self->priv->fdset, &self->priv->sock, TRUE);
 
   self->thread = g_thread_create (gst_net_time_provider_thread, self, TRUE,
       &error);
@@ -459,32 +416,33 @@ no_socket:
   }
 setsockopt_error:
   {
-    close (self->sock);
-    self->sock = -1;
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
     GST_ERROR_OBJECT (self, "setsockopt failed %d: %s (%d)", ret,
         g_strerror (errno), errno);
     return FALSE;
   }
 bind_error:
   {
-    close (self->sock);
-    self->sock = -1;
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
     GST_ERROR_OBJECT (self, "bind failed %d: %s (%d)", ret,
         g_strerror (errno), errno);
     return FALSE;
   }
 getsockname_error:
   {
-    close (self->sock);
-    self->sock = -1;
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
     GST_ERROR_OBJECT (self, "getsockname failed %d: %s (%d)", ret,
         g_strerror (errno), errno);
     return FALSE;
   }
 no_thread:
   {
-    close (self->sock);
-    self->sock = -1;
+    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
     GST_ERROR_OBJECT (self, "could not create thread: %s", error->message);
     g_error_free (error);
     return FALSE;
@@ -494,13 +452,14 @@ no_thread:
 static void
 gst_net_time_provider_stop (GstNetTimeProvider * self)
 {
-  SEND_COMMAND (self, CONTROL_STOP);
+  gst_poll_set_flushing (self->priv->fdset, TRUE);
   g_thread_join (self->thread);
   self->thread = NULL;
 
-  if (self->sock != -1) {
-    close (self->sock);
-    self->sock = -1;
+  if (self->priv->sock.fd != -1) {
+    gst_poll_remove_fd (self->priv->fdset, &self->priv->sock);
+    close (self->priv->sock.fd);
+    self->priv->sock.fd = -1;
   }
 }
 
@@ -519,7 +478,6 @@ GstNetTimeProvider *
 gst_net_time_provider_new (GstClock * clock, const gchar * address, gint port)
 {
   GstNetTimeProvider *ret;
-  gint iret;
 
   g_return_val_if_fail (clock && GST_IS_CLOCK (clock), NULL);
   g_return_val_if_fail (port >= 0 && port <= G_MAXUINT16, NULL);
@@ -527,18 +485,8 @@ gst_net_time_provider_new (GstClock * clock, const gchar * address, gint port)
   ret = g_object_new (GST_TYPE_NET_TIME_PROVIDER, "clock", clock, "address",
       address, "port", port, NULL);
 
-#ifdef G_OS_WIN32
-  GST_DEBUG_OBJECT (ret, "creating pipe");
-  if ((iret = _pipe (CONTROL_SOCKETS (ret), 4096, _O_BINARY)) < 0)
-    goto no_socket_pair;
-#else
-  GST_DEBUG_OBJECT (ret, "creating socket pair");
-  if ((iret = socketpair (PF_UNIX, SOCK_STREAM, 0, CONTROL_SOCKETS (ret))) < 0)
-    goto no_socket_pair;
-
-  fcntl (READ_SOCKET (ret), F_SETFL, O_NONBLOCK);
-  fcntl (WRITE_SOCKET (ret), F_SETFL, O_NONBLOCK);
-#endif
+  if ((ret->priv->fdset = gst_poll_new (TRUE)) == NULL)
+    goto no_fdset;
 
   if (!gst_net_time_provider_start (ret))
     goto failed_start;
@@ -546,9 +494,9 @@ gst_net_time_provider_new (GstClock * clock, const gchar * address, gint port)
   /* all systems go, cap'n */
   return ret;
 
-no_socket_pair:
+no_fdset:
   {
-    GST_ERROR_OBJECT (ret, "no socket pair %d: %s (%d)", iret,
+    GST_ERROR_OBJECT (ret, "could not create an fdset: %s (%d)",
         g_strerror (errno), errno);
     gst_object_unref (ret);
     return NULL;
@@ -559,5 +507,4 @@ failed_start:
     gst_object_unref (ret);
     return NULL;
   }
-
 }

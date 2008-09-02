@@ -110,6 +110,17 @@ GstBaseSink
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_base_sink_wait_clock ##### -->
+<para>
+
+</para>
+
+@basesink: 
+@time: 
+@jitter: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_base_sink_wait_eos ##### -->
 <para>
 

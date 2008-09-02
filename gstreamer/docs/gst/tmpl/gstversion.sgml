@@ -45,3 +45,13 @@ GstVersion
 
 
 
+<!-- ##### MACRO GST_CHECK_VERSION ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@micro: 
+
+

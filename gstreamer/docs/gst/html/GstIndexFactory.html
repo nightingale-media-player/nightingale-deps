@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>GstIndexFactory</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="GstIndex.html" title="GstIndex">
 <link rel="next" href="gstreamer-GstIterator.html" title="GstIterator">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,54 +26,48 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-GstIterator.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2692627" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2692822" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2692782" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstIndexFactory.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstIndexFactory.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstIndexFactory.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="GstIndexFactory"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2692627"></a><span class="refentrytitle">GstIndexFactory</span>
-</h2>
-<p>GstIndexFactory &#8212; Create GstIndexes from a factory</p>
+<h2><span class="refentrytitle"><a name="GstIndexFactory.top_of_page"></a>GstIndexFactory</span></h2>
+<p>GstIndexFactory — Create GstIndexes from a factory</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="GstIndexFactory.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-                    <a href="GstIndexFactory.html#GstIndexFactory-struct">GstIndexFactory</a>;
-<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    <a href="GstIndexFactory.html#gst-index-factory-new">gst_index_factory_new</a>               (const gchar *name,
+                    <a class="link" href="GstIndexFactory.html#GstIndexFactory-struct" title="GstIndexFactory">GstIndexFactory</a>;
+<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    <a class="link" href="GstIndexFactory.html#gst-index-factory-new" title="gst_index_factory_new ()">gst_index_factory_new</a>               (const gchar *name,
                                                          const gchar *longdesc,
                                                          GType type);
-void                <a href="GstIndexFactory.html#gst-index-factory-destroy">gst_index_factory_destroy</a>           (<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);
-<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    <a href="GstIndexFactory.html#gst-index-factory-find">gst_index_factory_find</a>              (const gchar *name);
-<a href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a href="GstIndexFactory.html#gst-index-factory-create">gst_index_factory_create</a>            (<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);
-<a href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a href="GstIndexFactory.html#gst-index-factory-make">gst_index_factory_make</a>              (const gchar *name);
-
-
+void                <a class="link" href="GstIndexFactory.html#gst-index-factory-destroy" title="gst_index_factory_destroy ()">gst_index_factory_destroy</a>           (<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);
+<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    <a class="link" href="GstIndexFactory.html#gst-index-factory-find" title="gst_index_factory_find ()">gst_index_factory_find</a>              (const gchar *name);
+<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a class="link" href="GstIndexFactory.html#gst-index-factory-create" title="gst_index_factory_create ()">gst_index_factory_create</a>            (<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);
+<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a class="link" href="GstIndexFactory.html#gst-index-factory-make" title="gst_index_factory_make ()">gst_index_factory_make</a>              (const gchar *name);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2692782"></a><h2>Object Hierarchy</h2>
+<a name="GstIndexFactory.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
-   +----<a href="GstObject.html" title="GstObject">GstObject</a>
-         +----<a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
+   +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
+         +----<a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
                +----GstIndexFactory
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2692822"></a><h2>Description</h2>
+<a name="GstIndexFactory.description"></a><h2>Description</h2>
 <p>
 GstIndexFactory is used to dynamically create GstIndex implementations.</p>
 <p>
@@ -81,11 +75,10 @@ GstIndexFactory is used to dynamically create GstIndex implementations.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2692841"></a><h2>Details</h2>
+<a name="GstIndexFactory.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2692851"></a><h3>
-<a name="GstIndexFactory-struct"></a>GstIndexFactory</h3>
-<a class="indexterm" name="id2692865"></a><pre class="programlisting">typedef struct _GstIndexFactory GstIndexFactory;</pre>
+<a name="GstIndexFactory-struct"></a><h3>GstIndexFactory</h3>
+<pre class="programlisting">typedef struct _GstIndexFactory GstIndexFactory;</pre>
 <p>
 The GstIndexFactory object</p>
 <p>
@@ -94,9 +87,8 @@ The GstIndexFactory object</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2692883"></a><h3>
-<a name="gst-index-factory-new"></a>gst_index_factory_new ()</h3>
-<a class="indexterm" name="id2692897"></a><pre class="programlisting"><a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    gst_index_factory_new               (const gchar *name,
+<a name="gst-index-factory-new"></a><h3>gst_index_factory_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    gst_index_factory_new               (const gchar *name,
                                                          const gchar *longdesc,
                                                          GType type);</pre>
 <p>
@@ -108,23 +100,23 @@ Create a new indexfactory with the given parameters</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> name of indexfactory to create
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>longdesc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>longdesc</code></em> :</span></p></td>
 <td> long description of indexfactory to create
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> the GType of the GstIndex element of this factory
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a new <a href="GstIndexFactory.html" title="GstIndexFactory"><span class="type">GstIndexFactory</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <a class="link" href="GstIndexFactory.html" title="GstIndexFactory"><span class="type">GstIndexFactory</span></a>.
 </td>
 </tr>
 </tbody>
@@ -132,9 +124,8 @@ Create a new indexfactory with the given parameters</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2693012"></a><h3>
-<a name="gst-index-factory-destroy"></a>gst_index_factory_destroy ()</h3>
-<a class="indexterm" name="id2693026"></a><pre class="programlisting">void                gst_index_factory_destroy           (<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);</pre>
+<a name="gst-index-factory-destroy"></a><h3>gst_index_factory_destroy ()</h3>
+<pre class="programlisting">void                gst_index_factory_destroy           (<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);</pre>
 <p>
 Removes the index from the global list.</p>
 <p>
@@ -143,7 +134,7 @@ Removes the index from the global list.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>factory</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
 <td> factory to destroy
 </td>
 </tr></tbody>
@@ -151,9 +142,8 @@ Removes the index from the global list.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2693076"></a><h3>
-<a name="gst-index-factory-find"></a>gst_index_factory_find ()</h3>
-<a class="indexterm" name="id2693090"></a><pre class="programlisting"><a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    gst_index_factory_find              (const gchar *name);</pre>
+<a name="gst-index-factory-find"></a><h3>gst_index_factory_find ()</h3>
+<pre class="programlisting"><a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>*    gst_index_factory_find              (const gchar *name);</pre>
 <p>
 Search for an indexfactory of the given name.</p>
 <p>
@@ -163,13 +153,13 @@ Search for an indexfactory of the given name.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> name of indexfactory to find
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="GstIndexFactory.html" title="GstIndexFactory"><span class="type">GstIndexFactory</span></a> if found, NULL otherwise
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="GstIndexFactory.html" title="GstIndexFactory"><span class="type">GstIndexFactory</span></a> if found, NULL otherwise
 </td>
 </tr>
 </tbody>
@@ -177,11 +167,10 @@ Search for an indexfactory of the given name.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2693160"></a><h3>
-<a name="gst-index-factory-create"></a>gst_index_factory_create ()</h3>
-<a class="indexterm" name="id2693173"></a><pre class="programlisting"><a href="GstIndex.html" title="GstIndex">GstIndex</a>*           gst_index_factory_create            (<a href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);</pre>
+<a name="gst-index-factory-create"></a><h3>gst_index_factory_create ()</h3>
+<pre class="programlisting"><a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>*           gst_index_factory_create            (<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a> *factory);</pre>
 <p>
-Create a new <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance from the
+Create a new <a class="link" href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance from the
 given indexfactory.</p>
 <p>
 
@@ -190,13 +179,13 @@ given indexfactory.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>factory</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
 <td> the factory used to create the instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> A new <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> A new <a class="link" href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance.
 </td>
 </tr>
 </tbody>
@@ -204,11 +193,10 @@ given indexfactory.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2693251"></a><h3>
-<a name="gst-index-factory-make"></a>gst_index_factory_make ()</h3>
-<a class="indexterm" name="id2693264"></a><pre class="programlisting"><a href="GstIndex.html" title="GstIndex">GstIndex</a>*           gst_index_factory_make              (const gchar *name);</pre>
+<a name="gst-index-factory-make"></a><h3>gst_index_factory_make ()</h3>
+<pre class="programlisting"><a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>*           gst_index_factory_make              (const gchar *name);</pre>
 <p>
-Create a new <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance from the
+Create a new <a class="link" href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance from the
 indexfactory with the given name.</p>
 <p>
 
@@ -217,13 +205,13 @@ indexfactory with the given name.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the name of the factory used to create the instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> A new <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> A new <a class="link" href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> instance.
 </td>
 </tr>
 </tbody>
@@ -231,9 +219,12 @@ indexfactory with the given name.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2693343"></a><h2>See Also</h2>
-<a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a>
+<a name="GstIndexFactory.see-also"></a><h2>See Also</h2>
+<a class="link" href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

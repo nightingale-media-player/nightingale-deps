@@ -129,6 +129,8 @@ static GType gst_subbuffer_get_type (void);
 static GType _gst_subbuffer_type = 0;
 static GType _gst_buffer_type = 0;
 
+static GstMiniObjectClass *parent_class = NULL;
+
 void
 _gst_buffer_initialize (void)
 {
@@ -167,6 +169,8 @@ gst_buffer_class_init (gpointer g_class, gpointer class_data)
 {
   GstBufferClass *buffer_class = GST_BUFFER_CLASS (g_class);
 
+  parent_class = g_type_class_peek_parent (g_class);
+
   buffer_class->mini_object_class.copy =
       (GstMiniObjectCopyFunction) _gst_buffer_copy;
   buffer_class->mini_object_class.finalize =
@@ -185,6 +189,8 @@ gst_buffer_finalize (GstBuffer * buffer)
   g_free (buffer->malloc_data);
 
   gst_caps_replace (&GST_BUFFER_CAPS (buffer), NULL);
+
+  GST_MINI_OBJECT_CLASS (parent_class)->finalize (GST_MINI_OBJECT (buffer));
 }
 
 /**
@@ -458,12 +464,6 @@ gst_buffer_make_metadata_writable (GstBuffer * buf)
   } else {
     ret = gst_buffer_create_sub (buf, 0, GST_BUFFER_SIZE (buf));
 
-    /* copy all the flags except IN_CAPS */
-    GST_BUFFER_FLAGS (ret) = GST_BUFFER_FLAGS (buf);
-    GST_BUFFER_FLAG_UNSET (ret, GST_BUFFER_FLAG_IN_CAPS);
-    /* data should always be set to READONLY */
-    GST_BUFFER_FLAG_SET (ret, GST_BUFFER_FLAG_READONLY);
-
     gst_buffer_unref (buf);
   }
 
@@ -592,6 +592,16 @@ gst_buffer_create_sub (GstBuffer * buffer, guint offset, guint size)
   /* set the right values in the child */
   GST_BUFFER_DATA (GST_BUFFER_CAST (subbuffer)) = buffer->data + offset;
   GST_BUFFER_SIZE (GST_BUFFER_CAST (subbuffer)) = size;
+
+  if ((offset == 0) && (size == GST_BUFFER_SIZE (buffer))) {
+    /* copy all the flags except IN_CAPS */
+    GST_BUFFER_FLAG_SET (subbuffer, GST_BUFFER_FLAGS (buffer));
+    GST_BUFFER_FLAG_UNSET (subbuffer, GST_BUFFER_FLAG_IN_CAPS);
+  } else {
+    /* copy only PREROLL & GAP flags */
+    GST_BUFFER_FLAG_SET (subbuffer, (GST_BUFFER_FLAGS (buffer) &
+            (GST_BUFFER_FLAG_PREROLL | GST_BUFFER_FLAG_GAP)));
+  }
 
   /* we can copy the timestamp and offset if the new buffer starts at
    * offset 0 */

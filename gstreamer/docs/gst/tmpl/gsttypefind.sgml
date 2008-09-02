@@ -68,6 +68,18 @@ GstTypeFind
 @caps: 
 
 
+<!-- ##### FUNCTION gst_type_find_suggest_simple ##### -->
+<para>
+
+</para>
+
+@find: 
+@probability: 
+@media_type: 
+@fieldname: 
+@Varargs: 
+
+
 <!-- ##### FUNCTION gst_type_find_get_length ##### -->
 <para>
 

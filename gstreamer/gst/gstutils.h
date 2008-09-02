@@ -27,6 +27,7 @@
 
 #include <glib.h>
 #include <gst/gstbin.h>
+#include <gst/gstparse.h>
 
 G_BEGIN_DECLS
 
@@ -88,6 +89,15 @@ GType gst_type_register_static_full (GType parent_type,
 /* Macros for defining classes.  Ideas taken from Bonobo, which took theirs
    from Nautilus and GOB. */
 
+/* FIXME: Use g_once_init_* unconditionally once we depend on glib 2.14 */
+#if GLIB_CHECK_VERSION (2, 14, 0)
+#define __gst_once_init_enter(val) (g_once_init_enter (val))
+#define __gst_once_init_leave(val,newval) (g_once_init_leave (val, newval))
+#else
+#define __gst_once_init_enter(val) (G_UNLIKELY (*(val) == 0))
+#define __gst_once_init_leave(val,newval) (*(val) = newval)
+#endif
+
 /**
  * GST_BOILERPLATE_FULL:
  * @type: the name of the type struct
@@ -128,10 +138,15 @@ GType type_as_function ## _get_type (void);				\
 GType									\
 type_as_function ## _get_type (void)					\
 {									\
-  static GType object_type = 0;						\
-  if (G_UNLIKELY (object_type == 0)) {					\
-    object_type = gst_type_register_static_full (parent_type_macro, #type,	\
-	sizeof (type ## Class),					\
+  /* The typedef for GType may be gulong or gsize, depending on the	\
+   * system and whether the compiler is c++ or not. The g_once_init_*	\
+   * functions always take a gsize * though ... */			\
+  static volatile gsize gonce_data;					\
+  if (__gst_once_init_enter (&gonce_data)) {				\
+    GType _type;							\
+    _type = gst_type_register_static_full (parent_type_macro,           \
+        g_intern_static_string (#type),					\
+	sizeof (type ## Class),						\
         type_as_function ## _base_init,					\
         NULL,		  /* base_finalize */				\
         type_as_function ## _class_init_trampoline,			\
@@ -142,9 +157,10 @@ type_as_function ## _get_type (void)					\
         (GInstanceInitFunc) type_as_function ## _init,                  \
         NULL,                                                           \
         (GTypeFlags) 0);				                \
-    additional_initializations (object_type);				\
+    additional_initializations (_type);				        \
+    __gst_once_init_leave (&gonce_data, (gsize) _type);			\
   }									\
-  return object_type;							\
+  return (GType) gonce_data;						\
 }
 
 #define __GST_DO_NOTHING(type)	/* NOP */
@@ -651,7 +667,10 @@ gboolean                gst_pad_query_peer_convert      (GstPad *pad, GstFormat 
 /* bin functions */
 void                    gst_bin_add_many                (GstBin *bin, GstElement *element_1, ...) G_GNUC_NULL_TERMINATED;
 void                    gst_bin_remove_many             (GstBin *bin, GstElement *element_1, ...) G_GNUC_NULL_TERMINATED;
+GstPad *                gst_bin_find_unlinked_pad       (GstBin *bin, GstPadDirection direction);
+#ifndef GST_DISABLE_DEPRECATED
 GstPad *                gst_bin_find_unconnected_pad    (GstBin *bin, GstPadDirection direction);
+#endif
 
 /* buffer functions */
 GstBuffer *		gst_buffer_merge		(GstBuffer * buf1, GstBuffer * buf2);
@@ -661,20 +680,42 @@ void			gst_buffer_stamp		(GstBuffer * dest, const GstBuffer * src);
 #endif /* GST_DISABLE_DEPRECATED */
 
 /* atomic functions */
+#ifndef GST_DISABLE_DEPRECATED
 void                    gst_atomic_int_set              (gint * atomic_int, gint value);
+#endif
 
 /* probes */
-gulong			gst_pad_add_data_probe		(GstPad * pad,
-							 GCallback handler,
-							 gpointer data);
+gulong			gst_pad_add_data_probe		(GstPad   * pad,
+							 GCallback  handler,
+							 gpointer   data);
+
+gulong			gst_pad_add_data_probe_full	(GstPad       * pad,
+							 GCallback      handler,
+							 gpointer       data,
+							 GDestroyNotify notify);
+
 void			gst_pad_remove_data_probe	(GstPad * pad, guint handler_id);
-gulong			gst_pad_add_event_probe		(GstPad * pad,
-							 GCallback handler,
-							 gpointer data);
+
+gulong			gst_pad_add_event_probe		(GstPad   * pad,
+							 GCallback  handler,
+							 gpointer   data);
+
+gulong			gst_pad_add_event_probe_full	(GstPad       * pad,
+							 GCallback      handler,
+							 gpointer       data,
+							 GDestroyNotify notify);
+
 void			gst_pad_remove_event_probe	(GstPad * pad, guint handler_id);
-gulong			gst_pad_add_buffer_probe	(GstPad * pad,
-							 GCallback handler,
-							 gpointer data);
+
+gulong			gst_pad_add_buffer_probe	(GstPad   * pad,
+							 GCallback  handler,
+							 gpointer   data);
+
+gulong			gst_pad_add_buffer_probe_full	(GstPad       * pad,
+							 GCallback      handler,
+							 gpointer       data,
+							 GDestroyNotify notify);
+
 void			gst_pad_remove_buffer_probe	(GstPad * pad, guint handler_id);
 
 /* tag emission utility functions */
@@ -685,9 +726,15 @@ void			gst_element_found_tags		(GstElement * element,
 							 GstTagList * list);
 
 /* parse utility functions */
-GstElement *            gst_parse_bin_from_description  (const gchar * bin_description,
-                                                         gboolean ghost_unconnected_pads,
-                                                         GError ** err);
+GstElement *            gst_parse_bin_from_description      (const gchar     * bin_description,
+                                                             gboolean          ghost_unlinked_pads,
+                                                             GError         ** err);
+
+GstElement *            gst_parse_bin_from_description_full (const gchar     * bin_description,
+                                                             gboolean          ghost_unlinked_pads,
+                                                             GstParseContext * context,
+                                                             GstParseFlags     flags,
+                                                             GError         ** err);
 
 GstClockTime gst_util_get_timestamp (void);
 

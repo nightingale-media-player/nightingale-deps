@@ -402,6 +402,18 @@ GstPad
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_pad_add_data_probe_full ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@notify: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_pad_add_buffer_probe ##### -->
 <para>
 
@@ -413,6 +425,18 @@ GstPad
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_pad_add_buffer_probe_full ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@notify: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_pad_add_event_probe ##### -->
 <para>
 
@@ -421,6 +445,18 @@ GstPad
 @pad: 
 @handler: 
 @data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_pad_add_event_probe_full ##### -->
+<para>
+
+</para>
+
+@pad: 
+@handler: 
+@data: 
+@notify: 
 @Returns: 
 
 
@@ -1198,6 +1234,14 @@ GstPad
 @pad: 
 @active: 
 @Returns: 
+
+
+<!-- ##### MACRO GST_PAD_CAPS ##### -->
+<para>
+
+</para>
+
+@pad: 
 
 
 <!-- ##### MACRO GST_PAD_GET_STREAM_LOCK ##### -->

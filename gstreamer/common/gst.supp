@@ -427,6 +427,199 @@
    fun:__libc_dlopen_mode
 }
 
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   fun:iconv_open
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   obj:/lib/i686/cmov/libc-2.7.so
+   fun:iconv_open
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
+{
+   <suppression for glibc 2.7 on debian>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/i686/cmov/libdl-2.7.so
+   fun:dlopen
+}
+
 # suppression for a glibc bug:
 # http://valgrind.org/docs/manual/faq.html#faq.exit_errors>
 {
@@ -437,6 +630,15 @@
    fun:__libc_freeres
    fun:*
    fun:_Exit
+}
+
+# same as above, just so it works for tpm on gutsy/x86-64
+{
+   <workaround glibc bug on gutsy x86-64>
+   Memcheck:Free
+   fun:free
+   fun:free_mem
+   fun:__libc_freeres
 }
 
 # valgrind doesn't allow me to specify a suppression for Addr1, Addr2, Addr4
@@ -1729,6 +1931,20 @@
    fun:g_get_tmp_dir
 }
 
+{
+   <GLib caching the host name>
+   Memcheck:Leak
+   fun:malloc
+   obj:*libc-*.so
+   fun:__nss_database_lookup
+   obj:*
+   obj:*
+   fun:getpwnam_r
+   obj:/usr/lib*/libglib-2.0.so.0.*
+   fun:g_get_host_name
+}
+
+
 ## Some Fontconfig errors.
 {
    <First time load of a font - feisty x86_64>
@@ -1779,3 +1995,211 @@
    fun:FcInitLoadConfigAndFonts
 }
 
+# Issues with ubuntu Hardy, same crack as for previous ubuntus
+{
+   <tls leak generic ubuntu hardy x86>
+   Memcheck:Leak
+   fun:calloc
+   obj:*
+   fun:_dl_allocate_tls
+   fun:pthread_create@@*
+   obj:/usr/lib/libgthread*
+   fun:g_thread_*
+}
+
+# I've made this version generic, so that it covers future modifications
+# of library names
+{
+   <tls leak generic>
+   Memcheck:Leak
+   fun:calloc
+   obj:*
+   fun:_dl_allocate_tls
+   fun:pthread_create@@*
+   fun:g_thread_*
+}
+
+# series of invalid read of size 4 in g_module_open for ubuntu
+# hardy x86/32bit
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+   fun:gst_plugin_load_*
+}
+
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+   fun:gst_plugin_load_*
+}
+
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+   fun:gst_plugin_load_*
+}
+
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+   fun:gst_plugin_load_*
+}
+
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+   fun:gst_plugin_load*
+}
+
+{
+   <invalid read of size 4 within <g_module_open>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   fun:_dl_sym
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlsym
+   fun:g_module_symbol
+   fun:g_module_open
+   fun:gst_plugin_load_*
+}
+
+{
+   <GLib caching>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   fun:__nss_passwd_lookup
+   fun:getpwnam_r
+}
+
+{
+   <GLib caching>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   fun:__nss_passwd_lookup
+   fun:getpwnam_r
+}
+
+{
+   <GLib caching>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/tls/i686/cmov/libnss_compat-2.7.so
+   fun:_nss_compat_getpwnam_r
+   fun:getpwnam_r
+}
+
+{
+   <GLib caching>
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/tls/i686/cmov/libnss_compat-2.7.so
+   fun:_nss_compat_getpwnam_r
+   fun:getpwnam_r
+}

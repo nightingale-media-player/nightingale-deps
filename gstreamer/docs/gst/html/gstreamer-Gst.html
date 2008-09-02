@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Gst</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Core Reference Manual">
 <link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="prev" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="next" href="GstBin.html" title="GstBin">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="gstreamer.html" title="GStreamer Overview">
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
@@ -26,51 +26,47 @@
 <th width="100%" align="center">GStreamer 0.10 Core Reference Manual</th>
 <td><a accesskey="n" href="GstBin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2511129" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2557122" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-Gst.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-Gst.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gstreamer-Gst"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2511129"></a><span class="refentrytitle">Gst</span>
-</h2>
-<p>Gst &#8212; Media library supporting arbitrary formats and filter
+<h2><span class="refentrytitle"><a name="gstreamer-Gst.top_of_page"></a>Gst</span></h2>
+<p>Gst — Media library supporting arbitrary formats and filter
                     graphs.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gstreamer-Gst.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/gst.h&gt;
 
-
-void                <a href="gstreamer-Gst.html#gst-init">gst_init</a>                            (int *argc,
+void                <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()">gst_init</a>                            (int *argc,
                                                          char **argv[]);
-gboolean            <a href="gstreamer-Gst.html#gst-init-check">gst_init_check</a>                      (int *argc,
+gboolean            <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_check ()">gst_init_check</a>                      (int *argc,
                                                          char **argv[],
                                                          GError **err);
-GOptionGroup*       <a href="gstreamer-Gst.html#gst-init-get-option-group">gst_init_get_option_group</a>           (void);
-void                <a href="gstreamer-Gst.html#gst-deinit">gst_deinit</a>                          (void);
-void                <a href="gstreamer-Gst.html#gst-version">gst_version</a>                         (guint *major,
+GOptionGroup*       <a class="link" href="gstreamer-Gst.html#gst-init-get-option-group" title="gst_init_get_option_group ()">gst_init_get_option_group</a>           (void);
+void                <a class="link" href="gstreamer-Gst.html#gst-deinit" title="gst_deinit ()">gst_deinit</a>                          (void);
+void                <a class="link" href="gstreamer-Gst.html#gst-version" title="gst_version ()">gst_version</a>                         (guint *major,
                                                          guint *minor,
                                                          guint *micro,
                                                          guint *nano);
-gchar*              <a href="gstreamer-Gst.html#gst-version-string">gst_version_string</a>                  (void);
-gboolean            <a href="gstreamer-Gst.html#gst-segtrap-is-enabled">gst_segtrap_is_enabled</a>              (void);
-void                <a href="gstreamer-Gst.html#gst-segtrap-set-enabled">gst_segtrap_set_enabled</a>             (gboolean enabled);
-gboolean            <a href="gstreamer-Gst.html#gst-registry-fork-is-enabled">gst_registry_fork_is_enabled</a>        (void);
-void                <a href="gstreamer-Gst.html#gst-registry-fork-set-enabled">gst_registry_fork_set_enabled</a>       (gboolean enabled);
-gboolean            <a href="gstreamer-Gst.html#gst-update-registry">gst_update_registry</a>                 (void);
-
+gchar*              <a class="link" href="gstreamer-Gst.html#gst-version-string" title="gst_version_string ()">gst_version_string</a>                  (void);
+gboolean            <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-enabled" title="gst_segtrap_is_enabled ()">gst_segtrap_is_enabled</a>              (void);
+void                <a class="link" href="gstreamer-Gst.html#gst-segtrap-set-enabled" title="gst_segtrap_set_enabled ()">gst_segtrap_set_enabled</a>             (gboolean enabled);
+gboolean            <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()">gst_registry_fork_is_enabled</a>        (void);
+void                <a class="link" href="gstreamer-Gst.html#gst-registry-fork-set-enabled" title="gst_registry_fork_set_enabled ()">gst_registry_fork_set_enabled</a>       (gboolean enabled);
+gboolean            <a class="link" href="gstreamer-Gst.html#gst-update-registry" title="gst_update_registry ()">gst_update_registry</a>                 (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2557122"></a><h2>Description</h2>
+<a name="gstreamer-Gst.description"></a><h2>Description</h2>
 <p>
 GStreamer is a framework for constructing graphs of various filters
 (termed elements here) that will handle streaming media.  Any discreet
@@ -81,20 +77,20 @@ all elements, allowing one to construct plugins outside of the GST
 library, even released binary-only if license require (please don't).
 </p>
 <p>
-GStreamer borrows heavily from both the <a href="http://www.cse.ogi.edu/sysl/" target="_top">OGI media pipeline</a> and
+GStreamer borrows heavily from both the <a class="ulink" href="http://www.cse.ogi.edu/sysl/" target="_top">OGI media pipeline</a> and
 Microsoft's DirectShow, hopefully taking the best of both and leaving the
 cruft behind. Its interface is slowly getting stable.
 </p>
 <p>
 The <span class="application">GStreamer</span> library should be initialized with
-<a href="gstreamer-Gst.html#gst-init"><code class="function">gst_init()</code></a> before it can be used. You should pass pointers to the main argc
+<a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a> before it can be used. You should pass pointers to the main argc
 and argv variables so that GStreamer can process its own command line
 options, as shown in the following example.
 </p>
 <p>
 </p>
 <div class="example">
-<a name="id2557182"></a><p class="title"><b>Example&#160;1.&#160;Initializing the gstreamer library</b></p>
+<a name="id2577272"></a><p class="title"><b>Example 1. Initializing the gstreamer library</b></p>
 <div class="example-contents"><pre class="programlisting">
 int
 main (int argc, char *argv[])
@@ -108,7 +104,7 @@ main (int argc, char *argv[])
 <p><br class="example-break">
 </p>
 <p>
-It's allowed to pass two NULL pointers to <a href="gstreamer-Gst.html#gst-init"><code class="function">gst_init()</code></a> in case you don't want
+It's allowed to pass two NULL pointers to <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a> in case you don't want
 to pass the command line args to GStreamer.
 </p>
 <p>
@@ -116,7 +112,7 @@ You can also use GOption to initialize your own parameters as shown in
 the next code fragment:
 </p>
 <div class="example">
-<a name="id2557221"></a><p class="title"><b>Example&#160;2.&#160;Initializing own parameters when initializing gstreamer</b></p>
+<a name="id2577308"></a><p class="title"><b>Example 2. Initializing own parameters when initializing gstreamer</b></p>
 <div class="example-contents"><pre class="programlisting">
 static gboolean stats = FALSE;
 ...
@@ -146,12 +142,12 @@ main (int argc, char *argv[])
 <p><br class="example-break">
 </p>
 <p>
-Use <a href="gstreamer-Gst.html#gst-version"><code class="function">gst_version()</code></a> to query the library version at runtime or use the
+Use <a class="link" href="gstreamer-Gst.html#gst-version" title="gst_version ()"><code class="function">gst_version()</code></a> to query the library version at runtime or use the
 GST_VERSION_* macros to find the version at compile time. Optionally
-<a href="gstreamer-Gst.html#gst-version-string"><code class="function">gst_version_string()</code></a> returns a printable string.
+<a class="link" href="gstreamer-Gst.html#gst-version-string" title="gst_version_string ()"><code class="function">gst_version_string()</code></a> returns a printable string.
 </p>
 <p>
-The <a href="gstreamer-Gst.html#gst-deinit"><code class="function">gst_deinit()</code></a> call is used to clean up all internal resources used
+The <a class="link" href="gstreamer-Gst.html#gst-deinit" title="gst_deinit ()"><code class="function">gst_deinit()</code></a> call is used to clean up all internal resources used
 by <span class="application">GStreamer</span>. It is mostly used in unit tests 
 to check for leaks.
 </p>
@@ -162,11 +158,10 @@ Last reviewed on 2006-08-11 (0.10.10)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2557306"></a><h2>Details</h2>
+<a name="gstreamer-Gst.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2557316"></a><h3>
-<a name="gst-init"></a>gst_init ()</h3>
-<a class="indexterm" name="id2557328"></a><pre class="programlisting">void                gst_init                            (int *argc,
+<a name="gst-init"></a><h3>gst_init ()</h3>
+<pre class="programlisting">void                gst_init                            (int *argc,
                                                          char **argv[]);</pre>
 <p>
 Initializes the GStreamer library, setting up internal path lists,
@@ -184,7 +179,7 @@ using <code class="function">g_thread_init()</code> before any other GLib functi
 <p>
 This function will terminate your program if it was unable to initialize
 GStreamer for some reason.  If you want your program to fall back,
-use <a href="gstreamer-Gst.html#gst-init-check"><code class="function">gst_init_check()</code></a> instead.
+use <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_check ()"><code class="function">gst_init_check()</code></a> instead.
 </p>
 </div>
 <p>
@@ -201,12 +196,12 @@ abort program execution.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>argc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argc</code></em> :</span></p></td>
 <td> pointer to application's argc
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>argv</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argv</code></em> :</span></p></td>
 <td> pointer to application's argv
 </td>
 </tr>
@@ -215,9 +210,8 @@ abort program execution.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557462"></a><h3>
-<a name="gst-init-check"></a>gst_init_check ()</h3>
-<a class="indexterm" name="id2557473"></a><pre class="programlisting">gboolean            gst_init_check                      (int *argc,
+<a name="gst-init-check"></a><h3>gst_init_check ()</h3>
+<pre class="programlisting">gboolean            gst_init_check                      (int *argc,
                                                          char **argv[],
                                                          GError **err);</pre>
 <p>
@@ -227,7 +221,7 @@ registering built-in elements, and loading standard plugins.
 <p>
 This function will return <code class="literal">FALSE</code> if GStreamer could not be initialized
 for some reason.  If you want your program to fail fatally,
-use <a href="gstreamer-Gst.html#gst-init"><code class="function">gst_init()</code></a> instead.
+use <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a> instead.
 </p>
 <p>
 This function should be called before calling any other GLib functions. If
@@ -240,22 +234,22 @@ using <code class="function">g_thread_init()</code> before any other GLib functi
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>argc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argc</code></em> :</span></p></td>
 <td> pointer to application's argc
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>argv</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>argv</code></em> :</span></p></td>
 <td> pointer to application's argv
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>err</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>err</code></em> :</span></p></td>
 <td> pointer to a <span class="type">GError</span> to which a message will be posted on error
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if GStreamer could be initialized.
 </td>
 </tr>
@@ -264,9 +258,8 @@ using <code class="function">g_thread_init()</code> before any other GLib functi
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557643"></a><h3>
-<a name="gst-init-get-option-group"></a>gst_init_get_option_group ()</h3>
-<a class="indexterm" name="id2557656"></a><pre class="programlisting">GOptionGroup*       gst_init_get_option_group           (void);</pre>
+<a name="gst-init-get-option-group"></a><h3>gst_init_get_option_group ()</h3>
+<pre class="programlisting">GOptionGroup*       gst_init_get_option_group           (void);</pre>
 <p>
 Returns a <span class="type">GOptionGroup</span> with GStreamer's argument specifications. The
 group is set up to use standard GOption callbacks, so when using this
@@ -287,7 +280,7 @@ threading system as one of the very first things in your program
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a pointer to GStreamer's option group.
 </td>
 </tr></tbody>
@@ -295,11 +288,10 @@ threading system as one of the very first things in your program
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557732"></a><h3>
-<a name="gst-deinit"></a>gst_deinit ()</h3>
-<a class="indexterm" name="id2557744"></a><pre class="programlisting">void                gst_deinit                          (void);</pre>
+<a name="gst-deinit"></a><h3>gst_deinit ()</h3>
+<pre class="programlisting">void                gst_deinit                          (void);</pre>
 <p>
-Clean up any resources created by GStreamer in <a href="gstreamer-Gst.html#gst-init"><code class="function">gst_init()</code></a>.
+Clean up any resources created by GStreamer in <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a>.
 </p>
 <p>
 It is normally not needed to call this function in a normal application
@@ -315,9 +307,8 @@ After this call GStreamer (including this method) should not be used anymore.</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557791"></a><h3>
-<a name="gst-version"></a>gst_version ()</h3>
-<a class="indexterm" name="id2557803"></a><pre class="programlisting">void                gst_version                         (guint *major,
+<a name="gst-version"></a><h3>gst_version ()</h3>
+<pre class="programlisting">void                gst_version                         (guint *major,
                                                          guint *minor,
                                                          guint *micro,
                                                          guint *nano);</pre>
@@ -330,22 +321,22 @@ Gets the version number of the GStreamer library.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>major</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>major</code></em> :</span></p></td>
 <td> pointer to a guint to store the major version number
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>minor</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>minor</code></em> :</span></p></td>
 <td> pointer to a guint to store the minor version number
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>micro</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>micro</code></em> :</span></p></td>
 <td> pointer to a guint to store the micro version number
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>nano</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nano</code></em> :</span></p></td>
 <td>  pointer to a guint to store the nano version number
 </td>
 </tr>
@@ -354,9 +345,8 @@ Gets the version number of the GStreamer library.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557921"></a><h3>
-<a name="gst-version-string"></a>gst_version_string ()</h3>
-<a class="indexterm" name="id2557934"></a><pre class="programlisting">gchar*              gst_version_string                  (void);</pre>
+<a name="gst-version-string"></a><h3>gst_version_string ()</h3>
+<pre class="programlisting">gchar*              gst_version_string                  (void);</pre>
 <p>
 This function returns a string that is useful for describing this version
 of GStreamer to the outside world: user agent strings, logging, ...</p>
@@ -366,7 +356,7 @@ of GStreamer to the outside world: user agent strings, logging, ...</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly allocated string describing this version of GStreamer.
 </td>
 </tr></tbody>
@@ -374,9 +364,8 @@ of GStreamer to the outside world: user agent strings, logging, ...</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2557977"></a><h3>
-<a name="gst-segtrap-is-enabled"></a>gst_segtrap_is_enabled ()</h3>
-<a class="indexterm" name="id2557992"></a><pre class="programlisting">gboolean            gst_segtrap_is_enabled              (void);</pre>
+<a name="gst-segtrap-is-enabled"></a><h3>gst_segtrap_is_enabled ()</h3>
+<pre class="programlisting">gboolean            gst_segtrap_is_enabled              (void);</pre>
 <p>
 Some functions in the GStreamer core might install a custom SIGSEGV handler
 to better catch and report errors to the application. Currently this feature
@@ -384,7 +373,7 @@ is enabled by default when loading plugins.
 </p>
 <p>
 Applications might want to disable this behaviour with the
-<a href="gstreamer-Gst.html#gst-segtrap-set-enabled"><code class="function">gst_segtrap_set_enabled()</code></a> function. This is typically done if the application
+<a class="link" href="gstreamer-Gst.html#gst-segtrap-set-enabled" title="gst_segtrap_set_enabled ()"><code class="function">gst_segtrap_set_enabled()</code></a> function. This is typically done if the application
 wants to install its own handler without GStreamer interfering.</p>
 <p>
 
@@ -392,7 +381,7 @@ wants to install its own handler without GStreamer interfering.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if GStreamer is allowed to install a custom SIGSEGV handler.
 
 </td>
@@ -403,19 +392,18 @@ wants to install its own handler without GStreamer interfering.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558070"></a><h3>
-<a name="gst-segtrap-set-enabled"></a>gst_segtrap_set_enabled ()</h3>
-<a class="indexterm" name="id2558085"></a><pre class="programlisting">void                gst_segtrap_set_enabled             (gboolean enabled);</pre>
+<a name="gst-segtrap-set-enabled"></a><h3>gst_segtrap_set_enabled ()</h3>
+<pre class="programlisting">void                gst_segtrap_set_enabled             (gboolean enabled);</pre>
 <p>
 Applications might want to disable/enable the SIGSEGV handling of
-the GStreamer core. See <a href="gstreamer-Gst.html#gst-segtrap-is-enabled"><code class="function">gst_segtrap_is_enabled()</code></a> for more information.</p>
+the GStreamer core. See <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-enabled" title="gst_segtrap_is_enabled ()"><code class="function">gst_segtrap_is_enabled()</code></a> for more information.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>enabled</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>enabled</code></em> :</span></p></td>
 <td> whether a custom SIGSEGV handler should be installed.
 </td>
 </tr></tbody>
@@ -425,23 +413,22 @@ the GStreamer core. See <a href="gstreamer-Gst.html#gst-segtrap-is-enabled"><cod
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558156"></a><h3>
-<a name="gst-registry-fork-is-enabled"></a>gst_registry_fork_is_enabled ()</h3>
-<a class="indexterm" name="id2558171"></a><pre class="programlisting">gboolean            gst_registry_fork_is_enabled        (void);</pre>
+<a name="gst-registry-fork-is-enabled"></a><h3>gst_registry_fork_is_enabled ()</h3>
+<pre class="programlisting">gboolean            gst_registry_fork_is_enabled        (void);</pre>
 <p>
 By default GStreamer will perform a <code class="function">fork()</code> when scanning and rebuilding the
 registry file. 
 </p>
 <p>
 Applications might want to disable this behaviour with the
-<a href="gstreamer-Gst.html#gst-registry-fork-set-enabled"><code class="function">gst_registry_fork_set_enabled()</code></a> function.</p>
+<a class="link" href="gstreamer-Gst.html#gst-registry-fork-set-enabled" title="gst_registry_fork_set_enabled ()"><code class="function">gst_registry_fork_set_enabled()</code></a> function.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if GStreamer will use <code class="function">fork()</code> when rebuilding the registry. On
 platforms without <code class="function">fork()</code>, this function will always return <code class="literal">FALSE</code>.
 
@@ -453,23 +440,22 @@ platforms without <code class="function">fork()</code>, this function will alway
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558287"></a><h3>
-<a name="gst-registry-fork-set-enabled"></a>gst_registry_fork_set_enabled ()</h3>
-<a class="indexterm" name="id2558303"></a><pre class="programlisting">void                gst_registry_fork_set_enabled       (gboolean enabled);</pre>
+<a name="gst-registry-fork-set-enabled"></a><h3>gst_registry_fork_set_enabled ()</h3>
+<pre class="programlisting">void                gst_registry_fork_set_enabled       (gboolean enabled);</pre>
 <p>
 Applications might want to disable/enable the usage of <code class="function">fork()</code> when rebuilding
-the registry. See <a href="gstreamer-Gst.html#gst-registry-fork-is-enabled"><code class="function">gst_registry_fork_is_enabled()</code></a> for more information.
+the registry. See <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()"><code class="function">gst_registry_fork_is_enabled()</code></a> for more information.
 </p>
 <p>
 On platforms without <code class="function">fork()</code>, this function will have no effect on the return
-value of <a href="gstreamer-Gst.html#gst-registry-fork-is-enabled"><code class="function">gst_registry_fork_is_enabled()</code></a>.</p>
+value of <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()"><code class="function">gst_registry_fork_is_enabled()</code></a>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>enabled</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>enabled</code></em> :</span></p></td>
 <td> whether rebuilding the registry may fork
 </td>
 </tr></tbody>
@@ -479,9 +465,8 @@ value of <a href="gstreamer-Gst.html#gst-registry-fork-is-enabled"><code class="
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558410"></a><h3>
-<a name="gst-update-registry"></a>gst_update_registry ()</h3>
-<a class="indexterm" name="id2558425"></a><pre class="programlisting">gboolean            gst_update_registry                 (void);</pre>
+<a name="gst-update-registry"></a><h3>gst_update_registry ()</h3>
+<pre class="programlisting">gboolean            gst_update_registry                 (void);</pre>
 <p>
 Forces GStreamer to re-scan its plugin paths and update the default
 plugin registry.
@@ -490,7 +475,7 @@ plugin registry.
 Applications will almost never need to call this function, it is only
 useful if the application knows new plugins have been installed (or old
 ones removed) since the start of the application (or, to be precise, the
-first call to <a href="gstreamer-Gst.html#gst-init"><code class="function">gst_init()</code></a>) and the application wants to make use of any
+first call to <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a>) and the application wants to make use of any
 newly-installed plugins without restarting the application.
 </p>
 <p>
@@ -508,7 +493,7 @@ Note that this function may block for a significant amount of time.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the registry has been updated successfully (does not
          imply that there were changes), otherwise <code class="literal">FALSE</code>.
 
@@ -520,10 +505,13 @@ Note that this function may block for a significant amount of time.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2558528"></a><h2>See Also</h2>
-Check out both <a href="http://www.cse.ogi.edu/sysl/" target="_top">OGI's
+<a name="gstreamer-Gst.see-also"></a><h2>See Also</h2>
+Check out both <a class="ulink" href="http://www.cse.ogi.edu/sysl/" target="_top">OGI's
            pipeline</a> and Microsoft's DirectShow for some background.
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

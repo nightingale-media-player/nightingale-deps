@@ -110,13 +110,9 @@ GstPluginFeature*	gst_registry_find_feature	(GstRegistry *registry, const gchar 
 GstPlugin * 		gst_registry_lookup 		(GstRegistry *registry, const char *filename);
 GstPluginFeature * 	gst_registry_lookup_feature 	(GstRegistry *registry, const char *name);
 
-#ifdef USE_BINARY_REGISTRY
-gboolean 		gst_registry_binary_read_cache 	(GstRegistry * registry, const char *location);
-gboolean 		gst_registry_binary_write_cache	(GstRegistry * registry, const char *location);
-#else 
+/* FIXME 0.11: do we really want to export these? (If yes, we should add a GError argument) */
 gboolean 		gst_registry_xml_read_cache 	(GstRegistry * registry, const char *location);
 gboolean 		gst_registry_xml_write_cache 	(GstRegistry * registry, const char *location);
-#endif
 
 /* convinience defines for the default registry */
 

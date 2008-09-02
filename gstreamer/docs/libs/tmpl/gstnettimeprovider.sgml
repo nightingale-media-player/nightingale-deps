@@ -22,13 +22,26 @@ GstNetTimeProvider
 
 </para>
 
-@parent: 
-@address: 
-@port: 
-@sock: 
-@control_sock: 
-@thread: 
-@clock: 
+
+<!-- ##### ARG GstNetTimeProvider:active ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstNetTimeProvider:address ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstNetTimeProvider:clock ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstNetTimeProvider:port ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION gst_net_time_provider_new ##### -->
 <para>

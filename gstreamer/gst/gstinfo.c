@@ -277,8 +277,8 @@ _priv_gst_in_valgrind (void)
 void
 _gst_debug_init (void)
 {
-  gst_atomic_int_set (&__default_level, GST_LEVEL_DEFAULT);
-  gst_atomic_int_set (&__use_color, 1);
+  g_atomic_int_set (&__default_level, GST_LEVEL_DEFAULT);
+  g_atomic_int_set (&__use_color, 1);
 
   /* get time we started for debugging messages */
   _priv_gst_info_start_time = gst_util_get_timestamp ();
@@ -412,10 +412,23 @@ gst_debug_log_valist (GstDebugCategory * category, GstDebugLevel level,
   LogFuncEntry *entry;
   GSList *handler;
 
+#ifdef _MSC_VER
+  gchar *file_basename;
+#endif
+
   g_return_if_fail (category != NULL);
   g_return_if_fail (file != NULL);
   g_return_if_fail (function != NULL);
   g_return_if_fail (format != NULL);
+
+#ifdef _MSC_VER
+  /*
+   * The predefined macro __FILE__ is always the exact path given to the
+   * compiler with MSVC, which may or may not be the basename.  We work
+   * around it at runtime to improve the readability.
+   */
+  file = file_basename = g_path_get_basename (file);
+#endif
 
   message.message = NULL;
   message.format = format;
@@ -430,6 +443,10 @@ gst_debug_log_valist (GstDebugCategory * category, GstDebugLevel level,
   }
   g_free (message.message);
   va_end (message.arguments);
+
+#ifdef _MSC_VER
+  g_free (file_basename);
+#endif
 }
 
 /**
@@ -665,20 +682,25 @@ gst_debug_log_default (GstDebugCategory * category, GstDebugLevel level,
   elapsed = GST_CLOCK_DIFF (_priv_gst_info_start_time,
       gst_util_get_timestamp ());
 
-  /*
-     g_printerr ("%s (%p - %" GST_TIME_FORMAT ") %s%20s%s(%s%5d%s) %s%s(%d):%s:%s%s %s\n",
-     gst_debug_level_get_name (level), g_thread_self (),
-     GST_TIME_ARGS (elapsed), color,
-     gst_debug_category_get_name (category), clear, pidcolor, pid, clear,
-     color, file, line, function, obj, clear, gst_debug_message_get (message));
-   */
-
+#if defined (GLIB_SIZEOF_VOID_P) && GLIB_SIZEOF_VOID_P == 8
+  /* width of %p varies depending on actual value of pointer, which can make
+   * output unevenly aligned if multiple threads are involved, hence the %14p
+   * (should really be %18p, but %14p seems a good compromise between too many
+   * white spaces and likely unalignment on my system) */
   g_printerr ("%" GST_TIME_FORMAT
-      " %s%5d%s %p %s%s%s %s%20s %s:%d:%s:%s%s %s\n", GST_TIME_ARGS (elapsed),
+      " %s%5d%s %14p %s%s%s %s%20s %s:%d:%s:%s%s %s\n", GST_TIME_ARGS (elapsed),
       pidcolor, pid, clear, g_thread_self (), levelcolor,
       gst_debug_level_get_name (level), clear, color,
       gst_debug_category_get_name (category), file, line, function, obj, clear,
       gst_debug_message_get (message));
+#else
+  g_printerr ("%" GST_TIME_FORMAT
+      " %s%5d%s %10p %s%s%s %s%20s %s:%d:%s:%s%s %s\n", GST_TIME_ARGS (elapsed),
+      pidcolor, pid, clear, g_thread_self (), levelcolor,
+      gst_debug_level_get_name (level), clear, color,
+      gst_debug_category_get_name (category), file, line, function, obj, clear,
+      gst_debug_message_get (message));
+#endif
 
   if (free_color)
     g_free (color);
@@ -777,6 +799,8 @@ gst_debug_remove_with_compare_func (GCompareFunc func, gpointer data)
   new = __log_functions;
   while ((found = g_slist_find_custom (new, data, func))) {
     if (new == __log_functions) {
+      /* make a copy when we have the first hit, so that we modify the copy and
+       * make that the new list later */
       new = g_slist_copy (new);
       continue;
     }
@@ -847,7 +871,7 @@ gst_debug_remove_log_function_by_data (gpointer data)
 void
 gst_debug_set_colored (gboolean colored)
 {
-  gst_atomic_int_set (&__use_color, colored ? 1 : 0);
+  g_atomic_int_set (&__use_color, colored ? 1 : 0);
 }
 
 /**
@@ -906,7 +930,7 @@ gst_debug_is_active (void)
 void
 gst_debug_set_default_threshold (GstDebugLevel level)
 {
-  gst_atomic_int_set (&__default_level, level);
+  g_atomic_int_set (&__default_level, level);
   gst_debug_reset_all_thresholds ();
 }
 
@@ -1044,7 +1068,7 @@ _gst_debug_category_new (const gchar * name, guint color,
   } else {
     cat->description = g_strdup ("no description");
   }
-  gst_atomic_int_set (&cat->threshold, 0);
+  g_atomic_int_set (&cat->threshold, 0);
   gst_debug_reset_threshold (cat, NULL);
 
   /* add to category list */
@@ -1102,7 +1126,7 @@ gst_debug_category_set_threshold (GstDebugCategory * category,
     __gst_debug_min = level;
   }
 
-  gst_atomic_int_set (&category->threshold, level);
+  g_atomic_int_set (&category->threshold, level);
 }
 
 /**

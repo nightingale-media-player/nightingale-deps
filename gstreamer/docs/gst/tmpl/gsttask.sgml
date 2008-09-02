@@ -28,7 +28,6 @@ GstTask
 @func: 
 @data: 
 @running: 
-@_gst_reserved: 
 
 <!-- ##### USER_FUNCTION GstTaskFunction ##### -->
 <para>

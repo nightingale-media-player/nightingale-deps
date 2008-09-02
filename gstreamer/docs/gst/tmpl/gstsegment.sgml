@@ -65,6 +65,15 @@ GstSegment
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_segment_copy ##### -->
+<para>
+
+</para>
+
+@segment: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_segment_free ##### -->
 <para>
 

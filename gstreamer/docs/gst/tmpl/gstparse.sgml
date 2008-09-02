@@ -45,12 +45,38 @@ GstParse
 @GST_PARSE_ERROR_EMPTY_BIN: 
 @GST_PARSE_ERROR_EMPTY: 
 
+<!-- ##### STRUCT GstParseContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstParseFlags ##### -->
+<para>
+
+</para>
+
+@GST_PARSE_FLAG_NONE: 
+@GST_PARSE_FLAG_FATAL_ERRORS: 
+
 <!-- ##### FUNCTION gst_parse_launch ##### -->
 <para>
 
 </para>
 
 @pipeline_description: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_parse_launch_full ##### -->
+<para>
+
+</para>
+
+@pipeline_description: 
+@context: 
+@flags: 
 @error: 
 @Returns: 
 
@@ -65,14 +91,64 @@ GstParse
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_parse_launchv_full ##### -->
+<para>
+
+</para>
+
+@argv: 
+@context: 
+@flags: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_parse_bin_from_description ##### -->
 <para>
 
 </para>
 
 @bin_description: 
-@ghost_unconnected_pads: 
+@ghost_unlinked_pads: 
 @err: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_parse_bin_from_description_full ##### -->
+<para>
+
+</para>
+
+@bin_description: 
+@ghost_unlinked_pads: 
+@context: 
+@flags: 
+@err: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_parse_context_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_parse_context_free ##### -->
+<para>
+
+</para>
+
+@context: 
+
+
+<!-- ##### FUNCTION gst_parse_context_get_missing_elements ##### -->
+<para>
+
+</para>
+
+@context: 
 @Returns: 
 
 

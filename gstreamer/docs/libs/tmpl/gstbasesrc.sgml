@@ -139,7 +139,7 @@ GstBaseSrc
 </para>
 
 @src: 
-@live: 
+@timestamp: 
 
 
 <!-- ##### MACRO GST_BASE_SRC_PAD ##### -->

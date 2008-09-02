@@ -24,9 +24,9 @@
         <sub name="gstdataprotocol" link="gstreamer-libs-gstdataprotocol.html"/>
       </sub>
       <sub name="GStreamer Network Classes" link="gstreamer-net.html">
-        <sub name="GstNetClientClock" link="gstreamer-libs-GstNetClientClock.html"/>
+        <sub name="GstNetClientClock" link="GstNetClientClock.html"/>
         <sub name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html"/>
-        <sub name="GstNetTimeProvider" link="gstreamer-libs-GstNetTimeProvider.html"/>
+        <sub name="GstNetTimeProvider" link="GstNetTimeProvider.html"/>
       </sub>
       <sub name="GStreamer Check Unit Testing" link="gstreamer-check.html">
         <sub name="GstCheck" link="gstreamer-libs-GstCheck.html"/>
@@ -38,7 +38,7 @@
     <sub name="Index of deprecated symbols" link="ix02.html"/>
   </chapters>
   <functions>
-    <keyword type="" name="Controlled shutdown of live sources in applications" link="GstBaseSrc.html#id2556386"/>
+    <keyword type="" name="Controlled shutdown of live sources in applications" link="GstBaseSrc.html#id2576476"/>
     <keyword type="struct" name="GstBaseSrc" link="GstBaseSrc.html#GstBaseSrc-struct"/>
     <keyword type="struct" name="GstBaseSrcClass" link="GstBaseSrc.html#GstBaseSrcClass"/>
     <keyword type="enum" name="enum GstBaseSrcFlags" link="GstBaseSrc.html#GstBaseSrcFlags"/>
@@ -59,6 +59,7 @@
     <keyword type="function" name="gst_base_sink_query_latency ()" link="GstBaseSink.html#gst-base-sink-query-latency" since="0.10.12"/>
     <keyword type="function" name="gst_base_sink_get_latency ()" link="GstBaseSink.html#gst-base-sink-get-latency" since="0.10.12"/>
     <keyword type="function" name="gst_base_sink_wait_preroll ()" link="GstBaseSink.html#gst-base-sink-wait-preroll" since="0.10.11"/>
+    <keyword type="function" name="gst_base_sink_wait_clock ()" link="GstBaseSink.html#gst-base-sink-wait-clock"/>
     <keyword type="function" name="gst_base_sink_wait_eos ()" link="GstBaseSink.html#gst-base-sink-wait-eos"/>
     <keyword type="function" name="gst_base_sink_set_sync ()" link="GstBaseSink.html#gst-base-sink-set-sync" since="0.10.4"/>
     <keyword type="function" name="gst_base_sink_get_sync ()" link="GstBaseSink.html#gst-base-sink-get-sync" since="0.10.4"/>
@@ -128,6 +129,8 @@
     <keyword type="function" name="gst_collect_pads_pop ()" link="GstCollectPads.html#gst-collect-pads-pop"/>
     <keyword type="function" name="gst_collect_pads_available ()" link="GstCollectPads.html#gst-collect-pads-available"/>
     <keyword type="function" name="gst_collect_pads_read ()" link="GstCollectPads.html#gst-collect-pads-read"/>
+    <keyword type="function" name="gst_collect_pads_read_buffer ()" link="GstCollectPads.html#gst-collect-pads-read-buffer" since="0.10.18"/>
+    <keyword type="function" name="gst_collect_pads_take_buffer ()" link="GstCollectPads.html#gst-collect-pads-take-buffer" since="0.10.18"/>
     <keyword type="function" name="gst_collect_pads_flush ()" link="GstCollectPads.html#gst-collect-pads-flush"/>
     <keyword type="function" name="gst_type_find_helper ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper"/>
     <keyword type="function" name="gst_type_find_helper_for_buffer ()" link="gstreamer-libs-GstTypeFindHelper.html#gst-type-find-helper-for-buffer"/>
@@ -170,7 +173,6 @@
     <keyword type="function" name="gst_controller_unset_all ()" link="GstController.html#gst-controller-unset-all" deprecated="" since="0.10.5"/>
     <keyword type="function" name="gst_controller_get_all ()" link="GstController.html#gst-controller-get-all" deprecated=""/>
     <keyword type="function" name="gst_controller_set_interpolation_mode ()" link="GstController.html#gst-controller-set-interpolation-mode" deprecated=""/>
-    <keyword type="macro" name="GST_PARAM_CONTROLLABLE" link="GstController.html#GST-PARAM-CONTROLLABLE:CAPS"/>
     <keyword type="" name="The &quot;control-rate&quot; property" link="GstController.html#GstController--control-rate"/>
     <keyword type="struct" name="GstControlSource" link="GstControlSource.html#GstControlSource-struct"/>
     <keyword type="struct" name="GstControlSourceClass" link="GstControlSource.html#GstControlSourceClass"/>
@@ -237,16 +239,22 @@
     <keyword type="function" name="gst_dp_validate_header ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-header"/>
     <keyword type="function" name="gst_dp_validate_payload ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-payload"/>
     <keyword type="function" name="gst_dp_validate_packet ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-packet"/>
-    <keyword type="struct" name="GstNetClientClock" link="gstreamer-libs-GstNetClientClock.html#GstNetClientClock"/>
-    <keyword type="function" name="gst_net_client_clock_new ()" link="gstreamer-libs-GstNetClientClock.html#gst-net-client-clock-new"/>
+    <keyword type="struct" name="GstNetClientClock" link="GstNetClientClock.html#GstNetClientClock-struct"/>
+    <keyword type="function" name="gst_net_client_clock_new ()" link="GstNetClientClock.html#gst-net-client-clock-new"/>
+    <keyword type="" name="The &quot;address&quot; property" link="GstNetClientClock.html#GstNetClientClock--address"/>
+    <keyword type="" name="The &quot;port&quot; property" link="GstNetClientClock.html#GstNetClientClock--port"/>
     <keyword type="struct" name="GstNetTimePacket" link="gstreamer-libs-GstNetTimePacket.html#GstNetTimePacket"/>
     <keyword type="macro" name="GST_NET_TIME_PACKET_SIZE" link="gstreamer-libs-GstNetTimePacket.html#GST-NET-TIME-PACKET-SIZE:CAPS"/>
     <keyword type="function" name="gst_net_time_packet_new ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-new"/>
     <keyword type="function" name="gst_net_time_packet_receive ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-receive"/>
     <keyword type="function" name="gst_net_time_packet_send ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-send"/>
     <keyword type="function" name="gst_net_time_packet_serialize ()" link="gstreamer-libs-GstNetTimePacket.html#gst-net-time-packet-serialize"/>
-    <keyword type="struct" name="GstNetTimeProvider" link="gstreamer-libs-GstNetTimeProvider.html#GstNetTimeProvider"/>
-    <keyword type="function" name="gst_net_time_provider_new ()" link="gstreamer-libs-GstNetTimeProvider.html#gst-net-time-provider-new"/>
+    <keyword type="struct" name="GstNetTimeProvider" link="GstNetTimeProvider.html#GstNetTimeProvider-struct"/>
+    <keyword type="function" name="gst_net_time_provider_new ()" link="GstNetTimeProvider.html#gst-net-time-provider-new"/>
+    <keyword type="" name="The &quot;active&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--active"/>
+    <keyword type="" name="The &quot;address&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--address"/>
+    <keyword type="" name="The &quot;clock&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--clock"/>
+    <keyword type="" name="The &quot;port&quot; property" link="GstNetTimeProvider.html#GstNetTimeProvider--port"/>
     <keyword type="macro" name="GST_START_TEST()" link="gstreamer-libs-GstCheck.html#GST-START-TEST:CAPS"/>
     <keyword type="macro" name="GST_END_TEST" link="gstreamer-libs-GstCheck.html#GST-END-TEST:CAPS"/>
     <keyword type="macro" name="ASSERT_BUFFER_REFCOUNT()" link="gstreamer-libs-GstCheck.html#ASSERT-BUFFER-REFCOUNT:CAPS"/>
@@ -275,6 +283,10 @@
     <keyword type="function" name="gst_check_teardown_element ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-element"/>
     <keyword type="function" name="gst_check_teardown_sink_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-sink-pad"/>
     <keyword type="function" name="gst_check_teardown_src_pad ()" link="gstreamer-libs-GstCheck.html#gst-check-teardown-src-pad"/>
+    <keyword type="function" name="gst_check_drop_buffers ()" link="gstreamer-libs-GstCheck.html#gst-check-drop-buffers" since="0.10.18"/>
+    <keyword type="function" name="gst_check_caps_equal ()" link="gstreamer-libs-GstCheck.html#gst-check-caps-equal" since="0.10.18"/>
+    <keyword type="function" name="gst_check_element_push_buffer_list ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer-list"/>
+    <keyword type="function" name="gst_check_element_push_buffer ()" link="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer" since="0.10.18"/>
     <keyword type="function" name="gst_check_run_suite ()" link="gstreamer-libs-GstCheck.html#gst-check-run-suite"/>
     <keyword type="function" name="gst_buffer_straw_start_pipeline ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-start-pipeline"/>
     <keyword type="function" name="gst_buffer_straw_get_buffer ()" link="gstreamer-libs-GstBufferStraw.html#gst-buffer-straw-get-buffer"/>

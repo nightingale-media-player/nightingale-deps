@@ -276,6 +276,43 @@ GstCheck
 @element: 
 
 
+<!-- ##### FUNCTION gst_check_drop_buffers ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_check_caps_equal ##### -->
+<para>
+
+</para>
+
+@caps1: 
+@caps2: 
+
+
+<!-- ##### FUNCTION gst_check_element_push_buffer_list ##### -->
+<para>
+
+</para>
+
+@element_name: 
+@buffer_in: 
+@buffer_out: 
+@last_flow_return: 
+
+
+<!-- ##### FUNCTION gst_check_element_push_buffer ##### -->
+<para>
+
+</para>
+
+@element_name: 
+@buffer_in: 
+@buffer_out: 
+
+
 <!-- ##### FUNCTION gst_check_run_suite ##### -->
 <para>
 

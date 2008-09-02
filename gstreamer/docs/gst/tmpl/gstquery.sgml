@@ -41,6 +41,7 @@ GstQuery
 @GST_QUERY_SEGMENT: 
 @GST_QUERY_CONVERT: 
 @GST_QUERY_FORMATS: 
+@GST_QUERY_BUFFERING: 
 
 <!-- ##### MACRO GST_QUERY_TYPE ##### -->
 <para>
@@ -417,5 +418,92 @@ GstQuery
 @format: 
 @start_value: 
 @stop_value: 
+
+
+<!-- ##### ENUM GstBufferingMode ##### -->
+<para>
+
+</para>
+
+@GST_BUFFERING_STREAM: 
+@GST_BUFFERING_DOWNLOAD: 
+@GST_BUFFERING_TIMESHIFT: 
+@GST_BUFFERING_LIVE: 
+
+<!-- ##### FUNCTION gst_query_new_buffering ##### -->
+<para>
+
+</para>
+
+@format: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_query_set_buffering_percent ##### -->
+<para>
+
+</para>
+
+@query: 
+@busy: 
+@percent: 
+
+
+<!-- ##### FUNCTION gst_query_parse_buffering_percent ##### -->
+<para>
+
+</para>
+
+@query: 
+@busy: 
+@percent: 
+
+
+<!-- ##### FUNCTION gst_query_set_buffering_stats ##### -->
+<para>
+
+</para>
+
+@query: 
+@mode: 
+@avg_in: 
+@avg_out: 
+@buffering_left: 
+
+
+<!-- ##### FUNCTION gst_query_parse_buffering_stats ##### -->
+<para>
+
+</para>
+
+@query: 
+@mode: 
+@avg_in: 
+@avg_out: 
+@buffering_left: 
+
+
+<!-- ##### FUNCTION gst_query_set_buffering_range ##### -->
+<para>
+
+</para>
+
+@query: 
+@format: 
+@start: 
+@stop: 
+@estimated_total: 
+
+
+<!-- ##### FUNCTION gst_query_parse_buffering_range ##### -->
+<para>
+
+</para>
+
+@query: 
+@format: 
+@start: 
+@stop: 
+@estimated_total: 
 
 

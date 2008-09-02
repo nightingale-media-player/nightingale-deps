@@ -559,6 +559,9 @@ gst_controller_get_control_source (GstController * self, gchar * property_name)
   GstControlledProperty *prop;
   GstControlSource *ret = NULL;
 
+  g_return_val_if_fail (GST_IS_CONTROLLER (self), NULL);
+  g_return_val_if_fail (property_name, NULL);
+
   g_mutex_lock (self->lock);
   if ((prop = gst_controller_find_controlled_property (self, property_name))) {
     ret = prop->csource;
@@ -604,7 +607,7 @@ gst_controller_get (GstController * self, gchar * property_name,
       res = gst_control_source_get_value (prop->csource, timestamp, val);
       if (!res) {
         g_free (val);
-        val = FALSE;
+        val = NULL;
       }
     } else {
       g_object_get_property (self->object, prop->name, val);
@@ -917,14 +920,15 @@ _gst_controller_class_init (GstControllerClass * klass)
       g_param_spec_uint64 ("control-rate",
           "control rate",
           "Controlled properties will be updated at least every control-rate nanoseconds",
-          1, G_MAXUINT, 100 * GST_MSECOND, G_PARAM_READWRITE));
+          1, G_MAXUINT, 100 * GST_MSECOND,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* register signals */
   /* set defaults for overridable methods */
 }
 
 GType
-gst_controller_get_type ()
+gst_controller_get_type (void)
 {
   static GType type = 0;
 

@@ -24,16 +24,16 @@
 
 #include <gst/check/gstcheck.h>
 
-gboolean have_eos = FALSE;
+static gboolean have_eos = FALSE;
 
-GstPad *mysinkpad;
+static GstPad *mysinkpad;
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
-gboolean
+static gboolean
 event_func (GstPad * pad, GstEvent * event)
 {
   if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
@@ -46,8 +46,8 @@ event_func (GstPad * pad, GstEvent * event)
   return FALSE;
 }
 
-GstElement *
-setup_fakesrc ()
+static GstElement *
+setup_fakesrc (void)
 {
   GstElement *fakesrc;
 
@@ -59,7 +59,7 @@ setup_fakesrc ()
   return fakesrc;
 }
 
-void
+static void
 cleanup_fakesrc (GstElement * fakesrc)
 {
   gst_pad_set_active (mysinkpad, FALSE);
@@ -82,8 +82,7 @@ GST_START_TEST (test_num_buffers)
   }
 
   fail_unless (g_list_length (buffers) == 3);
-  g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
-  g_list_free (buffers);
+  gst_check_drop_buffers ();
 
   fail_unless (gst_element_set_state (src,
           GST_STATE_NULL) == GST_STATE_CHANGE_SUCCESS, "could not set to null");
@@ -120,8 +119,7 @@ GST_START_TEST (test_sizetype_empty)
     fail_unless (GST_BUFFER_SIZE (buf) == 0);
     l = l->next;
   }
-  g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
-  g_list_free (buffers);
+  gst_check_drop_buffers ();
 
   fail_unless (gst_element_set_state (src,
           GST_STATE_NULL) == GST_STATE_CHANGE_SUCCESS, "could not set to null");
@@ -159,8 +157,7 @@ GST_START_TEST (test_sizetype_fixed)
     fail_unless (GST_BUFFER_SIZE (buf) == 8192);
     l = l->next;
   }
-  g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
-  g_list_free (buffers);
+  gst_check_drop_buffers ();
 
   fail_unless (gst_element_set_state (src,
           GST_STATE_NULL) == GST_STATE_CHANGE_SUCCESS, "could not set to null");
@@ -200,8 +197,7 @@ GST_START_TEST (test_sizetype_random)
     fail_if (GST_BUFFER_SIZE (buf) < 4096);
     l = l->next;
   }
-  g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
-  g_list_free (buffers);
+  gst_check_drop_buffers ();
 
   fail_unless (gst_element_set_state (src,
           GST_STATE_NULL) == GST_STATE_CHANGE_SUCCESS, "could not set to null");
@@ -240,7 +236,7 @@ GST_START_TEST (test_no_preroll)
 
 GST_END_TEST;
 
-Suite *
+static Suite *
 fakesrc_suite (void)
 {
   Suite *s = suite_create ("fakesrc");

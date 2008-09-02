@@ -91,14 +91,6 @@
 #define IS_WRITABLE(caps) \
   (g_atomic_int_get (&(caps)->refcount) == 1)
 
-#if GLIB_CHECK_VERSION (2, 10, 0)
-#define ALLOC_CAPS()    g_slice_new (GstCaps)
-#define FREE_CAPS(caps) g_slice_free (GstCaps, caps)
-#else
-#define ALLOC_CAPS()    g_new (GstCaps, 1)
-#define FREE_CAPS(caps) g_free (caps)
-#endif
-
 /* lock to protect multiple invocations of static caps to caps conversion */
 G_LOCK_DEFINE_STATIC (static_caps_lock);
 
@@ -139,7 +131,7 @@ gst_caps_get_type (void)
 GstCaps *
 gst_caps_new_empty (void)
 {
-  GstCaps *caps = ALLOC_CAPS ();
+  GstCaps *caps = g_slice_new (GstCaps);
 
   caps->type = GST_TYPE_CAPS;
   caps->refcount = 1;
@@ -309,7 +301,7 @@ _gst_caps_free (GstCaps * caps)
 #ifdef DEBUG_REFCOUNT
   GST_CAT_LOG (GST_CAT_CAPS, "freeing caps %p", caps);
 #endif
-  FREE_CAPS (caps);
+  g_slice_free (GstCaps, caps);
 }
 
 /**
@@ -461,7 +453,7 @@ gst_static_caps_get (GstStaticCaps * static_caps)
 
     /* initialize the caps to a refcount of 1 so the caps can be writable for
      * the next statement */
-    gst_atomic_int_set (&temp.refcount, 1);
+    temp.refcount = 1;
 
     /* convert to string */
     if (G_UNLIKELY (!gst_caps_from_string_inplace (&temp, string)))
@@ -472,7 +464,7 @@ gst_static_caps_get (GstStaticCaps * static_caps)
     caps->flags = temp.flags;
     caps->structs = temp.structs;
     /* and bump the refcount so other threads can now read */
-    gst_atomic_int_set (&caps->refcount, 1);
+    g_atomic_int_set (&caps->refcount, 1);
 
     GST_CAT_LOG (GST_CAT_CAPS, "created %p", static_caps);
   done:
@@ -863,7 +855,7 @@ gst_caps_truncate (GstCaps * caps)
  * manner as gst_structure_set(), and be NULL-terminated.
  */
 void
-gst_caps_set_simple (GstCaps * caps, char *field, ...)
+gst_caps_set_simple (GstCaps * caps, const char *field, ...)
 {
   GstStructure *structure;
   va_list var_args;
@@ -890,7 +882,7 @@ gst_caps_set_simple (GstCaps * caps, char *field, ...)
  * manner as gst_structure_set(), and be NULL-terminated.
  */
 void
-gst_caps_set_simple_valist (GstCaps * caps, char *field, va_list varargs)
+gst_caps_set_simple_valist (GstCaps * caps, const char *field, va_list varargs)
 {
   GstStructure *structure;
 

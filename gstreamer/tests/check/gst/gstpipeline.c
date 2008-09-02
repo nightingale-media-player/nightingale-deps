@@ -18,8 +18,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <gst/check/gstcheck.h>
+#include <gst/gst.h>
 
 #define WAIT_TIME (300 * GST_MSECOND)
 
@@ -61,7 +65,6 @@ GST_START_TEST (test_async_state_change_fake_ready)
 
 GST_END_TEST;
 
-
 GST_START_TEST (test_async_state_change_fake)
 {
   GstPipeline *pipeline;
@@ -100,6 +103,9 @@ GST_START_TEST (test_async_state_change_fake)
   fail_unless_equals_int (gst_element_set_state (GST_ELEMENT (pipeline),
           GST_STATE_NULL), GST_STATE_CHANGE_SUCCESS);
 
+  /* here we don't get the state change messages, because of auto-flush in 
+   * the bus */
+
   gst_object_unref (bus);
   gst_object_unref (pipeline);
 }
@@ -127,9 +133,9 @@ GST_START_TEST (test_get_bus)
 
 GST_END_TEST;
 
-GMainLoop *loop = NULL;
+static GMainLoop *loop = NULL;
 
-gboolean
+static gboolean
 message_received (GstBus * bus, GstMessage * message, gpointer data)
 {
   GstElement *pipeline = GST_ELEMENT (data);
@@ -267,7 +273,7 @@ GST_START_TEST (test_base_time)
   gst_bin_add_many (GST_BIN (pipeline), fakesrc, fakesink, NULL);
   gst_element_link (fakesrc, fakesink);
 
-  sink = gst_element_get_pad (fakesink, "sink");
+  sink = gst_element_get_static_pad (fakesink, "sink");
   gst_pad_add_buffer_probe (sink, G_CALLBACK (sink_pad_probe), &observed);
 
   fail_unless (gst_element_set_state (pipeline, GST_STATE_PAUSED)
@@ -487,7 +493,43 @@ GST_START_TEST (test_base_time)
 
 GST_END_TEST;
 
-Suite *
+static gpointer
+pipeline_thread (gpointer data)
+{
+  GstElement *pipeline, *src, *sink;
+
+  src = gst_element_factory_make ("fakesrc", NULL);
+  g_object_set (src, "num-buffers", 20, NULL);
+  sink = gst_element_factory_make ("fakesink", NULL);
+  g_object_set (sink, "sync", TRUE, NULL);
+  pipeline = gst_pipeline_new (NULL);
+  gst_bin_add (GST_BIN (pipeline), src);
+  gst_bin_add (GST_BIN (pipeline), sink);
+  gst_element_link (src, sink);
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
+  g_usleep (G_USEC_PER_SEC / 10);
+  gst_element_set_state (pipeline, GST_STATE_NULL);
+  gst_object_unref (pipeline);
+  return NULL;
+}
+
+GST_START_TEST (test_concurrent_create)
+{
+  GThread *threads[30];
+  int i;
+
+  for (i = 0; i < G_N_ELEMENTS (threads); ++i) {
+    threads[i] = g_thread_create (pipeline_thread, NULL, TRUE, NULL);
+  }
+  for (i = 0; i < G_N_ELEMENTS (threads); ++i) {
+    if (threads[i])
+      g_thread_join (threads[i]);
+  }
+}
+
+GST_END_TEST;
+
+static Suite *
 gst_pipeline_suite (void)
 {
   Suite *s = suite_create ("GstPipeline");
@@ -502,6 +544,7 @@ gst_pipeline_suite (void)
   tcase_add_test (tc_chain, test_get_bus);
   tcase_add_test (tc_chain, test_bus);
   tcase_add_test (tc_chain, test_base_time);
+  tcase_add_test (tc_chain, test_concurrent_create);
 
   return s;
 }

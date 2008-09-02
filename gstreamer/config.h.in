@@ -7,17 +7,26 @@
 /* gettext package name */
 #undef GETTEXT_PACKAGE
 
-/* Location of registry */
-#undef GST_CACHE_DIR
+/* data dir */
+#undef GST_DATADIR
+
+/* Define if option parsing is disabled */
+#undef GST_DISABLE_OPTION_PARSING
 
 /* Define if pipeline parsing code is disabled */
 #undef GST_DISABLE_PARSE
+
+/* Extra platform specific plugin suffix */
+#undef GST_EXTRA_MODULE_SUFFIX
 
 /* macro to use to show function name */
 #undef GST_FUNCTION
 
 /* Defined if gcov is enabled to force a rebuild due to config.h changing */
 #undef GST_GCOV_ENABLED
+
+/* Defined when registry scanning through fork is unsafe */
+#undef GST_HAVE_UNSAFE_FORK
 
 /* Default errorlevel to use */
 #undef GST_LEVEL_DEFAULT
@@ -143,8 +152,14 @@
 /* Have a monotonic clock */
 #undef HAVE_MONOTONIC_CLOCK
 
+/* Define to 1 if you have the `poll' function. */
+#undef HAVE_POLL
+
 /* Have posix timers */
 #undef HAVE_POSIX_TIMERS
+
+/* Define to 1 if you have the `ppoll' function. */
+#undef HAVE_PPOLL
 
 /* defined if the compiler implements __PRETTY_FUNCTION__ */
 #undef HAVE_PRETTY_FUNCTION
@@ -154,6 +169,9 @@
 
 /* Define to 1 if you have the <process.h> header file. */
 #undef HAVE_PROCESS_H
+
+/* Define to 1 if you have the `pselect' function. */
+#undef HAVE_PSELECT
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC

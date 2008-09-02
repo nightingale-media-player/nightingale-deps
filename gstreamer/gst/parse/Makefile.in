@@ -114,6 +114,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -138,9 +139,11 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DOCBOOK_ROOT = @DOCBOOK_ROOT@
 DOC_HTML_FALSE = @DOC_HTML_FALSE@
 DOC_HTML_TRUE = @DOC_HTML_TRUE@
@@ -168,8 +171,6 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GENERATE_PARSER_FALSE = @GENERATE_PARSER_FALSE@
-GENERATE_PARSER_TRUE = @GENERATE_PARSER_TRUE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -183,7 +184,6 @@ GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
 GST_ALL_LDFLAGS = @GST_ALL_LDFLAGS@
 GST_ALL_LIBS = @GST_ALL_LIBS@
-GST_CACHE_DIR = @GST_CACHE_DIR@
 GST_CHECK_LIB_LDFLAGS = @GST_CHECK_LIB_LDFLAGS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
@@ -204,6 +204,9 @@ GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
 GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_NET_FALSE = @GST_DISABLE_NET_FALSE@
 GST_DISABLE_NET_TRUE = @GST_DISABLE_NET_TRUE@
+GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
+GST_DISABLE_OPTION_PARSING_FALSE = @GST_DISABLE_OPTION_PARSING_FALSE@
+GST_DISABLE_OPTION_PARSING_TRUE = @GST_DISABLE_OPTION_PARSING_TRUE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PARSE_FALSE = @GST_DISABLE_PARSE_FALSE@
 GST_DISABLE_PARSE_TRUE = @GST_DISABLE_PARSE_TRUE@
@@ -333,6 +336,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -432,10 +436,7 @@ CLEANFILES = grammar.tab.h grammar.output grammar.tab.c \
 	lex._gst_parse_yy.c
 EXTRA_DIST = \
 	grammar.y \
-	parse.l \
-	grammar.tab.pre.c \
-	grammar.tab.pre.h \
-	lex._gst_parse_yy.pre.c
+	parse.l
 
 
 # uncomment these lines to dist the generated sources
@@ -714,61 +715,25 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
-all: grammar.tab.pre.c grammar.tab.pre.h lex._gst_parse_yy.pre.c
+grammar.tab.c grammar.tab.h: grammar.y
+	$(BISON_PATH) -d -v -p_gst_parse_yy $(srcdir)/grammar.y -o grammar.tab.c && \
+	mv grammar.tab.c grammar.tab_tmp.c && \
+	echo '#ifdef HAVE_CONFIG_H' > grammar.tab_tmp2.c && \
+	echo '#include <config.h>' >> grammar.tab_tmp2.c && \
+	echo '#endif' >> grammar.tab_tmp2.c && \
+	cat grammar.tab_tmp.c >> grammar.tab_tmp2.c && \
+	rm grammar.tab_tmp.c && \
+	mv grammar.tab_tmp2.c grammar.tab.c
 
-grammar.tab.pre.c grammar.tab.pre.h: grammar.y
-@GENERATE_PARSER_TRUE@	$(BISON_PATH) -d -v -p_gst_parse_yy $(srcdir)/grammar.y -o grammar.tab.c && \
-@GENERATE_PARSER_TRUE@	mv grammar.tab.c grammar.tab_tmp.c && \
-@GENERATE_PARSER_TRUE@	echo '#ifdef HAVE_CONFIG_H' > grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#include <config.h>' >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#endif' >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	cat grammar.tab_tmp.c >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	rm grammar.tab_tmp.c && \
-@GENERATE_PARSER_TRUE@	mv grammar.tab_tmp2.c grammar.tab.c
-@GENERATE_PARSER_TRUE@	mv grammar.tab.c grammar.tab.pre.c
-@GENERATE_PARSER_TRUE@	mv grammar.tab.h grammar.tab.pre.h
-@GENERATE_PARSER_FALSE@	echo "Timestamp issue on pregenerated bison output."
-@GENERATE_PARSER_FALSE@	echo "Using probably outdated pregenerated sources..."
-@GENERATE_PARSER_FALSE@	touch grammar.tab.pre.c grammar.tab.pre.h
-
-lex._gst_parse_yy.pre.c: parse.l grammar.tab.pre.h
-@GENERATE_PARSER_TRUE@	$(FLEX_PATH) -P_gst_parse_yy $^ && \
-@GENERATE_PARSER_TRUE@	mv lex._gst_parse_yy.c lex._gst_parse_yy_tmp.c && \
-@GENERATE_PARSER_TRUE@	echo '#ifdef HAVE_CONFIG_H' > lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#include <config.h>' >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#endif' >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	cat lex._gst_parse_yy_tmp.c >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	rm lex._gst_parse_yy_tmp.c && \
-@GENERATE_PARSER_TRUE@	mv lex._gst_parse_yy_tmp2.c lex._gst_parse_yy.c && \
-@GENERATE_PARSER_TRUE@	mv lex._gst_parse_yy.c lex._gst_parse_yy.pre.c
-@GENERATE_PARSER_FALSE@	echo "Timestamp issue on pregenerated flex output."
-@GENERATE_PARSER_FALSE@	echo "Using probably outdated pregenerated sources..."
-@GENERATE_PARSER_FALSE@	touch lex._gst_parse_yy.pre.c
-
-@GENERATE_PARSER_TRUE@grammar.tab.c grammar.tab.h: grammar.y
-@GENERATE_PARSER_TRUE@	$(BISON_PATH) -d -v -p_gst_parse_yy $(srcdir)/grammar.y -o grammar.tab.c && \
-@GENERATE_PARSER_TRUE@	mv grammar.tab.c grammar.tab_tmp.c && \
-@GENERATE_PARSER_TRUE@	echo '#ifdef HAVE_CONFIG_H' > grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#include <config.h>' >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#endif' >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	cat grammar.tab_tmp.c >> grammar.tab_tmp2.c && \
-@GENERATE_PARSER_TRUE@	rm grammar.tab_tmp.c && \
-@GENERATE_PARSER_TRUE@	mv grammar.tab_tmp2.c grammar.tab.c
-@GENERATE_PARSER_FALSE@grammar.tab.c grammar.tab.h: grammar.tab.pre.c grammar.tab.pre.h
-@GENERATE_PARSER_FALSE@	cp $(srcdir)/grammar.tab.pre.h grammar.tab.h
-@GENERATE_PARSER_FALSE@	cp $(srcdir)/grammar.tab.pre.c grammar.tab.c
-
-@GENERATE_PARSER_TRUE@lex._gst_parse_yy.c: parse.l grammar.tab.h
-@GENERATE_PARSER_TRUE@	$(FLEX_PATH) -P_gst_parse_yy $^ && \
-@GENERATE_PARSER_TRUE@	mv lex._gst_parse_yy.c lex._gst_parse_yy_tmp.c && \
-@GENERATE_PARSER_TRUE@	echo '#ifdef HAVE_CONFIG_H' > lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#include <config.h>' >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	echo '#endif' >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	cat lex._gst_parse_yy_tmp.c >> lex._gst_parse_yy_tmp2.c && \
-@GENERATE_PARSER_TRUE@	rm lex._gst_parse_yy_tmp.c && \
-@GENERATE_PARSER_TRUE@	mv lex._gst_parse_yy_tmp2.c lex._gst_parse_yy.c
-@GENERATE_PARSER_FALSE@lex._gst_parse_yy.c: lex._gst_parse_yy.pre.c grammar.tab.h grammar.tab.c
-@GENERATE_PARSER_FALSE@	cp $(srcdir)/lex._gst_parse_yy.pre.c lex._gst_parse_yy.c
+lex._gst_parse_yy.c: parse.l grammar.tab.h
+	$(FLEX_PATH) -P_gst_parse_yy $^ && \
+	mv lex._gst_parse_yy.c lex._gst_parse_yy_tmp.c && \
+	echo '#ifdef HAVE_CONFIG_H' > lex._gst_parse_yy_tmp2.c && \
+	echo '#include <config.h>' >> lex._gst_parse_yy_tmp2.c && \
+	echo '#endif' >> lex._gst_parse_yy_tmp2.c && \
+	cat lex._gst_parse_yy_tmp.c >> lex._gst_parse_yy_tmp2.c && \
+	rm lex._gst_parse_yy_tmp.c && \
+	mv lex._gst_parse_yy_tmp2.c lex._gst_parse_yy.c
 
 .NOTPARALLEL:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

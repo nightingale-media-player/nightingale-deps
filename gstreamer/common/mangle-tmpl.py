@@ -83,42 +83,45 @@ class Tmpl:
         handle.write(self.output())
         handle.close()
 
-from xml.dom.ext.reader import Sax2
-from xml.dom.NodeFilter import NodeFilter
+import xml.dom.minidom
 
 def get_elements(file):
     elements = {}
-    handle = open(file)
-    reader = Sax2.Reader()
-    doc = reader.fromStream(handle)
-    handle.close()
+    doc = xml.dom.minidom.parse(file)
 
-    walker = doc.createTreeWalker(doc.documentElement,
-        NodeFilter.SHOW_ELEMENT, None, 0)
-    while walker.currentNode and walker.currentNode.tagName != 'elements':
-        walker.nextNode()
-        
-    # we're at elements now
-    el = walker.firstChild()
-    while walker.currentNode:
-        element = walker.firstChild()
-        # loop over children of <element>
-        name = None
-        description = None
-        while walker.currentNode:
-            if walker.currentNode.tagName == 'name':
-                name = walker.currentNode.firstChild.data.encode('UTF-8')
-            if walker.currentNode.tagName == 'description':
-                description = walker.currentNode.firstChild.data.encode('UTF-8')
-            if not walker.nextSibling(): break
-        # back up to <element>
-        walker.parentNode()
-        elements[name] = {'description': description}
+    elem = None
+    for e in doc.childNodes:
+        if e.nodeType == e.ELEMENT_NODE and e.localName == 'plugin':
+            elem = e
+            break
+    if elem == None:
+        return None
 
-        if not walker.nextSibling(): break
+    elem2 = None
+    for e in elem.childNodes:
+        if e.nodeType == e.ELEMENT_NODE and e.localName == 'elements':
+            elem2 = e
+            break
+    if elem2 == None:
+        return None
+
+    elem = elem2
+
+    for e in elem.childNodes:
+        if e.nodeType == e.ELEMENT_NODE and e.localName == 'element':
+            name = None
+            description = None
+
+            for e2 in e.childNodes:
+                if e2.nodeType == e2.ELEMENT_NODE and e2.localName == 'name':
+                    name = e2.childNodes[0].nodeValue.encode("UTF-8")
+                elif e2.nodeType == e2.ELEMENT_NODE and e2.localName == 'description':
+                    description = e2.childNodes[0].nodeValue.encode("UTF-8")
+
+            if name != None and description != None:
+                elements[name] = {'description': description}
 
     return elements
-
         
 def main():
     if not len(sys.argv) == 3:

@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AC_INIT(GStreamer, 0.10.17,
+AC_INIT(GStreamer, 0.10.20,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gstreamer)
 AG_GST_INIT
@@ -43,13 +43,14 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 15, 0, 15)
+AS_LIBTOOL(GST, 17, 0, 17)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
 dnl So this needs to be fixed first if we want to use this
 dnl AS_LIBTOOL_TAGS
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** autotools stuff ****
@@ -87,6 +88,12 @@ AM_CONDITIONAL(GST_DISABLE_PARSE, test "x$GST_DISABLE_PARSE" = "xyes")
 if test "x$GST_DISABLE_PARSE" = xyes; then
   AC_DEFINE(GST_DISABLE_PARSE, 1,
     [Define if pipeline parsing code is disabled])
+fi
+AG_GST_CHECK_SUBSYSTEM_DISABLE(OPTION_PARSING,[option parsing when gst_init])
+AM_CONDITIONAL(GST_DISABLE_OPTION_PARSING, test "x$GST_DISABLE_OPTION_PARSING" = "xyes")
+if test "x$GST_DISABLE_OPTION_PARSING" = xyes; then
+  AC_DEFINE(GST_DISABLE_OPTION_PARSING, 1,
+    [Define if option parsing is disabled])
 fi
 AG_GST_CHECK_SUBSYSTEM_DISABLE(TRACE,[tracing subsystem])
 AM_CONDITIONAL(GST_DISABLE_TRACE, test "x$GST_DISABLE_TRACE" = "xyes")
@@ -131,25 +138,6 @@ AG_GST_ARG_EXAMPLES
 AG_GST_ARG_WITH_PKG_CONFIG_PATH
 AG_GST_ARG_WITH_PACKAGE_NAME
 AG_GST_ARG_WITH_PACKAGE_ORIGIN
-
-dnl use a cache dir for storing element registry info.
-GST_CACHE_DIR=${localstatedir}/cache/gstreamer-$GST_MAJORMINOR
-
-AC_ARG_WITH(cachedir,
-  AC_HELP_STRING([--with-cachedir],
-    [specify path to use for plugin and command completion registries]),
-  [
-    case "${withval}" in
-      yes) AC_MSG_ERROR(bad value ${withval} for --with-cachedir) ;;
-      no)  AC_MSG_ERROR(bad value ${withval} for --with-cachedir) ;;
-      *)   GST_CACHE_DIR="${withval}" ;;
-    esac
-  ],
-  [:]) dnl Default value
-
-AS_AC_EXPAND(GST_CACHE_DIR, $GST_CACHE_DIR)
-AC_DEFINE_UNQUOTED(GST_CACHE_DIR, "$GST_CACHE_DIR", [Location of registry])
-AC_MSG_NOTICE(Using $GST_CACHE_DIR as registry cache dir)
 
 dnl building of tests
 AC_ARG_ENABLE(tests,
@@ -202,17 +190,19 @@ fi
 
 dnl Use binary registry
 AC_ARG_ENABLE(binary-registry,
-  AC_HELP_STRING([--enable-binary-registry],
-    [enable experimental binary registry]),
+  AC_HELP_STRING([--disable-binary-registry],
+    [disable binary registry]),
   [
     case "${enableval}" in
       yes) USE_BINARY_REGISTRY=yes ;;
       no)  USE_BINARY_REGISTRY=no ;;
-      *)   AC_MSG_ERROR(bad value ${enableval} for --enable-binary-registry) ;;
+      *)   AC_MSG_ERROR(bad value ${enableval} for --disable-binary-registry) ;;
     esac
   ],
-  [USE_BINARY_REGISTRY=no]) dnl Default value
+  [USE_BINARY_REGISTRY=yes]) dnl Default value
+
 if test "x$USE_BINARY_REGISTRY" = xyes; then
+  dnl for config.h:
   AC_DEFINE(USE_BINARY_REGISTRY, 1,
     [Define if we should use binary registry instead xml registry])
 fi
@@ -240,20 +230,28 @@ else
 fi
 AC_SUBST(GST_HAVE_UNALIGNED_ACCESS_DEFINE)
 
+dnl check for platform specific settings
+case $host_os in
+     rhapsody*)
+	AC_DEFINE_UNQUOTED(GST_EXTRA_MODULE_SUFFIX, [".dylib"], [Extra platform specific plugin suffix])
+        ;;
+     darwin*)
+	AC_DEFINE_UNQUOTED(GST_EXTRA_MODULE_SUFFIX, [".dylib"], [Extra platform specific plugin suffix])
+        AC_DEFINE_UNQUOTED(GST_HAVE_UNSAFE_FORK, 1, [Defined when registry scanning through fork is unsafe])
+	;;
+     cygwin* | mingw* | msvc* | mks*)
+        dnl HAVE_WIN32 currently means "disable POSIXisms".
+        AC_DEFINE_UNQUOTED(HAVE_WIN32, 1, [Defined if compiling for Windows])
+        ;;
+     *)
+	;;
+esac
+
 dnl * software *
 
 dnl check for large file support
 dnl affected plugins must include config.h
 AC_SYS_LARGEFILE
-
-dnl HAVE_WIN32 currently means "disable POSIXisms".
-case "$host" in
-  *-*-mingw*)
-    AC_DEFINE_UNQUOTED(HAVE_WIN32, 1, [Defined if compiling for Windows])
-    ;;
-  *)
-    ;;
-esac
 
 dnl *** checks for programs ***
 
@@ -356,6 +354,11 @@ AC_CHECK_FUNCS([ftello])
 AC_CHECK_FUNCS([fgetpos])
 AC_CHECK_FUNCS([fsetpos])
 
+dnl check for poll(), ppoll() and pselect()
+AC_CHECK_FUNCS([poll])
+AC_CHECK_FUNCS([ppoll])
+AC_CHECK_FUNCS([pselect])
+
 dnl check for mmap()
 AC_FUNC_MMAP
 AM_CONDITIONAL(HAVE_MMAP, test "x$ac_cv_func_mmap_fixed_mapped" = "xyes")
@@ -447,8 +450,8 @@ dnl test if we have dladdr(); we use it for debugging; see gst/gstinfo.c
 save_cflags="$CFLAGS"
 CFLAGS="$CFLAGS -D_GNU_SOURCE"
 AC_CHECK_LIB(dl, dladdr,
-   AC_DEFINE(HAVE_DLADDR, 1,
-             [Defined if we have dladdr ()]))
+   AC_DEFINE(HAVE_DLADDR, 1, [Defined if we have dladdr ()])
+   LIBS="$LIBS -ldl")
 CFLAGS="$save_cflags"
 
 dnl check for inet_aton()
@@ -464,8 +467,9 @@ LIBS="$save_libs"
 dnl *** checks for dependency libraries ***
 
 dnl GLib
+GLIB_REQ=2.12
 
-AG_GST_GLIB_CHECK([2.8])
+AG_GST_GLIB_CHECK([$GLIB_REQ])
 
 dnl FIXME: 0.11: Guess we need to keep this around until 0.11
 GST_HAVE_GLIB_2_8_DEFINE="#define GST_HAVE_GLIB_2_8 1"
@@ -516,9 +520,11 @@ GST_LICENSE="LGPL"
 AC_DEFINE_UNQUOTED(GST_LICENSE, "$GST_LICENSE", [GStreamer license])
 AC_SUBST(GST_LICENSE)
 
-dnl define LIBDIR so we can inform people where we live
+dnl define LIBDIR, GST_DATADIR so we can inform people where we live
 AS_AC_EXPAND(LIBDIR, $libdir)
 AC_DEFINE_UNQUOTED(LIBDIR, "$LIBDIR", [library dir])
+AS_AC_EXPAND(DATADIR, $datadir)
+AC_DEFINE_UNQUOTED(GST_DATADIR, "$DATADIR", [data dir])
 
 dnl set location of plugin directory
 AG_GST_SET_PLUGINDIR
@@ -553,7 +559,8 @@ AC_SUBST(PROFILE_CFLAGS)
 # GST_DISABLE_DEPRECATED: hide the visibility of deprecated
 # functionality from the API that gstreamer uses
 # GST_REMOVE_DEPRECATED: don't compile deprecated functionality (breaks ABI)
-if test "x$GST_CVS" = "xyes"; then
+if test "x$PACKAGE_VERSION_NANO" = "x1"; then
+  dnl Define _only_ during CVS (not pre-releases or releases)
   DEPRECATED_CFLAGS="-DGST_DISABLE_DEPRECATED"
 else
   DEPRECATED_CFLAGS=""
