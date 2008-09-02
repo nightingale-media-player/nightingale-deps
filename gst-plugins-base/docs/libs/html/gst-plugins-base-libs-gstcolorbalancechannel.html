@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstcolorbalancechannel</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstcolorbalance.html" title="gstcolorbalance">
 <link rel="next" href="gst-plugins-base-libs-gstmixer.html" title="gstmixer">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,76 +36,72 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstmixer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2598613" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2598693" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2598641" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2598665" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstcolorbalancechannel.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstcolorbalancechannel.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstcolorbalancechannel.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstcolorbalancechannel.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstcolorbalancechannel"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2598613"></a><span class="refentrytitle">gstcolorbalancechannel</span>
-</h2>
-<p>gstcolorbalancechannel</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstcolorbalancechannel.top_of_page"></a>gstcolorbalancechannel</span></h2>
+<p>gstcolorbalancechannel — Object representing a channel from the <a class="link" href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance"><span class="type">GstColorBalance</span></a>
+        interface.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.synopsis"></a><h2>Synopsis</h2>
 <a name="GstColorBalanceChannel"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/colorbalancechannel.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel-struct">GstColorBalanceChannel</a>;
-
+                    <a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel-struct" title="GstColorBalanceChannel">GstColorBalanceChannel</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2598641"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstColorBalanceChannel
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2598665"></a><h2>Signals</h2>
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel-value-changed">value-changed</a>"                                  : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel-value-changed" title='The "value-changed" signal'>value-changed</a>"                                  : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2598693"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2620923"></a><p>The <a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel"><span class="type">GstColorBalanceChannel</span></a> object represents a parameter
+for modifying the color balance implemented by an element providing the
+<a class="link" href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance"><span class="type">GstColorBalance</span></a> interface. For example, Hue or Saturation.
+</p>
+</div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2598708"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2598718"></a><h3>
-<a name="GstColorBalanceChannel-struct"></a>GstColorBalanceChannel</h3>
-<a class="indexterm" name="id2598732"></a><pre class="programlisting">typedef struct _GstColorBalanceChannel GstColorBalanceChannel;</pre>
+<a name="GstColorBalanceChannel-struct"></a><h3>GstColorBalanceChannel</h3>
+<pre class="programlisting">typedef struct {
+  gchar  *label;
+  gint    min_value;
+  gint    max_value;
+} GstColorBalanceChannel;
+</pre>
 <p>
-
 </p>
-</div>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2598749"></a><h2>Signal Details</h2>
-<div class="refsect2" lang="en">
-<a name="id2598759"></a><h3>
-<a name="GstColorBalanceChannel-value-changed"></a>The "value-changed" signal</h3>
-<a class="indexterm" name="id2598770"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel">GstColorBalanceChannel</a> *gstcolorbalancechannel,
-                                                        gint                    arg1,
-                                                        gpointer                user_data)                   : Run Last</pre>
 <p>
 
 </p>
@@ -113,18 +109,51 @@
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstcolorbalancechannel</code></em>&#160;:</span></td>
-<td>the object which received the signal.
+<td><p><span class="term">gchar *<em class="structfield"><code>label</code></em>;</span></p></td>
+<td> A string containing a descriptive name for this channel
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term">gint <em class="structfield"><code>min_value</code></em>;</span></p></td>
+<td> The minimum valid value for this channel.
+</td>
+</tr>
+<tr>
+<td><p><span class="term">gint <em class="structfield"><code>max_value</code></em>;</span></p></td>
+<td> The maximum valid value for this channel.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-libs-gstcolorbalancechannel.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstColorBalanceChannel-value-changed"></a><h3>The <code class="literal">"value-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel">GstColorBalanceChannel</a> *channel,
+                                                        gint                    value,
+                                                        gpointer                user_data)      : Run Last</pre>
+<p>
+Fired when the value of the indicated channel has changed.</p>
+<p>
 
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>channel</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel"><span class="type">GstColorBalanceChannel</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td> The new value
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -132,5 +161,8 @@
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstvideo</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
 <link rel="prev" href="gstreamer-video.html" title="Video Library">
 <link rel="next" href="gst-plugins-base-libs-gstvideosink.html" title="gstvideosink">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,73 +36,70 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstvideosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2755902" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2757100" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstvideo.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideo.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstvideo"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2755902"></a><span class="refentrytitle">gstvideo</span>
-</h2>
-<p>gstvideo &#8212; Support library for video operations</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstvideo.top_of_page"></a>gstvideo</span></h2>
+<p>gstvideo — Support library for video operations</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstvideo.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/video/video.h&gt;
 
-
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-15:CAPS">GST_VIDEO_BLUE_MASK_15</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-15-INT:CAPS">GST_VIDEO_BLUE_MASK_15_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-16:CAPS">GST_VIDEO_BLUE_MASK_16</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-16-INT:CAPS">GST_VIDEO_BLUE_MASK_16_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-24:CAPS">GST_VIDEO_BYTE1_MASK_24</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-24-INT:CAPS">GST_VIDEO_BYTE1_MASK_24_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-32:CAPS">GST_VIDEO_BYTE1_MASK_32</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-32-INT:CAPS">GST_VIDEO_BYTE1_MASK_32_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-24:CAPS">GST_VIDEO_BYTE2_MASK_24</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-24-INT:CAPS">GST_VIDEO_BYTE2_MASK_24_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-32:CAPS">GST_VIDEO_BYTE2_MASK_32</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-32-INT:CAPS">GST_VIDEO_BYTE2_MASK_32_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-24:CAPS">GST_VIDEO_BYTE3_MASK_24</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-24-INT:CAPS">GST_VIDEO_BYTE3_MASK_24_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-32:CAPS">GST_VIDEO_BYTE3_MASK_32</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-32-INT:CAPS">GST_VIDEO_BYTE3_MASK_32_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE4-MASK-32:CAPS">GST_VIDEO_BYTE4_MASK_32</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE4-MASK-32-INT:CAPS">GST_VIDEO_BYTE4_MASK_32_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-ABGR:CAPS">GST_VIDEO_CAPS_ABGR</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-ARGB:CAPS">GST_VIDEO_CAPS_ARGB</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGR:CAPS">GST_VIDEO_CAPS_BGR</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRA:CAPS">GST_VIDEO_CAPS_BGRA</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRx">GST_VIDEO_CAPS_BGRx</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRx-HOST-ENDIAN">GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB:CAPS">GST_VIDEO_CAPS_RGB</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGBA:CAPS">GST_VIDEO_CAPS_RGBA</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB-15:CAPS">GST_VIDEO_CAPS_RGB_15</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB-16:CAPS">GST_VIDEO_CAPS_RGB_16</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGBx">GST_VIDEO_CAPS_RGBx</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-YUV:CAPS">GST_VIDEO_CAPS_YUV</a>                  (fourcc)
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xBGR">GST_VIDEO_CAPS_xBGR</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xRGB">GST_VIDEO_CAPS_xRGB</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xRGB-HOST-ENDIAN">GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-FPS-RANGE:CAPS">GST_VIDEO_FPS_RANGE</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-15:CAPS">GST_VIDEO_GREEN_MASK_15</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-15-INT:CAPS">GST_VIDEO_GREEN_MASK_15_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-16:CAPS">GST_VIDEO_GREEN_MASK_16</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-16-INT:CAPS">GST_VIDEO_GREEN_MASK_16_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-15:CAPS">GST_VIDEO_RED_MASK_15</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-15-INT:CAPS">GST_VIDEO_RED_MASK_15_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-16:CAPS">GST_VIDEO_RED_MASK_16</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-16-INT:CAPS">GST_VIDEO_RED_MASK_16_INT</a>
-#define             <a href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-SIZE-RANGE:CAPS">GST_VIDEO_SIZE_RANGE</a>
-enum                <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a>;
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-calculate-display-ratio">gst_video_calculate_display_ratio</a>   (guint *dar_n,
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-15:CAPS" title="GST_VIDEO_BLUE_MASK_15">GST_VIDEO_BLUE_MASK_15</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-15-INT:CAPS" title="GST_VIDEO_BLUE_MASK_15_INT">GST_VIDEO_BLUE_MASK_15_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-16:CAPS" title="GST_VIDEO_BLUE_MASK_16">GST_VIDEO_BLUE_MASK_16</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BLUE-MASK-16-INT:CAPS" title="GST_VIDEO_BLUE_MASK_16_INT">GST_VIDEO_BLUE_MASK_16_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-24:CAPS" title="GST_VIDEO_BYTE1_MASK_24">GST_VIDEO_BYTE1_MASK_24</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-24-INT:CAPS" title="GST_VIDEO_BYTE1_MASK_24_INT">GST_VIDEO_BYTE1_MASK_24_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-32:CAPS" title="GST_VIDEO_BYTE1_MASK_32">GST_VIDEO_BYTE1_MASK_32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE1-MASK-32-INT:CAPS" title="GST_VIDEO_BYTE1_MASK_32_INT">GST_VIDEO_BYTE1_MASK_32_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-24:CAPS" title="GST_VIDEO_BYTE2_MASK_24">GST_VIDEO_BYTE2_MASK_24</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-24-INT:CAPS" title="GST_VIDEO_BYTE2_MASK_24_INT">GST_VIDEO_BYTE2_MASK_24_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-32:CAPS" title="GST_VIDEO_BYTE2_MASK_32">GST_VIDEO_BYTE2_MASK_32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE2-MASK-32-INT:CAPS" title="GST_VIDEO_BYTE2_MASK_32_INT">GST_VIDEO_BYTE2_MASK_32_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-24:CAPS" title="GST_VIDEO_BYTE3_MASK_24">GST_VIDEO_BYTE3_MASK_24</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-24-INT:CAPS" title="GST_VIDEO_BYTE3_MASK_24_INT">GST_VIDEO_BYTE3_MASK_24_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-32:CAPS" title="GST_VIDEO_BYTE3_MASK_32">GST_VIDEO_BYTE3_MASK_32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE3-MASK-32-INT:CAPS" title="GST_VIDEO_BYTE3_MASK_32_INT">GST_VIDEO_BYTE3_MASK_32_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE4-MASK-32:CAPS" title="GST_VIDEO_BYTE4_MASK_32">GST_VIDEO_BYTE4_MASK_32</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-BYTE4-MASK-32-INT:CAPS" title="GST_VIDEO_BYTE4_MASK_32_INT">GST_VIDEO_BYTE4_MASK_32_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-ABGR:CAPS" title="GST_VIDEO_CAPS_ABGR">GST_VIDEO_CAPS_ABGR</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-ARGB:CAPS" title="GST_VIDEO_CAPS_ARGB">GST_VIDEO_CAPS_ARGB</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGR:CAPS" title="GST_VIDEO_CAPS_BGR">GST_VIDEO_CAPS_BGR</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRA:CAPS" title="GST_VIDEO_CAPS_BGRA">GST_VIDEO_CAPS_BGRA</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRx" title="GST_VIDEO_CAPS_BGRx">GST_VIDEO_CAPS_BGRx</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-BGRx-HOST-ENDIAN" title="GST_VIDEO_CAPS_BGRx_HOST_ENDIAN">GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB:CAPS" title="GST_VIDEO_CAPS_RGB">GST_VIDEO_CAPS_RGB</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGBA:CAPS" title="GST_VIDEO_CAPS_RGBA">GST_VIDEO_CAPS_RGBA</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB-15:CAPS" title="GST_VIDEO_CAPS_RGB_15">GST_VIDEO_CAPS_RGB_15</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGB-16:CAPS" title="GST_VIDEO_CAPS_RGB_16">GST_VIDEO_CAPS_RGB_16</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-RGBx" title="GST_VIDEO_CAPS_RGBx">GST_VIDEO_CAPS_RGBx</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-YUV:CAPS" title="GST_VIDEO_CAPS_YUV()">GST_VIDEO_CAPS_YUV</a>                  (fourcc)
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xBGR" title="GST_VIDEO_CAPS_xBGR">GST_VIDEO_CAPS_xBGR</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xRGB" title="GST_VIDEO_CAPS_xRGB">GST_VIDEO_CAPS_xRGB</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-CAPS-xRGB-HOST-ENDIAN" title="GST_VIDEO_CAPS_xRGB_HOST_ENDIAN">GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-FPS-RANGE:CAPS" title="GST_VIDEO_FPS_RANGE">GST_VIDEO_FPS_RANGE</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-15:CAPS" title="GST_VIDEO_GREEN_MASK_15">GST_VIDEO_GREEN_MASK_15</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-15-INT:CAPS" title="GST_VIDEO_GREEN_MASK_15_INT">GST_VIDEO_GREEN_MASK_15_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-16:CAPS" title="GST_VIDEO_GREEN_MASK_16">GST_VIDEO_GREEN_MASK_16</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-GREEN-MASK-16-INT:CAPS" title="GST_VIDEO_GREEN_MASK_16_INT">GST_VIDEO_GREEN_MASK_16_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-15:CAPS" title="GST_VIDEO_RED_MASK_15">GST_VIDEO_RED_MASK_15</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-15-INT:CAPS" title="GST_VIDEO_RED_MASK_15_INT">GST_VIDEO_RED_MASK_15_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-16:CAPS" title="GST_VIDEO_RED_MASK_16">GST_VIDEO_RED_MASK_16</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-16-INT:CAPS" title="GST_VIDEO_RED_MASK_16_INT">GST_VIDEO_RED_MASK_16_INT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-SIZE-RANGE:CAPS" title="GST_VIDEO_SIZE_RANGE">GST_VIDEO_SIZE_RANGE</a>
+enum                <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>;
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-calculate-display-ratio" title="gst_video_calculate_display_ratio ()">gst_video_calculate_display_ratio</a>   (guint *dar_n,
                                                          guint *dar_d,
                                                          guint video_width,
                                                          guint video_height,
@@ -110,11 +107,11 @@ gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-calcu
                                                          guint video_par_d,
                                                          guint display_par_n,
                                                          guint display_par_d);
-const GValue*       <a href="gst-plugins-base-libs-gstvideo.html#gst-video-frame-rate">gst_video_frame_rate</a>                (GstPad *pad);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-get-size">gst_video_get_size</a>                  (GstPad *pad,
+const GValue*       <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-frame-rate" title="gst_video_frame_rate ()">gst_video_frame_rate</a>                (GstPad *pad);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-get-size" title="gst_video_get_size ()">gst_video_get_size</a>                  (GstPad *pad,
                                                          gint *width,
                                                          gint *height);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-convert">gst_video_format_convert</a>            (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-convert" title="gst_video_format_convert ()">gst_video_format_convert</a>            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int fps_n,
@@ -123,58 +120,58 @@ gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-forma
                                                          gint64 src_value,
                                                          GstFormat dest_format,
                                                          gint64 *dest_value);
-GstCaps*            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-new-caps">gst_video_format_new_caps</a>           (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+GstCaps*            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-new-caps" title="gst_video_format_new_caps ()">gst_video_format_new_caps</a>           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int framerate_n,
                                                          int framerate_d,
                                                          int par_n,
                                                          int par_d);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-height">gst_video_format_get_component_height</a>
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-height" title="gst_video_format_get_component_height ()">gst_video_format_get_component_height</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int height);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-offset">gst_video_format_get_component_offset</a>
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-offset" title="gst_video_format_get_component_offset ()">gst_video_format_get_component_offset</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width,
                                                          int height);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-width">gst_video_format_get_component_width</a>
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-component-width" title="gst_video_format_get_component_width ()">gst_video_format_get_component_width</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-pixel-stride">gst_video_format_get_pixel_stride</a>   (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-pixel-stride" title="gst_video_format_get_pixel_stride ()">gst_video_format_get_pixel_stride</a>   (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-row-stride">gst_video_format_get_row_stride</a>     (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-row-stride" title="gst_video_format_get_row_stride ()">gst_video_format_get_row_stride</a>     (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width);
-int                 <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-size">gst_video_format_get_size</a>           (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-size" title="gst_video_format_get_size ()">gst_video_format_get_size</a>           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-has-alpha">gst_video_format_has_alpha</a>          (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-rgb">gst_video_format_is_rgb</a>             (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-yuv">gst_video_format_is_yuv</a>             (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);
-guint32             <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-to-fourcc">gst_video_format_to_fourcc</a>          (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);
-<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a>      <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-from-fourcc">gst_video_format_from_fourcc</a>        (guint32 fourcc);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-format-parse-caps">gst_video_format_parse_caps</a>         (GstCaps *caps,
-                                                         <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> *format,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-has-alpha" title="gst_video_format_has_alpha ()">gst_video_format_has_alpha</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-rgb" title="gst_video_format_is_rgb ()">gst_video_format_is_rgb</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-yuv" title="gst_video_format_is_yuv ()">gst_video_format_is_yuv</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+guint32             <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-to-fourcc" title="gst_video_format_to_fourcc ()">gst_video_format_to_fourcc</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-from-fourcc" title="gst_video_format_from_fourcc ()">gst_video_format_from_fourcc</a>        (guint32 fourcc);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-parse-caps" title="gst_video_format_parse_caps ()">gst_video_format_parse_caps</a>         (GstCaps *caps,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> *format,
                                                          int *width,
                                                          int *height);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-framerate">gst_video_parse_caps_framerate</a>      (GstCaps *caps,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-framerate" title="gst_video_parse_caps_framerate ()">gst_video_parse_caps_framerate</a>      (GstCaps *caps,
                                                          int *fps_n,
                                                          int *fps_d);
-gboolean            <a href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-pixel-aspect-ratio">gst_video_parse_caps_pixel_aspect_ratio</a>
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-pixel-aspect-ratio" title="gst_video_parse_caps_pixel_aspect_ratio ()">gst_video_parse_caps_pixel_aspect_ratio</a>
                                                         (GstCaps *caps,
                                                          int *par_n,
                                                          int *par_d);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2757100"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstvideo.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2757112"></a><p>
+<a name="id2787325"></a><p>
 This library contains some helper functions and includes the 
 videosink and videofilter base classes.
 </p>
@@ -184,11 +181,10 @@ videosink and videofilter base classes.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2757124"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstvideo.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2757135"></a><h3>
-<a name="GST-VIDEO-BLUE-MASK-15:CAPS"></a>GST_VIDEO_BLUE_MASK_15</h3>
-<a class="indexterm" name="id2757147"></a><pre class="programlisting">#define GST_VIDEO_BLUE_MASK_15 "0x001f"
+<a name="GST-VIDEO-BLUE-MASK-15:CAPS"></a><h3>GST_VIDEO_BLUE_MASK_15</h3>
+<pre class="programlisting">#define GST_VIDEO_BLUE_MASK_15 "0x001f"
 </pre>
 <p>
 
@@ -196,9 +192,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757163"></a><h3>
-<a name="GST-VIDEO-BLUE-MASK-15-INT:CAPS"></a>GST_VIDEO_BLUE_MASK_15_INT</h3>
-<a class="indexterm" name="id2757177"></a><pre class="programlisting">#define GST_VIDEO_BLUE_MASK_15_INT 0x001f
+<a name="GST-VIDEO-BLUE-MASK-15-INT:CAPS"></a><h3>GST_VIDEO_BLUE_MASK_15_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BLUE_MASK_15_INT 0x001f
 </pre>
 <p>
 
@@ -206,9 +201,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757192"></a><h3>
-<a name="GST-VIDEO-BLUE-MASK-16:CAPS"></a>GST_VIDEO_BLUE_MASK_16</h3>
-<a class="indexterm" name="id2757206"></a><pre class="programlisting">#define GST_VIDEO_BLUE_MASK_16 "0x001f"
+<a name="GST-VIDEO-BLUE-MASK-16:CAPS"></a><h3>GST_VIDEO_BLUE_MASK_16</h3>
+<pre class="programlisting">#define GST_VIDEO_BLUE_MASK_16 "0x001f"
 </pre>
 <p>
 
@@ -216,9 +210,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757221"></a><h3>
-<a name="GST-VIDEO-BLUE-MASK-16-INT:CAPS"></a>GST_VIDEO_BLUE_MASK_16_INT</h3>
-<a class="indexterm" name="id2757234"></a><pre class="programlisting">#define GST_VIDEO_BLUE_MASK_16_INT 0x001f
+<a name="GST-VIDEO-BLUE-MASK-16-INT:CAPS"></a><h3>GST_VIDEO_BLUE_MASK_16_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BLUE_MASK_16_INT 0x001f
 </pre>
 <p>
 
@@ -226,9 +219,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757250"></a><h3>
-<a name="GST-VIDEO-BYTE1-MASK-24:CAPS"></a>GST_VIDEO_BYTE1_MASK_24</h3>
-<a class="indexterm" name="id2757263"></a><pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_24  "0x00FF0000"
+<a name="GST-VIDEO-BYTE1-MASK-24:CAPS"></a><h3>GST_VIDEO_BYTE1_MASK_24</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_24  "0x00FF0000"
 </pre>
 <p>
 
@@ -236,9 +228,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757279"></a><h3>
-<a name="GST-VIDEO-BYTE1-MASK-24-INT:CAPS"></a>GST_VIDEO_BYTE1_MASK_24_INT</h3>
-<a class="indexterm" name="id2757292"></a><pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_24_INT  0x00FF0000
+<a name="GST-VIDEO-BYTE1-MASK-24-INT:CAPS"></a><h3>GST_VIDEO_BYTE1_MASK_24_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_24_INT  0x00FF0000
 </pre>
 <p>
 
@@ -246,9 +237,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757308"></a><h3>
-<a name="GST-VIDEO-BYTE1-MASK-32:CAPS"></a>GST_VIDEO_BYTE1_MASK_32</h3>
-<a class="indexterm" name="id2757321"></a><pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_32  "0xFF000000"
+<a name="GST-VIDEO-BYTE1-MASK-32:CAPS"></a><h3>GST_VIDEO_BYTE1_MASK_32</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_32  "0xFF000000"
 </pre>
 <p>
 
@@ -256,9 +246,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757336"></a><h3>
-<a name="GST-VIDEO-BYTE1-MASK-32-INT:CAPS"></a>GST_VIDEO_BYTE1_MASK_32_INT</h3>
-<a class="indexterm" name="id2757349"></a><pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_32_INT  0xFF000000
+<a name="GST-VIDEO-BYTE1-MASK-32-INT:CAPS"></a><h3>GST_VIDEO_BYTE1_MASK_32_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE1_MASK_32_INT  0xFF000000
 </pre>
 <p>
 
@@ -266,9 +255,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757365"></a><h3>
-<a name="GST-VIDEO-BYTE2-MASK-24:CAPS"></a>GST_VIDEO_BYTE2_MASK_24</h3>
-<a class="indexterm" name="id2757378"></a><pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_24  "0x0000FF00"
+<a name="GST-VIDEO-BYTE2-MASK-24:CAPS"></a><h3>GST_VIDEO_BYTE2_MASK_24</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_24  "0x0000FF00"
 </pre>
 <p>
 
@@ -276,9 +264,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757394"></a><h3>
-<a name="GST-VIDEO-BYTE2-MASK-24-INT:CAPS"></a>GST_VIDEO_BYTE2_MASK_24_INT</h3>
-<a class="indexterm" name="id2757407"></a><pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_24_INT  0x0000FF00
+<a name="GST-VIDEO-BYTE2-MASK-24-INT:CAPS"></a><h3>GST_VIDEO_BYTE2_MASK_24_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_24_INT  0x0000FF00
 </pre>
 <p>
 
@@ -286,9 +273,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757423"></a><h3>
-<a name="GST-VIDEO-BYTE2-MASK-32:CAPS"></a>GST_VIDEO_BYTE2_MASK_32</h3>
-<a class="indexterm" name="id2757436"></a><pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_32  "0x00FF0000"
+<a name="GST-VIDEO-BYTE2-MASK-32:CAPS"></a><h3>GST_VIDEO_BYTE2_MASK_32</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_32  "0x00FF0000"
 </pre>
 <p>
 
@@ -296,9 +282,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757452"></a><h3>
-<a name="GST-VIDEO-BYTE2-MASK-32-INT:CAPS"></a>GST_VIDEO_BYTE2_MASK_32_INT</h3>
-<a class="indexterm" name="id2757466"></a><pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_32_INT  0x00FF0000
+<a name="GST-VIDEO-BYTE2-MASK-32-INT:CAPS"></a><h3>GST_VIDEO_BYTE2_MASK_32_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE2_MASK_32_INT  0x00FF0000
 </pre>
 <p>
 
@@ -306,9 +291,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757481"></a><h3>
-<a name="GST-VIDEO-BYTE3-MASK-24:CAPS"></a>GST_VIDEO_BYTE3_MASK_24</h3>
-<a class="indexterm" name="id2757495"></a><pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_24  "0x000000FF"
+<a name="GST-VIDEO-BYTE3-MASK-24:CAPS"></a><h3>GST_VIDEO_BYTE3_MASK_24</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_24  "0x000000FF"
 </pre>
 <p>
 
@@ -316,9 +300,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757511"></a><h3>
-<a name="GST-VIDEO-BYTE3-MASK-24-INT:CAPS"></a>GST_VIDEO_BYTE3_MASK_24_INT</h3>
-<a class="indexterm" name="id2757524"></a><pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_24_INT  0x000000FF
+<a name="GST-VIDEO-BYTE3-MASK-24-INT:CAPS"></a><h3>GST_VIDEO_BYTE3_MASK_24_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_24_INT  0x000000FF
 </pre>
 <p>
 
@@ -326,9 +309,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757540"></a><h3>
-<a name="GST-VIDEO-BYTE3-MASK-32:CAPS"></a>GST_VIDEO_BYTE3_MASK_32</h3>
-<a class="indexterm" name="id2757553"></a><pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_32  "0x0000FF00"
+<a name="GST-VIDEO-BYTE3-MASK-32:CAPS"></a><h3>GST_VIDEO_BYTE3_MASK_32</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_32  "0x0000FF00"
 </pre>
 <p>
 
@@ -336,9 +318,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757569"></a><h3>
-<a name="GST-VIDEO-BYTE3-MASK-32-INT:CAPS"></a>GST_VIDEO_BYTE3_MASK_32_INT</h3>
-<a class="indexterm" name="id2757582"></a><pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_32_INT  0x0000FF00
+<a name="GST-VIDEO-BYTE3-MASK-32-INT:CAPS"></a><h3>GST_VIDEO_BYTE3_MASK_32_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE3_MASK_32_INT  0x0000FF00
 </pre>
 <p>
 
@@ -346,9 +327,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757598"></a><h3>
-<a name="GST-VIDEO-BYTE4-MASK-32:CAPS"></a>GST_VIDEO_BYTE4_MASK_32</h3>
-<a class="indexterm" name="id2757611"></a><pre class="programlisting">#define GST_VIDEO_BYTE4_MASK_32  "0x000000FF"
+<a name="GST-VIDEO-BYTE4-MASK-32:CAPS"></a><h3>GST_VIDEO_BYTE4_MASK_32</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE4_MASK_32  "0x000000FF"
 </pre>
 <p>
 
@@ -356,9 +336,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757627"></a><h3>
-<a name="GST-VIDEO-BYTE4-MASK-32-INT:CAPS"></a>GST_VIDEO_BYTE4_MASK_32_INT</h3>
-<a class="indexterm" name="id2757640"></a><pre class="programlisting">#define GST_VIDEO_BYTE4_MASK_32_INT  0x000000FF
+<a name="GST-VIDEO-BYTE4-MASK-32-INT:CAPS"></a><h3>GST_VIDEO_BYTE4_MASK_32_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_BYTE4_MASK_32_INT  0x000000FF
 </pre>
 <p>
 
@@ -366,115 +345,103 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757656"></a><h3>
-<a name="GST-VIDEO-CAPS-ABGR:CAPS"></a>GST_VIDEO_CAPS_ABGR</h3>
-<a class="indexterm" name="id2757669"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_ABGR</pre>
+<a name="GST-VIDEO-CAPS-ABGR:CAPS"></a><h3>GST_VIDEO_CAPS_ABGR</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_ABGR</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757684"></a><h3>
-<a name="GST-VIDEO-CAPS-ARGB:CAPS"></a>GST_VIDEO_CAPS_ARGB</h3>
-<a class="indexterm" name="id2757698"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_ARGB</pre>
+<a name="GST-VIDEO-CAPS-ARGB:CAPS"></a><h3>GST_VIDEO_CAPS_ARGB</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_ARGB</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757713"></a><h3>
-<a name="GST-VIDEO-CAPS-BGR:CAPS"></a>GST_VIDEO_CAPS_BGR</h3>
-<a class="indexterm" name="id2757726"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_BGR</pre>
+<a name="GST-VIDEO-CAPS-BGR:CAPS"></a><h3>GST_VIDEO_CAPS_BGR</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_BGR</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757742"></a><h3>
-<a name="GST-VIDEO-CAPS-BGRA:CAPS"></a>GST_VIDEO_CAPS_BGRA</h3>
-<a class="indexterm" name="id2757754"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_BGRA</pre>
+<a name="GST-VIDEO-CAPS-BGRA:CAPS"></a><h3>GST_VIDEO_CAPS_BGRA</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_BGRA</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757770"></a><h3>
-<a name="GST-VIDEO-CAPS-BGRx"></a>GST_VIDEO_CAPS_BGRx</h3>
-<a class="indexterm" name="id2757782"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_BGRx</pre>
+<a name="GST-VIDEO-CAPS-BGRx"></a><h3>GST_VIDEO_CAPS_BGRx</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_BGRx</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757797"></a><h3>
-<a name="GST-VIDEO-CAPS-BGRx-HOST-ENDIAN"></a>GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</h3>
-<a class="indexterm" name="id2757810"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</pre>
+<a name="GST-VIDEO-CAPS-BGRx-HOST-ENDIAN"></a><h3>GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_BGRx_HOST_ENDIAN</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757826"></a><h3>
-<a name="GST-VIDEO-CAPS-RGB:CAPS"></a>GST_VIDEO_CAPS_RGB</h3>
-<a class="indexterm" name="id2757839"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_RGB</pre>
+<a name="GST-VIDEO-CAPS-RGB:CAPS"></a><h3>GST_VIDEO_CAPS_RGB</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_RGB</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757854"></a><h3>
-<a name="GST-VIDEO-CAPS-RGBA:CAPS"></a>GST_VIDEO_CAPS_RGBA</h3>
-<a class="indexterm" name="id2757868"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_RGBA</pre>
+<a name="GST-VIDEO-CAPS-RGBA:CAPS"></a><h3>GST_VIDEO_CAPS_RGBA</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_RGBA</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757883"></a><h3>
-<a name="GST-VIDEO-CAPS-RGB-15:CAPS"></a>GST_VIDEO_CAPS_RGB_15</h3>
-<a class="indexterm" name="id2757895"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_RGB_15</pre>
+<a name="GST-VIDEO-CAPS-RGB-15:CAPS"></a><h3>GST_VIDEO_CAPS_RGB_15</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_RGB_15</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757911"></a><h3>
-<a name="GST-VIDEO-CAPS-RGB-16:CAPS"></a>GST_VIDEO_CAPS_RGB_16</h3>
-<a class="indexterm" name="id2757924"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_RGB_16</pre>
+<a name="GST-VIDEO-CAPS-RGB-16:CAPS"></a><h3>GST_VIDEO_CAPS_RGB_16</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_RGB_16</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757940"></a><h3>
-<a name="GST-VIDEO-CAPS-RGBx"></a>GST_VIDEO_CAPS_RGBx</h3>
-<a class="indexterm" name="id2757953"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_RGBx</pre>
+<a name="GST-VIDEO-CAPS-RGBx"></a><h3>GST_VIDEO_CAPS_RGBx</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_RGBx</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2757968"></a><h3>
-<a name="GST-VIDEO-CAPS-YUV:CAPS"></a>GST_VIDEO_CAPS_YUV()</h3>
-<a class="indexterm" name="id2757981"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_YUV(fourcc)</pre>
+<a name="GST-VIDEO-CAPS-YUV:CAPS"></a><h3>GST_VIDEO_CAPS_YUV()</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_YUV(fourcc)</pre>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>fourcc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
 <td>
 
 
@@ -484,36 +451,32 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758014"></a><h3>
-<a name="GST-VIDEO-CAPS-xBGR"></a>GST_VIDEO_CAPS_xBGR</h3>
-<a class="indexterm" name="id2758027"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_xBGR</pre>
+<a name="GST-VIDEO-CAPS-xBGR"></a><h3>GST_VIDEO_CAPS_xBGR</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_xBGR</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758042"></a><h3>
-<a name="GST-VIDEO-CAPS-xRGB"></a>GST_VIDEO_CAPS_xRGB</h3>
-<a class="indexterm" name="id2758055"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_xRGB</pre>
+<a name="GST-VIDEO-CAPS-xRGB"></a><h3>GST_VIDEO_CAPS_xRGB</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_xRGB</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758070"></a><h3>
-<a name="GST-VIDEO-CAPS-xRGB-HOST-ENDIAN"></a>GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</h3>
-<a class="indexterm" name="id2758083"></a><pre class="programlisting">#define             GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</pre>
+<a name="GST-VIDEO-CAPS-xRGB-HOST-ENDIAN"></a><h3>GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</h3>
+<pre class="programlisting">#define             GST_VIDEO_CAPS_xRGB_HOST_ENDIAN</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758099"></a><h3>
-<a name="GST-VIDEO-FPS-RANGE:CAPS"></a>GST_VIDEO_FPS_RANGE</h3>
-<a class="indexterm" name="id2758112"></a><pre class="programlisting">#define GST_VIDEO_FPS_RANGE "(fraction) [ 0, max ]"
+<a name="GST-VIDEO-FPS-RANGE:CAPS"></a><h3>GST_VIDEO_FPS_RANGE</h3>
+<pre class="programlisting">#define GST_VIDEO_FPS_RANGE "(fraction) [ 0, max ]"
 </pre>
 <p>
 
@@ -521,9 +484,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758128"></a><h3>
-<a name="GST-VIDEO-GREEN-MASK-15:CAPS"></a>GST_VIDEO_GREEN_MASK_15</h3>
-<a class="indexterm" name="id2758141"></a><pre class="programlisting">#define GST_VIDEO_GREEN_MASK_15 "0x03e0"
+<a name="GST-VIDEO-GREEN-MASK-15:CAPS"></a><h3>GST_VIDEO_GREEN_MASK_15</h3>
+<pre class="programlisting">#define GST_VIDEO_GREEN_MASK_15 "0x03e0"
 </pre>
 <p>
 
@@ -531,9 +493,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758157"></a><h3>
-<a name="GST-VIDEO-GREEN-MASK-15-INT:CAPS"></a>GST_VIDEO_GREEN_MASK_15_INT</h3>
-<a class="indexterm" name="id2758170"></a><pre class="programlisting">#define GST_VIDEO_GREEN_MASK_15_INT 0x03e0
+<a name="GST-VIDEO-GREEN-MASK-15-INT:CAPS"></a><h3>GST_VIDEO_GREEN_MASK_15_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_GREEN_MASK_15_INT 0x03e0
 </pre>
 <p>
 
@@ -541,9 +502,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758186"></a><h3>
-<a name="GST-VIDEO-GREEN-MASK-16:CAPS"></a>GST_VIDEO_GREEN_MASK_16</h3>
-<a class="indexterm" name="id2758199"></a><pre class="programlisting">#define GST_VIDEO_GREEN_MASK_16 "0x07e0"
+<a name="GST-VIDEO-GREEN-MASK-16:CAPS"></a><h3>GST_VIDEO_GREEN_MASK_16</h3>
+<pre class="programlisting">#define GST_VIDEO_GREEN_MASK_16 "0x07e0"
 </pre>
 <p>
 
@@ -551,9 +511,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758214"></a><h3>
-<a name="GST-VIDEO-GREEN-MASK-16-INT:CAPS"></a>GST_VIDEO_GREEN_MASK_16_INT</h3>
-<a class="indexterm" name="id2758227"></a><pre class="programlisting">#define GST_VIDEO_GREEN_MASK_16_INT 0x07e0
+<a name="GST-VIDEO-GREEN-MASK-16-INT:CAPS"></a><h3>GST_VIDEO_GREEN_MASK_16_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_GREEN_MASK_16_INT 0x07e0
 </pre>
 <p>
 
@@ -561,9 +520,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758243"></a><h3>
-<a name="GST-VIDEO-RED-MASK-15:CAPS"></a>GST_VIDEO_RED_MASK_15</h3>
-<a class="indexterm" name="id2758256"></a><pre class="programlisting">#define GST_VIDEO_RED_MASK_15 "0x7c00"
+<a name="GST-VIDEO-RED-MASK-15:CAPS"></a><h3>GST_VIDEO_RED_MASK_15</h3>
+<pre class="programlisting">#define GST_VIDEO_RED_MASK_15 "0x7c00"
 </pre>
 <p>
 
@@ -571,9 +529,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758272"></a><h3>
-<a name="GST-VIDEO-RED-MASK-15-INT:CAPS"></a>GST_VIDEO_RED_MASK_15_INT</h3>
-<a class="indexterm" name="id2758285"></a><pre class="programlisting">#define GST_VIDEO_RED_MASK_15_INT 0x7c00
+<a name="GST-VIDEO-RED-MASK-15-INT:CAPS"></a><h3>GST_VIDEO_RED_MASK_15_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_RED_MASK_15_INT 0x7c00
 </pre>
 <p>
 
@@ -581,9 +538,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758301"></a><h3>
-<a name="GST-VIDEO-RED-MASK-16:CAPS"></a>GST_VIDEO_RED_MASK_16</h3>
-<a class="indexterm" name="id2758314"></a><pre class="programlisting">#define GST_VIDEO_RED_MASK_16 "0xf800"
+<a name="GST-VIDEO-RED-MASK-16:CAPS"></a><h3>GST_VIDEO_RED_MASK_16</h3>
+<pre class="programlisting">#define GST_VIDEO_RED_MASK_16 "0xf800"
 </pre>
 <p>
 
@@ -591,9 +547,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758330"></a><h3>
-<a name="GST-VIDEO-RED-MASK-16-INT:CAPS"></a>GST_VIDEO_RED_MASK_16_INT</h3>
-<a class="indexterm" name="id2758343"></a><pre class="programlisting">#define GST_VIDEO_RED_MASK_16_INT 0xf800
+<a name="GST-VIDEO-RED-MASK-16-INT:CAPS"></a><h3>GST_VIDEO_RED_MASK_16_INT</h3>
+<pre class="programlisting">#define GST_VIDEO_RED_MASK_16_INT 0xf800
 </pre>
 <p>
 
@@ -601,9 +556,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758359"></a><h3>
-<a name="GST-VIDEO-SIZE-RANGE:CAPS"></a>GST_VIDEO_SIZE_RANGE</h3>
-<a class="indexterm" name="id2758372"></a><pre class="programlisting">#define GST_VIDEO_SIZE_RANGE "(int) [ 1, max ]"
+<a name="GST-VIDEO-SIZE-RANGE:CAPS"></a><h3>GST_VIDEO_SIZE_RANGE</h3>
+<pre class="programlisting">#define GST_VIDEO_SIZE_RANGE "(int) [ 1, max ]"
 </pre>
 <p>
 
@@ -611,9 +565,8 @@ videosink and videofilter base classes.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758387"></a><h3>
-<a name="GstVideoFormat"></a>enum GstVideoFormat</h3>
-<a class="indexterm" name="id2758400"></a><pre class="programlisting">typedef enum {
+<a name="GstVideoFormat"></a><h3>enum GstVideoFormat</h3>
+<pre class="programlisting">typedef enum {
   GST_VIDEO_FORMAT_UNKNOWN,
   GST_VIDEO_FORMAT_I420,
   GST_VIDEO_FORMAT_YV12,
@@ -629,18 +582,116 @@ videosink and videofilter base classes.
   GST_VIDEO_FORMAT_ARGB,
   GST_VIDEO_FORMAT_ABGR,
   GST_VIDEO_FORMAT_RGB,
-  GST_VIDEO_FORMAT_BGR
+  GST_VIDEO_FORMAT_BGR,
+  GST_VIDEO_FORMAT_Y41B,
+  GST_VIDEO_FORMAT_Y42B
 } GstVideoFormat;
 </pre>
 <p>
+Enum value describing the most common video formats.</p>
+<p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_UNKNOWN</code></span></p></td>
+<td> Unknown or unset video format id
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-I420:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_I420</code></span></p></td>
+<td> planar 4:2:0 YUV
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-YV12:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_YV12</code></span></p></td>
+<td> planar 4:2:0 YVU (like I420 but UV planes swapped)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-YUY2:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_YUY2</code></span></p></td>
+<td> packed 4:2:2 YUV (Y0-U0-Y1-V0 Y2-U2-Y3-V2 Y4 ...)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-UYVY:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_UYVY</code></span></p></td>
+<td> packed 4:2:2 YUV (U0-Y0-V0-Y1 U2-Y2-V2-Y3 U4 ...) 
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-AYUV:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_AYUV</code></span></p></td>
+<td> packed 4:4:4 YUV with alpha channel (A0-Y0-U0-V0 ...)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-RGBx"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_RGBx</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-BGRx"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_BGRx</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-xRGB"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_xRGB</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-xBGR"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_xBGR</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-RGBA:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_RGBA</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-BGRA:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_BGRA</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-ARGB:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_ARGB</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-ABGR:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_ABGR</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-RGB:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_RGB</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-BGR:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_BGR</code></span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-Y41B:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_Y41B</code></span></p></td>
+<td> planar 4:1:1 YUV (Since: 0.10.18)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-FORMAT-Y42B:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_FORMAT_Y42B</code></span></p></td>
+<td> planar 4:2:2 YUV (Since: 0.10.18)
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758422"></a><h3>
-<a name="gst-video-calculate-display-ratio"></a>gst_video_calculate_display_ratio ()</h3>
-<a class="indexterm" name="id2758438"></a><pre class="programlisting">gboolean            gst_video_calculate_display_ratio   (guint *dar_n,
+<a name="gst-video-calculate-display-ratio"></a><h3>gst_video_calculate_display_ratio ()</h3>
+<pre class="programlisting">gboolean            gst_video_calculate_display_ratio   (guint *dar_n,
                                                          guint *dar_d,
                                                          guint video_width,
                                                          guint video_height,
@@ -659,47 +710,47 @@ display ratio the video will be rendered with.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dar_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dar_n</code></em> :</span></p></td>
 <td> Numerator of the calculated display_ratio
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dar_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dar_d</code></em> :</span></p></td>
 <td> Denominator of the calculated display_ratio
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>video_width</code></em> :</span></p></td>
 <td> Width of the video frame in pixels
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>video_height</code></em> :</span></p></td>
 <td> Height of the video frame in pixels
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_par_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>video_par_n</code></em> :</span></p></td>
 <td> Numerator of the pixel aspect ratio of the input video.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_par_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>video_par_d</code></em> :</span></p></td>
 <td> Denominator of the pixel aspect ratio of the input video.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>display_par_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>display_par_n</code></em> :</span></p></td>
 <td> Numerator of the pixel aspect ratio of the display device
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>display_par_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>display_par_d</code></em> :</span></p></td>
 <td> Denominator of the pixel aspect ratio of the display device
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A boolean indicating success and a calculated Display Ratio in the 
 dar_n and dar_d parameters. 
 The return value is FALSE in the case of integer overflow or other error. 
@@ -713,9 +764,14 @@ The return value is FALSE in the case of integer overflow or other error.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758669"></a><h3>
-<a name="gst-video-frame-rate"></a>gst_video_frame_rate ()</h3>
-<a class="indexterm" name="id2758681"></a><pre class="programlisting">const GValue*       gst_video_frame_rate                (GstPad *pad);</pre>
+<a name="gst-video-frame-rate"></a><h3>gst_video_frame_rate ()</h3>
+<pre class="programlisting">const GValue*       gst_video_frame_rate                (GstPad *pad);</pre>
+<p>
+A convenience function to retrieve a GValue holding the framerate
+from the caps on a pad.
+</p>
+<p>
+The pad needs to have negotiated caps containing a framerate property.</p>
 <p>
 
 </p>
@@ -723,14 +779,14 @@ The return value is FALSE in the case of integer overflow or other error.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> pointer to a <span class="type">GstPad</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td>
-
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> NULL if the pad has no configured caps or the configured caps
+do not contain a framerate.
 
 </td>
 </tr>
@@ -739,36 +795,40 @@ The return value is FALSE in the case of integer overflow or other error.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758739"></a><h3>
-<a name="gst-video-get-size"></a>gst_video_get_size ()</h3>
-<a class="indexterm" name="id2758752"></a><pre class="programlisting">gboolean            gst_video_get_size                  (GstPad *pad,
+<a name="gst-video-get-size"></a><h3>gst_video_get_size ()</h3>
+<pre class="programlisting">gboolean            gst_video_get_size                  (GstPad *pad,
                                                          gint *width,
                                                          gint *height);</pre>
 <p>
+Inspect the caps of the provided pad and retrieve the width and height of
+the video frames it is configured for.
+</p>
+<p>
+The pad needs to have negotiated caps containing width and height properties.</p>
+<p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> pointer to a <span class="type">GstPad</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
+<td> pointer to integer to hold pixel width of the video frames (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
+<td> pointer to integer to hold pixel height of the video frames (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td>
-
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> TRUE if the width and height could be retrieved.
 
 </td>
 </tr>
@@ -777,9 +837,8 @@ The return value is FALSE in the case of integer overflow or other error.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2758850"></a><h3>
-<a name="gst-video-format-convert"></a>gst_video_format_convert ()</h3>
-<a class="indexterm" name="id2758866"></a><pre class="programlisting">gboolean            gst_video_format_convert            (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-convert"></a><h3>gst_video_format_convert ()</h3>
+<pre class="programlisting">gboolean            gst_video_format_convert            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int fps_n,
@@ -792,10 +851,7 @@ The return value is FALSE in the case of integer overflow or other error.
 Converts among various <span class="type">GstFormat</span> types.  This function handles
 GST_FORMAT_BYTES, GST_FORMAT_TIME, and GST_FORMAT_DEFAULT.  For
 raw video, GST_FORMAT_DEFAULT corresponds to video frames.  This
-function can be to handle pad queries of the type GST_QUERY_CONVERT.
-</p>
-<p>
-Returns:</p>
+function can be to handle pad queries of the type GST_QUERY_CONVERT.</p>
 <p>
 
 </p>
@@ -803,52 +859,52 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> the height of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fps_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fps_n</code></em> :</span></p></td>
 <td> frame rate numerator
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fps_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fps_d</code></em> :</span></p></td>
 <td> frame rate denominator
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>src_format</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>src_format</code></em> :</span></p></td>
 <td> <span class="type">GstFormat</span> of the <em class="parameter"><code>src_value</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>src_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>src_value</code></em> :</span></p></td>
 <td> value to convert
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest_format</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest_format</code></em> :</span></p></td>
 <td> <span class="type">GstFormat</span> of the <em class="parameter"><code>dest_value</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest_value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest_value</code></em> :</span></p></td>
 <td> pointer to destination value
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the conversion was successful.
 </td>
 </tr>
@@ -860,9 +916,8 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2759157"></a><h3>
-<a name="gst-video-format-new-caps"></a>gst_video_format_new_caps ()</h3>
-<a class="indexterm" name="id2759173"></a><pre class="programlisting">GstCaps*            gst_video_format_new_caps           (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-new-caps"></a><h3>gst_video_format_new_caps ()</h3>
+<pre class="programlisting">GstCaps*            gst_video_format_new_caps           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int framerate_n,
@@ -870,10 +925,7 @@ Returns:</p>
                                                          int par_n,
                                                          int par_d);</pre>
 <p>
-Creates a new <span class="type">GstCaps</span> object based on the parameters provided.
-</p>
-<p>
-Returns:</p>
+Creates a new <span class="type">GstCaps</span> object based on the parameters provided.</p>
 <p>
 
 </p>
@@ -881,42 +933,42 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> describing the raw video format
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> describing the raw video format
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> height of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>framerate_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>framerate_n</code></em> :</span></p></td>
 <td> numerator of frame rate
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>framerate_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>framerate_d</code></em> :</span></p></td>
 <td> denominator of frame rate
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>par_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>par_n</code></em> :</span></p></td>
 <td> numerator of pixel aspect ratio
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>par_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>par_d</code></em> :</span></p></td>
 <td> denominator of pixel aspect ratio
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstCaps</span> object, or NULL if there was an error
 </td>
 </tr>
@@ -928,19 +980,15 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2759398"></a><h3>
-<a name="gst-video-format-get-component-height"></a>gst_video_format_get_component_height ()</h3>
-<a class="indexterm" name="id2759414"></a><pre class="programlisting">int                 gst_video_format_get_component_height
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-component-height"></a><h3>gst_video_format_get_component_height ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_component_height
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int height);</pre>
 <p>
 Calculates the height of the component.  See
 <em class="parameter"><code>gst_video_format_get_row_stride</code></em> for a description
-of the component index.
-</p>
-<p>
-Returns:</p>
+of the component index.</p>
 <p>
 
 </p>
@@ -948,22 +996,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>component</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>component</code></em> :</span></p></td>
 <td> the component index
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> the height of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> height of component <em class="parameter"><code>component</code></em>
 </td>
 </tr>
@@ -975,10 +1023,9 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2759550"></a><h3>
-<a name="gst-video-format-get-component-offset"></a>gst_video_format_get_component_offset ()</h3>
-<a class="indexterm" name="id2759567"></a><pre class="programlisting">int                 gst_video_format_get_component_offset
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-component-offset"></a><h3>gst_video_format_get_component_offset ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_component_offset
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width,
                                                          int height);</pre>
@@ -988,10 +1035,7 @@ with index <em class="parameter"><code>component</code></em>.  For packed format
 small integer (0, 1, 2, 3).  For planar formats, this will be a
 (relatively) large offset to the beginning of the second or third
 component planes.  See <em class="parameter"><code>gst_video_format_get_row_stride</code></em> for a description
-of the component index.
-</p>
-<p>
-Returns:</p>
+of the component index.</p>
 <p>
 
 </p>
@@ -999,27 +1043,27 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>component</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>component</code></em> :</span></p></td>
 <td> the component index
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> the height of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> offset of component <em class="parameter"><code>component</code></em>
 </td>
 </tr>
@@ -1031,19 +1075,15 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2759734"></a><h3>
-<a name="gst-video-format-get-component-width"></a>gst_video_format_get_component_width ()</h3>
-<a class="indexterm" name="id2759751"></a><pre class="programlisting">int                 gst_video_format_get_component_width
-                                                        (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-component-width"></a><h3>gst_video_format_get_component_width ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_component_width
+                                                        (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width);</pre>
 <p>
 Calculates the width of the component.  See
 <em class="parameter"><code>gst_video_format_get_row_stride</code></em> for a description
-of the component index.
-</p>
-<p>
-Returns:</p>
+of the component index.</p>
 <p>
 
 </p>
@@ -1051,22 +1091,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>component</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>component</code></em> :</span></p></td>
 <td> the component index
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> width of component <em class="parameter"><code>component</code></em>
 </td>
 </tr>
@@ -1078,18 +1118,14 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2759887"></a><h3>
-<a name="gst-video-format-get-pixel-stride"></a>gst_video_format_get_pixel_stride ()</h3>
-<a class="indexterm" name="id2759904"></a><pre class="programlisting">int                 gst_video_format_get_pixel_stride   (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-pixel-stride"></a><h3>gst_video_format_get_pixel_stride ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_pixel_stride   (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component);</pre>
 <p>
 Calculates the pixel stride (number of bytes from one pixel to the
 pixel to its immediate left) for the video component with an index
 of <em class="parameter"><code>component</code></em>.  See <em class="parameter"><code>gst_video_format_get_row_stride</code></em> for a description
-of the component index.
-</p>
-<p>
-Returns:</p>
+of the component index.</p>
 <p>
 
 </p>
@@ -1097,17 +1133,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>component</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>component</code></em> :</span></p></td>
 <td> the component index
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> pixel stride of component <em class="parameter"><code>component</code></em>
 </td>
 </tr>
@@ -1119,9 +1155,8 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760025"></a><h3>
-<a name="gst-video-format-get-row-stride"></a>gst_video_format_get_row_stride ()</h3>
-<a class="indexterm" name="id2760041"></a><pre class="programlisting">int                 gst_video_format_get_row_stride     (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-row-stride"></a><h3>gst_video_format_get_row_stride ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_row_stride     (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int component,
                                                          int width);</pre>
 <p>
@@ -1131,10 +1166,7 @@ YUV video, Y, U, and V have component indices of 0, 1, and 2,
 respectively.  For RGB video, R, G, and B have component indicies of
 0, 1, and 2, respectively.  Alpha channels, if present, have a component
 index of 3.  The <em class="parameter"><code>width</code></em> parameter always represents the width of the
-video, not the component.
-</p>
-<p>
-Returns:</p>
+video, not the component.</p>
 <p>
 
 </p>
@@ -1142,22 +1174,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>component</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>component</code></em> :</span></p></td>
 <td> the component index
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> row stride of component <em class="parameter"><code>component</code></em>
 </td>
 </tr>
@@ -1169,17 +1201,13 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760187"></a><h3>
-<a name="gst-video-format-get-size"></a>gst_video_format_get_size ()</h3>
-<a class="indexterm" name="id2760204"></a><pre class="programlisting">int                 gst_video_format_get_size           (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format,
+<a name="gst-video-format-get-size"></a><h3>gst_video_format_get_size ()</h3>
+<pre class="programlisting">int                 gst_video_format_get_size           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height);</pre>
 <p>
 Calculates the total number of bytes in the raw video format.  This
-number should be used when allocating a buffer for raw video.
-</p>
-<p>
-Returns:</p>
+number should be used when allocating a buffer for raw video.</p>
 <p>
 
 </p>
@@ -1187,22 +1215,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> the height of video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> size (in bytes) of raw video format
 </td>
 </tr>
@@ -1214,11 +1242,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760327"></a><h3>
-<a name="gst-video-format-has-alpha"></a>gst_video_format_has_alpha ()</h3>
-<a class="indexterm" name="id2760343"></a><pre class="programlisting">gboolean            gst_video_format_has_alpha          (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);</pre>
+<a name="gst-video-format-has-alpha"></a><h3>gst_video_format_has_alpha ()</h3>
+<pre class="programlisting">gboolean            gst_video_format_has_alpha          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
-Returns:</p>
+Returns TRUE or FALSE depending on if the video format provides an
+alpha channel.</p>
 <p>
 
 </p>
@@ -1226,12 +1254,12 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>format</code></em> has an alpha channel
 </td>
 </tr>
@@ -1243,11 +1271,10 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760424"></a><h3>
-<a name="gst-video-format-is-rgb"></a>gst_video_format_is_rgb ()</h3>
-<a class="indexterm" name="id2760439"></a><pre class="programlisting">gboolean            gst_video_format_is_rgb             (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);</pre>
+<a name="gst-video-format-is-rgb"></a><h3>gst_video_format_is_rgb ()</h3>
+<pre class="programlisting">gboolean            gst_video_format_is_rgb             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
-Returns:</p>
+Determine whether the video format is an RGB format.</p>
 <p>
 
 </p>
@@ -1255,12 +1282,12 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>format</code></em> represents RGB video
 </td>
 </tr>
@@ -1272,11 +1299,10 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760521"></a><h3>
-<a name="gst-video-format-is-yuv"></a>gst_video_format_is_yuv ()</h3>
-<a class="indexterm" name="id2760537"></a><pre class="programlisting">gboolean            gst_video_format_is_yuv             (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);</pre>
+<a name="gst-video-format-is-yuv"></a><h3>gst_video_format_is_yuv ()</h3>
+<pre class="programlisting">gboolean            gst_video_format_is_yuv             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
-Returns:</p>
+Determine whether the video format is a YUV format.</p>
 <p>
 
 </p>
@@ -1284,12 +1310,12 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>format</code></em> represents YUV video
 </td>
 </tr>
@@ -1301,16 +1327,12 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760619"></a><h3>
-<a name="gst-video-format-to-fourcc"></a>gst_video_format_to_fourcc ()</h3>
-<a class="indexterm" name="id2760635"></a><pre class="programlisting">guint32             gst_video_format_to_fourcc          (<a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> format);</pre>
+<a name="gst-video-format-to-fourcc"></a><h3>gst_video_format_to_fourcc ()</h3>
+<pre class="programlisting">guint32             gst_video_format_to_fourcc          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
-Converts a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> value into the corresponding FOURCC.  Only
+Converts a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> value into the corresponding FOURCC.  Only
 a few YUV formats have corresponding FOURCC values.  If <em class="parameter"><code>format</code></em> has
-no corresponding FOURCC value, 0 is returned.
-</p>
-<p>
-Returns:</p>
+no corresponding FOURCC value, 0 is returned.</p>
 <p>
 
 </p>
@@ -1318,12 +1340,12 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> video format
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> video format
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the FOURCC corresponding to <em class="parameter"><code>format</code></em>
 </td>
 </tr>
@@ -1335,16 +1357,12 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760737"></a><h3>
-<a name="gst-video-format-from-fourcc"></a>gst_video_format_from_fourcc ()</h3>
-<a class="indexterm" name="id2760753"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a>      gst_video_format_from_fourcc        (guint32 fourcc);</pre>
+<a name="gst-video-format-from-fourcc"></a><h3>gst_video_format_from_fourcc ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      gst_video_format_from_fourcc        (guint32 fourcc);</pre>
 <p>
-Converts a FOURCC value into the corresponding <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>.
-If the FOURCC cannot be represented by <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>,
-<span class="type">GST_VIDEO_FORMAT_UNKNOWN</span> is returned.
-</p>
-<p>
-Returns:</p>
+Converts a FOURCC value into the corresponding <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>.
+If the FOURCC cannot be represented by <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>,
+<a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-FORMAT-UNKNOWN:CAPS"><span class="type">GST_VIDEO_FORMAT_UNKNOWN</span></a> is returned.</p>
 <p>
 
 </p>
@@ -1352,13 +1370,13 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>fourcc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
 <td> a FOURCC value representing raw YUV video
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> describing the FOURCC value
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> describing the FOURCC value
 </td>
 </tr>
 </tbody>
@@ -1369,21 +1387,17 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2760862"></a><h3>
-<a name="gst-video-format-parse-caps"></a>gst_video_format_parse_caps ()</h3>
-<a class="indexterm" name="id2760877"></a><pre class="programlisting">gboolean            gst_video_format_parse_caps         (GstCaps *caps,
-                                                         <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat">GstVideoFormat</a> *format,
+<a name="gst-video-format-parse-caps"></a><h3>gst_video_format_parse_caps ()</h3>
+<pre class="programlisting">gboolean            gst_video_format_parse_caps         (GstCaps *caps,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> *format,
                                                          int *width,
                                                          int *height);</pre>
 <p>
-Determines the <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> of <em class="parameter"><code>caps</code></em> and places it in the location
+Determines the <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> of <em class="parameter"><code>caps</code></em> and places it in the location
 pointed to by <em class="parameter"><code>format</code></em>.  Extracts the size of the video and places it
 in the location pointed to by <em class="parameter"><code>width</code></em> and <em class="parameter"><code>height</code></em>.  If <em class="parameter"><code>caps</code></em> does not
-reprsent one of the raw video formats listed in <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>, the
-function will fail and return FALSE.
-</p>
-<p>
-Returns:</p>
+represent one of the raw video formats listed in <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>, the
+function will fail and return FALSE.</p>
 <p>
 
 </p>
@@ -1391,27 +1405,27 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the <span class="type">GstCaps</span> to parse
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a> of the video represented by <em class="parameter"><code>caps</code></em> (output)
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> of the video represented by <em class="parameter"><code>caps</code></em> (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
 <td> the width of the video represented by <em class="parameter"><code>caps</code></em> (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
 <td> the height of the video represented by <em class="parameter"><code>caps</code></em> (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>caps</code></em> was parsed correctly.
 </td>
 </tr>
@@ -1423,9 +1437,8 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2761104"></a><h3>
-<a name="gst-video-parse-caps-framerate"></a>gst_video_parse_caps_framerate ()</h3>
-<a class="indexterm" name="id2761120"></a><pre class="programlisting">gboolean            gst_video_parse_caps_framerate      (GstCaps *caps,
+<a name="gst-video-parse-caps-framerate"></a><h3>gst_video_parse_caps_framerate ()</h3>
+<pre class="programlisting">gboolean            gst_video_parse_caps_framerate      (GstCaps *caps,
                                                          int *fps_n,
                                                          int *fps_d);</pre>
 <p>
@@ -1435,10 +1448,7 @@ parsed correctly, FALSE if not.
 </p>
 <p>
 This function can be used with <span class="type">GstCaps</span> that have any media type; it
-is not limited to formats handled by <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>.
-</p>
-<p>
-Returns:</p>
+is not limited to formats handled by <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>.</p>
 <p>
 
 </p>
@@ -1446,22 +1456,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> pointer to a <span class="type">GstCaps</span> instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fps_n</code></em>&#160;:</span></td>
-<td> pointer to numerator of frame rate (output)
+<td><p><span class="term"><em class="parameter"><code>fps_n</code></em> :</span></p></td>
+<td> pointer to integer to hold numerator of frame rate (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fps_d</code></em>&#160;:</span></td>
-<td> pointer to denominator of frame rate (output)
+<td><p><span class="term"><em class="parameter"><code>fps_d</code></em> :</span></p></td>
+<td> pointer to integer to hold denominator of frame rate (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>caps</code></em> was parsed correctly.
 </td>
 </tr>
@@ -1473,9 +1483,8 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2761281"></a><h3>
-<a name="gst-video-parse-caps-pixel-aspect-ratio"></a>gst_video_parse_caps_pixel_aspect_ratio ()</h3>
-<a class="indexterm" name="id2761297"></a><pre class="programlisting">gboolean            gst_video_parse_caps_pixel_aspect_ratio
+<a name="gst-video-parse-caps-pixel-aspect-ratio"></a><h3>gst_video_parse_caps_pixel_aspect_ratio ()</h3>
+<pre class="programlisting">gboolean            gst_video_parse_caps_pixel_aspect_ratio
                                                         (GstCaps *caps,
                                                          int *par_n,
                                                          int *par_d);</pre>
@@ -1486,10 +1495,7 @@ values could be parsed correctly, FALSE if not.
 </p>
 <p>
 This function can be used with <span class="type">GstCaps</span> that have any media type; it
-is not limited to formats handled by <a href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat"><span class="type">GstVideoFormat</span></a>.
-</p>
-<p>
-Returns:</p>
+is not limited to formats handled by <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>.</p>
 <p>
 
 </p>
@@ -1497,22 +1503,22 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> pointer to a <span class="type">GstCaps</span> instance
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>par_n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>par_n</code></em> :</span></p></td>
 <td> pointer to numerator of pixel aspect ratio (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>par_d</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>par_d</code></em> :</span></p></td>
 <td> pointer to denominator of pixel aspect ratio (output)
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>caps</code></em> was parsed correctly.
 </td>
 </tr>
@@ -1524,5 +1530,8 @@ Returns:</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

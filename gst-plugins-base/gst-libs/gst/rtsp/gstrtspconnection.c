@@ -61,13 +61,13 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <time.h>
 
 
 /* we include this here to get the G_OS_* defines */
@@ -76,6 +76,7 @@
 
 #ifdef G_OS_WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #define EINPROGRESS WSAEINPROGRESS
 #else
 #include <sys/ioctl.h>
@@ -83,6 +84,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 #endif
 
 #ifdef HAVE_FIONREAD_IN_SYS_FILIO
@@ -91,34 +93,30 @@
 
 #include "gstrtspconnection.h"
 #include "gstrtspbase64.h"
-
-/* the select call is also performed on the control sockets, that way
- * we can send special commands to unlock or restart the select call */
-#define CONTROL_RESTART        'R'      /* restart the select call */
-#define CONTROL_STOP           'S'      /* stop the select call */
-#define CONTROL_SOCKETS(conn)  conn->control_sock
-#define WRITE_SOCKET(conn)     conn->control_sock[1]
-#define READ_SOCKET(conn)      conn->control_sock[0]
-
-#define SEND_COMMAND(conn, command)              \
-G_STMT_START {                                  \
-  unsigned char c; c = command;                 \
-  write (WRITE_SOCKET(conn), &c, 1);             \
-} G_STMT_END
-
-#define READ_COMMAND(conn, command, res)         \
-G_STMT_START {                                  \
-  res = read(READ_SOCKET(conn), &command, 1);    \
-} G_STMT_END
+#include "md5.h"
 
 #ifdef G_OS_WIN32
 #define FIONREAD_TYPE gulong
 #define IOCTL_SOCKET ioctlsocket
-#define CLOSE_SOCKET(sock) closesocket(sock);
+#define READ_SOCKET(fd, buf, len) recv (fd, (char *)buf, len, 0)
+#define WRITE_SOCKET(fd, buf, len) send (fd, (const char *)buf, len, 0)
+#define SETSOCKOPT(sock, level, name, val, len) setsockopt (sock, level, name, (const char *)val, len)
+#define CLOSE_SOCKET(sock) closesocket (sock)
+#define ERRNO_IS_NOT_EAGAIN (WSAGetLastError () != WSAEWOULDBLOCK)
+#define ERRNO_IS_NOT_EINTR (WSAGetLastError () != WSAEINTR)
+/* According to Microsoft's connect() documentation this one returns
+ * WSAEWOULDBLOCK and not WSAEINPROGRESS. */
+#define ERRNO_IS_NOT_EINPROGRESS (WSAGetLastError () != WSAEWOULDBLOCK)
 #else
 #define FIONREAD_TYPE gint
 #define IOCTL_SOCKET ioctl
-#define CLOSE_SOCKET(sock) close(sock);
+#define READ_SOCKET(fd, buf, len) read (fd, buf, len)
+#define WRITE_SOCKET(fd, buf, len) write (fd, buf, len)
+#define SETSOCKOPT(sock, level, name, val, len) setsockopt (sock, level, name, val, len)
+#define CLOSE_SOCKET(sock) close (sock)
+#define ERRNO_IS_NOT_EAGAIN (errno != EAGAIN)
+#define ERRNO_IS_NOT_EINTR (errno != EINTR)
+#define ERRNO_IS_NOT_EINPROGRESS (errno != EINPROGRESS)
 #endif
 
 #ifdef G_OS_WIN32
@@ -151,48 +149,30 @@ inet_aton (const char *c, struct in_addr *paddr)
 GstRTSPResult
 gst_rtsp_connection_create (GstRTSPUrl * url, GstRTSPConnection ** conn)
 {
-  gint ret;
   GstRTSPConnection *newconn;
-
-#ifdef G_OS_WIN32
-  unsigned long flags;
-#endif /* G_OS_WIN32 */
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
 
   newconn = g_new0 (GstRTSPConnection, 1);
 
-#ifdef G_OS_WIN32
-  /* This should work on UNIX too. PF_UNIX sockets replaced with pipe */
-  /* pipe( CONTROL_SOCKETS(newconn) ) */
-  if ((ret = _pipe (CONTROL_SOCKETS (newconn), 4096, _O_BINARY)) < 0)
-    goto no_socket_pair;
-
-  ioctlsocket (READ_SOCKET (newconn), FIONBIO, &flags);
-  ioctlsocket (WRITE_SOCKET (newconn), FIONBIO, &flags);
-#else
-  if ((ret =
-          socketpair (PF_UNIX, SOCK_STREAM, 0, CONTROL_SOCKETS (newconn))) < 0)
-    goto no_socket_pair;
-
-  fcntl (READ_SOCKET (newconn), F_SETFL, O_NONBLOCK);
-  fcntl (WRITE_SOCKET (newconn), F_SETFL, O_NONBLOCK);
-#endif
+  if ((newconn->fdset = gst_poll_new (TRUE)) == NULL)
+    goto no_fdset;
 
   newconn->url = url;
-  newconn->fd = -1;
+  newconn->fd.fd = -1;
   newconn->timer = g_timer_new ();
 
   newconn->auth_method = GST_RTSP_AUTH_NONE;
   newconn->username = NULL;
   newconn->passwd = NULL;
+  newconn->auth_params = NULL;
 
   *conn = newconn;
 
   return GST_RTSP_OK;
 
   /* ERRORS */
-no_socket_pair:
+no_fdset:
   {
     g_free (newconn);
     return GST_RTSP_ESYS;
@@ -209,6 +189,8 @@ no_socket_pair:
  * forever. If @timeout contains a valid timeout, this function will return
  * #GST_RTSP_ETIMEOUT after the timeout expired.
  *
+ * This function can be cancelled with gst_rtsp_connection_flush().
+ *
  * Returns: #GST_RTSP_OK when a connection could be made.
  */
 GstRTSPResult
@@ -222,13 +204,11 @@ gst_rtsp_connection_connect (GstRTSPConnection * conn, GTimeVal * timeout)
   gint ret;
   guint16 port;
   GstRTSPUrl *url;
-  fd_set writefds;
-  fd_set readfds;
-  struct timeval tv, *tvp;
-  gint max_fd, retval;
+  GstClockTime to;
+  gint retval;
 
 #ifdef G_OS_WIN32
-  unsigned long flags;
+  unsigned long flags = 1;
   struct in_addr *addrp;
 #else
   char **addrs;
@@ -237,7 +217,7 @@ gst_rtsp_connection_connect (GstRTSPConnection * conn, GTimeVal * timeout)
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
   g_return_val_if_fail (conn->url != NULL, GST_RTSP_EINVAL);
-  g_return_val_if_fail (conn->fd < 0, GST_RTSP_EINVAL);
+  g_return_val_if_fail (conn->fd.fd < 0, GST_RTSP_EINVAL);
 
   url = conn->url;
 
@@ -281,48 +261,46 @@ gst_rtsp_connection_connect (GstRTSPConnection * conn, GTimeVal * timeout)
   ioctlsocket (fd, FIONBIO, &flags);
 #endif /* G_OS_WIN32 */
 
+  /* add the socket to our fdset */
+  conn->fd.fd = fd;
+  gst_poll_add_fd (conn->fdset, &conn->fd);
+
   /* we are going to connect ASYNC now */
   ret = connect (fd, (struct sockaddr *) &sa_in, sizeof (sa_in));
   if (ret == 0)
     goto done;
-  if (errno != EINPROGRESS)
+  if (ERRNO_IS_NOT_EINPROGRESS)
     goto sys_error;
 
   /* wait for connect to complete up to the specified timeout or until we got
    * interrupted. */
-  FD_ZERO (&writefds);
-  FD_SET (fd, &writefds);
-  FD_ZERO (&readfds);
-  FD_SET (READ_SOCKET (conn), &readfds);
+  gst_poll_fd_ctl_write (conn->fdset, &conn->fd, TRUE);
 
-  if (timeout) {
-    tv.tv_sec = timeout->tv_sec;
-    tv.tv_usec = timeout->tv_usec;
-    tvp = &tv;
-  } else {
-    tvp = NULL;
-  }
-
-  max_fd = MAX (fd, READ_SOCKET (conn));
+  to = timeout ? GST_TIMEVAL_TO_TIME (*timeout) : GST_CLOCK_TIME_NONE;
 
   do {
-    retval = select (max_fd + 1, &readfds, &writefds, NULL, tvp);
-  } while ((retval == -1 && errno == EINTR));
+    retval = gst_poll_wait (conn->fdset, to);
+  } while (retval == -1 && (errno == EINTR || errno == EAGAIN));
 
   if (retval == 0)
     goto timeout;
   else if (retval == -1)
     goto sys_error;
 
+  gst_poll_fd_ignored (conn->fdset, &conn->fd);
+
 done:
-  conn->fd = fd;
   conn->ip = g_strdup (ip);
 
   return GST_RTSP_OK;
 
 sys_error:
   {
-    if (fd != -1)
+    if (conn->fd.fd >= 0) {
+      gst_poll_remove_fd (conn->fdset, &conn->fd);
+      conn->fd.fd = -1;
+    }
+    if (fd >= 0)
       CLOSE_SOCKET (fd);
     return GST_RTSP_ESYS;
   }
@@ -336,8 +314,73 @@ not_ip:
   }
 timeout:
   {
+    if (conn->fd.fd >= 0) {
+      gst_poll_remove_fd (conn->fdset, &conn->fd);
+      conn->fd.fd = -1;
+    }
+    if (fd >= 0)
+      CLOSE_SOCKET (fd);
     return GST_RTSP_ETIMEOUT;
   }
+}
+
+static void
+md5_digest_to_hex_string (unsigned char digest[16], char string[33])
+{
+  static const char hexdigits[] = "0123456789abcdef";
+  int i;
+
+  for (i = 0; i < 16; i++) {
+    string[i * 2] = hexdigits[(digest[i] >> 4) & 0x0f];
+    string[i * 2 + 1] = hexdigits[digest[i] & 0x0f];
+  }
+  string[32] = 0;
+}
+
+static void
+auth_digest_compute_hex_urp (const gchar * username,
+    const gchar * realm, const gchar * password, gchar hex_urp[33])
+{
+  struct MD5Context md5_context;
+  unsigned char digest[16];
+
+  MD5Init (&md5_context);
+  MD5Update (&md5_context, username, strlen (username));
+  MD5Update (&md5_context, ":", 1);
+  MD5Update (&md5_context, realm, strlen (realm));
+  MD5Update (&md5_context, ":", 1);
+  MD5Update (&md5_context, password, strlen (password));
+  MD5Final (digest, &md5_context);
+  md5_digest_to_hex_string (digest, hex_urp);
+}
+
+static void
+auth_digest_compute_response (const gchar * method,
+    const gchar * uri, const gchar * hex_a1, const gchar * nonce,
+    gchar response[33])
+{
+  char hex_a2[33];
+  struct MD5Context md5_context;
+  unsigned char digest[16];
+
+  /* compute A2 */
+  MD5Init (&md5_context);
+  MD5Update (&md5_context, method, strlen (method));
+  MD5Update (&md5_context, ":", 1);
+  MD5Update (&md5_context, uri, strlen (uri));
+  MD5Final (digest, &md5_context);
+  md5_digest_to_hex_string (digest, hex_a2);
+
+  /* compute KD */
+  MD5Init (&md5_context);
+  MD5Update (&md5_context, hex_a1, strlen (hex_a1));
+  MD5Update (&md5_context, ":", 1);
+  MD5Update (&md5_context, nonce, strlen (nonce));
+  MD5Update (&md5_context, ":", 1);
+
+  MD5Update (&md5_context, hex_a2, 32);
+  MD5Final (digest, &md5_context);
+  md5_digest_to_hex_string (digest, response);
 }
 
 static void
@@ -359,6 +402,50 @@ add_auth_header (GstRTSPConnection * conn, GstRTSPMessage * message)
       g_free (auth_string);
       break;
     }
+    case GST_RTSP_AUTH_DIGEST:{
+      gchar response[33], hex_urp[33];
+      gchar *auth_string, *auth_string2;
+      gchar *realm;
+      gchar *nonce;
+      gchar *opaque;
+      const gchar *uri;
+      const gchar *method;
+
+      /* we need to have some params set */
+      if (conn->auth_params == NULL)
+        break;
+
+      /* we need the realm and nonce */
+      realm = (gchar *) g_hash_table_lookup (conn->auth_params, "realm");
+      nonce = (gchar *) g_hash_table_lookup (conn->auth_params, "nonce");
+      if (realm == NULL || nonce == NULL)
+        break;
+
+      auth_digest_compute_hex_urp (conn->username, realm, conn->passwd,
+          hex_urp);
+
+      method = gst_rtsp_method_as_text (message->type_data.request.method);
+      uri = message->type_data.request.uri;
+
+      /* Assume no qop, algorithm=md5, stale=false */
+      /* For algorithm MD5, a1 = urp. */
+      auth_digest_compute_response (method, uri, hex_urp, nonce, response);
+      auth_string = g_strdup_printf ("Digest username=\"%s\", "
+          "realm=\"%s\", nonce=\"%s\", uri=\"%s\", response=\"%s\"",
+          conn->username, realm, nonce, uri, response);
+
+      opaque = (gchar *) g_hash_table_lookup (conn->auth_params, "opaque");
+      if (opaque) {
+        auth_string2 = g_strdup_printf ("%s, opaque=\"%s\"", auth_string,
+            opaque);
+        g_free (auth_string);
+        auth_string = auth_string2;
+      }
+      gst_rtsp_message_add_header (message, GST_RTSP_HDR_AUTHORIZATION,
+          auth_string);
+      g_free (auth_string);
+      break;
+    }
     default:
       /* Nothing to do */
       break;
@@ -370,10 +457,22 @@ add_date_header (GstRTSPMessage * message)
 {
   GTimeVal tv;
   gchar date_string[100];
+  time_t t;
+
+#ifdef HAVE_GMTIME_R
+  struct tm tm_;
+#endif
 
   g_get_current_time (&tv);
+  t = (time_t) tv.tv_sec;
+
+#ifdef HAVE_GMTIME_R
   strftime (date_string, sizeof (date_string), "%a, %d %b %Y %H:%M:%S GMT",
-      gmtime (&tv.tv_sec));
+      gmtime_r (&t, &tm_));
+#else
+  strftime (date_string, sizeof (date_string), "%a, %d %b %Y %H:%M:%S GMT",
+      gmtime (&t));
+#endif
 
   gst_rtsp_message_add_header (message, GST_RTSP_HDR_DATE, date_string);
 }
@@ -389,7 +488,7 @@ add_date_header (GstRTSPMessage * message)
  * the specified @timeout. @timeout can be #NULL, in which case this function
  * might block forever.
  * 
- * This function can be canceled with gst_rtsp_connection_flush().
+ * This function can be cancelled with gst_rtsp_connection_flush().
  *
  * Returns: #GST_RTSP_OK on success.
  */
@@ -398,54 +497,41 @@ gst_rtsp_connection_write (GstRTSPConnection * conn, const guint8 * data,
     guint size, GTimeVal * timeout)
 {
   guint towrite;
-  fd_set writefds;
-  fd_set readfds;
-  int max_fd;
   gint retval;
-  struct timeval tv, *tvp;
+  GstClockTime to;
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
   g_return_val_if_fail (data != NULL || size == 0, GST_RTSP_EINVAL);
 
-  FD_ZERO (&writefds);
-  FD_SET (conn->fd, &writefds);
-  FD_ZERO (&readfds);
+  gst_poll_set_controllable (conn->fdset, TRUE);
+  gst_poll_fd_ctl_write (conn->fdset, &conn->fd, TRUE);
+  gst_poll_fd_ctl_read (conn->fdset, &conn->fd, FALSE);
 
-  max_fd = MAX (conn->fd, READ_SOCKET (conn));
-
-  if (timeout) {
-    tv.tv_sec = timeout->tv_sec;
-    tv.tv_usec = timeout->tv_usec;
-    tvp = &tv;
-  } else {
-    tvp = NULL;
-  }
+  to = timeout ? GST_TIMEVAL_TO_TIME (*timeout) : GST_CLOCK_TIME_NONE;
 
   towrite = size;
 
   while (towrite > 0) {
     gint written;
 
-    /* set bit inside the loop for when we loop to read the rest of the data */
-    FD_SET (READ_SOCKET (conn), &readfds);
-
     do {
-      retval = select (max_fd + 1, &readfds, &writefds, NULL, tvp);
-    } while ((retval == -1 && errno == EINTR));
+      retval = gst_poll_wait (conn->fdset, to);
+    } while (retval == -1 && (errno == EINTR || errno == EAGAIN));
 
     if (retval == 0)
       goto timeout;
 
-    if (retval == -1)
-      goto select_error;
-
-    if (FD_ISSET (READ_SOCKET (conn), &readfds))
-      goto stopped;
+    if (retval == -1) {
+      if (errno == EBUSY)
+        goto stopped;
+      else
+        goto select_error;
+    }
 
     /* now we can write */
-    written = write (conn->fd, data, towrite);
+    written = WRITE_SOCKET (conn->fd.fd, data, towrite);
     if (written < 0) {
-      if (errno != EAGAIN && errno != EINTR)
+      if (ERRNO_IS_NOT_EAGAIN && ERRNO_IS_NOT_EINTR)
         goto write_error;
     } else {
       towrite -= written;
@@ -483,7 +569,7 @@ write_error:
  * the specified @timeout. @timeout can be #NULL, in which case this function
  * might block forever.
  * 
- * This function can be canceled with gst_rtsp_connection_flush().
+ * This function can be cancelled with gst_rtsp_connection_flush().
  *
  * Returns: #GST_RTSP_OK on success.
  */
@@ -616,11 +702,11 @@ read_line (gint fd, gchar * buffer, guint size)
 
   idx = 0;
   while (TRUE) {
-    r = read (fd, &c, 1);
+    r = READ_SOCKET (fd, &c, 1);
     if (r == 0) {
       goto eof;
     } else if (r < 0) {
-      if (errno != EAGAIN && errno != EINTR)
+      if (ERRNO_IS_NOT_EAGAIN && ERRNO_IS_NOT_EINTR)
         goto read_error;
     } else {
       if (c == '\n')            /* end on \n */
@@ -800,7 +886,7 @@ no_column:
  * the specified @timeout. @timeout can be #NULL, in which case this function
  * might block forever.
  * 
- * This function can be canceled with gst_rtsp_connection_flush() only if the
+ * This function can be cancelled with gst_rtsp_connection_flush() only if
  * @allow_interrupt is set.
  *
  * Returns: #GST_RTSP_OK on success.
@@ -809,10 +895,9 @@ static GstRTSPResult
 gst_rtsp_connection_read_internal (GstRTSPConnection * conn, guint8 * data,
     guint size, GTimeVal * timeout, gboolean allow_interrupt)
 {
-  fd_set readfds;
   guint toread;
   gint retval;
-  struct timeval tv_timeout, *ptv_timeout;
+  GstClockTime to;
   FIONREAD_TYPE avail;
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
@@ -824,54 +909,45 @@ gst_rtsp_connection_read_internal (GstRTSPConnection * conn, guint8 * data,
   toread = size;
 
   /* configure timeout if any */
-  if (timeout != NULL) {
-    tv_timeout.tv_sec = timeout->tv_sec;
-    tv_timeout.tv_usec = timeout->tv_usec;
-    ptv_timeout = &tv_timeout;
-  } else
-    ptv_timeout = NULL;
+  to = timeout ? GST_TIMEVAL_TO_TIME (*timeout) : GST_CLOCK_TIME_NONE;
 
   /* if the call fails, just go in the select.. it should not fail. Else if
    * there is enough data to read, skip the select call al together.*/
-  if (IOCTL_SOCKET (conn->fd, FIONREAD, &avail) < 0)
+  if (IOCTL_SOCKET (conn->fd.fd, FIONREAD, &avail) < 0)
     avail = 0;
   else if (avail >= toread)
     goto do_read;
 
-  FD_ZERO (&readfds);
-  FD_SET (conn->fd, &readfds);
+  gst_poll_set_controllable (conn->fdset, allow_interrupt);
+  gst_poll_fd_ctl_write (conn->fdset, &conn->fd, FALSE);
+  gst_poll_fd_ctl_read (conn->fdset, &conn->fd, TRUE);
 
   while (toread > 0) {
     gint bytes;
 
-    /* set inside the loop so that when we did not read enough and we have to
-     * continue, we still have the cancel socket bit set */
-    if (allow_interrupt)
-      FD_SET (READ_SOCKET (conn), &readfds);
-
     do {
-      retval = select (FD_SETSIZE, &readfds, NULL, NULL, ptv_timeout);
-    } while ((retval == -1 && errno == EINTR));
+      retval = gst_poll_wait (conn->fdset, to);
+    } while (retval == -1 && (errno == EINTR || errno == EAGAIN));
 
-    if (retval == -1)
-      goto select_error;
+    if (retval == -1) {
+      if (errno == EBUSY)
+        goto stopped;
+      else
+        goto select_error;
+    }
 
     /* check for timeout */
     if (retval == 0)
       goto select_timeout;
 
-    if (FD_ISSET (READ_SOCKET (conn), &readfds))
-      goto stopped;
-
   do_read:
     /* if we get here there is activity on the real fd since the select
      * completed and the control socket was not readable. */
-    bytes = read (conn->fd, data, toread);
-
+    bytes = READ_SOCKET (conn->fd.fd, data, toread);
     if (bytes == 0) {
       goto eof;
     } else if (bytes < 0) {
-      if (errno != EAGAIN && errno != EINTR)
+      if (ERRNO_IS_NOT_EAGAIN && ERRNO_IS_NOT_EINTR)
         goto read_error;
     } else {
       toread -= bytes;
@@ -914,7 +990,7 @@ read_error:
  * the specified @timeout. @timeout can be #NULL, in which case this function
  * might block forever.
  *
- * This function can be canceled with gst_rtsp_connection_flush().
+ * This function can be cancelled with gst_rtsp_connection_flush().
  *
  * Returns: #GST_RTSP_OK on success.
  */
@@ -970,7 +1046,7 @@ read_error:
  * the specified @timeout. @timeout can be #NULL, in which case this function
  * might block forever.
  * 
- * This function can be canceled with gst_rtsp_connection_flush().
+ * This function can be cancelled with gst_rtsp_connection_flush().
  *
  * Returns: #GST_RTSP_OK on success.
  */
@@ -1037,7 +1113,7 @@ gst_rtsp_connection_receive (GstRTSPConnection * conn, GstRTSPMessage * message,
         break;
 
       /* read lines */
-      GST_RTSP_CHECK (read_line (conn->fd, buffer + offset,
+      GST_RTSP_CHECK (read_line (conn->fd.fd, buffer + offset,
               sizeof (buffer) - offset), read_error);
 
       if (buffer[0] == '\0')
@@ -1132,12 +1208,13 @@ gst_rtsp_connection_close (GstRTSPConnection * conn)
   g_free (conn->ip);
   conn->ip = NULL;
 
-  if (conn->fd != -1) {
-    res = CLOSE_SOCKET (conn->fd);
+  if (conn->fd.fd != -1) {
+    gst_poll_remove_fd (conn->fdset, &conn->fd);
+    res = CLOSE_SOCKET (conn->fd.fd);
+    conn->fd.fd = -1;
 #ifdef G_OS_WIN32
     WSACleanup ();
 #endif
-    conn->fd = -1;
     if (res != 0)
       goto sys_error;
   }
@@ -1165,17 +1242,15 @@ gst_rtsp_connection_free (GstRTSPConnection * conn)
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
 
-  if (WRITE_SOCKET (conn) >= 0)
-    CLOSE_SOCKET (WRITE_SOCKET (conn));
-  if (READ_SOCKET (conn) >= 0)
-    CLOSE_SOCKET (READ_SOCKET (conn));
+  res = gst_rtsp_connection_close (conn);
+  gst_poll_free (conn->fdset);
 #ifdef G_OS_WIN32
   WSACleanup ();
 #endif
-  res = gst_rtsp_connection_close (conn);
   g_timer_destroy (conn->timer);
   g_free (conn->username);
   g_free (conn->passwd);
+  gst_rtsp_connection_clear_auth_params (conn);
   g_free (conn);
 
   return res;
@@ -1195,7 +1270,7 @@ gst_rtsp_connection_free (GstRTSPConnection * conn)
  *
  * @timeout can be #NULL, in which case this function might block forever.
  *
- * This function can be canceled with gst_rtsp_connection_flush().
+ * This function can be cancelled with gst_rtsp_connection_flush().
  * 
  * Returns: #GST_RTSP_OK on success.
  *
@@ -1205,60 +1280,45 @@ GstRTSPResult
 gst_rtsp_connection_poll (GstRTSPConnection * conn, GstRTSPEvent events,
     GstRTSPEvent * revents, GTimeVal * timeout)
 {
-  fd_set writefds, *pwritefds;
-  fd_set readfds;
-  int max_fd;
+  GstClockTime to;
   gint retval;
-  struct timeval tv, *tvp;
 
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
   g_return_val_if_fail (events != 0, GST_RTSP_EINVAL);
   g_return_val_if_fail (revents != NULL, GST_RTSP_EINVAL);
 
-  if (events & GST_RTSP_EV_WRITE) {
-    /* add fd to writer set when asked to */
-    FD_ZERO (&writefds);
-    FD_SET (conn->fd, &writefds);
-    pwritefds = &writefds;
-  } else
-    pwritefds = NULL;
+  gst_poll_set_controllable (conn->fdset, TRUE);
 
-  /* always add cancel socket to readfds */
-  FD_ZERO (&readfds);
-  FD_SET (READ_SOCKET (conn), &readfds);
-  if (events & GST_RTSP_EV_READ) {
-    /* add fd to reader set when asked to */
-    FD_SET (conn->fd, &readfds);
-  }
-  max_fd = MAX (conn->fd, READ_SOCKET (conn));
+  /* add fd to writer set when asked to */
+  gst_poll_fd_ctl_write (conn->fdset, &conn->fd, events & GST_RTSP_EV_WRITE);
 
-  if (timeout) {
-    tv.tv_sec = timeout->tv_sec;
-    tv.tv_usec = timeout->tv_usec;
-    tvp = &tv;
-  } else
-    tvp = NULL;
+  /* add fd to reader set when asked to */
+  gst_poll_fd_ctl_read (conn->fdset, &conn->fd, events & GST_RTSP_EV_READ);
+
+  /* configure timeout if any */
+  to = timeout ? GST_TIMEVAL_TO_TIME (*timeout) : GST_CLOCK_TIME_NONE;
 
   do {
-    retval = select (max_fd + 1, &readfds, pwritefds, NULL, tvp);
-  } while ((retval == -1 && errno == EINTR));
+    retval = gst_poll_wait (conn->fdset, to);
+  } while (retval == -1 && (errno == EINTR || errno == EAGAIN));
 
   if (retval == 0)
     goto select_timeout;
 
-  if (retval == -1)
-    goto select_error;
-
-  if (FD_ISSET (READ_SOCKET (conn), &readfds))
-    goto stopped;
+  if (retval == -1) {
+    if (errno == EBUSY)
+      goto stopped;
+    else
+      goto select_error;
+  }
 
   *revents = 0;
   if (events & GST_RTSP_EV_READ) {
-    if (FD_ISSET (conn->fd, &readfds))
+    if (gst_poll_fd_can_read (conn->fdset, &conn->fd))
       *revents |= GST_RTSP_EV_READ;
   }
   if (events & GST_RTSP_EV_WRITE) {
-    if (FD_ISSET (conn->fd, &writefds))
+    if (gst_poll_fd_can_write (conn->fdset, &conn->fd))
       *revents |= GST_RTSP_EV_WRITE;
   }
   return GST_RTSP_OK;
@@ -1345,20 +1405,8 @@ gst_rtsp_connection_flush (GstRTSPConnection * conn, gboolean flush)
 {
   g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
 
-  if (flush) {
-    SEND_COMMAND (conn, CONTROL_STOP);
-  } else {
-    while (TRUE) {
-      gchar command;
-      int res;
+  gst_poll_set_flushing (conn->fdset, flush);
 
-      READ_COMMAND (conn, command, res);
-      if (res <= 0) {
-        /* no more commands */
-        break;
-      }
-    }
-  }
   return GST_RTSP_OK;
 }
 
@@ -1378,9 +1426,11 @@ GstRTSPResult
 gst_rtsp_connection_set_auth (GstRTSPConnection * conn,
     GstRTSPAuthMethod method, const gchar * user, const gchar * pass)
 {
-  /* Digest isn't implemented yet */
-  if (method == GST_RTSP_AUTH_DIGEST)
-    return GST_RTSP_ENOTIMPL;
+  g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
+
+  if (method == GST_RTSP_AUTH_DIGEST && ((user == NULL || pass == NULL)
+          || g_strrstr (user, ":") != NULL))
+    return GST_RTSP_EINVAL;
 
   /* Make sure the username and passwd are being set for authentication */
   if (method == GST_RTSP_AUTH_NONE && (user == NULL || pass == NULL))
@@ -1398,4 +1448,177 @@ gst_rtsp_connection_set_auth (GstRTSPConnection * conn,
   conn->passwd = g_strdup (pass);
 
   return GST_RTSP_OK;
+}
+
+/**
+ * str_case_hash:
+ * @key: ASCII string to hash
+ *
+ * Hashes @key in a case-insensitive manner.
+ *
+ * Returns: the hash code.
+ **/
+static guint
+str_case_hash (gconstpointer key)
+{
+  const char *p = key;
+  guint h = g_ascii_toupper (*p);
+
+  if (h)
+    for (p += 1; *p != '\0'; p++)
+      h = (h << 5) - h + g_ascii_toupper (*p);
+
+  return h;
+}
+
+/**
+ * str_case_equal:
+ * @v1: an ASCII string
+ * @v2: another ASCII string
+ *
+ * Compares @v1 and @v2 in a case-insensitive manner
+ *
+ * Returns: %TRUE if they are equal (modulo case)
+ **/
+static gboolean
+str_case_equal (gconstpointer v1, gconstpointer v2)
+{
+  const char *string1 = v1;
+  const char *string2 = v2;
+
+  return g_ascii_strcasecmp (string1, string2) == 0;
+}
+
+/**
+ * gst_rtsp_connection_set_auth_param:
+ * @conn: a #GstRTSPConnection
+ * @param: authentication directive
+ * @value: value
+ *
+ * Setup @conn with authentication directives. This is not necesary for
+ * methods #GST_RTSP_AUTH_NONE and #GST_RTSP_AUTH_BASIC. For
+ * #GST_RTSP_AUTH_DIGEST, directives should be taken from the digest challenge
+ * in the WWW-Authenticate response header and can include realm, domain,
+ * nonce, opaque, stale, algorithm, qop as per RFC2617.
+ * 
+ * Since: 0.10.20
+ */
+void
+gst_rtsp_connection_set_auth_param (GstRTSPConnection * conn,
+    const gchar * param, const gchar * value)
+{
+  g_return_if_fail (conn != NULL);
+  g_return_if_fail (param != NULL);
+
+  if (conn->auth_params == NULL) {
+    conn->auth_params =
+        g_hash_table_new_full (str_case_hash, str_case_equal, g_free, g_free);
+  }
+  g_hash_table_insert (conn->auth_params, g_strdup (param), g_strdup (value));
+}
+
+/**
+ * gst_rtsp_connection_clear_auth_params:
+ * @conn: a #GstRTSPConnection
+ *
+ * Clear the list of authentication directives stored in @conn.
+ *
+ * Since: 0.10.20
+ */
+void
+gst_rtsp_connection_clear_auth_params (GstRTSPConnection * conn)
+{
+  g_return_if_fail (conn != NULL);
+
+  if (conn->auth_params != NULL) {
+    g_hash_table_destroy (conn->auth_params);
+    conn->auth_params = NULL;
+  }
+}
+
+/**
+ * gst_rtsp_connection_set_qos_dscp:
+ * @conn: a #GstRTSPConnection
+ * @qos_dscp: DSCP value
+ *
+ * Configure @conn to use the specified DSCP value.
+ *
+ * Returns: #GST_RTSP_OK on success.
+ *
+ * Since: 0.10.20
+ */
+GstRTSPResult
+gst_rtsp_connection_set_qos_dscp (GstRTSPConnection * conn, guint qos_dscp)
+{
+  struct sockaddr_storage sa_s;
+  socklen_t sa_sl = sizeof (sa_s);
+  gint af;
+  gint tos;
+
+  g_return_val_if_fail (conn != NULL, GST_RTSP_EINVAL);
+  g_return_val_if_fail (conn->fd.fd >= 0, GST_RTSP_EINVAL);
+
+  if (getsockname (conn->fd.fd, (struct sockaddr *) &sa_s, &sa_sl) < 0)
+    goto no_getsockname;
+
+  af = sa_s.ss_family;
+
+  /* if this is an IPv4-mapped address then do IPv4 QoS */
+  if (af == AF_INET6) {
+    struct sockaddr_in6 *saddr6 = (struct sockaddr_in6 *) &sa_s;
+
+    if (IN6_IS_ADDR_V4MAPPED (&saddr6->sin6_addr))
+      af = AF_INET;
+  }
+
+  /* extract and shift 6 bits of the DSCP */
+  tos = (qos_dscp & 0x3f) << 2;
+
+  switch (af) {
+    case AF_INET:
+      if (SETSOCKOPT (conn->fd.fd, IPPROTO_IP, IP_TOS, &tos, sizeof (tos)) < 0)
+        goto no_setsockopt;
+      break;
+    case AF_INET6:
+#ifdef IPV6_TCLASS
+      if (SETSOCKOPT (conn->fd.fd, IPPROTO_IPV6, IPV6_TCLASS, &tos,
+              sizeof (tos)) < 0)
+        goto no_setsockopt;
+      break;
+#endif
+    default:
+      goto wrong_family;
+  }
+
+  return GST_RTSP_OK;
+
+  /* ERRORS */
+no_getsockname:
+no_setsockopt:
+  {
+    return GST_RTSP_ESYS;
+  }
+
+wrong_family:
+  {
+    return GST_RTSP_ERROR;
+  }
+}
+
+/**
+ * gst_rtsp_connection_get_ip:
+ * @conn: a #GstRTSPConnection
+ *
+ * Retrieve the IP address of the other end of @conn.
+ *
+ * Returns: The IP address as a string.
+ *
+ * Since: 0.10.20
+ */
+const gchar *
+gst_rtsp_connection_get_ip (const GstRTSPConnection * conn)
+{
+  g_return_val_if_fail (conn != NULL, NULL);
+
+  return conn->ip;
 }

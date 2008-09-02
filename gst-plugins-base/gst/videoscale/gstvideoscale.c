@@ -80,7 +80,7 @@ GST_ELEMENT_DETAILS ("Video scaler",
     "Resizes video",
     "Wim Taymans <wim.taymans@chello.be>");
 
-#define DEFAULT_PROP_METHOD	GST_VIDEO_SCALE_NEAREST
+#define DEFAULT_PROP_METHOD	GST_VIDEO_SCALE_BILINEAR
 
 enum
 {
@@ -88,10 +88,6 @@ enum
   PROP_METHOD
       /* FILL ME */
 };
-
-/* can't handle width/height of 1 yet, since we divide a lot by (n-1) */
-#undef GST_VIDEO_SIZE_RANGE
-#define GST_VIDEO_SIZE_RANGE "(int) [ 2, MAX ]"
 
 static GstStaticCaps gst_video_scale_format_caps[] = {
   GST_STATIC_CAPS (GST_VIDEO_CAPS_RGBx),
@@ -143,6 +139,7 @@ static GType
 gst_video_scale_method_get_type (void)
 {
   static GType video_scale_method_type = 0;
+
   static const GEnumValue video_scale_methods[] = {
     {GST_VIDEO_SCALE_NEAREST, "Nearest Neighbour", "nearest-neighbour"},
     {GST_VIDEO_SCALE_BILINEAR, "Bilinear", "bilinear"},
@@ -191,9 +188,13 @@ gst_video_scale_sink_template_factory (void)
 
 
 static void gst_video_scale_base_init (gpointer g_class);
+
 static void gst_video_scale_class_init (GstVideoScaleClass * klass);
+
 static void gst_video_scale_init (GstVideoScale * videoscale);
+
 static void gst_video_scale_finalize (GstVideoScale * videoscale);
+
 static gboolean gst_video_scale_src_event (GstBaseTransform * trans,
     GstEvent * event);
 
@@ -259,6 +260,7 @@ static void
 gst_video_scale_class_init (GstVideoScaleClass * klass)
 {
   GObjectClass *gobject_class;
+
   GstBaseTransformClass *trans_class;
 
   gobject_class = (GObjectClass *) klass;
@@ -270,7 +272,8 @@ gst_video_scale_class_init (GstVideoScaleClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_METHOD,
       g_param_spec_enum ("method", "method", "method",
-          GST_TYPE_VIDEO_SCALE_METHOD, DEFAULT_PROP_METHOD, G_PARAM_READWRITE));
+          GST_TYPE_VIDEO_SCALE_METHOD, DEFAULT_PROP_METHOD,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   trans_class->transform_caps =
       GST_DEBUG_FUNCPTR (gst_video_scale_transform_caps);
@@ -344,9 +347,13 @@ gst_video_scale_transform_caps (GstBaseTransform * trans,
     GstPadDirection direction, GstCaps * caps)
 {
   GstVideoScale *videoscale;
+
   GstCaps *ret;
+
   GstStructure *structure;
+
   const GValue *par;
+
   gint method;
 
   /* this function is always called with a simple caps */
@@ -374,28 +381,22 @@ gst_video_scale_transform_caps (GstBaseTransform * trans,
   }
 
   ret = gst_caps_copy (caps);
-  structure = gst_caps_get_structure (ret, 0);
+  structure = gst_structure_copy (gst_caps_get_structure (ret, 0));
 
   gst_structure_set (structure,
       "width", GST_TYPE_INT_RANGE, 1, G_MAXINT,
       "height", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
 
+  gst_caps_merge_structure (ret, gst_structure_copy (structure));
+
   /* if pixel aspect ratio, make a range of it */
   if ((par = gst_structure_get_value (structure, "pixel-aspect-ratio"))) {
-    GstCaps *copy;
-    GstStructure *cstruct;
-
-    /* copy input PAR first, this is the prefered PAR */
-    gst_structure_set_value (structure, "pixel-aspect-ratio", par);
-
-    /* then make a copy with a fraction range as a second choice */
-    copy = gst_caps_copy (ret);
-    cstruct = gst_caps_get_structure (copy, 0);
-    gst_structure_set (cstruct,
+    gst_structure_set (structure,
         "pixel-aspect-ratio", GST_TYPE_FRACTION_RANGE, 0, 1, G_MAXINT, 1, NULL);
 
-    /* and append */
-    gst_caps_append (ret, copy);
+    gst_caps_merge_structure (ret, structure);
+  } else {
+    gst_structure_free (structure);
   }
 
   GST_DEBUG_OBJECT (trans, "returning caps: %" GST_PTR_FORMAT, ret);
@@ -414,6 +415,7 @@ static int
 gst_video_scale_get_format (GstCaps * caps)
 {
   int i;
+
   GstCaps *icaps, *scaps;
 
   for (i = 0; i < G_N_ELEMENTS (gst_video_scale_format_caps); i++) {
@@ -508,6 +510,7 @@ static gboolean
 parse_caps (GstCaps * caps, gint * format, gint * width, gint * height)
 {
   gboolean ret;
+
   GstStructure *structure;
 
   structure = gst_caps_get_structure (caps, 0);
@@ -524,6 +527,7 @@ static gboolean
 gst_video_scale_set_caps (GstBaseTransform * trans, GstCaps * in, GstCaps * out)
 {
   GstVideoScale *videoscale;
+
   gboolean ret;
 
   videoscale = GST_VIDEO_SCALE (trans);
@@ -565,7 +569,9 @@ gst_video_scale_get_unit_size (GstBaseTransform * trans, GstCaps * caps,
     guint * size)
 {
   GstVideoScale *videoscale;
+
   gint format, width, height;
+
   VSImage img;
 
   g_assert (size);
@@ -587,6 +593,7 @@ gst_video_scale_fixate_caps (GstBaseTransform * base, GstPadDirection direction,
     GstCaps * caps, GstCaps * othercaps)
 {
   GstStructure *ins, *outs;
+
   const GValue *from_par, *to_par;
 
   g_return_if_fail (gst_caps_is_fixed (caps));
@@ -603,7 +610,9 @@ gst_video_scale_fixate_caps (GstBaseTransform * base, GstPadDirection direction,
   /* we have both PAR but they might not be fixated */
   if (from_par && to_par) {
     gint from_w, from_h, from_par_n, from_par_d, to_par_n, to_par_d;
+
     gint count = 0, w = 0, h = 0;
+
     guint num, den;
 
     /* from_par should be fixed */
@@ -732,13 +741,21 @@ gst_video_scale_transform (GstBaseTransform * trans, GstBuffer * in,
     GstBuffer * out)
 {
   GstVideoScale *videoscale;
+
   GstFlowReturn ret = GST_FLOW_OK;
+
   VSImage *dest;
+
   VSImage *src;
+
   VSImage dest_u;
+
   VSImage dest_v;
+
   VSImage src_u;
+
   VSImage src_v;
+
   gint method;
 
   videoscale = GST_VIDEO_SCALE (trans);
@@ -756,6 +773,7 @@ gst_video_scale_transform (GstBaseTransform * trans, GstBuffer * in,
 
   switch (method) {
     case GST_VIDEO_SCALE_NEAREST:
+      GST_LOG_OBJECT (videoscale, "doing nearest scaling");
       switch (videoscale->format) {
         case GST_VIDEO_SCALE_RGBx:
         case GST_VIDEO_SCALE_xRGB:
@@ -799,6 +817,7 @@ gst_video_scale_transform (GstBaseTransform * trans, GstBuffer * in,
       }
       break;
     case GST_VIDEO_SCALE_BILINEAR:
+      GST_LOG_OBJECT (videoscale, "doing bilinear scaling");
       switch (videoscale->format) {
         case GST_VIDEO_SCALE_RGBx:
         case GST_VIDEO_SCALE_xRGB:
@@ -842,6 +861,7 @@ gst_video_scale_transform (GstBaseTransform * trans, GstBuffer * in,
       }
       break;
     case GST_VIDEO_SCALE_4TAP:
+      GST_LOG_OBJECT (videoscale, "doing 4tap scaling");
       switch (videoscale->format) {
         case GST_VIDEO_SCALE_I420:
         case GST_VIDEO_SCALE_YV12:
@@ -884,8 +904,11 @@ static gboolean
 gst_video_scale_src_event (GstBaseTransform * trans, GstEvent * event)
 {
   GstVideoScale *videoscale;
+
   gboolean ret;
+
   double a;
+
   GstStructure *structure;
 
   videoscale = GST_VIDEO_SCALE (trans);

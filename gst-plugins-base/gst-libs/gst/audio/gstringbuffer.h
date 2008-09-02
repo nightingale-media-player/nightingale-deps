@@ -90,6 +90,10 @@ typedef enum {
  * @GST_BUFTYPE_IMA_ADPCM: samples in ima adpcm
  * @GST_BUFTYPE_MPEG: samples in mpeg audio format
  * @GST_BUFTYPE_GSM: samples in gsm format
+ * @GST_BUFTYPE_IEC958: samples in IEC958 frames (e.g. AC3)
+ * @GST_BUFTYPE_AC3: samples in AC3 format
+ * @GST_BUFTYPE_EAC3: samples in EAC3 format
+ * @GST_BUFTYPE_DTS: samples in DTS format
  *
  * The format of the samples in the ringbuffer.
  */
@@ -101,7 +105,11 @@ typedef enum
   GST_BUFTYPE_A_LAW,
   GST_BUFTYPE_IMA_ADPCM,
   GST_BUFTYPE_MPEG,
-  GST_BUFTYPE_GSM
+  GST_BUFTYPE_GSM,
+  GST_BUFTYPE_IEC958,
+  GST_BUFTYPE_AC3,
+  GST_BUFTYPE_EAC3,
+  GST_BUFTYPE_DTS
 } GstBufferFormatType;
 
 typedef enum
@@ -149,7 +157,11 @@ typedef enum
   GST_A_LAW,
   GST_IMA_ADPCM,
   GST_MPEG,
-  GST_GSM
+  GST_GSM,
+  GST_IEC958,
+  GST_AC3,
+  GST_EAC3,
+  GST_DTS
 } GstBufferFormat;
 
 /**
@@ -188,17 +200,30 @@ struct _GstRingBufferSpec
   gint      rate;
   gint      channels;
   
-  guint64  latency_time;        /* the required/actual latency time */
-  guint64  buffer_time;         /* the required/actual time of the buffer */
-  gint     segsize;             /* size of one buffer segment in bytes */
-  gint     segtotal;            /* total number of segments */
-
+  guint64  latency_time;        /* the required/actual latency time, this is the
+				 * actual the size of one segment and the
+				 * minimum possible latency we can achieve. */
+  guint64  buffer_time;         /* the required/actual time of the buffer, this is
+				 * the total size of the buffer and maximum
+				 * latency we can compensate for. */
+  gint     segsize;             /* size of one buffer segment in bytes, this value
+				 * should be chosen to match latency_time as
+				 * well as possible. */
+  gint     segtotal;            /* total number of segments, this value is the
+				 * number of segments of @segsize and should be
+				 * chosen so that it matches buffer_time as
+				 * close as possible. */
   /* out */
   gint     bytes_per_sample;    /* number of bytes of one sample */
   guint8   silence_sample[32];  /* bytes representing silence */
 
+  /* ABI added 0.10.20 */
+  gint     seglatency;          /* number of segments queued in the lower
+				 * level device, defaults to segtotal. */
+
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  /* gpointer _gst_reserved[GST_PADDING]; */
+  guint8 _gst_reserved[(sizeof (gpointer) * GST_PADDING) - sizeof (gint)];
 };
 
 #define GST_RING_BUFFER_GET_COND(buf) (((GstRingBuffer *)buf)->cond)

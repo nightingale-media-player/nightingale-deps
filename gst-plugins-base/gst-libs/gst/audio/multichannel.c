@@ -23,25 +23,35 @@
 
 #include "multichannel.h"
 
-#define GST_AUDIO_CHANNEL_POSITIONS_PROPERTY_NAME "channel-positions"
+#define GST_AUDIO_CHANNEL_POSITIONS_FIELD_NAME "channel-positions"
 
-/*
- * This function checks if basic assumptions apply:
- *  - does each position occur at most once?
- *  - do conflicting positions occur?
- *     + front_mono vs. front_left/right
- *     + front_center vs. front_left/right_of_center
- *     + rear_center vs. rear_left/right
- * It also adds some hacks that 0.8.x needs for compatibility:
- *  - if channels == 1, are we really mono?
- *  - if channels == 2, are we really stereo?
+/**
+ * gst_audio_check_channel_positions:
+ * @pos: An array of #GstAudioChannelPosition.
+ * @channels: The number of elements in @pos.
+ *
+ * This functions checks if the given channel positions are valid. Channel
+ * positions are valid if:
+ * <itemizedlist>
+ *   <listitem><para>No channel positions appears twice or all positions are %GST_AUDIO_CHANNEL_POSITION_NONE.
+ *   </para></listitem>
+ *   <listitem><para>Either all or none of the channel positions are %GST_AUDIO_CHANNEL_POSITION_NONE.
+ *   </para></listitem>
+ *   <listitem><para>%GST_AUDIO_CHANNEL_POSITION_FRONT_MONO and %GST_AUDIO_CHANNEL_POSITION_LEFT or %GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT don't appear together in the given positions.
+ *   </para></listitem>
+ * </itemizedlist>
+ *
+ * Since: 0.10.20
+ *
+ * Returns: %TRUE if the given channel positions are valid
+ * and %FALSE otherwise.
  */
-
-static gboolean
+gboolean
 gst_audio_check_channel_positions (const GstAudioChannelPosition * pos,
-    gint channels)
+    guint channels)
 {
   gint i, n;
+
   const struct
   {
     const GstAudioChannelPosition pos1[2];
@@ -51,27 +61,18 @@ gst_audio_check_channel_positions (const GstAudioChannelPosition * pos,
     { {
     GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
             GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT}, {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_MONO}},
-        /* front center: 2 <-> 1 */
-    { {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER,
-            GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER}, {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER}},
-        /* rear: 2 <-> 1 */
-    { {
-    GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
-            GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT}, {
-    GST_AUDIO_CHANNEL_POSITION_REAR_CENTER}}, { {
+    GST_AUDIO_CHANNEL_POSITION_FRONT_MONO}}, { {
     GST_AUDIO_CHANNEL_POSITION_INVALID}}
   };
 
-  g_assert (pos != NULL && channels > 0);
+  g_return_val_if_fail (pos != NULL, FALSE);
+  g_return_val_if_fail (channels > 0, FALSE);
 
   /* check for invalid channel positions */
   for (n = 0; n < channels; n++) {
     if (pos[n] <= GST_AUDIO_CHANNEL_POSITION_INVALID ||
         pos[n] >= GST_AUDIO_CHANNEL_POSITION_NUM) {
-      g_warning ("Channel position %d is invalid, not allowed", n);
+      GST_WARNING ("Channel position %d for channel %d is invalid", pos[n], n);
       return FALSE;
     }
   }
@@ -82,7 +83,7 @@ gst_audio_check_channel_positions (const GstAudioChannelPosition * pos,
   if (pos[0] == GST_AUDIO_CHANNEL_POSITION_NONE) {
     for (n = 1; n < channels; ++n) {
       if (pos[n] != GST_AUDIO_CHANNEL_POSITION_NONE) {
-        g_warning ("Either all channel positions must be defined, or all "
+        GST_WARNING ("Either all channel positions must be defined, or all "
             "be set to NONE, having only some defined is not allowed");
         return FALSE;
       }
@@ -103,13 +104,13 @@ gst_audio_check_channel_positions (const GstAudioChannelPosition * pos,
 
     /* NONE may not occur mixed with other channel positions */
     if (i == GST_AUDIO_CHANNEL_POSITION_NONE && count > 0) {
-      g_warning ("Either all channel positions must be defined, or all "
+      GST_WARNING ("Either all channel positions must be defined, or all "
           "be set to NONE, having only some defined is not allowed");
       return FALSE;
     }
 
     if (count > 1) {
-      g_warning ("Channel position %d occurred %d times, not allowed",
+      GST_WARNING ("Channel position %d occurred %d times, not allowed",
           i, count);
       return FALSE;
     }
@@ -127,19 +128,10 @@ gst_audio_check_channel_positions (const GstAudioChannelPosition * pos,
     }
 
     if (found1 && found2) {
-      g_warning ("Found conflicting channel positions %d/%d and %d",
+      GST_WARNING ("Found conflicting channel positions %d/%d and %d",
           conf[i].pos1[0], conf[i].pos1[1], conf[i].pos2[0]);
       return FALSE;
     }
-  }
-
-  /* Throw warning if we encounter an unusual 2-channel configuration,
-   * at least until someone finds a reason why we should not */
-  if (channels == 2 && (pos[0] != GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT ||
-          pos[1] != GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT)) {
-    g_warning ("channels=2 implies stereo, but channel positions are "
-        "< %d, %d>", pos[0], pos[1]);
-    return FALSE;
   }
 
   return TRUE;
@@ -232,9 +224,13 @@ GstAudioChannelPosition *
 gst_audio_get_channel_positions (GstStructure * str)
 {
   GstAudioChannelPosition *pos;
+
   gint channels, n;
+
   const GValue *pos_val_arr, *pos_val_entry;
+
   gboolean res;
+
   GType t;
 
   /* get number of channels, general type checkups */
@@ -243,10 +239,10 @@ gst_audio_get_channel_positions (GstStructure * str)
   g_return_val_if_fail (res, NULL);
   g_return_val_if_fail (channels > 0, NULL);
   pos_val_arr = gst_structure_get_value (str,
-      GST_AUDIO_CHANNEL_POSITIONS_PROPERTY_NAME);
+      GST_AUDIO_CHANNEL_POSITIONS_FIELD_NAME);
 
   /* The following checks are here to retain compatibility for plugins not
-   * implementing this property. They expect that channels=1 implies mono
+   * implementing this field. They expect that channels=1 implies mono
    * and channels=2 implies stereo, so we follow that. */
   if (pos_val_arr == NULL) {
     /* channel layouts for 1 and 2 channels are implicit, don't warn */
@@ -294,9 +290,9 @@ gst_audio_get_channel_positions (GstStructure * str)
  * @str: A #GstStructure to set channel positions on.
  * @pos: an array of channel positions. The number of members
  *       in this array should be equal to the (fixed!) number
- *       of the "channels" property in the given #GstStructure.
+ *       of the "channels" field in the given #GstStructure.
  *
- * Adds a "channel-positions" property to the given #GstStructure,
+ * Adds a "channel-positions" field to the given #GstStructure,
  * which will represent the channel positions as given in the
  * provided #GstAudioChannelPosition array.
  */
@@ -308,6 +304,7 @@ gst_audio_set_channel_positions (GstStructure * str,
   GValue pos_val_arr = { 0 }, pos_val_entry = {
   0};
   gint channels, n;
+
   gboolean res;
 
   /* get number of channels, checkups */
@@ -330,7 +327,7 @@ gst_audio_set_channel_positions (GstStructure * str,
 
   /* add to structure */
   gst_structure_set_value (str,
-      GST_AUDIO_CHANNEL_POSITIONS_PROPERTY_NAME, &pos_val_arr);
+      GST_AUDIO_CHANNEL_POSITIONS_FIELD_NAME, &pos_val_arr);
   g_value_unset (&pos_val_arr);
 }
 
@@ -346,9 +343,9 @@ gst_audio_set_channel_positions (GstStructure * str,
  * Sets a (possibly non-fixed) list of possible audio channel
  * positions (given in pos) on the given structure. The
  * structure, after this function has been called, will contain
- * a "channel-positions" property with an array of the size of
- * the "channels" property value in the given structure (note
- * that this means that the channels property in the provided
+ * a "channel-positions" field with an array of the size of
+ * the "channels" field value in the given structure (note
+ * that this means that the channels field in the provided
  * structure should be fixed!). Each value in the array will
  * contain each of the values given in the pos array.
  */
@@ -371,11 +368,6 @@ gst_audio_set_structure_channel_positions_list (GstStructure * str,
   g_return_if_fail (res);
   g_return_if_fail (channels > 0);
 
-  /* 0.8.x: channels=1 or channels=2 is mono/stereo, no positions needed
-   * there (we discard them anyway) */
-  if (channels == 1 || channels == 2)
-    return;
-
   /* create the array of lists */
   g_value_init (&pos_val_arr, GST_TYPE_ARRAY);
   g_value_init (&pos_val_entry, GST_TYPE_AUDIO_CHANNEL_POSITION);
@@ -389,7 +381,7 @@ gst_audio_set_structure_channel_positions_list (GstStructure * str,
     g_value_unset (&pos_val_list);
   }
   g_value_unset (&pos_val_entry);
-  gst_structure_set_value (str, GST_AUDIO_CHANNEL_POSITIONS_PROPERTY_NAME,
+  gst_structure_set_value (str, GST_AUDIO_CHANNEL_POSITIONS_FIELD_NAME,
       &pos_val_arr);
   g_value_unset (&pos_val_arr);
 }
@@ -405,6 +397,7 @@ add_list_to_struct (GstStructure * str,
     const GstAudioChannelPosition * pos, gint num_positions)
 {
   GstCaps *caps = gst_caps_new_empty ();
+
   const GValue *chan_val;
 
   chan_val = gst_structure_get_value (str, "channels");
@@ -412,6 +405,7 @@ add_list_to_struct (GstStructure * str,
     gst_audio_set_structure_channel_positions_list (str, pos, num_positions);
   } else if (G_VALUE_TYPE (chan_val) == GST_TYPE_LIST) {
     gint size;
+
     const GValue *sub_val;
 
     size = gst_value_list_get_size (chan_val);
@@ -440,7 +434,8 @@ add_list_to_struct (GstStructure * str,
       gst_caps_append_structure (caps, str);
     }
   } else {
-    g_warning ("Unknown value type for channels property");
+    g_warning ("Unexpected value type '%s' for channels field",
+        GST_STR_NULL (g_type_name (G_VALUE_TYPE (chan_val))));
   }
 
   return caps;
@@ -457,11 +452,11 @@ add_list_to_struct (GstStructure * str,
  * Sets a (possibly non-fixed) list of possible audio channel
  * positions (given in pos) on the given caps. Each of the
  * structures of the caps, after this function has been called,
- * will contain a "channel-positions" property with an array.
+ * will contain a "channel-positions" field with an array.
  * Each value in the array will contain each of the values given
  * in the pos array. Note that the size of the caps might be
  * increased by this, since each structure with a "channel-
- * positions" property needs to have a fixed "channels" property.
+ * positions" field needs to have a fixed "channels" field.
  * The input caps is not required to have this.
  */
 
@@ -486,10 +481,10 @@ gst_audio_set_caps_channel_positions_list (GstCaps * caps,
 /**
  * gst_audio_fixate_channel_positions:
  * @str: a #GstStructure containing a (possibly unfixed)
- *       "channel-positions" property.
+ *       "channel-positions" field.
  *
  * Custom fixate function. Elements that implement some sort of
- * channel conversion algorhithm should use this function for
+ * channel conversion algorithm should use this function for
  * fixating on GstAudioChannelPosition properties. It will take
  * care of equal channel positioning (left/right). Caller g_free()s
  * the return value. The input properties may be (and are supposed
@@ -505,9 +500,13 @@ GstAudioChannelPosition *
 gst_audio_fixate_channel_positions (GstStructure * str)
 {
   GstAudioChannelPosition *pos;
+
   gint channels, n, num_unfixed = 0, i, c;
+
   const GValue *pos_val_arr, *pos_val_entry, *pos_val;
+
   gboolean res, is_stereo = TRUE;
+
   GType t;
 
   /*
@@ -522,19 +521,20 @@ gst_audio_fixate_channel_positions (GstStructure * str)
     const GstAudioChannelPosition pos2[1];
   } conf[] = {
     /* front: mono <-> stereo */
-    { {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+    {
+      {
+      GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
             GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT}, {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_MONO}},
-        /* front center: 2 <-> 1 */
-    { {
+    GST_AUDIO_CHANNEL_POSITION_FRONT_MONO}}, { {
     GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER,
             GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER}, {
-    GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER}},
-        /* rear: 2 <-> 1 */
-    { {
+    GST_AUDIO_CHANNEL_POSITION_INVALID}}, { {
+    GST_AUDIO_CHANNEL_POSITION_INVALID, GST_AUDIO_CHANNEL_POSITION_INVALID}, {
+    GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER}}, { {
     GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
             GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT}, {
+    GST_AUDIO_CHANNEL_POSITION_INVALID}}, { {
+    GST_AUDIO_CHANNEL_POSITION_INVALID, GST_AUDIO_CHANNEL_POSITION_INVALID}, {
     GST_AUDIO_CHANNEL_POSITION_REAR_CENTER}}, { {
     GST_AUDIO_CHANNEL_POSITION_INVALID, GST_AUDIO_CHANNEL_POSITION_INVALID}, {
     GST_AUDIO_CHANNEL_POSITION_LFE}}, { {
@@ -560,7 +560,7 @@ gst_audio_fixate_channel_positions (GstStructure * str)
 
   /* 0.8.x mono/stereo checks */
   pos_val_arr = gst_structure_get_value (str,
-      GST_AUDIO_CHANNEL_POSITIONS_PROPERTY_NAME);
+      GST_AUDIO_CHANNEL_POSITIONS_FIELD_NAME);
   if (!pos_val_arr && (channels == 1 || channels == 2)) {
     pos = g_new (GstAudioChannelPosition, channels);
     if (channels == 1) {

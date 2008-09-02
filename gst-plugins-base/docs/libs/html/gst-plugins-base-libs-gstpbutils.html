@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstpbutils</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="prev" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="next" href="gst-plugins-base-libs-gstpbutilsdescriptions.html" title="gstpbutilsdescriptions">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,38 +36,35 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstpbutilsdescriptions.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2743645" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2743674" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpbutils.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpbutils.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpbutils"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2743645"></a><span class="refentrytitle">gstpbutils</span>
-</h2>
-<p>gstpbutils &#8212; General Application and Plugin Utility Library</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstpbutils.top_of_page"></a>gstpbutils</span></h2>
+<p>gstpbutils — General Application and Plugin Utility Library</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstpbutils.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
-#include &lt;gst/pbutils/base-utils.h&gt;
+#include &lt;gst/pbutils/pbutils.h&gt;
 
-
-
-void                <a href="gst-plugins-base-libs-gstpbutils.html#gst-pb-utils-init">gst_pb_utils_init</a>                   (void);
+void                <a class="link" href="gst-plugins-base-libs-gstpbutils.html#gst-pb-utils-init" title="gst_pb_utils_init ()">gst_pb_utils_init</a>                   (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2743674"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstpbutils.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2743686"></a><p>
+<a name="id2773626"></a><h3>Linking to this library</h3>
+<p>
 libgstpbutils is a general utility library for plugins and applications,
 available since gst-plugins-base 0.10.12. It currently provides the
 following:
@@ -91,16 +88,14 @@ communicate to the application that a certain type of plugin is missing
 API for applications to recognise and handle missing-plugin messages
 </p></li>
 </ul></div>
-<h3>Linking to this library</h3>
 <p>
 You should obtain the required CFLAGS and LIBS using pkg-config on the
 gstreamer-plugins-base-0.10 module. You will then also need to add
 '-lgstpbutils-0.10' manually to your LIBS line.
 </p>
-<h3>Library initialisation</h3>
 <p>
 Before using any of its functions, applications and plugins must call
-<a href="gst-plugins-base-libs-gstpbutils.html#gst-pb-utils-init"><code class="function">gst_pb_utils_init()</code></a> to initialise the library.
+<a class="link" href="gst-plugins-base-libs-gstpbutils.html#gst-pb-utils-init" title="gst_pb_utils_init ()"><code class="function">gst_pb_utils_init()</code></a> to initialise the library.
 </p>
 </div>
 <p>
@@ -108,11 +103,10 @@ Before using any of its functions, applications and plugins must call
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2743768"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstpbutils.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2743778"></a><h3>
-<a name="gst-pb-utils-init"></a>gst_pb_utils_init ()</h3>
-<a class="indexterm" name="id2743793"></a><pre class="programlisting">void                gst_pb_utils_init                   (void);</pre>
+<a name="gst-pb-utils-init"></a><h3>gst_pb_utils_init ()</h3>
+<pre class="programlisting">void                gst_pb_utils_init                   (void);</pre>
 <p>
 Initialises the base utils support library. This function is not
 thread-safe. Applications should call it after calling <code class="function">gst_init()</code>,
@@ -129,5 +123,8 @@ library has already been initialised.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

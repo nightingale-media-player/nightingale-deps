@@ -277,7 +277,7 @@ gst_v4l_close (GstV4lElement * v4lelement)
  * return value: the number of video input channels
  ******************************************************/
 
-gint
+static gint
 gst_v4l_get_num_chans (GstV4lElement * v4lelement)
 {
   GST_DEBUG_OBJECT (v4lelement, "getting number of channels");
@@ -334,8 +334,8 @@ gst_v4l_get_chan_names (GstV4lElement * v4lelement)
         channel->flags |= GST_TUNER_CHANNEL_FREQUENCY;
         channel->freq_multiplicator =
             62.5 * ((vtun.flags & VIDEO_TUNER_LOW) ? 1 : 1000);
-        channel->min_frequency = vtun.rangelow;
-        channel->max_frequency = vtun.rangehigh;
+        channel->min_frequency = vtun.rangelow * channel->freq_multiplicator;
+        channel->max_frequency = vtun.rangehigh * channel->freq_multiplicator;
         channel->min_signal = 0;
         channel->max_signal = 0xffff;
         break;

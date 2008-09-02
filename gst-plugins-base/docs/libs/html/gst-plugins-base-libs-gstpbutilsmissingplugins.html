@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstpbutilsmissingplugins</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="prev" href="gst-plugins-base-libs-gstpbutilsdescriptions.html" title="gstpbutilsdescriptions">
 <link rel="next" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html" title="gstpbutilsinstallplugins">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,64 +36,60 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2746550" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2746919" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpbutilsmissingplugins.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpbutilsmissingplugins"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2746550"></a><span class="refentrytitle">gstpbutilsmissingplugins</span>
-</h2>
-<p>gstpbutilsmissingplugins &#8212; Create, recognise and parse missing-plugins messages</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstpbutilsmissingplugins.top_of_page"></a>gstpbutilsmissingplugins</span></h2>
+<p>gstpbutilsmissingplugins — Create, recognise and parse missing-plugins messages</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstpbutilsmissingplugins.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/pbutils/missing-plugins.h&gt;
 
-
-
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail">gst_missing_plugin_message_get_installer_detail</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail" title="gst_missing_plugin_message_get_installer_detail ()">gst_missing_plugin_message_get_installer_detail</a>
                                                         (GstMessage *msg);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description">gst_missing_plugin_message_get_description</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()">gst_missing_plugin_message_get_description</a>
                                                         (GstMessage *msg);
-gboolean            <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-is-missing-plugin-message">gst_is_missing_plugin_message</a>       (GstMessage *msg);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-is-missing-plugin-message" title="gst_is_missing_plugin_message ()">gst_is_missing_plugin_message</a>       (GstMessage *msg);
 
-GstMessage*         <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-message-new">gst_missing_decoder_message_new</a>     (GstElement *element,
+GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-message-new" title="gst_missing_decoder_message_new ()">gst_missing_decoder_message_new</a>     (GstElement *element,
                                                          const GstCaps *decode_caps);
-GstMessage*         <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-message-new">gst_missing_encoder_message_new</a>     (GstElement *element,
+GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-message-new" title="gst_missing_encoder_message_new ()">gst_missing_encoder_message_new</a>     (GstElement *element,
                                                          const GstCaps *encode_caps);
-GstMessage*         <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-message-new">gst_missing_uri_source_message_new</a>  (GstElement *element,
+GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-message-new" title="gst_missing_uri_source_message_new ()">gst_missing_uri_source_message_new</a>  (GstElement *element,
                                                          const gchar *protocol);
-GstMessage*         <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-message-new">gst_missing_uri_sink_message_new</a>    (GstElement *element,
+GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-message-new" title="gst_missing_uri_sink_message_new ()">gst_missing_uri_sink_message_new</a>    (GstElement *element,
                                                          const gchar *protocol);
-GstMessage*         <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-message-new">gst_missing_element_message_new</a>     (GstElement *element,
+GstMessage*         <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-message-new" title="gst_missing_element_message_new ()">gst_missing_element_message_new</a>     (GstElement *element,
                                                          const gchar *factory_name);
 
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-installer-detail-new">gst_missing_uri_source_installer_detail_new</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-source-installer-detail-new" title="gst_missing_uri_source_installer_detail_new ()">gst_missing_uri_source_installer_detail_new</a>
                                                         (const gchar *protocol);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-installer-detail-new">gst_missing_uri_sink_installer_detail_new</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-uri-sink-installer-detail-new" title="gst_missing_uri_sink_installer_detail_new ()">gst_missing_uri_sink_installer_detail_new</a>
                                                         (const gchar *protocol);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-installer-detail-new">gst_missing_element_installer_detail_new</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-element-installer-detail-new" title="gst_missing_element_installer_detail_new ()">gst_missing_element_installer_detail_new</a>
                                                         (const gchar *factory_name);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-installer-detail-new">gst_missing_decoder_installer_detail_new</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-decoder-installer-detail-new" title="gst_missing_decoder_installer_detail_new ()">gst_missing_decoder_installer_detail_new</a>
                                                         (const GstCaps *decode_caps);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-installer-detail-new">gst_missing_encoder_installer_detail_new</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-encoder-installer-detail-new" title="gst_missing_encoder_installer_detail_new ()">gst_missing_encoder_installer_detail_new</a>
                                                         (const GstCaps *encode_caps);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2746919"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstpbutilsmissingplugins.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2746931"></a><p>
+<a name="id2776975"></a><p>
 Functions to create, recognise and parse missing-plugins messages for
 applications and elements.
 </p>
@@ -105,12 +101,12 @@ element. The application can use these messages for two things:
 <div class="itemizedlist"><ul type="disc">
 <li><p>
     concise error/problem reporting to the user mentioning what exactly
-    is missing, see <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a>
+    is missing, see <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a>
   </p></li>
 <li><p>
     initiate installation of missing plugins, see
-    <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail"><code class="function">gst_missing_plugin_message_get_installer_detail()</code></a> and
-    <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a>
+    <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-installer-detail" title="gst_missing_plugin_message_get_installer_detail ()"><code class="function">gst_missing_plugin_message_get_installer_detail()</code></a> and
+    <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a>
   </p></li>
 </ul></div>
 <p>
@@ -126,16 +122,15 @@ above.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2747011"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstpbutilsmissingplugins.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2747021"></a><h3>
-<a name="gst-missing-plugin-message-get-installer-detail"></a>gst_missing_plugin_message_get_installer_detail ()</h3>
-<a class="indexterm" name="id2747035"></a><pre class="programlisting">gchar*              gst_missing_plugin_message_get_installer_detail
+<a name="gst-missing-plugin-message-get-installer-detail"></a><h3>gst_missing_plugin_message_get_installer_detail ()</h3>
+<pre class="programlisting">gchar*              gst_missing_plugin_message_get_installer_detail
                                                         (GstMessage *msg);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -147,12 +142,12 @@ installation mechanisms using one of the two above-mentioned functions.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
 <td> a missing-plugin <span class="type">GstMessage</span> of type <span class="type">GST_MESSAGE_ELEMENT</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -162,9 +157,8 @@ installation mechanisms using one of the two above-mentioned functions.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747157"></a><h3>
-<a name="gst-missing-plugin-message-get-description"></a>gst_missing_plugin_message_get_description ()</h3>
-<a class="indexterm" name="id2747170"></a><pre class="programlisting">gchar*              gst_missing_plugin_message_get_description
+<a name="gst-missing-plugin-message-get-description"></a><h3>gst_missing_plugin_message_get_description ()</h3>
+<pre class="programlisting">gchar*              gst_missing_plugin_message_get_description
                                                         (GstMessage *msg);</pre>
 <p>
 Returns a localised string describing the missing feature, for use in
@@ -182,12 +176,12 @@ message</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
 <td> a missing-plugin <span class="type">GstMessage</span> of type <span class="type">GST_MESSAGE_ELEMENT</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -197,9 +191,8 @@ message</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747273"></a><h3>
-<a name="gst-is-missing-plugin-message"></a>gst_is_missing_plugin_message ()</h3>
-<a class="indexterm" name="id2747286"></a><pre class="programlisting">gboolean            gst_is_missing_plugin_message       (GstMessage *msg);</pre>
+<a name="gst-is-missing-plugin-message"></a><h3>gst_is_missing_plugin_message ()</h3>
+<pre class="programlisting">gboolean            gst_is_missing_plugin_message       (GstMessage *msg);</pre>
 <p>
 Checks whether <em class="parameter"><code>msg</code></em> is a missing plugins message.</p>
 <p>
@@ -209,12 +202,12 @@ Checks whether <em class="parameter"><code>msg</code></em> is a missing plugins 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
 <td> a <span class="type">GstMessage</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if <em class="parameter"><code>msg</code></em> is a missing-plugins message, otherwise <code class="literal">FALSE</code>.
 </td>
 </tr>
@@ -223,9 +216,8 @@ Checks whether <em class="parameter"><code>msg</code></em> is a missing plugins 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747386"></a><h3>
-<a name="gst-missing-decoder-message-new"></a>gst_missing_decoder_message_new ()</h3>
-<a class="indexterm" name="id2747399"></a><pre class="programlisting">GstMessage*         gst_missing_decoder_message_new     (GstElement *element,
+<a name="gst-missing-decoder-message-new"></a><h3>gst_missing_decoder_message_new ()</h3>
+<pre class="programlisting">GstMessage*         gst_missing_decoder_message_new     (GstElement *element,
                                                          const GstCaps *decode_caps);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
@@ -238,17 +230,17 @@ This function is mainly for use in plugins.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
 <td> the <span class="type">GstElement</span> posting the message
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>decode_caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>decode_caps</code></em> :</span></p></td>
 <td> the (fixed) caps for which a decoder element is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstMessage</span>, or NULL on error
 </td>
 </tr>
@@ -257,9 +249,8 @@ This function is mainly for use in plugins.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747508"></a><h3>
-<a name="gst-missing-encoder-message-new"></a>gst_missing_encoder_message_new ()</h3>
-<a class="indexterm" name="id2747521"></a><pre class="programlisting">GstMessage*         gst_missing_encoder_message_new     (GstElement *element,
+<a name="gst-missing-encoder-message-new"></a><h3>gst_missing_encoder_message_new ()</h3>
+<pre class="programlisting">GstMessage*         gst_missing_encoder_message_new     (GstElement *element,
                                                          const GstCaps *encode_caps);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
@@ -272,17 +263,17 @@ This function is mainly for use in plugins.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
 <td> the <span class="type">GstElement</span> posting the message
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>encode_caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>encode_caps</code></em> :</span></p></td>
 <td> the (fixed) caps for which an encoder element is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstMessage</span>, or NULL on error
 </td>
 </tr>
@@ -291,9 +282,8 @@ This function is mainly for use in plugins.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747629"></a><h3>
-<a name="gst-missing-uri-source-message-new"></a>gst_missing_uri_source_message_new ()</h3>
-<a class="indexterm" name="id2747644"></a><pre class="programlisting">GstMessage*         gst_missing_uri_source_message_new  (GstElement *element,
+<a name="gst-missing-uri-source-message-new"></a><h3>gst_missing_uri_source_message_new ()</h3>
+<pre class="programlisting">GstMessage*         gst_missing_uri_source_message_new  (GstElement *element,
                                                          const gchar *protocol);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
@@ -306,18 +296,18 @@ function is mainly for use in plugins.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
 <td> the <span class="type">GstElement</span> posting the message
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the URI protocol the missing source needs to implement,
            e.g. "http" or "mms"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstMessage</span>, or NULL on error
 </td>
 </tr>
@@ -326,9 +316,8 @@ function is mainly for use in plugins.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747752"></a><h3>
-<a name="gst-missing-uri-sink-message-new"></a>gst_missing_uri_sink_message_new ()</h3>
-<a class="indexterm" name="id2747765"></a><pre class="programlisting">GstMessage*         gst_missing_uri_sink_message_new    (GstElement *element,
+<a name="gst-missing-uri-sink-message-new"></a><h3>gst_missing_uri_sink_message_new ()</h3>
+<pre class="programlisting">GstMessage*         gst_missing_uri_sink_message_new    (GstElement *element,
                                                          const gchar *protocol);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
@@ -341,18 +330,18 @@ function is mainly for use in plugins.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
 <td> the <span class="type">GstElement</span> posting the message
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the URI protocol the missing sink needs to implement,
            e.g. "http" or "smb"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstMessage</span>, or NULL on error
 </td>
 </tr>
@@ -361,9 +350,8 @@ function is mainly for use in plugins.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747873"></a><h3>
-<a name="gst-missing-element-message-new"></a>gst_missing_element_message_new ()</h3>
-<a class="indexterm" name="id2747887"></a><pre class="programlisting">GstMessage*         gst_missing_element_message_new     (GstElement *element,
+<a name="gst-missing-element-message-new"></a><h3>gst_missing_element_message_new ()</h3>
+<pre class="programlisting">GstMessage*         gst_missing_element_message_new     (GstElement *element,
                                                          const gchar *factory_name);</pre>
 <p>
 Creates a missing-plugin message for <em class="parameter"><code>element</code></em> to notify the application
@@ -376,18 +364,18 @@ use in plugins.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>element</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
 <td> the <span class="type">GstElement</span> posting the message
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>factory_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factory_name</code></em> :</span></p></td>
 <td> the name of the missing element (element factory),
            e.g. "videoscale" or "cdparanoiasrc"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a new <span class="type">GstMessage</span>, or NULL on error
 </td>
 </tr>
@@ -396,14 +384,13 @@ use in plugins.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2747996"></a><h3>
-<a name="gst-missing-uri-source-installer-detail-new"></a>gst_missing_uri_source_installer_detail_new ()</h3>
-<a class="indexterm" name="id2748013"></a><pre class="programlisting">gchar*              gst_missing_uri_source_installer_detail_new
+<a name="gst-missing-uri-source-installer-detail-new"></a><h3>gst_missing_uri_source_installer_detail_new ()</h3>
+<pre class="programlisting">gchar*              gst_missing_uri_source_installer_detail_new
                                                         (const gchar *protocol);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -417,13 +404,13 @@ missing.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the URI protocol the missing source needs to implement,
            e.g. "http" or "mms"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 
@@ -436,14 +423,13 @@ missing.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2748125"></a><h3>
-<a name="gst-missing-uri-sink-installer-detail-new"></a>gst_missing_uri_sink_installer_detail_new ()</h3>
-<a class="indexterm" name="id2748142"></a><pre class="programlisting">gchar*              gst_missing_uri_sink_installer_detail_new
+<a name="gst-missing-uri-sink-installer-detail-new"></a><h3>gst_missing_uri_sink_installer_detail_new ()</h3>
+<pre class="programlisting">gchar*              gst_missing_uri_sink_installer_detail_new
                                                         (const gchar *protocol);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -457,13 +443,13 @@ missing.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the URI protocol the missing source needs to implement,
            e.g. "http" or "mms"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 
@@ -476,14 +462,13 @@ missing.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2748254"></a><h3>
-<a name="gst-missing-element-installer-detail-new"></a>gst_missing_element_installer_detail_new ()</h3>
-<a class="indexterm" name="id2748270"></a><pre class="programlisting">gchar*              gst_missing_element_installer_detail_new
+<a name="gst-missing-element-installer-detail-new"></a><h3>gst_missing_element_installer_detail_new ()</h3>
+<pre class="programlisting">gchar*              gst_missing_element_installer_detail_new
                                                         (const gchar *factory_name);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -497,13 +482,13 @@ missing.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>factory_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factory_name</code></em> :</span></p></td>
 <td> the name of the missing element (element factory),
            e.g. "videoscale" or "cdparanoiasrc"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 
@@ -516,14 +501,13 @@ missing.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2748384"></a><h3>
-<a name="gst-missing-decoder-installer-detail-new"></a>gst_missing_decoder_installer_detail_new ()</h3>
-<a class="indexterm" name="id2748400"></a><pre class="programlisting">gchar*              gst_missing_decoder_installer_detail_new
+<a name="gst-missing-decoder-installer-detail-new"></a><h3>gst_missing_decoder_installer_detail_new ()</h3>
+<pre class="programlisting">gchar*              gst_missing_decoder_installer_detail_new
                                                         (const GstCaps *decode_caps);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -537,12 +521,12 @@ missing.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>decode_caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>decode_caps</code></em> :</span></p></td>
 <td> the (fixed) caps for which a decoder element is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 
@@ -555,14 +539,13 @@ missing.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2748512"></a><h3>
-<a name="gst-missing-encoder-installer-detail-new"></a>gst_missing_encoder_installer_detail_new ()</h3>
-<a class="indexterm" name="id2748528"></a><pre class="programlisting">gchar*              gst_missing_encoder_installer_detail_new
+<a name="gst-missing-encoder-installer-detail-new"></a><h3>gst_missing_encoder_installer_detail_new ()</h3>
+<pre class="programlisting">gchar*              gst_missing_encoder_installer_detail_new
                                                         (const GstCaps *encode_caps);</pre>
 <p>
 Returns an opaque string containing all the details about the missing
 element to be passed to an external installer called via
-<a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async"><code class="function">gst_install_plugins_async()</code></a> or <a href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync"><code class="function">gst_install_plugins_sync()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()"><code class="function">gst_install_plugins_async()</code></a> or <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()"><code class="function">gst_install_plugins_sync()</code></a>.
 </p>
 <p>
 This function is mainly for applications that call external plugin
@@ -576,12 +559,12 @@ missing.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>encode_caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>encode_caps</code></em> :</span></p></td>
 <td> the (fixed) caps for which an encoder element is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated detail string, or NULL on error. Free string
          with <code class="function">g_free()</code> when not needed any longer.
 
@@ -594,5 +577,8 @@ missing.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

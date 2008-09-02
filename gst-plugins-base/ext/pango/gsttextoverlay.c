@@ -2,7 +2,7 @@
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
  * Copyright (C) <2003> David Schleef <ds@schleef.org>
  * Copyright (C) <2006> Julien Moutte <julien@moutte.net>
- * Copyright (C) <2006> Tim-Philipp Müller <tim centricular net>
+ * Copyright (C) <2006-2008> Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -116,6 +116,7 @@ GST_ELEMENT_DETAILS ("Text overlay",
 #define DEFAULT_PROP_FONT_DESC	""
 #define DEFAULT_PROP_SILENT	FALSE
 #define DEFAULT_PROP_LINE_ALIGNMENT GST_TEXT_OVERLAY_LINE_ALIGN_CENTER
+#define DEFAULT_PROP_WAIT_TEXT	TRUE
 
 /* make a property of me */
 #define DEFAULT_SHADING_VALUE    -80
@@ -136,7 +137,9 @@ enum
   PROP_WRAP_MODE,
   PROP_FONT_DESC,
   PROP_SILENT,
-  PROP_LINE_ALIGNMENT
+  PROP_LINE_ALIGNMENT,
+  PROP_WAIT_TEXT,
+  PROP_LAST
 };
 
 
@@ -242,17 +245,6 @@ gst_text_overlay_line_align_get_type (void)
   return text_overlay_line_align_type;
 }
 
-/* These macros are adapted from videotestsrc.c */
-#define I420_Y_ROWSTRIDE(width) (GST_ROUND_UP_4(width))
-#define I420_U_ROWSTRIDE(width) (GST_ROUND_UP_8(width)/2)
-#define I420_V_ROWSTRIDE(width) ((GST_ROUND_UP_8(I420_Y_ROWSTRIDE(width)))/2)
-
-#define I420_Y_OFFSET(w,h) (0)
-#define I420_U_OFFSET(w,h) (I420_Y_OFFSET(w,h)+(I420_Y_ROWSTRIDE(w)*GST_ROUND_UP_2(h)))
-#define I420_V_OFFSET(w,h) (I420_U_OFFSET(w,h)+(I420_U_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
-#define I420_SIZE(w,h)     (I420_V_OFFSET(w,h)+(I420_V_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
-
 #define GST_TEXT_OVERLAY_GET_COND(ov) (((GstTextOverlay *)ov)->cond)
 #define GST_TEXT_OVERLAY_WAIT(ov)     (g_cond_wait (GST_TEXT_OVERLAY_GET_COND (ov), GST_OBJECT_GET_LOCK (ov)))
 #define GST_TEXT_OVERLAY_SIGNAL(ov)   (g_cond_signal (GST_TEXT_OVERLAY_GET_COND (ov)))
@@ -332,54 +324,56 @@ gst_text_overlay_class_init (GstTextOverlayClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_TEXT,
       g_param_spec_string ("text", "text",
-          "Text to be display.", DEFAULT_PROP_TEXT, G_PARAM_READWRITE));
+          "Text to be display.", DEFAULT_PROP_TEXT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SHADING,
       g_param_spec_boolean ("shaded-background", "shaded background",
           "Whether to shade the background under the text area",
-          DEFAULT_PROP_SHADING, G_PARAM_READWRITE));
+          DEFAULT_PROP_SHADING, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_VALIGNMENT,
       g_param_spec_enum ("valignment", "vertical alignment",
-          "Vertical alignment of the text",
-          GST_TYPE_TEXT_OVERLAY_VALIGN, DEFAULT_PROP_VALIGNMENT,
-          G_PARAM_READWRITE));
+          "Vertical alignment of the text", GST_TYPE_TEXT_OVERLAY_VALIGN,
+          DEFAULT_PROP_VALIGNMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_HALIGNMENT,
       g_param_spec_enum ("halignment", "horizontal alignment",
           "Horizontal alignment of the text", GST_TYPE_TEXT_OVERLAY_HALIGN,
-          DEFAULT_PROP_HALIGNMENT, G_PARAM_READWRITE));
+          DEFAULT_PROP_HALIGNMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_VALIGN,
       g_param_spec_string ("valign", "vertical alignment",
           "Vertical alignment of the text (deprecated; use valignment)",
-          DEFAULT_PROP_VALIGN, G_PARAM_WRITABLE));
+          DEFAULT_PROP_VALIGN, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_HALIGN,
       g_param_spec_string ("halign", "horizontal alignment",
           "Horizontal alignment of the text (deprecated; use halignment)",
-          DEFAULT_PROP_HALIGN, G_PARAM_WRITABLE));
+          DEFAULT_PROP_HALIGN, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_XPAD,
       g_param_spec_int ("xpad", "horizontal paddding",
           "Horizontal paddding when using left/right alignment", 0, G_MAXINT,
-          DEFAULT_PROP_XPAD, G_PARAM_READWRITE));
+          DEFAULT_PROP_XPAD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_YPAD,
       g_param_spec_int ("ypad", "vertical padding",
           "Vertical padding when using top/bottom alignment", 0, G_MAXINT,
-          DEFAULT_PROP_YPAD, G_PARAM_READWRITE));
+          DEFAULT_PROP_YPAD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DELTAX,
       g_param_spec_int ("deltax", "X position modifier",
           "Shift X position to the left or to the right. Unit is pixels.",
-          G_MININT, G_MAXINT, DEFAULT_PROP_DELTAX, G_PARAM_READWRITE));
+          G_MININT, G_MAXINT, DEFAULT_PROP_DELTAX,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DELTAY,
       g_param_spec_int ("deltay", "Y position modifier",
           "Shift Y position up or down. Unit is pixels.", G_MININT, G_MAXINT,
-          DEFAULT_PROP_DELTAY, G_PARAM_READWRITE));
+          DEFAULT_PROP_DELTAY, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_WRAP_MODE,
       g_param_spec_enum ("wrap-mode", "wrap mode",
           "Whether to wrap the text and if so how.",
           GST_TYPE_TEXT_OVERLAY_WRAP_MODE, DEFAULT_PROP_WRAP_MODE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FONT_DESC,
       g_param_spec_string ("font-desc", "font description",
           "Pango font description of font to be used for rendering. "
           "See documentation of pango_font_description_from_string "
-          "for syntax.", DEFAULT_PROP_FONT_DESC, G_PARAM_WRITABLE));
+          "for syntax.", DEFAULT_PROP_FONT_DESC,
+          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
   /**
    * GstTextOverlay:line-alignment
    *
@@ -391,7 +385,7 @@ gst_text_overlay_class_init (GstTextOverlayClass * klass)
       g_param_spec_enum ("line-alignment", "line alignment",
           "Alignment of text lines relative to each other.",
           GST_TYPE_TEXT_OVERLAY_LINE_ALIGN, DEFAULT_PROP_LINE_ALIGNMENT,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstTextOverlay:silent
    *
@@ -404,7 +398,20 @@ gst_text_overlay_class_init (GstTextOverlayClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SILENT,
       g_param_spec_boolean ("silent", "silent",
           "Whether to render the text string",
-          DEFAULT_PROP_SILENT, G_PARAM_READWRITE));
+          DEFAULT_PROP_SILENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstTextOverlay:wait-text
+   *
+   * If set, the video will block until a subtitle is received on the text pad.
+   * If video and subtitles are sent in sync, like from the same demuxer, this
+   * property should be set.
+   *
+   * Since: 0.10.20
+   **/
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_WAIT_TEXT,
+      g_param_spec_boolean ("wait-text", "Wait Text",
+          "Whether to wait for subtitles",
+          DEFAULT_PROP_WAIT_TEXT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -504,6 +511,7 @@ gst_text_overlay_init (GstTextOverlay * overlay, GstTextOverlayClass * klass)
   overlay->want_shading = DEFAULT_PROP_SHADING;
   overlay->shading_value = DEFAULT_SHADING_VALUE;
   overlay->silent = DEFAULT_PROP_SILENT;
+  overlay->wait_text = DEFAULT_PROP_WAIT_TEXT;
 
   overlay->default_text = g_strdup (DEFAULT_PROP_TEXT);
   overlay->need_render = TRUE;
@@ -513,9 +521,6 @@ gst_text_overlay_init (GstTextOverlay * overlay, GstTextOverlayClass * klass)
 
   overlay->text_buffer = NULL;
   overlay->text_linked = FALSE;
-  overlay->video_flushing = FALSE;
-  overlay->text_flushing = FALSE;
-  overlay->text_eos = FALSE;
   overlay->cond = g_cond_new ();
   overlay->segment = gst_segment_new ();
   if (overlay->segment) {
@@ -690,6 +695,9 @@ gst_text_overlay_set_property (GObject * object, guint prop_id,
       pango_layout_set_alignment (overlay->layout,
           (PangoAlignment) overlay->line_align);
       break;
+    case PROP_WAIT_TEXT:
+      overlay->wait_text = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -740,6 +748,9 @@ gst_text_overlay_get_property (GObject * object, guint prop_id,
     case PROP_LINE_ALIGNMENT:
       g_value_set_enum (value, overlay->line_align);
       break;
+    case PROP_WAIT_TEXT:
+      g_value_set_boolean (value, overlay->wait_text);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -761,6 +772,7 @@ gst_text_overlay_src_event (GstPad * pad, GstEvent * event)
     case GST_EVENT_SEEK:
       /* We don't handle seek if we have not text pad */
       if (!overlay->text_linked) {
+        GST_DEBUG_OBJECT (overlay, "seek received, pushing upstream");
         ret = gst_pad_push_event (overlay->video_sinkpad, event);
         goto beach;
       }
@@ -850,9 +862,12 @@ gst_text_overlay_getcaps (GstPad * pad)
 
 static inline void
 gst_text_overlay_shade_y (GstTextOverlay * overlay, guchar * dest,
-    guint dest_stride, gint x0, gint x1, gint y0, gint y1)
+    gint x0, gint x1, gint y0, gint y1)
 {
-  gint i, j;
+  gint i, j, dest_stride;
+
+  dest_stride = gst_video_format_get_row_stride (GST_VIDEO_FORMAT_I420, 0,
+      overlay->width);
 
   x0 = CLAMP (x0 - BOX_XPAD, 0, overlay->width);
   x1 = CLAMP (x1 + BOX_XPAD, 0, overlay->width);
@@ -880,20 +895,28 @@ gst_text_overlay_blit_yuv420 (GstTextOverlay * overlay, FT_Bitmap * bitmap,
     guint8 * yuv_pixels, gint x0, gint y0)
 {
   int y;                        /* text bitmap coordinates */
-  int x1, y1;                   /* video buffer coordinates */
-  int bit_rowinc, uv_rowinc;
-  guint8 *p, *bitp, *u_p;
-  int video_width, video_height;
+  int x1;                       /* video buffer coordinates */
+  guint8 *y_p, *bitp, *u_p, *v_p;
   int bitmap_x0 = 0;            //x0 < 1 ? -(x0 - 1) : 1;       /* 1 pixel border */
   int bitmap_y0 = y0 < 1 ? -(y0 - 1) : 1;       /* 1 pixel border */
   int bitmap_width = bitmap->width - bitmap_x0;
   int bitmap_height = bitmap->rows - bitmap_y0;
-  int u_plane_size;
   int skip_y, skip_x;
+  int y_stride, u_stride, v_stride;
+  int u_offset, v_offset;
+  int h, w;
   guint8 v;
 
-  video_width = I420_Y_ROWSTRIDE (overlay->width);
-  video_height = overlay->height;
+  w = overlay->width;
+  h = overlay->height;
+
+  y_stride = gst_video_format_get_row_stride (GST_VIDEO_FORMAT_I420, 0, w);
+  u_stride = gst_video_format_get_row_stride (GST_VIDEO_FORMAT_I420, 1, w);
+  v_stride = gst_video_format_get_row_stride (GST_VIDEO_FORMAT_I420, 2, w);
+  u_offset =
+      gst_video_format_get_component_offset (GST_VIDEO_FORMAT_I420, 1, w, h);
+  v_offset =
+      gst_video_format_get_component_offset (GST_VIDEO_FORMAT_I420, 2, w, h);
 
 /*
   if (x0 < 0 && abs (x0) < bitmap_width) {
@@ -902,73 +925,65 @@ gst_text_overlay_blit_yuv420 (GstTextOverlay * overlay, FT_Bitmap * bitmap,
   }
 */
 
-  if (x0 + bitmap_x0 + bitmap_width > overlay->width - 1)       /* 1 pixel border */
-    bitmap_width -= x0 + bitmap_x0 + bitmap_width - overlay->width + 1;
-  if (y0 + bitmap_y0 + bitmap_height > video_height - 1)        /* 1 pixel border */
-    bitmap_height -= y0 + bitmap_y0 + bitmap_height - video_height + 1;
+  if (x0 + bitmap_x0 + bitmap_width > w - 1)    /* 1 pixel border */
+    bitmap_width -= x0 + bitmap_x0 + bitmap_width - w + 1;
+  if (y0 + bitmap_y0 + bitmap_height > h - 1)   /* 1 pixel border */
+    bitmap_height -= y0 + bitmap_y0 + bitmap_height - h + 1;
 
-  uv_rowinc = video_width / 2 - bitmap_width / 2;
-  bit_rowinc = bitmap->pitch - bitmap_width;
-  u_plane_size = (video_width / 2) * (video_height / 2);
-
-  y1 = y0 + bitmap_y0;
   x1 = x0 + bitmap_x0;
-  bitp = bitmap->buffer + bitmap->pitch * bitmap_y0 + bitmap_x0;
+
+  /* draw an outline around the text */
   for (y = bitmap_y0; y < bitmap_y0 + bitmap_height; y++) {
     int n;
 
-    p = yuv_pixels + (y + y0) * I420_Y_ROWSTRIDE (overlay->width) + x1;
+    bitp = bitmap->buffer + (y * bitmap->pitch) + bitmap_x0;
+    y_p = yuv_pixels + ((y + y0) * y_stride) + x1;
     for (n = bitmap_width; n > 0; --n) {
       v = *bitp;
       if (v) {
-        p[-1] = CLAMP (p[-1] - v, 0, 255);
-        p[1] = CLAMP (p[1] - v, 0, 255);
-        p[-video_width] = CLAMP (p[-video_width] - v, 0, 255);
-        p[video_width] = CLAMP (p[video_width] - v, 0, 255);
+        y_p[-1] = CLAMP (y_p[-1] - v, 0, 255);
+        y_p[1] = CLAMP (y_p[1] - v, 0, 255);
+        y_p[-w] = CLAMP (y_p[-w] - v, 0, 255);
+        y_p[w] = CLAMP (y_p[w] - v, 0, 255);
       }
-      p++;
+      y_p++;
       bitp++;
     }
-    bitp += bit_rowinc;
   }
 
-  y = bitmap_y0;
-  y1 = y0 + bitmap_y0;
+  /* now blit text */
   x1 = x0 + bitmap_x0;
-  bitp = bitmap->buffer + bitmap->pitch * bitmap_y0 + bitmap_x0;
-  p = yuv_pixels + video_width * y1 + x1;
-  u_p =
-      yuv_pixels + video_width * video_height + (video_width >> 1) * (y1 >> 1) +
-      (x1 >> 1);
   skip_y = 0;
-  skip_x = 0;
-
-  for (; y < bitmap_y0 + bitmap_height; y++) {
+  for (y = bitmap_y0; y < bitmap_y0 + bitmap_height; y++) {
     int n;
 
-    x1 = x0 + bitmap_x0;
+    bitp = bitmap->buffer + (y * bitmap->pitch) + bitmap_x0;
+
+    y_p = yuv_pixels + 0 + ((y0 + y) * y_stride) + x1;
+    u_p = yuv_pixels + u_offset + (((y0 + y) / 2) * u_stride) + (x1 / 2);
+    v_p = yuv_pixels + v_offset + (((y0 + y) / 2) * v_stride) + (x1 / 2);
+
     skip_x = 0;
     for (n = bitmap_width; n > 0; --n) {
       v = *bitp;
       if (v) {
-        *p = v;
+        *y_p = v;
         if (!skip_y) {
-          u_p[0] = u_p[u_plane_size] = 0x80;
+          *u_p = 0x80;
+          *v_p = 0x80;
         }
       }
       if (!skip_y) {
-        skip_x = !skip_x;
-        if (!skip_x)
+        if (!skip_x) {
           u_p++;
+          v_p++;
+        }
+        skip_x = !skip_x;
       }
-      p++;
+      y_p++;
       bitp++;
     }
-    /*if (!skip_x && !skip_y) u_p--; */
-    p += I420_Y_ROWSTRIDE (overlay->width) - bitmap_width;
-    bitp += bit_rowinc;
     skip_y = !skip_y;
-    u_p += skip_y ? uv_rowinc : 0;
   }
 }
 
@@ -1084,9 +1099,8 @@ gst_text_overlay_push_frame (GstTextOverlay * overlay, GstBuffer * video_frame)
   /* shaded background box */
   if (overlay->want_shading) {
     gst_text_overlay_shade_y (overlay,
-        GST_BUFFER_DATA (video_frame),
-        I420_Y_ROWSTRIDE (overlay->width),
-        xpos, xpos + overlay->bitmap.width, ypos, ypos + overlay->bitmap.rows);
+        GST_BUFFER_DATA (video_frame), xpos, xpos + overlay->bitmap.width,
+        ypos, ypos + overlay->bitmap.rows);
   }
 
 
@@ -1175,7 +1189,9 @@ gst_text_overlay_text_event (GstPad * pad, GstEvent * event)
     }
     case GST_EVENT_FLUSH_STOP:
       GST_OBJECT_LOCK (overlay);
+      GST_INFO_OBJECT (overlay, "text flush stop");
       overlay->text_flushing = FALSE;
+      overlay->text_eos = FALSE;
       gst_text_overlay_pop_text (overlay);
       GST_OBJECT_UNLOCK (overlay);
       gst_event_unref (event);
@@ -1183,6 +1199,7 @@ gst_text_overlay_text_event (GstPad * pad, GstEvent * event)
       break;
     case GST_EVENT_FLUSH_START:
       GST_OBJECT_LOCK (overlay);
+      GST_INFO_OBJECT (overlay, "text flush start");
       overlay->text_flushing = TRUE;
       GST_TEXT_OVERLAY_BROADCAST (overlay);
       GST_OBJECT_UNLOCK (overlay);
@@ -1191,9 +1208,8 @@ gst_text_overlay_text_event (GstPad * pad, GstEvent * event)
       break;
     case GST_EVENT_EOS:
       GST_OBJECT_LOCK (overlay);
-      overlay->text_flushing = TRUE;
       overlay->text_eos = TRUE;
-      GST_INFO_OBJECT (overlay, "EOS");
+      GST_INFO_OBJECT (overlay, "text EOS");
       /* wake up the video chain, it might be waiting for a text buffer or
        * a text segment update */
       GST_TEXT_OVERLAY_BROADCAST (overlay);
@@ -1250,14 +1266,14 @@ gst_text_overlay_video_event (GstPad * pad, GstEvent * event)
     }
     case GST_EVENT_EOS:
       GST_OBJECT_LOCK (overlay);
-      overlay->video_flushing = TRUE;
-      overlay->text_flushing = TRUE;
-      gst_text_overlay_pop_text (overlay);
+      GST_INFO_OBJECT (overlay, "video EOS");
+      overlay->video_eos = TRUE;
       GST_OBJECT_UNLOCK (overlay);
       ret = gst_pad_event_default (pad, event);
       break;
     case GST_EVENT_FLUSH_START:
       GST_OBJECT_LOCK (overlay);
+      GST_INFO_OBJECT (overlay, "video flush start");
       overlay->video_flushing = TRUE;
       GST_TEXT_OVERLAY_BROADCAST (overlay);
       GST_OBJECT_UNLOCK (overlay);
@@ -1265,7 +1281,9 @@ gst_text_overlay_video_event (GstPad * pad, GstEvent * event)
       break;
     case GST_EVENT_FLUSH_STOP:
       GST_OBJECT_LOCK (overlay);
+      GST_INFO_OBJECT (overlay, "video flush stop");
       overlay->video_flushing = FALSE;
+      overlay->video_eos = FALSE;
       GST_OBJECT_UNLOCK (overlay);
       ret = gst_pad_event_default (pad, event);
       break;
@@ -1321,17 +1339,17 @@ gst_text_overlay_text_chain (GstPad * pad, GstBuffer * buffer)
 
   GST_OBJECT_LOCK (overlay);
 
-  if (overlay->text_eos) {
-    GST_OBJECT_UNLOCK (overlay);
-    ret = GST_FLOW_UNEXPECTED;
-    GST_LOG_OBJECT (overlay, "text EOS");
-    goto beach;
-  }
-
   if (overlay->text_flushing) {
     GST_OBJECT_UNLOCK (overlay);
     ret = GST_FLOW_WRONG_STATE;
     GST_LOG_OBJECT (overlay, "text flushing");
+    goto beach;
+  }
+
+  if (overlay->text_eos) {
+    GST_OBJECT_UNLOCK (overlay);
+    ret = GST_FLOW_UNEXPECTED;
+    GST_LOG_OBJECT (overlay, "text EOS");
     goto beach;
   }
 
@@ -1450,6 +1468,9 @@ wait_for_text_buf:
 
   if (overlay->video_flushing)
     goto flushing;
+
+  if (overlay->video_eos)
+    goto have_eos;
 
   if (overlay->silent) {
     GST_OBJECT_UNLOCK (overlay);
@@ -1582,6 +1603,9 @@ wait_for_text_buf:
       if (overlay->text_eos)
         wait_for_text_buf = FALSE;
 
+      if (!overlay->wait_text)
+        wait_for_text_buf = FALSE;
+
       /* Text pad linked, but no text buffer available - what now? */
       if (overlay->text_segment.format == GST_FORMAT_TIME) {
         if (GST_BUFFER_TIMESTAMP (buffer) < overlay->text_segment.start ||
@@ -1625,7 +1649,13 @@ flushing:
     gst_buffer_unref (buffer);
     return GST_FLOW_WRONG_STATE;
   }
-
+have_eos:
+  {
+    GST_OBJECT_UNLOCK (overlay);
+    GST_DEBUG_OBJECT (overlay, "eos, discarding buffer");
+    gst_buffer_unref (buffer);
+    return GST_FLOW_UNEXPECTED;
+  }
 out_of_segment:
   {
     GST_DEBUG_OBJECT (overlay, "buffer out of segment, discarding");
@@ -1663,6 +1693,8 @@ gst_text_overlay_change_state (GstElement * element, GstStateChange transition)
       GST_OBJECT_LOCK (overlay);
       overlay->text_flushing = FALSE;
       overlay->video_flushing = FALSE;
+      overlay->video_eos = FALSE;
+      overlay->text_eos = FALSE;
       GST_OBJECT_UNLOCK (overlay);
       break;
     default:

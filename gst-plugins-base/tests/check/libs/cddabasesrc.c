@@ -154,7 +154,7 @@ struct _test_disc
 
 /* FIXME: now we just need to find out how to treat
  * data tracks for the cddb id calculation .... */
-struct _test_disc test_discs[NUM_TEST_DISCS] = {
+static struct _test_disc test_discs[NUM_TEST_DISCS] = {
   {nh_cd2_tracks, G_N_ELEMENTS (nh_cd2_tracks), 0xae11900e,
       NULL},
   {mb_sample_tracks, G_N_ELEMENTS (mb_sample_tracks), 0x00000000,
@@ -310,7 +310,7 @@ GST_START_TEST (test_buffer_timestamps)
   fakesink = gst_element_factory_make ("fakesink", "fakesink");
   gst_bin_add_many (GST_BIN (pipeline), foosrc, fakesink, NULL);
   fail_unless (gst_element_link (foosrc, fakesink));
-  sinkpad = gst_element_get_pad (fakesink, "sink");
+  sinkpad = gst_element_get_static_pad (fakesink, "sink");
 
   GST_CD_FOO_SRC (foosrc)->cur_disc = 0;
 

@@ -89,7 +89,6 @@ struct _GstDecodeBin
   gchar *encoding;              /* encoding of subtitles */
 
   GstElement *typefind;         /* this holds the typefind object */
-  GstElement *fakesink;
 
   GMutex *lock;                 /* Protects activegroup and groups */
   GstDecodeGroup *activegroup;  /* group currently active */
@@ -100,9 +99,12 @@ struct _GstDecodeBin
   gint nbpads;                  /* unique identifier for source pads */
 
   GValueArray *factories;       /* factories we can use for selecting elements */
+  GList *subtitles;             /* List of elements with subtitle-encoding */
 
   gboolean have_type;           /* if we received the have_type signal */
   guint have_type_id;           /* signal id for have-type from typefind */
+
+  gboolean async_pending;       /* async-start has been emited */
 };
 
 struct _GstDecodeBinClass
@@ -152,7 +154,9 @@ enum
 {
   PROP_0,
   PROP_CAPS,
-  PROP_SUBTITLE_ENCODING
+  PROP_SUBTITLE_ENCODING,
+  PROP_SINK_CAPS,
+  PROP_LAST
 };
 
 static GstBinClass *parent_class;
@@ -165,8 +169,8 @@ GST_ELEMENT_DETAILS ("Decoder Bin",
     "Edward Hervey <edward@fluendo.com>");
 
 
-static gboolean add_fakesink (GstDecodeBin * decode_bin);
-static void remove_fakesink (GstDecodeBin * decode_bin);
+static void do_async_start (GstDecodeBin * dbin);
+static void do_async_done (GstDecodeBin * dbin);
 
 static void type_found (GstElement * typefind, guint probability,
     GstCaps * caps, GstDecodeBin * decode_bin);
@@ -228,7 +232,6 @@ struct _GstDecodeGroup
   gboolean complete;            /* TRUE if we are not expecting anymore streams 
                                  * on this group */
   gulong overrunsig;
-  gulong underrunsig;
   guint nbdynamic;              /* number of dynamic pads in the group. */
 
   GList *endpads;               /* List of GstDecodePad of source pads to be exposed */
@@ -390,7 +393,8 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
 
   /**
    * GstDecodeBin2::new-decoded-pad:
-   * @pad: the newly created pad
+   * @bin: The decodebin
+   * @pad: The newly created pad
    * @islast: #TRUE if this is the last pad to be added. Deprecated.
    *
    * This signal gets emitted as soon as a new pad of the same type as one of
@@ -405,7 +409,8 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
 
   /**
    * GstDecodeBin2::removed-decoded-pad:
-   * @pad: the pad that was removed
+   * @bin: The decodebin
+   * @pad: The pad that was removed
    *
    * This signal is emitted when a 'final' caps pad has been removed.
    */
@@ -417,8 +422,10 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
 
   /**
    * GstDecodeBin2::unknown-type:
-   * @pad: the new pad containing caps that cannot be resolved to a 'final' stream type.
-   * @caps: the #GstCaps of the pad that cannot be resolved.
+   * @bin: The decodebin
+   * @pad: The new pad containing caps that cannot be resolved to a 'final'
+   *       stream type.
+   * @caps: The #GstCaps of the pad that cannot be resolved.
    *
    * This signal is emitted when a pad for which there is no further possible
    * decoding is added to the decodebin.
@@ -426,11 +433,12 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
   gst_decode_bin_signals[SIGNAL_UNKNOWN_TYPE] =
       g_signal_new ("unknown-type", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstDecodeBinClass, unknown_type),
-      NULL, NULL, gst_marshal_VOID__OBJECT_OBJECT, G_TYPE_NONE, 2,
+      NULL, NULL, gst_marshal_VOID__OBJECT_BOXED, G_TYPE_NONE, 2,
       GST_TYPE_PAD, GST_TYPE_CAPS);
 
   /**
    * GstDecodeBin2::autoplug-continue:
+   * @bin: The decodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps found.
    *
@@ -445,11 +453,12 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
   gst_decode_bin_signals[SIGNAL_AUTOPLUG_CONTINUE] =
       g_signal_new ("autoplug-continue", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstDecodeBinClass, autoplug_continue),
-      _gst_boolean_accumulator, NULL, gst_play_marshal_BOOLEAN__OBJECT_OBJECT,
+      _gst_boolean_accumulator, NULL, gst_play_marshal_BOOLEAN__OBJECT_BOXED,
       G_TYPE_BOOLEAN, 2, GST_TYPE_PAD, GST_TYPE_CAPS);
 
   /**
    * GstDecodeBin2::autoplug-factories:
+   * @bin: The decodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps found.
    *
@@ -470,11 +479,12 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
       g_signal_new ("autoplug-factories", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstDecodeBinClass,
           autoplug_factories), _gst_array_accumulator, NULL,
-      gst_play_marshal_BOXED__OBJECT_OBJECT, G_TYPE_VALUE_ARRAY, 2,
+      gst_play_marshal_BOXED__OBJECT_BOXED, G_TYPE_VALUE_ARRAY, 2,
       GST_TYPE_PAD, GST_TYPE_CAPS);
 
   /**
    * GstDecodeBin2::autoplug-sort:
+   * @bin: The decodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps.
    * @factories: A #GValueArray of possible #GstElementFactory to use.
@@ -491,11 +501,12 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
   gst_decode_bin_signals[SIGNAL_AUTOPLUG_SORT] =
       g_signal_new ("autoplug-sort", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstDecodeBinClass, autoplug_sort),
-      NULL, NULL, gst_play_marshal_BOXED__OBJECT_OBJECT_BOXED,
+      NULL, NULL, gst_play_marshal_BOXED__OBJECT_BOXED_BOXED,
       G_TYPE_VALUE_ARRAY, 3, GST_TYPE_PAD, GST_TYPE_CAPS, G_TYPE_VALUE_ARRAY);
 
   /**
    * GstDecodeBin2::autoplug-select:
+   * @bin: The decodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps.
    * @factories: A #GValueArray of possible #GstElementFactory to use, sorted by
@@ -513,12 +524,13 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
       g_signal_new ("autoplug-select", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstDecodeBinClass, autoplug_select),
       _gst_select_accumulator, NULL,
-      gst_play_marshal_ENUM__OBJECT_OBJECT_OBJECT,
+      gst_play_marshal_ENUM__OBJECT_BOXED_OBJECT,
       GST_TYPE_AUTOPLUG_SELECT_RESULT, 3, GST_TYPE_PAD, GST_TYPE_CAPS,
       GST_TYPE_ELEMENT_FACTORY);
 
   /**
    * GstDecodeBin2::drained
+   * @bin: The decodebin
    *
    * This signal is emitted once decodebin2 has finished decoding all the data.
    *
@@ -531,14 +543,20 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
 
   g_object_class_install_property (gobject_klass, PROP_CAPS,
       g_param_spec_boxed ("caps", "Caps", "The caps on which to stop decoding.",
-          GST_TYPE_CAPS, G_PARAM_READWRITE));
+          GST_TYPE_CAPS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_klass, PROP_SUBTITLE_ENCODING,
       g_param_spec_string ("subtitle-encoding", "subtitle encoding",
           "Encoding to assume if input subtitles are not in UTF-8 encoding. "
           "If not set, the GST_SUBTITLE_ENCODING environment variable will "
           "be checked for an encoding to use. If that is not set either, "
-          "ISO-8859-15 will be assumed.", NULL, G_PARAM_READWRITE));
+          "ISO-8859-15 will be assumed.", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_klass, PROP_SINK_CAPS,
+      g_param_spec_boxed ("sink-caps", "Sink Caps",
+          "The caps of the input data. (NULL = use typefind element)",
+          GST_TYPE_CAPS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   klass->autoplug_continue =
       GST_DEBUG_FUNCPTR (gst_decode_bin_autoplug_continue);
@@ -581,7 +599,7 @@ gst_decode_bin_init (GstDecodeBin * decode_bin)
     }
 
     /* get the sinkpad */
-    pad = gst_element_get_pad (decode_bin->typefind, "sink");
+    pad = gst_element_get_static_pad (decode_bin->typefind, "sink");
 
     /* ghost the sink pad to ourself */
     gpad = gst_ghost_pad_new ("sink", pad);
@@ -604,10 +622,6 @@ gst_decode_bin_init (GstDecodeBin * decode_bin)
   decode_bin->caps =
       gst_caps_from_string ("video/x-raw-yuv;video/x-raw-rgb;video/x-raw-gray;"
       "audio/x-raw-int;audio/x-raw-float;" "text/plain;text/x-pango-markup");
-
-  add_fakesink (decode_bin);
-
-  /* FILLME */
 }
 
 static void
@@ -651,7 +665,8 @@ gst_decode_bin_dispose (GObject * object)
   g_free (decode_bin->encoding);
   decode_bin->encoding = NULL;
 
-  remove_fakesink (decode_bin);
+  g_list_free (decode_bin->subtitles);
+  decode_bin->subtitles = NULL;
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -684,13 +699,13 @@ gst_decode_bin_set_caps (GstDecodeBin * dbin, GstCaps * caps)
 {
   GST_DEBUG_OBJECT (dbin, "Setting new caps: %" GST_PTR_FORMAT, caps);
 
-  DECODE_BIN_LOCK (dbin);
+  GST_OBJECT_LOCK (dbin);
   if (dbin->caps)
     gst_caps_unref (dbin->caps);
   if (caps)
     gst_caps_ref (caps);
   dbin->caps = caps;
-  DECODE_BIN_UNLOCK (dbin);
+  GST_OBJECT_UNLOCK (dbin);
 }
 
 /* _get_caps
@@ -707,11 +722,31 @@ gst_decode_bin_get_caps (GstDecodeBin * dbin)
 
   GST_DEBUG_OBJECT (dbin, "Getting currently set caps");
 
-  DECODE_BIN_LOCK (dbin);
+  GST_OBJECT_LOCK (dbin);
   caps = dbin->caps;
   if (caps)
     gst_caps_ref (caps);
-  DECODE_BIN_UNLOCK (dbin);
+  GST_OBJECT_UNLOCK (dbin);
+
+  return caps;
+}
+
+static void
+gst_decode_bin_set_sink_caps (GstDecodeBin * dbin, GstCaps * caps)
+{
+  GST_DEBUG_OBJECT (dbin, "Setting new caps: %" GST_PTR_FORMAT, caps);
+
+  g_object_set (dbin->typefind, "force-caps", caps, NULL);
+}
+
+static GstCaps *
+gst_decode_bin_get_sink_caps (GstDecodeBin * dbin)
+{
+  GstCaps *caps;
+
+  GST_DEBUG_OBJECT (dbin, "Getting currently set caps");
+
+  g_object_get (dbin->typefind, "force-caps", &caps, NULL);
 
   return caps;
 }
@@ -719,11 +754,21 @@ gst_decode_bin_get_caps (GstDecodeBin * dbin)
 static void
 gst_decode_bin_set_subs_encoding (GstDecodeBin * dbin, const gchar * encoding)
 {
+  GList *walk;
+
   GST_DEBUG_OBJECT (dbin, "Setting new encoding: %s", GST_STR_NULL (encoding));
 
   DECODE_BIN_LOCK (dbin);
+  GST_OBJECT_LOCK (dbin);
   g_free (dbin->encoding);
   dbin->encoding = g_strdup (encoding);
+  GST_OBJECT_UNLOCK (dbin);
+
+  /* set the subtitle encoding on all added elements */
+  for (walk = dbin->subtitles; walk; walk = g_list_next (walk)) {
+    g_object_set (G_OBJECT (walk->data), "subtitle-encoding", dbin->encoding,
+        NULL);
+  }
   DECODE_BIN_UNLOCK (dbin);
 }
 
@@ -734,9 +779,9 @@ gst_decode_bin_get_subs_encoding (GstDecodeBin * dbin)
 
   GST_DEBUG_OBJECT (dbin, "Getting currently set encoding");
 
-  DECODE_BIN_LOCK (dbin);
+  GST_OBJECT_LOCK (dbin);
   encoding = g_strdup (dbin->encoding);
-  DECODE_BIN_UNLOCK (dbin);
+  GST_OBJECT_UNLOCK (dbin);
 
   return encoding;
 }
@@ -755,6 +800,9 @@ gst_decode_bin_set_property (GObject * object, guint prop_id,
       break;
     case PROP_SUBTITLE_ENCODING:
       gst_decode_bin_set_subs_encoding (dbin, g_value_get_string (value));
+      break;
+    case PROP_SINK_CAPS:
+      gst_decode_bin_set_sink_caps (dbin, g_value_get_boxed (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -776,15 +824,15 @@ gst_decode_bin_get_property (GObject * object, guint prop_id,
     case PROP_SUBTITLE_ENCODING:
       g_value_take_string (value, gst_decode_bin_get_subs_encoding (dbin));
       break;
+    case PROP_SINK_CAPS:
+      g_value_take_boxed (value, gst_decode_bin_get_sink_caps (dbin));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }
 
-
-static GValueArray *find_compatibles (GstDecodeBin * decode_bin,
-    GstPad * pad, const GstCaps * caps);
 
 /*****
  * Default autoplug signal handlers
@@ -805,8 +853,11 @@ gst_decode_bin_autoplug_factories (GstElement * element, GstPad * pad,
 {
   GValueArray *result;
 
+  GST_DEBUG_OBJECT (element, "finding factories");
+
   /* return all compatible factories for caps */
-  result = find_compatibles (GST_DECODE_BIN (element), pad, caps);
+  result =
+      gst_factory_list_filter (GST_DECODE_BIN_CAST (element)->factories, caps);
 
   GST_DEBUG_OBJECT (element, "autoplug-factories returns %p", result);
 
@@ -953,9 +1004,10 @@ unknown_type:
     g_signal_emit (G_OBJECT (dbin),
         gst_decode_bin_signals[SIGNAL_UNKNOWN_TYPE], 0, pad, caps);
 
-    /* Check if there are no pending groups, if so, remove fakesink */
-    if (dbin->groups == NULL)
-      remove_fakesink (dbin);
+    /* Check if there are no pending groups, if so, commit our state */
+    if (dbin->groups == NULL) {
+      do_async_done (dbin);
+    }
 
     if (src == dbin->typefind) {
       gchar *desc;
@@ -1030,6 +1082,7 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
       if (!(group = get_current_group (dbin))) {
         group = gst_decode_group_new (dbin, TRUE);
         DECODE_BIN_LOCK (dbin);
+        GST_LOG_OBJECT (dbin, "added group %p", group);
         dbin->groups = g_list_append (dbin->groups, group);
         DECODE_BIN_UNLOCK (dbin);
       }
@@ -1046,6 +1099,7 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
     GstElementFactory *factory;
     GstElement *element;
     GstPad *sinkpad;
+    gboolean subtitle;
 
     /* take first factory */
     factory = g_value_get_object (g_value_array_get_nth (factories, 0));
@@ -1097,6 +1151,7 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
     if (!(sinkpad = find_sink_pad (element))) {
       GST_WARNING_OBJECT (dbin, "Element %s doesn't have a sink pad",
           GST_ELEMENT_NAME (element));
+      gst_element_set_state (element, GST_STATE_NULL);
       gst_object_unref (element);
       continue;
     }
@@ -1106,6 +1161,7 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
       GST_WARNING_OBJECT (dbin, "Couldn't add %s to the bin",
           GST_ELEMENT_NAME (element));
       gst_object_unref (sinkpad);
+      gst_element_set_state (element, GST_STATE_NULL);
       gst_object_unref (element);
       continue;
     }
@@ -1125,6 +1181,17 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
     /* link this element further */
     connect_element (dbin, element, group);
 
+    /* try to configure the subtitle encoding property when we can */
+    if (g_object_class_find_property (G_OBJECT_GET_CLASS (element),
+            "subtitle-encoding")) {
+      GST_DEBUG_OBJECT (dbin,
+          "setting subtitle-encoding=%s to element", dbin->encoding);
+      g_object_set (G_OBJECT (element), "subtitle-encoding", dbin->encoding,
+          NULL);
+      subtitle = TRUE;
+    } else
+      subtitle = FALSE;
+
     /* Bring the element to the state of the parent */
     if ((gst_element_set_state (element,
                 GST_STATE_PAUSED)) == GST_STATE_CHANGE_FAILURE) {
@@ -1133,6 +1200,13 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
       gst_element_set_state (element, GST_STATE_NULL);
       gst_bin_remove (GST_BIN (dbin), element);
       continue;
+    }
+    if (subtitle) {
+      DECODE_BIN_LOCK (dbin);
+      /* we added the element now, add it to the list of subtitle-encoding
+       * elements when we can set the property */
+      dbin->subtitles = g_list_prepend (dbin->subtitles, element);
+      DECODE_BIN_UNLOCK (dbin);
     }
 
     res = TRUE;
@@ -1176,7 +1250,7 @@ connect_element (GstDecodeBin * dbin, GstElement * element,
       case GST_PAD_ALWAYS:
       {
         /* get the pad that we need to autoplug */
-        GstPad *pad = gst_element_get_pad (element, templ_name);
+        GstPad *pad = gst_element_get_static_pad (element, templ_name);
 
         if (pad) {
           GST_DEBUG_OBJECT (dbin, "got the pad for always template %s",
@@ -1195,7 +1269,7 @@ connect_element (GstDecodeBin * dbin, GstElement * element,
       {
         /* try to get the pad to see if it is already created or
          * not */
-        GstPad *pad = gst_element_get_pad (element, templ_name);
+        GstPad *pad = gst_element_get_static_pad (element, templ_name);
 
         if (pad) {
           GST_DEBUG_OBJECT (dbin, "got the pad for sometimes template %s",
@@ -1282,6 +1356,7 @@ expose_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
     if (!(group = get_current_group (dbin))) {
       group = gst_decode_group_new (dbin, isdemux);
       DECODE_BIN_LOCK (dbin);
+      GST_LOG_OBJECT (dbin, "added group %p", group);
       dbin->groups = g_list_append (dbin->groups, group);
       DECODE_BIN_UNLOCK (dbin);
       newgroup = TRUE;
@@ -1452,21 +1527,6 @@ caps_notify_group_cb (GstPad * pad, GParamSpec * unused, GstDecodeGroup * group)
   gst_object_unref (element);
 }
 
-/* this function runs through the element factories and returns a value array of
- * all elements that are able to sink the given caps
- */
-static GValueArray *
-find_compatibles (GstDecodeBin * decode_bin, GstPad * pad, const GstCaps * caps)
-{
-  GValueArray *result;
-
-  GST_DEBUG_OBJECT (decode_bin, "finding factories");
-
-  result = gst_factory_list_filter (decode_bin->factories, caps);
-
-  return result;
-}
-
 /* Decide whether an element is a demuxer based on the 
  * klass and number/type of src pad templates it has */
 static gboolean
@@ -1530,7 +1590,10 @@ are_raw_caps (GstDecodeBin * dbin, GstCaps * caps)
 
   GST_LOG_OBJECT (dbin, "Checking with caps %" GST_PTR_FORMAT, caps);
 
+  /* lock for getting the caps */
+  GST_OBJECT_LOCK (dbin);
   intersection = gst_caps_intersect (dbin->caps, caps);
+  GST_OBJECT_UNLOCK (dbin);
 
   res = (!(gst_caps_is_empty (intersection)));
 
@@ -1557,27 +1620,7 @@ multi_queue_overrun_cb (GstElement * queue, GstDecodeGroup * group)
   DECODE_BIN_UNLOCK (group->dbin);
 }
 
-static void
-multi_queue_underrun_cb (GstElement * queue, GstDecodeGroup * group)
-{
-  GstDecodeBin *dbin = group->dbin;
-
-  GST_LOG_OBJECT (dbin, "multiqueue is empty for group %p", group);
-
-  /* Check if we need to activate another group */
-  DECODE_BIN_LOCK (dbin);
-  if ((group == dbin->activegroup) && dbin->groups) {
-    GST_DEBUG_OBJECT (dbin, "Switching to new group");
-    /* unexpose current active */
-    gst_decode_group_hide (group);
-
-    /* expose first group of groups */
-    gst_decode_group_expose ((GstDecodeGroup *) dbin->groups->data);
-  }
-  DECODE_BIN_UNLOCK (dbin);
-}
-
-/* gst_decode_group_new
+/* gst_decode_group_new:
  *
  * Creates a new GstDecodeGroup. It is up to the caller to add it to the list
  * of groups.
@@ -1621,10 +1664,6 @@ gst_decode_group_new (GstDecodeBin * dbin, gboolean use_queue)
     /* will expose the group */
     group->overrunsig = g_signal_connect (G_OBJECT (mq), "overrun",
         G_CALLBACK (multi_queue_overrun_cb), group);
-    /* will hide the group again, this is usually called when the multiqueue is
-     * drained because of EOS. */
-    group->underrunsig = g_signal_connect (G_OBJECT (mq), "underrun",
-        G_CALLBACK (multi_queue_underrun_cb), group);
 
     gst_bin_add (GST_BIN (dbin), mq);
     gst_element_set_state (mq, GST_STATE_PAUSED);
@@ -1635,11 +1674,11 @@ gst_decode_group_new (GstDecodeBin * dbin, gboolean use_queue)
   return group;
 }
 
-/** get_current_group:
+/* get_current_group:
  *
  * Returns the current non-completed group.
  *
- * Returns NULL if no groups are available, or all groups are completed.
+ * Returns: %NULL if no groups are available, or all groups are completed.
  */
 static GstDecodeGroup *
 get_current_group (GstDecodeBin * dbin)
@@ -1663,20 +1702,6 @@ get_current_group (GstDecodeBin * dbin)
   GST_LOG_OBJECT (dbin, "Returning group %p", group);
 
   return group;
-}
-
-static gboolean
-group_demuxer_event_probe (GstPad * pad, GstEvent * event,
-    GstDecodeGroup * group)
-{
-  if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
-    GST_DEBUG_OBJECT (group->dbin,
-        "Got EOS on group input pads, exposing group if it wasn't before");
-    DECODE_BIN_LOCK (group->dbin);
-    gst_decode_group_expose (group);
-    DECODE_BIN_UNLOCK (group->dbin);
-  }
-  return TRUE;
 }
 
 /* gst_decode_group_control_demuxer_pad
@@ -1715,13 +1740,10 @@ gst_decode_group_control_demuxer_pad (GstDecodeGroup * group, GstPad * pad)
 
   GROUP_MUTEX_LOCK (group);
 
-  if (!(srcpad = gst_element_get_pad (group->multiqueue, srcname))) {
+  if (!(srcpad = gst_element_get_static_pad (group->multiqueue, srcname))) {
     GST_ERROR ("Couldn't get srcpad %s from multiqueue", srcname);
     goto chiringuito;
   }
-
-  /* connect event handler on pad to intercept EOS events */
-  gst_pad_add_event_probe (pad, G_CALLBACK (group_demuxer_event_probe), group);
 
 chiringuito:
   g_free (srcname);
@@ -1746,9 +1768,12 @@ gst_decode_group_control_source_pad (GstDecodeGroup * group, GstPad * pad)
   GROUP_MUTEX_LOCK (group);
 
   /* Create GstDecodePad for the pad */
-  dpad = gst_decode_pad_new (group, pad, TRUE);
-
-  group->endpads = g_list_append (group->endpads, dpad);
+  if ((dpad = gst_decode_pad_new (group, pad, TRUE))) {
+    GST_WARNING ("created decode pad %p in group %p", dpad, group);
+    group->endpads = g_list_append (group->endpads, dpad);
+  } else {
+    GST_WARNING ("could not create a decode pad in group %p", group);
+  }
 
   GROUP_MUTEX_UNLOCK (group);
 
@@ -1917,22 +1942,11 @@ gst_decode_group_expose (GstDecodeGroup * group)
 {
   GList *tmp;
   GList *next = NULL;
+  GstDecodeBin *dbin;
 
-  if (group->dbin->activegroup) {
-    GST_DEBUG_OBJECT (group->dbin, "A group is already active and exposed");
-    return TRUE;
-  }
+  dbin = group->dbin;
 
-  if (group->dbin->activegroup == group) {
-    GST_WARNING ("Group %p is already exposed", group);
-    return TRUE;
-  }
-
-  if (!group->dbin->groups
-      || (group != (GstDecodeGroup *) group->dbin->groups->data)) {
-    GST_WARNING ("Group %p is not the first group to expose", group);
-    return FALSE;
-  }
+  GST_DEBUG_OBJECT (dbin, "going to expose group %p", group);
 
   if (group->nbdynamic) {
     GST_WARNING ("Group %p still has %d dynamic objects, not exposing yet",
@@ -1940,7 +1954,10 @@ gst_decode_group_expose (GstDecodeGroup * group)
     return FALSE;
   }
 
-  GST_LOG ("Exposing group %p", group);
+  if (dbin->activegroup == group) {
+    GST_DEBUG_OBJECT (dbin, "Group %p is already exposed, all is fine", group);
+    return TRUE;
+  }
 
   if (group->multiqueue) {
     /* update runtime limits. At runtime, we try to keep the amount of buffers
@@ -1957,6 +1974,21 @@ gst_decode_group_expose (GstDecodeGroup * group)
     }
   }
 
+  if (dbin->activegroup) {
+    GST_DEBUG_OBJECT (dbin,
+        "another group %p is already exposed, waiting for EOS",
+        dbin->activegroup);
+    return TRUE;
+  }
+
+  if (!dbin->groups || (group != (GstDecodeGroup *) dbin->groups->data)) {
+    GST_WARNING ("Group %p is not the first group to expose", group);
+    return FALSE;
+  }
+
+  GST_LOG ("Exposing group %p", group);
+
+
   /* re-order pads : video, then audio, then others */
   group->endpads = g_list_sort (group->endpads, (GCompareFunc) sort_end_pads);
 
@@ -1970,31 +2002,36 @@ gst_decode_group_expose (GstDecodeGroup * group)
     next = g_list_next (tmp);
 
     /* 1. ghost pad */
-    padname = g_strdup_printf ("src%d", group->dbin->nbpads);
-    group->dbin->nbpads++;
+    padname = g_strdup_printf ("src%d", dbin->nbpads);
+    dbin->nbpads++;
 
-    GST_LOG_OBJECT (group->dbin, "About to expose pad %s:%s",
+    GST_LOG_OBJECT (dbin, "About to expose pad %s:%s",
         GST_DEBUG_PAD_NAME (dpad->pad));
 
     ghost = gst_ghost_pad_new (padname, dpad->pad);
-    gst_pad_set_active (ghost, TRUE);
-    gst_element_add_pad (GST_ELEMENT (group->dbin), ghost);
-    group->ghosts = g_list_append (group->ghosts, ghost);
+    /* the ghostpad can be NULL when we failed to link or some other error
+     * occured */
+    if (ghost) {
+      gst_pad_set_active (ghost, TRUE);
+      gst_element_add_pad (GST_ELEMENT (dbin), ghost);
+      group->ghosts = g_list_append (group->ghosts, ghost);
 
+      /* 2. emit signal */
+      GST_DEBUG_OBJECT (dbin, "emitting new-decoded-pad");
+      g_signal_emit (G_OBJECT (dbin),
+          gst_decode_bin_signals[SIGNAL_NEW_DECODED_PAD], 0, ghost,
+          (next == NULL));
+      GST_DEBUG_OBJECT (dbin, "emitted new-decoded-pad");
+    } else {
+      GST_WARNING_OBJECT (dbin, "failed to create ghostpad");
+    }
     g_free (padname);
-
-    /* 2. emit signal */
-    GST_DEBUG_OBJECT (group->dbin, "emitting new-decoded-pad");
-    g_signal_emit (G_OBJECT (group->dbin),
-        gst_decode_bin_signals[SIGNAL_NEW_DECODED_PAD], 0, ghost,
-        (next == NULL));
-    GST_DEBUG_OBJECT (group->dbin, "emitted new-decoded-pad");
   }
 
   /* signal no-more-pads. This allows the application to hook stuff to the
    * exposed pads */
-  GST_LOG_OBJECT (group->dbin, "signalling no-more-pads");
-  gst_element_no_more_pads (GST_ELEMENT (group->dbin));
+  GST_LOG_OBJECT (dbin, "signalling no-more-pads");
+  gst_element_no_more_pads (GST_ELEMENT (dbin));
 
   /* 3. Unblock internal pads. The application should have connected stuff now
    * so that streaming can continue. */
@@ -2009,17 +2046,21 @@ gst_decode_group_expose (GstDecodeGroup * group)
     GST_DEBUG_OBJECT (dpad->pad, "unblocked");
   }
 
-  group->dbin->activegroup = group;
+  dbin->activegroup = group;
 
   /* pop off the first group */
-  group->dbin->groups =
-      g_list_delete_link (group->dbin->groups, group->dbin->groups);
+  if (dbin->groups && dbin->groups->data) {
+    GST_LOG_OBJECT (dbin, "removed group %p", dbin->groups->data);
+    dbin->groups = g_list_delete_link (dbin->groups, dbin->groups);
+  } else {
+    GST_LOG_OBJECT (dbin, "no more groups");
+  }
 
-  remove_fakesink (group->dbin);
+  do_async_done (dbin);
 
   group->exposed = TRUE;
 
-  GST_LOG_OBJECT (group->dbin, "Group %p exposed", group);
+  GST_LOG_OBJECT (dbin, "Group %p exposed", group);
   return TRUE;
 }
 
@@ -2058,6 +2099,9 @@ deactivate_free_recursive (GstDecodeGroup * group, GstElement * element)
   GstIterator *it;
   GstIteratorResult res;
   gpointer point;
+  GstDecodeBin *dbin;
+
+  dbin = group->dbin;
 
   GST_LOG ("element:%s", GST_ELEMENT_NAME (element));
 
@@ -2105,7 +2149,11 @@ restart:
 
 done:
   gst_element_set_state (element, GST_STATE_NULL);
-  gst_bin_remove (GST_BIN (group->dbin), element);
+  DECODE_BIN_LOCK (dbin);
+  /* remove possible subtitle element */
+  dbin->subtitles = g_list_remove (dbin->subtitles, element);
+  DECODE_BIN_UNLOCK (dbin);
+  gst_bin_remove (GST_BIN (dbin), element);
 
 beach:
   gst_iterator_free (it);
@@ -2149,8 +2197,6 @@ gst_decode_group_free (GstDecodeGroup * group)
 
   /* disconnect signal handlers on multiqueue */
   if (group->multiqueue) {
-    if (group->underrunsig)
-      g_signal_handler_disconnect (group->multiqueue, group->underrunsig);
     if (group->overrunsig)
       g_signal_handler_disconnect (group->multiqueue, group->overrunsig);
     deactivate_free_recursive (group, group->multiqueue);
@@ -2252,73 +2298,28 @@ gst_decode_pad_new (GstDecodeGroup * group, GstPad * pad, gboolean block)
  * Element add/remove
  *****/
 
-/*
- * add_fakesink / remove_fakesink
- *
- * We use a sink so that the parent ::change_state returns GST_STATE_CHANGE_ASYNC
- * when that sink is present (since it's not connected to anything it will 
- * always return GST_STATE_CHANGE_ASYNC).
- *
- * But this is an ugly way of achieving this goal.
- * Ideally, we shouldn't use a sink and just return GST_STATE_CHANGE_ASYNC in
- * our ::change_state if we have not exposed the active group.
- * We also need to override ::get_state to fake the asynchronous behaviour.
- * Once the active group is exposed, we would then post a
- * GST_MESSAGE_STATE_DIRTY and return GST_STATE_CHANGE_SUCCESS (which will call
- * ::get_state .
- */
-
-static gboolean
-add_fakesink (GstDecodeBin * decode_bin)
+static void
+do_async_start (GstDecodeBin * dbin)
 {
-  GST_DEBUG_OBJECT (decode_bin, "Adding the fakesink");
+  GstMessage *message;
 
-  if (decode_bin->fakesink)
-    return TRUE;
+  dbin->async_pending = TRUE;
 
-  decode_bin->fakesink =
-      gst_element_factory_make ("fakesink", "async-fakesink");
-  if (!decode_bin->fakesink)
-    goto no_fakesink;
-
-  /* enable sync so that we force ASYNC preroll */
-  g_object_set (G_OBJECT (decode_bin->fakesink), "sync", TRUE, NULL);
-
-  /* hacky, remove sink flag, we don't want our decodebin to become a sink
-   * just because we add a fakesink element to make us ASYNC */
-  GST_OBJECT_FLAG_UNSET (decode_bin->fakesink, GST_ELEMENT_IS_SINK);
-
-  if (!gst_bin_add (GST_BIN (decode_bin), decode_bin->fakesink))
-    goto could_not_add;
-
-  return TRUE;
-
-  /* ERRORS */
-no_fakesink:
-  {
-    g_warning ("can't find fakesink element, decodebin will not work");
-    return FALSE;
-  }
-could_not_add:
-  {
-    g_warning ("Could not add fakesink to decodebin, decodebin will not work");
-    gst_object_unref (decode_bin->fakesink);
-    decode_bin->fakesink = NULL;
-    return FALSE;
-  }
+  message = gst_message_new_async_start (GST_OBJECT_CAST (dbin), FALSE);
+  parent_class->handle_message (GST_BIN_CAST (dbin), message);
 }
 
 static void
-remove_fakesink (GstDecodeBin * decode_bin)
+do_async_done (GstDecodeBin * dbin)
 {
-  if (decode_bin->fakesink == NULL)
-    return;
+  GstMessage *message;
 
-  GST_DEBUG_OBJECT (decode_bin, "Removing the fakesink");
+  if (dbin->async_pending) {
+    message = gst_message_new_async_done (GST_OBJECT_CAST (dbin));
+    parent_class->handle_message (GST_BIN_CAST (dbin), message);
 
-  gst_element_set_state (decode_bin->fakesink, GST_STATE_NULL);
-  gst_bin_remove (GST_BIN (decode_bin), decode_bin->fakesink);
-  decode_bin->fakesink = NULL;
+    dbin->async_pending = FALSE;
+  }
 }
 
 /*****
@@ -2351,7 +2352,7 @@ find_sink_pad (GstElement * element)
 static GstStateChangeReturn
 gst_decode_bin_change_state (GstElement * element, GstStateChange transition)
 {
-  GstStateChangeReturn ret;
+  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
   GstDecodeBin *dbin = GST_DECODE_BIN (element);
 
   switch (transition) {
@@ -2359,19 +2360,29 @@ gst_decode_bin_change_state (GstElement * element, GstStateChange transition)
       if (dbin->typefind == NULL)
         goto missing_typefind;
       break;
-    case GST_STATE_CHANGE_READY_TO_PAUSED:{
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
       dbin->have_type = FALSE;
-      if (!add_fakesink (dbin))
-        goto missing_fakesink;
+      ret = GST_STATE_CHANGE_ASYNC;
+      do_async_start (dbin);
       break;
-    }
     default:
       break;
   }
 
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  {
+    GstStateChangeReturn bret;
 
-  /* FIXME : put some cleanup functions here.. if needed */
+    bret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+    if (G_UNLIKELY (bret == GST_STATE_CHANGE_FAILURE))
+      goto activate_failed;
+  }
+  switch (transition) {
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      do_async_done (dbin);
+      break;
+    default:
+      break;
+  }
 
   return ret;
 
@@ -2383,11 +2394,10 @@ missing_typefind:
     GST_ELEMENT_ERROR (dbin, CORE, MISSING_PLUGIN, (NULL), ("no typefind!"));
     return GST_STATE_CHANGE_FAILURE;
   }
-missing_fakesink:
+activate_failed:
   {
-    gst_element_post_message (element,
-        gst_missing_element_message_new (element, "fakesink"));
-    GST_ELEMENT_ERROR (dbin, CORE, MISSING_PLUGIN, (NULL), ("no fakesink!"));
+    GST_DEBUG_OBJECT (element,
+        "element failed to change states -- activation problem?");
     return GST_STATE_CHANGE_FAILURE;
   }
 }

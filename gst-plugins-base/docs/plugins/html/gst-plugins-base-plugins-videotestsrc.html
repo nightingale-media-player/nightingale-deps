@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>videotestsrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-videoscale.html" title="videoscale">
 <link rel="next" href="gst-plugins-base-plugins-volume.html" title="volume">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -22,40 +22,33 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-volume.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2619508" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2617611" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2607061" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2596499" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-videotestsrc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-videotestsrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-videotestsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-videotestsrc.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-videotestsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2619508"></a><span class="refentrytitle">videotestsrc</span>
-</h2>
-<p>videotestsrc &#8212; Creates a test video stream</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-videotestsrc.top_of_page"></a>videotestsrc</span></h2>
+<p>videotestsrc — Creates a test video stream</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoTestSrc"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc-struct">GstVideoTestSrc</a>;
-enum                <a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>;
-
+                    <a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc-struct" title="GstVideoTestSrc">GstVideoTestSrc</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern" title="enum GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2607061"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -65,25 +58,24 @@ enum                <a href="gst-plugins-base-plugins-videotestsrc.html#GstVideo
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2596499"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--pattern">pattern</a>"                  <a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>  : Read / Write
-  "<a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--timestamp-offset">timestamp-offset</a>"         gint64                : Read / Write
-  "<a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--is-live">is-live</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--pattern" title='The "pattern" property'>pattern</a>"                  <a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern" title="enum GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2617611"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2617624"></a><p>
+<a name="id2650286"></a><h3>Example launch line</h3>
+<p>
 The videotestsrc element is used to produce test video data in a wide variaty
 of formats. The video test data produced can be controlled with the "pattern"
 property.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -94,45 +86,156 @@ Shows random noise in an X window.
 </p>
 </div>
 <div class="refsect2" lang="en">
-<a name="id2617649"></a><h3>Element Information</h3>
+<a name="id2650263"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-videotestsrc.html#plugin-videotestsrc">videotestsrc</a>
+          <a class="link" href="gst-plugins-base-plugins-plugin-videotestsrc.html#plugin-videotestsrc">videotestsrc</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>David A. Schleef &lt;ds@schleef.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Source/Video</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>video/x-raw-yuv, format=(fourcc)YUY2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)Y422, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)UYNV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)YVYU, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)IYU2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)YVU9, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)YUV9, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)YV12, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)Y41B, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)Y42B, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-yuv, format=(fourcc)Y800, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)24, endianness=(int)4321, depth=(int)24, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)24, endianness=(int)4321, depth=(int)24, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)16, endianness=(int)1234, depth=(int)16, red_mask=(int)63488, green_mask=(int)2016, blue_mask=(int)31, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-rgb, bpp=(int)16, endianness=(int)1234, depth=(int)15, red_mask=(int)31744, green_mask=(int)992, blue_mask=(int)31, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw-bayer, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc)YUY2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)Y422, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)UYNV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YVYU, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)AYUV, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)IYU2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YVU9, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YUV9, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YV12, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)NV12, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)NV21, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)Y41B, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)Y42B, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)Y800, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)24, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, alpha_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)-16777216, green_mask=(int)16711680, blue_mask=(int)65280, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)32, endianness=(int)4321, depth=(int)32, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, alpha_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)24, endianness=(int)4321, depth=(int)24, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)24, endianness=(int)4321, depth=(int)24, red_mask=(int)255, green_mask=(int)65280, blue_mask=(int)16711680, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)16, endianness=(int)1234, depth=(int)16, red_mask=(int)63488, green_mask=(int)2016, blue_mask=(int)31, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-rgb, bpp=(int)16, endianness=(int)1234, depth=(int)15, red_mask=(int)31744, green_mask=(int)992, blue_mask=(int)31, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-bayer, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -142,11 +245,10 @@ Shows random noise in an X window.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619651"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2619661"></a><h3>
-<a name="GstVideoTestSrc-struct"></a>GstVideoTestSrc</h3>
-<a class="indexterm" name="id2619673"></a><pre class="programlisting">typedef struct _GstVideoTestSrc GstVideoTestSrc;</pre>
+<a name="GstVideoTestSrc-struct"></a><h3>GstVideoTestSrc</h3>
+<pre class="programlisting">typedef struct _GstVideoTestSrc GstVideoTestSrc;</pre>
 <p>
 Opaque data structure.</p>
 <p>
@@ -155,9 +257,8 @@ Opaque data structure.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2614762"></a><h3>
-<a name="GstVideoTestSrcPattern"></a>enum GstVideoTestSrcPattern</h3>
-<a class="indexterm" name="id2614774"></a><pre class="programlisting">typedef enum {
+<a name="GstVideoTestSrcPattern"></a><h3>enum GstVideoTestSrcPattern</h3>
+<pre class="programlisting">typedef enum {
   GST_VIDEO_TEST_SRC_SMPTE,
   GST_VIDEO_TEST_SRC_SNOW,
   GST_VIDEO_TEST_SRC_BLACK,
@@ -182,67 +283,67 @@ The test pattern to produce.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-SMPTE:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_SMPTE</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-SMPTE:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_SMPTE</code></span></p></td>
 <td> A standard SMPTE test pattern
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-SNOW:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_SNOW</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-SNOW:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_SNOW</code></span></p></td>
 <td> Random noise
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-BLACK:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_BLACK</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-BLACK:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_BLACK</code></span></p></td>
 <td> A black image
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-WHITE:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_WHITE</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-WHITE:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_WHITE</code></span></p></td>
 <td> A white image
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-RED:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_RED</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-RED:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_RED</code></span></p></td>
 <td> A red image
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-GREEN:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_GREEN</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-GREEN:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_GREEN</code></span></p></td>
 <td> A green image
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-BLUE:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_BLUE</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-BLUE:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_BLUE</code></span></p></td>
 <td> A blue image
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-CHECKERS1:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS1</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-CHECKERS1:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS1</code></span></p></td>
 <td> Checkers pattern (1px)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-CHECKERS2:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS2</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-CHECKERS2:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS2</code></span></p></td>
 <td> Checkers pattern (2px)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-CHECKERS4:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS4</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-CHECKERS4:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS4</code></span></p></td>
 <td> Checkers pattern (4px)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-CHECKERS8:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS8</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-CHECKERS8:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_CHECKERS8</code></span></p></td>
 <td> Checkers pattern (8px)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-CIRCULAR:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_CIRCULAR</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-CIRCULAR:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_CIRCULAR</code></span></p></td>
 <td> Circular pattern
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-VIDEO-TEST-SRC-BLINK:CAPS"></a><code class="literal">GST_VIDEO_TEST_SRC_BLINK</code></span></td>
+<td><p><a name="GST-VIDEO-TEST-SRC-BLINK:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_BLINK</code></span></p></td>
 <td> Alternate between black and white
 </td>
 </tr>
@@ -251,31 +352,31 @@ The test pattern to produce.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2614269"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-videotestsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2614280"></a><h3>
-<a name="GstVideoTestSrc--pattern"></a>The "<code class="literal">pattern</code>" property</h3>
-<a class="indexterm" name="id2614294"></a><pre class="programlisting">  "pattern"                  <a href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>  : Read / Write</pre>
+<a name="GstVideoTestSrc--pattern"></a><h3>The <code class="literal">"pattern"</code> property</h3>
+<pre class="programlisting">  "pattern"                  <a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern" title="enum GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>  : Read / Write</pre>
 <p>Type of test pattern to generate.</p>
 <p>Default value: SMPTE 100% color bars</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2614319"></a><h3>
-<a name="GstVideoTestSrc--timestamp-offset"></a>The "<code class="literal">timestamp-offset</code>" property</h3>
-<a class="indexterm" name="id2614335"></a><pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
+<a name="GstVideoTestSrc--timestamp-offset"></a><h3>The <code class="literal">"timestamp-offset"</code> property</h3>
+<pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
 <p>An offset added to timestamps set on buffers (in ns).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2614362"></a><h3>
-<a name="GstVideoTestSrc--is-live"></a>The "<code class="literal">is-live</code>" property</h3>
-<a class="indexterm" name="id2614376"></a><pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
+<a name="GstVideoTestSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
+<pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
 <p>Whether to act as a live source.</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

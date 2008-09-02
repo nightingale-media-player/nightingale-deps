@@ -35,7 +35,7 @@ GST_DEBUG_CATEGORY_EXTERN (riff_debug);
 #define GST_CAT_DEFAULT riff_debug
 
 /**
- * gst_riff_create_video_caps_with_data:
+ * gst_riff_create_video_caps:
  * @codec_fcc: fourCC codec for this codec.
  * @strh: pointer to the strh stream header structure.
  * @strf: pointer to the strf stream header structure, including any
@@ -304,7 +304,6 @@ gst_riff_create_video_caps (guint32 codec_fcc,
       break;
 
     case GST_MAKE_FOURCC ('M', 'P', 'G', '4'):
-    case GST_MAKE_FOURCC ('M', 'P', '4', 'S'):
       caps = gst_caps_new_simple ("video/x-msmpeg",
           "msmpegversion", G_TYPE_INT, 41, NULL);
       if (codec_name)
@@ -327,6 +326,7 @@ gst_riff_create_video_caps (guint32 codec_fcc,
         *codec_name = g_strdup ("Microsoft MPEG-4 4.3");
       break;
 
+    case GST_MAKE_FOURCC ('M', 'P', '4', 'S'):
     case GST_MAKE_FOURCC ('M', '4', 'S', '2'):
       caps = gst_caps_new_simple ("video/mpeg",
           "mpegversion", G_TYPE_INT, 4, NULL);
@@ -359,9 +359,19 @@ gst_riff_create_video_caps (guint32 codec_fcc,
     case GST_MAKE_FOURCC ('d', 'v', 's', 'd'):
     case GST_MAKE_FOURCC ('C', 'D', 'V', 'C'):
       caps = gst_caps_new_simple ("video/x-dv",
-          "systemstream", G_TYPE_BOOLEAN, FALSE, NULL);
+          "systemstream", G_TYPE_BOOLEAN, FALSE,
+          "dvversion", G_TYPE_INT, 25, NULL);
       if (codec_name)
         *codec_name = g_strdup ("Generic DV");
+      break;
+
+    case GST_MAKE_FOURCC ('D', 'V', '5', '0'):
+    case GST_MAKE_FOURCC ('d', 'v', '5', '0'):
+      caps = gst_caps_new_simple ("video/x-dv",
+          "systemstream", G_TYPE_BOOLEAN, FALSE,
+          "dvversion", G_TYPE_INT, 50, NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("DVCPro50 Video");
       break;
 
     case GST_MAKE_FOURCC ('W', 'M', 'V', '1'):
@@ -961,14 +971,14 @@ gst_riff_create_audio_caps (guint16 codec_id,
           GST_WARNING ("invalid depth (%d) of alaw audio, overwriting.",
               strf->size);
           strf->size = 8;
-          strf->av_bps = 8;
-          strf->blockalign = strf->av_bps * strf->channels;
+          strf->blockalign = (strf->size * strf->channels) / 8;
+          strf->av_bps = strf->blockalign * strf->rate;
         }
         if (strf->av_bps == 0 || strf->blockalign == 0) {
           GST_WARNING ("fixing av_bps (%d) and blockalign (%d) of alaw audio",
               strf->av_bps, strf->blockalign);
-          strf->av_bps = strf->size;
-          strf->blockalign = strf->av_bps * strf->channels;
+          strf->blockalign = (strf->size * strf->channels) / 8;
+          strf->av_bps = strf->blockalign * strf->rate;
         }
       }
       rate_max = 48000;
@@ -999,14 +1009,14 @@ gst_riff_create_audio_caps (guint16 codec_id,
           GST_WARNING ("invalid depth (%d) of mulaw audio, overwriting.",
               strf->size);
           strf->size = 8;
-          strf->av_bps = 8;
-          strf->blockalign = strf->av_bps * strf->channels;
+          strf->blockalign = (strf->size * strf->channels) / 8;
+          strf->av_bps = strf->blockalign * strf->rate;
         }
         if (strf->av_bps == 0 || strf->blockalign == 0) {
           GST_WARNING ("fixing av_bps (%d) and blockalign (%d) of mulaw audio",
               strf->av_bps, strf->blockalign);
-          strf->av_bps = strf->size;
-          strf->blockalign = strf->av_bps * strf->channels;
+          strf->blockalign = (strf->size * strf->channels) / 8;
+          strf->av_bps = strf->blockalign * strf->rate;
         }
       }
       rate_max = 48000;
@@ -1029,6 +1039,7 @@ gst_riff_create_audio_caps (guint16 codec_id,
 
     case GST_RIFF_WAVE_FORMAT_GSM610:
     case GST_RIFF_WAVE_FORMAT_MSN:
+      rate_min = 1;
       caps = gst_caps_new_simple ("audio/ms-gsm", NULL);
       if (codec_name)
         *codec_name = g_strdup ("MS GSM audio");
@@ -1432,6 +1443,7 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('D', 'I', 'V', 'X'),
     GST_MAKE_FOURCC ('D', 'U', 'C', 'K'),
     GST_MAKE_FOURCC ('D', 'V', 'S', 'D'),
+    GST_MAKE_FOURCC ('D', 'V', '5', '0'),
     GST_MAKE_FOURCC ('D', 'X', '5', '0'),
     GST_MAKE_FOURCC ('F', 'L', 'V', '1'),
     GST_MAKE_FOURCC ('H', '2', '6', '3'),
@@ -1477,7 +1489,8 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('c', 'v', 'i', 'd'),
     GST_MAKE_FOURCC ('h', '2', '6', '4'),
     GST_MAKE_FOURCC ('m', 's', 'v', 'c'),
-    GST_MAKE_FOURCC ('x', '2', '6', '3')
+    GST_MAKE_FOURCC ('x', '2', '6', '3'),
+    GST_MAKE_FOURCC ('d', 'r', 'a', 'c')
         /* FILL ME */
   };
   guint i;

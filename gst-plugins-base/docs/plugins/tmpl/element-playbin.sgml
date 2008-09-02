@@ -18,3 +18,44 @@ Autoplug and play media from an uri
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### STRUCT GstPlayBin ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstPlayBin:audio-sink ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:frame ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:subtitle-font-desc ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:video-sink ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:vis-plugin ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:volume ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin:connection-speed ##### -->
+<para>
+
+</para>
+

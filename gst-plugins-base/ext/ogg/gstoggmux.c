@@ -18,6 +18,28 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-oggmux
+ * @short_description: a muxer for ogg files
+ * @see_also: <link linkend="gst-plugins-base-plugins-deoggmux">oggdemux</link>
+ *
+ * <refsect2>
+ * <para>
+ * This element merges streams (audio and video) into ogg files.
+ * </para>
+ * <title>Example pipelines</title>
+ * <para>
+ * <programlisting>
+ * gst-launch v4l2src num-buffers=500 ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! theoraenc ! oggmux ! filesink location=video.ogg
+ * </programlisting>
+ * Encodes a video stream captured from a v4l2-compatible camera to Ogg/Theora
+ * (the encoding will stop automatically after 500 frames)
+ * </para>
+ * </refsect2>
+ *
+ * Last reviewed on 2008-02-06 (0.10.17)
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -25,7 +47,8 @@
 #include <gst/gst.h>
 #include <gst/base/gstcollectpads.h>
 
-#include <ogg/ogg.h>
+#include "gstoggmux.h"
+
 /* memcpy - if someone knows a way to get rid of it, please speak up
  * note: the ogg docs even say you need this... */
 #include <string.h>
@@ -34,12 +57,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (gst_ogg_mux_debug);
 #define GST_CAT_DEFAULT gst_ogg_mux_debug
-
-#define GST_TYPE_OGG_MUX (gst_ogg_mux_get_type())
-#define GST_OGG_MUX(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_OGG_MUX, GstOggMux))
-#define GST_OGG_MUX_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_OGG_MUX, GstOggMux))
-#define GST_IS_OGG_MUX(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_OGG_MUX))
-#define GST_IS_OGG_MUX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_OGG_MUX))
 
 /* This isn't generally what you'd want with an end-time macro, because
    technically the end time of a buffer with invalid duration is invalid. But
@@ -51,101 +68,12 @@ GST_DEBUG_CATEGORY_STATIC (gst_ogg_mux_debug);
 
 #define GST_GP_FORMAT "[gp %8" G_GINT64_FORMAT "]"
 
-typedef struct _GstOggMux GstOggMux;
-typedef struct _GstOggMuxClass GstOggMuxClass;
-
-typedef enum
-{
-  GST_OGG_PAD_STATE_CONTROL = 0,
-  GST_OGG_PAD_STATE_DATA = 1
-}
-GstOggPadState;
-
-/* all information needed for one ogg stream */
-typedef struct
-{
-  GstCollectData collect;       /* we extend the CollectData */
-
-  /* These two buffers make a very simple queue - they enter as 'next_buffer'
-   * and (usually) leave as 'buffer', except at EOS, when buffer will be NULL */
-  GstBuffer *buffer;            /* the first waiting buffer for the pad */
-  GstBuffer *next_buffer;       /* the second waiting buffer for the pad */
-
-  gint serial;
-  ogg_stream_state stream;
-  gint64 packetno;              /* number of next packet */
-  gint64 pageno;                /* number of next page */
-  guint64 duration;             /* duration of current page */
-  gboolean eos;
-  gint64 offset;
-  GstClockTime timestamp;       /* timestamp of the first packet on the next
-                                 * page to be dequeued */
-  GstClockTime timestamp_end;   /* end timestamp of last complete packet on
-                                   the next page to be dequeued */
-  GstClockTime gp_time;         /* time corresponding to the gp value of the
-                                   last complete packet on the next page to be
-                                   dequeued */
-
-  GstOggPadState state;         /* state of the pad */
-
-  GList *headers;
-
-  GQueue *pagebuffers;          /* List of pages in buffers ready for pushing */
-
-  gboolean new_page;            /* starting a new page */
-  gboolean first_delta;         /* was the first packet in the page a delta */
-  gboolean prev_delta;          /* was the previous buffer a delta frame */
-}
-GstOggPad;
-
-struct _GstOggMux
-{
-  GstElement element;
-
-  /* source pad */
-  GstPad *srcpad;
-
-  /* sinkpads */
-  GstCollectPads *collect;
-
-  /* number of pads which have not received EOS */
-  gint active_pads;
-
-  /* the pad we are currently using to fill a page */
-  GstOggPad *pulling;
-
-  /* next timestamp for the page */
-  GstClockTime next_ts;
-
-  /* Last timestamp actually output on src pad */
-  GstClockTime last_ts;
-
-  /* offset in stream */
-  guint64 offset;
-
-  /* need_headers */
-  gboolean need_headers;
-
-  guint64 max_delay;
-  guint64 max_page_delay;
-
-  GstOggPad *delta_pad;         /* when a delta frame is detected on a stream, we mark
-                                   pages as delta frames up to the page that has the
-                                   keyframe */
-
-};
-
 typedef enum
 {
   GST_OGG_FLAG_BOS = GST_ELEMENT_FLAG_LAST,
   GST_OGG_FLAG_EOS
 }
 GstOggFlag;
-
-struct _GstOggMuxClass
-{
-  GstElementClass parent_class;
-};
 
 /* elementfactory information */
 static const GstElementDetails gst_ogg_mux_details =
@@ -268,11 +196,13 @@ gst_ogg_mux_class_init (GstOggMuxClass * klass)
   g_object_class_install_property (gobject_class, ARG_MAX_DELAY,
       g_param_spec_uint64 ("max-delay", "Max delay",
           "Maximum delay in multiplexing streams", 0, G_MAXUINT64,
-          DEFAULT_MAX_DELAY, (GParamFlags) G_PARAM_READWRITE));
+          DEFAULT_MAX_DELAY,
+          (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_MAX_PAGE_DELAY,
       g_param_spec_uint64 ("max-page-delay", "Max page delay",
           "Maximum delay for sending out a page", 0, G_MAXUINT64,
-          DEFAULT_MAX_PAGE_DELAY, (GParamFlags) G_PARAM_READWRITE));
+          DEFAULT_MAX_PAGE_DELAY,
+          (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = gst_ogg_mux_change_state;
 
@@ -888,49 +818,37 @@ gst_ogg_mux_get_headers (GstOggPad * pad)
     const GValue *streamheader;
 
     structure = gst_caps_get_structure (caps, 0);
-    if (strcmp (gst_structure_get_name (structure), "video/x-dirac") == 0) {
-      GstBuffer *buf = gst_buffer_new_and_alloc (16);
-      int fps_n = 12;
-      int fps_d = 1;
+    streamheader = gst_structure_get_value (structure, "streamheader");
+    if (streamheader != NULL) {
+      GST_LOG_OBJECT (thepad, "got header");
+      if (G_VALUE_TYPE (streamheader) == GST_TYPE_ARRAY) {
+        GArray *bufarr = g_value_peek_pointer (streamheader);
+        gint i;
 
-      gst_structure_get_fraction (structure, "framerate", &fps_n, &fps_d);
+        GST_LOG_OBJECT (thepad, "got fixed list");
 
-      memcpy (GST_BUFFER_DATA (buf), "KW-DIRAC", 8);
-      GST_WRITE_UINT32_BE (GST_BUFFER_DATA (buf) + 8, fps_n);
-      GST_WRITE_UINT32_BE (GST_BUFFER_DATA (buf) + 12, fps_d);
+        for (i = 0; i < bufarr->len; i++) {
+          GValue *bufval = &g_array_index (bufarr, GValue, i);
 
-      res = g_list_append (res, buf);
+          GST_LOG_OBJECT (thepad, "item %d", i);
+          if (G_VALUE_TYPE (bufval) == GST_TYPE_BUFFER) {
+            GstBuffer *buf = g_value_peek_pointer (bufval);
 
-      //res = g_list_append (res, gst_buffer_ref(pad->buffer));
-    } else {
-      streamheader = gst_structure_get_value (structure, "streamheader");
-      if (streamheader != NULL) {
-        GST_LOG_OBJECT (thepad, "got header");
-        if (G_VALUE_TYPE (streamheader) == GST_TYPE_ARRAY) {
-          GArray *bufarr = g_value_peek_pointer (streamheader);
-          gint i;
+            GST_LOG_OBJECT (thepad, "adding item %d to header list", i);
 
-          GST_LOG_OBJECT (thepad, "got fixed list");
-
-          for (i = 0; i < bufarr->len; i++) {
-            GValue *bufval = &g_array_index (bufarr, GValue, i);
-
-            GST_LOG_OBJECT (thepad, "item %d", i);
-            if (G_VALUE_TYPE (bufval) == GST_TYPE_BUFFER) {
-              GstBuffer *buf = g_value_peek_pointer (bufval);
-
-              GST_LOG_OBJECT (thepad, "adding item %d to header list", i);
-
-              gst_buffer_ref (buf);
-              res = g_list_append (res, buf);
-            }
+            gst_buffer_ref (buf);
+            res = g_list_append (res, buf);
           }
-        } else {
-          GST_LOG_OBJECT (thepad, "streamheader is not fixed list");
         }
       } else {
-        GST_LOG_OBJECT (thepad, "caps don't have streamheader");
+        GST_LOG_OBJECT (thepad, "streamheader is not fixed list");
       }
+    } else if (gst_structure_has_name (structure, "video/x-dirac")) {
+      res = g_list_append (res, pad->buffer);
+      pad->buffer = pad->next_buffer;
+      pad->next_buffer = NULL;
+    } else {
+      GST_LOG_OBJECT (thepad, "caps don't have streamheader");
     }
     gst_caps_unref (caps);
   } else {
@@ -1494,7 +1412,7 @@ gst_ogg_mux_process_best_pad (GstOggMux * ogg_mux, GstOggPad * best)
   return GST_FLOW_OK;
 }
 
-/** all_pads_eos:
+/* all_pads_eos:
  *
  * Checks if all pads are EOS'd by peeking.
  *

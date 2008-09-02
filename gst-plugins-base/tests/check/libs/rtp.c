@@ -40,13 +40,38 @@ GST_START_TEST (test_rtp_buffer)
   fail_unless_equals_int (GST_BUFFER_SIZE (buf), RTP_HEADER_LEN + 16 + 4);
   data = GST_BUFFER_DATA (buf);
 
+  /* check defaults */
+  fail_unless_equals_int (gst_rtp_buffer_get_version (buf), 2);
+  fail_unless (gst_rtp_buffer_get_padding (buf) == FALSE);
+  fail_unless (gst_rtp_buffer_get_extension (buf) == FALSE);
+  fail_unless_equals_int (gst_rtp_buffer_get_csrc_count (buf), 0);
+  fail_unless (gst_rtp_buffer_get_marker (buf) == FALSE);
+  fail_unless (gst_rtp_buffer_get_payload_type (buf) == 0);
+  fail_unless_equals_int (GST_READ_UINT16_BE (data), 0x8000);
+
   /* check version in bitfield */
   gst_rtp_buffer_set_version (buf, 3);
   fail_unless_equals_int (gst_rtp_buffer_get_version (buf), 3);
   fail_unless_equals_int ((data[0] & 0xC0) >> 6, 3);
-  gst_rtp_buffer_set_version (buf, 0);
-  fail_unless_equals_int (gst_rtp_buffer_get_version (buf), 0);
-  fail_unless_equals_int ((data[0] & 0xC0) >> 6, 0);
+  gst_rtp_buffer_set_version (buf, 2);
+  fail_unless_equals_int (gst_rtp_buffer_get_version (buf), 2);
+  fail_unless_equals_int ((data[0] & 0xC0) >> 6, 2);
+
+  /* check padding bit */
+  gst_rtp_buffer_set_padding (buf, TRUE);
+  fail_unless (gst_rtp_buffer_get_padding (buf) == TRUE);
+  fail_unless_equals_int ((data[0] & 0x20) >> 5, 1);
+  gst_rtp_buffer_set_padding (buf, FALSE);
+  fail_unless (gst_rtp_buffer_get_padding (buf) == FALSE);
+  fail_unless_equals_int ((data[0] & 0x20) >> 5, 0);
+
+  /* check marker bit */
+  gst_rtp_buffer_set_marker (buf, TRUE);
+  fail_unless (gst_rtp_buffer_get_marker (buf) == TRUE);
+  fail_unless_equals_int ((data[1] & 0x80) >> 7, 1);
+  gst_rtp_buffer_set_marker (buf, FALSE);
+  fail_unless (gst_rtp_buffer_get_marker (buf) == FALSE);
+  fail_unless_equals_int ((data[1] & 0x80) >> 7, 0);
 
   /* check sequence offset */
   gst_rtp_buffer_set_seq (buf, 0xF2C9);
@@ -106,6 +131,136 @@ GST_START_TEST (test_rtp_buffer)
 
 GST_END_TEST;
 
+GST_START_TEST (test_rtp_buffer_set_extension_data)
+{
+  GstBuffer *buf;
+  guint8 *data;
+  guint16 bits;
+  guint size;
+  gpointer pointer;
+
+  /* check GstRTPHeader structure alignment and packing */
+  buf = gst_rtp_buffer_new_allocate (4, 0, 0);
+  data = GST_BUFFER_DATA (buf);
+
+  /* should be impossible to set the extension data */
+  ASSERT_WARNING (fail_unless (gst_rtp_buffer_set_extension_data (buf, 0,
+              4) == FALSE));
+  fail_unless (gst_rtp_buffer_get_extension (buf) == FALSE);
+
+  /* should be possible to set the extension data */
+  fail_unless (gst_rtp_buffer_set_extension_data (buf, 270, 0) == TRUE);
+  fail_unless (gst_rtp_buffer_get_extension (buf) == TRUE);
+  gst_rtp_buffer_get_extension_data (buf, &bits, &pointer, &size);
+  fail_unless (bits == 270);
+  fail_unless (size == 0);
+  fail_unless (pointer == GST_BUFFER_DATA (buf) + 16);
+  pointer = gst_rtp_buffer_get_payload (buf);
+  fail_unless (pointer == GST_BUFFER_DATA (buf) + 16);
+  gst_buffer_unref (buf);
+
+  buf = gst_rtp_buffer_new_allocate (20, 0, 0);
+  data = GST_BUFFER_DATA (buf);
+  fail_unless (gst_rtp_buffer_get_extension (buf) == FALSE);
+  fail_unless (gst_rtp_buffer_set_extension_data (buf, 333, 2) == TRUE);
+  fail_unless (gst_rtp_buffer_get_extension (buf) == TRUE);
+  gst_rtp_buffer_get_extension_data (buf, &bits, &pointer, &size);
+  fail_unless (bits == 333);
+  fail_unless (size == 2);
+  fail_unless (pointer == GST_BUFFER_DATA (buf) + 16);
+  pointer = gst_rtp_buffer_get_payload (buf);
+  fail_unless (pointer == GST_BUFFER_DATA (buf) + 24);
+  gst_buffer_unref (buf);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_rtp_seqnum_compare)
+{
+#define ASSERT_COMP(a,b,c) fail_unless (gst_rtp_buffer_compare_seqnum ((guint16)a,(guint16)b) == c);
+  ASSERT_COMP (0xfffe, 0xfffd, -1);
+  ASSERT_COMP (0xffff, 0xfffe, -1);
+  ASSERT_COMP (0x0000, 0xffff, -1);
+  ASSERT_COMP (0x0001, 0x0000, -1);
+  ASSERT_COMP (0x0002, 0x0001, -1);
+
+  ASSERT_COMP (0xffff, 0xfffd, -2);
+  ASSERT_COMP (0x0000, 0xfffd, -3);
+  ASSERT_COMP (0x0001, 0xfffd, -4);
+  ASSERT_COMP (0x0002, 0xfffd, -5);
+
+  ASSERT_COMP (0x7ffe, 0x7ffd, -1);
+  ASSERT_COMP (0x7fff, 0x7ffe, -1);
+  ASSERT_COMP (0x8000, 0x7fff, -1);
+  ASSERT_COMP (0x8001, 0x8000, -1);
+  ASSERT_COMP (0x8002, 0x8001, -1);
+
+  ASSERT_COMP (0x7fff, 0x7ffd, -2);
+  ASSERT_COMP (0x8000, 0x7ffd, -3);
+  ASSERT_COMP (0x8001, 0x7ffd, -4);
+  ASSERT_COMP (0x8002, 0x7ffd, -5);
+
+  ASSERT_COMP (0x7ffd, 0xffff, -0x7ffe);
+  ASSERT_COMP (0x7ffe, 0x0000, -0x7ffe);
+  ASSERT_COMP (0x7fff, 0x0001, -0x7ffe);
+  ASSERT_COMP (0x7fff, 0x0000, -0x7fff);
+  ASSERT_COMP (0x8000, 0x0001, -0x7fff);
+  ASSERT_COMP (0x8001, 0x0002, -0x7fff);
+
+  ASSERT_COMP (0xfffd, 0x7ffe, -0x7fff);
+  ASSERT_COMP (0xfffe, 0x7fff, -0x7fff);
+  ASSERT_COMP (0xffff, 0x8000, -0x7fff);
+  ASSERT_COMP (0x0000, 0x8001, -0x7fff);
+  ASSERT_COMP (0x0001, 0x8002, -0x7fff);
+
+  ASSERT_COMP (0xfffe, 0x7ffe, -0x8000);
+  ASSERT_COMP (0xffff, 0x7fff, -0x8000);
+  ASSERT_COMP (0x0000, 0x8000, -0x8000);
+  ASSERT_COMP (0x0001, 0x8001, -0x8000);
+
+  ASSERT_COMP (0x7ffe, 0xfffe, -0x8000);
+  ASSERT_COMP (0x7fff, 0xffff, -0x8000);
+  ASSERT_COMP (0x8000, 0x0000, -0x8000);
+  ASSERT_COMP (0x8001, 0x0001, -0x8000);
+
+  ASSERT_COMP (0x0001, 0x0002, 1);
+  ASSERT_COMP (0x0000, 0x0001, 1);
+  ASSERT_COMP (0xffff, 0x0000, 1);
+  ASSERT_COMP (0xfffe, 0xffff, 1);
+  ASSERT_COMP (0xfffd, 0xfffe, 1);
+
+  ASSERT_COMP (0x0000, 0x0002, 2);
+  ASSERT_COMP (0xffff, 0x0002, 3);
+  ASSERT_COMP (0xfffe, 0x0002, 4);
+  ASSERT_COMP (0xfffd, 0x0002, 5);
+
+  ASSERT_COMP (0x8001, 0x8002, 1);
+  ASSERT_COMP (0x8000, 0x8001, 1);
+  ASSERT_COMP (0x7fff, 0x8000, 1);
+  ASSERT_COMP (0x7ffe, 0x7fff, 1);
+  ASSERT_COMP (0x7ffd, 0x7ffe, 1);
+
+  ASSERT_COMP (0x8000, 0x8002, 2);
+  ASSERT_COMP (0x7fff, 0x8002, 3);
+  ASSERT_COMP (0x7ffe, 0x8002, 4);
+  ASSERT_COMP (0x7ffd, 0x8002, 5);
+
+  ASSERT_COMP (0xfffe, 0x7ffd, 0x7fff);
+  ASSERT_COMP (0xffff, 0x7ffe, 0x7fff);
+  ASSERT_COMP (0x0000, 0x7fff, 0x7fff);
+  ASSERT_COMP (0x0001, 0x8000, 0x7fff);
+  ASSERT_COMP (0x0002, 0x8001, 0x7fff);
+
+  ASSERT_COMP (0x7ffe, 0xfffd, 0x7fff);
+  ASSERT_COMP (0x7fff, 0xfffe, 0x7fff);
+  ASSERT_COMP (0x8000, 0xffff, 0x7fff);
+  ASSERT_COMP (0x8001, 0x0000, 0x7fff);
+  ASSERT_COMP (0x8002, 0x0001, 0x7fff);
+#undef ASSERT_COMP
+}
+
+GST_END_TEST;
+
 static Suite *
 rtp_suite (void)
 {
@@ -114,6 +269,8 @@ rtp_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_rtp_buffer);
+  tcase_add_test (tc_chain, test_rtp_buffer_set_extension_data);
+  tcase_add_test (tc_chain, test_rtp_seqnum_compare);
   return s;
 }
 

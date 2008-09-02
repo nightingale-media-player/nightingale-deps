@@ -108,7 +108,7 @@ tmpl.stamp: tmpl-build.stamp
 
 #### xml ####
 
-### FIXME: make this error out again when docs are fixed for 0.9
+### FIXME: make this error out again when docs are complete
 sgml-build.stamp: tmpl.stamp $(CFILE_GLOB)
 	@echo '*** Building XML ***'
 	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --main-sgml-file=$(srcdir)/$(DOC_MAIN_SGML_FILE) --output-format=xml $(MKDB_OPTIONS) | tee sgml-build.log
@@ -130,6 +130,9 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	cp -pr xml html
 	cp ../version.entities html
 	cd html && gtkdoc-mkhtml $(DOC_MODULE) $(DOC_MAIN_SGML_FILE)
+	mv html/index.sgml html/index.sgml.bak
+	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
+	rm -f html/index.sgml.bak
 	rm -f html/$(DOC_MAIN_SGML_FILE)
 	rm -rf html/xml
 	rm -f html/version.entities
@@ -138,13 +141,20 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@echo '-- Fixing Crossreferences' 
 	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
+
+clean-local-gtkdoc:
+	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+	if test x"$(srcdir)" != x. ; then \
+	        rm -rf $(DOC_MODULE).types; \
+	fi
 else
 all-local:
+clean-local-gtkdoc:
 endif
 
-clean-local:
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
-	rm -rf xml html
 	rm -rf .libs
 
 maintainer-clean-local: clean
@@ -260,5 +270,10 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	for i in "" $$images ; do		      \
 	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
 	done
+	images="$(srcdir)/html/*.png" ;		      \
+	for i in "" $$images ; do		      \
+	  fname=`basename $$i` ; 		      \
+	  if test ! -f "$(distdir)/html/$$fname"; then cp $$i $(distdir)/html ; fi; \
+	done 
 
 .PHONY : dist-hook-local

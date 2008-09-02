@@ -45,8 +45,6 @@ struct _GstBaseRTPPayloadPrivate
   gboolean seqnum_offset_random;
   gboolean ssrc_random;
   guint16 next_seqnum;
-
-  GstClockTime rt_base;
 };
 
 /* BaseRTPPayload signals and args */
@@ -90,8 +88,8 @@ static void gst_basertppayload_init (GstBaseRTPPayload * basertppayload,
     gpointer g_class);
 static void gst_basertppayload_finalize (GObject * object);
 
-static gboolean gst_basertppayload_setcaps (GstPad * pad, GstCaps * caps);
-static GstCaps *gst_basertppayload_getcaps (GstPad * pad);
+static gboolean gst_basertppayload_sink_setcaps (GstPad * pad, GstCaps * caps);
+static GstCaps *gst_basertppayload_sink_getcaps (GstPad * pad);
 static gboolean gst_basertppayload_event (GstPad * pad, GstEvent * event);
 static GstFlowReturn gst_basertppayload_chain (GstPad * pad,
     GstBuffer * buffer);
@@ -159,28 +157,31 @@ gst_basertppayload_class_init (GstBaseRTPPayloadClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MTU,
       g_param_spec_uint ("mtu", "MTU",
           "Maximum size of one packet",
-          28, G_MAXUINT, DEFAULT_MTU, G_PARAM_READWRITE));
+          28, G_MAXUINT, DEFAULT_MTU,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PT,
       g_param_spec_uint ("pt", "payload type",
-          "The payload type of the packets",
-          0, 0x80, DEFAULT_PT, G_PARAM_READWRITE));
+          "The payload type of the packets", 0, 0x80, DEFAULT_PT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SSRC,
       g_param_spec_uint ("ssrc", "SSRC",
-          "The SSRC of the packets (default == random)",
-          0, G_MAXUINT32, DEFAULT_SSRC, G_PARAM_READWRITE));
+          "The SSRC of the packets (default == random)", 0, G_MAXUINT32,
+          DEFAULT_SSRC, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_TIMESTAMP_OFFSET, g_param_spec_uint ("timestamp-offset",
           "Timestamp Offset",
           "Offset to add to all outgoing timestamps (default = random)", 0,
-          G_MAXUINT32, DEFAULT_TIMESTAMP_OFFSET, G_PARAM_READWRITE));
+          G_MAXUINT32, DEFAULT_TIMESTAMP_OFFSET,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SEQNUM_OFFSET,
       g_param_spec_int ("seqnum-offset", "Sequence number Offset",
           "Offset to add to all outgoing seqnum (-1 = random)", -1, G_MAXUINT16,
-          DEFAULT_SEQNUM_OFFSET, G_PARAM_READWRITE));
+          DEFAULT_SEQNUM_OFFSET, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MAX_PTIME,
       g_param_spec_int64 ("max-ptime", "Max packet time",
           "Maximum duration of the packet data in ns (-1 = unlimited up to MTU)",
-          -1, G_MAXINT64, DEFAULT_MAX_PTIME, G_PARAM_READWRITE));
+          -1, G_MAXINT64, DEFAULT_MAX_PTIME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstBaseRTPAudioPayload:min-ptime:
    *
@@ -191,16 +192,17 @@ gst_basertppayload_class_init (GstBaseRTPPayloadClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MIN_PTIME,
       g_param_spec_int64 ("min-ptime", "Min packet time",
           "Minimum duration of the packet data in ns (can't go above MTU)",
-          0, G_MAXINT64, DEFAULT_MIN_PTIME, G_PARAM_READWRITE));
+          0, G_MAXINT64, DEFAULT_MIN_PTIME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_TIMESTAMP,
       g_param_spec_uint ("timestamp", "Timestamp",
           "The RTP timestamp of the last processed packet",
-          0, G_MAXUINT32, 0, G_PARAM_READABLE));
+          0, G_MAXUINT32, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SEQNUM,
       g_param_spec_uint ("seqnum", "Sequence number",
           "The RTP sequence number of the last processed packet",
-          0, G_MAXUINT16, 0, G_PARAM_READABLE));
+          0, G_MAXUINT16, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = gst_basertppayload_change_state;
 
@@ -230,9 +232,9 @@ gst_basertppayload_init (GstBaseRTPPayload * basertppayload, gpointer g_class)
 
   basertppayload->sinkpad = gst_pad_new_from_template (templ, "sink");
   gst_pad_set_setcaps_function (basertppayload->sinkpad,
-      gst_basertppayload_setcaps);
+      gst_basertppayload_sink_setcaps);
   gst_pad_set_getcaps_function (basertppayload->sinkpad,
-      gst_basertppayload_getcaps);
+      gst_basertppayload_sink_getcaps);
   gst_pad_set_event_function (basertppayload->sinkpad,
       gst_basertppayload_event);
   gst_pad_set_chain_function (basertppayload->sinkpad,
@@ -284,7 +286,7 @@ gst_basertppayload_finalize (GObject * object)
 }
 
 static gboolean
-gst_basertppayload_setcaps (GstPad * pad, GstCaps * caps)
+gst_basertppayload_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstBaseRTPPayload *basertppayload;
   GstBaseRTPPayloadClass *basertppayload_class;
@@ -303,7 +305,7 @@ gst_basertppayload_setcaps (GstPad * pad, GstCaps * caps)
 }
 
 static GstCaps *
-gst_basertppayload_getcaps (GstPad * pad)
+gst_basertppayload_sink_getcaps (GstPad * pad)
 {
   GstBaseRTPPayload *basertppayload;
   GstBaseRTPPayloadClass *basertppayload_class;
@@ -406,6 +408,7 @@ no_function:
     GST_ELEMENT_ERROR (basertppayload, STREAM, NOT_IMPLEMENTED, (NULL),
         ("subclass did not implement handle_buffer function"));
     gst_object_unref (basertppayload);
+    gst_buffer_unref (buffer);
     return GST_FLOW_ERROR;
   }
 }
@@ -437,7 +440,7 @@ gst_basertppayload_set_options (GstBaseRTPPayload * payload,
   payload->clock_rate = clock_rate;
 }
 
-gboolean
+static gboolean
 copy_fixed (GQuark field_id, const GValue * value, GstStructure * dest)
 {
   if (gst_value_is_fixed (value)) {
@@ -656,15 +659,6 @@ gst_basertppayload_push (GstBaseRTPPayload * payload, GstBuffer * buffer)
     rtime = gst_segment_to_running_time (&payload->segment, GST_FORMAT_TIME,
         timestamp);
 
-    /* take first timestamp as base, we want to calculate the RTP timestamp
-     * starting from the ts_base */
-    if (priv->rt_base == -1) {
-      priv->rt_base = rtime;
-      GST_LOG_OBJECT (payload, "first timestamp %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (rtime));
-    }
-    rtime -= priv->rt_base;
-
     rtime = gst_util_uint64_scale_int (rtime, payload->clock_rate, GST_SECOND);
 
     /* add running_time in clock-rate units to the base timestamp */
@@ -832,8 +826,6 @@ gst_basertppayload_change_state (GstElement * element,
         basertppayload->ts_base = g_rand_int (basertppayload->ts_rand);
       else
         basertppayload->ts_base = basertppayload->ts_offset;
-
-      priv->rt_base = -1;
       break;
     default:
       break;

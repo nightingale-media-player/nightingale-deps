@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>uridecodebin</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-timeoverlay.html" title="timeoverlay">
+<link rel="next" href="gst-plugins-base-plugins-videorate.html" title="videorate">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-timeoverlay.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-videorate.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-uridecodebin.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-uridecodebin.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-uridecodebin.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-uridecodebin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-uridecodebin.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-uridecodebin.signals" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-uridecodebin.top_of_page"></a>uridecodebin</span></h2>
+<p>uridecodebin — decoder for an uri</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-plugins-uridecodebin.synopsis"></a><h2>Synopsis</h2>
+<a name="GstURIDecodeBin"></a><pre class="synopsis">
+struct              <a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-struct" title="struct GstURIDecodeBin">GstURIDecodeBin</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstAutoplugSelectResult" title="enum GstAutoplugSelectResult">GstAutoplugSelectResult</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBin
+                     +----GstURIDecodeBin
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstURIDecodeBin implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--uri" title='The "uri" property'>uri</a>"                      gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--source" title='The "source" property'>source</a>"                   GstElement*           : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-autoplug-continue" title='The "autoplug-continue" signal'>autoplug-continue</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-autoplug-factories" title='The "autoplug-factories" signal'>autoplug-factories</a>"                             : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-autoplug-select" title='The "autoplug-select" signal'>autoplug-select</a>"                                : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-unknown-type" title='The "unknown-type" signal'>unknown-type</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin-drained" title='The "drained" signal'>drained</a>"                                        : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.description"></a><h2>Description</h2>
+<p>
+Decodes data from a URI into raw media.</p>
+<div class="refsect2" lang="en">
+<a name="id2647183"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+          <a class="link" href="gst-plugins-base-plugins-plugin-uridecodebin.html#plugin-uridecodebin">uridecodebin</a>
+        </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Bin/Decoder</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-struct"></a><h3>struct GstURIDecodeBin</h3>
+<pre class="programlisting">struct GstURIDecodeBin;</pre>
+<p>
+uridecodebin element struct</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAutoplugSelectResult"></a><h3>enum GstAutoplugSelectResult</h3>
+<pre class="programlisting">typedef enum {
+  GST_AUTOPLUG_SELECT_TRY,
+  GST_AUTOPLUG_SELECT_EXPOSE,
+  GST_AUTOPLUG_SELECT_SKIP
+} GstAutoplugSelectResult;
+</pre>
+<p>
+return values for the autoplug-select signal.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-AUTOPLUG-SELECT-TRY:CAPS"></a><span class="term"><code class="literal">GST_AUTOPLUG_SELECT_TRY</code></span></p></td>
+<td> try to autoplug the current factory
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-AUTOPLUG-SELECT-EXPOSE:CAPS"></a><span class="term"><code class="literal">GST_AUTOPLUG_SELECT_EXPOSE</code></span></p></td>
+<td> expose the pad as a raw stream
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-AUTOPLUG-SELECT-SKIP:CAPS"></a><span class="term"><code class="literal">GST_AUTOPLUG_SELECT_SKIP</code></span></p></td>
+<td> skip the current factory
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
+<pre class="programlisting">  "uri"                      gchar*                : Read / Write</pre>
+<p>URI to decode.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
+<pre class="programlisting">  "connection-speed"         guint                 : Read / Write</pre>
+<p>Network connection speed in kbps (0 = unknown).</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
+<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<p>The caps on which to stop decoding. (NULL = default).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--subtitle-encoding"></a><h3>The <code class="literal">"subtitle-encoding"</code> property</h3>
+<pre class="programlisting">  "subtitle-encoding"        gchar*                : Read / Write</pre>
+<p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--source"></a><h3>The <code class="literal">"source"</code> property</h3>
+<pre class="programlisting">  "source"                   GstElement*           : Read</pre>
+<p>Source object used.</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-uridecodebin.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-autoplug-continue"></a><h3>The <code class="literal">"autoplug-continue"</code> signal</h3>
+<pre class="programlisting">gboolean            user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
+                                                        GstPad          *caps,
+                                                        GstCaps         *Returns,
+                                                        gpointer         user_data)      : Run Last</pre>
+<p>
+This signal is emitted whenever uridecodebin finds a new stream. It is
+emitted before looking for any elements that can handle that stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The <span class="type">GstPad</span>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> The <span class="type">GstCaps</span> found.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <span class="type">TRUE</span> if you wish uridecodebin to look for elements that can
+handle the given <em class="parameter"><code>caps</code></em>. If <span class="type">FALSE</span>, those caps will be considered as
+final and the pad will be exposed as such (see 'new-decoded-pad'
+signal).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-autoplug-factories"></a><h3>The <code class="literal">"autoplug-factories"</code> signal</h3>
+<pre class="programlisting">GValueArray*        user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
+                                                        GstPad          *caps,
+                                                        GstCaps         *Returns,
+                                                        gpointer         user_data)      : Run Last</pre>
+<p>
+This function is emited when an array of possible factories for <em class="parameter"><code>caps</code></em> on
+<em class="parameter"><code>pad</code></em> is needed. Decodebin2 will by default return</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The <span class="type">GstPad</span>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> The <span class="type">GstCaps</span> found.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">GValueArray</span>* with a list of factories to try. The factories are
+by default tried in the returned order or based on the index returned by
+"autoplug-select".
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-autoplug-select"></a><h3>The <code class="literal">"autoplug-select"</code> signal</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstAutoplugSelectResult" title="enum GstAutoplugSelectResult">GstAutoplugSelectResult</a>user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a>   *pad,
+                                                        GstPad            *caps,
+                                                        GstCaps           *factories,
+                                                        GstElementFactory *Returns,
+                                                        gpointer           user_data)      : Run Last</pre>
+<p>
+This signal is emitted once uridecodebin has found all the possible
+<span class="type">GstElementFactory</span> that can be used to handle the given <em class="parameter"><code>caps</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The <span class="type">GstPad</span>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> The <span class="type">GstCaps</span>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
+<td> A <span class="type">GValueArray</span> of possible <span class="type">GstElementFactory</span> to use, sorted by
+rank (higher ranks come first).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> A <span class="type">gint</span> indicating what factory index from the <em class="parameter"><code>factories</code></em> array
+that you wish uridecodebin to use for trying to decode the given <em class="parameter"><code>caps</code></em>.
+-1 to stop selection of a factory. The default handler always
+returns the first possible factory.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-unknown-type"></a><h3>The <code class="literal">"unknown-type"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
+                                                        GstPad          *caps,
+                                                        GstCaps         *arg2,
+                                                        gpointer         user_data)      : Run Last</pre>
+<p>
+This signal is emitted when a pad for which there is no further possible
+decoding is added to the uridecodebin.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> the new pad containing caps that cannot be resolved to a 'final'
+stream type.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> the <span class="type">GstCaps</span> of the pad that cannot be resolved.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin-drained"></a><h3>The <code class="literal">"drained"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *arg0,
+                                                        gpointer         user_data)      : Run Last</pre>
+<p>
+This signal is emitted when the data for the current uri is played.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

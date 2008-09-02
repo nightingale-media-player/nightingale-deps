@@ -143,6 +143,7 @@ gst_audio_get_channel_positions
 gst_audio_set_caps_channel_positions_list
 gst_audio_set_channel_positions
 gst_audio_set_structure_channel_positions_list
+gst_audio_check_channel_positions
 <SUBSECTION Standard>
 GST_TYPE_AUDIO_CHANNEL_POSITION
 gst_audio_channel_position_get_type
@@ -365,7 +366,10 @@ gst_mixer_mute_toggled
 gst_mixer_record_toggled
 gst_mixer_volume_changed
 gst_mixer_option_changed
+gst_mixer_options_list_changed
 gst_mixer_get_option
+
+gst_mixer_mixer_changed
 
 gst_mixer_get_mixer_flags
 
@@ -374,6 +378,7 @@ gst_mixer_message_parse_mute_toggled
 gst_mixer_message_parse_option_changed
 gst_mixer_message_parse_record_toggled
 gst_mixer_message_parse_volume_changed
+gst_mixer_message_parse_options_list_changed
 
 <SUBSECTION Standard>
 GstMixerClass
@@ -591,6 +596,7 @@ gst_netaddress_get_ip6_address
 gst_netaddress_get_net_type
 gst_netaddress_set_ip4_address
 gst_netaddress_set_ip6_address
+gst_netaddress_equal
 <SUBSECTION Standard>
 GstNetBufferClass
 GST_TYPE_NETBUFFER
@@ -1355,7 +1361,7 @@ GstTagDemuxResult
 
 <SECTION>
 <FILE>gstpbutils</FILE>
-<INCLUDE>gst/pbutils/base-utils.h</INCLUDE>
+<INCLUDE>gst/pbutils/pbutils.h</INCLUDE>
 <SUBSECTION>
 gst_pb_utils_init
 </SECTION>
@@ -1479,7 +1485,6 @@ gst_video_format_is_yuv
 gst_video_format_to_fourcc
 gst_video_format_from_fourcc
 gst_video_format_parse_caps
-gst_video_format_from_rgb32_masks
 gst_video_parse_caps_framerate
 gst_video_parse_caps_pixel_aspect_ratio
 </SECTION>
@@ -1537,7 +1542,6 @@ dngettext
 gettext
 gettext_noop
 ngettext
-rfc822_binary
 textdomain
 SHA_BLOCKSIZE
 SHA_BYTE

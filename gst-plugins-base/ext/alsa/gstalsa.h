@@ -32,8 +32,16 @@
 #include <alsa/error.h>
 #include <gst/gst.h>
 
+#define GST_CHECK_ALSA_VERSION(major,minor,micro) \
+    (SND_LIB_MAJOR > (major) || \
+     (SND_LIB_MAJOR == (major) && SND_LIB_MINOR > (minor)) || \
+     (SND_LIB_MAJOR == (major) && SND_LIB_MINOR == (minor) && \
+      SND_LIB_SUBMINOR >= (micro)))
+
 GST_DEBUG_CATEGORY_EXTERN (alsa_debug);
 #define GST_CAT_DEFAULT alsa_debug
+
+snd_pcm_t * gst_alsa_open_iec958_pcm (GstObject * obj);
 
 GstCaps * gst_alsa_probe_supported_formats (GstObject      * obj,
                                             snd_pcm_t      * handle,

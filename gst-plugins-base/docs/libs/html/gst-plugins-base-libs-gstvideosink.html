@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstvideosink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideo.html" title="gstvideo">
 <link rel="next" href="gst-plugins-base-libs-gstvideofilter.html" title="gstvideofilter">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,47 +36,42 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstvideofilter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2766862" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2767030" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2766984" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstvideosink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideosink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideosink.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstvideosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2766862"></a><span class="refentrytitle">gstvideosink</span>
-</h2>
-<p>gstvideosink &#8212; Base class for video sinks</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstvideosink.top_of_page"></a>gstvideosink</span></h2>
+<p>gstvideosink — Base class for video sinks</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstvideosink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoSink"></a><pre class="synopsis">
 
 #include &lt;gst/video/gstvideosink.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink-struct">GstVideoSink</a>;
-                    <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoSinkClass">GstVideoSinkClass</a>;
-                    <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a>;
-#define             <a href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-HEIGHT:CAPS">GST_VIDEO_SINK_HEIGHT</a>               (obj)
-#define             <a href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-PAD:CAPS">GST_VIDEO_SINK_PAD</a>                  (obj)
-#define             <a href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-WIDTH:CAPS">GST_VIDEO_SINK_WIDTH</a>                (obj)
-void                <a href="gst-plugins-base-libs-gstvideosink.html#gst-video-sink-center-rect">gst_video_sink_center_rect</a>          (<a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> src,
-                                                         <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> dst,
-                                                         <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> *result,
+                    <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink-struct" title="GstVideoSink">GstVideoSink</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoSinkClass" title="GstVideoSinkClass">GstVideoSinkClass</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a>;
+#define             <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-HEIGHT:CAPS" title="GST_VIDEO_SINK_HEIGHT()">GST_VIDEO_SINK_HEIGHT</a>               (obj)
+#define             <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-PAD:CAPS" title="GST_VIDEO_SINK_PAD()">GST_VIDEO_SINK_PAD</a>                  (obj)
+#define             <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GST-VIDEO-SINK-WIDTH:CAPS" title="GST_VIDEO_SINK_WIDTH()">GST_VIDEO_SINK_WIDTH</a>                (obj)
+void                <a class="link" href="gst-plugins-base-libs-gstvideosink.html#gst-video-sink-center-rect" title="gst_video_sink_center_rect ()">gst_video_sink_center_rect</a>          (<a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> src,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> dst,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> *result,
                                                          gboolean scaling);
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2766984"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstvideosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -85,11 +80,11 @@ void                <a href="gst-plugins-base-libs-gstvideosink.html#gst-video-s
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2767030"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstvideosink.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2767043"></a><p>
+<a name="id2798372"></a><p>
 Provides useful functions and a base class for video sinks. 
 </p>
 <p>
@@ -103,20 +98,18 @@ observing out-of-sync frames.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2767061"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstvideosink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2767071"></a><h3>
-<a name="GstVideoSink-struct"></a>GstVideoSink</h3>
-<a class="indexterm" name="id2767084"></a><pre class="programlisting">typedef struct _GstVideoSink GstVideoSink;</pre>
+<a name="GstVideoSink-struct"></a><h3>GstVideoSink</h3>
+<pre class="programlisting">typedef struct _GstVideoSink GstVideoSink;</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767099"></a><h3>
-<a name="GstVideoSinkClass"></a>GstVideoSinkClass</h3>
-<a class="indexterm" name="id2767112"></a><pre class="programlisting">typedef struct {
+<a name="GstVideoSinkClass"></a><h3>GstVideoSinkClass</h3>
+<pre class="programlisting">typedef struct {
   GstBaseSinkClass parent_class;
       
   gpointer _gst_reserved[GST_PADDING];
@@ -128,9 +121,8 @@ observing out-of-sync frames.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767129"></a><h3>
-<a name="GstVideoRectangle"></a>GstVideoRectangle</h3>
-<a class="indexterm" name="id2767142"></a><pre class="programlisting">typedef struct {
+<a name="GstVideoRectangle"></a><h3>GstVideoRectangle</h3>
+<pre class="programlisting">typedef struct {
   gint x;
   gint y;
   gint w;
@@ -146,22 +138,22 @@ Helper structure representing a rectangular area.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>x</code></em>;</span></td>
+<td><p><span class="term">gint <em class="structfield"><code>x</code></em>;</span></p></td>
 <td> X coordinate of rectangle's top-left point
 </td>
 </tr>
 <tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>y</code></em>;</span></td>
+<td><p><span class="term">gint <em class="structfield"><code>y</code></em>;</span></p></td>
 <td> Y coordinate of rectangle's top-left point
 </td>
 </tr>
 <tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>w</code></em>;</span></td>
+<td><p><span class="term">gint <em class="structfield"><code>w</code></em>;</span></p></td>
 <td> width of the rectangle
 </td>
 </tr>
 <tr>
-<td><span class="term">gint&#160;<em class="structfield"><code>h</code></em>;</span></td>
+<td><p><span class="term">gint <em class="structfield"><code>h</code></em>;</span></p></td>
 <td> height of the rectangle
 </td>
 </tr>
@@ -170,9 +162,8 @@ Helper structure representing a rectangular area.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767249"></a><h3>
-<a name="GST-VIDEO-SINK-HEIGHT:CAPS"></a>GST_VIDEO_SINK_HEIGHT()</h3>
-<a class="indexterm" name="id2767262"></a><pre class="programlisting">#define GST_VIDEO_SINK_HEIGHT(obj) (GST_VIDEO_SINK_CAST (obj)-&gt;height)
+<a name="GST-VIDEO-SINK-HEIGHT:CAPS"></a><h3>GST_VIDEO_SINK_HEIGHT()</h3>
+<pre class="programlisting">#define GST_VIDEO_SINK_HEIGHT(obj) (GST_VIDEO_SINK_CAST (obj)-&gt;height)
 </pre>
 <p>
 
@@ -180,7 +171,7 @@ Helper structure representing a rectangular area.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td>
 
 
@@ -190,9 +181,8 @@ Helper structure representing a rectangular area.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767296"></a><h3>
-<a name="GST-VIDEO-SINK-PAD:CAPS"></a>GST_VIDEO_SINK_PAD()</h3>
-<a class="indexterm" name="id2767309"></a><pre class="programlisting">#define GST_VIDEO_SINK_PAD(obj) GST_BASE_SINK_PAD(obj)
+<a name="GST-VIDEO-SINK-PAD:CAPS"></a><h3>GST_VIDEO_SINK_PAD()</h3>
+<pre class="programlisting">#define GST_VIDEO_SINK_PAD(obj) GST_BASE_SINK_PAD(obj)
 </pre>
 <p>
 Get the sink <span class="type">GstPad</span> of <em class="parameter"><code>obj</code></em>.</p>
@@ -202,17 +192,16 @@ Get the sink <span class="type">GstPad</span> of <em class="parameter"><code>obj
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink"><span class="type">GstVideoSink</span></a>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink"><span class="type">GstVideoSink</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767369"></a><h3>
-<a name="GST-VIDEO-SINK-WIDTH:CAPS"></a>GST_VIDEO_SINK_WIDTH()</h3>
-<a class="indexterm" name="id2767382"></a><pre class="programlisting">#define GST_VIDEO_SINK_WIDTH(obj) (GST_VIDEO_SINK_CAST (obj)-&gt;width)
+<a name="GST-VIDEO-SINK-WIDTH:CAPS"></a><h3>GST_VIDEO_SINK_WIDTH()</h3>
+<pre class="programlisting">#define GST_VIDEO_SINK_WIDTH(obj) (GST_VIDEO_SINK_CAST (obj)-&gt;width)
 </pre>
 <p>
 
@@ -220,7 +209,7 @@ Get the sink <span class="type">GstPad</span> of <em class="parameter"><code>obj
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
 <td>
 
 
@@ -230,11 +219,10 @@ Get the sink <span class="type">GstPad</span> of <em class="parameter"><code>obj
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2767417"></a><h3>
-<a name="gst-video-sink-center-rect"></a>gst_video_sink_center_rect ()</h3>
-<a class="indexterm" name="id2767430"></a><pre class="programlisting">void                gst_video_sink_center_rect          (<a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> src,
-                                                         <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> dst,
-                                                         <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle">GstVideoRectangle</a> *result,
+<a name="gst-video-sink-center-rect"></a><h3>gst_video_sink_center_rect ()</h3>
+<pre class="programlisting">void                gst_video_sink_center_rect          (<a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> src,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> dst,
+                                                         <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> *result,
                                                          gboolean scaling);</pre>
 <p>
 Takes <em class="parameter"><code>src</code></em> rectangle and position it at the center of <em class="parameter"><code>dst</code></em> rectangle with or
@@ -247,22 +235,22 @@ the <em class="parameter"><code>dst</code></em> one and <em class="parameter"><c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> describing the source area
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> describing the source area
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dst</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> describing the destination area
+<td><p><span class="term"><em class="parameter"><code>dst</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> describing the destination area
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>result</code></em>&#160;:</span></td>
-<td> a pointer to a <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> which will receive the result area
+<td><p><span class="term"><em class="parameter"><code>result</code></em> :</span></p></td>
+<td> a pointer to a <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle"><span class="type">GstVideoRectangle</span></a> which will receive the result area
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>scaling</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>scaling</code></em> :</span></p></td>
 <td> a <span class="type">gboolean</span> indicating if scaling should be applied or not
 </td>
 </tr>
@@ -271,5 +259,8 @@ the <em class="parameter"><code>dst</code></em> one and <em class="parameter"><c
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

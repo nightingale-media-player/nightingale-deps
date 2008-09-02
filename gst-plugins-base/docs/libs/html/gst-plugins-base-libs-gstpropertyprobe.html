@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstpropertyprobe</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstnavigation.html" title="gstnavigation">
 <link rel="next" href="gst-plugins-base-libs-gsttuner.html" title="gsttuner">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,95 +36,87 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gsttuner.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2609819" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2610220" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2610167" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2610192" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpropertyprobe.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpropertyprobe.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpropertyprobe.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpropertyprobe.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpropertyprobe"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2609819"></a><span class="refentrytitle">gstpropertyprobe</span>
-</h2>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstpropertyprobe.top_of_page"></a>gstpropertyprobe</span></h2>
 <p>gstpropertyprobe</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.synopsis"></a><h2>Synopsis</h2>
 <a name="GstPropertyProbe"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/propertyprobe.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe-struct">GstPropertyProbe</a>;
-                    <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbeInterface">GstPropertyProbeInterface</a>;
-const GList*        <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-properties">gst_property_probe_get_properties</a>   (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);
-const GParamSpec*   <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-property">gst_property_probe_get_property</a>     (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+                    <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe-struct" title="GstPropertyProbe">GstPropertyProbe</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbeInterface" title="GstPropertyProbeInterface">GstPropertyProbeInterface</a>;
+const GList*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-properties" title="gst_property_probe_get_properties ()">gst_property_probe_get_properties</a>   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);
+const GParamSpec*   <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-property" title="gst_property_probe_get_property ()">gst_property_probe_get_property</a>     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);
-GValueArray*        <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values">gst_property_probe_get_values</a>       (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+GValueArray*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values" title="gst_property_probe_get_values ()">gst_property_probe_get_values</a>       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);
-GValueArray*        <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values-name">gst_property_probe_get_values_name</a>  (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+GValueArray*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values-name" title="gst_property_probe_get_values_name ()">gst_property_probe_get_values_name</a>  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);
-gboolean            <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe">gst_property_probe_needs_probe</a>      (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe" title="gst_property_probe_needs_probe ()">gst_property_probe_needs_probe</a>      (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);
-gboolean            <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe-name">gst_property_probe_needs_probe_name</a> (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe-name" title="gst_property_probe_needs_probe_name ()">gst_property_probe_needs_probe_name</a> (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);
-GValueArray*        <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values">gst_property_probe_probe_and_get_values</a>
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+GValueArray*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values" title="gst_property_probe_probe_and_get_values ()">gst_property_probe_probe_and_get_values</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);
-GValueArray*        <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values-name">gst_property_probe_probe_and_get_values_name</a>
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+GValueArray*        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values-name" title="gst_property_probe_probe_and_get_values_name ()">gst_property_probe_probe_and_get_values_name</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);
-void                <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-property">gst_property_probe_probe_property</a>   (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+void                <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-property" title="gst_property_probe_probe_property ()">gst_property_probe_probe_property</a>   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);
-void                <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-property-name">gst_property_probe_probe_property_name</a>
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+void                <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-property-name" title="gst_property_probe_probe_property_name ()">gst_property_probe_probe_property_name</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610167"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GInterface
    +----GstPropertyProbe
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610192"></a><h2>Signals</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe-probe-needed">probe-needed</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe-probe-needed" title='The "probe-needed" signal'>probe-needed</a>"                                   : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610220"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.description"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610235"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2610245"></a><h3>
-<a name="GstPropertyProbe-struct"></a>GstPropertyProbe</h3>
-<a class="indexterm" name="id2610258"></a><pre class="programlisting">typedef struct _GstPropertyProbe GstPropertyProbe;</pre>
+<a name="GstPropertyProbe-struct"></a><h3>GstPropertyProbe</h3>
+<pre class="programlisting">typedef struct _GstPropertyProbe GstPropertyProbe;</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610274"></a><h3>
-<a name="GstPropertyProbeInterface"></a>GstPropertyProbeInterface</h3>
-<a class="indexterm" name="id2610286"></a><pre class="programlisting">typedef struct {
+<a name="GstPropertyProbeInterface"></a><h3>GstPropertyProbeInterface</h3>
+<pre class="programlisting">typedef struct {
   GTypeInterface klass;
 
   /* signals */
@@ -152,9 +144,8 @@ void                <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-pro
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610316"></a><h3>
-<a name="gst-property-probe-get-properties"></a>gst_property_probe_get_properties ()</h3>
-<a class="indexterm" name="id2610329"></a><pre class="programlisting">const GList*        gst_property_probe_get_properties   (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);</pre>
+<a name="gst-property-probe-get-properties"></a><h3>gst_property_probe_get_properties ()</h3>
+<pre class="programlisting">const GList*        gst_property_probe_get_properties   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe);</pre>
 <p>
 Get a list of properties for which probing is supported.</p>
 <p>
@@ -164,12 +155,12 @@ Get a list of properties for which probing is supported.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> to get the properties for.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> to get the properties for.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the list of properties for which probing is supported
 by this element.
 </td>
@@ -179,9 +170,8 @@ by this element.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610401"></a><h3>
-<a name="gst-property-probe-get-property"></a>gst_property_probe_get_property ()</h3>
-<a class="indexterm" name="id2610414"></a><pre class="programlisting">const GParamSpec*   gst_property_probe_get_property     (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-get-property"></a><h3>gst_property_probe_get_property ()</h3>
+<pre class="programlisting">const GParamSpec*   gst_property_probe_get_property     (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);</pre>
 <p>
 
@@ -190,17 +180,17 @@ by this element.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
 
 
@@ -211,9 +201,8 @@ by this element.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610494"></a><h3>
-<a name="gst-property-probe-get-values"></a>gst_property_probe_get_values ()</h3>
-<a class="indexterm" name="id2610507"></a><pre class="programlisting">GValueArray*        gst_property_probe_get_values       (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-get-values"></a><h3>gst_property_probe_get_values ()</h3>
+<pre class="programlisting">GValueArray*        gst_property_probe_get_values       (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);</pre>
 <p>
 Gets the possible (probed) values for the given property,
@@ -225,17 +214,17 @@ requires the property to have been probed before.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> the <span class="type">GParamSpec</span> property identifier.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A list of valid values for the given property.
 </td>
 </tr>
@@ -244,12 +233,11 @@ requires the property to have been probed before.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610609"></a><h3>
-<a name="gst-property-probe-get-values-name"></a>gst_property_probe_get_values_name ()</h3>
-<a class="indexterm" name="id2610623"></a><pre class="programlisting">GValueArray*        gst_property_probe_get_values_name  (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-get-values-name"></a><h3>gst_property_probe_get_values_name ()</h3>
+<pre class="programlisting">GValueArray*        gst_property_probe_get_values_name  (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);</pre>
 <p>
-Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values"><code class="function">gst_property_probe_get_values()</code></a>.</p>
+Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-get-values" title="gst_property_probe_get_values ()"><code class="function">gst_property_probe_get_values()</code></a>.</p>
 <p>
 
 </p>
@@ -257,17 +245,17 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the name of the property to get values for.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A list of valid values for the given property.
 </td>
 </tr>
@@ -276,9 +264,8 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610726"></a><h3>
-<a name="gst-property-probe-needs-probe"></a>gst_property_probe_needs_probe ()</h3>
-<a class="indexterm" name="id2610740"></a><pre class="programlisting">gboolean            gst_property_probe_needs_probe      (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-needs-probe"></a><h3>gst_property_probe_needs_probe ()</h3>
+<pre class="programlisting">gboolean            gst_property_probe_needs_probe      (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);</pre>
 <p>
 Checks whether a property needs a probe. This might be because
@@ -293,17 +280,17 @@ the new device.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object to which the given property belongs.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object to which the given property belongs.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> a <span class="type">GParamSpec</span> that identifies the property to check.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the property needs a new probe, FALSE if not.
 </td>
 </tr>
@@ -312,12 +299,11 @@ the new device.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610845"></a><h3>
-<a name="gst-property-probe-needs-probe-name"></a>gst_property_probe_needs_probe_name ()</h3>
-<a class="indexterm" name="id2610859"></a><pre class="programlisting">gboolean            gst_property_probe_needs_probe_name (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-needs-probe-name"></a><h3>gst_property_probe_needs_probe_name ()</h3>
+<pre class="programlisting">gboolean            gst_property_probe_needs_probe_name (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);</pre>
 <p>
-Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe"><code class="function">gst_property_probe_needs_probe()</code></a>.</p>
+Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-needs-probe" title="gst_property_probe_needs_probe ()"><code class="function">gst_property_probe_needs_probe()</code></a>.</p>
 <p>
 
 </p>
@@ -325,17 +311,17 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object to which the given property belongs.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object to which the given property belongs.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the name of the property to check.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the property needs a new probe, FALSE if not.
 </td>
 </tr>
@@ -344,10 +330,9 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610962"></a><h3>
-<a name="gst-property-probe-probe-and-get-values"></a>gst_property_probe_probe_and_get_values ()</h3>
-<a class="indexterm" name="id2610976"></a><pre class="programlisting">GValueArray*        gst_property_probe_probe_and_get_values
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-probe-and-get-values"></a><h3>gst_property_probe_probe_and_get_values ()</h3>
+<pre class="programlisting">GValueArray*        gst_property_probe_probe_and_get_values
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);</pre>
 <p>
 Check whether the given property requires a new probe. If so,
@@ -360,17 +345,17 @@ utility function that wraps the above functions.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td> The <span class="type">GParamSpec</span> property identifier.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the list of valid values for this property.
 </td>
 </tr>
@@ -379,13 +364,12 @@ utility function that wraps the above functions.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611079"></a><h3>
-<a name="gst-property-probe-probe-and-get-values-name"></a>gst_property_probe_probe_and_get_values_name ()</h3>
-<a class="indexterm" name="id2611094"></a><pre class="programlisting">GValueArray*        gst_property_probe_probe_and_get_values_name
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-probe-and-get-values-name"></a><h3>gst_property_probe_probe_and_get_values_name ()</h3>
+<pre class="programlisting">GValueArray*        gst_property_probe_probe_and_get_values_name
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);</pre>
 <p>
-Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values"><code class="function">gst_property_probe_probe_and_get_values()</code></a>.</p>
+Same as <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-probe-and-get-values" title="gst_property_probe_probe_and_get_values ()"><code class="function">gst_property_probe_probe_and_get_values()</code></a>.</p>
 <p>
 
 </p>
@@ -393,17 +377,17 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> object.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the name of the property to get values for.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the list of valid values for this property.
 </td>
 </tr>
@@ -412,9 +396,8 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611199"></a><h3>
-<a name="gst-property-probe-probe-property"></a>gst_property_probe_probe_property ()</h3>
-<a class="indexterm" name="id2611214"></a><pre class="programlisting">void                gst_property_probe_probe_property   (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-probe-property"></a><h3>gst_property_probe_probe_property ()</h3>
+<pre class="programlisting">void                gst_property_probe_probe_property   (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const GParamSpec *pspec);</pre>
 <p>
 
@@ -423,12 +406,12 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pspec</code></em> :</span></p></td>
 <td>
 
 
@@ -439,10 +422,9 @@ Same as <a href="gst-plugins-base-libs-gstpropertyprobe.html#gst-property-probe-
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611281"></a><h3>
-<a name="gst-property-probe-probe-property-name"></a>gst_property_probe_probe_property_name ()</h3>
-<a class="indexterm" name="id2611295"></a><pre class="programlisting">void                gst_property_probe_probe_property_name
-                                                        (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
+<a name="gst-property-probe-probe-property-name"></a><h3>gst_property_probe_probe_property_name ()</h3>
+<pre class="programlisting">void                gst_property_probe_probe_property_name
+                                                        (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *probe,
                                                          const gchar *name);</pre>
 <p>
 Runs a probe on the given property.</p>
@@ -453,12 +435,12 @@ Runs a probe on the given property.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>probe</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> to check.
+<td><p><span class="term"><em class="parameter"><code>probe</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe"><span class="type">GstPropertyProbe</span></a> to check.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> name of the property to return.
 </td>
 </tr>
@@ -467,11 +449,10 @@ Runs a probe on the given property.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2611379"></a><h2>Signal Details</h2>
+<a name="gst-plugins-base-libs-gstpropertyprobe.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2611390"></a><h3>
-<a name="GstPropertyProbe-probe-needed"></a>The "probe-needed" signal</h3>
-<a class="indexterm" name="id2611400"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *gstpropertyprobe,
+<a name="GstPropertyProbe-probe-needed"></a><h3>The <code class="literal">"probe-needed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a> *gstpropertyprobe,
                                                         gpointer          arg1,
                                                         gpointer          user_data)             : Run Last</pre>
 <p>
@@ -481,18 +462,18 @@ Runs a probe on the given property.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstpropertyprobe</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstpropertyprobe</code></em> :</span></p></td>
 <td>the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -500,5 +481,8 @@ Runs a probe on the given property.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

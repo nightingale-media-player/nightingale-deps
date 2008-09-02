@@ -221,14 +221,15 @@ gst_cdda_base_src_class_init (GstCddaBaseSrcClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DEVICE,
       g_param_spec_string ("device", "Device", "CD device location",
-          NULL, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MODE,
       g_param_spec_enum ("mode", "Mode", "Mode", GST_TYPE_CDDA_BASE_SRC_MODE,
-          GST_CDDA_BASE_SRC_MODE_NORMAL, G_PARAM_READWRITE));
+          GST_CDDA_BASE_SRC_MODE_NORMAL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TRACK,
       g_param_spec_uint ("track", "Track", "Track", 1, 99, 1,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 #if 0
   /* Do we really need this toc adjustment stuff as properties? does the user
@@ -239,12 +240,13 @@ gst_cdda_base_src_class_init (GstCddaBaseSrcClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TOC_OFFSET,
       g_param_spec_int ("toc-offset", "Table of contents offset",
           "Add <n> sectors to the values reported", G_MININT, G_MAXINT, 0,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TOC_BIAS,
       g_param_spec_boolean ("toc-bias", "Table of contents bias",
           "Assume that the beginning offset of track 1 as reported in the TOC "
           "will be addressed as LBA 0.  Necessary for some Toshiba drives to "
-          "get track boundaries", FALSE, G_PARAM_READWRITE));
+          "get track boundaries", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 #endif
 
   element_class->set_index = GST_DEBUG_FUNCPTR (gst_cdda_base_src_set_index);
@@ -1025,7 +1027,7 @@ gst_cdda_base_src_add_track (GstCddaBaseSrc * src, GstCddaBaseSrcTrack * track)
   if (src->num_tracks > 0) {
     guint end_of_previous_track = src->tracks[src->num_tracks - 1].end;
 
-    if (track->start < end_of_previous_track) {
+    if (track->start <= end_of_previous_track) {
       GST_WARNING ("track %2u overlaps with previous tracks", track->num);
       return FALSE;
     }
@@ -1082,7 +1084,6 @@ cddb_sum (gint n)
   return ret;
 }
 
-#include "base64.h"
 #include "sha1.h"
 
 static void
@@ -1090,7 +1091,8 @@ gst_cddabasesrc_calculate_musicbrainz_discid (GstCddaBaseSrc * src)
 {
   GString *s;
   SHA_INFO sha;
-  guchar digest[20], *ptr;
+  guchar digest[20];
+  gchar *ptr;
   gchar tmp[9];
   gulong i;
   guint leadout_sector;
@@ -1127,12 +1129,25 @@ gst_cddabasesrc_calculate_musicbrainz_discid (GstCddaBaseSrc * src)
   sha_final (digest, &sha);
 
   /* re-encode to base64 */
-  ptr = rfc822_binary (digest, 20, &i);
+  ptr = g_base64_encode (digest, 20);
+  i = strlen (ptr);
 
   g_assert (i < sizeof (src->mb_discid) + 1);
   memcpy (src->mb_discid, ptr, i);
   src->mb_discid[i] = '\0';
   free (ptr);
+
+  /* Replace '/', '+' and '=' by '_', '.' and '-' as specified on
+   * http://musicbrainz.org/doc/DiscIDCalculation
+   */
+  for (ptr = src->mb_discid; *ptr != '\0'; ptr++) {
+    if (*ptr == '/')
+      *ptr = '_';
+    else if (*ptr == '+')
+      *ptr = '.';
+    else if (*ptr == '=')
+      *ptr = '-';
+  }
 
   GST_DEBUG_OBJECT (src, "musicbrainz-discid      = %s", src->mb_discid);
   GST_DEBUG_OBJECT (src, "musicbrainz-discid-full = %s", s->str);
@@ -1502,10 +1517,10 @@ gst_cdda_base_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
 
   switch (src->mode) {
     case GST_CDDA_BASE_SRC_MODE_NORMAL:
-      eos = (src->cur_sector >= src->tracks[src->cur_track].end);
+      eos = (src->cur_sector > src->tracks[src->cur_track].end);
       break;
     case GST_CDDA_BASE_SRC_MODE_CONTINUOUS:
-      eos = (src->cur_sector >= src->tracks[src->num_tracks - 1].end);
+      eos = (src->cur_sector > src->tracks[src->num_tracks - 1].end);
       src->cur_track = gst_cdda_base_src_get_track_from_sector (src,
           src->cur_sector);
       break;

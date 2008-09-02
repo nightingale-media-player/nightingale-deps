@@ -25,12 +25,10 @@
 
 #include <gst/check/gstcheck.h>
 
-gboolean have_eos = FALSE;
-
 /* For ease of programming we use globals to keep refs for our floating
  * src and sink pads we create; otherwise we always have to do get_pad,
  * get_peer, and then remove references in every test function */
-GstPad *mysrcpad, *mysinkpad;
+static GstPad *mysrcpad, *mysinkpad;
 
 
 #define RESAMPLE_CAPS_TEMPLATE_STRING   \
@@ -53,7 +51,7 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (RESAMPLE_CAPS_TEMPLATE_STRING)
     );
 
-GstElement *
+static GstElement *
 setup_audioresample (int channels, int inrate, int outrate)
 {
   GstElement *audioresample;
@@ -100,7 +98,7 @@ setup_audioresample (int channels, int inrate, int outrate)
   return audioresample;
 }
 
-void
+static void
 cleanup_audioresample (GstElement * audioresample)
 {
   GST_DEBUG ("cleanup_audioresample");
@@ -116,7 +114,7 @@ cleanup_audioresample (GstElement * audioresample)
 }
 
 static void
-fail_unless_perfect_stream ()
+fail_unless_perfect_stream (void)
 {
   guint64 timestamp = 0L, duration = 0L;
   guint64 offset = 0L, offset_end = 0L;
@@ -416,6 +414,128 @@ GST_START_TEST (test_shutdown)
   gst_object_unref (pipeline);
 }
 
+GST_END_TEST;
+
+static GstFlowReturn
+live_switch_alloc_only_48000 (GstPad * pad, guint64 offset,
+    guint size, GstCaps * caps, GstBuffer ** buf)
+{
+  GstStructure *structure;
+  gint rate;
+  gint channels;
+  GstCaps *desired;
+
+  structure = gst_caps_get_structure (caps, 0);
+  fail_unless (gst_structure_get_int (structure, "rate", &rate));
+  fail_unless (gst_structure_get_int (structure, "channels", &channels));
+
+  if (rate < 48000)
+    return GST_FLOW_NOT_NEGOTIATED;
+
+  desired = gst_caps_copy (caps);
+  gst_caps_set_simple (desired, "rate", G_TYPE_INT, 48000, NULL);
+
+  *buf = gst_buffer_new_and_alloc (channels * 48000);
+  gst_buffer_set_caps (*buf, desired);
+  gst_caps_unref (desired);
+
+  return GST_FLOW_OK;
+}
+
+static GstCaps *
+live_switch_get_sink_caps (GstPad * pad)
+{
+  GstCaps *result;
+
+  result = gst_caps_copy (GST_PAD_CAPS (pad));
+
+  gst_caps_set_simple (result,
+      "rate", GST_TYPE_INT_RANGE, 48000, G_MAXINT, NULL);
+
+  return result;
+}
+
+static void
+live_switch_push (int rate, GstCaps * caps)
+{
+  GstBuffer *inbuffer;
+  GstCaps *desired;
+  GList *l;
+
+  desired = gst_caps_copy (caps);
+  gst_caps_set_simple (desired, "rate", G_TYPE_INT, rate, NULL);
+
+  fail_unless (gst_pad_alloc_buffer_and_set_caps (mysrcpad,
+          GST_BUFFER_OFFSET_NONE, rate * 4, desired, &inbuffer) == GST_FLOW_OK);
+
+  /* When the basetransform hits the non-configured case it always
+   * returns a buffer with exactly the same caps as we requested so the actual
+   * renegotiation (if needed) will be done in the _chain*/
+  fail_unless (inbuffer != NULL);
+  fail_unless (gst_caps_is_equal (desired, GST_BUFFER_CAPS (inbuffer)));
+
+  memset (GST_BUFFER_DATA (inbuffer), 0, GST_BUFFER_SIZE (inbuffer));
+  GST_BUFFER_DURATION (inbuffer) = GST_SECOND;
+  GST_BUFFER_TIMESTAMP (inbuffer) = 0;
+  GST_BUFFER_OFFSET (inbuffer) = 0;
+
+  /* pushing gives away my reference ... */
+  fail_unless (gst_pad_push (mysrcpad, inbuffer) == GST_FLOW_OK);
+
+  /* ... but it ends up being collected on the global buffer list */
+  fail_unless_equals_int (g_list_length (buffers), 1);
+
+  for (l = buffers; l; l = l->next) {
+    GstBuffer *buffer = GST_BUFFER (l->data);
+
+    gst_buffer_unref (buffer);
+  }
+
+  g_list_free (buffers);
+  buffers = NULL;
+
+  gst_caps_unref (desired);
+}
+
+GST_START_TEST (test_live_switch)
+{
+  GstElement *audioresample;
+  GstEvent *newseg;
+  GstCaps *caps;
+
+  audioresample = setup_audioresample (4, 48000, 48000);
+
+  /* Let the sinkpad act like something that can only handle things of
+   * rate 48000- and can only allocate buffers for that rate, but if someone
+   * tries to get a buffer with a rate higher then 48000 tries to renegotiate
+   * */
+  gst_pad_set_bufferalloc_function (mysinkpad, live_switch_alloc_only_48000);
+  gst_pad_set_getcaps_function (mysinkpad, live_switch_get_sink_caps);
+
+  caps = gst_pad_get_negotiated_caps (mysrcpad);
+  fail_unless (gst_caps_is_fixed (caps));
+
+  fail_unless (gst_element_set_state (audioresample,
+          GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
+      "could not set to playing");
+
+  newseg = gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0);
+  fail_unless (gst_pad_push_event (mysrcpad, newseg) != FALSE);
+
+  /* downstream can provide the requested rate, a buffer alloc will be passed
+   * on */
+  live_switch_push (48000, caps);
+
+  /* Downstream can never accept this rate, buffer alloc isn't passed on */
+  live_switch_push (40000, caps);
+
+  /* Downstream can provide the requested rate but will re-negotiate */
+  live_switch_push (50000, caps);
+
+  cleanup_audioresample (audioresample);
+  gst_caps_unref (caps);
+}
+
 GST_END_TEST static Suite *
 audioresample_suite (void)
 {
@@ -427,6 +547,7 @@ audioresample_suite (void)
   tcase_add_test (tc_chain, test_discont_stream);
   tcase_add_test (tc_chain, test_reuse);
   tcase_add_test (tc_chain, test_shutdown);
+  tcase_add_test (tc_chain, test_live_switch);
 
   return s;
 }

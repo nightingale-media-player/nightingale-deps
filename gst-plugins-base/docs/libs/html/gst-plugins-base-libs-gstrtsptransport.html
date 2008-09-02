@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtsptransport</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtsprange.html" title="gstrtsprange">
 <link rel="next" href="gst-plugins-base-libs-gstrtspurl.html" title="gstrtspurl">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,51 +36,48 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtspurl.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2704955" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2705202" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtsptransport.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtsptransport.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtsptransport"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2704955"></a><span class="refentrytitle">gstrtsptransport</span>
-</h2>
-<p>gstrtsptransport &#8212; dealing with RTSP transports</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtsptransport.top_of_page"></a>gstrtsptransport</span></h2>
+<p>gstrtsptransport — dealing with RTSP transports</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstrtsptransport.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/rtsp/gstrtsptransport.h&gt;
 
-
-enum                <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode">GstRTSPTransMode</a>;
-enum                <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPProfile">GstRTSPProfile</a>;
-enum                <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans">GstRTSPLowerTrans</a>;
-                    <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a>;
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-new">gst_rtsp_transport_new</a>              (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> **transport);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-init">gst_rtsp_transport_init</a>             (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-parse">gst_rtsp_transport_parse</a>            (const gchar *str,
-                                                         <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);
-gchar*              <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-as-text">gst_rtsp_transport_as_text</a>          (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-get-mime">gst_rtsp_transport_get_mime</a>         (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode">GstRTSPTransMode</a> trans,
+enum                <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPProfile" title="enum GstRTSPProfile">GstRTSPProfile</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans" title="enum GstRTSPLowerTrans">GstRTSPLowerTrans</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a>;
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-new" title="gst_rtsp_transport_new ()">gst_rtsp_transport_new</a>              (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> **transport);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-init" title="gst_rtsp_transport_init ()">gst_rtsp_transport_init</a>             (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-parse" title="gst_rtsp_transport_parse ()">gst_rtsp_transport_parse</a>            (const gchar *str,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);
+gchar*              <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-as-text" title="gst_rtsp_transport_as_text ()">gst_rtsp_transport_as_text</a>          (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-get-mime" title="gst_rtsp_transport_get_mime ()">gst_rtsp_transport_get_mime</a>         (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a> trans,
                                                          const gchar **mime);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-get-manager">gst_rtsp_transport_get_manager</a>      (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode">GstRTSPTransMode</a> trans,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-get-manager" title="gst_rtsp_transport_get_manager ()">gst_rtsp_transport_get_manager</a>      (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a> trans,
                                                          const gchar **manager,
                                                          guint option);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-free">gst_rtsp_transport_free</a>             (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-free" title="gst_rtsp_transport_free ()">gst_rtsp_transport_free</a>             (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2705202"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstrtsptransport.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2705214"></a><p>
+<a name="id2734815"></a><p>
 Provides helper functions to deal with RTSP transport strings.
 </p>
 </div>
@@ -92,11 +89,10 @@ Last reviewed on 2007-07-25 (0.10.14)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2705227"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtsptransport.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2705238"></a><h3>
-<a name="GstRTSPTransMode"></a>enum GstRTSPTransMode</h3>
-<a class="indexterm" name="id2705251"></a><pre class="programlisting">typedef enum {
+<a name="GstRTSPTransMode"></a><h3>enum GstRTSPTransMode</h3>
+<pre class="programlisting">typedef enum {
   GST_RTSP_TRANS_UNKNOWN =  0,
   GST_RTSP_TRANS_RTP     = (1 &lt;&lt; 0),
   GST_RTSP_TRANS_RDT     = (1 &lt;&lt; 1)
@@ -111,17 +107,17 @@ The transfer mode to use.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TRANS-UNKNOWN:CAPS"></a><code class="literal">GST_RTSP_TRANS_UNKNOWN</code></span></td>
+<td><p><a name="GST-RTSP-TRANS-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_UNKNOWN</code></span></p></td>
 <td> invalid tansport mode
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TRANS-RTP:CAPS"></a><code class="literal">GST_RTSP_TRANS_RTP</code></span></td>
+<td><p><a name="GST-RTSP-TRANS-RTP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RTP</code></span></p></td>
 <td> transfer RTP data
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TRANS-RDT:CAPS"></a><code class="literal">GST_RTSP_TRANS_RDT</code></span></td>
+<td><p><a name="GST-RTSP-TRANS-RDT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TRANS_RDT</code></span></p></td>
 <td> transfer RDT (RealMedia) data
 </td>
 </tr>
@@ -130,9 +126,8 @@ The transfer mode to use.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705345"></a><h3>
-<a name="GstRTSPProfile"></a>enum GstRTSPProfile</h3>
-<a class="indexterm" name="id2705358"></a><pre class="programlisting">typedef enum {
+<a name="GstRTSPProfile"></a><h3>enum GstRTSPProfile</h3>
+<pre class="programlisting">typedef enum {
   GST_RTSP_PROFILE_UNKNOWN =  0,
   GST_RTSP_PROFILE_AVP     = (1 &lt;&lt; 0),
   GST_RTSP_PROFILE_SAVP    = (1 &lt;&lt; 1)
@@ -147,17 +142,17 @@ The transfer profile to use.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-PROFILE-UNKNOWN:CAPS"></a><code class="literal">GST_RTSP_PROFILE_UNKNOWN</code></span></td>
+<td><p><a name="GST-RTSP-PROFILE-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_UNKNOWN</code></span></p></td>
 <td> invalid profile
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-PROFILE-AVP:CAPS"></a><code class="literal">GST_RTSP_PROFILE_AVP</code></span></td>
+<td><p><a name="GST-RTSP-PROFILE-AVP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_AVP</code></span></p></td>
 <td> the Audio/Visual profile
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-PROFILE-SAVP:CAPS"></a><code class="literal">GST_RTSP_PROFILE_SAVP</code></span></td>
+<td><p><a name="GST-RTSP-PROFILE-SAVP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_PROFILE_SAVP</code></span></p></td>
 <td> the secure Audio/Visual profile
 </td>
 </tr>
@@ -166,9 +161,8 @@ The transfer profile to use.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705452"></a><h3>
-<a name="GstRTSPLowerTrans"></a>enum GstRTSPLowerTrans</h3>
-<a class="indexterm" name="id2705466"></a><pre class="programlisting">typedef enum {
+<a name="GstRTSPLowerTrans"></a><h3>enum GstRTSPLowerTrans</h3>
+<pre class="programlisting">typedef enum {
   GST_RTSP_LOWER_TRANS_UNKNOWN   = 0,
   GST_RTSP_LOWER_TRANS_UDP       = (1 &lt;&lt; 0),
   GST_RTSP_LOWER_TRANS_UDP_MCAST = (1 &lt;&lt; 1),
@@ -184,22 +178,22 @@ The different transport methods.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-LOWER-TRANS-UNKNOWN:CAPS"></a><code class="literal">GST_RTSP_LOWER_TRANS_UNKNOWN</code></span></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UNKNOWN:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UNKNOWN</code></span></p></td>
 <td> invalid transport flag
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-LOWER-TRANS-UDP:CAPS"></a><code class="literal">GST_RTSP_LOWER_TRANS_UDP</code></span></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UDP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP</code></span></p></td>
 <td> stream data over UDP
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-LOWER-TRANS-UDP-MCAST:CAPS"></a><code class="literal">GST_RTSP_LOWER_TRANS_UDP_MCAST</code></span></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-UDP-MCAST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_UDP_MCAST</code></span></p></td>
 <td> stream data over UDP multicast
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-LOWER-TRANS-TCP:CAPS"></a><code class="literal">GST_RTSP_LOWER_TRANS_TCP</code></span></td>
+<td><p><a name="GST-RTSP-LOWER-TRANS-TCP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_LOWER_TRANS_TCP</code></span></p></td>
 <td> stream data over TCP
 </td>
 </tr>
@@ -208,9 +202,29 @@ The different transport methods.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705589"></a><h3>
-<a name="GstRTSPTransport"></a>GstRTSPTransport</h3>
-<a class="indexterm" name="id2705602"></a><pre class="programlisting">typedef struct {
+<a name="GstRTSPTransport"></a><h3>GstRTSPTransport</h3>
+<pre class="programlisting">typedef struct {
+  GstRTSPTransMode  trans;
+  GstRTSPProfile    profile;
+  GstRTSPLowerTrans lower_transport;
+
+  gchar         *destination;
+  gchar         *source;
+  guint          layers;
+  gboolean       mode_play;
+  gboolean       mode_record;
+  gboolean       append;
+  GstRTSPRange   interleaved;
+
+  /* multicast specific */
+  guint  ttl;
+
+  /* UDP specific */
+  GstRTSPRange   port;
+  GstRTSPRange   client_port;
+  GstRTSPRange   server_port;
+  /* RTP specific */
+  guint          ssrc;
 } GstRTSPTransport;
 </pre>
 <p>
@@ -221,11 +235,10 @@ A structure holding the RTSP transport values.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705622"></a><h3>
-<a name="gst-rtsp-transport-new"></a>gst_rtsp_transport_new ()</h3>
-<a class="indexterm" name="id2705634"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_new              (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> **transport);</pre>
+<a name="gst-rtsp-transport-new"></a><h3>gst_rtsp_transport_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_new              (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> **transport);</pre>
 <p>
-Allocate a new initialized <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>. Use <a href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-free"><code class="function">gst_rtsp_transport_free()</code></a>
+Allocate a new initialized <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>. Use <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-free" title="gst_rtsp_transport_free ()"><code class="function">gst_rtsp_transport_free()</code></a>
 after usage.</p>
 <p>
 
@@ -234,13 +247,13 @@ after usage.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>transport</code></em>&#160;:</span></td>
-<td> location to hold the new <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
+<td><p><span class="term"><em class="parameter"><code>transport</code></em> :</span></p></td>
+<td> location to hold the new <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>. 
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -248,9 +261,8 @@ after usage.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705732"></a><h3>
-<a name="gst-rtsp-transport-init"></a>gst_rtsp_transport_init ()</h3>
-<a class="indexterm" name="id2705745"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_init             (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
+<a name="gst-rtsp-transport-init"></a><h3>gst_rtsp_transport_init ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_init             (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
 <p>
 Initialize <em class="parameter"><code>transport</code></em> so that it can be used.</p>
 <p>
@@ -260,13 +272,13 @@ Initialize <em class="parameter"><code>transport</code></em> so that it can be u
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>transport</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
+<td><p><span class="term"><em class="parameter"><code>transport</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -274,10 +286,9 @@ Initialize <em class="parameter"><code>transport</code></em> so that it can be u
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705829"></a><h3>
-<a name="gst-rtsp-transport-parse"></a>gst_rtsp_transport_parse ()</h3>
-<a class="indexterm" name="id2705842"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_parse            (const gchar *str,
-                                                         <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
+<a name="gst-rtsp-transport-parse"></a><h3>gst_rtsp_transport_parse ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_parse            (const gchar *str,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
 <p>
 Parse the RTSP transport string <em class="parameter"><code>str</code></em> into <em class="parameter"><code>transport</code></em>.</p>
 <p>
@@ -287,18 +298,18 @@ Parse the RTSP transport string <em class="parameter"><code>str</code></em> into
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>str</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>str</code></em> :</span></p></td>
 <td> a transport string
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>transport</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
+<td><p><span class="term"><em class="parameter"><code>transport</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -306,9 +317,8 @@ Parse the RTSP transport string <em class="parameter"><code>str</code></em> into
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2705952"></a><h3>
-<a name="gst-rtsp-transport-as-text"></a>gst_rtsp_transport_as_text ()</h3>
-<a class="indexterm" name="id2705966"></a><pre class="programlisting">gchar*              gst_rtsp_transport_as_text          (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
+<a name="gst-rtsp-transport-as-text"></a><h3>gst_rtsp_transport_as_text ()</h3>
+<pre class="programlisting">gchar*              gst_rtsp_transport_as_text          (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
 <p>
 Convert <em class="parameter"><code>transport</code></em> into a string that can be used to signal the transport in
 an RTSP SETUP response.</p>
@@ -319,12 +329,12 @@ an RTSP SETUP response.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>transport</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
+<td><p><span class="term"><em class="parameter"><code>transport</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a string describing the RTSP transport or <span class="type">NULL</span> when the transport
 is invalid.
 </td>
@@ -334,9 +344,8 @@ is invalid.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2706050"></a><h3>
-<a name="gst-rtsp-transport-get-mime"></a>gst_rtsp_transport_get_mime ()</h3>
-<a class="indexterm" name="id2706063"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_get_mime         (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode">GstRTSPTransMode</a> trans,
+<a name="gst-rtsp-transport-get-mime"></a><h3>gst_rtsp_transport_get_mime ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_get_mime         (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a> trans,
                                                          const gchar **mime);</pre>
 <p>
 Get the mime type of the transport mode <em class="parameter"><code>trans</code></em>. This mime type is typically
@@ -348,18 +357,18 @@ used to generate <span class="type">GstCaps</span> on buffers.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode"><span class="type">GstRTSPTransMode</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode"><span class="type">GstRTSPTransMode</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mime</code></em> :</span></p></td>
 <td> location to hold the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -367,9 +376,8 @@ used to generate <span class="type">GstCaps</span> on buffers.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2706177"></a><h3>
-<a name="gst-rtsp-transport-get-manager"></a>gst_rtsp_transport_get_manager ()</h3>
-<a class="indexterm" name="id2706191"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_get_manager      (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode">GstRTSPTransMode</a> trans,
+<a name="gst-rtsp-transport-get-manager"></a><h3>gst_rtsp_transport_get_manager ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_get_manager      (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode">GstRTSPTransMode</a> trans,
                                                          const gchar **manager,
                                                          guint option);</pre>
 <p>
@@ -390,23 +398,23 @@ needed/available for <em class="parameter"><code>trans</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>trans</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode"><span class="type">GstRTSPTransMode</span></a>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransMode" title="enum GstRTSPTransMode"><span class="type">GstRTSPTransMode</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>manager</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>manager</code></em> :</span></p></td>
 <td> location to hold the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>option</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>option</code></em> :</span></p></td>
 <td> option index.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>. 
 </td>
 </tr>
 </tbody>
@@ -414,9 +422,8 @@ needed/available for <em class="parameter"><code>trans</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2706362"></a><h3>
-<a name="gst-rtsp-transport-free"></a>gst_rtsp_transport_free ()</h3>
-<a class="indexterm" name="id2706375"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_free             (<a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
+<a name="gst-rtsp-transport-free"></a><h3>gst_rtsp_transport_free ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_transport_free             (<a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport">GstRTSPTransport</a> *transport);</pre>
 <p>
 Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 <p>
@@ -426,13 +433,13 @@ Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>transport</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
+<td><p><span class="term"><em class="parameter"><code>transport</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsptransport.html#GstRTSPTransport" title="GstRTSPTransport"><span class="type">GstRTSPTransport</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -440,5 +447,8 @@ Free the memory used by <em class="parameter"><code>transport</code></em>.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

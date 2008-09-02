@@ -23,6 +23,16 @@ gstbaseaudiosrc
 </para>
 
 
+<!-- ##### ARG GstBaseAudioSrc:actual-buffer-time ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseAudioSrc:actual-latency-time ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG GstBaseAudioSrc:buffer-time ##### -->
 <para>
 
@@ -34,6 +44,11 @@ gstbaseaudiosrc
 </para>
 
 <!-- ##### ARG GstBaseAudioSrc:provide-clock ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstBaseAudioSrc:slave-method ##### -->
 <para>
 
 </para>

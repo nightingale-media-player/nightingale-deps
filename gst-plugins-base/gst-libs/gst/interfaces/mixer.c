@@ -497,6 +497,82 @@ gst_mixer_option_changed (GstMixer * mixer,
   }
 }
 
+/**
+ * gst_mixer_options_list_changed:
+ * @mixer: the #GstMixer (a #GstElement) that owns the options 
+ * @opts: the GstMixerOptions whose list of values has changed
+ *
+ * This function is called by the mixer implementation to produce
+ * a notification message on the bus indicating that the list of possible
+ * options of a given options object has changed.
+ *
+ * The new options are not contained in the message on purpose. Applications
+ * should call gst_mixer_option_get_values() on @opts to make @opts update
+ * its internal state and obtain the new list of values.
+ *
+ * This function only works for GstElements that are implementing the
+ * GstMixer interface, and the element needs to have been provided a bus
+ * for this to work.
+ *
+ * Since: 0.10.18
+ */
+void
+gst_mixer_options_list_changed (GstMixer * mixer, GstMixerOptions * opts)
+{
+  GstStructure *s;
+  GstMessage *m;
+
+  g_return_if_fail (mixer != NULL);
+  g_return_if_fail (GST_IS_ELEMENT (mixer));
+  g_return_if_fail (opts != NULL);
+  g_return_if_fail (GST_IS_MIXER_OPTIONS (opts));
+
+  /* we do not include the new list here on purpose, so that the application
+   * has to use gst_mixer_options_get_values() to get the new list, which then
+   * allows the mixer options object to update the internal GList in a somewhat
+   * thread-safe way at least */
+  s = gst_structure_new (GST_MIXER_MESSAGE_NAME,
+      "type", G_TYPE_STRING, "options-list-changed",
+      "options", GST_TYPE_MIXER_OPTIONS, opts, NULL);
+
+  m = gst_message_new_element (GST_OBJECT (mixer), s);
+  if (gst_element_post_message (GST_ELEMENT (mixer), m) == FALSE) {
+    GST_WARNING ("This element has no bus, therefore no message sent!");
+  }
+}
+
+/**
+ * gst_mixer_mixer_changed:
+ * @mixer: the #GstMixer (a #GstElement) which has changed
+ *
+ * This function is called by the mixer implementation to produce
+ * a notification message on the bus indicating that the list of available
+ * mixer tracks for a given mixer object has changed. Applications should
+ * rebuild their interface when they receive this message.
+ *
+ * This function only works for GstElements that are implementing the
+ * GstMixer interface, and the element needs to have been provided a bus.
+ *
+ * Since: 0.10.18
+ */
+void
+gst_mixer_mixer_changed (GstMixer * mixer)
+{
+  GstStructure *s;
+  GstMessage *m;
+
+  g_return_if_fail (mixer != NULL);
+  g_return_if_fail (GST_IS_ELEMENT (mixer));
+
+  s = gst_structure_new (GST_MIXER_MESSAGE_NAME,
+      "type", G_TYPE_STRING, "mixer-changed", NULL);
+
+  m = gst_message_new_element (GST_OBJECT (mixer), s);
+  if (gst_element_post_message (GST_ELEMENT (mixer), m) == FALSE) {
+    GST_WARNING ("This element has no bus, therefore no message sent!");
+  }
+}
+
 static gboolean
 gst_mixer_message_is_mixer_message (GstMessage * message)
 {
@@ -545,9 +621,16 @@ gst_mixer_message_get_type (GstMessage * message)
     return GST_MIXER_MESSAGE_VOLUME_CHANGED;
   else if (g_str_equal (m_type, "option-changed"))
     return GST_MIXER_MESSAGE_OPTION_CHANGED;
+  else if (g_str_equal (m_type, "options-list-changed"))
+    return GST_MIXER_MESSAGE_OPTIONS_LIST_CHANGED;
+  else if (g_str_equal (m_type, "mixer-changed"))
+    return GST_MIXER_MESSAGE_MIXER_CHANGED;
 
   return GST_MIXER_MESSAGE_INVALID;
 }
+
+#define GST_MIXER_MESSAGE_HAS_TYPE(msg,msg_type) \
+(gst_mixer_message_get_type (msg) == GST_MIXER_MESSAGE_ ## msg_type)
 
 /**
  * gst_mixer_message_parse_mute_toggled:
@@ -568,13 +651,11 @@ gst_mixer_message_parse_mute_toggled (GstMessage * message,
     GstMixerTrack ** track, gboolean * mute)
 {
   const GstStructure *s;
-  const gchar *m_type;
 
   g_return_if_fail (gst_mixer_message_is_mixer_message (message));
-  s = gst_message_get_structure (message);
+  g_return_if_fail (GST_MIXER_MESSAGE_HAS_TYPE (message, MUTE_TOGGLED));
 
-  m_type = gst_structure_get_string (s, "type");
-  g_return_if_fail (m_type == NULL || g_str_equal (m_type, "mute-toggled"));
+  s = gst_message_get_structure (message);
 
   if (track) {
     const GValue *v = gst_structure_get_value (s, "track");
@@ -607,13 +688,11 @@ gst_mixer_message_parse_record_toggled (GstMessage * message,
     GstMixerTrack ** track, gboolean * record)
 {
   const GstStructure *s;
-  const gchar *m_type;
 
   g_return_if_fail (gst_mixer_message_is_mixer_message (message));
-  s = gst_message_get_structure (message);
+  g_return_if_fail (GST_MIXER_MESSAGE_HAS_TYPE (message, RECORD_TOGGLED));
 
-  m_type = gst_structure_get_string (s, "type");
-  g_return_if_fail (m_type == NULL || g_str_equal (m_type, "record-toggled"));
+  s = gst_message_get_structure (message);
 
   if (track) {
     const GValue *v = gst_structure_get_value (s, "track");
@@ -649,13 +728,11 @@ gst_mixer_message_parse_volume_changed (GstMessage * message,
     GstMixerTrack ** track, gint ** volumes, gint * num_channels)
 {
   const GstStructure *s;
-  const gchar *m_type;
 
   g_return_if_fail (gst_mixer_message_is_mixer_message (message));
-  s = gst_message_get_structure (message);
+  g_return_if_fail (GST_MIXER_MESSAGE_HAS_TYPE (message, VOLUME_CHANGED));
 
-  m_type = gst_structure_get_string (s, "type");
-  g_return_if_fail (m_type == NULL || g_str_equal (m_type, "volume-changed"));
+  s = gst_message_get_structure (message);
 
   if (track) {
     const GValue *v = gst_structure_get_value (s, "track");
@@ -706,13 +783,11 @@ gst_mixer_message_parse_option_changed (GstMessage * message,
     GstMixerOptions ** options, const gchar ** value)
 {
   const GstStructure *s;
-  const gchar *m_type;
 
   g_return_if_fail (gst_mixer_message_is_mixer_message (message));
-  s = gst_message_get_structure (message);
+  g_return_if_fail (GST_MIXER_MESSAGE_HAS_TYPE (message, OPTION_CHANGED));
 
-  m_type = gst_structure_get_string (s, "type");
-  g_return_if_fail (m_type == NULL || g_str_equal (m_type, "option-changed"));
+  s = gst_message_get_structure (message);
 
   if (options) {
     const GValue *v = gst_structure_get_value (s, "options");
@@ -724,4 +799,37 @@ gst_mixer_message_parse_option_changed (GstMessage * message,
 
   if (value)
     *value = gst_structure_get_string (s, "value");
+}
+
+/**
+ * gst_mixer_message_parse_options_list_changed:
+ * @message: A volume-changed change notification message.
+ * @options: Pointer to hold a GstMixerOptions object, or NULL.
+ *
+ * Extracts the GstMixerOptions whose value list has changed from an
+ * options-list-changed bus notification message.
+ *
+ * The options object returned remains valid until the message is freed. You
+ * do not need to unref it.
+ *
+ * Since: 0.10.18
+ */
+void
+gst_mixer_message_parse_options_list_changed (GstMessage * message,
+    GstMixerOptions ** options)
+{
+  const GstStructure *s;
+
+  g_return_if_fail (gst_mixer_message_is_mixer_message (message));
+  g_return_if_fail (GST_MIXER_MESSAGE_HAS_TYPE (message, OPTIONS_LIST_CHANGED));
+
+  s = gst_message_get_structure (message);
+
+  if (options) {
+    const GValue *v = gst_structure_get_value (s, "options");
+
+    g_return_if_fail (v != NULL);
+    *options = (GstMixerOptions *) g_value_get_object (v);
+    g_return_if_fail (GST_IS_MIXER_OPTIONS (*options));
+  }
 }

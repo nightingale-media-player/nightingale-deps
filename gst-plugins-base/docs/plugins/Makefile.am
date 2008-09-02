@@ -79,29 +79,38 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/alsa/gstalsasink.h \
 	$(top_srcdir)/ext/alsa/gstalsasrc.h \
 	$(top_srcdir)/ext/cdparanoia/gstcdparanoiasrc.h \
+	$(top_srcdir)/ext/gio/gstgiosink.h \
+	$(top_srcdir)/ext/gio/gstgiosrc.h \
+	$(top_srcdir)/ext/gio/gstgiostreamsink.h \
+	$(top_srcdir)/ext/gio/gstgiostreamsrc.h \
 	$(top_srcdir)/ext/gnomevfs/gstgnomevfssink.h \
 	$(top_srcdir)/ext/gnomevfs/gstgnomevfssrc.h \
 	$(top_srcdir)/ext/ogg/gstoggdemux.h \
+	$(top_srcdir)/ext/ogg/gstoggmux.h \
 	$(top_srcdir)/ext/pango/gstclockoverlay.h \
 	$(top_srcdir)/ext/pango/gsttextoverlay.h \
 	$(top_srcdir)/ext/pango/gsttextrender.h \
 	$(top_srcdir)/ext/pango/gsttimeoverlay.h \
 	$(top_srcdir)/ext/theora/gsttheoradec.h \
 	$(top_srcdir)/ext/theora/gsttheoraenc.h \
+	$(top_srcdir)/ext/theora/gsttheoraparse.h \
 	$(top_srcdir)/ext/vorbis/vorbisdec.h \
 	$(top_srcdir)/ext/vorbis/vorbisenc.h \
 	$(top_srcdir)/ext/vorbis/vorbisparse.h \
 	$(top_srcdir)/ext/vorbis/vorbistag.h \
 	$(top_srcdir)/gst/adder/gstadder.h \
+	$(top_srcdir)/gst/audioconvert/audioconvert.h \
 	$(top_srcdir)/gst/audioconvert/gstaudioconvert.h \
 	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/audiotestsrc/gstaudiotestsrc.h \
 	$(top_srcdir)/gst/ffmpegcolorspace/gstffmpegcolorspace.h \
 	$(top_srcdir)/gst/gdp/gstgdpdepay.h \
 	$(top_srcdir)/gst/gdp/gstgdppay.h \
-	$(top_srcdir)/gst/playback/gstdecodebin2.c \
+	$(top_srcdir)/gst/playback/gstplay-enum.h \
 	$(top_srcdir)/gst/tcp/gstmultifdsink.h \
 	$(top_srcdir)/gst/tcp/gsttcpserversink.h \
+	$(top_srcdir)/gst/tcp/gsttcp-enumtypes.h \
+	$(top_srcdir)/gst/tcp/gsttcp.h \
 	$(top_srcdir)/gst/videorate/gstvideorate.h \
 	$(top_srcdir)/gst/videoscale/gstvideoscale.h \
 	$(top_srcdir)/gst/videotestsrc/gstvideotestsrc.h \

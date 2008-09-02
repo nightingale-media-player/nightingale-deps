@@ -46,10 +46,10 @@
 /* package origin */
 #undef GST_PACKAGE_ORIGIN
 
-/* support for features: alsa */
+/* Define to enable ALSA (used by alsa). */
 #undef HAVE_ALSA
 
-/* support for features: cdparanoia */
+/* Define to enable CDParanoia (used by cdparanoia). */
 #undef HAVE_CDPARANOIA
 
 /* Define if the host CPU is an Alpha */
@@ -101,7 +101,10 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* support for features: */
+/* Define to enable building of experimental plug-ins. */
+#undef HAVE_EXPERIMENTAL
+
+/* Define to enable building of plug-ins with external deps. */
 #undef HAVE_EXTERNAL
 
 /* FIONREAD ioctl found in sys/filio.h */
@@ -122,10 +125,16 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* support for features: gnomevfs */
+/* Define to enable GIO library (used by gio). */
+#undef HAVE_GIO
+
+/* Define to 1 if you have the `gmtime_r' function. */
+#undef HAVE_GMTIME_R
+
+/* Define to enable GNOME VFS (used by gnomevfs). */
 #undef HAVE_GNOME_VFS
 
-/* support for features: video4linux */
+/* Define to enable Video 4 Linux (used by video4linux). */
 #undef HAVE_GST_V4L
 
 /* Define if you have the iconv() function. */
@@ -140,7 +149,7 @@
 /* Define to 1 if you have the `resolv' library (-lresolv). */
 #undef HAVE_LIBRESOLV
 
-/* support for features: libvisual */
+/* Define to enable libvisual visualization library (used by libvisual). */
 #undef HAVE_LIBVISUAL
 
 /* Define to 1 if you have the `localtime_r' function. */
@@ -158,10 +167,10 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* support for features: ogg */
+/* Define to enable Xiph Ogg library (used by ogg). */
 #undef HAVE_OGG
 
-/* support for features: pango */
+/* Define to enable Pango font rendering (used by pango). */
 #undef HAVE_PANGO
 
 /* defined if the compiler implements __PRETTY_FUNCTION__ */
@@ -200,7 +209,7 @@
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
 
-/* support for features: theora */
+/* Define to enable Xiph Theora video codec (used by theora). */
 #undef HAVE_THEORA
 
 /* Define to 1 if you have the <unistd.h> header file. */
@@ -209,7 +218,7 @@
 /* Define if valgrind should be used */
 #undef HAVE_VALGRIND
 
-/* support for features: vorbis */
+/* Define to enable Xiph Vorbis audio codec (used by vorbis). */
 #undef HAVE_VORBIS
 
 /* defined if vorbis_synthesis_restart is present */
@@ -218,13 +227,13 @@
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
 
-/* support for features: ximagesink */
+/* Define to enable X libraries and plugins (used by ximagesink). */
 #undef HAVE_X
 
-/* support for features: */
+/* Define to enable X Shared Memory extension. */
 #undef HAVE_XSHM
 
-/* support for features: xvimagesink */
+/* Define to enable X11 XVideo extensions (used by xvimagesink). */
 #undef HAVE_XVIDEO
 
 /* the host CPU */

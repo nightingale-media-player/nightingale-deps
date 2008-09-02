@@ -1,0 +1,33 @@
+<!-- ##### SECTION Title ##### -->
+theoraparse
+
+<!-- ##### SECTION Short_Description ##### -->
+parse raw theora streams
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-theoraparse-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstTheoraParse ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstTheoraParse:synchronization-points ##### -->
+<para>
+
+</para>
+

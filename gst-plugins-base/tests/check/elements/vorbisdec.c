@@ -30,10 +30,10 @@
 /* For ease of programming we use globals to keep refs for our floating
  * src and sink pads we create; otherwise we always have to do get_pad,
  * get_peer, and then remove references in every test function */
-GstPad *mysrcpad, *mysinkpad;
+static GstPad *mysrcpad, *mysinkpad;
 
 /* a valid first header packet */
-guchar identification_header[30] = {
+static guchar identification_header[30] = {
   1,                            /* packet_type */
   'v', 'o', 'r', 'b', 'i', 's',
   0, 0, 0, 0,                   /* vorbis_version */
@@ -46,7 +46,7 @@ guchar identification_header[30] = {
   0x01,                         /* framing_flag */
 };
 
-guchar comment_header[] = {
+static guchar comment_header[] = {
   3,                            /* packet_type */
   'v', 'o', 'r', 'b', 'i', 's',
   2, 0, 0, 0,                   /* vendor_length */
@@ -66,8 +66,8 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
-GstElement *
-setup_vorbisdec ()
+static GstElement *
+setup_vorbisdec (void)
 {
   GstElement *vorbisdec;
 
@@ -81,7 +81,7 @@ setup_vorbisdec ()
   return vorbisdec;
 }
 
-void
+static void
 cleanup_vorbisdec (GstElement * vorbisdec)
 {
   GST_DEBUG ("cleanup_vorbisdec");
@@ -93,47 +93,6 @@ cleanup_vorbisdec (GstElement * vorbisdec)
   gst_check_teardown_sink_pad (vorbisdec);
   gst_check_teardown_element (vorbisdec);
 }
-
-GST_START_TEST (test_wrong_channels_identification_header)
-{
-  GstElement *vorbisdec;
-  GstBuffer *inbuffer;
-  GstBus *bus;
-  GstMessage *message;
-
-  vorbisdec = setup_vorbisdec ();
-  fail_unless (gst_element_set_state (vorbisdec,
-          GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
-      "could not set to playing");
-  bus = gst_bus_new ();
-
-  inbuffer = gst_buffer_new_and_alloc (30);
-  memcpy (GST_BUFFER_DATA (inbuffer), identification_header, 30);
-  /* set the channel count to 7, which is not supported */
-  GST_BUFFER_DATA (inbuffer)[11] = 7;
-  ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
-  gst_buffer_ref (inbuffer);
-
-  gst_element_set_bus (vorbisdec, bus);
-  /* pushing gives away my reference ... */
-  fail_unless_equals_int (gst_pad_push (mysrcpad, inbuffer), GST_FLOW_ERROR);
-  /* ... and nothing ends up on the global buffer list */
-  ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
-  gst_buffer_unref (inbuffer);
-  fail_unless_equals_int (g_list_length (buffers), 0);
-
-  fail_if ((message = gst_bus_pop (bus)) == NULL);
-  fail_unless_message_error (message, STREAM, NOT_IMPLEMENTED);
-  gst_message_unref (message);
-  gst_element_set_bus (vorbisdec, NULL);
-
-  /* cleanup */
-  gst_object_unref (GST_OBJECT (bus));
-  cleanup_vorbisdec (vorbisdec);
-}
-
-GST_END_TEST;
-
 
 GST_START_TEST (test_empty_identification_header)
 {
@@ -233,10 +192,10 @@ GST_START_TEST (test_identification_header)
 
 GST_END_TEST;
 
-vorbis_comment vc;
-vorbis_dsp_state vd;
-vorbis_info vi;
-vorbis_block vb;
+static vorbis_comment vc;
+static vorbis_dsp_state vd;
+static vorbis_info vi;
+static vorbis_block vb;
 
 static GstBuffer *
 _create_codebook_header_buffer (void)
@@ -371,7 +330,6 @@ vorbisdec_suite (void)
 
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_empty_identification_header);
-  tcase_add_test (tc_chain, test_wrong_channels_identification_header);
   tcase_add_test (tc_chain, test_identification_header);
   tcase_add_test (tc_chain, test_empty_vorbis_packet);
 

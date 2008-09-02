@@ -3,7 +3,8 @@ SUBDIRS = m4
 EXTRA_DIST = \
 	ChangeLog \
 	gettext.patch \
-	glib-gen.mak gtk-doc.mak upload.mak release.mak win32.mak \
+	glib-gen.mak gtk-doc.mak upload.mak upload-doc.mak \
+	release.mak win32.mak po.mak \
 	gst-autogen.sh \
 	check-exports \
 	c-to-xml.py gst-xmlinspect.py mangle-tmpl.py scangobj-merge.py \
@@ -13,4 +14,5 @@ EXTRA_DIST = \
 	coverage/lcov.mak \
 	coverage/coverage-report.pl \
 	coverage/coverage-report.xsl \
-	coverage/coverage-report-entry.pl
+	coverage/coverage-report-entry.pl \
+	download-translations

@@ -1,0 +1,205 @@
+<!-- ##### SECTION Title ##### -->
+playbin2
+
+<!-- ##### SECTION Short_Description ##### -->
+Autoplug and play media from an uri
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-playbin2-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPlayBin2 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstPlayBin2::about-to-finish ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+
+<!-- ##### SIGNAL GstPlayBin2::audio-changed ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+
+<!-- ##### SIGNAL GstPlayBin2::get-audio-tags ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GstPlayBin2::get-text-tags ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GstPlayBin2::get-video-tags ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GstPlayBin2::text-changed ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+
+<!-- ##### SIGNAL GstPlayBin2::video-changed ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+
+<!-- ##### SIGNAL GstPlayBin2::convert-frame ##### -->
+<para>
+
+</para>
+
+@gstplaybin2: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### ARG GstPlayBin2:audio-sink ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:connection-speed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:current-audio ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:current-text ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:current-video ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:flags ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:frame ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:n-audio ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:n-text ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:n-video ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:source ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:stream-info ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:subtitle-encoding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:subtitle-font-desc ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:suburi ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:uri ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:video-sink ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:vis-plugin ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:volume ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPlayBin2:mute ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstPlayFlags ##### -->
+<para>
+
+</para>
+
+@GST_PLAY_FLAG_VIDEO: 
+@GST_PLAY_FLAG_AUDIO: 
+@GST_PLAY_FLAG_TEXT: 
+@GST_PLAY_FLAG_VIS: 
+@GST_PLAY_FLAG_SOFT_VOLUME: 
+@GST_PLAY_FLAG_NATIVE_AUDIO: 
+@GST_PLAY_FLAG_NATIVE_VIDEO: 
+

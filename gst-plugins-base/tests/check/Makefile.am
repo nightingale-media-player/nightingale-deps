@@ -37,6 +37,12 @@ else
 check_gnomevfs = 
 endif
 
+if USE_GIO
+check_gio = pipelines/gio
+else
+check_gio =
+endif
+
 if USE_LIBVISUAL
 check_libvisual = elements/libvisual
 else
@@ -68,9 +74,16 @@ else
 check_theora =
 endif
 
+if USE_PLUGIN_SUBPARSE
+check_subparse = elements/subparse
+else
+check_subparse =
+endif
+
 check_PROGRAMS = \
 	$(check_alsa) \
 	$(check_gnomevfs) \
+	$(check_gio) \
 	$(check_ogg) \
 	$(check_pango) \
 	$(check_vorbis) \
@@ -86,7 +99,7 @@ check_PROGRAMS = \
 	elements/gdppay \
 	elements/multifdsink \
 	elements/playbin \
-	elements/subparse \
+	$(check_subparse) \
 	elements/videorate \
 	elements/videotestsrc \
 	elements/volume \
@@ -275,6 +288,9 @@ libs_video_LDADD = \
 	$(top_builddir)/gst-libs/gst/video/libgstvideo-@GST_MAJORMINOR@.la \
 	$(GST_BASE_LIBS) \
 	$(LDADD)
+
+pipelines_gio_CFLAGS = $(GIO_CFLAGS) $(AM_CFLAGS)
+pipelines_gio_LDADD = $(GIO_LIBS) $(LDADD)
 
 pipelines_vorbisenc_CFLAGS = \
         $(GST_PLUGINS_BASE_CFLAGS) \

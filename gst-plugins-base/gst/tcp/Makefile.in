@@ -22,7 +22,6 @@
 #glib_enum_prefix=gst_color_balance
 
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -47,7 +46,6 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = README $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/common/glib-gen.mak
-noinst_PROGRAMS = fdsetstress$(EXEEXT)
 subdir = gst/tcp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
@@ -100,8 +98,8 @@ am__DEPENDENCIES_1 =
 libgsttcp_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libgsttcp_la_OBJECTS = libgsttcp_la-gsttcpplugin.lo \
-	libgsttcp_la-gsttcp.lo libgsttcp_la-gstfdset.lo \
-	libgsttcp_la-gstmultifdsink.lo libgsttcp_la-gsttcpclientsrc.lo \
+	libgsttcp_la-gsttcp.lo libgsttcp_la-gstmultifdsink.lo \
+	libgsttcp_la-gsttcpclientsrc.lo \
 	libgsttcp_la-gsttcpclientsink.lo \
 	libgsttcp_la-gsttcpserversrc.lo \
 	libgsttcp_la-gsttcpserversink.lo
@@ -110,11 +108,6 @@ am__objects_1 = libgsttcp_la-gsttcp-enumtypes.lo \
 nodist_libgsttcp_la_OBJECTS = $(am__objects_1)
 libgsttcp_la_OBJECTS = $(am_libgsttcp_la_OBJECTS) \
 	$(nodist_libgsttcp_la_OBJECTS)
-PROGRAMS = $(noinst_PROGRAMS)
-am_fdsetstress_OBJECTS = fdsetstress-fdsetstress.$(OBJEXT) \
-	fdsetstress-gstfdset.$(OBJEXT)
-fdsetstress_OBJECTS = $(am_fdsetstress_OBJECTS)
-fdsetstress_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -126,9 +119,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgsttcp_la_SOURCES) $(nodist_libgsttcp_la_SOURCES) \
-	$(fdsetstress_SOURCES)
-DIST_SOURCES = $(libgsttcp_la_SOURCES) $(fdsetstress_SOURCES)
+SOURCES = $(libgsttcp_la_SOURCES) $(nodist_libgsttcp_la_SOURCES)
+DIST_SOURCES = $(libgsttcp_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -144,12 +136,15 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_EXAMPLES_FALSE = @BUILD_EXAMPLES_FALSE@
 BUILD_EXAMPLES_TRUE = @BUILD_EXAMPLES_TRUE@
+BUILD_EXPERIMENTAL_FALSE = @BUILD_EXPERIMENTAL_FALSE@
+BUILD_EXPERIMENTAL_TRUE = @BUILD_EXPERIMENTAL_TRUE@
 BUILD_EXTERNAL_FALSE = @BUILD_EXTERNAL_FALSE@
 BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CC = @CC@
@@ -169,6 +164,7 @@ DEFAULT_VISUALIZER = @DEFAULT_VISUALIZER@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -190,6 +186,9 @@ GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
@@ -231,14 +230,10 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -272,7 +267,6 @@ HAVE_FT2_FALSE = @HAVE_FT2_FALSE@
 HAVE_FT2_TRUE = @HAVE_FT2_TRUE@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
@@ -318,6 +312,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
@@ -355,8 +350,12 @@ USE_ALSA_FALSE = @USE_ALSA_FALSE@
 USE_ALSA_TRUE = @USE_ALSA_TRUE@
 USE_CDPARANOIA_FALSE = @USE_CDPARANOIA_FALSE@
 USE_CDPARANOIA_TRUE = @USE_CDPARANOIA_TRUE@
+USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
+USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
 USE_EXTERNAL_TRUE = @USE_EXTERNAL_TRUE@
+USE_GIO_FALSE = @USE_GIO_FALSE@
+USE_GIO_TRUE = @USE_GIO_TRUE@
 USE_GNOME_VFS_FALSE = @USE_GNOME_VFS_FALSE@
 USE_GNOME_VFS_TRUE = @USE_GNOME_VFS_TRUE@
 USE_GST_V4L_FALSE = @USE_GST_V4L_FALSE@
@@ -368,6 +367,36 @@ USE_OGG_FALSE = @USE_OGG_FALSE@
 USE_OGG_TRUE = @USE_OGG_TRUE@
 USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
+USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
+USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
+USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
+USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
+USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
+USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
+USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
+USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
+USE_PLUGIN_FFMPEGCOLORSPACE_TRUE = @USE_PLUGIN_FFMPEGCOLORSPACE_TRUE@
+USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
+USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
+USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
+USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
+USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
+USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
+USE_PLUGIN_TCP_TRUE = @USE_PLUGIN_TCP_TRUE@
+USE_PLUGIN_TYPEFIND_FALSE = @USE_PLUGIN_TYPEFIND_FALSE@
+USE_PLUGIN_TYPEFIND_TRUE = @USE_PLUGIN_TYPEFIND_TRUE@
+USE_PLUGIN_VIDEORATE_FALSE = @USE_PLUGIN_VIDEORATE_FALSE@
+USE_PLUGIN_VIDEORATE_TRUE = @USE_PLUGIN_VIDEORATE_TRUE@
+USE_PLUGIN_VIDEOSCALE_FALSE = @USE_PLUGIN_VIDEOSCALE_FALSE@
+USE_PLUGIN_VIDEOSCALE_TRUE = @USE_PLUGIN_VIDEOSCALE_TRUE@
+USE_PLUGIN_VIDEOTESTSRC_FALSE = @USE_PLUGIN_VIDEOTESTSRC_FALSE@
+USE_PLUGIN_VIDEOTESTSRC_TRUE = @USE_PLUGIN_VIDEOTESTSRC_TRUE@
+USE_PLUGIN_VOLUME_FALSE = @USE_PLUGIN_VOLUME_FALSE@
+USE_PLUGIN_VOLUME_TRUE = @USE_PLUGIN_VOLUME_TRUE@
 USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
@@ -459,7 +488,6 @@ BUILT_SOURCES = $(built_sources) $(built_headers)
 libgsttcp_la_SOURCES = \
 	gsttcpplugin.c \
 	gsttcp.c \
-	gstfdset.c \
 	gstmultifdsink.c  \
 	gsttcpclientsrc.c gsttcpclientsink.c \
 	gsttcpserversrc.c gsttcpserversink.c
@@ -475,16 +503,12 @@ libgsttcp_la_LIBADD = $(GST_BASE_LIBS) $(GST_GDP_LIBS) $(GST_LIBS)
 noinst_HEADERS = \
   gsttcpplugin.h \
   gsttcp.h \
-  gstfdset.h \
   gstmultifdsink.h  \
   gsttcpclientsrc.h gsttcpclientsink.h \
   gsttcpserversrc.h gsttcpserversink.h
 
 CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = gsttcp-marshal.list
-fdsetstress_SOURCES = fdsetstress.c gstfdset.c 
-fdsetstress_CFLAGS = $(GST_CFLAGS)
-fdsetstress_LDFLAGS = $(GST_LIBS)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -549,25 +573,12 @@ clean-pluginLTLIBRARIES:
 libgsttcp.la: $(libgsttcp_la_OBJECTS) $(libgsttcp_la_DEPENDENCIES) 
 	$(LINK) -rpath $(plugindir) $(libgsttcp_la_LDFLAGS) $(libgsttcp_la_OBJECTS) $(libgsttcp_la_LIBADD) $(LIBS)
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
-	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  echo " rm -f $$p $$f"; \
-	  rm -f $$p $$f ; \
-	done
-fdsetstress$(EXEEXT): $(fdsetstress_OBJECTS) $(fdsetstress_DEPENDENCIES) 
-	@rm -f fdsetstress$(EXEEXT)
-	$(LINK) $(fdsetstress_LDFLAGS) $(fdsetstress_OBJECTS) $(fdsetstress_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fdsetstress-fdsetstress.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fdsetstress-gstfdset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttcp_la-gstfdset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttcp_la-gstmultifdsink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttcp_la-gsttcp-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgsttcp_la-gsttcp-marshal.Plo@am__quote@
@@ -612,13 +623,6 @@ libgsttcp_la-gsttcp.lo: gsttcp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gsttcp.c' object='libgsttcp_la-gsttcp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttcp_la_CFLAGS) $(CFLAGS) -c -o libgsttcp_la-gsttcp.lo `test -f 'gsttcp.c' || echo '$(srcdir)/'`gsttcp.c
-
-libgsttcp_la-gstfdset.lo: gstfdset.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttcp_la_CFLAGS) $(CFLAGS) -MT libgsttcp_la-gstfdset.lo -MD -MP -MF "$(DEPDIR)/libgsttcp_la-gstfdset.Tpo" -c -o libgsttcp_la-gstfdset.lo `test -f 'gstfdset.c' || echo '$(srcdir)/'`gstfdset.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgsttcp_la-gstfdset.Tpo" "$(DEPDIR)/libgsttcp_la-gstfdset.Plo"; else rm -f "$(DEPDIR)/libgsttcp_la-gstfdset.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstfdset.c' object='libgsttcp_la-gstfdset.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttcp_la_CFLAGS) $(CFLAGS) -c -o libgsttcp_la-gstfdset.lo `test -f 'gstfdset.c' || echo '$(srcdir)/'`gstfdset.c
 
 libgsttcp_la-gstmultifdsink.lo: gstmultifdsink.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttcp_la_CFLAGS) $(CFLAGS) -MT libgsttcp_la-gstmultifdsink.lo -MD -MP -MF "$(DEPDIR)/libgsttcp_la-gstmultifdsink.Tpo" -c -o libgsttcp_la-gstmultifdsink.lo `test -f 'gstmultifdsink.c' || echo '$(srcdir)/'`gstmultifdsink.c; \
@@ -668,34 +672,6 @@ libgsttcp_la-gsttcp-marshal.lo: gsttcp-marshal.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gsttcp-marshal.c' object='libgsttcp_la-gsttcp-marshal.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgsttcp_la_CFLAGS) $(CFLAGS) -c -o libgsttcp_la-gsttcp-marshal.lo `test -f 'gsttcp-marshal.c' || echo '$(srcdir)/'`gsttcp-marshal.c
-
-fdsetstress-fdsetstress.o: fdsetstress.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -MT fdsetstress-fdsetstress.o -MD -MP -MF "$(DEPDIR)/fdsetstress-fdsetstress.Tpo" -c -o fdsetstress-fdsetstress.o `test -f 'fdsetstress.c' || echo '$(srcdir)/'`fdsetstress.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fdsetstress-fdsetstress.Tpo" "$(DEPDIR)/fdsetstress-fdsetstress.Po"; else rm -f "$(DEPDIR)/fdsetstress-fdsetstress.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fdsetstress.c' object='fdsetstress-fdsetstress.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -c -o fdsetstress-fdsetstress.o `test -f 'fdsetstress.c' || echo '$(srcdir)/'`fdsetstress.c
-
-fdsetstress-fdsetstress.obj: fdsetstress.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -MT fdsetstress-fdsetstress.obj -MD -MP -MF "$(DEPDIR)/fdsetstress-fdsetstress.Tpo" -c -o fdsetstress-fdsetstress.obj `if test -f 'fdsetstress.c'; then $(CYGPATH_W) 'fdsetstress.c'; else $(CYGPATH_W) '$(srcdir)/fdsetstress.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fdsetstress-fdsetstress.Tpo" "$(DEPDIR)/fdsetstress-fdsetstress.Po"; else rm -f "$(DEPDIR)/fdsetstress-fdsetstress.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fdsetstress.c' object='fdsetstress-fdsetstress.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -c -o fdsetstress-fdsetstress.obj `if test -f 'fdsetstress.c'; then $(CYGPATH_W) 'fdsetstress.c'; else $(CYGPATH_W) '$(srcdir)/fdsetstress.c'; fi`
-
-fdsetstress-gstfdset.o: gstfdset.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -MT fdsetstress-gstfdset.o -MD -MP -MF "$(DEPDIR)/fdsetstress-gstfdset.Tpo" -c -o fdsetstress-gstfdset.o `test -f 'gstfdset.c' || echo '$(srcdir)/'`gstfdset.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fdsetstress-gstfdset.Tpo" "$(DEPDIR)/fdsetstress-gstfdset.Po"; else rm -f "$(DEPDIR)/fdsetstress-gstfdset.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstfdset.c' object='fdsetstress-gstfdset.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -c -o fdsetstress-gstfdset.o `test -f 'gstfdset.c' || echo '$(srcdir)/'`gstfdset.c
-
-fdsetstress-gstfdset.obj: gstfdset.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -MT fdsetstress-gstfdset.obj -MD -MP -MF "$(DEPDIR)/fdsetstress-gstfdset.Tpo" -c -o fdsetstress-gstfdset.obj `if test -f 'gstfdset.c'; then $(CYGPATH_W) 'gstfdset.c'; else $(CYGPATH_W) '$(srcdir)/gstfdset.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fdsetstress-gstfdset.Tpo" "$(DEPDIR)/fdsetstress-gstfdset.Po"; else rm -f "$(DEPDIR)/fdsetstress-gstfdset.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstfdset.c' object='fdsetstress-gstfdset.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fdsetstress_CFLAGS) $(CFLAGS) -c -o fdsetstress-gstfdset.obj `if test -f 'gstfdset.c'; then $(CYGPATH_W) 'gstfdset.c'; else $(CYGPATH_W) '$(srcdir)/gstfdset.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -786,7 +762,7 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(plugindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
@@ -820,8 +796,8 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	clean-pluginLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-libtool clean-pluginLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -870,17 +846,17 @@ ps-am:
 uninstall-am: uninstall-info-am uninstall-pluginLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstPROGRAMS clean-pluginLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man install-pluginLTLIBRARIES \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-info-am uninstall-pluginLTLIBRARIES
+	clean-libtool clean-pluginLTLIBRARIES ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-pluginLTLIBRARIES install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-info-am \
+	uninstall-pluginLTLIBRARIES
 
 
 # these are all the rules generating the relevant files

@@ -29,8 +29,11 @@ AC_DEFUN([GTK_DOC_CHECK],
     if test "$PKG_CONFIG" != "no" && $PKG_CONFIG --exists gtk-doc; then
       have_gtk_doc=yes
     fi
+    if test -z "$SED"; then
+      AC_PROG_SED
+    fi
 
-  dnl do we want to do a version check?
+dnl do we want to do a version check?
 ifelse([$1],[],,
     [gtk_doc_min_version=$1
     if test "$have_gtk_doc" = yes; then

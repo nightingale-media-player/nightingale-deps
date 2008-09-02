@@ -1,0 +1,109 @@
+<!-- ##### SECTION Title ##### -->
+uridecodebin
+
+<!-- ##### SECTION Short_Description ##### -->
+Autoplug and decode an URI to raw media
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-uridecodebin-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstURIDecodeBin ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstURIDecodeBin::autoplug-continue ##### -->
+<para>
+
+</para>
+
+@gsturidecodebin: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### SIGNAL GstURIDecodeBin::autoplug-factories ##### -->
+<para>
+
+</para>
+
+@gsturidecodebin: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### SIGNAL GstURIDecodeBin::autoplug-select ##### -->
+<para>
+
+</para>
+
+@gsturidecodebin: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL GstURIDecodeBin::unknown-type ##### -->
+<para>
+
+</para>
+
+@gsturidecodebin: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstURIDecodeBin::drained ##### -->
+<para>
+
+</para>
+
+@gsturidecodebin: the object which received the signal.
+
+<!-- ##### ARG GstURIDecodeBin:uri ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstURIDecodeBin:connection-speed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstURIDecodeBin:caps ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstURIDecodeBin:subtitle-encoding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstURIDecodeBin:source ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GstAutoplugSelectResult ##### -->
+<para>
+
+</para>
+
+@GST_AUTOPLUG_SELECT_TRY: 
+@GST_AUTOPLUG_SELECT_EXPOSE: 
+@GST_AUTOPLUG_SELECT_SKIP: 
+

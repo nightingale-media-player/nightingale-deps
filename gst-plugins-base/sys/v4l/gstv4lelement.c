@@ -52,21 +52,20 @@ enum
 static void gst_v4lelement_init_interfaces (GType type);
 
 GST_BOILERPLATE_FULL (GstV4lElement, gst_v4lelement, GstPushSrc,
-    GST_TYPE_PUSH_SRC, gst_v4lelement_init_interfaces)
+    GST_TYPE_PUSH_SRC, gst_v4lelement_init_interfaces);
 
 
-     static void gst_v4lelement_dispose (GObject * object);
-     static void gst_v4lelement_set_property (GObject * object,
+static void gst_v4lelement_dispose (GObject * object);
+static void gst_v4lelement_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
-     static void gst_v4lelement_get_property (GObject * object,
+static void gst_v4lelement_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
-     static gboolean gst_v4lelement_start (GstBaseSrc * src);
-     static gboolean gst_v4lelement_stop (GstBaseSrc * src);
+static gboolean gst_v4lelement_start (GstBaseSrc * src);
+static gboolean gst_v4lelement_stop (GstBaseSrc * src);
 
 
-     static gboolean
-         gst_v4l_iface_supported (GstImplementsInterface * iface,
-    GType iface_type)
+static gboolean
+gst_v4l_iface_supported (GstImplementsInterface * iface, GType iface_type)
 {
   GstV4lElement *v4lelement = GST_V4LELEMENT (iface);
 
@@ -246,7 +245,7 @@ gst_v4l_property_probe_interface_init (GstPropertyProbeInterface * iface)
 }
 
 #define GST_TYPE_V4L_DEVICE_FLAGS (gst_v4l_device_get_type ())
-GType
+static GType
 gst_v4l_device_get_type (void)
 {
   static GType v4l_device_type = 0;
@@ -336,13 +335,14 @@ gst_v4lelement_class_init (GstV4lElementClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DEVICE,
       g_param_spec_string ("device", "Device", "Device location",
-          NULL, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DEVICE_NAME,
-      g_param_spec_string ("device_name", "Device name", "Name of the device",
-          NULL, G_PARAM_READABLE));
+      g_param_spec_string ("device-name", "Device name", "Name of the device",
+          NULL, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FLAGS,
       g_param_spec_flags ("flags", "Flags", "Device type flags",
-          GST_TYPE_V4L_DEVICE_FLAGS, 0, G_PARAM_READABLE));
+          GST_TYPE_V4L_DEVICE_FLAGS, 0,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   basesrc_class->start = gst_v4lelement_start;
   basesrc_class->stop = gst_v4lelement_stop;

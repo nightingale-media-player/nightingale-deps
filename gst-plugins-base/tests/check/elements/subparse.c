@@ -1,6 +1,5 @@
 /* GStreamer unit tests for subparse
- *
- * Copyright (C) 2006 Tim-Philipp Müller <tim centricular net>
+ * Copyright (C) 2006-2008 Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -249,11 +248,19 @@ do_test (SubParseInputChunk * input, guint num, const gchar * media_type)
 
     buf = g_list_nth_data (buffers, n);
     fail_unless (buf != NULL);
+
+    /* check timestamp */
     fail_unless (GST_BUFFER_TIMESTAMP_IS_VALID (buf), NULL);
-    fail_unless (GST_BUFFER_DURATION_IS_VALID (buf), NULL);
     fail_unless_equals_uint64 (GST_BUFFER_TIMESTAMP (buf), input[n].from_ts);
-    fail_unless_equals_uint64 (GST_BUFFER_DURATION (buf),
-        input[n].to_ts - input[n].from_ts);
+
+    /* might not be able to put a duration on the last buffer */
+    if (input[n].to_ts != GST_CLOCK_TIME_NONE) {
+      /* check duration */
+      fail_unless (GST_BUFFER_DURATION_IS_VALID (buf), NULL);
+      fail_unless_equals_uint64 (GST_BUFFER_DURATION (buf),
+          input[n].to_ts - input[n].from_ts);
+    }
+
     out = (gchar *) GST_BUFFER_DATA (buf);
     out_size = GST_BUFFER_SIZE (buf);
     /* shouldn't have trailing newline characters */
@@ -382,6 +389,30 @@ GST_START_TEST (test_tmplayer_style3)
 
 GST_END_TEST;
 
+/* also tests the max_duration stuff (see second-last chunk which is supposed
+ * to be clipped to 5s duration) */
+GST_START_TEST (test_tmplayer_style3b)
+{
+  static SubParseInputChunk tmplayer_style3b_input[] = {
+    {
+          "0:00:10:This is the Earth at a time|when the dinosaurs roamed...\n",
+          10 * GST_SECOND, 14 * GST_SECOND,
+        "This is the Earth at a time\nwhen the dinosaurs roamed..."}, {
+          "0:00:14:a lush and fertile planet.\n",
+          14 * GST_SECOND, 16 * GST_SECOND,
+        "a lush and fertile planet."}, {
+          "0:00:16:And they liked it a lot.\n",
+        16 * GST_SECOND, (16 + 5) * GST_SECOND, "And they liked it a lot."}, {
+          "0:00:30:Last line.",
+        30 * GST_SECOND, GST_CLOCK_TIME_NONE, "Last line."}
+  };
+
+  test_tmplayer_do_test (tmplayer_style3b_input,
+      G_N_ELEMENTS (tmplayer_style3b_input));
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_tmplayer_style4)
 {
   static SubParseInputChunk tmplayer_style4_input[] = {
@@ -419,6 +450,22 @@ GST_START_TEST (test_tmplayer_style4_with_bogus_lines)
 
   test_tmplayer_do_test (tmplayer_style4b_input,
       G_N_ELEMENTS (tmplayer_style4b_input));
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_microdvd_with_italics)
+{
+  static SubParseInputChunk microdvd_italics[] = {
+    {
+          "{1}{1}25.000 movie info: XVID  608x256 25.0fps 699.0 MB|"
+          "/SubEdit b.4060(http://subedit.com.pl)/\n"
+          "{100}{200}/italics/|not italics\n",
+          4 * GST_SECOND, 8 * GST_SECOND,
+        "<span style=\"italic\">italics</span>\n" "<span>not italics</span>"}
+  };
+
+  test_microdvd_do_test (microdvd_italics, G_N_ELEMENTS (microdvd_italics));
 }
 
 GST_END_TEST;
@@ -536,6 +583,42 @@ GST_START_TEST (test_subviewer2)
 
 GST_END_TEST;
 
+GST_START_TEST (test_sami)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<HEAD>\n"
+          "    <TITLE>Subtitle</TITLE>\n"
+          "    <STYLE TYPE=\"text/css\">\n"
+          "    <!--\n"
+          "        P {margin-left:8pt; margin-right:8pt; margin-bottom:2pt; margin-top:2pt; text-align:center; font-size:12pt; font-weight:normal; color:black;}\n"
+          "        .CC {Name:English; lang:en-AU; SAMIType:CC;}\n"
+          "        #STDPrn {Name:Standard Print;}\n"
+          "        #LargePrn {Name:Large Print; font-size:24pt;}\n"
+          "        #SmallPrn {Name:Small Print; font-size:16pt;}\n"
+          "    -->\n"
+          "    </Style>\n"
+          "</HEAD>\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=CC>\n"
+          "            This is a comment.<br>\n"
+          "            This is a second comment.\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "This is a comment.\nThis is a second comment."},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n"
+          "            This is a third comment.<br>\n"
+          "            This is a fourth comment.\n" "</BODY>\n" "</SAMI>\n",
+          2000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "This is a third comment.\nThis is a fourth comment."}
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "text/x-pango-markup");
+}
+
+GST_END_TEST;
+
 /* TODO:
  *  - add/modify tests so that lines aren't dogfed to the parsers in complete
  *    lines or sets of complete lines, but rather in random chunks
@@ -555,12 +638,15 @@ subparse_suite (void)
   tcase_add_test (tc_chain, test_tmplayer_style1);
   tcase_add_test (tc_chain, test_tmplayer_style2);
   tcase_add_test (tc_chain, test_tmplayer_style3);
+  tcase_add_test (tc_chain, test_tmplayer_style3b);
   tcase_add_test (tc_chain, test_tmplayer_style4);
   tcase_add_test (tc_chain, test_tmplayer_style4_with_bogus_lines);
   tcase_add_test (tc_chain, test_microdvd_with_fps);
+  tcase_add_test (tc_chain, test_microdvd_with_italics);
   tcase_add_test (tc_chain, test_mpl2);
   tcase_add_test (tc_chain, test_subviewer);
   tcase_add_test (tc_chain, test_subviewer2);
+  tcase_add_test (tc_chain, test_sami);
   return s;
 }
 

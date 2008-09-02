@@ -124,6 +124,7 @@ am_libgstplaybin_la_OBJECTS = libgstplaybin_la-gstplayback.lo \
 	libgstplaybin_la-gstplaybasebin.lo \
 	libgstplaybin_la-gstplay-enum.lo \
 	libgstplaybin_la-gstfactorylists.lo \
+	libgstplaybin_la-gstscreenshot.lo \
 	libgstplaybin_la-gststreaminfo.lo \
 	libgstplaybin_la-gststreamselector.lo
 am__objects_3 = libgstplaybin_la-gstplay-marshal.lo
@@ -199,12 +200,15 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_EXAMPLES_FALSE = @BUILD_EXAMPLES_FALSE@
 BUILD_EXAMPLES_TRUE = @BUILD_EXAMPLES_TRUE@
+BUILD_EXPERIMENTAL_FALSE = @BUILD_EXPERIMENTAL_FALSE@
+BUILD_EXPERIMENTAL_TRUE = @BUILD_EXPERIMENTAL_TRUE@
 BUILD_EXTERNAL_FALSE = @BUILD_EXTERNAL_FALSE@
 BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CC = @CC@
@@ -224,6 +228,7 @@ DEFAULT_VISUALIZER = @DEFAULT_VISUALIZER@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -245,6 +250,9 @@ GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
@@ -286,14 +294,10 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -327,7 +331,6 @@ HAVE_FT2_FALSE = @HAVE_FT2_FALSE@
 HAVE_FT2_TRUE = @HAVE_FT2_TRUE@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
@@ -373,6 +376,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
@@ -410,8 +414,12 @@ USE_ALSA_FALSE = @USE_ALSA_FALSE@
 USE_ALSA_TRUE = @USE_ALSA_TRUE@
 USE_CDPARANOIA_FALSE = @USE_CDPARANOIA_FALSE@
 USE_CDPARANOIA_TRUE = @USE_CDPARANOIA_TRUE@
+USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
+USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
 USE_EXTERNAL_TRUE = @USE_EXTERNAL_TRUE@
+USE_GIO_FALSE = @USE_GIO_FALSE@
+USE_GIO_TRUE = @USE_GIO_TRUE@
 USE_GNOME_VFS_FALSE = @USE_GNOME_VFS_FALSE@
 USE_GNOME_VFS_TRUE = @USE_GNOME_VFS_TRUE@
 USE_GST_V4L_FALSE = @USE_GST_V4L_FALSE@
@@ -423,6 +431,36 @@ USE_OGG_FALSE = @USE_OGG_FALSE@
 USE_OGG_TRUE = @USE_OGG_TRUE@
 USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
+USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
+USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
+USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
+USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
+USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
+USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
+USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
+USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
+USE_PLUGIN_FFMPEGCOLORSPACE_TRUE = @USE_PLUGIN_FFMPEGCOLORSPACE_TRUE@
+USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
+USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
+USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
+USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
+USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
+USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
+USE_PLUGIN_TCP_TRUE = @USE_PLUGIN_TCP_TRUE@
+USE_PLUGIN_TYPEFIND_FALSE = @USE_PLUGIN_TYPEFIND_FALSE@
+USE_PLUGIN_TYPEFIND_TRUE = @USE_PLUGIN_TYPEFIND_TRUE@
+USE_PLUGIN_VIDEORATE_FALSE = @USE_PLUGIN_VIDEORATE_FALSE@
+USE_PLUGIN_VIDEORATE_TRUE = @USE_PLUGIN_VIDEORATE_TRUE@
+USE_PLUGIN_VIDEOSCALE_FALSE = @USE_PLUGIN_VIDEOSCALE_FALSE@
+USE_PLUGIN_VIDEOSCALE_TRUE = @USE_PLUGIN_VIDEOSCALE_TRUE@
+USE_PLUGIN_VIDEOTESTSRC_FALSE = @USE_PLUGIN_VIDEOTESTSRC_FALSE@
+USE_PLUGIN_VIDEOTESTSRC_TRUE = @USE_PLUGIN_VIDEOTESTSRC_TRUE@
+USE_PLUGIN_VOLUME_FALSE = @USE_PLUGIN_VOLUME_FALSE@
+USE_PLUGIN_VOLUME_TRUE = @USE_PLUGIN_VOLUME_TRUE@
 USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
@@ -514,6 +552,7 @@ libgstplaybin_la_SOURCES = \
 	gstplaybasebin.c \
 	gstplay-enum.c \
 	gstfactorylists.c \
+	gstscreenshot.c \
 	gststreaminfo.c \
 	gststreamselector.c
 
@@ -551,6 +590,7 @@ noinst_HEADERS = \
 	gststreaminfo.h \
 	gstfactorylists.h \
 	gstplay-enum.h \
+	gstscreenshot.h \
 	gststreamselector.h
 
 test_LDADD = $(GST_LIBS) 
@@ -696,6 +736,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gstplaybin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gstplaybin2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gstplaysink.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gstscreenshot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gststreaminfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstplaybin_la-gststreamselector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqueue2_la-gstplay-marshal.Plo@am__quote@
@@ -826,6 +867,13 @@ libgstplaybin_la-gstfactorylists.lo: gstfactorylists.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstfactorylists.c' object='libgstplaybin_la-gstfactorylists.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstplaybin_la_CFLAGS) $(CFLAGS) -c -o libgstplaybin_la-gstfactorylists.lo `test -f 'gstfactorylists.c' || echo '$(srcdir)/'`gstfactorylists.c
+
+libgstplaybin_la-gstscreenshot.lo: gstscreenshot.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstplaybin_la_CFLAGS) $(CFLAGS) -MT libgstplaybin_la-gstscreenshot.lo -MD -MP -MF "$(DEPDIR)/libgstplaybin_la-gstscreenshot.Tpo" -c -o libgstplaybin_la-gstscreenshot.lo `test -f 'gstscreenshot.c' || echo '$(srcdir)/'`gstscreenshot.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstplaybin_la-gstscreenshot.Tpo" "$(DEPDIR)/libgstplaybin_la-gstscreenshot.Plo"; else rm -f "$(DEPDIR)/libgstplaybin_la-gstscreenshot.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstscreenshot.c' object='libgstplaybin_la-gstscreenshot.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstplaybin_la_CFLAGS) $(CFLAGS) -c -o libgstplaybin_la-gstscreenshot.lo `test -f 'gstscreenshot.c' || echo '$(srcdir)/'`gstscreenshot.c
 
 libgstplaybin_la-gststreaminfo.lo: gststreaminfo.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstplaybin_la_CFLAGS) $(CFLAGS) -MT libgstplaybin_la-gststreaminfo.lo -MD -MP -MF "$(DEPDIR)/libgstplaybin_la-gststreaminfo.Tpo" -c -o libgstplaybin_la-gststreaminfo.lo `test -f 'gststreaminfo.c' || echo '$(srcdir)/'`gststreaminfo.c; \

@@ -138,13 +138,15 @@ gst_tcp_client_sink_class_init (GstTCPClientSink * klass)
 
   g_object_class_install_property (gobject_class, ARG_HOST,
       g_param_spec_string ("host", "Host", "The host/IP to send the packets to",
-          TCP_DEFAULT_HOST, G_PARAM_READWRITE));
+          TCP_DEFAULT_HOST, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_PORT,
       g_param_spec_int ("port", "Port", "The port to send the packets to",
-          0, TCP_HIGHEST_PORT, TCP_DEFAULT_PORT, G_PARAM_READWRITE));
+          0, TCP_HIGHEST_PORT, TCP_DEFAULT_PORT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_PROTOCOL,
       g_param_spec_enum ("protocol", "Protocol", "The protocol to wrap data in",
-          GST_TYPE_TCP_PROTOCOL, GST_TCP_PROTOCOL_NONE, G_PARAM_READWRITE));
+          GST_TYPE_TCP_PROTOCOL, GST_TCP_PROTOCOL_NONE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = gst_tcp_client_sink_change_state;
 
@@ -160,7 +162,7 @@ gst_tcp_client_sink_init (GstTCPClientSink * this)
   this->host = g_strdup (TCP_DEFAULT_HOST);
   this->port = TCP_DEFAULT_PORT;
 
-  this->sock_fd = -1;
+  this->sock_fd.fd = -1;
   this->protocol = GST_TCP_PROTOCOL_NONE;
   GST_OBJECT_FLAG_UNSET (this, GST_TCP_CLIENT_SINK_OPEN);
 }
@@ -198,8 +200,8 @@ gst_tcp_client_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
         GST_DEBUG_OBJECT (sink, "Sending caps %s through GDP", string);
         g_free (string);
 
-        if (!gst_tcp_gdp_write_caps (GST_ELEMENT (sink), sink->sock_fd, caps,
-                TRUE, sink->host, sink->port))
+        if (!gst_tcp_gdp_write_caps (GST_ELEMENT (sink), sink->sock_fd.fd,
+                caps, TRUE, sink->host, sink->port))
           goto gdp_write_error;
 
         sink->caps_sent = TRUE;
@@ -241,7 +243,7 @@ gst_tcp_client_sink_render (GstBaseSink * bsink, GstBuffer * buf)
       break;
     case GST_TCP_PROTOCOL_GDP:
       GST_LOG_OBJECT (sink, "Sending buffer header through GDP");
-      if (!gst_tcp_gdp_write_buffer (GST_ELEMENT (sink), sink->sock_fd, buf,
+      if (!gst_tcp_gdp_write_buffer (GST_ELEMENT (sink), sink->sock_fd.fd, buf,
               TRUE, sink->host, sink->port))
         goto gdp_write_error;
       break;
@@ -250,7 +252,7 @@ gst_tcp_client_sink_render (GstBaseSink * bsink, GstBuffer * buf)
   }
 
   /* write buffer data */
-  wrote = gst_tcp_socket_write (sink->sock_fd, GST_BUFFER_DATA (buf), size);
+  wrote = gst_tcp_socket_write (sink->sock_fd.fd, GST_BUFFER_DATA (buf), size);
 
   if (wrote < size)
     goto write_error;
@@ -348,12 +350,12 @@ gst_tcp_client_sink_start (GstTCPClientSink * this)
   /* create sending client socket */
   GST_DEBUG_OBJECT (this, "opening sending client socket to %s:%d", this->host,
       this->port);
-  if ((this->sock_fd = socket (AF_INET, SOCK_STREAM, 0)) == -1) {
+  if ((this->sock_fd.fd = socket (AF_INET, SOCK_STREAM, 0)) == -1) {
     GST_ELEMENT_ERROR (this, RESOURCE, OPEN_WRITE, (NULL), GST_ERROR_SYSTEM);
     return FALSE;
   }
   GST_DEBUG_OBJECT (this, "opened sending client socket with fd %d",
-      this->sock_fd);
+      this->sock_fd.fd);
 
   /* look up name if we need to */
   ip = gst_tcp_host_to_ip (GST_ELEMENT (this), this->host);
@@ -371,7 +373,7 @@ gst_tcp_client_sink_start (GstTCPClientSink * this)
   g_free (ip);
 
   GST_DEBUG_OBJECT (this, "connecting to server");
-  ret = connect (this->sock_fd, (struct sockaddr *) &this->server_sin,
+  ret = connect (this->sock_fd.fd, (struct sockaddr *) &this->server_sin,
       sizeof (this->server_sin));
 
   if (ret) {
@@ -405,10 +407,7 @@ gst_tcp_client_sink_stop (GstTCPClientSink * this)
   if (!GST_OBJECT_FLAG_IS_SET (this, GST_TCP_CLIENT_SINK_OPEN))
     return TRUE;
 
-  if (this->sock_fd != -1) {
-    close (this->sock_fd);
-    this->sock_fd = -1;
-  }
+  gst_tcp_socket_close (&this->sock_fd);
 
   GST_OBJECT_FLAG_UNSET (this, GST_TCP_CLIENT_SINK_OPEN);
 

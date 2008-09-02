@@ -364,50 +364,53 @@ gst_queue_class_init (GstQueueClass * klass)
   g_object_class_install_property (gobject_class, PROP_CUR_LEVEL_BYTES,
       g_param_spec_uint ("current-level-bytes", "Current level (kB)",
           "Current amount of data in the queue (bytes)",
-          0, G_MAXUINT, 0, G_PARAM_READABLE));
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CUR_LEVEL_BUFFERS,
       g_param_spec_uint ("current-level-buffers", "Current level (buffers)",
           "Current number of buffers in the queue",
-          0, G_MAXUINT, 0, G_PARAM_READABLE));
+          0, G_MAXUINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CUR_LEVEL_TIME,
       g_param_spec_uint64 ("current-level-time", "Current level (ns)",
           "Current amount of data in the queue (in ns)",
-          0, G_MAXUINT64, 0, G_PARAM_READABLE));
+          0, G_MAXUINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_MAX_SIZE_BYTES,
       g_param_spec_uint ("max-size-bytes", "Max. size (kB)",
           "Max. amount of data in the queue (bytes, 0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_MAX_SIZE_BYTES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_MAX_SIZE_BUFFERS,
       g_param_spec_uint ("max-size-buffers", "Max. size (buffers)",
-          "Max. number of buffers in the queue (0=disable)",
-          0, G_MAXUINT, DEFAULT_MAX_SIZE_BUFFERS, G_PARAM_READWRITE));
+          "Max. number of buffers in the queue (0=disable)", 0, G_MAXUINT,
+          DEFAULT_MAX_SIZE_BUFFERS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_MAX_SIZE_TIME,
       g_param_spec_uint64 ("max-size-time", "Max. size (ns)",
-          "Max. amount of data in the queue (in ns, 0=disable)",
-          0, G_MAXUINT64, DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE));
+          "Max. amount of data in the queue (in ns, 0=disable)", 0, G_MAXUINT64,
+          DEFAULT_MAX_SIZE_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_USE_BUFFERING,
       g_param_spec_boolean ("use-buffering", "Use buffering",
           "Emit GST_MESSAGE_BUFFERING based on low-/high-percent thresholds",
-          DEFAULT_USE_BUFFERING, G_PARAM_READWRITE));
+          DEFAULT_USE_BUFFERING, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_USE_RATE_ESTIMATE,
       g_param_spec_boolean ("use-rate-estimate", "Use Rate Estimate",
           "Estimate the bitrate of the stream to calculate time level",
-          DEFAULT_USE_RATE_ESTIMATE, G_PARAM_READWRITE));
+          DEFAULT_USE_RATE_ESTIMATE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_LOW_PERCENT,
       g_param_spec_int ("low-percent", "Low percent",
-          "Low threshold for buffering to start",
-          0, 100, DEFAULT_LOW_PERCENT, G_PARAM_READWRITE));
+          "Low threshold for buffering to start", 0, 100, DEFAULT_LOW_PERCENT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_HIGH_PERCENT,
       g_param_spec_int ("high-percent", "High percent",
-          "High threshold for buffering to finish",
-          0, 100, DEFAULT_HIGH_PERCENT, G_PARAM_READWRITE));
+          "High threshold for buffering to finish", 0, 100,
+          DEFAULT_HIGH_PERCENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TEMP_LOCATION,
       g_param_spec_string ("temp-location", "Temporary File Location",
           "Location of a temporary file to store data in",
-          NULL, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&srctemplate));
@@ -686,15 +689,27 @@ update_buffering (GstQueue * queue)
     }
   }
   if (post) {
+    GstMessage *message;
+    GstBufferingMode mode;
+
     /* scale to high percent so that it becomes the 100% mark */
     percent = percent * 100 / queue->high_percent;
     /* clip */
     if (percent > 100)
       percent = 100;
 
+    if (QUEUE_IS_USING_TEMP_FILE (queue))
+      mode = GST_BUFFERING_DOWNLOAD;
+    else
+      mode = GST_BUFFERING_STREAM;
+
     GST_DEBUG_OBJECT (queue, "buffering %d percent", percent);
-    gst_element_post_message (GST_ELEMENT_CAST (queue),
-        gst_message_new_buffering (GST_OBJECT_CAST (queue), percent));
+    message = gst_message_new_buffering (GST_OBJECT_CAST (queue), percent);
+    gst_message_set_buffering_stats (message, mode,
+        queue->byte_in_rate, queue->byte_out_rate, -1);
+
+    gst_element_post_message (GST_ELEMENT_CAST (queue), message);
+
   } else {
     GST_DEBUG_OBJECT (queue, "filled %d percent", percent);
   }
@@ -796,6 +811,10 @@ update_out_rates (GstQueue * queue)
     /* reset the values to calculate rate over the next interval */
     queue->last_out_elapsed = elapsed;
     queue->bytes_out = 0;
+  }
+  if (queue->byte_in_rate > 0.0) {
+    queue->cur_level.rate_time =
+        queue->cur_level.bytes / queue->byte_in_rate * GST_SECOND;
   }
   GST_DEBUG_OBJECT (queue, "rates: out %f, time %" GST_TIME_FORMAT,
       queue->byte_out_rate, GST_TIME_ARGS (queue->cur_level.rate_time));
@@ -952,6 +971,8 @@ gst_queue_open_temp_location_file (GstQueue * queue)
   if (queue->temp_location == NULL)
     goto no_filename;
 
+  GST_DEBUG_OBJECT (queue, "opening temp file %s", queue->temp_location);
+
   /* open the file for update/writing */
   queue->temp_file = g_fopen (queue->temp_location, "wb+");
   /* error creating file */
@@ -985,6 +1006,8 @@ gst_queue_close_temp_location_file (GstQueue * queue)
   /* nothing to do */
   if (queue->temp_file == NULL)
     return;
+
+  GST_DEBUG_OBJECT (queue, "closing temp file");
 
   /* we don't remove the file so that the application can use it as a cache
    * later on */
@@ -1285,6 +1308,10 @@ gst_queue_is_filled (GstQueue * queue)
   if (QUEUE_IS_USING_TEMP_FILE (queue))
     return FALSE;
 
+  /* we are never filled when we have no buffers at all */
+  if (queue->cur_level.buffers == 0)
+    return FALSE;
+
 #define CHECK_FILLED(format) ((queue->max_level.format) > 0 && \
 		(queue->cur_level.format) >= (queue->max_level.format))
 
@@ -1545,8 +1572,14 @@ gst_queue_handle_src_event (GstPad * pad, GstEvent * event)
       event, GST_EVENT_TYPE_NAME (event));
 #endif
 
-  /* just forward upstream */
-  res = gst_pad_push_event (queue->sinkpad, event);
+  if (!QUEUE_IS_USING_TEMP_FILE (queue)) {
+    /* just forward upstream */
+    res = gst_pad_push_event (queue->sinkpad, event);
+  } else {
+    /* when using a temp file, we unblock the pending read */
+    res = TRUE;
+    gst_event_unref (event);
+  }
 
   return res;
 }
@@ -1602,20 +1635,65 @@ gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
     }
     case GST_QUERY_DURATION:
     {
-      GST_DEBUG_OBJECT (queue, "waiting for preroll in duration query");
-
-      GST_QUEUE_MUTEX_LOCK (queue);
-      /* we have to wait until the upstream element is at least paused, which
-       * happened when we received a first item. */
-      while (gst_queue_is_empty (queue)) {
-        GST_QUEUE_WAIT_ADD_CHECK (queue, flushing);
-      }
-      GST_QUEUE_MUTEX_UNLOCK (queue);
+      GST_DEBUG_OBJECT (queue, "doing peer query");
 
       if (!gst_queue_peer_query (queue, queue->sinkpad, query))
         goto peer_failed;
 
       GST_DEBUG_OBJECT (queue, "peer query success");
+      break;
+    }
+    case GST_QUERY_BUFFERING:
+    {
+      GstFormat format;
+
+      GST_DEBUG_OBJECT (queue, "query buffering");
+
+      if (!QUEUE_IS_USING_TEMP_FILE (queue)) {
+        /* no temp file, just forward to the peer */
+        if (!gst_queue_peer_query (queue, queue->sinkpad, query))
+          goto peer_failed;
+        GST_DEBUG_OBJECT (queue, "buffering forwarded to peer");
+      } else {
+        gint64 start, stop;
+
+        gst_query_parse_buffering_range (query, &format, NULL, NULL, NULL);
+
+        switch (format) {
+          case GST_FORMAT_PERCENT:
+          {
+            gint64 duration;
+            GstFormat peer_fmt;
+
+            peer_fmt = GST_FORMAT_BYTES;
+
+            if (!gst_pad_query_peer_duration (queue->sinkpad, &peer_fmt,
+                    &duration))
+              goto peer_failed;
+
+            GST_DEBUG_OBJECT (queue, "duration %" G_GINT64_FORMAT ", writing %"
+                G_GINT64_FORMAT, duration, queue->writing_pos);
+
+            start = 0;
+            /* get our available data relative to the duration */
+            if (duration != -1)
+              stop = GST_FORMAT_PERCENT_MAX * queue->writing_pos / duration;
+            else
+              stop = -1;
+            break;
+          }
+          case GST_FORMAT_BYTES:
+            start = 0;
+            stop = queue->writing_pos;
+            break;
+          default:
+            start = -1;
+            stop = -1;
+            break;
+        }
+        gst_query_set_buffering_percent (query, queue->is_buffering, 100);
+        gst_query_set_buffering_range (query, format, start, stop, -1);
+      }
       break;
     }
     default:
@@ -1631,12 +1709,6 @@ gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
 peer_failed:
   {
     GST_DEBUG_OBJECT (queue, "failed peer query");
-    return FALSE;
-  }
-flushing:
-  {
-    GST_DEBUG_OBJECT (queue, "flushing while waiting for query");
-    GST_QUEUE_MUTEX_UNLOCK (queue);
     return FALSE;
   }
 }
@@ -1678,8 +1750,10 @@ gst_queue_src_checkgetrange_function (GstPad * pad)
   gboolean ret;
 
   queue = GST_QUEUE (gst_pad_get_parent (pad));
+
   /* we can operate in pull mode when we are using a tempfile */
   ret = QUEUE_IS_USING_TEMP_FILE (queue);
+
   gst_object_unref (GST_OBJECT (queue));
 
   return ret;
@@ -1921,7 +1995,7 @@ gst_queue_set_property (GObject * object,
       queue->high_percent = g_value_get_int (value);
       break;
     case PROP_TEMP_LOCATION:
-      gst_queue_set_temp_location (queue, g_value_dup_string (value));
+      gst_queue_set_temp_location (queue, g_value_get_string (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

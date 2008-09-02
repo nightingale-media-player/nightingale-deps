@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtspconnection</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspbase64.html" title="gstrtspbase64">
 <link rel="next" href="gst-plugins-base-libs-gstrtspdefs.html" title="gstrtspdefs">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,66 +36,63 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtspdefs.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2683296" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2684638" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtspconnection.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtspconnection.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtspconnection"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2683296"></a><span class="refentrytitle">gstrtspconnection</span>
-</h2>
-<p>gstrtspconnection &#8212; manage RTSP connections</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtspconnection.top_of_page"></a>gstrtspconnection</span></h2>
+<p>gstrtspconnection — manage RTSP connections</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstrtspconnection.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/rtsp/gstrtspconnection.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a>;
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create">gst_rtsp_connection_create</a>          (<a href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl">GstRTSPUrl</a> *url,
-                                                         <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> **conn);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-connect">gst_rtsp_connection_connect</a>         (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+                    <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a>;
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create" title="gst_rtsp_connection_create ()">gst_rtsp_connection_create</a>          (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> **conn);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-connect" title="gst_rtsp_connection_connect ()">gst_rtsp_connection_connect</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-close">gst_rtsp_connection_close</a>           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-free">gst_rtsp_connection_free</a>            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-read">gst_rtsp_connection_read</a>            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-close" title="gst_rtsp_connection_close ()">gst_rtsp_connection_close</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-free" title="gst_rtsp_connection_free ()">gst_rtsp_connection_free</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-read" title="gst_rtsp_connection_read ()">gst_rtsp_connection_read</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          guint8 *data,
                                                          guint size,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-write">gst_rtsp_connection_write</a>           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-write" title="gst_rtsp_connection_write ()">gst_rtsp_connection_write</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          const guint8 *data,
                                                          guint size,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-send">gst_rtsp_connection_send</a>            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *message,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-send" title="gst_rtsp_connection_send ()">gst_rtsp_connection_send</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-receive">gst_rtsp_connection_receive</a>         (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *message,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-receive" title="gst_rtsp_connection_receive ()">gst_rtsp_connection_receive</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-next-timeout">gst_rtsp_connection_next_timeout</a>    (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-next-timeout" title="gst_rtsp_connection_next_timeout ()">gst_rtsp_connection_next_timeout</a>    (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          GTimeVal *timeout);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-reset-timeout">gst_rtsp_connection_reset_timeout</a>   (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush">gst_rtsp_connection_flush</a>           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-reset-timeout" title="gst_rtsp_connection_reset_timeout ()">gst_rtsp_connection_reset_timeout</a>   (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()">gst_rtsp_connection_flush</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          gboolean flush);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-set-auth">gst_rtsp_connection_set_auth</a>        (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-set-auth" title="gst_rtsp_connection_set_auth ()">gst_rtsp_connection_set_auth</a>        (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
                                                          const gchar *user,
                                                          const gchar *pass);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2684638"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstrtspconnection.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2684650"></a><p>
+<a name="id2713976"></a><p>
 This object manages the RTSP connection to the server. It provides function
 to receive and send bytes and messages.
 </p>
@@ -108,11 +105,10 @@ Last reviewed on 2007-07-24 (0.10.14)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2684664"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtspconnection.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2684674"></a><h3>
-<a name="GstRTSPConnection"></a>GstRTSPConnection</h3>
-<a class="indexterm" name="id2684687"></a><pre class="programlisting">typedef struct {
+<a name="GstRTSPConnection"></a><h3>GstRTSPConnection</h3>
+<pre class="programlisting">typedef struct {
 } GstRTSPConnection;
 </pre>
 <p>
@@ -123,14 +119,13 @@ Opaque RTSP connection object.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2684706"></a><h3>
-<a name="gst-rtsp-connection-create"></a>gst_rtsp_connection_create ()</h3>
-<a class="indexterm" name="id2684720"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_create          (<a href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl">GstRTSPUrl</a> *url,
-                                                         <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> **conn);</pre>
+<a name="gst-rtsp-connection-create"></a><h3>gst_rtsp_connection_create ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_create          (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> **conn);</pre>
 <p>
-Create a newly allocated <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a> from <em class="parameter"><code>url</code></em> and store it in <em class="parameter"><code>conn</code></em>.
+Create a newly allocated <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a> from <em class="parameter"><code>url</code></em> and store it in <em class="parameter"><code>conn</code></em>.
 The connection will not yet attempt to connect to <em class="parameter"><code>url</code></em>, use
-<a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-connect"><code class="function">gst_rtsp_connection_connect()</code></a>.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-connect" title="gst_rtsp_connection_connect ()"><code class="function">gst_rtsp_connection_connect()</code></a>.</p>
 <p>
 
 </p>
@@ -138,18 +133,18 @@ The connection will not yet attempt to connect to <em class="parameter"><code>ur
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>url</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl"><span class="type">GstRTSPUrl</span></a> 
+<td><p><span class="term"><em class="parameter"><code>url</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl"><span class="type">GstRTSPUrl</span></a> 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when <em class="parameter"><code>conn</code></em> contains a valid connection.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when <em class="parameter"><code>conn</code></em> contains a valid connection.
 </td>
 </tr>
 </tbody>
@@ -157,15 +152,17 @@ The connection will not yet attempt to connect to <em class="parameter"><code>ur
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2684872"></a><h3>
-<a name="gst-rtsp-connection-connect"></a>gst_rtsp_connection_connect ()</h3>
-<a class="indexterm" name="id2684886"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_connect         (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a name="gst-rtsp-connection-connect"></a><h3>gst_rtsp_connection_connect ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_connect         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          GTimeVal *timeout);</pre>
 <p>
 Attempt to connect to the url of <em class="parameter"><code>conn</code></em> made with
-<a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create"><code class="function">gst_rtsp_connection_create()</code></a>. If <em class="parameter"><code>timeout</code></em> is <span class="type">NULL</span> this function can block
+<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create" title="gst_rtsp_connection_create ()"><code class="function">gst_rtsp_connection_create()</code></a>. If <em class="parameter"><code>timeout</code></em> is <span class="type">NULL</span> this function can block
 forever. If <em class="parameter"><code>timeout</code></em> contains a valid timeout, this function will return
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-ETIMEOUT:CAPS"><span class="type">GST_RTSP_ETIMEOUT</span></a> after the timeout expired.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-ETIMEOUT:CAPS"><span class="type">GST_RTSP_ETIMEOUT</span></a> after the timeout expired.
+</p>
+<p>
+This function can be cancelled with <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
 <p>
 
 </p>
@@ -173,18 +170,18 @@ forever. If <em class="parameter"><code>timeout</code></em> contains a valid tim
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a> 
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a> 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a <span class="type">GTimeVal</span> timeout
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when a connection could be made.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when a connection could be made.
 </td>
 </tr>
 </tbody>
@@ -192,9 +189,8 @@ forever. If <em class="parameter"><code>timeout</code></em> contains a valid tim
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685041"></a><h3>
-<a name="gst-rtsp-connection-close"></a>gst_rtsp_connection_close ()</h3>
-<a class="indexterm" name="id2685055"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_close           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
+<a name="gst-rtsp-connection-close"></a><h3>gst_rtsp_connection_close ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_close           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
 <p>
 Close the connected <em class="parameter"><code>conn</code></em>.</p>
 <p>
@@ -204,13 +200,13 @@ Close the connected <em class="parameter"><code>conn</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -218,9 +214,8 @@ Close the connected <em class="parameter"><code>conn</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685137"></a><h3>
-<a name="gst-rtsp-connection-free"></a>gst_rtsp_connection_free ()</h3>
-<a class="indexterm" name="id2685151"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_free            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
+<a name="gst-rtsp-connection-free"></a><h3>gst_rtsp_connection_free ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_free            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
 <p>
 Close and free <em class="parameter"><code>conn</code></em>.</p>
 <p>
@@ -230,13 +225,13 @@ Close and free <em class="parameter"><code>conn</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -244,9 +239,8 @@ Close and free <em class="parameter"><code>conn</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685234"></a><h3>
-<a name="gst-rtsp-connection-read"></a>gst_rtsp_connection_read ()</h3>
-<a class="indexterm" name="id2685247"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_read            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a name="gst-rtsp-connection-read"></a><h3>gst_rtsp_connection_read ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_read            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          guint8 *data,
                                                          guint size,
                                                          GTimeVal *timeout);</pre>
@@ -256,7 +250,7 @@ the specified <em class="parameter"><code>timeout</code></em>. <em class="parame
 might block forever.
 </p>
 <p>
-This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
+This function can be cancelled with <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
 <p>
 
 </p>
@@ -264,28 +258,28 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data to read
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a timeout value or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -293,9 +287,8 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685457"></a><h3>
-<a name="gst-rtsp-connection-write"></a>gst_rtsp_connection_write ()</h3>
-<a class="indexterm" name="id2685471"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_write           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a name="gst-rtsp-connection-write"></a><h3>gst_rtsp_connection_write ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_write           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          const guint8 *data,
                                                          guint size,
                                                          GTimeVal *timeout);</pre>
@@ -305,7 +298,7 @@ the specified <em class="parameter"><code>timeout</code></em>. <em class="parame
 might block forever.
 </p>
 <p>
-This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
+This function can be cancelled with <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
 <p>
 
 </p>
@@ -313,28 +306,28 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data to write
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a timeout value or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -342,10 +335,9 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685680"></a><h3>
-<a name="gst-rtsp-connection-send"></a>gst_rtsp_connection_send ()</h3>
-<a class="indexterm" name="id2685694"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_send            (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *message,
+<a name="gst-rtsp-connection-send"></a><h3>gst_rtsp_connection_send ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_send            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
                                                          GTimeVal *timeout);</pre>
 <p>
 Attempt to send <em class="parameter"><code>message</code></em> to the connected <em class="parameter"><code>conn</code></em>, blocking up to
@@ -353,7 +345,7 @@ the specified <em class="parameter"><code>timeout</code></em>. <em class="parame
 might block forever.
 </p>
 <p>
-This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
+This function can be cancelled with <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
 <p>
 
 </p>
@@ -361,23 +353,23 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> the message to send
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a timeout value or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -385,10 +377,9 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2685871"></a><h3>
-<a name="gst-rtsp-connection-receive"></a>gst_rtsp_connection_receive ()</h3>
-<a class="indexterm" name="id2685885"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_receive         (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *message,
+<a name="gst-rtsp-connection-receive"></a><h3>gst_rtsp_connection_receive ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_receive         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
                                                          GTimeVal *timeout);</pre>
 <p>
 Attempt to read into <em class="parameter"><code>message</code></em> from the connected <em class="parameter"><code>conn</code></em>, blocking up to
@@ -396,7 +387,7 @@ the specified <em class="parameter"><code>timeout</code></em>. <em class="parame
 might block forever.
 </p>
 <p>
-This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
+This function can be cancelled with <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()"><code class="function">gst_rtsp_connection_flush()</code></a>.</p>
 <p>
 
 </p>
@@ -404,23 +395,23 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> the message to read
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a timeout value or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -428,9 +419,8 @@ This function can be canceled with <a href="gst-plugins-base-libs-gstrtspconnect
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2686061"></a><h3>
-<a name="gst-rtsp-connection-next-timeout"></a>gst_rtsp_connection_next_timeout ()</h3>
-<a class="indexterm" name="id2686075"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_next_timeout    (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a name="gst-rtsp-connection-next-timeout"></a><h3>gst_rtsp_connection_next_timeout ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_next_timeout    (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          GTimeVal *timeout);</pre>
 <p>
 Calculate the next timeout for <em class="parameter"><code>conn</code></em>, storing the result in <em class="parameter"><code>timeout</code></em>.</p>
@@ -441,18 +431,18 @@ Calculate the next timeout for <em class="parameter"><code>conn</code></em>, sto
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>timeout</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
 <td> a timeout
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -460,9 +450,8 @@ Calculate the next timeout for <em class="parameter"><code>conn</code></em>, sto
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2686186"></a><h3>
-<a name="gst-rtsp-connection-reset-timeout"></a>gst_rtsp_connection_reset_timeout ()</h3>
-<a class="indexterm" name="id2686201"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_reset_timeout   (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
+<a name="gst-rtsp-connection-reset-timeout"></a><h3>gst_rtsp_connection_reset_timeout ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_reset_timeout   (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);</pre>
 <p>
 Reset the timeout of <em class="parameter"><code>conn</code></em>.</p>
 <p>
@@ -472,13 +461,13 @@ Reset the timeout of <em class="parameter"><code>conn</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -486,13 +475,12 @@ Reset the timeout of <em class="parameter"><code>conn</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2686283"></a><h3>
-<a name="gst-rtsp-connection-flush"></a>gst_rtsp_connection_flush ()</h3>
-<a class="indexterm" name="id2686297"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_flush           (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
+<a name="gst-rtsp-connection-flush"></a><h3>gst_rtsp_connection_flush ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_flush           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          gboolean flush);</pre>
 <p>
 Start or stop the flushing action on <em class="parameter"><code>conn</code></em>. When flushing, all current
-and future actions on <em class="parameter"><code>conn</code></em> will return <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-EINTR:CAPS"><span class="type">GST_RTSP_EINTR</span></a> until the connection
+and future actions on <em class="parameter"><code>conn</code></em> will return <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-EINTR:CAPS"><span class="type">GST_RTSP_EINTR</span></a> until the connection
 is set to non-flushing mode again.</p>
 <p>
 
@@ -501,18 +489,18 @@ is set to non-flushing mode again.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flush</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flush</code></em> :</span></p></td>
 <td> start or stop the flush
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -520,10 +508,9 @@ is set to non-flushing mode again.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2686419"></a><h3>
-<a name="gst-rtsp-connection-set-auth"></a>gst_rtsp_connection_set_auth ()</h3>
-<a class="indexterm" name="id2686433"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_set_auth        (<a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
+<a name="gst-rtsp-connection-set-auth"></a><h3>gst_rtsp_connection_set_auth ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_set_auth        (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
                                                          const gchar *user,
                                                          const gchar *pass);</pre>
 <p>
@@ -536,28 +523,28 @@ user and password respectively.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>conn</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
+<td><p><span class="term"><em class="parameter"><code>conn</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection"><span class="type">GstRTSPConnection</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
 <td> authentication method
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user</code></em> :</span></p></td>
 <td> the user
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>pass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pass</code></em> :</span></p></td>
 <td> the password
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -565,9 +552,12 @@ user and password respectively.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2686601"></a><h2>See Also</h2>
+<a name="gst-plugins-base-libs-gstrtspconnection.see-also"></a><h2>See Also</h2>
 gstrtspurl
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -47,8 +47,8 @@ struct _GstSamiContext
                                  * and _context_pop_state(). */
   htmlParserCtxtPtr htmlctxt;   /* html parser context */
   gboolean has_result;          /* set when ready to push out result */
-  gboolean in_title;            /* flag to avoid appending the title content
-                                 * to buf */
+  gboolean in_sync;             /* flag to avoid appending anything except the
+                                 * content of the sync elements to buf */
   guint64 time1;                /* previous start attribute in sync tag */
   guint64 time2;                /* current start attribute in sync tag  */
 };
@@ -131,10 +131,13 @@ handle_start_sync (GstSamiContext * sctx, const xmlChar ** atts)
       if (!value)
         continue;
       if (!xmlStrncmp ((const xmlChar *) "start", key, 5)) {
-        sctx->time1 = sctx->time2;
+        /* Only set a new start time if we don't have text pending */
+        if (sctx->resultbuf->len == 0)
+          sctx->time1 = sctx->time2;
+
         sctx->time2 = atoi ((const char *) value) * GST_MSECOND;
-        sctx->has_result = TRUE;
         g_string_append (sctx->resultbuf, sctx->buf->str);
+        sctx->has_result = (sctx->resultbuf->len != 0) ? TRUE : FALSE;
         g_string_truncate (sctx->buf, 0);
       }
     }
@@ -210,10 +213,9 @@ start_sami_element (void *ctx, const xmlChar * name, const xmlChar ** atts)
 {
   GstSamiContext *sctx = (GstSamiContext *) ctx;
 
-  if (!xmlStrncmp ((const xmlChar *) "title", name, 5)) {
-    sctx->in_title = TRUE;
-  } else if (!xmlStrncmp ((const xmlChar *) "sync", name, 4)) {
+  if (!xmlStrncmp ((const xmlChar *) "sync", name, 4)) {
     handle_start_sync (sctx, atts);
+    sctx->in_sync = TRUE;
   } else if (!xmlStrncmp ((const xmlChar *) "font", name, 4)) {
     handle_start_font (sctx, atts);
   } else if (!xmlStrncmp ((const xmlChar *) "ruby", name, 4)) {
@@ -239,8 +241,21 @@ end_sami_element (void *ctx, const xmlChar * name)
 {
   GstSamiContext *sctx = (GstSamiContext *) ctx;
 
-  if (!xmlStrncmp ((const xmlChar *) "title", name, 5)) {
-    sctx->in_title = FALSE;
+  if (!xmlStrncmp ((const xmlChar *) "sync", name, 4)) {
+    sctx->in_sync = FALSE;
+  } else if (!xmlStrncmp ((const xmlChar *) "body", name, 4)) {
+    /* We will usually have one buffer left when the body is closed
+     * as we need the next sync to actually send it */
+    if (sctx->buf->len != 0) {
+      /* Only set a new start time if we don't have text pending */
+      if (sctx->resultbuf->len == 0)
+        sctx->time1 = sctx->time2;
+
+      sctx->time2 = GST_CLOCK_TIME_NONE;
+      g_string_append (sctx->resultbuf, sctx->buf->str);
+      sctx->has_result = (sctx->resultbuf->len != 0) ? TRUE : FALSE;
+      g_string_truncate (sctx->buf, 0);
+    }
   } else if (!xmlStrncmp ((const xmlChar *) "font", name, 4)) {
     sami_context_pop_state (sctx, SPAN_TAG);
   } else if (!xmlStrncmp ((const xmlChar *) "ruby", name, 4)) {
@@ -255,12 +270,29 @@ characters_sami (void *ctx, const xmlChar * ch, int len)
 {
   GstSamiContext *sctx = (GstSamiContext *) ctx;
   gchar *escaped;
+  gchar *tmp;
+  gint i;
 
-  /* skip title */
-  if (sctx->in_title)
+  /* Skip everything except content of the sync elements */
+  if (!sctx->in_sync)
     return;
 
   escaped = g_markup_escape_text ((const gchar *) ch, len);
+  g_strstrip (escaped);
+
+  /* Remove double spaces forom the string as those are
+   * usually added by newlines and indention */
+  tmp = escaped;
+  for (i = 0; i <= strlen (escaped); i++) {
+    escaped[i] = *tmp;
+    if (*tmp != ' ') {
+      tmp++;
+      continue;
+    }
+    while (*tmp == ' ')
+      tmp++;
+  }
+
   if (has_tag (sctx->state, RT_TAG)) {
     g_string_append_c (sctx->rubybuf, ' ');
     g_string_append (sctx->rubybuf, escaped);
@@ -361,7 +393,7 @@ sami_context_reset (ParserState * state)
     g_string_truncate (context->resultbuf, 0);
     g_string_truncate (context->state, 0);
     context->has_result = FALSE;
-    context->in_title = FALSE;
+    context->in_sync = FALSE;
     context->time1 = 0;
     context->time2 = 0;
   }

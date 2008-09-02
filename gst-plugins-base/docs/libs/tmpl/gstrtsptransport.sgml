@@ -50,6 +50,21 @@ gstrtsptransport
 
 </para>
 
+@trans: 
+@profile: 
+@lower_transport: 
+@destination: 
+@source: 
+@layers: 
+@mode_play: 
+@mode_record: 
+@append: 
+@interleaved: 
+@ttl: 
+@port: 
+@client_port: 
+@server_port: 
+@ssrc: 
 
 <!-- ##### FUNCTION gst_rtsp_transport_new ##### -->
 <para>

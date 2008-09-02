@@ -228,7 +228,8 @@ gst_gnome_vfs_src_class_init (GstGnomeVFSSrcClass * klass)
       ARG_HANDLE,
       g_param_spec_boxed ("handle",
           "GnomeVFSHandle", "Handle for GnomeVFS",
-          GST_TYPE_GNOME_VFS_HANDLE, G_PARAM_READWRITE));
+          GST_TYPE_GNOME_VFS_HANDLE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* icecast stuff */
   g_object_class_install_property (gobject_class,
@@ -236,25 +237,24 @@ gst_gnome_vfs_src_class_init (GstGnomeVFSSrcClass * klass)
       g_param_spec_boolean ("iradio-mode",
           "iradio-mode",
           "Enable internet radio mode (extraction of shoutcast/icecast metadata)",
-          FALSE, G_PARAM_READWRITE));
+          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class,
       ARG_IRADIO_NAME,
       g_param_spec_string ("iradio-name",
-          "iradio-name", "Name of the stream", NULL, G_PARAM_READABLE));
-  g_object_class_install_property (gobject_class,
-      ARG_IRADIO_GENRE,
-      g_param_spec_string ("iradio-genre",
-          "iradio-genre", "Genre of the stream", NULL, G_PARAM_READABLE));
-  g_object_class_install_property (gobject_class,
-      ARG_IRADIO_URL,
-      g_param_spec_string ("iradio-url",
-          "iradio-url",
-          "Homepage URL for radio stream", NULL, G_PARAM_READABLE));
-  g_object_class_install_property (gobject_class,
-      ARG_IRADIO_TITLE,
-      g_param_spec_string ("iradio-title",
-          "iradio-title",
-          "Name of currently playing song", NULL, G_PARAM_READABLE));
+          "iradio-name", "Name of the stream", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, ARG_IRADIO_GENRE,
+      g_param_spec_string ("iradio-genre", "iradio-genre",
+          "Genre of the stream", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, ARG_IRADIO_URL,
+      g_param_spec_string ("iradio-url", "iradio-url",
+          "Homepage URL for radio stream", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, ARG_IRADIO_TITLE,
+      g_param_spec_string ("iradio-title", "iradio-title",
+          "Name of currently playing song", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_gnome_vfs_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_gnome_vfs_src_stop);
@@ -275,7 +275,6 @@ gst_gnome_vfs_src_init (GstGnomeVFSSrc * gnomevfssrc)
   gnomevfssrc->curoffset = 0;
   gnomevfssrc->seekable = FALSE;
 
-  gnomevfssrc->icy_caps = NULL;
   gnomevfssrc->iradio_mode = FALSE;
   gnomevfssrc->http_callbacks_pushed = FALSE;
   gnomevfssrc->iradio_name = NULL;
@@ -329,11 +328,6 @@ gst_gnome_vfs_src_finalize (GObject * object)
   g_free (src->iradio_title);
   src->iradio_title = NULL;
 
-  if (src->icy_caps) {
-    gst_caps_unref (src->icy_caps);
-    src->icy_caps = NULL;
-  }
-
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -350,12 +344,7 @@ gst_gnome_vfs_src_uri_get_type (void)
 static gchar **
 gst_gnome_vfs_src_uri_get_protocols (void)
 {
-  static gchar **protocols = NULL;
-
-  if (!protocols)
-    protocols = gst_gnomevfs_get_supported_uris ();
-
-  return protocols;
+  return gst_gnomevfs_get_supported_uris ();
 }
 
 static const gchar *
@@ -539,9 +528,14 @@ gst_gnome_vfs_src_received_headers_callback (gconstpointer in,
     /* Icecast stuff */
     if (strncmp (data, "icy-metaint:", 12) == 0) {      /* ugh */
       if (sscanf (data + 12, "%d", &icy_metaint) == 1) {
-        if (icy_metaint > 0)
-          src->icy_caps = gst_caps_new_simple ("application/x-icy",
+        if (icy_metaint > 0) {
+          GstCaps *icy_caps;
+
+          icy_caps = gst_caps_new_simple ("application/x-icy",
               "metadata-interval", G_TYPE_INT, icy_metaint, NULL);
+          gst_pad_set_caps (GST_BASE_SRC_PAD (src), icy_caps);
+          gst_caps_unref (icy_caps);
+        }
       }
       continue;
     }
@@ -638,9 +632,6 @@ gst_gnome_vfs_src_create (GstBaseSrc * basesrc, guint64 offset, guint size,
 
   buf = gst_buffer_new_and_alloc (size);
 
-  if (src->icy_caps)
-    gst_buffer_set_caps (buf, src->icy_caps);
-
   data = GST_BUFFER_DATA (buf);
   GST_BUFFER_OFFSET (buf) = src->curoffset;
 
@@ -725,7 +716,7 @@ gst_gnome_vfs_src_check_get_range (GstBaseSrc * basesrc)
   if (protocol == NULL)
     goto undecided;
 
-  if (strcmp (protocol, "http") == 0) {
+  if (strcmp (protocol, "http") == 0 || strcmp (protocol, "https") == 0) {
     GST_LOG_OBJECT (src, "blacklisted protocol '%s', no random access possible"
         " (URI=%s)", protocol, GST_STR_NULL (src->uri_name));
     return FALSE;
@@ -870,11 +861,6 @@ gst_gnome_vfs_src_stop (GstBaseSrc * basesrc)
     src->handle = NULL;
   }
   src->curoffset = 0;
-
-  if (src->icy_caps) {
-    gst_caps_unref (src->icy_caps);
-    src->icy_caps = NULL;
-  }
 
   return TRUE;
 }

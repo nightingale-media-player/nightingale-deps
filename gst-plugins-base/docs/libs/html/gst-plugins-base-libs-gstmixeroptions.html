@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstmixeroptions</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstmixer.html" title="gstmixer">
 <link rel="next" href="gst-plugins-base-libs-gstmixertrack.html" title="gstmixertrack">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,65 +36,64 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstmixertrack.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2606712" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2606795" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2606763" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstmixeroptions.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixeroptions.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixeroptions.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstmixeroptions"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2606712"></a><span class="refentrytitle">gstmixeroptions</span>
-</h2>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstmixeroptions.top_of_page"></a>gstmixeroptions</span></h2>
 <p>gstmixeroptions</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstmixeroptions.synopsis"></a><h2>Synopsis</h2>
 <a name="GstMixerOptions"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/mixer.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions-struct">GstMixerOptions</a>;
-GList*              <a href="gst-plugins-base-libs-gstmixeroptions.html#gst-mixer-options-get-values">gst_mixer_options_get_values</a>        (<a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *mixer_options);
-
+                    <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions-struct" title="GstMixerOptions">GstMixerOptions</a>;
+GList*              <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#gst-mixer-options-get-values" title="gst_mixer_options_get_values ()">gst_mixer_options_get_values</a>        (<a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *mixer_options);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2606763"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstmixeroptions.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
-   +----<a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a>
+   +----<a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a>
          +----GstMixerOptions
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2606795"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstmixeroptions.description"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2606809"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstmixeroptions.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2606820"></a><h3>
-<a name="GstMixerOptions-struct"></a>GstMixerOptions</h3>
-<a class="indexterm" name="id2606833"></a><pre class="programlisting">typedef struct _GstMixerOptions GstMixerOptions;</pre>
+<a name="GstMixerOptions-struct"></a><h3>GstMixerOptions</h3>
+<pre class="programlisting">typedef struct _GstMixerOptions GstMixerOptions;</pre>
+<p>
+</p>
 <p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2606849"></a><h3>
-<a name="gst-mixer-options-get-values"></a>gst_mixer_options_get_values ()</h3>
-<a class="indexterm" name="id2606862"></a><pre class="programlisting">GList*              gst_mixer_options_get_values        (<a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *mixer_options);</pre>
+<a name="gst-mixer-options-get-values"></a><h3>gst_mixer_options_get_values ()</h3>
+<pre class="programlisting">GList*              gst_mixer_options_get_values        (<a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *mixer_options);</pre>
 <p>
 Get the values for the mixer option.</p>
 <p>
@@ -104,13 +103,15 @@ Get the values for the mixer option.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer_options</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> item that owns the values.
+<td><p><span class="term"><em class="parameter"><code>mixer_options</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> item that owns the values.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> A list of all the possible values for the mixer option.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> A list of strings with all the possible values for the mixer
+    option. You must not free or modify the list or its contents, it belongs
+    to the <em class="parameter"><code>mixer_options</code></em> object.
 </td>
 </tr>
 </tbody>
@@ -118,5 +119,8 @@ Get the values for the mixer option.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -145,57 +145,61 @@ gst_play_base_bin_class_init (GstPlayBaseBinClass * klass)
 
   g_object_class_install_property (gobject_klass, ARG_URI,
       g_param_spec_string ("uri", "URI", "URI of the media to play",
-          NULL, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_SUBURI,
       g_param_spec_string ("suburi", ".sub-URI", "Optional URI of a subtitle",
-          NULL, G_PARAM_READWRITE));
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_klass, ARG_QUEUE_SIZE,
       g_param_spec_uint64 ("queue-size", "Queue size",
           "Size of internal queues in nanoseconds", 0, G_MAXINT64,
-          DEFAULT_QUEUE_SIZE, G_PARAM_READWRITE));
+          DEFAULT_QUEUE_SIZE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_QUEUE_THRESHOLD,
       g_param_spec_uint64 ("queue-threshold", "Queue threshold",
           "Buffering threshold of internal queues in nanoseconds", 0,
-          G_MAXINT64, DEFAULT_QUEUE_THRESHOLD, G_PARAM_READWRITE));
+          G_MAXINT64, DEFAULT_QUEUE_THRESHOLD,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_QUEUE_MIN_THRESHOLD,
       g_param_spec_uint64 ("queue-min-threshold", "Queue min threshold",
           "Buffering low threshold of internal queues in nanoseconds", 0,
-          G_MAXINT64, DEFAULT_QUEUE_MIN_THRESHOLD, G_PARAM_READWRITE));
+          G_MAXINT64, DEFAULT_QUEUE_MIN_THRESHOLD,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_klass, ARG_NSTREAMS,
       g_param_spec_int ("nstreams", "NStreams", "number of streams",
-          0, G_MAXINT, 0, G_PARAM_READABLE));
+          0, G_MAXINT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_STREAMINFO,
       g_param_spec_pointer ("stream-info", "Stream info", "List of streaminfo",
-          G_PARAM_READABLE));
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_STREAMINFO_VALUES,
       g_param_spec_value_array ("stream-info-value-array",
           "StreamInfo GValueArray", "value array of streaminfo",
           g_param_spec_object ("streaminfo", "StreamInfo", "Streaminfo object",
-              GST_TYPE_STREAM_INFO, G_PARAM_READABLE), G_PARAM_READABLE));
+              GST_TYPE_STREAM_INFO, G_PARAM_READABLE),
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_SOURCE,
       g_param_spec_object ("source", "Source", "Source element",
-          GST_TYPE_ELEMENT, G_PARAM_READABLE));
+          GST_TYPE_ELEMENT, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_klass, ARG_VIDEO,
       g_param_spec_int ("current-video", "Current video",
           "Currently playing video stream (-1 = none)",
-          -1, G_MAXINT, -1, G_PARAM_READWRITE));
+          -1, G_MAXINT, -1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_AUDIO,
       g_param_spec_int ("current-audio", "Current audio",
           "Currently playing audio stream (-1 = none)",
-          -1, G_MAXINT, -1, G_PARAM_READWRITE));
+          -1, G_MAXINT, -1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_TEXT,
       g_param_spec_int ("current-text", "Current text",
           "Currently playing text stream (-1 = none)",
-          -1, G_MAXINT, -1, G_PARAM_READWRITE));
+          -1, G_MAXINT, -1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, ARG_SUBTITLE_ENCODING,
       g_param_spec_string ("subtitle-encoding", "subtitle encoding",
           "Encoding to assume if input subtitles are not in UTF-8 encoding. "
           "If not set, the GST_SUBTITLE_ENCODING environment variable will "
           "be checked for an encoding to use. If that is not set either, "
-          "ISO-8859-15 will be assumed.", NULL, G_PARAM_READWRITE));
+          "ISO-8859-15 will be assumed.", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstPlayBin::connection-speed
    *
@@ -206,7 +210,8 @@ gst_play_base_bin_class_init (GstPlayBaseBinClass * klass)
   g_object_class_install_property (gobject_klass, ARG_CONNECTION_SPEED,
       g_param_spec_uint ("connection-speed", "Connection Speed",
           "Network connection speed in kbps (0 = unknown)",
-          0, G_MAXUINT, DEFAULT_CONNECTION_SPEED, G_PARAM_READWRITE));
+          0, G_MAXUINT, DEFAULT_CONNECTION_SPEED,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   GST_DEBUG_CATEGORY_INIT (gst_play_base_bin_debug, "playbasebin", 0,
       "playbasebin");
@@ -623,7 +628,7 @@ queue_remove_probe (GstElement * queue, GstPlayBaseBin * play_base_bin)
   GstPad *sinkpad;
 
   data = g_object_get_data (G_OBJECT (queue), "probe");
-  sinkpad = gst_element_get_pad (queue, "sink");
+  sinkpad = gst_element_get_static_pad (queue, "sink");
 
   if (data) {
     GST_DEBUG_OBJECT (play_base_bin,
@@ -747,7 +752,7 @@ queue_out_of_data (GstElement * queue, GstPlayBaseBin * play_base_bin)
     GstPad *sinkpad;
     guint id;
 
-    sinkpad = gst_element_get_pad (queue, "sink");
+    sinkpad = gst_element_get_static_pad (queue, "sink");
     id = gst_pad_add_buffer_probe (sinkpad, G_CALLBACK (check_queue), queue);
     g_object_set_data (G_OBJECT (queue), "probe", GINT_TO_POINTER (id));
     GST_DEBUG_OBJECT (play_base_bin,
@@ -858,7 +863,7 @@ gen_preroll_element (GstPlayBaseBin * play_base_bin,
     g_object_set_data (G_OBJECT (preroll), "pbb", play_base_bin);
 
     /* give updates on queue size */
-    sinkpad = gst_element_get_pad (preroll, "sink");
+    sinkpad = gst_element_get_static_pad (preroll, "sink");
     id = gst_pad_add_buffer_probe (sinkpad, G_CALLBACK (check_queue), preroll);
     GST_DEBUG_OBJECT (play_base_bin, "Attaching probe to pad %s:%s (%p)",
         GST_DEBUG_PAD_NAME (sinkpad), sinkpad);
@@ -879,7 +884,7 @@ gen_preroll_element (GstPlayBaseBin * play_base_bin,
   }
 
   /* listen for EOS so we can switch groups when one ended. */
-  preroll_pad = gst_element_get_pad (preroll, "src");
+  preroll_pad = gst_element_get_static_pad (preroll, "src");
   gst_pad_add_event_probe (preroll_pad, G_CALLBACK (probe_triggered), info);
   gst_object_unref (preroll_pad);
 
@@ -1241,11 +1246,11 @@ preroll_unlinked (GstPad * pad, GstPad * peerpad,
 
   /* make a fakesrc that will just emit one EOS */
   fakesrc = gst_element_factory_make ("fakesrc", NULL);
-  g_object_set (G_OBJECT (fakesrc), "num_buffers", 0, NULL);
+  g_object_set (G_OBJECT (fakesrc), "num-buffers", 0, NULL);
 
   GST_DEBUG ("patching unlinked pad %s:%s", GST_DEBUG_PAD_NAME (pad));
 
-  srcpad = gst_element_get_pad (fakesrc, "src");
+  srcpad = gst_element_get_static_pad (fakesrc, "src");
   gst_bin_add (GST_BIN_CAST (play_base_bin), fakesrc);
   gst_pad_link (srcpad, pad);
   gst_object_unref (srcpad);
@@ -1907,9 +1912,13 @@ analyse_source (GstPlayBaseBin * play_base_bin, gboolean * is_raw,
 
       templ = (GstPadTemplate *) walk->data;
       if (GST_PAD_TEMPLATE_DIRECTION (templ) == GST_PAD_SRC) {
-        if (GST_PAD_TEMPLATE_PRESENCE (templ) == GST_PAD_SOMETIMES)
+        if (GST_PAD_TEMPLATE_PRESENCE (templ) == GST_PAD_SOMETIMES) {
           *is_dynamic = TRUE;
-        break;
+          break;                /* only break out if we found a sometimes src pad 
+                                   continue walking through if say a request src pad is found
+                                   elements such as mpegtsparse and dvbbasebin have request
+                                   and sometimes src pads */
+        }
       }
       walk = g_list_next (walk);
     }
@@ -2349,13 +2358,13 @@ mute_group_type (GstPlayBaseGroup * group, GstStreamType type, gboolean mute)
   gboolean active = !mute;
   GstPad *pad;
 
-  pad = gst_element_get_pad (group->type[type - 1].preroll, "src");
+  pad = gst_element_get_static_pad (group->type[type - 1].preroll, "src");
   gst_pad_set_active (pad, active);
   gst_object_unref (pad);
-  pad = gst_element_get_pad (group->type[type - 1].preroll, "sink");
+  pad = gst_element_get_static_pad (group->type[type - 1].preroll, "sink");
   gst_pad_set_active (pad, active);
   gst_object_unref (pad);
-  pad = gst_element_get_pad (group->type[type - 1].selector, "src");
+  pad = gst_element_get_static_pad (group->type[type - 1].selector, "src");
   gst_pad_set_active (pad, active);
   gst_object_unref (pad);
 
@@ -2404,6 +2413,17 @@ set_subtitles_visible (GstPlayBaseBin * play_base_bin, gboolean visible)
     klass->set_subtitles_visible (play_base_bin, visible);
 }
 
+static void
+set_audio_mute (GstPlayBaseBin * play_base_bin, gboolean mute)
+{
+  GstPlayBaseBinClass *klass = GST_PLAY_BASE_BIN_GET_CLASS (play_base_bin);
+
+  /* we use a vfunc for this since we don't have a reference to the
+   * textoverlay element, but playbin does */
+  if (klass != NULL && klass->set_audio_mute != NULL)
+    klass->set_audio_mute (play_base_bin, mute);
+}
+
 /*
  * Caller has group-lock held.
  */
@@ -2436,6 +2456,13 @@ set_active_source (GstPlayBaseBin * play_base_bin,
     set_subtitles_visible (play_base_bin, visible);
     if (!visible)
       return;
+  } else if (type == GST_STREAM_TYPE_AUDIO) {
+    gboolean mute = (source_num == -1);
+
+    set_audio_mute (play_base_bin, mute);
+
+    if (mute)
+      return;
   }
 
   sel = group->type[type - 1].selector;
@@ -2456,8 +2483,7 @@ set_active_source (GstPlayBaseBin * play_base_bin,
                 "pb_sel_pad"));
 
         if (sel && sel_pad != NULL) {
-          g_object_set (G_OBJECT (sel), "active-pad", GST_PAD_NAME (sel_pad),
-              NULL);
+          g_object_set (G_OBJECT (sel), "active-pad", sel_pad, NULL);
         }
 
         have_active = TRUE;
@@ -2476,7 +2502,7 @@ set_active_source (GstPlayBaseBin * play_base_bin,
 
   if (!have_active) {
     GST_LOG ("Muting group type: %d", type);
-    g_object_set (sel, "active-pad", "", NULL);
+    g_object_set (sel, "active-pad", NULL, NULL);
   } else {
     GST_LOG ("Unmuting group type: %d", type);
   }

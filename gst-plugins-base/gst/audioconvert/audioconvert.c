@@ -409,7 +409,8 @@ audio_convert_clean_fmt (AudioConvertFmt * fmt)
 
 gboolean
 audio_convert_prepare_context (AudioConvertCtx * ctx, AudioConvertFmt * in,
-    AudioConvertFmt * out, DitherType dither, NoiseShapingType ns)
+    AudioConvertFmt * out, GstAudioConvertDithering dither,
+    GstAudioConvertNoiseShaping ns)
 {
   gint idx_in, idx_out;
 
@@ -419,6 +420,9 @@ audio_convert_prepare_context (AudioConvertCtx * ctx, AudioConvertFmt * in,
 
   /* first clean the existing context */
   audio_convert_clean_context (ctx);
+
+  g_return_val_if_fail (in->unpositioned_layout == out->unpositioned_layout,
+      FALSE);
 
   ctx->in = *in;
   ctx->out = *out;

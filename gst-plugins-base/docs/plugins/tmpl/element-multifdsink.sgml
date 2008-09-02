@@ -232,3 +232,21 @@ Send data to multiple filedescriptors
 @GST_CLIENT_STATUS_DUPLICATE: 
 @GST_CLIENT_STATUS_FLUSHING: 
 
+<!-- ##### ENUM GstTCPProtocol ##### -->
+<para>
+
+</para>
+
+@GST_TCP_PROTOCOL_NONE: 
+@GST_TCP_PROTOCOL_GDP: 
+
+<!-- ##### ENUM GstTCPUnitType ##### -->
+<para>
+
+</para>
+
+@GST_TCP_UNIT_TYPE_UNDEFINED: 
+@GST_TCP_UNIT_TYPE_BUFFERS: 
+@GST_TCP_UNIT_TYPE_TIME: 
+@GST_TCP_UNIT_TYPE_BYTES: 
+

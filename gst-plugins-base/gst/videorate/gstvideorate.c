@@ -173,24 +173,26 @@ gst_video_rate_class_init (GstVideoRateClass * klass)
 
   g_object_class_install_property (object_class, ARG_IN,
       g_param_spec_uint64 ("in", "In",
-          "Number of input frames", 0, G_MAXUINT64, 0, G_PARAM_READABLE));
+          "Number of input frames", 0, G_MAXUINT64, 0,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, ARG_OUT,
-      g_param_spec_uint64 ("out", "Out",
-          "Number of output frames", 0, G_MAXUINT64, 0, G_PARAM_READABLE));
+      g_param_spec_uint64 ("out", "Out", "Number of output frames", 0,
+          G_MAXUINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, ARG_DUP,
       g_param_spec_uint64 ("duplicate", "Duplicate",
-          "Number of duplicated frames", 0, G_MAXUINT64, 0, G_PARAM_READABLE));
+          "Number of duplicated frames", 0, G_MAXUINT64, 0,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, ARG_DROP,
-      g_param_spec_uint64 ("drop", "Drop",
-          "Number of dropped frames", 0, G_MAXUINT64, 0, G_PARAM_READABLE));
+      g_param_spec_uint64 ("drop", "Drop", "Number of dropped frames", 0,
+          G_MAXUINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, ARG_SILENT,
       g_param_spec_boolean ("silent", "silent",
-          "Don't emit notify for dropped and duplicated frames",
-          DEFAULT_SILENT, G_PARAM_READWRITE));
+          "Don't emit notify for dropped and duplicated frames", DEFAULT_SILENT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, ARG_NEW_PREF,
-      g_param_spec_double ("new_pref", "New Pref",
-          "Value indicating how much to prefer new frames (unused)",
-          0.0, 1.0, DEFAULT_NEW_PREF, G_PARAM_READWRITE));
+      g_param_spec_double ("new-pref", "New Pref",
+          "Value indicating how much to prefer new frames (unused)", 0.0, 1.0,
+          DEFAULT_NEW_PREF, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   element_class->change_state = gst_video_rate_change_state;
 }
@@ -362,6 +364,7 @@ gst_video_rate_reset (GstVideoRate * videorate)
 
   videorate->in = 0;
   videorate->out = 0;
+  videorate->segment_out = 0;
   videorate->drop = 0;
   videorate->dup = 0;
   videorate->next_ts = GST_CLOCK_TIME_NONE;
@@ -421,10 +424,11 @@ gst_video_rate_flush_prev (GstVideoRate * videorate)
   push_ts = videorate->next_ts;
 
   videorate->out++;
+  videorate->segment_out++;
   if (videorate->to_rate_numerator) {
     /* interpolate next expected timestamp in the segment */
     videorate->next_ts = videorate->segment.accum + videorate->segment.start +
-        gst_util_uint64_scale (videorate->out,
+        gst_util_uint64_scale (videorate->segment_out,
         videorate->to_rate_denominator * GST_SECOND,
         videorate->to_rate_numerator);
     GST_BUFFER_DURATION (outbuf) = videorate->next_ts - push_ts;
@@ -462,6 +466,7 @@ gst_video_rate_swap_prev (GstVideoRate * videorate, GstBuffer * buffer,
   videorate->prev_ts = time;
 }
 
+#define MAGIC_LIMIT  25
 static gboolean
 gst_video_rate_event (GstPad * pad, GstEvent * event)
 {
@@ -485,6 +490,38 @@ gst_video_rate_event (GstPad * pad, GstEvent * event)
         goto format_error;
 
       GST_DEBUG_OBJECT (videorate, "handle NEWSEGMENT");
+
+      /* close up the previous segment, if appropriate */
+      if (!update && videorate->prevbuf) {
+        gint count = 0;
+        GstFlowReturn res;
+
+        res = GST_FLOW_OK;
+        /* fill up to the end of current segment,
+         * or only send out the stored buffer if there is no specific stop.
+         * regardless, prevent going loopy in strange cases */
+        while (res == GST_FLOW_OK && count <= MAGIC_LIMIT &&
+            ((GST_CLOCK_TIME_IS_VALID (videorate->segment.stop) &&
+                    videorate->next_ts - videorate->segment.accum
+                    < videorate->segment.stop)
+                || count < 1)) {
+          gst_video_rate_flush_prev (videorate);
+          count++;
+        }
+        if (count > 1) {
+          videorate->dup += count - 1;
+          if (!videorate->silent)
+            g_object_notify (G_OBJECT (videorate), "duplicate");
+        } else if (count == 0) {
+          videorate->drop++;
+          if (!videorate->silent)
+            g_object_notify (G_OBJECT (videorate), "drop");
+        }
+        /* clean up for the new one; _chain will resume from the new start */
+        videorate->segment_out = 0;
+        gst_video_rate_swap_prev (videorate, NULL, 0);
+        videorate->next_ts = GST_CLOCK_TIME_NONE;
+      }
 
       /* We just want to update the accumulated stream_time  */
       gst_segment_set_newsegment_full (&videorate->segment, update, rate, arate,
@@ -615,7 +652,7 @@ gst_video_rate_chain (GstPad * pad, GstBuffer * buffer)
     if (!GST_CLOCK_TIME_IS_VALID (videorate->next_ts)) {
       /* new buffer, we expect to output a buffer that matches the first
        * timestamp in the segment */
-      videorate->next_ts = videorate->segment.start;
+      videorate->next_ts = videorate->segment.start + videorate->segment.accum;
     }
   } else {
     GstClockTime prevtime;

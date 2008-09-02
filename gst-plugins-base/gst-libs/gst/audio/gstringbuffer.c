@@ -258,6 +258,7 @@ gst_ring_buffer_debug_spec_buff (GstRingBufferSpec * spec)
   GST_DEBUG ("acquire ringbuffer: latency time: %" G_GINT64_FORMAT " usec",
       spec->latency_time);
   GST_DEBUG ("acquire ringbuffer: total segments: %d", spec->segtotal);
+  GST_DEBUG ("acquire ringbuffer: latency segments: %d", spec->seglatency);
   GST_DEBUG ("acquire ringbuffer: segment size: %d bytes = %d samples",
       spec->segsize, spec->segsize / spec->bytes_per_sample);
   GST_DEBUG ("acquire ringbuffer: buffer size: %d bytes = %d samples",
@@ -286,11 +287,6 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
   /* we have to differentiate between int and float formats */
   mimetype = gst_structure_get_name (structure);
 
-  /* get rate and channels */
-  if (!(gst_structure_get_int (structure, "rate", &spec->rate) &&
-          gst_structure_get_int (structure, "channels", &spec->channels)))
-    goto parse_error;
-
   if (!strncmp (mimetype, "audio/x-raw-int", 15)) {
     gint endianness;
     const FormatDef *def;
@@ -299,7 +295,9 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
     spec->type = GST_BUFTYPE_LINEAR;
 
     /* extract the needed information from the cap */
-    if (!(gst_structure_get_int (structure, "width", &spec->width) &&
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate) &&
+            gst_structure_get_int (structure, "channels", &spec->channels) &&
+            gst_structure_get_int (structure, "width", &spec->width) &&
             gst_structure_get_int (structure, "depth", &spec->depth) &&
             gst_structure_get_boolean (structure, "signed", &spec->sign)))
       goto parse_error;
@@ -333,8 +331,10 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
 
     spec->type = GST_BUFTYPE_FLOAT;
 
-    /* get layout */
-    if (!gst_structure_get_int (structure, "width", &spec->width))
+    /* extract the needed information from the cap */
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate) &&
+            gst_structure_get_int (structure, "channels", &spec->channels) &&
+            gst_structure_get_int (structure, "width", &spec->width)))
       goto parse_error;
 
     /* match layout to format wrt to endianness */
@@ -353,6 +353,11 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
     /* float silence is all zeros.. */
     memset (spec->silence_sample, 0, 32);
   } else if (!strncmp (mimetype, "audio/x-alaw", 12)) {
+    /* extract the needed information from the cap */
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate) &&
+            gst_structure_get_int (structure, "channels", &spec->channels)))
+      goto parse_error;
+
     spec->type = GST_BUFTYPE_A_LAW;
     spec->format = GST_A_LAW;
     spec->width = 8;
@@ -360,12 +365,37 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
     for (i = 0; i < spec->channels; i++)
       spec->silence_sample[i] = 0xd5;
   } else if (!strncmp (mimetype, "audio/x-mulaw", 13)) {
+    /* extract the needed information from the cap */
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate) &&
+            gst_structure_get_int (structure, "channels", &spec->channels)))
+      goto parse_error;
+
     spec->type = GST_BUFTYPE_MU_LAW;
     spec->format = GST_MU_LAW;
     spec->width = 8;
     spec->depth = 8;
     for (i = 0; i < spec->channels; i++)
       spec->silence_sample[i] = 0xff;
+  } else if (!strncmp (mimetype, "audio/x-iec958", 14)) {
+    /* extract the needed information from the cap */
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate)))
+      goto parse_error;
+
+    spec->type = GST_BUFTYPE_IEC958;
+    spec->format = GST_IEC958;
+    spec->width = 16;
+    spec->depth = 16;
+    spec->channels = 2;
+  } else if (!strncmp (mimetype, "audio/x-ac3", 11)) {
+    /* extract the needed information from the cap */
+    if (!(gst_structure_get_int (structure, "rate", &spec->rate)))
+      goto parse_error;
+
+    spec->type = GST_BUFTYPE_AC3;
+    spec->format = GST_AC3;
+    spec->width = 16;
+    spec->depth = 16;
+    spec->channels = 2;
   } else {
     goto parse_error;
   }
@@ -385,6 +415,9 @@ gst_ring_buffer_parse_caps (GstRingBufferSpec * spec, GstCaps * caps)
   spec->segsize -= spec->segsize % spec->bytes_per_sample;
 
   spec->segtotal = spec->buffer_time / spec->latency_time;
+  /* leave the latency undefined now, implementations can change it but if it's
+   * not changed, we assume the same value as segtotal */
+  spec->seglatency = -1;
 
   gst_ring_buffer_debug_spec_caps (spec);
   gst_ring_buffer_debug_spec_buff (spec);
@@ -619,6 +652,11 @@ gst_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
 
   if (G_UNLIKELY ((bps = buf->spec.bytes_per_sample) == 0))
     goto invalid_bps;
+
+  /* if the seglatency was overwritten with something else than -1, use it, else
+   * assume segtotal as the latency */
+  if (buf->spec.seglatency == -1)
+    buf->spec.seglatency = buf->spec.segtotal;
 
   segsize = buf->spec.segsize;
 
@@ -1728,5 +1766,5 @@ gst_ring_buffer_may_start (GstRingBuffer * buf, gboolean allowed)
   g_return_if_fail (GST_IS_RING_BUFFER (buf));
 
   GST_LOG_OBJECT (buf, "may start: %d", allowed);
-  gst_atomic_int_set (&buf->abidata.ABI.may_start, allowed);
+  g_atomic_int_set (&buf->abidata.ABI.may_start, allowed);
 }

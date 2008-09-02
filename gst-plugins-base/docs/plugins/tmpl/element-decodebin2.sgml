@@ -18,7 +18,7 @@ Autoplug and decode to raw media
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### TYPEDEF GstDecodeBin2 ##### -->
+<!-- ##### STRUCT GstDecodeBin2 ##### -->
 <para>
 
 </para>
@@ -42,7 +42,7 @@ Autoplug and decode to raw media
 @gstdecodebin2: the object which received the signal.
 @arg1: 
 @arg2: 
-@Returns: 
+@arg3: 
 @Returns: 
 
 <!-- ##### SIGNAL GstDecodeBin2::new-decoded-pad ##### -->
@@ -105,6 +105,11 @@ Autoplug and decode to raw media
 </para>
 
 <!-- ##### ARG GstDecodeBin2:subtitle-encoding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDecodeBin2:sink-caps ##### -->
 <para>
 
 </para>

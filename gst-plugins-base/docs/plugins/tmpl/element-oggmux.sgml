@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+oggmux
+
+<!-- ##### SECTION Short_Description ##### -->
+mux ogg streams (info about ogg: http://xiph.org)
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-oggmux-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstOggMux ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstOggMux:max-delay ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstOggMux:max-page-delay ##### -->
+<para>
+
+</para>
+

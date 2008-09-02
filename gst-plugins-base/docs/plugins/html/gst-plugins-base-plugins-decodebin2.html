@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>decodebin2</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-playbin.html" title="playbin">
-<link rel="next" href="gst-plugins-base-plugins-tcpserversink.html" title="tcpserversink">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="prev" href="gst-plugins-base-plugins-decodebin.html" title="decodebin">
+<link rel="next" href="gst-plugins-base-plugins-ffmpegcolorspace.html" title="ffmpegcolorspace">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -16,48 +16,42 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-playbin.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-decodebin.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-tcpserversink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-ffmpegcolorspace.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2597262" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2607597" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2597221" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2607824" class="shortcut">Implemented Interfaces</a>
-                  &#160;|&#160;
-                  <a href="#id2563338" class="shortcut">Properties</a>
-                  &#160;|&#160;
-                  <a href="#id2578161" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-decodebin2.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-decodebin2.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-decodebin2.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-decodebin2.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-decodebin2.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-decodebin2.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-decodebin2"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2597262"></a><span class="refentrytitle">decodebin2</span>
-</h2>
-<p>decodebin2 &#8212; Next-generation automatic decoding bin</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-decodebin2.top_of_page"></a>decodebin2</span></h2>
+<p>decodebin2 — Next-generation automatic decoding bin</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-decodebin2.synopsis"></a><h2>Synopsis</h2>
 <a name="GstDecodeBin2"></a><pre class="synopsis">
-
-
-
-typedef             <a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a>;
+struct              <a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-struct" title="struct GstDecodeBin2">GstDecodeBin2</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597221"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-decodebin2.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -66,35 +60,34 @@ typedef             <a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeB
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2607824"></a><h2>Implemented Interfaces</h2>
+<a name="gst-plugins-base-plugins-decodebin2.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstDecodeBin2 implements
  GstChildProxy.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2563338"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-decodebin2.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--caps">caps</a>"                     GstCaps*              : Read / Write
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--subtitle-encoding">subtitle-encoding</a>"        gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2--sink-caps" title='The "sink-caps" property'>sink-caps</a>"                GstCaps*              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2578161"></a><h2>Signals</h2>
+<a name="gst-plugins-base-plugins-decodebin2.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-continue">autoplug-continue</a>"                              : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-sort">autoplug-sort</a>"                                  : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-new-decoded-pad">new-decoded-pad</a>"                                : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-removed-decoded-pad">removed-decoded-pad</a>"                            : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-unknown-type">unknown-type</a>"                                   : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-factories">autoplug-factories</a>"                             : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-select">autoplug-select</a>"                                : Run Last
-  "<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-drained">drained</a>"                                        : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-continue" title='The "autoplug-continue" signal'>autoplug-continue</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-sort" title='The "autoplug-sort" signal'>autoplug-sort</a>"                                  : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-new-decoded-pad" title='The "new-decoded-pad" signal'>new-decoded-pad</a>"                                : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-removed-decoded-pad" title='The "removed-decoded-pad" signal'>removed-decoded-pad</a>"                            : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-unknown-type" title='The "unknown-type" signal'>unknown-type</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-factories" title='The "autoplug-factories" signal'>autoplug-factories</a>"                             : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-autoplug-select" title='The "autoplug-select" signal'>autoplug-select</a>"                                : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2-drained" title='The "drained" signal'>drained</a>"                                        : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2607597"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-decodebin2.description"></a><h2>Description</h2>
 <p>
 <span class="type">GstBin</span> that auto-magically constructs a decoding pipeline using available
 decoders and demuxers via auto-plugging.
@@ -108,44 +101,43 @@ To try out decodebin2, you can set the USE_DECODEBIN2 environment
 variable (USE_DECODEBIN2=1 for example). This will cause playbin to use
 decodebin2 instead of the older decodebin for its internal auto-plugging.</p>
 <div class="refsect2" lang="en">
-<a name="id2607635"></a><h3>Element Information</h3>
+<a name="id2593727"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          uridecodebin
+          <a class="link" href="gst-plugins-base-plugins-plugin-uridecodebin.html#plugin-uridecodebin">uridecodebin</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Edward Hervey &lt;edward@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Generic/Bin/Decoder</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
-<td>sink</td>
+<td><p><span class="term">name</span></p></td>
+<td>src%d</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
-<td>sink</td>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -154,19 +146,19 @@ decodebin2 instead of the older decodebin for its internal auto-plugging.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
-<td>src%d</td>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
-<td>sometimes</td>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -177,12 +169,10 @@ decodebin2 instead of the older decodebin for its internal auto-plugging.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608575"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-decodebin2.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2608586"></a><h3>
-<a name="GstDecodeBin2"></a>GstDecodeBin2</h3>
-<a class="indexterm" name="id2608598"></a><pre class="programlisting">typedef struct _GstDecodeBin GstDecodeBin2;
-</pre>
+<a name="GstDecodeBin2-struct"></a><h3>struct GstDecodeBin2</h3>
+<pre class="programlisting">struct GstDecodeBin2;</pre>
 <p>
 The opaque <span class="type">DecodeBin2</span> data structure</p>
 <p>
@@ -191,30 +181,33 @@ The opaque <span class="type">DecodeBin2</span> data structure</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608627"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-decodebin2.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2608638"></a><h3>
-<a name="GstDecodeBin2--caps"></a>The "<code class="literal">caps</code>" property</h3>
-<a class="indexterm" name="id2608653"></a><pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<a name="GstDecodeBin2--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
+<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
 <p>The caps on which to stop decoding.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2608673"></a><h3>
-<a name="GstDecodeBin2--subtitle-encoding"></a>The "<code class="literal">subtitle-encoding</code>" property</h3>
-<a class="indexterm" name="id2608689"></a><pre class="programlisting">  "subtitle-encoding"        gchar*                : Read / Write</pre>
+<a name="GstDecodeBin2--subtitle-encoding"></a><h3>The <code class="literal">"subtitle-encoding"</code> property</h3>
+<pre class="programlisting">  "subtitle-encoding"        gchar*                : Read / Write</pre>
 <p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
 <p>Default value: NULL</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstDecodeBin2--sink-caps"></a><h3>The <code class="literal">"sink-caps"</code> property</h3>
+<pre class="programlisting">  "sink-caps"                GstCaps*              : Read / Write</pre>
+<p>The caps of the input data. (NULL = use typefind element).</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608720"></a><h2>Signal Details</h2>
+<a name="gst-plugins-base-plugins-decodebin2.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2608731"></a><h3>
-<a name="GstDecodeBin2-autoplug-continue"></a>The "autoplug-continue" signal</h3>
-<a class="indexterm" name="id2608740"></a><pre class="programlisting">gboolean            user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *caps,
-                                                        GstCaps       *Returns,
+<a name="GstDecodeBin2-autoplug-continue"></a><h3>The <code class="literal">"autoplug-continue"</code> signal</h3>
+<pre class="programlisting">gboolean            user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
+                                                        GstCaps       *caps,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This signal is emitted whenever decodebin2 finds a new stream. It is
@@ -226,21 +219,26 @@ emitted before looking for any elements that can handle that stream.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> The <span class="type">GstPad</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> The <span class="type">GstCaps</span> found.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <span class="type">TRUE</span> if you wish decodebin2 to look for elements that can
 handle the given <em class="parameter"><code>caps</code></em>. If <span class="type">FALSE</span>, those caps will be considered as
 final and the pad will be exposed as such (see 'new-decoded-pad'
@@ -252,12 +250,11 @@ signal).
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2608890"></a><h3>
-<a name="GstDecodeBin2-autoplug-sort"></a>The "autoplug-sort" signal</h3>
-<a class="indexterm" name="id2608898"></a><pre class="programlisting">GValueArray*        user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *caps,
-                                                        GstCaps       *factories,
-                                                        GValueArray   *Returns,
+<a name="GstDecodeBin2-autoplug-sort"></a><h3>The <code class="literal">"autoplug-sort"</code> signal</h3>
+<pre class="programlisting">GValueArray*        user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
+                                                        GstCaps       *caps,
+                                                        GValueArray   *factories,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 Once decodebin2 has found the possible <span class="type">GstElementFactory</span> objects to try
@@ -274,26 +271,31 @@ The callee should copy and modify <em class="parameter"><code>factories</code></
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> The <span class="type">GstPad</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> The <span class="type">GstCaps</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>factories</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
 <td> A <span class="type">GValueArray</span> of possible <span class="type">GstElementFactory</span> to use.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A new sorted array of <span class="type">GstElementFactory</span> objects.
 </td>
 </tr>
@@ -302,11 +304,10 @@ The callee should copy and modify <em class="parameter"><code>factories</code></
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609096"></a><h3>
-<a name="GstDecodeBin2-new-decoded-pad"></a>The "new-decoded-pad" signal</h3>
-<a class="indexterm" name="id2609106"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *islast,
-                                                        gboolean       arg2,
+<a name="GstDecodeBin2-new-decoded-pad"></a><h3>The <code class="literal">"new-decoded-pad"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
+                                                        gboolean       islast,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This signal gets emitted as soon as a new pad of the same type as one of
@@ -318,17 +319,22 @@ the valid 'raw' types is added.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
-<td> the newly created pad
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>islast</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The newly created pad
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>islast</code></em> :</span></p></td>
 <td> <span class="type">TRUE</span> if this is the last pad to be added. Deprecated.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -336,10 +342,9 @@ the valid 'raw' types is added.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612366"></a><h3>
-<a name="GstDecodeBin2-removed-decoded-pad"></a>The "removed-decoded-pad" signal</h3>
-<a class="indexterm" name="id2612376"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *arg1,
+<a name="GstDecodeBin2-removed-decoded-pad"></a><h3>The <code class="literal">"removed-decoded-pad"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This signal is emitted when a 'final' caps pad has been removed.</p>
@@ -350,12 +355,17 @@ This signal is emitted when a 'final' caps pad has been removed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
-<td> the pad that was removed
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The pad that was removed
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -363,11 +373,10 @@ This signal is emitted when a 'final' caps pad has been removed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612448"></a><h3>
-<a name="GstDecodeBin2-unknown-type"></a>The "unknown-type" signal</h3>
-<a class="indexterm" name="id2612455"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *caps,
-                                                        GstCaps       *arg2,
+<a name="GstDecodeBin2-unknown-type"></a><h3>The <code class="literal">"unknown-type"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
+                                                        GstCaps       *caps,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This signal is emitted when a pad for which there is no further possible
@@ -379,17 +388,23 @@ decoding is added to the decodebin.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
-<td> the new pad containing caps that cannot be resolved to a 'final' stream type.
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
-<td> the <span class="type">GstCaps</span> of the pad that cannot be resolved.
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The new pad containing caps that cannot be resolved to a 'final'
+      stream type.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> The <span class="type">GstCaps</span> of the pad that cannot be resolved.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -397,11 +412,10 @@ decoding is added to the decodebin.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612554"></a><h3>
-<a name="GstDecodeBin2-autoplug-factories"></a>The "autoplug-factories" signal</h3>
-<a class="indexterm" name="id2612564"></a><pre class="programlisting">GValueArray*        user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *pad,
-                                                        GstPad        *caps,
-                                                        GstCaps       *Returns,
+<a name="GstDecodeBin2-autoplug-factories"></a><h3>The <code class="literal">"autoplug-factories"</code> signal</h3>
+<pre class="programlisting">GValueArray*        user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
+                                                        GstPad        *pad,
+                                                        GstCaps       *caps,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This function is emited when an array of possible factories for <em class="parameter"><code>caps</code></em> on
@@ -421,21 +435,26 @@ having an unhandled type media type.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> The <span class="type">GstPad</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> The <span class="type">GstCaps</span> found.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a <span class="type">GValueArray</span>* with a list of factories to try. The factories are
 by default tried in the returned order or based on the index returned by
 "autoplug-select".
@@ -446,12 +465,11 @@ by default tried in the returned order or based on the index returned by
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612713"></a><h3>
-<a name="GstDecodeBin2-autoplug-select"></a>The "autoplug-select" signal</h3>
-<a class="indexterm" name="id2612722"></a><pre class="programlisting">GstAutoplugSelectResultuser_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a>     *pad,
-                                                        GstPad            *caps,
-                                                        GstCaps           *factories,
-                                                        GstElementFactory *Returns,
+<a name="GstDecodeBin2-autoplug-select"></a><h3>The <code class="literal">"autoplug-select"</code> signal</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstAutoplugSelectResult" title="enum GstAutoplugSelectResult">GstAutoplugSelectResult</a>user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a>     *bin,
+                                                        GstPad            *pad,
+                                                        GstCaps           *caps,
+                                                        GstElementFactory *factories,
                                                         gpointer           user_data)      : Run Last</pre>
 <p>
 This signal is emitted once decodebin2 has found all the possible
@@ -463,27 +481,32 @@ This signal is emitted once decodebin2 has found all the possible
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>pad</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
 <td> The <span class="type">GstPad</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> The <span class="type">GstCaps</span>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>factories</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
 <td> A <span class="type">GValueArray</span> of possible <span class="type">GstElementFactory</span> to use, sorted by
 rank (higher ranks come first).
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A <span class="type">gint</span> indicating what factory index from the <em class="parameter"><code>factories</code></em> array
 that you wish decodebin2 to use for trying to decode the given <em class="parameter"><code>caps</code></em>.
 Return -1 to stop selection of a factory and expose the pad as a raw type. 
@@ -495,9 +518,8 @@ The default handler always returns the first possible factory (index 0).
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612901"></a><h3>
-<a name="GstDecodeBin2-drained"></a>The "drained" signal</h3>
-<a class="indexterm" name="id2612908"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *arg0,
+<a name="GstDecodeBin2-drained"></a><h3>The <code class="literal">"drained"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-decodebin2.html#GstDecodeBin2">GstDecodeBin2</a> *bin,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
 This signal is emitted once decodebin2 has finished decoding all the data.</p>
@@ -506,15 +528,25 @@ This signal is emitted once decodebin2 has finished decoding all the data.</p>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
-<tbody><tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bin</code></em> :</span></p></td>
+<td> The decodebin
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
-</tr></tbody>
+</tr>
+</tbody>
 </table></div>
 <p>Since  0.10.16
 </p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

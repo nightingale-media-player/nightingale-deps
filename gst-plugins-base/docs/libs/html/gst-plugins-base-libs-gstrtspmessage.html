@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtspmessage</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspdefs.html" title="gstrtspdefs">
 <link rel="next" href="gst-plugins-base-libs-gstrtsprange.html" title="gstrtsprange">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,96 +36,93 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtsprange.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2694067" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2694928" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtspmessage.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtspmessage.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtspmessage"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2694067"></a><span class="refentrytitle">gstrtspmessage</span>
-</h2>
-<p>gstrtspmessage &#8212; RTSP messages</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtspmessage.top_of_page"></a>gstrtspmessage</span></h2>
+<p>gstrtspmessage — RTSP messages</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstrtspmessage.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/rtsp/gstrtspmessage.h&gt;
 
-
-enum                <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType">GstRTSPMsgType</a>;
-                    <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a>;
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new">gst_rtsp_message_new</a>                (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init">gst_rtsp_message_init</a>               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset">gst_rtsp_message_unset</a>              (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free">gst_rtsp_message_free</a>               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);
-<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType">GstRTSPMsgType</a>      <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-type">gst_rtsp_message_get_type</a>           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-request">gst_rtsp_message_new_request</a>        (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> method,
+enum                <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType" title="enum GstRTSPMsgType">GstRTSPMsgType</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a>;
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new" title="gst_rtsp_message_new ()">gst_rtsp_message_new</a>                (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init" title="gst_rtsp_message_init ()">gst_rtsp_message_init</a>               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset" title="gst_rtsp_message_unset ()">gst_rtsp_message_unset</a>              (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free" title="gst_rtsp_message_free ()">gst_rtsp_message_free</a>               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType" title="enum GstRTSPMsgType">GstRTSPMsgType</a>      <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-type" title="gst_rtsp_message_get_type ()">gst_rtsp_message_get_type</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-request" title="gst_rtsp_message_new_request ()">gst_rtsp_message_new_request</a>        (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method,
                                                          const gchar *uri);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-request">gst_rtsp_message_init_request</a>       (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> method,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-request" title="gst_rtsp_message_init_request ()">gst_rtsp_message_init_request</a>       (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method,
                                                          const gchar *uri);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-request">gst_rtsp_message_parse_request</a>      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> *method,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-request" title="gst_rtsp_message_parse_request ()">gst_rtsp_message_parse_request</a>      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> *method,
                                                          const gchar **uri,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion">GstRTSPVersion</a> *version);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-response">gst_rtsp_message_new_response</a>       (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> code,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> *version);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-response" title="gst_rtsp_message_new_response ()">gst_rtsp_message_new_response</a>       (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code,
                                                          const gchar *reason,
-                                                         const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *request);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-response">gst_rtsp_message_init_response</a>      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> code,
+                                                         const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *request);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-response" title="gst_rtsp_message_init_response ()">gst_rtsp_message_init_response</a>      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code,
                                                          const gchar *reason,
-                                                         const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *request);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-response">gst_rtsp_message_parse_response</a>     (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> *code,
+                                                         const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *request);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-response" title="gst_rtsp_message_parse_response ()">gst_rtsp_message_parse_response</a>     (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> *code,
                                                          const gchar **reason,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion">GstRTSPVersion</a> *version);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-data">gst_rtsp_message_new_data</a>           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> *version);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-new-data" title="gst_rtsp_message_new_data ()">gst_rtsp_message_new_data</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
                                                          guint8 channel);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-data">gst_rtsp_message_init_data</a>          (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-data" title="gst_rtsp_message_init_data ()">gst_rtsp_message_init_data</a>          (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 channel);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-data">gst_rtsp_message_parse_data</a>         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-parse-data" title="gst_rtsp_message_parse_data ()">gst_rtsp_message_parse_data</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 *channel);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-add-header">gst_rtsp_message_add_header</a>         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-add-header" title="gst_rtsp_message_add_header ()">gst_rtsp_message_add_header</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          const gchar *value);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-remove-header">gst_rtsp_message_remove_header</a>      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-remove-header" title="gst_rtsp_message_remove_header ()">gst_rtsp_message_remove_header</a>      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          gint indx);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-header">gst_rtsp_message_get_header</a>         (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-header" title="gst_rtsp_message_get_header ()">gst_rtsp_message_get_header</a>         (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          gchar **value,
                                                          gint indx);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-append-headers">gst_rtsp_message_append_headers</a>     (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-append-headers" title="gst_rtsp_message_append_headers ()">gst_rtsp_message_append_headers</a>     (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          GString *str);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-set-body">gst_rtsp_message_set_body</a>           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-set-body" title="gst_rtsp_message_set_body ()">gst_rtsp_message_set_body</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          const guint8 *data,
                                                          guint size);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-take-body">gst_rtsp_message_take_body</a>          (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-take-body" title="gst_rtsp_message_take_body ()">gst_rtsp_message_take_body</a>          (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 *data,
                                                          guint size);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-body">gst_rtsp_message_get_body</a>           (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-get-body" title="gst_rtsp_message_get_body ()">gst_rtsp_message_get_body</a>           (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 **data,
                                                          guint *size);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-steal-body">gst_rtsp_message_steal_body</a>         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-steal-body" title="gst_rtsp_message_steal_body ()">gst_rtsp_message_steal_body</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 **data,
                                                          guint *size);
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-dump">gst_rtsp_message_dump</a>               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-dump" title="gst_rtsp_message_dump ()">gst_rtsp_message_dump</a>               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2694928"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstrtspmessage.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2694940"></a><p>
+<a name="id2724382"></a><p>
 Provides methods for creating and parsing request, response and data messages.
 </p>
 </div>
@@ -137,11 +134,10 @@ Last reviewed on 2007-07-25 (0.10.14)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2694954"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtspmessage.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2694964"></a><h3>
-<a name="GstRTSPMsgType"></a>enum GstRTSPMsgType</h3>
-<a class="indexterm" name="id2694977"></a><pre class="programlisting">typedef enum
+<a name="GstRTSPMsgType"></a><h3>enum GstRTSPMsgType</h3>
+<pre class="programlisting">typedef enum
 {
   GST_RTSP_MESSAGE_INVALID,
   GST_RTSP_MESSAGE_REQUEST,
@@ -158,22 +154,22 @@ The type of a message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-MESSAGE-INVALID:CAPS"></a><code class="literal">GST_RTSP_MESSAGE_INVALID</code></span></td>
+<td><p><a name="GST-RTSP-MESSAGE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTSP_MESSAGE_INVALID</code></span></p></td>
 <td> invalid message type
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-MESSAGE-REQUEST:CAPS"></a><code class="literal">GST_RTSP_MESSAGE_REQUEST</code></span></td>
+<td><p><a name="GST-RTSP-MESSAGE-REQUEST:CAPS"></a><span class="term"><code class="literal">GST_RTSP_MESSAGE_REQUEST</code></span></p></td>
 <td> request message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-MESSAGE-RESPONSE:CAPS"></a><code class="literal">GST_RTSP_MESSAGE_RESPONSE</code></span></td>
+<td><p><a name="GST-RTSP-MESSAGE-RESPONSE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_MESSAGE_RESPONSE</code></span></p></td>
 <td> response message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-MESSAGE-DATA:CAPS"></a><code class="literal">GST_RTSP_MESSAGE_DATA</code></span></td>
+<td><p><a name="GST-RTSP-MESSAGE-DATA:CAPS"></a><span class="term"><code class="literal">GST_RTSP_MESSAGE_DATA</code></span></p></td>
 <td> data message
 </td>
 </tr>
@@ -182,9 +178,8 @@ The type of a message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695095"></a><h3>
-<a name="GstRTSPMessage"></a>GstRTSPMessage</h3>
-<a class="indexterm" name="id2695108"></a><pre class="programlisting">typedef struct {
+<a name="GstRTSPMessage"></a><h3>GstRTSPMessage</h3>
+<pre class="programlisting">typedef struct {
   GstRTSPMsgType    type;
 
   union {
@@ -212,7 +207,7 @@ the <em class="parameter"><code>type</code></em>, the appropriate structure may 
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType">GstRTSPMsgType</a>&#160;<em class="structfield"><code>type</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType" title="enum GstRTSPMsgType">GstRTSPMsgType</a> <em class="structfield"><code>type</code></em>;</span></p></td>
 <td> the message type
 </td>
 </tr></tbody>
@@ -220,11 +215,10 @@ the <em class="parameter"><code>type</code></em>, the appropriate structure may 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695165"></a><h3>
-<a name="gst-rtsp-message-new"></a>gst_rtsp_message_new ()</h3>
-<a class="indexterm" name="id2695179"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new                (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg);</pre>
+<a name="gst-rtsp-message-new"></a><h3>gst_rtsp_message_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new                (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg);</pre>
 <p>
-Create a new initialized <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>.</p>
+Create a new initialized <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>.</p>
 <p>
 
 </p>
@@ -232,13 +226,13 @@ Create a new initialized <a href="gst-plugins-base-libs-gstrtspmessage.html#GstR
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a location for the new <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a location for the new <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free"><code class="function">gst_rtsp_message_free()</code></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free" title="gst_rtsp_message_free ()"><code class="function">gst_rtsp_message_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -246,12 +240,11 @@ Create a new initialized <a href="gst-plugins-base-libs-gstrtspmessage.html#GstR
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695275"></a><h3>
-<a name="gst-rtsp-message-init"></a>gst_rtsp_message_init ()</h3>
-<a class="indexterm" name="id2695289"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
+<a name="gst-rtsp-message-init"></a><h3>gst_rtsp_message_init ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
 <p>
 Initialize <em class="parameter"><code>msg</code></em>. This function is mostly used when <em class="parameter"><code>msg</code></em> is allocated on the
-stack. The reverse operation of this is <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset"><code class="function">gst_rtsp_message_unset()</code></a>.</p>
+stack. The reverse operation of this is <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset" title="gst_rtsp_message_unset ()"><code class="function">gst_rtsp_message_unset()</code></a>.</p>
 <p>
 
 </p>
@@ -259,13 +252,13 @@ stack. The reverse operation of this is <a href="gst-plugins-base-libs-gstrtspme
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -273,14 +266,13 @@ stack. The reverse operation of this is <a href="gst-plugins-base-libs-gstrtspme
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695389"></a><h3>
-<a name="gst-rtsp-message-unset"></a>gst_rtsp_message_unset ()</h3>
-<a class="indexterm" name="id2695402"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_unset              (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
+<a name="gst-rtsp-message-unset"></a><h3>gst_rtsp_message_unset ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_unset              (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
 <p>
 Unset the concents of <em class="parameter"><code>msg</code></em> so that it becomes an uninitialized
-<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> again. This function is mostly used in combination with 
-<a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-request"><code class="function">gst_rtsp_message_init_request()</code></a>, <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-response"><code class="function">gst_rtsp_message_init_response()</code></a> and
-<a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-data"><code class="function">gst_rtsp_message_init_data()</code></a> on stack allocated <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> structures.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> again. This function is mostly used in combination with 
+<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-request" title="gst_rtsp_message_init_request ()"><code class="function">gst_rtsp_message_init_request()</code></a>, <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-response" title="gst_rtsp_message_init_response ()"><code class="function">gst_rtsp_message_init_response()</code></a> and
+<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-init-data" title="gst_rtsp_message_init_data ()"><code class="function">gst_rtsp_message_init_data()</code></a> on stack allocated <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> structures.</p>
 <p>
 
 </p>
@@ -288,13 +280,13 @@ Unset the concents of <em class="parameter"><code>msg</code></em> so that it bec
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -302,9 +294,8 @@ Unset the concents of <em class="parameter"><code>msg</code></em> so that it bec
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695537"></a><h3>
-<a name="gst-rtsp-message-free"></a>gst_rtsp_message_free ()</h3>
-<a class="indexterm" name="id2695550"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_free               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
+<a name="gst-rtsp-message-free"></a><h3>gst_rtsp_message_free ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_free               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
 <p>
 Free the memory used by <em class="parameter"><code>msg</code></em>.</p>
 <p>
@@ -314,13 +305,13 @@ Free the memory used by <em class="parameter"><code>msg</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -328,9 +319,8 @@ Free the memory used by <em class="parameter"><code>msg</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695632"></a><h3>
-<a name="gst-rtsp-message-get-type"></a>gst_rtsp_message_get_type ()</h3>
-<a class="indexterm" name="id2695646"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType">GstRTSPMsgType</a>      gst_rtsp_message_get_type           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
+<a name="gst-rtsp-message-get-type"></a><h3>gst_rtsp_message_get_type ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMsgType" title="enum GstRTSPMsgType">GstRTSPMsgType</a>      gst_rtsp_message_get_type           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
 <p>
 Get the message type of <em class="parameter"><code>msg</code></em>.</p>
 <p>
@@ -340,12 +330,12 @@ Get the message type of <em class="parameter"><code>msg</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the message type.
 </td>
 </tr>
@@ -354,13 +344,12 @@ Get the message type of <em class="parameter"><code>msg</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695720"></a><h3>
-<a name="gst-rtsp-message-new-request"></a>gst_rtsp_message_new_request ()</h3>
-<a class="indexterm" name="id2695734"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_request        (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> method,
+<a name="gst-rtsp-message-new-request"></a><h3>gst_rtsp_message_new_request ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_request        (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method,
                                                          const gchar *uri);</pre>
 <p>
-Create a new <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>method</code></em> and <em class="parameter"><code>uri</code></em> and store the result
+Create a new <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>method</code></em> and <em class="parameter"><code>uri</code></em> and store the result
 request message in <em class="parameter"><code>msg</code></em>.</p>
 <p>
 
@@ -369,23 +358,23 @@ request message in <em class="parameter"><code>msg</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a location for the new <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a location for the new <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
 <td> the request method to use
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>uri</code></em> :</span></p></td>
 <td> the uri of the request
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free"><code class="function">gst_rtsp_message_free()</code></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free" title="gst_rtsp_message_free ()"><code class="function">gst_rtsp_message_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -393,14 +382,13 @@ request message in <em class="parameter"><code>msg</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2695893"></a><h3>
-<a name="gst-rtsp-message-init-request"></a>gst_rtsp_message_init_request ()</h3>
-<a class="indexterm" name="id2695906"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_request       (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> method,
+<a name="gst-rtsp-message-init-request"></a><h3>gst_rtsp_message_init_request ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_request       (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> method,
                                                          const gchar *uri);</pre>
 <p>
 Initialize <em class="parameter"><code>msg</code></em> as a request message with <em class="parameter"><code>method</code></em> and <em class="parameter"><code>uri</code></em>. To clear <em class="parameter"><code>msg</code></em>
-again, use <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset"><code class="function">gst_rtsp_message_unset()</code></a>.</p>
+again, use <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-unset" title="gst_rtsp_message_unset ()"><code class="function">gst_rtsp_message_unset()</code></a>.</p>
 <p>
 
 </p>
@@ -408,23 +396,23 @@ again, use <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-u
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
 <td> the request method to use
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>uri</code></em> :</span></p></td>
 <td> the uri of the request
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -432,12 +420,11 @@ again, use <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-u
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2696062"></a><h3>
-<a name="gst-rtsp-message-parse-request"></a>gst_rtsp_message_parse_request ()</h3>
-<a class="indexterm" name="id2696075"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_request      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod">GstRTSPMethod</a> *method,
+<a name="gst-rtsp-message-parse-request"></a><h3>gst_rtsp_message_parse_request ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_request      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPMethod" title="enum GstRTSPMethod">GstRTSPMethod</a> *method,
                                                          const gchar **uri,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion">GstRTSPVersion</a> *version);</pre>
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> *version);</pre>
 <p>
 Parse the request message <em class="parameter"><code>msg</code></em> and store the values <em class="parameter"><code>method</code></em>, <em class="parameter"><code>uri</code></em> and
 <em class="parameter"><code>version</code></em>. The result locations can be <span class="type">NULL</span> if one is not interested in its
@@ -452,28 +439,28 @@ value.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>method</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>method</code></em> :</span></p></td>
 <td> location to hold the method
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>uri</code></em> :</span></p></td>
 <td> location to hold the uri
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>version</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
 <td> location to hold the version
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -481,14 +468,13 @@ value.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2696267"></a><h3>
-<a name="gst-rtsp-message-new-response"></a>gst_rtsp_message_new_response ()</h3>
-<a class="indexterm" name="id2696280"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_response       (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> code,
+<a name="gst-rtsp-message-new-response"></a><h3>gst_rtsp_message_new_response ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_response       (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code,
                                                          const gchar *reason,
-                                                         const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *request);</pre>
+                                                         const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *request);</pre>
 <p>
-Create a new response <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>code</code></em> and <em class="parameter"><code>reason</code></em> and store the
+Create a new response <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>code</code></em> and <em class="parameter"><code>reason</code></em> and store the
 result message in <em class="parameter"><code>msg</code></em>. 
 </p>
 <p>
@@ -504,28 +490,28 @@ response message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a location for the new <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a location for the new <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>code</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
 <td> the status code
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>reason</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em> :</span></p></td>
 <td> the status reason or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>request</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>request</code></em> :</span></p></td>
 <td> the request that triggered the response or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free"><code class="function">gst_rtsp_message_free()</code></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free" title="gst_rtsp_message_free ()"><code class="function">gst_rtsp_message_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -533,12 +519,11 @@ response message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2696520"></a><h3>
-<a name="gst-rtsp-message-init-response"></a>gst_rtsp_message_init_response ()</h3>
-<a class="indexterm" name="id2696534"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_response      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> code,
+<a name="gst-rtsp-message-init-response"></a><h3>gst_rtsp_message_init_response ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_response      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> code,
                                                          const gchar *reason,
-                                                         const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *request);</pre>
+                                                         const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *request);</pre>
 <p>
 Initialize <em class="parameter"><code>msg</code></em> with <em class="parameter"><code>code</code></em> and <em class="parameter"><code>reason</code></em>.
 </p>
@@ -555,28 +540,28 @@ response message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>code</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
 <td> the status code
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>reason</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em> :</span></p></td>
 <td> the status reason or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>request</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>request</code></em> :</span></p></td>
 <td> the request that triggered the response or <span class="type">NULL</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -584,12 +569,11 @@ response message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2696753"></a><h3>
-<a name="gst-rtsp-message-parse-response"></a>gst_rtsp_message_parse_response ()</h3>
-<a class="indexterm" name="id2696766"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_response     (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode">GstRTSPStatusCode</a> *code,
+<a name="gst-rtsp-message-parse-response"></a><h3>gst_rtsp_message_parse_response ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_response     (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPStatusCode" title="enum GstRTSPStatusCode">GstRTSPStatusCode</a> *code,
                                                          const gchar **reason,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion">GstRTSPVersion</a> *version);</pre>
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPVersion" title="enum GstRTSPVersion">GstRTSPVersion</a> *version);</pre>
 <p>
 Parse the response message <em class="parameter"><code>msg</code></em> and store the values <em class="parameter"><code>code</code></em>, <em class="parameter"><code>reason</code></em> and
 <em class="parameter"><code>version</code></em>. The result locations can be <span class="type">NULL</span> if one is not interested in its
@@ -604,28 +588,28 @@ value.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>code</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
 <td> location to hold the status code
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>reason</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em> :</span></p></td>
 <td> location to hold the status reason
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>version</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>version</code></em> :</span></p></td>
 <td> location to hold the version
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -633,12 +617,11 @@ value.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2696959"></a><h3>
-<a name="gst-rtsp-message-new-data"></a>gst_rtsp_message_new_data ()</h3>
-<a class="indexterm" name="id2696973"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_data           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> **msg,
+<a name="gst-rtsp-message-new-data"></a><h3>gst_rtsp_message_new_data ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_new_data           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> **msg,
                                                          guint8 channel);</pre>
 <p>
-Create a new data <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>channel</code></em> and store the
+Create a new data <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> with <em class="parameter"><code>channel</code></em> and store the
 result message in <em class="parameter"><code>msg</code></em>.</p>
 <p>
 
@@ -647,18 +630,18 @@ result message in <em class="parameter"><code>msg</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a location for the new <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a location for the new <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>channel</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>channel</code></em> :</span></p></td>
 <td> the channel
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free"><code class="function">gst_rtsp_message_free()</code></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>. Free with <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#gst-rtsp-message-free" title="gst_rtsp_message_free ()"><code class="function">gst_rtsp_message_free()</code></a>.
 </td>
 </tr>
 </tbody>
@@ -666,12 +649,11 @@ result message in <em class="parameter"><code>msg</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697103"></a><h3>
-<a name="gst-rtsp-message-init-data"></a>gst_rtsp_message_init_data ()</h3>
-<a class="indexterm" name="id2697117"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_data          (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-init-data"></a><h3>gst_rtsp_message_init_data ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_init_data          (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 channel);</pre>
 <p>
-Initialize a new data <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> for <em class="parameter"><code>channel</code></em>.</p>
+Initialize a new data <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a> for <em class="parameter"><code>channel</code></em>.</p>
 <p>
 
 </p>
@@ -679,18 +661,18 @@ Initialize a new data <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSP
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>channel</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>channel</code></em> :</span></p></td>
 <td> a channel
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -698,9 +680,8 @@ Initialize a new data <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSP
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697229"></a><h3>
-<a name="gst-rtsp-message-parse-data"></a>gst_rtsp_message_parse_data ()</h3>
-<a class="indexterm" name="id2697243"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_data         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-parse-data"></a><h3>gst_rtsp_message_parse_data ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_parse_data         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 *channel);</pre>
 <p>
 Parse the data message <em class="parameter"><code>msg</code></em> and store the channel in <em class="parameter"><code>channel</code></em>.</p>
@@ -711,18 +692,18 @@ Parse the data message <em class="parameter"><code>msg</code></em> and store the
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>channel</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>channel</code></em> :</span></p></td>
 <td> location to hold the channel
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -730,10 +711,9 @@ Parse the data message <em class="parameter"><code>msg</code></em> and store the
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697353"></a><h3>
-<a name="gst-rtsp-message-add-header"></a>gst_rtsp_message_add_header ()</h3>
-<a class="indexterm" name="id2697367"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_add_header         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a name="gst-rtsp-message-add-header"></a><h3>gst_rtsp_message_add_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_add_header         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          const gchar *value);</pre>
 <p>
 Add a header with key <em class="parameter"><code>field</code></em> and <em class="parameter"><code>value</code></em> to <em class="parameter"><code>msg</code></em>.</p>
@@ -744,23 +724,23 @@ Add a header with key <em class="parameter"><code>field</code></em> and <em clas
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>field</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
+<td><p><span class="term"><em class="parameter"><code>field</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> the value of the header
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -768,10 +748,9 @@ Add a header with key <em class="parameter"><code>field</code></em> and <em clas
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697512"></a><h3>
-<a name="gst-rtsp-message-remove-header"></a>gst_rtsp_message_remove_header ()</h3>
-<a class="indexterm" name="id2697526"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_remove_header      (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a name="gst-rtsp-message-remove-header"></a><h3>gst_rtsp_message_remove_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_remove_header      (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          gint indx);</pre>
 <p>
 Remove the <em class="parameter"><code>indx</code></em> header with key <em class="parameter"><code>field</code></em> from <em class="parameter"><code>msg</code></em>. If <em class="parameter"><code>indx</code></em> equals -1, all
@@ -783,23 +762,23 @@ headers will be removed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>field</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
+<td><p><span class="term"><em class="parameter"><code>field</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>indx</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>indx</code></em> :</span></p></td>
 <td> the index of the header
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult"><span class="type">GstRTSPResult</span></a>.
 </td>
 </tr>
 </tbody>
@@ -807,10 +786,9 @@ headers will be removed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697679"></a><h3>
-<a name="gst-rtsp-message-get-header"></a>gst_rtsp_message_get_header ()</h3>
-<a class="indexterm" name="id2697693"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_get_header         (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
-                                                         <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField">GstRTSPHeaderField</a> field,
+<a name="gst-rtsp-message-get-header"></a><h3>gst_rtsp_message_get_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_get_header         (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField">GstRTSPHeaderField</a> field,
                                                          gchar **value,
                                                          gint indx);</pre>
 <p>
@@ -822,28 +800,28 @@ Get the <em class="parameter"><code>indx</code></em> header value with key <em c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>field</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
+<td><p><span class="term"><em class="parameter"><code>field</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPHeaderField" title="enum GstRTSPHeaderField"><span class="type">GstRTSPHeaderField</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> pointer to hold the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>indx</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>indx</code></em> :</span></p></td>
 <td> the index of the header
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when <em class="parameter"><code>field</code></em> was found, <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-ENOTIMPL:CAPS"><span class="type">GST_RTSP_ENOTIMPL</span></a> if the key
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> when <em class="parameter"><code>field</code></em> was found, <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-ENOTIMPL:CAPS"><span class="type">GST_RTSP_ENOTIMPL</span></a> if the key
 was not found.
 </td>
 </tr>
@@ -852,9 +830,8 @@ was not found.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2697877"></a><h3>
-<a name="gst-rtsp-message-append-headers"></a>gst_rtsp_message_append_headers ()</h3>
-<a class="indexterm" name="id2697890"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_append_headers     (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-append-headers"></a><h3>gst_rtsp_message_append_headers ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_append_headers     (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          GString *str);</pre>
 <p>
 Append the currently configured headers in <em class="parameter"><code>msg</code></em> to the <span class="type">GString</span> <em class="parameter"><code>str</code></em> suitable
@@ -866,18 +843,18 @@ for transmission.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>str</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>str</code></em> :</span></p></td>
 <td> a string
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -885,9 +862,8 @@ for transmission.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698009"></a><h3>
-<a name="gst-rtsp-message-set-body"></a>gst_rtsp_message_set_body ()</h3>
-<a class="indexterm" name="id2698023"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_set_body           (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-set-body"></a><h3>gst_rtsp_message_set_body ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_set_body           (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          const guint8 *data,
                                                          guint size);</pre>
 <p>
@@ -899,23 +875,23 @@ Set the body of <em class="parameter"><code>msg</code></em> to a copy of <em cla
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -923,9 +899,8 @@ Set the body of <em class="parameter"><code>msg</code></em> to a copy of <em cla
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698160"></a><h3>
-<a name="gst-rtsp-message-take-body"></a>gst_rtsp_message_take_body ()</h3>
-<a class="indexterm" name="id2698174"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_take_body          (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-take-body"></a><h3>gst_rtsp_message_take_body ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_take_body          (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 *data,
                                                          guint size);</pre>
 <p>
@@ -938,23 +913,23 @@ Set the body of <em class="parameter"><code>msg</code></em> to <em class="parame
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -962,9 +937,8 @@ Set the body of <em class="parameter"><code>msg</code></em> to <em class="parame
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698323"></a><h3>
-<a name="gst-rtsp-message-get-body"></a>gst_rtsp_message_get_body ()</h3>
-<a class="indexterm" name="id2698337"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_get_body           (const <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-get-body"></a><h3>gst_rtsp_message_get_body ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_get_body           (const <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 **data,
                                                          guint *size);</pre>
 <p>
@@ -977,23 +951,23 @@ unchanged.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> location for the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> location for the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1001,9 +975,8 @@ unchanged.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698480"></a><h3>
-<a name="gst-rtsp-message-steal-body"></a>gst_rtsp_message_steal_body ()</h3>
-<a class="indexterm" name="id2698494"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_steal_body         (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg,
+<a name="gst-rtsp-message-steal-body"></a><h3>gst_rtsp_message_steal_body ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_steal_body         (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg,
                                                          guint8 **data,
                                                          guint *size);</pre>
 <p>
@@ -1016,23 +989,23 @@ the body and size of <em class="parameter"><code>msg</code></em> will be set to 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> location for the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> location for the size of <em class="parameter"><code>data</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1040,9 +1013,8 @@ the body and size of <em class="parameter"><code>msg</code></em> will be set to 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2698652"></a><h3>
-<a name="gst-rtsp-message-dump"></a>gst_rtsp_message_dump ()</h3>
-<a class="indexterm" name="id2698665"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_dump               (<a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
+<a name="gst-rtsp-message-dump"></a><h3>gst_rtsp_message_dump ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_message_dump               (<a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *msg);</pre>
 <p>
 Dump the contents of <em class="parameter"><code>msg</code></em> to stdout.</p>
 <p>
@@ -1052,13 +1024,13 @@ Dump the contents of <em class="parameter"><code>msg</code></em> to stdout.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>msg</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
+<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1066,9 +1038,12 @@ Dump the contents of <em class="parameter"><code>msg</code></em> to stdout.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2698749"></a><h2>See Also</h2>
+<a name="gst-plugins-base-libs-gstrtspmessage.see-also"></a><h2>See Also</h2>
 gstrtspconnection
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

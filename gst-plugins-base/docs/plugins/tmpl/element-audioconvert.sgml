@@ -34,3 +34,24 @@ Convert audio to different formats
 
 </para>
 
+<!-- ##### ENUM GstAudioConvertDithering ##### -->
+<para>
+
+</para>
+
+@DITHER_NONE: 
+@DITHER_RPDF: 
+@DITHER_TPDF: 
+@DITHER_TPDF_HF: 
+
+<!-- ##### ENUM GstAudioConvertNoiseShaping ##### -->
+<para>
+
+</para>
+
+@NOISE_SHAPING_NONE: 
+@NOISE_SHAPING_ERROR_FEEDBACK: 
+@NOISE_SHAPING_SIMPLE: 
+@NOISE_SHAPING_MEDIUM: 
+@NOISE_SHAPING_HIGH: 
+

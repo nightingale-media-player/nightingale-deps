@@ -71,6 +71,7 @@ gstringbuffer
 @segtotal: 
 @bytes_per_sample: 
 @silence_sample: 
+@seglatency: 
 
 <!-- ##### USER_FUNCTION GstRingBufferCallback ##### -->
 <para>
@@ -143,6 +144,10 @@ gstringbuffer
 @GST_IMA_ADPCM: 
 @GST_MPEG: 
 @GST_GSM: 
+@GST_IEC958: 
+@GST_AC3: 
+@GST_EAC3: 
+@GST_DTS: 
 
 <!-- ##### ENUM GstBufferFormatType ##### -->
 <para>
@@ -156,6 +161,10 @@ gstringbuffer
 @GST_BUFTYPE_IMA_ADPCM: 
 @GST_BUFTYPE_MPEG: 
 @GST_BUFTYPE_GSM: 
+@GST_BUFTYPE_IEC958: 
+@GST_BUFTYPE_AC3: 
+@GST_BUFTYPE_EAC3: 
+@GST_BUFTYPE_DTS: 
 
 <!-- ##### MACRO GST_RING_BUFFER_BROADCAST ##### -->
 <para>

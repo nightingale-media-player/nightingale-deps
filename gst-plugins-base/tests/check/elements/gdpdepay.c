@@ -25,12 +25,10 @@
 #include <gst/check/gstcheck.h>
 #include <gst/dataprotocol/dataprotocol.h>
 
-gboolean have_eos = FALSE;
-
 /* For ease of programming we use globals to keep refs for our floating
  * src and sink pads we create; otherwise we always have to do get_pad,
  * get_peer, and then remove references in every test function */
-GstPad *mysrcpad, *mysinkpad, *myshsinkpad;
+static GstPad *mysrcpad, *mysinkpad, *myshsinkpad;
 
 #define AUDIO_CAPS_TEMPLATE_STRING \
   "audio/x-raw-int, " \
@@ -63,8 +61,8 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 /* takes over reference for outcaps */
-GstElement *
-setup_gdpdepay ()
+static GstElement *
+setup_gdpdepay (void)
 {
   GstElement *gdpdepay;
 
@@ -78,7 +76,7 @@ setup_gdpdepay ()
   return gdpdepay;
 }
 
-void
+static void
 cleanup_gdpdepay (GstElement * gdpdepay)
 {
   GST_DEBUG ("cleanup_gdpdepay");
@@ -122,7 +120,7 @@ GST_START_TEST (test_audio_per_byte)
   pk = gst_dp_packetizer_new (GST_DP_VERSION_1_0);
 
   gdpdepay = setup_gdpdepay ();
-  srcpad = gst_element_get_pad (gdpdepay, "src");
+  srcpad = gst_element_get_static_pad (gdpdepay, "src");
 
   fail_unless (gst_element_set_state (gdpdepay,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
@@ -198,7 +196,7 @@ GST_START_TEST (test_audio_in_one_buffer)
   pk = gst_dp_packetizer_new (GST_DP_VERSION_1_0);
 
   gdpdepay = setup_gdpdepay ();
-  srcpad = gst_element_get_pad (gdpdepay, "src");
+  srcpad = gst_element_get_static_pad (gdpdepay, "src");
 
   fail_unless (gst_element_set_state (gdpdepay,
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
@@ -266,8 +264,8 @@ static GstStaticPadTemplate shsinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS ("application/x-gst-test-streamheader")
     );
 
-GstElement *
-setup_gdpdepay_streamheader ()
+static GstElement *
+setup_gdpdepay_streamheader (void)
 {
   GstElement *gdpdepay;
 
@@ -280,8 +278,6 @@ setup_gdpdepay_streamheader ()
 
   return gdpdepay;
 }
-
-#ifndef HAVE_CPU_PPC64          /* Test known to fail on PPC64. See #348114 */
 
 /* this tests deserialization of a GDP stream where the serialized caps
  * have a streamheader set */
@@ -302,7 +298,7 @@ GST_START_TEST (test_streamheader)
   pk = gst_dp_packetizer_new (GST_DP_VERSION_1_0);
 
   gdpdepay = setup_gdpdepay_streamheader ();
-  srcpad = gst_element_get_pad (gdpdepay, "src");
+  srcpad = gst_element_get_static_pad (gdpdepay, "src");
   ASSERT_OBJECT_REFCOUNT (gdpdepay, "gdpdepay", 1);
 
   fail_unless (gst_element_set_state (gdpdepay,
@@ -400,9 +396,7 @@ GST_START_TEST (test_streamheader)
 
 GST_END_TEST;
 
-#endif /* ifndef HAVE_CPU_PPC64 */
-
-Suite *
+static Suite *
 gdpdepay_suite (void)
 {
   Suite *s = suite_create ("gdpdepay");
@@ -411,9 +405,14 @@ gdpdepay_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_audio_per_byte);
   tcase_add_test (tc_chain, test_audio_in_one_buffer);
-#ifndef HAVE_CPU_PPC64          /* Test known to fail on PPC64. See #348114 */
-  tcase_add_test (tc_chain, test_streamheader);
+
+#ifdef HAVE_CPU_PPC64           /* Test known to fail on PPC64. See #348114 */
+  g_print ("\n\n***** skipping test test_streamheader.  May fail "
+      "on PPC due to a compiler bug. See bug #348114 for details\n\n\n");
+  if (0)                        /* this avoids the 'function not used' warning */
 #endif
+    tcase_add_test (tc_chain, test_streamheader);
+
   return s;
 }
 

@@ -85,6 +85,8 @@ gstmixer
 @GST_MIXER_MESSAGE_RECORD_TOGGLED: 
 @GST_MIXER_MESSAGE_VOLUME_CHANGED: 
 @GST_MIXER_MESSAGE_OPTION_CHANGED: 
+@GST_MIXER_MESSAGE_OPTIONS_LIST_CHANGED: 
+@GST_MIXER_MESSAGE_MIXER_CHANGED: 
 
 <!-- ##### FUNCTION gst_mixer_list_tracks ##### -->
 <para>
@@ -185,6 +187,15 @@ gstmixer
 @value: 
 
 
+<!-- ##### FUNCTION gst_mixer_options_list_changed ##### -->
+<para>
+
+</para>
+
+@mixer: 
+@opts: 
+
+
 <!-- ##### FUNCTION gst_mixer_get_option ##### -->
 <para>
 
@@ -193,6 +204,14 @@ gstmixer
 @mixer: 
 @opts: 
 @Returns: 
+
+
+<!-- ##### FUNCTION gst_mixer_mixer_changed ##### -->
+<para>
+
+</para>
+
+@mixer: 
 
 
 <!-- ##### FUNCTION gst_mixer_get_mixer_flags ##### -->
@@ -252,5 +271,14 @@ gstmixer
 @track: 
 @volumes: 
 @num_channels: 
+
+
+<!-- ##### FUNCTION gst_mixer_message_parse_options_list_changed ##### -->
+<para>
+
+</para>
+
+@message: 
+@options: 
 
 

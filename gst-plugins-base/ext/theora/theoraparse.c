@@ -34,7 +34,7 @@
  * <para>
  * This element also makes sure that the buffers that it pushes out are properly
  * timestamped and that their offset and offset_end are set. The buffers that
- * vorbisparse outputs have all of the metadata that oggmux expects to receive,
+ * theoraparse outputs have all of the metadata that oggmux expects to receive,
  * which allows you to (for example) remux an ogg/theora file.
  * </para>
  * <para>
@@ -55,7 +55,7 @@
  * </para>
  * <para>
  * <programlisting>
- * gst-launch filesrc location=video.ogg ! oggdemux ! vorbisparse \
+ * gst-launch filesrc location=video.ogg ! oggdemux ! theoraparse \
  *            ! oggmux ! filesink location=video-remuxed.ogg
  * </programlisting>
  * This pipeline shows remuxing. video-remuxed.ogg might not be exactly the same
@@ -63,7 +63,7 @@
  * </para>
  * </refsect2>
  *
- * Last reviewed on 2006-04-01 (0.10.4.1)
+ * Last reviewed on 2008-05-28 (0.10.20)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -76,7 +76,7 @@
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 static GstElementDetails theora_parse_details = {
-  "TheoraParse",
+  "Theora video parser",
   "Codec/Parser/Video",
   "parse raw theora streams",
   "Andy Wingo <wingo@pobox.com>"
@@ -153,7 +153,8 @@ gst_theora_parse_class_init (GstTheoraParseClass * klass)
           "An array of (granuletime, buffertime) pairs",
           g_param_spec_uint64 ("time", "Time",
               "Time (either granuletime or buffertime)", 0, G_MAXUINT64, 0,
-              G_PARAM_READWRITE), (GParamFlags) G_PARAM_READWRITE));
+              G_PARAM_READWRITE),
+          (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = theora_parse_change_state;
 

@@ -5,7 +5,7 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, cvs and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for cvs/prerelease
-AC_INIT(GStreamer Base Plug-ins, 0.10.17,
+AC_INIT(GStreamer Base Plug-ins, 0.10.20,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-base)
 
@@ -44,17 +44,18 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 12, 0, 12)
+AS_LIBTOOL(GST, 14, 0, 14)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
 dnl So this needs to be fixed first if we want to use this
 dnl AS_LIBTOOL_TAGS
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.15.1
+GST_REQ=0.10.19.1
 
 dnl *** autotools stuff ****
 
@@ -104,30 +105,11 @@ AC_DEFINE_UNQUOTED(GST_INSTALL_PLUGINS_HELPER, "$GST_INSTALL_PLUGINS_HELPER",
     [plugin install helper script])
 AC_SUBST(GST_INSTALL_PLUGINS_HELPER)
 
-
-dnl these are all the gst plug-ins, compilable without additional libs
-GST_PLUGINS_ALL="\
-	adder \
-	audioconvert \
-	audiorate \
-	audioresample \
-	audiotestsrc \
-	ffmpegcolorspace \
-	gdp \
-	playback \
-	typefind \
-	videotestsrc \
-	videorate \
-	videoscale \
-	volume \
-	"
-AC_SUBST(GST_PLUGINS_ALL)
-
-GST_PLUGINS_SELECTED=""
 AG_GST_ARG_WITH_PLUGINS
-AC_SUBST(GST_PLUGINS_SELECTED)
 
 AG_GST_ARG_ENABLE_EXTERNAL
+
+AG_GST_ARG_ENABLE_EXPERIMENTAL
 
 dnl *** checks for platform ***
 
@@ -178,7 +160,7 @@ AM_CONDITIONAL(HAVE_REGEX_H, test "x$HAVE_REGEX_H" = "xyes")
 
 if test "x$HAVE_REGEX_H" = "xyes"; then
   ac_cppflags_save="$CPPFLAGS"
-  CPPFLAGS="-Wall -Werror `$PKG_CONFIG --cflags libxml-2.0`"
+  CPPFLAGS="`$PKG_CONFIG --cflags libxml-2.0`"
   AC_COMPILE_IFELSE(
     AC_LANG_PROGRAM([
 #include <libxml/HTMLparser.h>
@@ -188,14 +170,7 @@ if test "x$HAVE_REGEX_H" = "xyes"; then
 #endif /* LIBXML_HTML_ENABLED */
                      ]), HAVE_LIBXML_HTML="yes", HAVE_LIBXML_HTML="no")
   CPPFLAGS="$ac_cppflags_save"
-  
-  if test "x$HAVE_LIBXML_HTML" = "xyes"; then
-    GST_PLUGINS_SELECTED="$GST_PLUGINS_SELECTED subparse"
-  else
-    GST_PLUGINS_NO="\t[subparse]\n$GST_PLUGINS_NO"
-  fi
 else
-  GST_PLUGINS_NO="\t[subparse]\n$GST_PLUGINS_NO"
   HAVE_LIBXML_HTML="no"
 fi
 AM_CONDITIONAL(HAVE_LIBXML_HTML, test "x$HAVE_LIBXML_HTML" = "xyes")
@@ -204,11 +179,6 @@ dnl used in gst/tcp
 AC_CHECK_HEADERS([sys/socket.h], 
   HAVE_SYS_SOCKET_H="yes", HAVE_SYS_SOCKET_H="no")
 AM_CONDITIONAL(HAVE_SYS_SOCKET_H, test "x$HAVE_SYS_SOCKET_H" = "xyes")
-if test "x$HAVE_SYS_SOCKET_H" = "xyes"; then
-  GST_PLUGINS_SELECTED="$GST_PLUGINS_SELECTED tcp"
-else
-  GST_PLUGINS_NO="\t[tcp]\n$GST_PLUGINS_NO"
-fi
 
 dnl used in gst-libs/gst/rtsp
 AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
@@ -235,7 +205,7 @@ dnl also, Windows does not have long long
 AX_CREATE_STDINT_H
 
 dnl *** checks for functions ***
-AC_CHECK_FUNCS([localtime_r])
+AC_CHECK_FUNCS([localtime_r gmtime_r])
 
 dnl *** checks for types/defines ***
 
@@ -257,8 +227,11 @@ AC_FUNC_FSEEKO
 
 dnl Check for fast float to int casting as defined in C99
 dnl used in gst-libs/gst/floatcast/floatcast.h
+save_libs=$LIBS
+LIBS="$LIBS $LIBM"
 AC_C99_FUNC_LRINT
 AC_C99_FUNC_LRINTF
+LIBS=$save_libs
 
 dnl Check for a way to display the function name in debug output
 AG_GST_CHECK_FUNCTION
@@ -266,21 +239,20 @@ AG_GST_CHECK_FUNCTION
 dnl *** checks for dependency libraries ***
 
 dnl GLib is required
-AG_GST_GLIB_CHECK([2.6])
+AG_GST_GLIB_CHECK([2.12])
 
 dnl liboil is required
-PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.8, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-if test "x$HAVE_LIBOIL" != "xyes"
-then
-  AC_ERROR([liboil-0.3.8 or later is required])
+PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
+if test "x$HAVE_LIBOIL" != "xyes"; then
+  AC_ERROR([liboil-0.3.14 or later is required])
 fi
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
-AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_GDP($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_CONTROLLER($GST_MAJORMINOR, [$GST_REQ])
+AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_GDP($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_CONTROLLER($GST_MAJORMINOR, [$GST_REQ], yes)
 AG_GST_CHECK_GST_CHECK($GST_MAJORMINOR, [$GST_REQ], no)
 AM_CONDITIONAL(HAVE_GST_CHECK, test "x$HAVE_GST_CHECK" = "xyes")
 
@@ -290,26 +262,8 @@ GST_PREFIX="`$PKG_CONFIG --variable=prefix gstreamer-$GST_MAJORMINOR`"
 AC_SUBST(GLIB_PREFIX)
 AC_SUBST(GST_PREFIX)
 
-dnl GTK is optional and used in examples
-HAVE_GTK=NO
-PKG_CHECK_MODULES(GTK2, gtk+-2.0 >= 2.2.0, HAVE_GTK_22=yes, HAVE_GTK_22=no)
-if test "x$HAVE_GTK_22" = "xyes"; then
-  HAVE_GTK=yes
-  GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-  AC_SUBST(GTK_VERSION)
-  GTK_PREFIX=`$PKG_CONFIG --variable=prefix gdk-pixbuf-2.0`
-  AC_SUBST(GTK_BASE_DIR)
-else
-  PKG_CHECK_MODULES(GTK2, gtk+-2.0, HAVE_GTK_20=yes, HAVE_GTK_20=no)
-fi
-if test "x$HAVE_GTK_20" = "xyes"; then
-  HAVE_GTK=yes
-fi
-GTK_CFLAGS=$GTK2_CFLAGS
-GTK_LIBS=$GTK2_LIBS
-AC_SUBST(GTK_LIBS)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(HAVE_GTK)
+dnl GTK is optional and only used in examples
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.12.0, HAVE_GTK=yes, HAVE_GTK=no)
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
 dnl *** set variables based on configure arguments ***
@@ -330,6 +284,35 @@ AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
 
 dnl used in examples
 AG_GST_DEFAULT_ELEMENTS
+
+dnl *** plug-ins to include ***
+
+dnl these are all the gst plug-ins, compilable without additional libs
+AG_GST_CHECK_PLUGIN(adder)
+AG_GST_CHECK_PLUGIN(audioconvert)
+AG_GST_CHECK_PLUGIN(audiorate)
+AG_GST_CHECK_PLUGIN(audioresample)
+AG_GST_CHECK_PLUGIN(audiotestsrc)
+AG_GST_CHECK_PLUGIN(ffmpegcolorspace)
+AG_GST_CHECK_PLUGIN(gdp)
+AG_GST_CHECK_PLUGIN(playback)
+AG_GST_CHECK_PLUGIN(subparse)
+AG_GST_CHECK_PLUGIN(tcp)
+AG_GST_CHECK_PLUGIN(typefind)
+AG_GST_CHECK_PLUGIN(videotestsrc)
+AG_GST_CHECK_PLUGIN(videorate)
+AG_GST_CHECK_PLUGIN(videoscale)
+AG_GST_CHECK_PLUGIN(volume)
+
+dnl disable plug-ins that require libxml2's HTML support if it is not available
+if test "x$HAVE_LIBXML_HTML" != "xyes"; then
+  AG_GST_DISABLE_PLUGIN(subparse)
+fi
+
+dnl disable plug-ins that require sys/socket.h if it is not available
+if test "x$HAVE_SYS_SOCKET_H" != "xyes"; then
+  AG_GST_DISABLE_PLUGIN(tcp)
+fi
 
 dnl *** sys plug-ins ***
 
@@ -476,6 +459,19 @@ AG_GST_CHECK_FEATURE(GNOME_VFS, [GNOME VFS], gnomevfs, [
   AG_GST_PKG_CHECK_MODULES(GNOME_VFS, gnome-vfs-2.0)
 ])
 
+dnl *** libgio ***
+USE_GIO=$BUILD_EXPERIMENTAL
+translit(dnm, m, l) AM_CONDITIONAL(USE_GIO, true)
+AG_GST_CHECK_FEATURE(GIO, [GIO library], gio, [
+  PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.15.2, HAVE_GIO="yes", [
+    HAVE_GIO="no"
+    AC_MSG_RESULT(no)
+  ])
+  AC_SUBST(GIO_CFLAGS)
+  AC_SUBST(GIO_LIBS)
+  AC_SUBST(GIO_LDFLAGS)
+])
+
 dnl *** libvisual ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBVISUAL, true)
 AG_GST_CHECK_FEATURE(LIBVISUAL, [libvisual visualization library], libvisual, [
@@ -525,9 +521,6 @@ AG_GST_CHECK_FEATURE(VORBIS, [Xiph Vorbis audio codec], vorbis, [
 
 if test "x$HAVE_VORBIS" = "xyes"; then
   ac_cflags_save="$CFLAGS"
-  dnl FIXME: does this work on non-gcc? -- Company
-  dnl FIXME: no, it doesn't.  Why is this here in the first place ? -- thomasvs
-  CFLAGS="-Wall -Werror"
   AC_COMPILE_IFELSE(
     AC_LANG_PROGRAM([
 #include <vorbis/codec.h>
@@ -550,6 +543,7 @@ dnl but we still need to set the conditionals
 AM_CONDITIONAL(USE_ALSA, false)
 AM_CONDITIONAL(USE_CDPARANOIA, false)
 AM_CONDITIONAL(USE_GNOME_VFS, false)
+AM_CONDITIONAL(USE_GIO, false)
 AM_CONDITIONAL(USE_LIBVISUAL, false)
 AM_CONDITIONAL(USE_OGG, false)
 AM_CONDITIONAL(USE_PANGO, false)
@@ -585,7 +579,8 @@ if test "x$USE_DEBUG" = xyes; then
 fi
 AC_SUBST(PROFILE_CFLAGS)
 
-if test "x$GST_CVS" = "xyes"; then
+if test "x$PACKAGE_VERSION_NANO" = "x1"; then
+  dnl Define _only_ during CVS (not pre-releases or releases)
   DEPRECATED_CFLAGS="-DGST_DISABLE_DEPRECATED"
 else
   DEPRECATED_CFLAGS=""
@@ -659,6 +654,7 @@ ext/Makefile
 ext/alsa/Makefile
 ext/cdparanoia/Makefile
 ext/gnomevfs/Makefile
+ext/gio/Makefile
 ext/libvisual/Makefile
 ext/ogg/Makefile
 ext/pango/Makefile

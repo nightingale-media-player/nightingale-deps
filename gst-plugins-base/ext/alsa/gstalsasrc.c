@@ -234,12 +234,12 @@ gst_alsasrc_class_init (GstAlsaSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_DEVICE,
       g_param_spec_string ("device", "Device",
           "ALSA device, as defined in an asound configuration file",
-          DEFAULT_PROP_DEVICE, G_PARAM_READWRITE));
+          DEFAULT_PROP_DEVICE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_DEVICE_NAME,
       g_param_spec_string ("device-name", "Device name",
           "Human-readable name of the sound device",
-          DEFAULT_PROP_DEVICE_NAME, G_PARAM_READABLE));
+          DEFAULT_PROP_DEVICE_NAME, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -363,7 +363,7 @@ set_hwparams (GstAlsaSrc * alsa)
       no_channels);
   /* set the stream rate */
   rrate = alsa->rate;
-  CHECK (snd_pcm_hw_params_set_rate_near (alsa->handle, params, &rrate, 0),
+  CHECK (snd_pcm_hw_params_set_rate_near (alsa->handle, params, &rrate, NULL),
       no_rate);
   if (rrate != alsa->rate)
     goto rate_match;
@@ -502,8 +502,13 @@ set_swparams (GstAlsaSrc * alsa)
   /* start the transfer on first read */
   CHECK (snd_pcm_sw_params_set_start_threshold (alsa->handle, params,
           0), start_threshold);
+
+#if GST_CHECK_ALSA_VERSION(1,0,16)
+  /* snd_pcm_sw_params_set_xfer_align() is deprecated, alignment is always 1 */
+#else
   /* align all transfers to 1 sample */
   CHECK (snd_pcm_sw_params_set_xfer_align (alsa->handle, params, 1), set_align);
+#endif
 
   /* write the parameters to the recording device */
   CHECK (snd_pcm_sw_params (alsa->handle, params), set_sw_params);
@@ -535,6 +540,7 @@ set_avail:
     snd_pcm_sw_params_free (params);
     return err;
   }
+#if !GST_CHECK_ALSA_VERSION(1,0,16)
 set_align:
   {
     GST_ELEMENT_ERROR (alsa, RESOURCE, SETTINGS, (NULL),
@@ -542,6 +548,7 @@ set_align:
     snd_pcm_sw_params_free (params);
     return err;
   }
+#endif
 set_sw_params:
   {
     GST_ELEMENT_ERROR (alsa, RESOURCE, SETTINGS, (NULL),

@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>playbin</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-oggdemux.html" title="oggdemux">
-<link rel="next" href="gst-plugins-base-plugins-decodebin2.html" title="decodebin2">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="prev" href="gst-plugins-base-plugins-oggmux.html" title="oggmux">
+<link rel="next" href="gst-plugins-base-plugins-playbin2.html" title="playbin2">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -16,42 +16,74 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-oggdemux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-oggmux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-decodebin2.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-playbin2.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2587143" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2592931" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-playbin.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-playbin"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2587143"></a><span class="refentrytitle">playbin</span>
-</h2>
-<p>playbin &#8212; Autoplug and play media from an uri</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-playbin.top_of_page"></a>playbin</span></h2>
+<p>playbin — Autoplug and play media from an uri</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<pre class="synopsis">
-
-
-
-
+<a name="gst-plugins-base-plugins-playbin.synopsis"></a><h2>Synopsis</h2>
+<a name="GstPlayBin"></a><pre class="synopsis">
+struct              <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-struct" title="struct GstPlayBin">GstPlayBin</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2592931"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-playbin.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBin
+                     +----GstPipeline
+                           +----GstPlayBaseBin
+                                 +----GstPlayBin
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstPlayBin implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'>audio-sink</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--frame" title='The "frame" property'>frame</a>"                    GstBuffer*            : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-font-desc" title='The "subtitle-font-desc" property'>subtitle-font-desc</a>"       gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'>video-sink</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--vis-plugin" title='The "vis-plugin" property'>vis-plugin</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         guint                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2574351"></a><p>
+<a name="id2634723"></a><h3>Usage</h3>
+<p>
 Playbin provides a stand-alone everything-in-one abstraction for an
 audio and/or video player.
 </p>
@@ -87,7 +119,6 @@ volume control
 </ul></div>
 <p>
 </p>
-<h3>Usage</h3>
 <p>
 A playbin element can be created just like any other element using
 <code class="function">gst_element_factory_make()</code>. The file/URI to play should be set via the "uri"
@@ -130,7 +161,6 @@ via <code class="function">gst_element_query_position()</code> and <code class="
 setting the format passed to GST_FORMAT_TIME. If the query was successful,
 the duration or position will have been returned in units of nanoseconds.
 </p>
-<h3>Advanced Usage: specifying the audio and video sink</h3>
 <p>
 By default, if no audio sink or video sink has been specified via the
 "audio-sink" or "video-sink" property, playbin will use the autoaudiosink
@@ -166,7 +196,6 @@ It is also possible to 'suppress' audio and/or video output by using
 'fakesink' elements (or capture it from there using the fakesink element's
 "handoff" signal, which, nota bene, is fired from the streaming thread!).
 </p>
-<h3>Retrieving Tags and Other Meta Data</h3>
 <p>
 Most of the common meta data (artist, title, etc.) can be retrieved by
 watching for TAG messages on the pipeline's bus (see above).
@@ -195,7 +224,6 @@ via a state-changed message on the bus where old_state=READY and
 new_state=PAUSED), since before that the list might not be complete yet or
 not contain all available information (like language-codes).
 </p>
-<h3>Buffering</h3>
 <p>
 Playbin handles buffering automatically for the most part, but applications
 need to handle parts of the buffering process as well. Whenever playbin is
@@ -225,14 +253,12 @@ a BUFFERING message is received with a buffer percent value &lt; 100 and set
 the pipeline back to PLAYING state when a BUFFERING message with a value
 of 100 percent is received (if PLAYING is the desired state, that is).
 </p>
-<h3>Embedding the video window in your application</h3>
 <p>
 By default, playbin (or rather the video sinks used) will create their own
 window. Applications will usually want to force output to a window of their
 own, however. This can be done using the GstXOverlay interface, which most
 video sinks implement. See the documentation there for more details.
 </p>
-<h3>Specifying which CD/DVD device to use</h3>
 <p>
 The device to use for CDs/DVDs needs to be set on the source element
 playbin creates before it is opened. The only way to do this at the moment
@@ -243,7 +269,6 @@ property and set it appropriately. In future ways might be added to specify
 the device as part of the URI, but at the time of writing this is not
 possible yet.
 </p>
-<h3>Examples</h3>
 <p>
 Here is a simple pipeline to play back a video or audio file:
 </p>
@@ -279,35 +304,96 @@ the drive is detected automatically by the plugin).
 </p>
 </div>
 <div class="refsect2" lang="en">
-<a name="id2608145"></a><h3>Element Information</h3>
+<a name="id2631620"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-playbin.html#plugin-playbin">playbin</a>
+          <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-plugins-0.10/gst-plugins-base-plugins-plugin-playbin.html#plugin-playbin"
+>playbin</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Generic/Bin/Player</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608550"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-playbin.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin-struct"></a><h3>struct GstPlayBin</h3>
+<pre class="programlisting">struct GstPlayBin;</pre>
+<p>
+High-level player element</p>
+<p>
+
+</p>
 </div>
 </div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--audio-sink"></a><h3>The <code class="literal">"audio-sink"</code> property</h3>
+<pre class="programlisting">  "audio-sink"               GstElement*           : Read / Write</pre>
+<p>the audio output element to use (NULL = default sink).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--frame"></a><h3>The <code class="literal">"frame"</code> property</h3>
+<pre class="programlisting">  "frame"                    GstBuffer*            : Read</pre>
+<p>The last frame (NULL = no video available).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--subtitle-font-desc"></a><h3>The <code class="literal">"subtitle-font-desc"</code> property</h3>
+<pre class="programlisting">  "subtitle-font-desc"       gchar*                : Write</pre>
+<p>Pango font description of font to be used for subtitle rendering.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--video-sink"></a><h3>The <code class="literal">"video-sink"</code> property</h3>
+<pre class="programlisting">  "video-sink"               GstElement*           : Read / Write</pre>
+<p>the video output element to use (NULL = default sink).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--vis-plugin"></a><h3>The <code class="literal">"vis-plugin"</code> property</h3>
+<pre class="programlisting">  "vis-plugin"               GstElement*           : Read / Write</pre>
+<p>the visualization element to use (NULL = none).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
+<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<p>volume.</p>
+<p>Allowed values: [0,10]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
+<pre class="programlisting">  "connection-speed"         guint                 : Read / Write</pre>
+<p>Network connection speed in kbps (0 = unknown).</p>
+<p>Default value: 0</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -144,27 +144,44 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_GENERIC_DEVICE,
       g_param_spec_string ("generic-device", "Generic device",
           "Use specified generic scsi device", DEFAULT_GENERIC_DEVICE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_READ_SPEED,
       g_param_spec_int ("read-speed", "Read speed",
           "Read from device at specified speed", -1, G_MAXINT,
-          DEFAULT_READ_SPEED, G_PARAM_READWRITE));
+          DEFAULT_READ_SPEED, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PARANOIA_MODE,
       g_param_spec_flags ("paranoia-mode", "Paranoia mode",
           "Type of checking to perform", GST_TYPE_CD_PARANOIA_MODE,
-          DEFAULT_PARANOIA_MODE, G_PARAM_READWRITE));
+          DEFAULT_PARANOIA_MODE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SEARCH_OVERLAP,
       g_param_spec_int ("search-overlap", "Search overlap",
           "Force minimum overlap search during verification to n sectors", -1,
-          75, DEFAULT_SEARCH_OVERLAP, G_PARAM_READWRITE));
+          75, DEFAULT_SEARCH_OVERLAP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* FIXME: we don't really want signals for this, but messages on the bus,
    * but then we can't check any longer whether anyone is interested in them */
+  /**
+   * GstCdParanoiaSrc::transport-error
+   * @cdparanoia: The CdParanoia instance
+   * @sector: The sector number at which the error was encountered.
+   *
+   * This signal is emitted whenever an error occurs while reading.
+   * CdParanoia will attempt to recover the data.
+   */
   cdpsrc_signals[TRANSPORT_ERROR] =
       g_signal_new ("transport-error", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstCdParanoiaSrcClass, transport_error),
       NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+  /**
+   * GstCdParanoiaSrc::uncorrected-error
+   * @cdparanoia: The CdParanoia instance
+   * @sector: The sector number at which the error was encountered.
+   *
+   * This signal is emitted whenever an uncorrectable error occurs while
+   * reading. The data could not be read.
+   */
   cdpsrc_signals[UNCORRECTED_ERROR] =
       g_signal_new ("uncorrected-error", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST,

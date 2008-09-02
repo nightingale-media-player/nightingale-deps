@@ -94,6 +94,11 @@ Adds text strings on top of a video buffer
 
 </para>
 
+<!-- ##### ARG GstTextOverlay:wait-text ##### -->
+<para>
+
+</para>
+
 <!-- ##### ENUM GstTextOverlayVAlign ##### -->
 <para>
 

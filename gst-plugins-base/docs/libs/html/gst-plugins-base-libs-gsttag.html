@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gsttag</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="prev" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="next" href="gst-plugins-base-libs-gsttagvorbis.html" title="gsttagvorbis">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,62 +36,57 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gsttagvorbis.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2735094" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2735358" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gsttag.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gsttag.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gsttag"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2735094"></a><span class="refentrytitle">gsttag</span>
-</h2>
-<p>gsttag &#8212; additional tag definitions for plugins and applications</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gsttag.top_of_page"></a>gsttag</span></h2>
+<p>gsttag — additional tag definitions for plugins and applications</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gsttag.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/tag/tag.h&gt;
 
-
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRACKID:CAPS">GST_TAG_MUSICBRAINZ_TRACKID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ARTISTID:CAPS">GST_TAG_MUSICBRAINZ_ARTISTID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMID:CAPS">GST_TAG_MUSICBRAINZ_ALBUMID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS">GST_TAG_MUSICBRAINZ_ALBUMARTISTID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRMID:CAPS">GST_TAG_MUSICBRAINZ_TRMID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-SORTNAME:CAPS">GST_TAG_MUSICBRAINZ_SORTNAME</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID:CAPS">GST_TAG_CDDA_CDDB_DISCID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS">GST_TAG_CDDA_CDDB_DISCID_FULL</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS">GST_TAG_CDDA_MUSICBRAINZ_DISCID</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS">GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-TRACK-TAGS:CAPS">GST_TAG_CDDA_TRACK_TAGS</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-CLIP:CAPS">GST_TAG_CMML_CLIP</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-HEAD:CAPS">GST_TAG_CMML_HEAD</a>
-#define             <a href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-STREAM:CAPS">GST_TAG_CMML_STREAM</a>
-void                <a href="gst-plugins-base-libs-gsttag.html#gst-tag-register-musicbrainz-tags">gst_tag_register_musicbrainz_tags</a>   (void);
-gchar*              <a href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8">gst_tag_freeform_string_to_utf8</a>     (const gchar *data,
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRACKID:CAPS" title="GST_TAG_MUSICBRAINZ_TRACKID">GST_TAG_MUSICBRAINZ_TRACKID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ARTISTID:CAPS" title="GST_TAG_MUSICBRAINZ_ARTISTID">GST_TAG_MUSICBRAINZ_ARTISTID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMID:CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMID">GST_TAG_MUSICBRAINZ_ALBUMID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMARTISTID">GST_TAG_MUSICBRAINZ_ALBUMARTISTID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRMID:CAPS" title="GST_TAG_MUSICBRAINZ_TRMID">GST_TAG_MUSICBRAINZ_TRMID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-SORTNAME:CAPS" title="GST_TAG_MUSICBRAINZ_SORTNAME">GST_TAG_MUSICBRAINZ_SORTNAME</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID:CAPS" title="GST_TAG_CDDA_CDDB_DISCID">GST_TAG_CDDA_CDDB_DISCID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS" title="GST_TAG_CDDA_CDDB_DISCID_FULL">GST_TAG_CDDA_CDDB_DISCID_FULL</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID">GST_TAG_CDDA_MUSICBRAINZ_DISCID</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL">GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-TRACK-TAGS:CAPS" title="GST_TAG_CDDA_TRACK_TAGS">GST_TAG_CDDA_TRACK_TAGS</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-CLIP:CAPS" title="GST_TAG_CMML_CLIP">GST_TAG_CMML_CLIP</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-HEAD:CAPS" title="GST_TAG_CMML_HEAD">GST_TAG_CMML_HEAD</a>
+#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-STREAM:CAPS" title="GST_TAG_CMML_STREAM">GST_TAG_CMML_STREAM</a>
+void                <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-register-musicbrainz-tags" title="gst_tag_register_musicbrainz_tags ()">gst_tag_register_musicbrainz_tags</a>   (void);
+gchar*              <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8" title="gst_tag_freeform_string_to_utf8 ()">gst_tag_freeform_string_to_utf8</a>     (const gchar *data,
                                                          gint size,
                                                          const gchar **env_vars);
-gboolean            <a href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment">gst_tag_parse_extended_comment</a>      (const gchar *ext_comment,
+gboolean            <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment" title="gst_tag_parse_extended_comment ()">gst_tag_parse_extended_comment</a>      (const gchar *ext_comment,
                                                          gchar **key,
                                                          gchar **lang,
                                                          gchar **value,
                                                          gboolean fail_if_no_key);
-enum                <a href="gst-plugins-base-libs-gsttag.html#GstTagImageType">GstTagImageType</a>;
-
-
+enum                <a class="link" href="gst-plugins-base-libs-gsttag.html#GstTagImageType" title="enum GstTagImageType">GstTagImageType</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2735358"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gsttag.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2735370"></a><p>
+<a name="id2765449"></a><p>
 Contains additional standardized GStreamer tag definitions for plugins
 and applications, and functions to register them with the GStreamer
 tag system.
@@ -102,11 +97,10 @@ tag system.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2735383"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gsttag.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2735393"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-TRACKID:CAPS"></a>GST_TAG_MUSICBRAINZ_TRACKID</h3>
-<a class="indexterm" name="id2735408"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRACKID	"musicbrainz-trackid"
+<a name="GST-TAG-MUSICBRAINZ-TRACKID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRACKID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRACKID	"musicbrainz-trackid"
 </pre>
 <p>
 MusicBrainz track ID</p>
@@ -116,9 +110,8 @@ MusicBrainz track ID</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2735427"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-ARTISTID:CAPS"></a>GST_TAG_MUSICBRAINZ_ARTISTID</h3>
-<a class="indexterm" name="id2735440"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ARTISTID	"musicbrainz-artistid"
+<a name="GST-TAG-MUSICBRAINZ-ARTISTID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ARTISTID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ARTISTID	"musicbrainz-artistid"
 </pre>
 <p>
 MusicBrainz artist ID</p>
@@ -128,9 +121,8 @@ MusicBrainz artist ID</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2735460"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-ALBUMID:CAPS"></a>GST_TAG_MUSICBRAINZ_ALBUMID</h3>
-<a class="indexterm" name="id2735474"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMID	"musicbrainz-albumid"
+<a name="GST-TAG-MUSICBRAINZ-ALBUMID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMID	"musicbrainz-albumid"
 </pre>
 <p>
 MusicBrainz album ID</p>
@@ -140,9 +132,8 @@ MusicBrainz album ID</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2735494"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS"></a>GST_TAG_MUSICBRAINZ_ALBUMARTISTID</h3>
-<a class="indexterm" name="id2511804"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMARTISTID	"musicbrainz-albumartistid"
+<a name="GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMARTISTID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMARTISTID	"musicbrainz-albumartistid"
 </pre>
 <p>
 MusicBrainz album artist ID</p>
@@ -152,9 +143,8 @@ MusicBrainz album artist ID</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2511824"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-TRMID:CAPS"></a>GST_TAG_MUSICBRAINZ_TRMID</h3>
-<a class="indexterm" name="id2511837"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRMID	"musicbrainz-trmid"
+<a name="GST-TAG-MUSICBRAINZ-TRMID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRMID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRMID	"musicbrainz-trmid"
 </pre>
 <p>
 MusicBrainz track TRM ID</p>
@@ -164,9 +154,8 @@ MusicBrainz track TRM ID</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2511856"></a><h3>
-<a name="GST-TAG-MUSICBRAINZ-SORTNAME:CAPS"></a>GST_TAG_MUSICBRAINZ_SORTNAME</h3>
-<a class="indexterm" name="id2511870"></a><pre class="programlisting">#define GST_TAG_MUSICBRAINZ_SORTNAME	GST_TAG_ARTIST_SORTNAME
+<a name="GST-TAG-MUSICBRAINZ-SORTNAME:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_SORTNAME</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_SORTNAME	GST_TAG_ARTIST_SORTNAME
 </pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
@@ -183,9 +172,8 @@ Deprecated.  Use GST_TAG_ARTIST_SORTNAME instead.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736328"></a><h3>
-<a name="GST-TAG-CDDA-CDDB-DISCID:CAPS"></a>GST_TAG_CDDA_CDDB_DISCID</h3>
-<a class="indexterm" name="id2736340"></a><pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID              "discid"
+<a name="GST-TAG-CDDA-CDDB-DISCID:CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID              "discid"
 </pre>
 <p>
 CDDB disc id in its short form (e.g. 'aa063d0f')</p>
@@ -195,9 +183,8 @@ CDDB disc id in its short form (e.g. 'aa063d0f')</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736360"></a><h3>
-<a name="GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS"></a>GST_TAG_CDDA_CDDB_DISCID_FULL</h3>
-<a class="indexterm" name="id2736372"></a><pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID_FULL         "discid-full"
+<a name="GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID_FULL</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID_FULL         "discid-full"
 </pre>
 <p>
 CDDB disc id including all details</p>
@@ -207,9 +194,8 @@ CDDB disc id including all details</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736392"></a><h3>
-<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS"></a>GST_TAG_CDDA_MUSICBRAINZ_DISCID</h3>
-<a class="indexterm" name="id2736405"></a><pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID       "musicbrainz-discid"
+<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID       "musicbrainz-discid"
 </pre>
 <p>
 Musicbrainz disc id (e.g. 'ahg7JUcfR3vCYBphSDIogOOWrr0-')</p>
@@ -219,9 +205,8 @@ Musicbrainz disc id (e.g. 'ahg7JUcfR3vCYBphSDIogOOWrr0-')</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736425"></a><h3>
-<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS"></a>GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</h3>
-<a class="indexterm" name="id2736437"></a><pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL  "musicbrainz-discid-full"
+<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL  "musicbrainz-discid-full"
 </pre>
 <p>
 Musicbrainz disc id details</p>
@@ -231,9 +216,8 @@ Musicbrainz disc id details</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736458"></a><h3>
-<a name="GST-TAG-CDDA-TRACK-TAGS:CAPS"></a>GST_TAG_CDDA_TRACK_TAGS</h3>
-<a class="indexterm" name="id2736470"></a><pre class="programlisting">#define GST_TAG_CDDA_TRACK_TAGS               "track-tags"
+<a name="GST-TAG-CDDA-TRACK-TAGS:CAPS"></a><h3>GST_TAG_CDDA_TRACK_TAGS</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_TRACK_TAGS               "track-tags"
 </pre>
 <p>
 
@@ -241,9 +225,8 @@ Musicbrainz disc id details</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736486"></a><h3>
-<a name="GST-TAG-CMML-CLIP:CAPS"></a>GST_TAG_CMML_CLIP</h3>
-<a class="indexterm" name="id2736497"></a><pre class="programlisting">#define GST_TAG_CMML_CLIP "cmml-clip"
+<a name="GST-TAG-CMML-CLIP:CAPS"></a><h3>GST_TAG_CMML_CLIP</h3>
+<pre class="programlisting">#define GST_TAG_CMML_CLIP "cmml-clip"
 </pre>
 <p>
 Annodex CMML clip element tag</p>
@@ -253,9 +236,8 @@ Annodex CMML clip element tag</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736515"></a><h3>
-<a name="GST-TAG-CMML-HEAD:CAPS"></a>GST_TAG_CMML_HEAD</h3>
-<a class="indexterm" name="id2736526"></a><pre class="programlisting">#define GST_TAG_CMML_HEAD "cmml-head"
+<a name="GST-TAG-CMML-HEAD:CAPS"></a><h3>GST_TAG_CMML_HEAD</h3>
+<pre class="programlisting">#define GST_TAG_CMML_HEAD "cmml-head"
 </pre>
 <p>
 Annodex CMML head element tag</p>
@@ -265,9 +247,8 @@ Annodex CMML head element tag</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736546"></a><h3>
-<a name="GST-TAG-CMML-STREAM:CAPS"></a>GST_TAG_CMML_STREAM</h3>
-<a class="indexterm" name="id2736557"></a><pre class="programlisting">#define GST_TAG_CMML_STREAM "cmml-stream"
+<a name="GST-TAG-CMML-STREAM:CAPS"></a><h3>GST_TAG_CMML_STREAM</h3>
+<pre class="programlisting">#define GST_TAG_CMML_STREAM "cmml-stream"
 </pre>
 <p>
 Annodex CMML stream element tag</p>
@@ -277,9 +258,8 @@ Annodex CMML stream element tag</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736576"></a><h3>
-<a name="gst-tag-register-musicbrainz-tags"></a>gst_tag_register_musicbrainz_tags ()</h3>
-<a class="indexterm" name="id2736590"></a><pre class="programlisting">void                gst_tag_register_musicbrainz_tags   (void);</pre>
+<a name="gst-tag-register-musicbrainz-tags"></a><h3>gst_tag_register_musicbrainz_tags ()</h3>
+<pre class="programlisting">void                gst_tag_register_musicbrainz_tags   (void);</pre>
 <p>
 Registers additional musicbrainz-specific tags with the GStreamer tag
 system. Plugins and applications that use these tags should call this
@@ -290,9 +270,8 @@ function before using them. Can be called multiple times.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736617"></a><h3>
-<a name="gst-tag-freeform-string-to-utf8"></a>gst_tag_freeform_string_to_utf8 ()</h3>
-<a class="indexterm" name="id2736632"></a><pre class="programlisting">gchar*              gst_tag_freeform_string_to_utf8     (const gchar *data,
+<a name="gst-tag-freeform-string-to-utf8"></a><h3>gst_tag_freeform_string_to_utf8 ()</h3>
+<pre class="programlisting">gchar*              gst_tag_freeform_string_to_utf8     (const gchar *data,
                                                          gint size,
                                                          const gchar **env_vars);</pre>
 <p>
@@ -310,23 +289,23 @@ ISO-8859-1 is assumed (which will almost always succeed).</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> string data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
 <td> length of string data, or -1 if the string is NUL-terminated
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>env_vars</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>env_vars</code></em> :</span></p></td>
 <td> a NULL-terminated string array of environment variable names,
            or NULL
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated string in UTF-8 encoding, or NULL
 
 </td>
@@ -338,9 +317,8 @@ ISO-8859-1 is assumed (which will almost always succeed).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736760"></a><h3>
-<a name="gst-tag-parse-extended-comment"></a>gst_tag_parse_extended_comment ()</h3>
-<a class="indexterm" name="id2736776"></a><pre class="programlisting">gboolean            gst_tag_parse_extended_comment      (const gchar *ext_comment,
+<a name="gst-tag-parse-extended-comment"></a><h3>gst_tag_parse_extended_comment ()</h3>
+<pre class="programlisting">gboolean            gst_tag_parse_extended_comment      (const gchar *ext_comment,
                                                          gchar **key,
                                                          gchar **lang,
                                                          gchar **value,
@@ -361,32 +339,32 @@ code in the extended comment string.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>ext_comment</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ext_comment</code></em> :</span></p></td>
 <td> an extended comment string, see <span class="type">GST_TAG_EXTENDED_COMMENT</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
 <td> return location for the comment description key, or NULL
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>lang</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
 <td> return location for the comment ISO-639 language code, or NULL
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> return location for the actual comment string, or NULL
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fail_if_no_key</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fail_if_no_key</code></em> :</span></p></td>
 <td> whether to fail if strings are not in key=value form
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the string could be parsed, otherwise FALSE
 
 </td>
@@ -398,10 +376,10 @@ code in the extended comment string.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2736992"></a><h3>
-<a name="GstTagImageType"></a>enum GstTagImageType</h3>
-<a class="indexterm" name="id2737005"></a><pre class="programlisting">typedef enum {
-  GST_TAG_IMAGE_TYPE_UNDEFINED,
+<a name="GstTagImageType"></a><h3>enum GstTagImageType</h3>
+<pre class="programlisting">typedef enum {
+  GST_TAG_IMAGE_TYPE_NONE = -1,
+  GST_TAG_IMAGE_TYPE_UNDEFINED = 0,
   GST_TAG_IMAGE_TYPE_FRONT_COVER,
   GST_TAG_IMAGE_TYPE_BACK_COVER,
   GST_TAG_IMAGE_TYPE_LEAFLET_PAGE,
@@ -432,97 +410,104 @@ the image buffer's caps structure)</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-UNDEFINED:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_UNDEFINED</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-NONE:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_NONE</code></span></p></td>
+<td> No image type. Can be used to
+     tell functions such as <code class="function">gst_tag_image_data_to_image_buffer()</code> that no
+     image type should be set. (Since: 0.10.20)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-TAG-IMAGE-TYPE-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_UNDEFINED</code></span></p></td>
 <td> Undefined/other image type
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-FRONT-COVER:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_FRONT_COVER</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-FRONT-COVER:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_FRONT_COVER</code></span></p></td>
 <td> Cover (front)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-BACK-COVER:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_BACK_COVER</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-BACK-COVER:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BACK_COVER</code></span></p></td>
 <td> Cover (back)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-LEAFLET-PAGE:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_LEAFLET_PAGE</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-LEAFLET-PAGE:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LEAFLET_PAGE</code></span></p></td>
 <td> Leaflet page
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-MEDIUM:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_MEDIUM</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-MEDIUM:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_MEDIUM</code></span></p></td>
 <td> Medium (e.g. label side of CD)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-LEAD-ARTIST:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_LEAD_ARTIST</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-LEAD-ARTIST:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LEAD_ARTIST</code></span></p></td>
 <td> Lead artist/lead performer/soloist
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-ARTIST:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_ARTIST</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-ARTIST:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_ARTIST</code></span></p></td>
 <td> Artist/performer
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-CONDUCTOR:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_CONDUCTOR</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-CONDUCTOR:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_CONDUCTOR</code></span></p></td>
 <td> Conductor
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-BAND-ORCHESTRA:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-BAND-ORCHESTRA:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA</code></span></p></td>
 <td> Band/orchestra
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-COMPOSER:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_COMPOSER</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-COMPOSER:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_COMPOSER</code></span></p></td>
 <td> Composer
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-LYRICIST:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_LYRICIST</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-LYRICIST:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LYRICIST</code></span></p></td>
 <td> Lyricist/text writer
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-RECORDING-LOCATION:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_RECORDING_LOCATION</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-RECORDING-LOCATION:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_RECORDING_LOCATION</code></span></p></td>
 <td> Recording location
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-DURING-RECORDING:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_DURING_RECORDING</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-DURING-RECORDING:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_DURING_RECORDING</code></span></p></td>
 <td> During recording
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-DURING-PERFORMANCE:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-DURING-PERFORMANCE:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE</code></span></p></td>
 <td> During performance
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-VIDEO-CAPTURE:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-VIDEO-CAPTURE:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE</code></span></p></td>
 <td> Movie/video screen capture
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-FISH:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_FISH</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-FISH:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_FISH</code></span></p></td>
 <td> A fish as funny as the ID3v2 spec
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-ILLUSTRATION:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_ILLUSTRATION</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-ILLUSTRATION:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_ILLUSTRATION</code></span></p></td>
 <td> Illustration
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-BAND-ARTIST-LOGO:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-BAND-ARTIST-LOGO:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO</code></span></p></td>
 <td> Band/artist logotype
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TAG-IMAGE-TYPE-PUBLISHER-STUDIO-LOGO:CAPS"></a><code class="literal">GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO</code></span></td>
+<td><p><a name="GST-TAG-IMAGE-TYPE-PUBLISHER-STUDIO-LOGO:CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO</code></span></p></td>
 <td> Publisher/studio logotype
 </td>
 </tr>
@@ -533,9 +518,12 @@ the image buffer's caps structure)</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2737446"></a><h2>See Also</h2>
+<a name="gst-plugins-base-libs-gsttag.see-also"></a><h2>See Also</h2>
 <span class="type">GstTagList</span>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

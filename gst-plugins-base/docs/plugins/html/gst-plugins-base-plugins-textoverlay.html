@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>textoverlay</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-theoraenc.html" title="theoraenc">
+<link rel="prev" href="gst-plugins-base-plugins-tcpserversink.html" title="tcpserversink">
 <link rel="next" href="gst-plugins-base-plugins-textrender.html" title="textrender">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -16,82 +16,75 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-theoraenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-tcpserversink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-textrender.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2615061" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2615235" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2613936" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2613899" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-textoverlay.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-textoverlay.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-textoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-textoverlay.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-textoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2615061"></a><span class="refentrytitle">textoverlay</span>
-</h2>
-<p>textoverlay &#8212; Adds text strings on top of a video buffer</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-textoverlay.top_of_page"></a>textoverlay</span></h2>
+<p>textoverlay — Adds text strings on top of a video buffer</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-textoverlay.synopsis"></a><h2>Synopsis</h2>
 <a name="GstTextOverlay"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay-struct">GstTextOverlay</a>;
-enum                <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign">GstTextOverlayVAlign</a>;
-enum                <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign">GstTextOverlayHAlign</a>;
-enum                <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>;
-
+                    <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay-struct" title="GstTextOverlay">GstTextOverlay</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign" title="enum GstTextOverlayVAlign">GstTextOverlayVAlign</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign" title="enum GstTextOverlayHAlign">GstTextOverlayHAlign</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode" title="enum GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2613936"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-textoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstTextOverlay
-                     +----<a href="gst-plugins-base-plugins-timeoverlay.html#GstTimeOverlay">GstTimeOverlay</a>
-                     +----<a href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay">GstClockOverlay</a>
+                     +----<a class="link" href="gst-plugins-base-plugins-timeoverlay.html#GstTimeOverlay">GstTimeOverlay</a>
+                     +----<a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay">GstClockOverlay</a>
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2613899"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-textoverlay.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltax">deltax</a>"                   gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltay">deltay</a>"                   gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--font-desc">font-desc</a>"                gchar*                : Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halign">halign</a>"                   gchar*                : Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--shaded-background">shaded-background</a>"        gboolean              : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--text">text</a>"                     gchar*                : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valign">valign</a>"                   gchar*                : Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--wrap-mode">wrap-mode</a>"                <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--xpad">xpad</a>"                     gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--ypad">ypad</a>"                     gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halignment">halignment</a>"               <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign">GstTextOverlayHAlign</a>  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valignment">valignment</a>"               <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign">GstTextOverlayVAlign</a>  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--line-alignment">line-alignment</a>"           GstTextOverlayLineAlign  : Read / Write
-  "<a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--silent">silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltax" title='The "deltax" property'>deltax</a>"                   gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltay" title='The "deltay" property'>deltay</a>"                   gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--font-desc" title='The "font-desc" property'>font-desc</a>"                gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halign" title='The "halign" property'>halign</a>"                   gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--shaded-background" title='The "shaded-background" property'>shaded-background</a>"        gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--text" title='The "text" property'>text</a>"                     gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valign" title='The "valign" property'>valign</a>"                   gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--wrap-mode" title='The "wrap-mode" property'>wrap-mode</a>"                <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode" title="enum GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--xpad" title='The "xpad" property'>xpad</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--ypad" title='The "ypad" property'>ypad</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halignment" title='The "halignment" property'>halignment</a>"               <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign" title="enum GstTextOverlayHAlign">GstTextOverlayHAlign</a>  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valignment" title='The "valignment" property'>valignment</a>"               <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign" title="enum GstTextOverlayVAlign">GstTextOverlayVAlign</a>  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--line-alignment" title='The "line-alignment" property'>line-alignment</a>"           GstTextOverlayLineAlign  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--wait-text" title='The "wait-text" property'>wait-text</a>"                gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2615235"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-textoverlay.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2615248"></a><p>
+<a name="id2635976"></a><p>
 This plugin renders text on top of a video stream. This can be either
 static text or text from buffers received on the text sink pad, e.g.
 as produced by the subparse element. If the text sink pad is not linked,
@@ -143,87 +136,90 @@ I don't understand  (18-62s)
 </p>
 </div>
 <div class="refsect2" lang="en">
-<a name="id2611876"></a><h3>Element Information</h3>
+<a name="id2636036"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-pango.html#plugin-pango">pango</a>
+          <a class="link" href="gst-plugins-base-plugins-plugin-pango.html#plugin-pango">pango</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>David Schleef &lt;ds@schleef.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Editor/Video</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
-<td>src</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>video_sink</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>text_sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>text/x-pango-markup; text/plain</td>
+<td><p><span class="term">details</span></p></td>
+<td>text/x-pango-markup</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> text/plain</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -233,11 +229,10 @@ I don't understand  (18-62s)
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2612142"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-textoverlay.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2612153"></a><h3>
-<a name="GstTextOverlay-struct"></a>GstTextOverlay</h3>
-<a class="indexterm" name="id2612165"></a><pre class="programlisting">typedef struct _GstTextOverlay GstTextOverlay;</pre>
+<a name="GstTextOverlay-struct"></a><h3>GstTextOverlay</h3>
+<pre class="programlisting">typedef struct _GstTextOverlay GstTextOverlay;</pre>
 <p>
 Opaque textoverlay object structure</p>
 <p>
@@ -246,9 +241,8 @@ Opaque textoverlay object structure</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612185"></a><h3>
-<a name="GstTextOverlayVAlign"></a>enum GstTextOverlayVAlign</h3>
-<a class="indexterm" name="id2612197"></a><pre class="programlisting">typedef enum {
+<a name="GstTextOverlayVAlign"></a><h3>enum GstTextOverlayVAlign</h3>
+<pre class="programlisting">typedef enum {
     GST_TEXT_OVERLAY_VALIGN_BASELINE,
     GST_TEXT_OVERLAY_VALIGN_BOTTOM,
     GST_TEXT_OVERLAY_VALIGN_TOP
@@ -263,17 +257,17 @@ Vertical alignment of the text.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-VALIGN-BASELINE:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_VALIGN_BASELINE</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-VALIGN-BASELINE:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_VALIGN_BASELINE</code></span></p></td>
 <td> draw text on the baseline
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-VALIGN-BOTTOM:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_VALIGN_BOTTOM</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-VALIGN-BOTTOM:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_VALIGN_BOTTOM</code></span></p></td>
 <td> draw text on the bottom
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-VALIGN-TOP:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_VALIGN_TOP</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-VALIGN-TOP:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_VALIGN_TOP</code></span></p></td>
 <td> draw test on top
 </td>
 </tr>
@@ -282,9 +276,8 @@ Vertical alignment of the text.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616106"></a><h3>
-<a name="GstTextOverlayHAlign"></a>enum GstTextOverlayHAlign</h3>
-<a class="indexterm" name="id2616117"></a><pre class="programlisting">typedef enum {
+<a name="GstTextOverlayHAlign"></a><h3>enum GstTextOverlayHAlign</h3>
+<pre class="programlisting">typedef enum {
     GST_TEXT_OVERLAY_HALIGN_LEFT,
     GST_TEXT_OVERLAY_HALIGN_CENTER,
     GST_TEXT_OVERLAY_HALIGN_RIGHT
@@ -299,17 +292,17 @@ Horizontal alignment of the text.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-HALIGN-LEFT:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_HALIGN_LEFT</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-HALIGN-LEFT:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_HALIGN_LEFT</code></span></p></td>
 <td> align text left
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-HALIGN-CENTER:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_HALIGN_CENTER</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-HALIGN-CENTER:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_HALIGN_CENTER</code></span></p></td>
 <td> align text center
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-HALIGN-RIGHT:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_HALIGN_RIGHT</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-HALIGN-RIGHT:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_HALIGN_RIGHT</code></span></p></td>
 <td> align text right
 </td>
 </tr>
@@ -318,9 +311,8 @@ Horizontal alignment of the text.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616203"></a><h3>
-<a name="GstTextOverlayWrapMode"></a>enum GstTextOverlayWrapMode</h3>
-<a class="indexterm" name="id2616213"></a><pre class="programlisting">typedef enum {
+<a name="GstTextOverlayWrapMode"></a><h3>enum GstTextOverlayWrapMode</h3>
+<pre class="programlisting">typedef enum {
     GST_TEXT_OVERLAY_WRAP_MODE_NONE = -1,
     GST_TEXT_OVERLAY_WRAP_MODE_WORD = PANGO_WRAP_WORD,
     GST_TEXT_OVERLAY_WRAP_MODE_CHAR = PANGO_WRAP_CHAR,
@@ -336,22 +328,22 @@ Whether to wrap the text and if so how.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-WRAP-MODE-NONE:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_NONE</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-WRAP-MODE-NONE:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_NONE</code></span></p></td>
 <td> no wrapping
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-WRAP-MODE-WORD:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_WORD</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-WRAP-MODE-WORD:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_WORD</code></span></p></td>
 <td> do word wrapping
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-WRAP-MODE-CHAR:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_CHAR</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-WRAP-MODE-CHAR:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_CHAR</code></span></p></td>
 <td> do char wrapping
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-TEXT-OVERLAY-WRAP-MODE-WORD-CHAR:CAPS"></a><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_WORD_CHAR</code></span></td>
+<td><p><a name="GST-TEXT-OVERLAY-WRAP-MODE-WORD-CHAR:CAPS"></a><span class="term"><code class="literal">GST_TEXT_OVERLAY_WRAP_MODE_WORD_CHAR</code></span></p></td>
 <td> do word and char wrapping
 </td>
 </tr>
@@ -360,109 +352,96 @@ Whether to wrap the text and if so how.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2616324"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-textoverlay.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2616333"></a><h3>
-<a name="GstTextOverlay--deltax"></a>The "<code class="literal">deltax</code>" property</h3>
-<a class="indexterm" name="id2616346"></a><pre class="programlisting">  "deltax"                   gint                  : Read / Write</pre>
+<a name="GstTextOverlay--deltax"></a><h3>The <code class="literal">"deltax"</code> property</h3>
+<pre class="programlisting">  "deltax"                   gint                  : Read / Write</pre>
 <p>Shift X position to the left or to the right. Unit is pixels.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616369"></a><h3>
-<a name="GstTextOverlay--deltay"></a>The "<code class="literal">deltay</code>" property</h3>
-<a class="indexterm" name="id2616382"></a><pre class="programlisting">  "deltay"                   gint                  : Read / Write</pre>
+<a name="GstTextOverlay--deltay"></a><h3>The <code class="literal">"deltay"</code> property</h3>
+<pre class="programlisting">  "deltay"                   gint                  : Read / Write</pre>
 <p>Shift Y position up or down. Unit is pixels.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616406"></a><h3>
-<a name="GstTextOverlay--font-desc"></a>The "<code class="literal">font-desc</code>" property</h3>
-<a class="indexterm" name="id2616418"></a><pre class="programlisting">  "font-desc"                gchar*                : Write</pre>
+<a name="GstTextOverlay--font-desc"></a><h3>The <code class="literal">"font-desc"</code> property</h3>
+<pre class="programlisting">  "font-desc"                gchar*                : Write</pre>
 <p>Pango font description of font to be used for rendering. See documentation of pango_font_description_from_string for syntax.</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616443"></a><h3>
-<a name="GstTextOverlay--halign"></a>The "<code class="literal">halign</code>" property</h3>
-<a class="indexterm" name="id2616456"></a><pre class="programlisting">  "halign"                   gchar*                : Write</pre>
+<a name="GstTextOverlay--halign"></a><h3>The <code class="literal">"halign"</code> property</h3>
+<pre class="programlisting">  "halign"                   gchar*                : Write</pre>
 <p>Horizontal alignment of the text (deprecated; use halignment).</p>
 <p>Default value: "center"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616478"></a><h3>
-<a name="GstTextOverlay--shaded-background"></a>The "<code class="literal">shaded-background</code>" property</h3>
-<a class="indexterm" name="id2616493"></a><pre class="programlisting">  "shaded-background"        gboolean              : Read / Write</pre>
+<a name="GstTextOverlay--shaded-background"></a><h3>The <code class="literal">"shaded-background"</code> property</h3>
+<pre class="programlisting">  "shaded-background"        gboolean              : Read / Write</pre>
 <p>Whether to shade the background under the text area.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616517"></a><h3>
-<a name="GstTextOverlay--text"></a>The "<code class="literal">text</code>" property</h3>
-<a class="indexterm" name="id2616530"></a><pre class="programlisting">  "text"                     gchar*                : Read / Write</pre>
+<a name="GstTextOverlay--text"></a><h3>The <code class="literal">"text"</code> property</h3>
+<pre class="programlisting">  "text"                     gchar*                : Read / Write</pre>
 <p>Text to be display.</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616553"></a><h3>
-<a name="GstTextOverlay--valign"></a>The "<code class="literal">valign</code>" property</h3>
-<a class="indexterm" name="id2616566"></a><pre class="programlisting">  "valign"                   gchar*                : Write</pre>
+<a name="GstTextOverlay--valign"></a><h3>The <code class="literal">"valign"</code> property</h3>
+<pre class="programlisting">  "valign"                   gchar*                : Write</pre>
 <p>Vertical alignment of the text (deprecated; use valignment).</p>
 <p>Default value: "baseline"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616588"></a><h3>
-<a name="GstTextOverlay--wrap-mode"></a>The "<code class="literal">wrap-mode</code>" property</h3>
-<a class="indexterm" name="id2616601"></a><pre class="programlisting">  "wrap-mode"                <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>  : Read / Write</pre>
+<a name="GstTextOverlay--wrap-mode"></a><h3>The <code class="literal">"wrap-mode"</code> property</h3>
+<pre class="programlisting">  "wrap-mode"                <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode" title="enum GstTextOverlayWrapMode">GstTextOverlayWrapMode</a>  : Read / Write</pre>
 <p>Whether to wrap the text and if so how.</p>
 <p>Default value: wordchar</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616624"></a><h3>
-<a name="GstTextOverlay--xpad"></a>The "<code class="literal">xpad</code>" property</h3>
-<a class="indexterm" name="id2616637"></a><pre class="programlisting">  "xpad"                     gint                  : Read / Write</pre>
+<a name="GstTextOverlay--xpad"></a><h3>The <code class="literal">"xpad"</code> property</h3>
+<pre class="programlisting">  "xpad"                     gint                  : Read / Write</pre>
 <p>Horizontal paddding when using left/right alignment.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 25</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616665"></a><h3>
-<a name="GstTextOverlay--ypad"></a>The "<code class="literal">ypad</code>" property</h3>
-<a class="indexterm" name="id2616677"></a><pre class="programlisting">  "ypad"                     gint                  : Read / Write</pre>
+<a name="GstTextOverlay--ypad"></a><h3>The <code class="literal">"ypad"</code> property</h3>
+<pre class="programlisting">  "ypad"                     gint                  : Read / Write</pre>
 <p>Vertical padding when using top/bottom alignment.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 25</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616705"></a><h3>
-<a name="GstTextOverlay--halignment"></a>The "<code class="literal">halignment</code>" property</h3>
-<a class="indexterm" name="id2616717"></a><pre class="programlisting">  "halignment"               <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign">GstTextOverlayHAlign</a>  : Read / Write</pre>
+<a name="GstTextOverlay--halignment"></a><h3>The <code class="literal">"halignment"</code> property</h3>
+<pre class="programlisting">  "halignment"               <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign" title="enum GstTextOverlayHAlign">GstTextOverlayHAlign</a>  : Read / Write</pre>
 <p>Horizontal alignment of the text.</p>
 <p>Default value: center</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616740"></a><h3>
-<a name="GstTextOverlay--valignment"></a>The "<code class="literal">valignment</code>" property</h3>
-<a class="indexterm" name="id2616753"></a><pre class="programlisting">  "valignment"               <a href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign">GstTextOverlayVAlign</a>  : Read / Write</pre>
+<a name="GstTextOverlay--valignment"></a><h3>The <code class="literal">"valignment"</code> property</h3>
+<pre class="programlisting">  "valignment"               <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign" title="enum GstTextOverlayVAlign">GstTextOverlayVAlign</a>  : Read / Write</pre>
 <p>Vertical alignment of the text.</p>
 <p>Default value: baseline</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616776"></a><h3>
-<a name="GstTextOverlay--line-alignment"></a>The "<code class="literal">line-alignment</code>" property</h3>
-<a class="indexterm" name="id2616791"></a><pre class="programlisting">  "line-alignment"           GstTextOverlayLineAlign  : Read / Write</pre>
+<a name="GstTextOverlay--line-alignment"></a><h3>The <code class="literal">"line-alignment"</code> property</h3>
+<pre class="programlisting">  "line-alignment"           GstTextOverlayLineAlign  : Read / Write</pre>
 <p>
 Alignment of text lines relative to each other (for multi-line text)</p>
 <p>
@@ -474,9 +453,8 @@ Alignment of text lines relative to each other (for multi-line text)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616823"></a><h3>
-<a name="GstTextOverlay--silent"></a>The "<code class="literal">silent</code>" property</h3>
-<a class="indexterm" name="id2616836"></a><pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<a name="GstTextOverlay--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
+<pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
 <p>
 If set, no text is rendered. Useful to switch off text rendering
 temporarily without removing the textoverlay element from the pipeline.</p>
@@ -487,11 +465,29 @@ temporarily without removing the textoverlay element from the pipeline.</p>
 <p>Since  0.10.15
 </p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTextOverlay--wait-text"></a><h3>The <code class="literal">"wait-text"</code> property</h3>
+<pre class="programlisting">  "wait-text"                gboolean              : Read / Write</pre>
+<p>
+If set, the video will block until a subtitle is received on the text pad.
+If video and subtitles are sent in sync, like from the same demuxer, this
+property should be set.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  0.10.20
+</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2616871"></a><h2>See Also</h2>
-<a href="gst-plugins-base-plugins-textrender.html#GstTextRender"><span class="type">GstTextRender</span></a>, <a href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay"><span class="type">GstClockOverlay</span></a>, <a href="gst-plugins-base-plugins-timeoverlay.html#GstTimeOverlay"><span class="type">GstTimeOverlay</span></a>, <span class="type">GstSubParse</span>
+<a name="gst-plugins-base-plugins-textoverlay.see-also"></a><h2>See Also</h2>
+<a class="link" href="gst-plugins-base-plugins-textrender.html#GstTextRender"><span class="type">GstTextRender</span></a>, <a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay"><span class="type">GstClockOverlay</span></a>, <a class="link" href="gst-plugins-base-plugins-timeoverlay.html#GstTimeOverlay"><span class="type">GstTimeOverlay</span></a>, <span class="type">GstSubParse</span>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

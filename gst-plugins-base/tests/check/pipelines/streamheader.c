@@ -36,7 +36,7 @@
 
 static int n_tags = 0;
 
-gboolean
+static gboolean
 tag_event_probe_cb (GstPad * pad, GstEvent * event, GMainLoop * loop)
 {
   switch (GST_EVENT_TYPE (event)) {
@@ -91,7 +91,7 @@ GST_START_TEST (test_multifdsink_gdp_tag)
   depay = gst_bin_get_by_name (GST_BIN (p2), "depay");
   fail_if (depay == NULL);
 
-  pad = gst_element_get_pad (depay, "src");
+  pad = gst_element_get_static_pad (depay, "src");
   fail_unless (pad != NULL, "Could not get pad out of depay");
   gst_object_unref (depay);
 
@@ -107,13 +107,14 @@ GST_START_TEST (test_multifdsink_gdp_tag)
 
 GST_END_TEST;
 
+#ifdef HAVE_VORBIS
 /* this tests gdp-serialized Vorbis header pages being sent only once
  * to clients of multifdsink; the gdp depayloader should deserialize
  * exactly three in_caps buffers for the three header packets */
 
 static int n_in_caps = 0;
 
-gboolean
+static gboolean
 buffer_probe_cb (GstPad * pad, GstBuffer * buffer)
 {
   if (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_IN_CAPS)) {
@@ -188,7 +189,7 @@ GST_START_TEST (test_multifdsink_gdp_vorbisenc)
   depay = gst_bin_get_by_name (GST_BIN (p2), "depay");
   fail_if (depay == NULL);
 
-  pad = gst_element_get_pad (depay, "src");
+  pad = gst_element_get_static_pad (depay, "src");
   fail_unless (pad != NULL, "Could not get pad out of depay");
   gst_object_unref (depay);
 
@@ -204,11 +205,11 @@ GST_START_TEST (test_multifdsink_gdp_vorbisenc)
 }
 
 GST_END_TEST;
-
+#endif /* HAVE_VORBIS */
 
 #endif /* #ifndef GST_DISABLE_PARSE */
 
-Suite *
+static Suite *
 streamheader_suite (void)
 {
   Suite *s = suite_create ("streamheader");
@@ -217,12 +218,14 @@ streamheader_suite (void)
   suite_add_tcase (s, tc_chain);
 #ifndef GST_DISABLE_PARSE
   tcase_add_test (tc_chain, test_multifdsink_gdp_tag);
+#ifdef HAVE_VORBIS
 #ifdef HAVE_CPU_PPC64
   g_print ("\n\n***** skipping test test_multifdsink_gdp_vorbisenc.  May fail "
       "on PPC64 due to compiler bug. See bug #348114 for details\n\n\n");
   if (0)                        /* this avoids the 'function not used' warning */
 #endif
     tcase_add_test (tc_chain, test_multifdsink_gdp_vorbisenc);
+#endif
 #endif
 
   return s;

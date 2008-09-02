@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtcpbuffer</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-rtp.html" title="RTP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtpbuffer.html" title="gstrtpbuffer">
 <link rel="next" href="gstreamer-rtsp.html" title="RTSP Library">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,76 +36,73 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-rtsp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2668158" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2669678" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtcpbuffer.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtcpbuffer.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtcpbuffer"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2668158"></a><span class="refentrytitle">gstrtcpbuffer</span>
-</h2>
-<p>gstrtcpbuffer &#8212; Helper methods for dealing with RTCP buffers</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtcpbuffer.top_of_page"></a>gstrtcpbuffer</span></h2>
+<p>gstrtcpbuffer — Helper methods for dealing with RTCP buffers</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstrtcpbuffer.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/rtp/gstrtcpbuffer.h&gt;
 
-
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VERSION:CAPS">GST_RTCP_VERSION</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-SDES:CAPS">GST_RTCP_MAX_SDES</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS">GST_RTCP_MAX_BYE_SSRC_COUNT</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-RB-COUNT:CAPS">GST_RTCP_MAX_RB_COUNT</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-SDES-ITEM-COUNT:CAPS">GST_RTCP_MAX_SDES_ITEM_COUNT</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-MASK:CAPS">GST_RTCP_VALID_MASK</a>
-#define             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-VALUE:CAPS">GST_RTCP_VALID_VALUE</a>
-enum                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType">GstRTCPType</a>;
-                    <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a>;
-enum                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a>;
-GstBuffer*          <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new-take-data">gst_rtcp_buffer_new_take_data</a>       (gpointer data,
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VERSION:CAPS" title="GST_RTCP_VERSION">GST_RTCP_VERSION</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-SDES:CAPS" title="GST_RTCP_MAX_SDES">GST_RTCP_MAX_SDES</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS" title="GST_RTCP_MAX_BYE_SSRC_COUNT">GST_RTCP_MAX_BYE_SSRC_COUNT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-RB-COUNT:CAPS" title="GST_RTCP_MAX_RB_COUNT">GST_RTCP_MAX_RB_COUNT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-SDES-ITEM-COUNT:CAPS" title="GST_RTCP_MAX_SDES_ITEM_COUNT">GST_RTCP_MAX_SDES_ITEM_COUNT</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-MASK:CAPS" title="GST_RTCP_VALID_MASK">GST_RTCP_VALID_MASK</a>
+#define             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-VALUE:CAPS" title="GST_RTCP_VALID_VALUE">GST_RTCP_VALID_VALUE</a>
+enum                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType">GstRTCPType</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a>;
+GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new-take-data" title="gst_rtcp_buffer_new_take_data ()">gst_rtcp_buffer_new_take_data</a>       (gpointer data,
                                                          guint len);
-GstBuffer*          <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new-copy-data">gst_rtcp_buffer_new_copy_data</a>       (gpointer data,
+GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new-copy-data" title="gst_rtcp_buffer_new_copy_data ()">gst_rtcp_buffer_new_copy_data</a>       (gpointer data,
                                                          guint len);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate-data">gst_rtcp_buffer_validate_data</a>       (guint8 *data,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate-data" title="gst_rtcp_buffer_validate_data ()">gst_rtcp_buffer_validate_data</a>       (guint8 *data,
                                                          guint len);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate">gst_rtcp_buffer_validate</a>            (GstBuffer *buffer);
-GstBuffer*          <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new">gst_rtcp_buffer_new</a>                 (guint mtu);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-end">gst_rtcp_buffer_end</a>                 (GstBuffer *buffer);
-guint               <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-packet-count">gst_rtcp_buffer_get_packet_count</a>    (GstBuffer *buffer);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet">gst_rtcp_buffer_get_first_packet</a>    (GstBuffer *buffer,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-move-to-next">gst_rtcp_packet_move_to_next</a>        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-add-packet">gst_rtcp_buffer_add_packet</a>          (GstBuffer *buffer,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType">GstRTCPType</a> type,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-remove">gst_rtcp_packet_remove</a>              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-padding">gst_rtcp_packet_get_padding</a>         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-guint8              <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-count">gst_rtcp_packet_get_count</a>           (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType">GstRTCPType</a>         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-type">gst_rtcp_packet_get_type</a>            (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-guint16             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-length">gst_rtcp_packet_get_length</a>          (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sr-get-sender-info">gst_rtcp_packet_sr_get_sender_info</a>  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate" title="gst_rtcp_buffer_validate ()">gst_rtcp_buffer_validate</a>            (GstBuffer *buffer);
+GstBuffer*          <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new" title="gst_rtcp_buffer_new ()">gst_rtcp_buffer_new</a>                 (guint mtu);
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-end" title="gst_rtcp_buffer_end ()">gst_rtcp_buffer_end</a>                 (GstBuffer *buffer);
+guint               <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-packet-count" title="gst_rtcp_buffer_get_packet_count ()">gst_rtcp_buffer_get_packet_count</a>    (GstBuffer *buffer);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet" title="gst_rtcp_buffer_get_first_packet ()">gst_rtcp_buffer_get_first_packet</a>    (GstBuffer *buffer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-move-to-next" title="gst_rtcp_packet_move_to_next ()">gst_rtcp_packet_move_to_next</a>        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-add-packet" title="gst_rtcp_buffer_add_packet ()">gst_rtcp_buffer_add_packet</a>          (GstBuffer *buffer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType">GstRTCPType</a> type,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-remove" title="gst_rtcp_packet_remove ()">gst_rtcp_packet_remove</a>              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-padding" title="gst_rtcp_packet_get_padding ()">gst_rtcp_packet_get_padding</a>         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+guint8              <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-count" title="gst_rtcp_packet_get_count ()">gst_rtcp_packet_get_count</a>           (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType">GstRTCPType</a>         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-type" title="gst_rtcp_packet_get_type ()">gst_rtcp_packet_get_type</a>            (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+guint16             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-length" title="gst_rtcp_packet_get_length ()">gst_rtcp_packet_get_length</a>          (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sr-get-sender-info" title="gst_rtcp_packet_sr_get_sender_info ()">gst_rtcp_packet_sr_get_sender_info</a>  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 *ssrc,
                                                          guint64 *ntptime,
                                                          guint32 *rtptime,
                                                          guint32 *packet_count,
                                                          guint32 *octet_count);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sr-set-sender-info">gst_rtcp_packet_sr_set_sender_info</a>  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sr-set-sender-info" title="gst_rtcp_packet_sr_set_sender_info ()">gst_rtcp_packet_sr_set_sender_info</a>  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc,
                                                          guint64 ntptime,
                                                          guint32 rtptime,
                                                          guint32 packet_count,
                                                          guint32 octet_count);
-guint32             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-rr-get-ssrc">gst_rtcp_packet_rr_get_ssrc</a>         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-rr-set-ssrc">gst_rtcp_packet_rr_set_ssrc</a>         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+guint32             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-rr-get-ssrc" title="gst_rtcp_packet_rr_get_ssrc ()">gst_rtcp_packet_rr_get_ssrc</a>         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-rr-set-ssrc" title="gst_rtcp_packet_rr_set_ssrc ()">gst_rtcp_packet_rr_set_ssrc</a>         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);
-guint               <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-rb-count">gst_rtcp_packet_get_rb_count</a>        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-rb">gst_rtcp_packet_get_rb</a>              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+guint               <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-rb-count" title="gst_rtcp_packet_get_rb_count ()">gst_rtcp_packet_get_rb_count</a>        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-get-rb" title="gst_rtcp_packet_get_rb ()">gst_rtcp_packet_get_rb</a>              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth,
                                                          guint32 *ssrc,
                                                          guint8 *fractionlost,
@@ -114,7 +111,7 @@ void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-p
                                                          guint32 *jitter,
                                                          guint32 *lsr,
                                                          guint32 *dlsr);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-add-rb">gst_rtcp_packet_add_rb</a>              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-add-rb" title="gst_rtcp_packet_add_rb ()">gst_rtcp_packet_add_rb</a>              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc,
                                                          guint8 fractionlost,
                                                          gint32 packetslost,
@@ -122,7 +119,7 @@ gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-p
                                                          guint32 jitter,
                                                          guint32 lsr,
                                                          guint32 dlsr);
-void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-set-rb">gst_rtcp_packet_set_rb</a>              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+void                <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-set-rb" title="gst_rtcp_packet_set_rb ()">gst_rtcp_packet_set_rb</a>              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth,
                                                          guint32 ssrc,
                                                          guint8 fractionlost,
@@ -131,61 +128,60 @@ void                <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-p
                                                          guint32 jitter,
                                                          guint32 lsr,
                                                          guint32 dlsr);
-guint               <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-item-count">gst_rtcp_packet_sdes_get_item_count</a> (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-first-item">gst_rtcp_packet_sdes_first_item</a>     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-next-item">gst_rtcp_packet_sdes_next_item</a>      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-guint32             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-ssrc">gst_rtcp_packet_sdes_get_ssrc</a>       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-first-entry">gst_rtcp_packet_sdes_first_entry</a>    (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-next-entry">gst_rtcp_packet_sdes_next_entry</a>     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-entry">gst_rtcp_packet_sdes_get_entry</a>      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> *type,
+guint               <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-item-count" title="gst_rtcp_packet_sdes_get_item_count ()">gst_rtcp_packet_sdes_get_item_count</a> (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-first-item" title="gst_rtcp_packet_sdes_first_item ()">gst_rtcp_packet_sdes_first_item</a>     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-next-item" title="gst_rtcp_packet_sdes_next_item ()">gst_rtcp_packet_sdes_next_item</a>      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+guint32             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-ssrc" title="gst_rtcp_packet_sdes_get_ssrc ()">gst_rtcp_packet_sdes_get_ssrc</a>       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-first-entry" title="gst_rtcp_packet_sdes_first_entry ()">gst_rtcp_packet_sdes_first_entry</a>    (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-next-entry" title="gst_rtcp_packet_sdes_next_entry ()">gst_rtcp_packet_sdes_next_entry</a>     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-entry" title="gst_rtcp_packet_sdes_get_entry ()">gst_rtcp_packet_sdes_get_entry</a>      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> *type,
                                                          guint8 *len,
                                                          guint8 **data);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-copy-entry">gst_rtcp_packet_sdes_copy_entry</a>     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> *type,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-copy-entry" title="gst_rtcp_packet_sdes_copy_entry ()">gst_rtcp_packet_sdes_copy_entry</a>     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> *type,
                                                          guint8 *len,
                                                          guint8 **data);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-add-item">gst_rtcp_packet_sdes_add_item</a>       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-add-item" title="gst_rtcp_packet_sdes_add_item ()">gst_rtcp_packet_sdes_add_item</a>       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-add-entry">gst_rtcp_packet_sdes_add_entry</a>      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> type,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-add-entry" title="gst_rtcp_packet_sdes_add_entry ()">gst_rtcp_packet_sdes_add_entry</a>      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> type,
                                                          guint8 len,
                                                          const guint8 *data);
-guint               <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-ssrc-count">gst_rtcp_packet_bye_get_ssrc_count</a>  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-guint32             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-nth-ssrc">gst_rtcp_packet_bye_get_nth_ssrc</a>    (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+guint               <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-ssrc-count" title="gst_rtcp_packet_bye_get_ssrc_count ()">gst_rtcp_packet_bye_get_ssrc_count</a>  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+guint32             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-nth-ssrc" title="gst_rtcp_packet_bye_get_nth_ssrc ()">gst_rtcp_packet_bye_get_nth_ssrc</a>    (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-add-ssrc">gst_rtcp_packet_bye_add_ssrc</a>        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-add-ssrc" title="gst_rtcp_packet_bye_add_ssrc ()">gst_rtcp_packet_bye_add_ssrc</a>        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-add-ssrcs">gst_rtcp_packet_bye_add_ssrcs</a>       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-add-ssrcs" title="gst_rtcp_packet_bye_add_ssrcs ()">gst_rtcp_packet_bye_add_ssrcs</a>       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 *ssrc,
                                                          guint len);
-guint8              <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-reason-len">gst_rtcp_packet_bye_get_reason_len</a>  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gchar*              <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-reason">gst_rtcp_packet_bye_get_reason</a>      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);
-gboolean            <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-set-reason">gst_rtcp_packet_bye_set_reason</a>      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+guint8              <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-reason-len" title="gst_rtcp_packet_bye_get_reason_len ()">gst_rtcp_packet_bye_get_reason_len</a>  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gchar*              <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-get-reason" title="gst_rtcp_packet_bye_get_reason ()">gst_rtcp_packet_bye_get_reason</a>      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);
+gboolean            <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-bye-set-reason" title="gst_rtcp_packet_bye_set_reason ()">gst_rtcp_packet_bye_set_reason</a>      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          const gchar *reason);
-guint64             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-ntp-to-unix">gst_rtcp_ntp_to_unix</a>                (guint64 ntptime);
-guint64             <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-unix-to-ntp">gst_rtcp_unix_to_ntp</a>                (guint64 unixtime);
-
+guint64             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-ntp-to-unix" title="gst_rtcp_ntp_to_unix ()">gst_rtcp_ntp_to_unix</a>                (guint64 ntptime);
+guint64             <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-unix-to-ntp" title="gst_rtcp_unix_to_ntp ()">gst_rtcp_unix_to_ntp</a>                (guint64 unixtime);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2669678"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstrtcpbuffer.description"></a><h2>Description</h2>
 <p>
 Note: The API in this module is not yet declared stable.
 </p>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2669694"></a><p>
+<a name="id2698772"></a><p>
 The GstRTPCBuffer helper functions makes it easy to parse and create regular 
 <span class="type">GstBuffer</span> objects that contain compound RTCP packets. These buffers are typically
 of 'application/x-rtcp' <span class="type">GstCaps</span>.
 </p>
 <p>
-An RTCP buffer consists of 1 or more <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> structures that you can
-retrieve with <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet"><code class="function">gst_rtcp_buffer_get_first_packet()</code></a>. <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> acts as a pointer
+An RTCP buffer consists of 1 or more <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> structures that you can
+retrieve with <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet" title="gst_rtcp_buffer_get_first_packet ()"><code class="function">gst_rtcp_buffer_get_first_packet()</code></a>. <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> acts as a pointer
 into the RTCP buffer; you can move to the next packet with
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-move-to-next"><code class="function">gst_rtcp_packet_move_to_next()</code></a>.
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-move-to-next" title="gst_rtcp_packet_move_to_next ()"><code class="function">gst_rtcp_packet_move_to_next()</code></a>.
 </p>
 </div>
 <p>
@@ -193,11 +189,10 @@ into the RTCP buffer; you can move to the next packet with
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2669768"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtcpbuffer.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2669779"></a><h3>
-<a name="GST-RTCP-VERSION:CAPS"></a>GST_RTCP_VERSION</h3>
-<a class="indexterm" name="id2669792"></a><pre class="programlisting">#define GST_RTCP_VERSION 2
+<a name="GST-RTCP-VERSION:CAPS"></a><h3>GST_RTCP_VERSION</h3>
+<pre class="programlisting">#define GST_RTCP_VERSION 2
 </pre>
 <p>
 The supported RTCP version 2.</p>
@@ -207,9 +202,8 @@ The supported RTCP version 2.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669811"></a><h3>
-<a name="GST-RTCP-MAX-SDES:CAPS"></a>GST_RTCP_MAX_SDES</h3>
-<a class="indexterm" name="id2669825"></a><pre class="programlisting">#define GST_RTCP_MAX_SDES 255
+<a name="GST-RTCP-MAX-SDES:CAPS"></a><h3>GST_RTCP_MAX_SDES</h3>
+<pre class="programlisting">#define GST_RTCP_MAX_SDES 255
 </pre>
 <p>
 The maximum text length for an SDES item.</p>
@@ -219,9 +213,8 @@ The maximum text length for an SDES item.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669844"></a><h3>
-<a name="GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS"></a>GST_RTCP_MAX_BYE_SSRC_COUNT</h3>
-<a class="indexterm" name="id2669858"></a><pre class="programlisting">#define GST_RTCP_MAX_BYE_SSRC_COUNT   31
+<a name="GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS"></a><h3>GST_RTCP_MAX_BYE_SSRC_COUNT</h3>
+<pre class="programlisting">#define GST_RTCP_MAX_BYE_SSRC_COUNT   31
 </pre>
 <p>
 The maximum amount of SSRCs in a BYE packet.</p>
@@ -231,9 +224,8 @@ The maximum amount of SSRCs in a BYE packet.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669878"></a><h3>
-<a name="GST-RTCP-MAX-RB-COUNT:CAPS"></a>GST_RTCP_MAX_RB_COUNT</h3>
-<a class="indexterm" name="id2669890"></a><pre class="programlisting">#define GST_RTCP_MAX_RB_COUNT   31
+<a name="GST-RTCP-MAX-RB-COUNT:CAPS"></a><h3>GST_RTCP_MAX_RB_COUNT</h3>
+<pre class="programlisting">#define GST_RTCP_MAX_RB_COUNT   31
 </pre>
 <p>
 The maximum amount of Receiver report blocks in RR and SR messages.</p>
@@ -243,9 +235,8 @@ The maximum amount of Receiver report blocks in RR and SR messages.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669910"></a><h3>
-<a name="GST-RTCP-MAX-SDES-ITEM-COUNT:CAPS"></a>GST_RTCP_MAX_SDES_ITEM_COUNT</h3>
-<a class="indexterm" name="id2669923"></a><pre class="programlisting">#define GST_RTCP_MAX_SDES_ITEM_COUNT   31
+<a name="GST-RTCP-MAX-SDES-ITEM-COUNT:CAPS"></a><h3>GST_RTCP_MAX_SDES_ITEM_COUNT</h3>
+<pre class="programlisting">#define GST_RTCP_MAX_SDES_ITEM_COUNT   31
 </pre>
 <p>
 The maximum amount of SDES items.</p>
@@ -255,9 +246,8 @@ The maximum amount of SDES items.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669943"></a><h3>
-<a name="GST-RTCP-VALID-MASK:CAPS"></a>GST_RTCP_VALID_MASK</h3>
-<a class="indexterm" name="id2669956"></a><pre class="programlisting">#define GST_RTCP_VALID_MASK (0xc000 | 0x2000 | 0xfe)
+<a name="GST-RTCP-VALID-MASK:CAPS"></a><h3>GST_RTCP_VALID_MASK</h3>
+<pre class="programlisting">#define GST_RTCP_VALID_MASK (0xc000 | 0x2000 | 0xfe)
 </pre>
 <p>
 Mask for version, padding bit and packet type pair</p>
@@ -267,22 +257,20 @@ Mask for version, padding bit and packet type pair</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2669976"></a><h3>
-<a name="GST-RTCP-VALID-VALUE:CAPS"></a>GST_RTCP_VALID_VALUE</h3>
-<a class="indexterm" name="id2669989"></a><pre class="programlisting">#define GST_RTCP_VALID_VALUE ((GST_RTCP_VERSION &lt;&lt; 14) | GST_RTCP_TYPE_SR)
+<a name="GST-RTCP-VALID-VALUE:CAPS"></a><h3>GST_RTCP_VALID_VALUE</h3>
+<pre class="programlisting">#define GST_RTCP_VALID_VALUE ((GST_RTCP_VERSION &lt;&lt; 14) | GST_RTCP_TYPE_SR)
 </pre>
 <p>
 Valid value for the first two bytes of an RTCP packet after applying
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-MASK:CAPS"><span class="type">GST_RTCP_VALID_MASK</span></a> to them.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-VALID-MASK:CAPS" title="GST_RTCP_VALID_MASK"><span class="type">GST_RTCP_VALID_MASK</span></a> to them.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670019"></a><h3>
-<a name="GstRTCPType"></a>enum GstRTCPType</h3>
-<a class="indexterm" name="id2670031"></a><pre class="programlisting">typedef enum
+<a name="GstRTCPType"></a><h3>enum GstRTCPType</h3>
+<pre class="programlisting">typedef enum
 {
   GST_RTCP_TYPE_INVALID = 0,
   GST_RTCP_TYPE_SR      = 200,
@@ -301,32 +289,32 @@ Different RTCP packet types.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-INVALID:CAPS"></a><code class="literal">GST_RTCP_TYPE_INVALID</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_INVALID</code></span></p></td>
 <td> Invalid type
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-SR:CAPS"></a><code class="literal">GST_RTCP_TYPE_SR</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-SR:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_SR</code></span></p></td>
 <td> Sender report
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-RR:CAPS"></a><code class="literal">GST_RTCP_TYPE_RR</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-RR:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_RR</code></span></p></td>
 <td> Receiver report
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-SDES:CAPS"></a><code class="literal">GST_RTCP_TYPE_SDES</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-SDES:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_SDES</code></span></p></td>
 <td> Source description
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-BYE:CAPS"></a><code class="literal">GST_RTCP_TYPE_BYE</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-BYE:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_BYE</code></span></p></td>
 <td> Goodbye
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-TYPE-APP:CAPS"></a><code class="literal">GST_RTCP_TYPE_APP</code></span></td>
+<td><p><a name="GST-RTCP-TYPE-APP:CAPS"></a><span class="term"><code class="literal">GST_RTCP_TYPE_APP</code></span></p></td>
 <td> Application defined
 </td>
 </tr>
@@ -335,9 +323,8 @@ Different RTCP packet types.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670194"></a><h3>
-<a name="GstRTCPPacket"></a>GstRTCPPacket</h3>
-<a class="indexterm" name="id2670206"></a><pre class="programlisting">typedef struct {
+<a name="GstRTCPPacket"></a><h3>GstRTCPPacket</h3>
+<pre class="programlisting">typedef struct {
   GstBuffer   *buffer;
   guint        offset;
 } GstRTCPPacket;
@@ -352,12 +339,12 @@ The size of the structure is made public to allow stack allocations.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GstBuffer&#160;*<em class="structfield"><code>buffer</code></em>;</span></td>
+<td><p><span class="term">GstBuffer *<em class="structfield"><code>buffer</code></em>;</span></p></td>
 <td> pointer to RTCP buffer
 </td>
 </tr>
 <tr>
-<td><span class="term">guint&#160;<em class="structfield"><code>offset</code></em>;</span></td>
+<td><p><span class="term">guint <em class="structfield"><code>offset</code></em>;</span></p></td>
 <td> offset of packet in buffer data
 </td>
 </tr>
@@ -366,9 +353,8 @@ The size of the structure is made public to allow stack allocations.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670285"></a><h3>
-<a name="GstRTCPSDESType"></a>enum GstRTCPSDESType</h3>
-<a class="indexterm" name="id2670299"></a><pre class="programlisting">typedef enum 
+<a name="GstRTCPSDESType"></a><h3>enum GstRTCPSDESType</h3>
+<pre class="programlisting">typedef enum 
 {
   GST_RTCP_SDES_INVALID  = -1,
   GST_RTCP_SDES_END      = 0,
@@ -391,52 +377,52 @@ Different types of SDES content.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-INVALID:CAPS"></a><code class="literal">GST_RTCP_SDES_INVALID</code></span></td>
+<td><p><a name="GST-RTCP-SDES-INVALID:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_INVALID</code></span></p></td>
 <td> Invalid SDES entry
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-END:CAPS"></a><code class="literal">GST_RTCP_SDES_END</code></span></td>
+<td><p><a name="GST-RTCP-SDES-END:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_END</code></span></p></td>
 <td> End of SDES list
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-CNAME:CAPS"></a><code class="literal">GST_RTCP_SDES_CNAME</code></span></td>
+<td><p><a name="GST-RTCP-SDES-CNAME:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_CNAME</code></span></p></td>
 <td> Canonical name
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-NAME:CAPS"></a><code class="literal">GST_RTCP_SDES_NAME</code></span></td>
+<td><p><a name="GST-RTCP-SDES-NAME:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_NAME</code></span></p></td>
 <td> User name
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-EMAIL:CAPS"></a><code class="literal">GST_RTCP_SDES_EMAIL</code></span></td>
+<td><p><a name="GST-RTCP-SDES-EMAIL:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_EMAIL</code></span></p></td>
 <td> User's electronic mail address
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-PHONE:CAPS"></a><code class="literal">GST_RTCP_SDES_PHONE</code></span></td>
+<td><p><a name="GST-RTCP-SDES-PHONE:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_PHONE</code></span></p></td>
 <td> User's phone number
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-LOC:CAPS"></a><code class="literal">GST_RTCP_SDES_LOC</code></span></td>
+<td><p><a name="GST-RTCP-SDES-LOC:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_LOC</code></span></p></td>
 <td> Geographic user location
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-TOOL:CAPS"></a><code class="literal">GST_RTCP_SDES_TOOL</code></span></td>
+<td><p><a name="GST-RTCP-SDES-TOOL:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_TOOL</code></span></p></td>
 <td> Name of application or tool
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-NOTE:CAPS"></a><code class="literal">GST_RTCP_SDES_NOTE</code></span></td>
+<td><p><a name="GST-RTCP-SDES-NOTE:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_NOTE</code></span></p></td>
 <td> Notice about the source
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTCP-SDES-PRIV:CAPS"></a><code class="literal">GST_RTCP_SDES_PRIV</code></span></td>
+<td><p><a name="GST-RTCP-SDES-PRIV:CAPS"></a><span class="term"><code class="literal">GST_RTCP_SDES_PRIV</code></span></p></td>
 <td> Private extensions
 </td>
 </tr>
@@ -445,9 +431,8 @@ Different types of SDES content.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670554"></a><h3>
-<a name="gst-rtcp-buffer-new-take-data"></a>gst_rtcp_buffer_new_take_data ()</h3>
-<a class="indexterm" name="id2670568"></a><pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new_take_data       (gpointer data,
+<a name="gst-rtcp-buffer-new-take-data"></a><h3>gst_rtcp_buffer_new_take_data ()</h3>
+<pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new_take_data       (gpointer data,
                                                          guint len);</pre>
 <p>
 Create a new buffer and set the data and size of the buffer to <em class="parameter"><code>data</code></em> and <em class="parameter"><code>len</code></em>
@@ -460,17 +445,17 @@ function transfers ownership of <em class="parameter"><code>data</code></em> to 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> data for the new buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> the length of data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A newly allocated buffer with <em class="parameter"><code>data</code></em> and of size <em class="parameter"><code>len</code></em>.
 </td>
 </tr>
@@ -479,9 +464,8 @@ function transfers ownership of <em class="parameter"><code>data</code></em> to 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670689"></a><h3>
-<a name="gst-rtcp-buffer-new-copy-data"></a>gst_rtcp_buffer_new_copy_data ()</h3>
-<a class="indexterm" name="id2670702"></a><pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new_copy_data       (gpointer data,
+<a name="gst-rtcp-buffer-new-copy-data"></a><h3>gst_rtcp_buffer_new_copy_data ()</h3>
+<pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new_copy_data       (gpointer data,
                                                          guint len);</pre>
 <p>
 Create a new buffer and set the data to a copy of <em class="parameter"><code>len</code></em>
@@ -494,17 +478,17 @@ is freed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> data for the new buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> the length of data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A newly allocated buffer with a copy of <em class="parameter"><code>data</code></em> and of size <em class="parameter"><code>len</code></em>.
 </td>
 </tr>
@@ -513,9 +497,8 @@ is freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670816"></a><h3>
-<a name="gst-rtcp-buffer-validate-data"></a>gst_rtcp_buffer_validate_data ()</h3>
-<a class="indexterm" name="id2670829"></a><pre class="programlisting">gboolean            gst_rtcp_buffer_validate_data       (guint8 *data,
+<a name="gst-rtcp-buffer-validate-data"></a><h3>gst_rtcp_buffer_validate_data ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_buffer_validate_data       (guint8 *data,
                                                          guint len);</pre>
 <p>
 Check if the <em class="parameter"><code>data</code></em> and <em class="parameter"><code>size</code></em> point to the data of a valid RTCP (compound)
@@ -529,17 +512,17 @@ this module.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data to validate
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> the length of <em class="parameter"><code>data</code></em> to validate
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the data points to a valid RTCP packet.
 </td>
 </tr>
@@ -548,12 +531,11 @@ this module.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2670933"></a><h3>
-<a name="gst-rtcp-buffer-validate"></a>gst_rtcp_buffer_validate ()</h3>
-<a class="indexterm" name="id2670946"></a><pre class="programlisting">gboolean            gst_rtcp_buffer_validate            (GstBuffer *buffer);</pre>
+<a name="gst-rtcp-buffer-validate"></a><h3>gst_rtcp_buffer_validate ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_buffer_validate            (GstBuffer *buffer);</pre>
 <p>
 Check if the data pointed to by <em class="parameter"><code>buffer</code></em> is a valid RTCP packet using
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate-data"><code class="function">gst_rtcp_buffer_validate_data()</code></a>.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-validate-data" title="gst_rtcp_buffer_validate_data ()"><code class="function">gst_rtcp_buffer_validate_data()</code></a>.</p>
 <p>
 
 </p>
@@ -561,12 +543,12 @@ Check if the data pointed to by <em class="parameter"><code>buffer</code></em> i
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> the buffer to validate
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>buffer</code></em> is a valid RTCP packet.
 </td>
 </tr>
@@ -575,9 +557,8 @@ Check if the data pointed to by <em class="parameter"><code>buffer</code></em> i
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671031"></a><h3>
-<a name="gst-rtcp-buffer-new"></a>gst_rtcp_buffer_new ()</h3>
-<a class="indexterm" name="id2671044"></a><pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new                 (guint mtu);</pre>
+<a name="gst-rtcp-buffer-new"></a><h3>gst_rtcp_buffer_new ()</h3>
+<pre class="programlisting">GstBuffer*          gst_rtcp_buffer_new                 (guint mtu);</pre>
 <p>
 Create a new buffer for constructing RTCP packets. The packet will have a
 maximum size of <em class="parameter"><code>mtu</code></em>.</p>
@@ -588,12 +569,12 @@ maximum size of <em class="parameter"><code>mtu</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mtu</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mtu</code></em> :</span></p></td>
 <td> the maximum mtu size.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A newly allocated buffer.
 </td>
 </tr>
@@ -602,12 +583,11 @@ maximum size of <em class="parameter"><code>mtu</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671111"></a><h3>
-<a name="gst-rtcp-buffer-end"></a>gst_rtcp_buffer_end ()</h3>
-<a class="indexterm" name="id2671124"></a><pre class="programlisting">void                gst_rtcp_buffer_end                 (GstBuffer *buffer);</pre>
+<a name="gst-rtcp-buffer-end"></a><h3>gst_rtcp_buffer_end ()</h3>
+<pre class="programlisting">void                gst_rtcp_buffer_end                 (GstBuffer *buffer);</pre>
 <p>
 Finish <em class="parameter"><code>buffer</code></em> after being constructured. This function is usually called
-after <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new"><code class="function">gst_rtcp_buffer_new()</code></a> and after adding the RTCP items to the new buffer. 
+after <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-new" title="gst_rtcp_buffer_new ()"><code class="function">gst_rtcp_buffer_new()</code></a> and after adding the RTCP items to the new buffer. 
 </p>
 <p>
 The function adjusts the size of <em class="parameter"><code>buffer</code></em> with the total length of all the
@@ -618,7 +598,7 @@ added packets.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> a buffer with an RTCP packet
 </td>
 </tr></tbody>
@@ -626,9 +606,8 @@ added packets.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671203"></a><h3>
-<a name="gst-rtcp-buffer-get-packet-count"></a>gst_rtcp_buffer_get_packet_count ()</h3>
-<a class="indexterm" name="id2671217"></a><pre class="programlisting">guint               gst_rtcp_buffer_get_packet_count    (GstBuffer *buffer);</pre>
+<a name="gst-rtcp-buffer-get-packet-count"></a><h3>gst_rtcp_buffer_get_packet_count ()</h3>
+<pre class="programlisting">guint               gst_rtcp_buffer_get_packet_count    (GstBuffer *buffer);</pre>
 <p>
 Get the number of RTCP packets in <em class="parameter"><code>buffer</code></em>.</p>
 <p>
@@ -638,12 +617,12 @@ Get the number of RTCP packets in <em class="parameter"><code>buffer</code></em>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> a valid RTCP buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the number of RTCP packets in <em class="parameter"><code>buffer</code></em>.
 </td>
 </tr>
@@ -652,12 +631,11 @@ Get the number of RTCP packets in <em class="parameter"><code>buffer</code></em>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671289"></a><h3>
-<a name="gst-rtcp-buffer-get-first-packet"></a>gst_rtcp_buffer_get_first_packet ()</h3>
-<a class="indexterm" name="id2671303"></a><pre class="programlisting">gboolean            gst_rtcp_buffer_get_first_packet    (GstBuffer *buffer,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-buffer-get-first-packet"></a><h3>gst_rtcp_buffer_get_first_packet ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_buffer_get_first_packet    (GstBuffer *buffer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
-Initialize a new <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> pointer that points to the first packet in
+Initialize a new <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a> pointer that points to the first packet in
 <em class="parameter"><code>buffer</code></em>.</p>
 <p>
 
@@ -666,17 +644,17 @@ Initialize a new <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> a valid RTCP buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the packet existed in <em class="parameter"><code>buffer</code></em>.
 </td>
 </tr>
@@ -685,12 +663,11 @@ Initialize a new <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671415"></a><h3>
-<a name="gst-rtcp-packet-move-to-next"></a>gst_rtcp_packet_move_to_next ()</h3>
-<a class="indexterm" name="id2671428"></a><pre class="programlisting">gboolean            gst_rtcp_packet_move_to_next        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-move-to-next"></a><h3>gst_rtcp_packet_move_to_next ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_move_to_next        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Move the packet pointer <em class="parameter"><code>packet</code></em> to the next packet in the payload.
-Use <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet"><code class="function">gst_rtcp_buffer_get_first_packet()</code></a> to initialize <em class="parameter"><code>packet</code></em>.</p>
+Use <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-packet" title="gst_rtcp_buffer_get_first_packet ()"><code class="function">gst_rtcp_buffer_get_first_packet()</code></a> to initialize <em class="parameter"><code>packet</code></em>.</p>
 <p>
 
 </p>
@@ -698,12 +675,12 @@ Use <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-buffer-get-first-
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if <em class="parameter"><code>packet</code></em> is pointing to a valid packet after calling this
 function.
 </td>
@@ -713,11 +690,10 @@ function.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671528"></a><h3>
-<a name="gst-rtcp-buffer-add-packet"></a>gst_rtcp_buffer_add_packet ()</h3>
-<a class="indexterm" name="id2671542"></a><pre class="programlisting">gboolean            gst_rtcp_buffer_add_packet          (GstBuffer *buffer,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType">GstRTCPType</a> type,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-buffer-add-packet"></a><h3>gst_rtcp_buffer_add_packet ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_buffer_add_packet          (GstBuffer *buffer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType">GstRTCPType</a> type,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Add a new packet of <em class="parameter"><code>type</code></em> to <em class="parameter"><code>buffer</code></em>. <em class="parameter"><code>packet</code></em> will point to the newly created 
 packet.</p>
@@ -728,22 +704,22 @@ packet.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>buffer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
 <td> a valid RTCP buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType"><span class="type">GstRTCPType</span></a> of the new packet
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType"><span class="type">GstRTCPType</span></a> of the new packet
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
 <td> pointer to new packet
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the packet could be created. This function returns <code class="literal">FALSE</code>
 if the max mtu is exceeded for the buffer.
 </td>
@@ -753,9 +729,8 @@ if the max mtu is exceeded for the buffer.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671694"></a><h3>
-<a name="gst-rtcp-packet-remove"></a>gst_rtcp_packet_remove ()</h3>
-<a class="indexterm" name="id2671708"></a><pre class="programlisting">void                gst_rtcp_packet_remove              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-remove"></a><h3>gst_rtcp_packet_remove ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_remove              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Removes the packet pointed to by <em class="parameter"><code>packet</code></em>.
 </p>
@@ -767,17 +742,16 @@ Note: Not implemented.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671776"></a><h3>
-<a name="gst-rtcp-packet-get-padding"></a>gst_rtcp_packet_get_padding ()</h3>
-<a class="indexterm" name="id2671790"></a><pre class="programlisting">gboolean            gst_rtcp_packet_get_padding         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-get-padding"></a><h3>gst_rtcp_packet_get_padding ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_get_padding         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the packet padding of the packet pointed to by <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -787,12 +761,12 @@ Get the packet padding of the packet pointed to by <em class="parameter"><code>p
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> If the packet has the padding bit set.
 </td>
 </tr>
@@ -801,9 +775,8 @@ Get the packet padding of the packet pointed to by <em class="parameter"><code>p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671865"></a><h3>
-<a name="gst-rtcp-packet-get-count"></a>gst_rtcp_packet_get_count ()</h3>
-<a class="indexterm" name="id2671879"></a><pre class="programlisting">guint8              gst_rtcp_packet_get_count           (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-get-count"></a><h3>gst_rtcp_packet_get_count ()</h3>
+<pre class="programlisting">guint8              gst_rtcp_packet_get_count           (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the count field in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -813,12 +786,12 @@ Get the count field in <em class="parameter"><code>packet</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The count field in <em class="parameter"><code>packet</code></em> or -1 if <em class="parameter"><code>packet</code></em> does not point to a
 valid packet.
 </td>
@@ -828,9 +801,8 @@ valid packet.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2671966"></a><h3>
-<a name="gst-rtcp-packet-get-type"></a>gst_rtcp_packet_get_type ()</h3>
-<a class="indexterm" name="id2671979"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType">GstRTCPType</a>         gst_rtcp_packet_get_type            (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-get-type"></a><h3>gst_rtcp_packet_get_type ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPType" title="enum GstRTCPType">GstRTCPType</a>         gst_rtcp_packet_get_type            (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the packet type of the packet pointed to by <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -840,12 +812,12 @@ Get the packet type of the packet pointed to by <em class="parameter"><code>pack
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The packet type.
 </td>
 </tr>
@@ -854,9 +826,8 @@ Get the packet type of the packet pointed to by <em class="parameter"><code>pack
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672055"></a><h3>
-<a name="gst-rtcp-packet-get-length"></a>gst_rtcp_packet_get_length ()</h3>
-<a class="indexterm" name="id2672069"></a><pre class="programlisting">guint16             gst_rtcp_packet_get_length          (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-get-length"></a><h3>gst_rtcp_packet_get_length ()</h3>
+<pre class="programlisting">guint16             gst_rtcp_packet_get_length          (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the length field of <em class="parameter"><code>packet</code></em>. This is the length of the packet in 
 32-bit words minus one.</p>
@@ -867,12 +838,12 @@ Get the length field of <em class="parameter"><code>packet</code></em>. This is 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The length field of <em class="parameter"><code>packet</code></em>.
 </td>
 </tr>
@@ -881,9 +852,8 @@ Get the length field of <em class="parameter"><code>packet</code></em>. This is 
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672150"></a><h3>
-<a name="gst-rtcp-packet-sr-get-sender-info"></a>gst_rtcp_packet_sr_get_sender_info ()</h3>
-<a class="indexterm" name="id2672165"></a><pre class="programlisting">void                gst_rtcp_packet_sr_get_sender_info  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-sr-get-sender-info"></a><h3>gst_rtcp_packet_sr_get_sender_info ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_sr_get_sender_info  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 *ssrc,
                                                          guint64 *ntptime,
                                                          guint32 *rtptime,
@@ -898,32 +868,32 @@ Parse the SR sender info and store the values.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> result SSRC
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ntptime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
 <td> result NTP time
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>rtptime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>rtptime</code></em> :</span></p></td>
 <td> result RTP time
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet_count</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packet_count</code></em> :</span></p></td>
 <td> result packet count
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>octet_count</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>octet_count</code></em> :</span></p></td>
 <td> result octect count
 </td>
 </tr>
@@ -932,9 +902,8 @@ Parse the SR sender info and store the values.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672333"></a><h3>
-<a name="gst-rtcp-packet-sr-set-sender-info"></a>gst_rtcp_packet_sr_set_sender_info ()</h3>
-<a class="indexterm" name="id2672348"></a><pre class="programlisting">void                gst_rtcp_packet_sr_set_sender_info  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-sr-set-sender-info"></a><h3>gst_rtcp_packet_sr_set_sender_info ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_sr_set_sender_info  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc,
                                                          guint64 ntptime,
                                                          guint32 rtptime,
@@ -949,32 +918,32 @@ Set the given values in the SR packet <em class="parameter"><code>packet</code><
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> the SSRC 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ntptime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
 <td> the NTP time
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>rtptime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>rtptime</code></em> :</span></p></td>
 <td> the RTP time
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet_count</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packet_count</code></em> :</span></p></td>
 <td> the packet count
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>octet_count</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>octet_count</code></em> :</span></p></td>
 <td> the octect count
 </td>
 </tr>
@@ -983,9 +952,8 @@ Set the given values in the SR packet <em class="parameter"><code>packet</code><
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672521"></a><h3>
-<a name="gst-rtcp-packet-rr-get-ssrc"></a>gst_rtcp_packet_rr_get_ssrc ()</h3>
-<a class="indexterm" name="id2672535"></a><pre class="programlisting">guint32             gst_rtcp_packet_rr_get_ssrc         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-rr-get-ssrc"></a><h3>gst_rtcp_packet_rr_get_ssrc ()</h3>
+<pre class="programlisting">guint32             gst_rtcp_packet_rr_get_ssrc         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -995,12 +963,12 @@ Get the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the ssrc.
 </td>
 </tr>
@@ -1009,9 +977,8 @@ Get the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672610"></a><h3>
-<a name="gst-rtcp-packet-rr-set-ssrc"></a>gst_rtcp_packet_rr_set_ssrc ()</h3>
-<a class="indexterm" name="id2672624"></a><pre class="programlisting">void                gst_rtcp_packet_rr_set_ssrc         (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-rr-set-ssrc"></a><h3>gst_rtcp_packet_rr_set_ssrc ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_rr_set_ssrc         (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);</pre>
 <p>
 Set the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
@@ -1022,12 +989,12 @@ Set the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> the SSRC to set
 </td>
 </tr>
@@ -1036,9 +1003,8 @@ Set the ssrc field of the RR <em class="parameter"><code>packet</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672710"></a><h3>
-<a name="gst-rtcp-packet-get-rb-count"></a>gst_rtcp_packet_get_rb_count ()</h3>
-<a class="indexterm" name="id2672723"></a><pre class="programlisting">guint               gst_rtcp_packet_get_rb_count        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-get-rb-count"></a><h3>gst_rtcp_packet_get_rb_count ()</h3>
+<pre class="programlisting">guint               gst_rtcp_packet_get_rb_count        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the number of report blocks in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1048,12 +1014,12 @@ Get the number of report blocks in <em class="parameter"><code>packet</code></em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR or RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR or RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The number of report blocks in <em class="parameter"><code>packet</code></em>.
 </td>
 </tr>
@@ -1062,9 +1028,8 @@ Get the number of report blocks in <em class="parameter"><code>packet</code></em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2672805"></a><h3>
-<a name="gst-rtcp-packet-get-rb"></a>gst_rtcp_packet_get_rb ()</h3>
-<a class="indexterm" name="id2672818"></a><pre class="programlisting">void                gst_rtcp_packet_get_rb              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-get-rb"></a><h3>gst_rtcp_packet_get_rb ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_get_rb              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth,
                                                          guint32 *ssrc,
                                                          guint8 *fractionlost,
@@ -1083,47 +1048,47 @@ the values.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR or RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR or RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>nth</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nth</code></em> :</span></p></td>
 <td> the nth report block in <em class="parameter"><code>packet</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> result for data source being reported
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fractionlost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fractionlost</code></em> :</span></p></td>
 <td> result for fraction lost since last SR/RR
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packetslost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packetslost</code></em> :</span></p></td>
 <td> result for the cumululative number of packets lost
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>exthighestseq</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>exthighestseq</code></em> :</span></p></td>
 <td> result for the extended last sequence number received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>jitter</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>jitter</code></em> :</span></p></td>
 <td> result for the interarrival jitter
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>lsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>lsr</code></em> :</span></p></td>
 <td> result for the last SR packet from this source
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dlsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dlsr</code></em> :</span></p></td>
 <td> result for the delay since last SR packet
 </td>
 </tr>
@@ -1132,9 +1097,8 @@ the values.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673074"></a><h3>
-<a name="gst-rtcp-packet-add-rb"></a>gst_rtcp_packet_add_rb ()</h3>
-<a class="indexterm" name="id2673087"></a><pre class="programlisting">gboolean            gst_rtcp_packet_add_rb              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-add-rb"></a><h3>gst_rtcp_packet_add_rb ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_add_rb              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc,
                                                          guint8 fractionlost,
                                                          gint32 packetslost,
@@ -1151,50 +1115,50 @@ Add a new report block to <em class="parameter"><code>packet</code></em> with th
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR or RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR or RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> data source being reported
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fractionlost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fractionlost</code></em> :</span></p></td>
 <td> fraction lost since last SR/RR
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packetslost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packetslost</code></em> :</span></p></td>
 <td> the cumululative number of packets lost
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>exthighestseq</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>exthighestseq</code></em> :</span></p></td>
 <td> the extended last sequence number received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>jitter</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>jitter</code></em> :</span></p></td>
 <td> the interarrival jitter
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>lsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>lsr</code></em> :</span></p></td>
 <td> the last SR packet from this source
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dlsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dlsr</code></em> :</span></p></td>
 <td> the delay since last SR packet
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the packet was created. This function can return <code class="literal">FALSE</code> if
 the max MTU is exceeded or the number of report blocks is greater than
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-RB-COUNT:CAPS"><span class="type">GST_RTCP_MAX_RB_COUNT</span></a>.
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-RB-COUNT:CAPS" title="GST_RTCP_MAX_RB_COUNT"><span class="type">GST_RTCP_MAX_RB_COUNT</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1202,9 +1166,8 @@ the max MTU is exceeded or the number of report blocks is greater than
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673348"></a><h3>
-<a name="gst-rtcp-packet-set-rb"></a>gst_rtcp_packet_set_rb ()</h3>
-<a class="indexterm" name="id2673361"></a><pre class="programlisting">void                gst_rtcp_packet_set_rb              (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-set-rb"></a><h3>gst_rtcp_packet_set_rb ()</h3>
+<pre class="programlisting">void                gst_rtcp_packet_set_rb              (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth,
                                                          guint32 ssrc,
                                                          guint8 fractionlost,
@@ -1225,47 +1188,47 @@ Note: Not implemented.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SR or RR <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SR or RR <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>nth</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nth</code></em> :</span></p></td>
 <td> the nth report block to set
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> data source being reported
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fractionlost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fractionlost</code></em> :</span></p></td>
 <td> fraction lost since last SR/RR
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>packetslost</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>packetslost</code></em> :</span></p></td>
 <td> the cumululative number of packets lost
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>exthighestseq</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>exthighestseq</code></em> :</span></p></td>
 <td> the extended last sequence number received
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>jitter</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>jitter</code></em> :</span></p></td>
 <td> the interarrival jitter
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>lsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>lsr</code></em> :</span></p></td>
 <td> the last SR packet from this source
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>dlsr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dlsr</code></em> :</span></p></td>
 <td> the delay since last SR packet
 </td>
 </tr>
@@ -1274,9 +1237,8 @@ Note: Not implemented.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673612"></a><h3>
-<a name="gst-rtcp-packet-sdes-get-item-count"></a>gst_rtcp_packet_sdes_get_item_count ()</h3>
-<a class="indexterm" name="id2673626"></a><pre class="programlisting">guint               gst_rtcp_packet_sdes_get_item_count (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-get-item-count"></a><h3>gst_rtcp_packet_sdes_get_item_count ()</h3>
+<pre class="programlisting">guint               gst_rtcp_packet_sdes_get_item_count (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the number of items in the SDES packet <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1286,12 +1248,12 @@ Get the number of items in the SDES packet <em class="parameter"><code>packet</c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The number of items in <em class="parameter"><code>packet</code></em>.
 </td>
 </tr>
@@ -1300,9 +1262,8 @@ Get the number of items in the SDES packet <em class="parameter"><code>packet</c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673707"></a><h3>
-<a name="gst-rtcp-packet-sdes-first-item"></a>gst_rtcp_packet_sdes_first_item ()</h3>
-<a class="indexterm" name="id2673721"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_first_item     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-first-item"></a><h3>gst_rtcp_packet_sdes_first_item ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_first_item     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Move to the first SDES item in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1312,12 +1273,12 @@ Move to the first SDES item in <em class="parameter"><code>packet</code></em>.</
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if there was a first item.
 </td>
 </tr>
@@ -1326,9 +1287,8 @@ Move to the first SDES item in <em class="parameter"><code>packet</code></em>.</
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673797"></a><h3>
-<a name="gst-rtcp-packet-sdes-next-item"></a>gst_rtcp_packet_sdes_next_item ()</h3>
-<a class="indexterm" name="id2673810"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_next_item      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-next-item"></a><h3>gst_rtcp_packet_sdes_next_item ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_next_item      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Move to the next SDES item in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1338,12 +1298,12 @@ Move to the next SDES item in <em class="parameter"><code>packet</code></em>.</p
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if there was a next item.
 </td>
 </tr>
@@ -1352,9 +1312,8 @@ Move to the next SDES item in <em class="parameter"><code>packet</code></em>.</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673886"></a><h3>
-<a name="gst-rtcp-packet-sdes-get-ssrc"></a>gst_rtcp_packet_sdes_get_ssrc ()</h3>
-<a class="indexterm" name="id2673900"></a><pre class="programlisting">guint32             gst_rtcp_packet_sdes_get_ssrc       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-get-ssrc"></a><h3>gst_rtcp_packet_sdes_get_ssrc ()</h3>
+<pre class="programlisting">guint32             gst_rtcp_packet_sdes_get_ssrc       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the SSRC of the current SDES item.</p>
 <p>
@@ -1364,12 +1323,12 @@ Get the SSRC of the current SDES item.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the SSRC of the current item.
 </td>
 </tr>
@@ -1378,9 +1337,8 @@ Get the SSRC of the current SDES item.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2673970"></a><h3>
-<a name="gst-rtcp-packet-sdes-first-entry"></a>gst_rtcp_packet_sdes_first_entry ()</h3>
-<a class="indexterm" name="id2673984"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_first_entry    (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-first-entry"></a><h3>gst_rtcp_packet_sdes_first_entry ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_first_entry    (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Move to the first SDES entry in the current item.</p>
 <p>
@@ -1390,12 +1348,12 @@ Move to the first SDES entry in the current item.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if there was a first entry.
 </td>
 </tr>
@@ -1404,9 +1362,8 @@ Move to the first SDES entry in the current item.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674064"></a><h3>
-<a name="gst-rtcp-packet-sdes-next-entry"></a>gst_rtcp_packet_sdes_next_entry ()</h3>
-<a class="indexterm" name="id2674077"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_next_entry     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-sdes-next-entry"></a><h3>gst_rtcp_packet_sdes_next_entry ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_next_entry     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Move to the next SDES entry in the current item.</p>
 <p>
@@ -1416,12 +1373,12 @@ Move to the next SDES entry in the current item.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if there was a next entry.
 </td>
 </tr>
@@ -1430,10 +1387,9 @@ Move to the next SDES entry in the current item.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674158"></a><h3>
-<a name="gst-rtcp-packet-sdes-get-entry"></a>gst_rtcp_packet_sdes_get_entry ()</h3>
-<a class="indexterm" name="id2674171"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_get_entry      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> *type,
+<a name="gst-rtcp-packet-sdes-get-entry"></a><h3>gst_rtcp_packet_sdes_get_entry ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_get_entry      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> *type,
                                                          guint8 *len,
                                                          guint8 **data);</pre>
 <p>
@@ -1444,7 +1400,7 @@ bytes.
 <p>
 When <em class="parameter"><code>type</code></em> refers to a text item, <em class="parameter"><code>data</code></em> will point to a UTF8 string. Note
 that this UTF8 string is NOT null-terminated. Use
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-copy-entry"><code class="function">gst_rtcp_packet_sdes_copy_entry()</code></a> to get a null-termined copy of the entry.</p>
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-copy-entry" title="gst_rtcp_packet_sdes_copy_entry ()"><code class="function">gst_rtcp_packet_sdes_copy_entry()</code></a> to get a null-termined copy of the entry.</p>
 <p>
 
 </p>
@@ -1452,27 +1408,27 @@ that this UTF8 string is NOT null-terminated. Use
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> result of the entry type
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> result length of the entry data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> result entry data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if there was valid data.
 </td>
 </tr>
@@ -1481,14 +1437,13 @@ that this UTF8 string is NOT null-terminated. Use
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674365"></a><h3>
-<a name="gst-rtcp-packet-sdes-copy-entry"></a>gst_rtcp_packet_sdes_copy_entry ()</h3>
-<a class="indexterm" name="id2674379"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_copy_entry     (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> *type,
+<a name="gst-rtcp-packet-sdes-copy-entry"></a><h3>gst_rtcp_packet_sdes_copy_entry ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_copy_entry     (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> *type,
                                                          guint8 *len,
                                                          guint8 **data);</pre>
 <p>
-This function is like <a href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-entry"><code class="function">gst_rtcp_packet_sdes_get_entry()</code></a> but it returns a
+This function is like <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#gst-rtcp-packet-sdes-get-entry" title="gst_rtcp_packet_sdes_get_entry ()"><code class="function">gst_rtcp_packet_sdes_get_entry()</code></a> but it returns a
 null-terminated copy of the data instead. use <code class="function">g_free()</code> after usage.</p>
 <p>
 
@@ -1497,27 +1452,27 @@ null-terminated copy of the data instead. use <code class="function">g_free()</c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
 <td> result of the entry type
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> result length of the entry data
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> result entry data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if there was valid data.
 </td>
 </tr>
@@ -1526,9 +1481,8 @@ null-terminated copy of the data instead. use <code class="function">g_free()</c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674547"></a><h3>
-<a name="gst-rtcp-packet-sdes-add-item"></a>gst_rtcp_packet_sdes_add_item ()</h3>
-<a class="indexterm" name="id2674561"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_add_item       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-sdes-add-item"></a><h3>gst_rtcp_packet_sdes_add_item ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_add_item       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);</pre>
 <p>
 Add a new SDES item for <em class="parameter"><code>ssrc</code></em> to <em class="parameter"><code>packet</code></em>.</p>
@@ -1539,17 +1493,17 @@ Add a new SDES item for <em class="parameter"><code>ssrc</code></em> to <em clas
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> the SSRC of the new item to add
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the item could be added, <code class="literal">FALSE</code> if the maximum amount of
 items has been exceeded for the SDES packet or the MTU has been reached.
 </td>
@@ -1559,10 +1513,9 @@ items has been exceeded for the SDES packet or the MTU has been reached.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674686"></a><h3>
-<a name="gst-rtcp-packet-sdes-add-entry"></a>gst_rtcp_packet_sdes_add_entry ()</h3>
-<a class="indexterm" name="id2674700"></a><pre class="programlisting">gboolean            gst_rtcp_packet_sdes_add_entry      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
-                                                         <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType">GstRTCPSDESType</a> type,
+<a name="gst-rtcp-packet-sdes-add-entry"></a><h3>gst_rtcp_packet_sdes_add_entry ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_sdes_add_entry      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType">GstRTCPSDESType</a> type,
                                                          guint8 len,
                                                          const guint8 *data);</pre>
 <p>
@@ -1574,27 +1527,27 @@ Add a new SDES entry to the current item in <em class="parameter"><code>packet</
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid SDES <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid SDES <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType"><span class="type">GstRTCPSDESType</span></a> of the SDES entry
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPSDESType" title="enum GstRTCPSDESType"><span class="type">GstRTCPSDESType</span></a> of the SDES entry
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> the data length
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
 <td> the data
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the item could be added, <code class="literal">FALSE</code> if the MTU has been
 reached.
 </td>
@@ -1604,9 +1557,8 @@ reached.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674870"></a><h3>
-<a name="gst-rtcp-packet-bye-get-ssrc-count"></a>gst_rtcp_packet_bye_get_ssrc_count ()</h3>
-<a class="indexterm" name="id2674884"></a><pre class="programlisting">guint               gst_rtcp_packet_bye_get_ssrc_count  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-bye-get-ssrc-count"></a><h3>gst_rtcp_packet_bye_get_ssrc_count ()</h3>
+<pre class="programlisting">guint               gst_rtcp_packet_bye_get_ssrc_count  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the number of SSRC fields in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1616,12 +1568,12 @@ Get the number of SSRC fields in <em class="parameter"><code>packet</code></em>.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The number of SSRC fields in <em class="parameter"><code>packet</code></em>.
 </td>
 </tr>
@@ -1630,9 +1582,8 @@ Get the number of SSRC fields in <em class="parameter"><code>packet</code></em>.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2674965"></a><h3>
-<a name="gst-rtcp-packet-bye-get-nth-ssrc"></a>gst_rtcp_packet_bye_get_nth_ssrc ()</h3>
-<a class="indexterm" name="id2674979"></a><pre class="programlisting">guint32             gst_rtcp_packet_bye_get_nth_ssrc    (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-bye-get-nth-ssrc"></a><h3>gst_rtcp_packet_bye_get_nth_ssrc ()</h3>
+<pre class="programlisting">guint32             gst_rtcp_packet_bye_get_nth_ssrc    (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint nth);</pre>
 <p>
 Get the <em class="parameter"><code>nth</code></em> SSRC of the BYE <em class="parameter"><code>packet</code></em>.</p>
@@ -1643,17 +1594,17 @@ Get the <em class="parameter"><code>nth</code></em> SSRC of the BYE <em class="p
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>nth</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>nth</code></em> :</span></p></td>
 <td> the nth SSRC to get
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The <em class="parameter"><code>nth</code></em> SSRC of <em class="parameter"><code>packet</code></em>.
 </td>
 </tr>
@@ -1662,9 +1613,8 @@ Get the <em class="parameter"><code>nth</code></em> SSRC of the BYE <em class="p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675093"></a><h3>
-<a name="gst-rtcp-packet-bye-add-ssrc"></a>gst_rtcp_packet_bye_add_ssrc ()</h3>
-<a class="indexterm" name="id2675106"></a><pre class="programlisting">gboolean            gst_rtcp_packet_bye_add_ssrc        (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-bye-add-ssrc"></a><h3>gst_rtcp_packet_bye_add_ssrc ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_bye_add_ssrc        (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 ssrc);</pre>
 <p>
 Add <em class="parameter"><code>ssrc</code></em> to the BYE <em class="parameter"><code>packet</code></em>.</p>
@@ -1675,20 +1625,20 @@ Add <em class="parameter"><code>ssrc</code></em> to the BYE <em class="parameter
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> an SSRC to add
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the ssrc was added. This function can return <code class="literal">FALSE</code> if
 the max MTU is exceeded or the number of sources blocks is greater than
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS"><span class="type">GST_RTCP_MAX_BYE_SSRC_COUNT</span></a>.
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS" title="GST_RTCP_MAX_BYE_SSRC_COUNT"><span class="type">GST_RTCP_MAX_BYE_SSRC_COUNT</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1696,9 +1646,8 @@ the max MTU is exceeded or the number of sources blocks is greater than
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675241"></a><h3>
-<a name="gst-rtcp-packet-bye-add-ssrcs"></a>gst_rtcp_packet_bye_add_ssrcs ()</h3>
-<a class="indexterm" name="id2675253"></a><pre class="programlisting">gboolean            gst_rtcp_packet_bye_add_ssrcs       (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-bye-add-ssrcs"></a><h3>gst_rtcp_packet_bye_add_ssrcs ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_bye_add_ssrcs       (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          guint32 *ssrc,
                                                          guint len);</pre>
 <p>
@@ -1710,25 +1659,25 @@ Adds <em class="parameter"><code>len</code></em> SSRCs in <em class="parameter">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ssrc</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ssrc</code></em> :</span></p></td>
 <td> an array of SSRCs to add
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>len</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
 <td> number of elements in <em class="parameter"><code>ssrc</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if the all the SSRCs were added. This function can return <code class="literal">FALSE</code> if
 the max MTU is exceeded or the number of sources blocks is greater than
-<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS"><span class="type">GST_RTCP_MAX_BYE_SSRC_COUNT</span></a>.
+<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GST-RTCP-MAX-BYE-SSRC-COUNT:CAPS" title="GST_RTCP_MAX_BYE_SSRC_COUNT"><span class="type">GST_RTCP_MAX_BYE_SSRC_COUNT</span></a>.
 </td>
 </tr>
 </tbody>
@@ -1736,9 +1685,8 @@ the max MTU is exceeded or the number of sources blocks is greater than
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675421"></a><h3>
-<a name="gst-rtcp-packet-bye-get-reason-len"></a>gst_rtcp_packet_bye_get_reason_len ()</h3>
-<a class="indexterm" name="id2675434"></a><pre class="programlisting">guint8              gst_rtcp_packet_bye_get_reason_len  (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-bye-get-reason-len"></a><h3>gst_rtcp_packet_bye_get_reason_len ()</h3>
+<pre class="programlisting">guint8              gst_rtcp_packet_bye_get_reason_len  (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the length of the reason string.</p>
 <p>
@@ -1748,12 +1696,12 @@ Get the length of the reason string.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The length of the reason string or 0 when there is no reason string
 present.
 </td>
@@ -1763,9 +1711,8 @@ present.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675505"></a><h3>
-<a name="gst-rtcp-packet-bye-get-reason"></a>gst_rtcp_packet_bye_get_reason ()</h3>
-<a class="indexterm" name="id2675518"></a><pre class="programlisting">gchar*              gst_rtcp_packet_bye_get_reason      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
+<a name="gst-rtcp-packet-bye-get-reason"></a><h3>gst_rtcp_packet_bye_get_reason ()</h3>
+<pre class="programlisting">gchar*              gst_rtcp_packet_bye_get_reason      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet);</pre>
 <p>
 Get the reason in <em class="parameter"><code>packet</code></em>.</p>
 <p>
@@ -1775,12 +1722,12 @@ Get the reason in <em class="parameter"><code>packet</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The reason for the BYE <em class="parameter"><code>packet</code></em> or NULL if the packet did not contain
 a reason string. The string must be freed with <code class="function">g_free()</code> after usage.
 </td>
@@ -1790,9 +1737,8 @@ a reason string. The string must be freed with <code class="function">g_free()</
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675611"></a><h3>
-<a name="gst-rtcp-packet-bye-set-reason"></a>gst_rtcp_packet_bye_set_reason ()</h3>
-<a class="indexterm" name="id2675625"></a><pre class="programlisting">gboolean            gst_rtcp_packet_bye_set_reason      (<a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket">GstRTCPPacket</a> *packet,
+<a name="gst-rtcp-packet-bye-set-reason"></a><h3>gst_rtcp_packet_bye_set_reason ()</h3>
+<pre class="programlisting">gboolean            gst_rtcp_packet_bye_set_reason      (<a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket">GstRTCPPacket</a> *packet,
                                                          const gchar *reason);</pre>
 <p>
 Set the reason string to <em class="parameter"><code>reason</code></em> in <em class="parameter"><code>packet</code></em>.</p>
@@ -1803,17 +1749,17 @@ Set the reason string to <em class="parameter"><code>reason</code></em> in <em c
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>packet</code></em>&#160;:</span></td>
-<td> a valid BYE <a href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
+<td><p><span class="term"><em class="parameter"><code>packet</code></em> :</span></p></td>
+<td> a valid BYE <a class="link" href="gst-plugins-base-libs-gstrtcpbuffer.html#GstRTCPPacket" title="GstRTCPPacket"><span class="type">GstRTCPPacket</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>reason</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em> :</span></p></td>
 <td> a reason string
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if the string could be set.
 </td>
 </tr>
@@ -1822,9 +1768,8 @@ Set the reason string to <em class="parameter"><code>reason</code></em> in <em c
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675728"></a><h3>
-<a name="gst-rtcp-ntp-to-unix"></a>gst_rtcp_ntp_to_unix ()</h3>
-<a class="indexterm" name="id2675742"></a><pre class="programlisting">guint64             gst_rtcp_ntp_to_unix                (guint64 ntptime);</pre>
+<a name="gst-rtcp-ntp-to-unix"></a><h3>gst_rtcp_ntp_to_unix ()</h3>
+<pre class="programlisting">guint64             gst_rtcp_ntp_to_unix                (guint64 ntptime);</pre>
 <p>
 Converts an NTP time to UNIX nanoseconds. <em class="parameter"><code>ntptime</code></em> can typically be
 the NTP time of an SR RTCP message and contains, in the upper 32 bits, the
@@ -1837,12 +1782,12 @@ seconds. The resulting value will be the number of nanoseconds since 1970.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>ntptime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
 <td> an NTP timestamp
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the UNIX time for <em class="parameter"><code>ntptime</code></em> in nanoseconds.
 </td>
 </tr>
@@ -1851,9 +1796,8 @@ seconds. The resulting value will be the number of nanoseconds since 1970.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2675819"></a><h3>
-<a name="gst-rtcp-unix-to-ntp"></a>gst_rtcp_unix_to_ntp ()</h3>
-<a class="indexterm" name="id2675832"></a><pre class="programlisting">guint64             gst_rtcp_unix_to_ntp                (guint64 unixtime);</pre>
+<a name="gst-rtcp-unix-to-ntp"></a><h3>gst_rtcp_unix_to_ntp ()</h3>
+<pre class="programlisting">guint64             gst_rtcp_unix_to_ntp                (guint64 unixtime);</pre>
 <p>
 Converts a UNIX timestamp in nanoseconds to an NTP time. The caller should
 pass a value with nanoseconds since 1970. The NTP time will, in the upper
@@ -1867,12 +1811,12 @@ for constructing SR RTCP packets.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>unixtime</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>unixtime</code></em> :</span></p></td>
 <td> an UNIX timestamp in nanoseconds
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the NTP time for <em class="parameter"><code>gsttime</code></em>.
 </td>
 </tr>
@@ -1881,9 +1825,12 @@ for constructing SR RTCP packets.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2675905"></a><h2>See Also</h2>
-<a href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>, <a href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload"><span class="type">GstBaseRTPDepayload</span></a>, <span class="type">gstrtpbuffer</span>
+<a name="gst-plugins-base-libs-gstrtcpbuffer.see-also"></a><h2>See Also</h2>
+<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload"><span class="type">GstBaseRTPPayload</span></a>, <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload"><span class="type">GstBaseRTPDepayload</span></a>, <span class="type">gstrtpbuffer</span>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

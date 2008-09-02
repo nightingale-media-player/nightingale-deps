@@ -1,0 +1,899 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>playbin2</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-playbin.html" title="playbin">
+<link rel="next" href="gst-plugins-base-plugins-tcpserversink.html" title="tcpserversink">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-playbin.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-tcpserversink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-playbin2.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin2.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin2.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin2.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin2.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-playbin2.signals" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-playbin2"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-playbin2.top_of_page"></a>playbin2</span></h2>
+<p>playbin2 — Autoplug and play media from an uri</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-plugins-playbin2.synopsis"></a><h2>Synopsis</h2>
+<a name="GstPlayBin2"></a><pre class="synopsis">
+struct              <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-struct" title="struct GstPlayBin2">GstPlayBin2</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayFlags" title="enum GstPlayFlags">GstPlayFlags</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBin
+                     +----GstPipeline
+                           +----GstPlayBin2
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstPlayBin2 implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--audio-sink" title='The "audio-sink" property'>audio-sink</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--current-audio" title='The "current-audio" property'>current-audio</a>"            gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--current-text" title='The "current-text" property'>current-text</a>"             gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--current-video" title='The "current-video" property'>current-video</a>"            gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--flags" title='The "flags" property'>flags</a>"                    <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayFlags" title="enum GstPlayFlags">GstPlayFlags</a>          : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--frame" title='The "frame" property'>frame</a>"                    GstBuffer*            : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--n-audio" title='The "n-audio" property'>n-audio</a>"                  gint                  : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--n-text" title='The "n-text" property'>n-text</a>"                   gint                  : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--n-video" title='The "n-video" property'>n-video</a>"                  gint                  : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--source" title='The "source" property'>source</a>"                   GstElement*           : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--stream-info" title='The "stream-info" property'>stream-info</a>"              GValueArray*          : Read
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--subtitle-font-desc" title='The "subtitle-font-desc" property'>subtitle-font-desc</a>"       gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--suburi" title='The "suburi" property'>suburi</a>"                   gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--uri" title='The "uri" property'>uri</a>"                      gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--video-sink" title='The "video-sink" property'>video-sink</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--vis-plugin" title='The "vis-plugin" property'>vis-plugin</a>"               GstElement*           : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2--mute" title='The "mute" property'>mute</a>"                     gboolean              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-about-to-finish" title='The "about-to-finish" signal'>about-to-finish</a>"                                : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-audio-changed" title='The "audio-changed" signal'>audio-changed</a>"                                  : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-get-audio-tags" title='The "get-audio-tags" signal'>get-audio-tags</a>"                                 : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-get-text-tags" title='The "get-text-tags" signal'>get-text-tags</a>"                                  : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-get-video-tags" title='The "get-video-tags" signal'>get-video-tags</a>"                                 : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-text-changed" title='The "text-changed" signal'>text-changed</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-video-changed" title='The "video-changed" signal'>video-changed</a>"                                  : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2-convert-frame" title='The "convert-frame" signal'>convert-frame</a>"                                  : Run Last / Action
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2635052"></a><h3>Usage</h3>
+<p>
+Playbin2 provides a stand-alone everything-in-one abstraction for an
+audio and/or video player.
+</p>
+<p>
+At this stage, playbin2 is considered UNSTABLE. The API provided in the
+signals and properties may yet change in the near future. When playbin2
+is stable, it will probably replace <span class="type">playbin</span>
+</p>
+<p>
+It can handle both audio and video files and features
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li>
+automatic file type recognition and based on that automatic
+selection and usage of the right audio/video/subtitle demuxers/decoders
+</li>
+<li>
+visualisations for audio files
+</li>
+<li>
+subtitle support for video files. Subtitles can be store in external
+files.
+</li>
+<li>
+stream selection between different video/audio/subtitles streams
+</li>
+<li>
+meta info (tag) extraction
+</li>
+<li>
+easy access to the last video frame
+</li>
+<li>
+buffering when playing streams over a network
+</li>
+<li>
+volume control with mute option
+</li>
+</ul></div>
+<p>
+</p>
+<p>
+A playbin element can be created just like any other element using
+<code class="function">gst_element_factory_make()</code>. The file/URI to play should be set via the "uri"
+property. This must be an absolute URI, relative file paths are not allowed.
+Example URIs are file:///home/joe/movie.avi or http://www.joedoe.com/foo.ogg
+</p>
+<p>
+Playbin is a <span class="type">GstPipeline</span>. It will notify the application of everything
+that's happening (errors, end of stream, tags found, state changes, etc.)
+by posting messages on its <span class="type">GstBus</span>. The application needs to watch the
+bus.
+</p>
+<p>
+Playback can be initiated by setting the element to PLAYING state using
+<code class="function">gst_element_set_state()</code>. Note that the state change will take place in
+the background in a separate thread, when the function returns playback
+is probably not happening yet and any errors might not have occured yet.
+Applications using playbin should ideally be written to deal with things
+completely asynchroneous.
+</p>
+<p>
+When playback has finished (an EOS message has been received on the bus)
+or an error has occured (an ERROR message has been received on the bus) or
+the user wants to play a different track, playbin should be set back to
+READY or NULL state, then the "uri" property should be set to the new
+location and then playbin be set to PLAYING state again.
+</p>
+<p>
+Seeking can be done using <code class="function">gst_element_seek_simple()</code> or <code class="function">gst_element_seek()</code>
+on the playbin element. Again, the seek will not be executed
+instantaneously, but will be done in a background thread. When the seek
+call returns the seek will most likely still be in process. An application
+may wait for the seek to finish (or fail) using <code class="function">gst_element_get_state()</code> with
+-1 as the timeout, but this will block the user interface and is not
+recommended at all.
+</p>
+<p>
+Applications may query the current position and duration of the stream
+via <code class="function">gst_element_query_position()</code> and <code class="function">gst_element_query_duration()</code> and
+setting the format passed to GST_FORMAT_TIME. If the query was successful,
+the duration or position will have been returned in units of nanoseconds.
+</p>
+<p>
+By default, if no audio sink or video sink has been specified via the
+"audio-sink" or "video-sink" property, playbin will use the autoaudiosink
+and autovideosink elements to find the first-best available output method.
+This should work in most cases, but is not always desirable. Often either
+the user or application might want to specify more explicitly what to use
+for audio and video output.
+</p>
+<p>
+If the application wants more control over how audio or video should be
+output, it may create the audio/video sink elements itself (for example
+using <code class="function">gst_element_factory_make()</code>) and provide them to playbin using the
+"audio-sink" or "video-sink" property.
+</p>
+<p>
+GNOME-based applications, for example, will usually want to create
+gconfaudiosink and gconfvideosink elements and make playbin use those,
+so that output happens to whatever the user has configured in the GNOME
+Multimedia System Selector confinguration dialog.
+</p>
+<p>
+The sink elements do not necessarily need to be ready-made sinks. It is
+possible to create container elements that look like a sink to playbin,
+but in reality contain a number of custom elements linked together. This
+can be achieved by creating a <span class="type">GstBin</span> and putting elements in there and
+linking them, and then creating a sink <span class="type">GstGhostPad</span> for the bin and pointing
+it to the sink pad of the first element within the bin. This can be used
+for a number of purposes, for example to force output to a particular
+format or to modify or observe the data before it is output.
+</p>
+<p>
+It is also possible to 'suppress' audio and/or video output by using
+'fakesink' elements (or capture it from there using the fakesink element's
+"handoff" signal, which, nota bene, is fired from the streaming thread!).
+</p>
+<p>
+Most of the common meta data (artist, title, etc.) can be retrieved by
+watching for TAG messages on the pipeline's bus (see above).
+</p>
+<p>
+Other more specific meta information like width/height/framerate of video
+streams or samplerate/number of channels of audio streams can be obtained
+using the "stream-info" property, which will return a GList of stream info
+objects, one for each stream. These are opaque objects that can only be
+accessed via the standard GObject property interface, ie. <code class="function">g_object_get()</code>.
+Each stream info object has the following properties:
+</p>
+<div class="itemizedlist"><ul type="disc">
+<li>"object" (GstObject) (the decoder source pad usually)</li>
+<li>"type" (enum) (if this is an audio/video/subtitle stream)</li>
+<li>"decoder" (string) (name of decoder used to decode this stream)</li>
+<li>"mute" (boolean) (to mute or unmute this stream)</li>
+<li>"caps" (GstCaps) (caps of the decoded stream)</li>
+<li>"language-code" (string) (ISO-639 language code for this stream, mostly used for audio/subtitle streams)</li>
+<li>"codec" (string) (format this stream was encoded in)</li>
+</ul></div>
+<p>
+Stream information from the stream-info properties is best queried once
+playbin has changed into PAUSED or PLAYING state (which can be detected
+via a state-changed message on the bus where old_state=READY and
+new_state=PAUSED), since before that the list might not be complete yet or
+not contain all available information (like language-codes).
+</p>
+<p>
+Playbin handles buffering automatically for the most part, but applications
+need to handle parts of the buffering process as well. Whenever playbin is
+buffering, it will post BUFFERING messages on the bus with a percentage
+value that shows the progress of the buffering process. Applications need
+to set playbin to PLAYING or PAUSED state in response to these messages.
+They may also want to convey the buffering progress to the user in some
+way. Here is how to extract the percentage information from the message
+(requires GStreamer &gt;= 0.10.11):
+</p>
+<p>
+</p>
+<pre class="programlisting">
+switch (GST_MESSAGE_TYPE (msg)) {
+  case GST_MESSAGE_BUFFERING: {
+    gint percent = 0;
+    gst_message_parse_buffering (msg, &amp;percent);
+    g_print ("Buffering (%%u percent done)", percent);
+    break;
+  }
+  ...
+}
+</pre>
+<p>
+Note that applications should keep/set the pipeline in the PAUSED state when
+a BUFFERING message is received with a buffer percent value &lt; 100 and set
+the pipeline back to PLAYING state when a BUFFERING message with a value
+of 100 percent is received (if PLAYING is the desired state, that is).
+</p>
+<p>
+By default, playbin (or rather the video sinks used) will create their own
+window. Applications will usually want to force output to a window of their
+own, however. This can be done using the GstXOverlay interface, which most
+video sinks implement. See the documentation there for more details.
+</p>
+<p>
+The device to use for CDs/DVDs needs to be set on the source element
+playbin creates before it is opened. The only way to do this at the moment
+is to connect to playbin's "notify::source" signal, which will be emitted
+by playbin when it has created the source element for a particular URI.
+In the signal callback you can check if the source element has a "device"
+property and set it appropriately. In future ways might be added to specify
+the device as part of the URI, but at the time of writing this is not
+possible yet.
+</p>
+<p>
+Here is a simple pipeline to play back a video or audio file:
+</p>
+<pre class="programlisting">
+gst-launch -v playbin uri=file:///path/to/somefile.avi
+</pre>
+<p>
+This will play back the given AVI video file, given that the video and
+audio decoders required to decode the content are installed. Since no
+special audio sink or video sink is supplied (not possible via gst-launch),
+playbin will try to find a suitable audio and video sink automatically
+using the autoaudiosink and autovideosink elements.
+</p>
+<p>
+Here is a another pipeline to play track 4 of an audio CD:
+</p>
+<pre class="programlisting">
+gst-launch -v playbin uri=cdda://4
+</pre>
+<p>
+This will play back track 4 on an audio CD in your disc drive (assuming
+the drive is detected automatically by the plugin).
+</p>
+<p>
+Here is a another pipeline to play title 1 of a DVD:
+</p>
+<pre class="programlisting">
+gst-launch -v playbin uri=dvd://1
+</pre>
+<p>
+This will play back title 1 of a DVD in your disc drive (assuming
+the drive is detected automatically by the plugin).
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2639196"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+          <a class="link" href="gst-plugins-base-plugins-plugin-playback.html#plugin-playback">playback</a>
+        </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Bin/Player</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-struct"></a><h3>struct GstPlayBin2</h3>
+<pre class="programlisting">struct GstPlayBin2;</pre>
+<p>
+playbin element structure</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayFlags"></a><h3>enum GstPlayFlags</h3>
+<pre class="programlisting">typedef enum {
+  GST_PLAY_FLAG_VIDEO         = (1 &lt;&lt; 0),
+  GST_PLAY_FLAG_AUDIO         = (1 &lt;&lt; 1),
+  GST_PLAY_FLAG_TEXT          = (1 &lt;&lt; 2),
+  GST_PLAY_FLAG_VIS           = (1 &lt;&lt; 3),
+  GST_PLAY_FLAG_SOFT_VOLUME   = (1 &lt;&lt; 4),
+  GST_PLAY_FLAG_NATIVE_AUDIO  = (1 &lt;&lt; 5),
+  GST_PLAY_FLAG_NATIVE_VIDEO  = (1 &lt;&lt; 6)
+} GstPlayFlags;
+</pre>
+<p>
+Extra flags to configure the behaviour of the sinks.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-VIDEO:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_VIDEO</code></span></p></td>
+<td> Enable rendering of the video stream
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-AUDIO:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_AUDIO</code></span></p></td>
+<td> Enable rendering of the audio stream
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-TEXT:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_TEXT</code></span></p></td>
+<td> Enable rendering of subtitles
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-VIS:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_VIS</code></span></p></td>
+<td> Enable rendering of visualisations when there is
+      no video stream.
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-SOFT-VOLUME:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_SOFT_VOLUME</code></span></p></td>
+<td> Use software volume
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-NATIVE-AUDIO:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_NATIVE_AUDIO</code></span></p></td>
+<td> only allow native audio formats, this omits
+  configuration of audioconvert and audioresample.
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-PLAY-FLAG-NATIVE-VIDEO:CAPS"></a><span class="term"><code class="literal">GST_PLAY_FLAG_NATIVE_VIDEO</code></span></p></td>
+<td> only allow native video formats, this omits
+  configuration of ffmpegcolorspace and videoscale.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--audio-sink"></a><h3>The <code class="literal">"audio-sink"</code> property</h3>
+<pre class="programlisting">  "audio-sink"               GstElement*           : Read / Write</pre>
+<p>the audio output element to use (NULL = default sink).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
+<pre class="programlisting">  "connection-speed"         guint                 : Read / Write</pre>
+<p>Network connection speed in kbps (0 = unknown).</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--current-audio"></a><h3>The <code class="literal">"current-audio"</code> property</h3>
+<pre class="programlisting">  "current-audio"            gint                  : Read / Write</pre>
+<p>
+Get or set the currently playing audio stream. By default the first audio
+stream with data is played.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--current-text"></a><h3>The <code class="literal">"current-text"</code> property</h3>
+<pre class="programlisting">  "current-text"             gint                  : Read / Write</pre>
+<p>
+Get or set the currently playing subtitle stream. By default the first
+subtitle stream with data is played.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--current-video"></a><h3>The <code class="literal">"current-video"</code> property</h3>
+<pre class="programlisting">  "current-video"            gint                  : Read / Write</pre>
+<p>
+Get or set the currently playing video stream. By default the first video
+stream with data is played.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--flags"></a><h3>The <code class="literal">"flags"</code> property</h3>
+<pre class="programlisting">  "flags"                    <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayFlags" title="enum GstPlayFlags">GstPlayFlags</a>          : Read / Write</pre>
+<p>
+Control the behaviour of playbin.</p>
+<p>
+
+</p>
+<p>Default value: Render the video stream|Render the audio stream|Render subtitles|Use software volume</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--frame"></a><h3>The <code class="literal">"frame"</code> property</h3>
+<pre class="programlisting">  "frame"                    GstBuffer*            : Read</pre>
+<p>
+Get the currently rendered or prerolled frame in the sink.
+The <span class="type">GstCaps</span> on the buffer will describe the format of the buffer.</p>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--n-audio"></a><h3>The <code class="literal">"n-audio"</code> property</h3>
+<pre class="programlisting">  "n-audio"                  gint                  : Read</pre>
+<p>
+Get the total number of available audio streams.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--n-text"></a><h3>The <code class="literal">"n-text"</code> property</h3>
+<pre class="programlisting">  "n-text"                   gint                  : Read</pre>
+<p>
+Get the total number of available subtitle streams.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--n-video"></a><h3>The <code class="literal">"n-video"</code> property</h3>
+<pre class="programlisting">  "n-video"                  gint                  : Read</pre>
+<p>
+Get the total number of available video streams.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--source"></a><h3>The <code class="literal">"source"</code> property</h3>
+<pre class="programlisting">  "source"                   GstElement*           : Read</pre>
+<p>Source element.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--stream-info"></a><h3>The <code class="literal">"stream-info"</code> property</h3>
+<pre class="programlisting">  "stream-info"              GValueArray*          : Read</pre>
+<p>value array of streaminfo.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--subtitle-encoding"></a><h3>The <code class="literal">"subtitle-encoding"</code> property</h3>
+<pre class="programlisting">  "subtitle-encoding"        gchar*                : Read / Write</pre>
+<p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--subtitle-font-desc"></a><h3>The <code class="literal">"subtitle-font-desc"</code> property</h3>
+<pre class="programlisting">  "subtitle-font-desc"       gchar*                : Write</pre>
+<p>Pango font description of font to be used for subtitle rendering.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--suburi"></a><h3>The <code class="literal">"suburi"</code> property</h3>
+<pre class="programlisting">  "suburi"                   gchar*                : Read / Write</pre>
+<p>
+Set the next subtitle URI that playbin will play. This property can be
+set from the about-to-finish signal to queue the next subtitle media file.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
+<pre class="programlisting">  "uri"                      gchar*                : Read / Write</pre>
+<p>
+Set the next URI that playbin will play. This property can be set from the
+about-to-finish signal to queue the next media file.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--video-sink"></a><h3>The <code class="literal">"video-sink"</code> property</h3>
+<pre class="programlisting">  "video-sink"               GstElement*           : Read / Write</pre>
+<p>the video output element to use (NULL = default sink).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--vis-plugin"></a><h3>The <code class="literal">"vis-plugin"</code> property</h3>
+<pre class="programlisting">  "vis-plugin"               GstElement*           : Read / Write</pre>
+<p>the visualization element to use (NULL = default).</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
+<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<p>The audio volume.</p>
+<p>Allowed values: [0,10]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2--mute"></a><h3>The <code class="literal">"mute"</code> property</h3>
+<pre class="programlisting">  "mute"                     gboolean              : Read / Write</pre>
+<p>Mute the audio channel without changing the volume.</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-playbin2.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-about-to-finish"></a><h3>The <code class="literal">"about-to-finish"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gpointer     user_data)      : Run Last</pre>
+<p>
+This signal is emitted when the current uri is about to finish. You can
+set the next-uri and next-suburi to make sure that playback continues.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-audio-changed"></a><h3>The <code class="literal">"audio-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gpointer     user_data)      : Run Last</pre>
+<p>
+This signal is emited whenever the number or order of the audio
+streams has changed. The application will most likely want to select
+a new audio stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-get-audio-tags"></a><h3>The <code class="literal">"get-audio-tags"</code> signal</h3>
+<pre class="programlisting">GstTagList*         user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gint         stream,
+                                                        gpointer     user_data)      : Run Last / Action</pre>
+<p>
+Action signal to retrieve the tags of a specific audio stream number.
+This information can be used to select a stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td> an audio stream number
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a GstTagList with tags or NULL when the stream number does not
+exist.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-get-text-tags"></a><h3>The <code class="literal">"get-text-tags"</code> signal</h3>
+<pre class="programlisting">GstTagList*         user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gint         stream,
+                                                        gpointer     user_data)      : Run Last / Action</pre>
+<p>
+Action signal to retrieve the tags of a specific text stream number.
+This information can be used to select a stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td> a text stream number
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a GstTagList with tags or NULL when the stream number does not
+exist.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-get-video-tags"></a><h3>The <code class="literal">"get-video-tags"</code> signal</h3>
+<pre class="programlisting">GstTagList*         user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gint         stream,
+                                                        gpointer     user_data)      : Run Last / Action</pre>
+<p>
+Action signal to retrieve the tags of a specific video stream number.
+This information can be used to select a stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td> a video stream number
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a GstTagList with tags or NULL when the stream number does not
+exist.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-text-changed"></a><h3>The <code class="literal">"text-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gpointer     user_data)      : Run Last</pre>
+<p>
+This signal is emited whenever the number or order of the text
+streams has changed. The application will most likely want to select
+a new text stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-video-changed"></a><h3>The <code class="literal">"video-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        gpointer     user_data)      : Run Last</pre>
+<p>
+This signal is emited whenever the number or order of the video
+streams has changed. The application will most likely want to select
+a new video stream.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBin2-convert-frame"></a><h3>The <code class="literal">"convert-frame"</code> signal</h3>
+<pre class="programlisting">GstBuffer*          user_function                      (<a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2">GstPlayBin2</a> *playbin,
+                                                        GstCaps     *caps,
+                                                        gpointer     user_data)      : Run Last / Action</pre>
+<p>
+Action signal to retrieve the currently playing video frame in the format
+specified by <em class="parameter"><code>caps</code></em>.
+If <em class="parameter"><code>caps</code></em> is <code class="literal">NULL</code>, no conversion will be performed and this function is
+equivalent to the <span class="type">"frame"</span> property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>playbin</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-plugins-playbin2.html#GstPlayBin2"><span class="type">GstPlayBin2</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> the target format of the frame
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">GstBuffer</span> of the current video frame converted to <span class="type">caps</span>. 
+The caps on the buffer will describe the final layout of the buffer data.
+<code class="literal">NULL</code> is returned when no current buffer can be retrieved or when the
+conversion failed.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

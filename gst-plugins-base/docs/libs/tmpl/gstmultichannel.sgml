@@ -85,3 +85,13 @@ gstmultichannel
 @num_positions: 
 
 
+<!-- ##### FUNCTION gst_audio_check_channel_positions ##### -->
+<para>
+
+</para>
+
+@pos: 
+@channels: 
+@Returns: 
+
+

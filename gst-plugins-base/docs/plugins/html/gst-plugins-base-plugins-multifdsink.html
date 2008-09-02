@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>multifdsink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-gnomevfssrc.html" title="gnomevfssrc">
 <link rel="next" href="gst-plugins-base-plugins-oggdemux.html" title="oggdemux">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -22,98 +22,91 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-oggdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2567802" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2567948" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2584678" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2562922" class="shortcut">Properties</a>
-                  &#160;|&#160;
-                  <a href="#id2567870" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-multifdsink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-multifdsink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-multifdsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-multifdsink.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-multifdsink.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-multifdsink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2567802"></a><span class="refentrytitle">multifdsink</span>
-</h2>
-<p>multifdsink &#8212; Send data to multiple file descriptors</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-multifdsink.top_of_page"></a>multifdsink</span></h2>
+<p>multifdsink — Send data to multiple file descriptors</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-multifdsink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstMultiFdSink"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-struct">GstMultiFdSink</a>;
-enum                <a href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy">GstRecoverPolicy</a>;
-enum                <a href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod">GstSyncMethod</a>;
-enum                <a href="gst-plugins-base-plugins-multifdsink.html#GstClientStatus">GstClientStatus</a>;
-
+                    <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-struct" title="GstMultiFdSink">GstMultiFdSink</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy" title="enum GstRecoverPolicy">GstRecoverPolicy</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod" title="enum GstSyncMethod">GstSyncMethod</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstClientStatus" title="enum GstClientStatus">GstClientStatus</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPProtocol" title="enum GstTCPProtocol">GstTCPProtocol</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2584678"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-multifdsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseSink
                      +----GstMultiFdSink
-                           +----<a href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink">GstTCPServerSink</a>
+                           +----<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink">GstTCPServerSink</a>
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2562922"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-multifdsink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-max">buffers-max</a>"              gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-queued">buffers-queued</a>"           guint                 : Read
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-soft-max">buffers-soft-max</a>"         gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-served">bytes-served</a>"             guint64               : Read
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-to-serve">bytes-to-serve</a>"           guint64               : Read
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--mode">mode</a>"                     GstFDSetMode          : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--protocol">protocol</a>"                 GstTCPProtocol        : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--recover-policy">recover-policy</a>"           <a href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy">GstRecoverPolicy</a>      : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--sync-clients">sync-clients</a>"             gboolean              : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--sync-method">sync-method</a>"              <a href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod">GstSyncMethod</a>         : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--timeout">timeout</a>"                  guint64               : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-min">buffers-min</a>"              gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--burst-unit">burst-unit</a>"               GstTCPUnitType        : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--burst-value">burst-value</a>"              guint64               : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-min">bytes-min</a>"                gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--time-min">time-min</a>"                 gint64                : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--unit-type">unit-type</a>"                GstTCPUnitType        : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--units-max">units-max</a>"                gint64                : Read / Write
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--units-soft-max">units-soft-max</a>"           gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-max" title='The "buffers-max" property'>buffers-max</a>"              gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-queued" title='The "buffers-queued" property'>buffers-queued</a>"           guint                 : Read
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-soft-max" title='The "buffers-soft-max" property'>buffers-soft-max</a>"         gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-served" title='The "bytes-served" property'>bytes-served</a>"             guint64               : Read
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-to-serve" title='The "bytes-to-serve" property'>bytes-to-serve</a>"           guint64               : Read
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--mode" title='The "mode" property'>mode</a>"                     GstFDSetMode          : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--protocol" title='The "protocol" property'>protocol</a>"                 <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPProtocol" title="enum GstTCPProtocol">GstTCPProtocol</a>        : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--recover-policy" title='The "recover-policy" property'>recover-policy</a>"           <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy" title="enum GstRecoverPolicy">GstRecoverPolicy</a>      : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--sync-clients" title='The "sync-clients" property'>sync-clients</a>"             gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--sync-method" title='The "sync-method" property'>sync-method</a>"              <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod" title="enum GstSyncMethod">GstSyncMethod</a>         : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--timeout" title='The "timeout" property'>timeout</a>"                  guint64               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--buffers-min" title='The "buffers-min" property'>buffers-min</a>"              gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--burst-unit" title='The "burst-unit" property'>burst-unit</a>"               <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>        : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--burst-value" title='The "burst-value" property'>burst-value</a>"              guint64               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--bytes-min" title='The "bytes-min" property'>bytes-min</a>"                gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--time-min" title='The "time-min" property'>time-min</a>"                 gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--unit-type" title='The "unit-type" property'>unit-type</a>"                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>        : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--units-max" title='The "units-max" property'>units-max</a>"                gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink--units-soft-max" title='The "units-soft-max" property'>units-soft-max</a>"           gint64                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2567870"></a><h2>Signals</h2>
+<a name="gst-plugins-base-plugins-multifdsink.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-add">add</a>"                                            : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-clear">clear</a>"                                          : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-added">client-added</a>"                                   : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-removed">client-removed</a>"                                 : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-get-stats">get-stats</a>"                                      : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-remove">remove</a>"                                         : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-fd-removed">client-fd-removed</a>"                              : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-add-full">add-full</a>"                                       : Run Last
-  "<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-remove-flush">remove-flush</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-add" title='The "add" signal'>add</a>"                                            : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-clear" title='The "clear" signal'>clear</a>"                                          : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-added" title='The "client-added" signal'>client-added</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-removed" title='The "client-removed" signal'>client-removed</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-get-stats" title='The "get-stats" signal'>get-stats</a>"                                      : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-remove" title='The "remove" signal'>remove</a>"                                         : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-client-fd-removed" title='The "client-fd-removed" signal'>client-fd-removed</a>"                              : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-add-full" title='The "add-full" signal'>add-full</a>"                                       : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink-remove-flush" title='The "remove-flush" signal'>remove-flush</a>"                                   : Run Last / Action
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2567948"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-multifdsink.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2567961"></a><p>
+<a name="id2630544"></a><p>
 This plugin writes incoming data to a set of file descriptors. The
 file descriptors can be added to multifdsink by emitting the "add" signal. 
 For each descriptor added, the "client-added" signal will be called.
@@ -200,44 +193,43 @@ drop late buffers.
 <p>
 Last reviewed on 2006-09-12 (0.10.10)</p>
 <div class="refsect2" lang="en">
-<a name="id2601338"></a><h3>Element Information</h3>
+<a name="id2630658"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
+          <a class="link" href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink/Network</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -248,11 +240,10 @@ Last reviewed on 2006-09-12 (0.10.10)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601475"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-multifdsink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2601486"></a><h3>
-<a name="GstMultiFdSink-struct"></a>GstMultiFdSink</h3>
-<a class="indexterm" name="id2601498"></a><pre class="programlisting">typedef struct _GstMultiFdSink GstMultiFdSink;</pre>
+<a name="GstMultiFdSink-struct"></a><h3>GstMultiFdSink</h3>
+<pre class="programlisting">typedef struct _GstMultiFdSink GstMultiFdSink;</pre>
 <p>
 The multifdsink object structure.</p>
 <p>
@@ -261,9 +252,8 @@ The multifdsink object structure.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601518"></a><h3>
-<a name="GstRecoverPolicy"></a>enum GstRecoverPolicy</h3>
-<a class="indexterm" name="id2601531"></a><pre class="programlisting">typedef enum
+<a name="GstRecoverPolicy"></a><h3>enum GstRecoverPolicy</h3>
+<pre class="programlisting">typedef enum
 {
   GST_RECOVER_POLICY_NONE,
   GST_RECOVER_POLICY_RESYNC_LATEST,
@@ -281,22 +271,22 @@ data too slow and has a backlag of more that soft-limit buffers.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RECOVER-POLICY-NONE:CAPS"></a><code class="literal">GST_RECOVER_POLICY_NONE</code></span></td>
+<td><p><a name="GST-RECOVER-POLICY-NONE:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_NONE</code></span></p></td>
 <td> no recovering is done
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RECOVER-POLICY-RESYNC-LATEST:CAPS"></a><code class="literal">GST_RECOVER_POLICY_RESYNC_LATEST</code></span></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-LATEST:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_LATEST</code></span></p></td>
 <td> client is moved to last buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RECOVER-POLICY-RESYNC-SOFT-LIMIT:CAPS"></a><code class="literal">GST_RECOVER_POLICY_RESYNC_SOFT_LIMIT</code></span></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-SOFT-LIMIT:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_SOFT_LIMIT</code></span></p></td>
 <td> client is moved to the soft limit
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RECOVER-POLICY-RESYNC-KEYFRAME:CAPS"></a><code class="literal">GST_RECOVER_POLICY_RESYNC_KEYFRAME</code></span></td>
+<td><p><a name="GST-RECOVER-POLICY-RESYNC-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_RECOVER_POLICY_RESYNC_KEYFRAME</code></span></p></td>
 <td> client is moved to latest keyframe
 </td>
 </tr>
@@ -305,9 +295,8 @@ data too slow and has a backlag of more that soft-limit buffers.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609301"></a><h3>
-<a name="GstSyncMethod"></a>enum GstSyncMethod</h3>
-<a class="indexterm" name="id2609312"></a><pre class="programlisting">typedef enum
+<a name="GstSyncMethod"></a><h3>enum GstSyncMethod</h3>
+<pre class="programlisting">typedef enum
 {
   GST_SYNC_METHOD_LATEST,
   GST_SYNC_METHOD_NEXT_KEYFRAME,
@@ -327,33 +316,33 @@ to a new client.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-LATEST:CAPS"></a><code class="literal">GST_SYNC_METHOD_LATEST</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-LATEST:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST</code></span></p></td>
 <td> client receives most recent buffer
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-NEXT-KEYFRAME:CAPS"></a><code class="literal">GST_SYNC_METHOD_NEXT_KEYFRAME</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-NEXT-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_NEXT_KEYFRAME</code></span></p></td>
 <td> client receives next keyframe
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-LATEST-KEYFRAME:CAPS"></a><code class="literal">GST_SYNC_METHOD_LATEST_KEYFRAME</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-LATEST-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_LATEST_KEYFRAME</code></span></p></td>
 <td> client receives latest keyframe (burst)
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-BURST:CAPS"></a><code class="literal">GST_SYNC_METHOD_BURST</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-BURST:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST</code></span></p></td>
 <td> client receives specific amount of data
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-BURST-KEYFRAME:CAPS"></a><code class="literal">GST_SYNC_METHOD_BURST_KEYFRAME</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-BURST-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_KEYFRAME</code></span></p></td>
 <td> client receives specific amount of data 
                                        starting from latest keyframe
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-SYNC-METHOD-BURST-WITH-KEYFRAME:CAPS"></a><code class="literal">GST_SYNC_METHOD_BURST_WITH_KEYFRAME</code></span></td>
+<td><p><a name="GST-SYNC-METHOD-BURST-WITH-KEYFRAME:CAPS"></a><span class="term"><code class="literal">GST_SYNC_METHOD_BURST_WITH_KEYFRAME</code></span></p></td>
 <td> client receives specific amount of data from
                                        a keyframe, or if there is not enough data after
                                        the keyframe, starting before the keyframe
@@ -364,9 +353,8 @@ to a new client.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609469"></a><h3>
-<a name="GstClientStatus"></a>enum GstClientStatus</h3>
-<a class="indexterm" name="id2609479"></a><pre class="programlisting">typedef enum
+<a name="GstClientStatus"></a><h3>enum GstClientStatus</h3>
+<pre class="programlisting">typedef enum
 {
   GST_CLIENT_STATUS_OK          = 0,
   GST_CLIENT_STATUS_CLOSED      = 1,
@@ -387,38 +375,118 @@ multifdsink and is received in the "client-removed" signal.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-OK:CAPS"></a><code class="literal">GST_CLIENT_STATUS_OK</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-OK:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_OK</code></span></p></td>
 <td> client is ok
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-CLOSED:CAPS"></a><code class="literal">GST_CLIENT_STATUS_CLOSED</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-CLOSED:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_CLOSED</code></span></p></td>
 <td> client closed the socket
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-REMOVED:CAPS"></a><code class="literal">GST_CLIENT_STATUS_REMOVED</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-REMOVED:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_REMOVED</code></span></p></td>
 <td> client is removed
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-SLOW:CAPS"></a><code class="literal">GST_CLIENT_STATUS_SLOW</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-SLOW:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_SLOW</code></span></p></td>
 <td> client is too slow
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-ERROR:CAPS"></a><code class="literal">GST_CLIENT_STATUS_ERROR</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-ERROR:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_ERROR</code></span></p></td>
 <td> client is in error
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-DUPLICATE:CAPS"></a><code class="literal">GST_CLIENT_STATUS_DUPLICATE</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-DUPLICATE:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_DUPLICATE</code></span></p></td>
 <td> same client added twice
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-CLIENT-STATUS-FLUSHING:CAPS"></a><code class="literal">GST_CLIENT_STATUS_FLUSHING</code></span></td>
+<td><p><a name="GST-CLIENT-STATUS-FLUSHING:CAPS"></a><span class="term"><code class="literal">GST_CLIENT_STATUS_FLUSHING</code></span></p></td>
 <td> client is flushing out the remaining buffers.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTCPProtocol"></a><h3>enum GstTCPProtocol</h3>
+<pre class="programlisting">typedef enum
+{
+  GST_TCP_PROTOCOL_NONE,
+  GST_TCP_PROTOCOL_GDP
+} GstTCPProtocol;
+</pre>
+<p>
+This enum is provided by the tcp/multifd elements to configure the format of
+data transmission/reception.
+</p>
+<p>
+The GDP protocol wraps data buffers in a header that also carries format
+information and timestamps. The None value indicates the data is
+sent/received as-is. In that case, format information and timestamping
+must be transmitted separately, or implicit in the bytestream itself.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-TCP-PROTOCOL-NONE:CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_NONE</code></span></p></td>
+<td> Raw data transmission
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-TCP-PROTOCOL-GDP:CAPS"></a><span class="term"><code class="literal">GST_TCP_PROTOCOL_GDP</code></span></p></td>
+<td> <span class="type">GstBuffers</span> are wrapped and sent/received using the
+     GDP protocol.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTCPUnitType"></a><h3>enum GstTCPUnitType</h3>
+<pre class="programlisting">typedef enum
+{
+  GST_TCP_UNIT_TYPE_UNDEFINED,
+  GST_TCP_UNIT_TYPE_BUFFERS,
+  GST_TCP_UNIT_TYPE_TIME,
+  GST_TCP_UNIT_TYPE_BYTES
+} GstTCPUnitType;
+</pre>
+<p>
+The units used to specify limits.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-TCP-UNIT-TYPE-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_UNDEFINED</code></span></p></td>
+<td> undefined
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-TCP-UNIT-TYPE-BUFFERS:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BUFFERS</code></span></p></td>
+<td> buffers
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-TCP-UNIT-TYPE-TIME:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_TIME</code></span></p></td>
+<td> timeunits (in nanoseconds)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-TCP-UNIT-TYPE-BYTES:CAPS"></a><span class="term"><code class="literal">GST_TCP_UNIT_TYPE_BYTES</code></span></p></td>
+<td> bytes
 </td>
 </tr>
 </tbody>
@@ -426,174 +494,154 @@ multifdsink and is received in the "client-removed" signal.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2609648"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-multifdsink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2609658"></a><h3>
-<a name="GstMultiFdSink--buffers-max"></a>The "<code class="literal">buffers-max</code>" property</h3>
-<a class="indexterm" name="id2609670"></a><pre class="programlisting">  "buffers-max"              gint                  : Read / Write</pre>
+<a name="GstMultiFdSink--buffers-max"></a><h3>The <code class="literal">"buffers-max"</code> property</h3>
+<pre class="programlisting">  "buffers-max"              gint                  : Read / Write</pre>
 <p>max number of buffers to queue for a client (-1 = no limit).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609697"></a><h3>
-<a name="GstMultiFdSink--buffers-queued"></a>The "<code class="literal">buffers-queued</code>" property</h3>
-<a class="indexterm" name="id2609712"></a><pre class="programlisting">  "buffers-queued"           guint                 : Read</pre>
+<a name="GstMultiFdSink--buffers-queued"></a><h3>The <code class="literal">"buffers-queued"</code> property</h3>
+<pre class="programlisting">  "buffers-queued"           guint                 : Read</pre>
 <p>Number of buffers currently queued.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609735"></a><h3>
-<a name="GstMultiFdSink--buffers-soft-max"></a>The "<code class="literal">buffers-soft-max</code>" property</h3>
-<a class="indexterm" name="id2609750"></a><pre class="programlisting">  "buffers-soft-max"         gint                  : Read / Write</pre>
+<a name="GstMultiFdSink--buffers-soft-max"></a><h3>The <code class="literal">"buffers-soft-max"</code> property</h3>
+<pre class="programlisting">  "buffers-soft-max"         gint                  : Read / Write</pre>
 <p>Recover client when going over this limit (-1 = no limit).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609777"></a><h3>
-<a name="GstMultiFdSink--bytes-served"></a>The "<code class="literal">bytes-served</code>" property</h3>
-<a class="indexterm" name="id2609792"></a><pre class="programlisting">  "bytes-served"             guint64               : Read</pre>
+<a name="GstMultiFdSink--bytes-served"></a><h3>The <code class="literal">"bytes-served"</code> property</h3>
+<pre class="programlisting">  "bytes-served"             guint64               : Read</pre>
 <p>Total number of bytes send to all clients.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609814"></a><h3>
-<a name="GstMultiFdSink--bytes-to-serve"></a>The "<code class="literal">bytes-to-serve</code>" property</h3>
-<a class="indexterm" name="id2609828"></a><pre class="programlisting">  "bytes-to-serve"           guint64               : Read</pre>
+<a name="GstMultiFdSink--bytes-to-serve"></a><h3>The <code class="literal">"bytes-to-serve"</code> property</h3>
+<pre class="programlisting">  "bytes-to-serve"           guint64               : Read</pre>
 <p>Number of bytes received to serve to clients.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609852"></a><h3>
-<a name="GstMultiFdSink--mode"></a>The "<code class="literal">mode</code>" property</h3>
-<a class="indexterm" name="id2609864"></a><pre class="programlisting">  "mode"                     GstFDSetMode          : Read / Write</pre>
-<p>The mode for selecting activity on the fds.</p>
+<a name="GstMultiFdSink--mode"></a><h3>The <code class="literal">"mode"</code> property</h3>
+<pre class="programlisting">  "mode"                     GstFDSetMode          : Read / Write</pre>
+<p>The mode for selecting activity on the fds (deprecated).</p>
 <p>Default value: Poll</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609888"></a><h3>
-<a name="GstMultiFdSink--protocol"></a>The "<code class="literal">protocol</code>" property</h3>
-<a class="indexterm" name="id2609900"></a><pre class="programlisting">  "protocol"                 GstTCPProtocol        : Read / Write</pre>
+<a name="GstMultiFdSink--protocol"></a><h3>The <code class="literal">"protocol"</code> property</h3>
+<pre class="programlisting">  "protocol"                 <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPProtocol" title="enum GstTCPProtocol">GstTCPProtocol</a>        : Read / Write</pre>
 <p>The protocol to wrap data in.</p>
 <p>Default value: GST_TCP_PROTOCOL_NONE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609925"></a><h3>
-<a name="GstMultiFdSink--recover-policy"></a>The "<code class="literal">recover-policy</code>" property</h3>
-<a class="indexterm" name="id2609939"></a><pre class="programlisting">  "recover-policy"           <a href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy">GstRecoverPolicy</a>      : Read / Write</pre>
+<a name="GstMultiFdSink--recover-policy"></a><h3>The <code class="literal">"recover-policy"</code> property</h3>
+<pre class="programlisting">  "recover-policy"           <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstRecoverPolicy" title="enum GstRecoverPolicy">GstRecoverPolicy</a>      : Read / Write</pre>
 <p>How to recover when client reaches the soft max.</p>
 <p>Default value: Do not try to recover</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609964"></a><h3>
-<a name="GstMultiFdSink--sync-clients"></a>The "<code class="literal">sync-clients</code>" property</h3>
-<a class="indexterm" name="id2609978"></a><pre class="programlisting">  "sync-clients"             gboolean              : Read / Write</pre>
+<a name="GstMultiFdSink--sync-clients"></a><h3>The <code class="literal">"sync-clients"</code> property</h3>
+<pre class="programlisting">  "sync-clients"             gboolean              : Read / Write</pre>
 <p>(DEPRECATED) Sync clients to a keyframe.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610002"></a><h3>
-<a name="GstMultiFdSink--sync-method"></a>The "<code class="literal">sync-method</code>" property</h3>
-<a class="indexterm" name="id2610014"></a><pre class="programlisting">  "sync-method"              <a href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod">GstSyncMethod</a>         : Read / Write</pre>
+<a name="GstMultiFdSink--sync-method"></a><h3>The <code class="literal">"sync-method"</code> property</h3>
+<pre class="programlisting">  "sync-method"              <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstSyncMethod" title="enum GstSyncMethod">GstSyncMethod</a>         : Read / Write</pre>
 <p>How to sync new clients to the stream.</p>
 <p>Default value: Serve starting from the latest buffer</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610039"></a><h3>
-<a name="GstMultiFdSink--timeout"></a>The "<code class="literal">timeout</code>" property</h3>
-<a class="indexterm" name="id2610051"></a><pre class="programlisting">  "timeout"                  guint64               : Read / Write</pre>
+<a name="GstMultiFdSink--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
+<pre class="programlisting">  "timeout"                  guint64               : Read / Write</pre>
 <p>Maximum inactivity timeout in nanoseconds for a client (0 = no limit).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610076"></a><h3>
-<a name="GstMultiFdSink--buffers-min"></a>The "<code class="literal">buffers-min</code>" property</h3>
-<a class="indexterm" name="id2610088"></a><pre class="programlisting">  "buffers-min"              gint                  : Read / Write</pre>
+<a name="GstMultiFdSink--buffers-min"></a><h3>The <code class="literal">"buffers-min"</code> property</h3>
+<pre class="programlisting">  "buffers-min"              gint                  : Read / Write</pre>
 <p>min number of buffers to queue (-1 = as few as possible).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610116"></a><h3>
-<a name="GstMultiFdSink--burst-unit"></a>The "<code class="literal">burst-unit</code>" property</h3>
-<a class="indexterm" name="id2610128"></a><pre class="programlisting">  "burst-unit"               GstTCPUnitType        : Read / Write</pre>
+<a name="GstMultiFdSink--burst-unit"></a><h3>The <code class="literal">"burst-unit"</code> property</h3>
+<pre class="programlisting">  "burst-unit"               <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>        : Read / Write</pre>
 <p>The format of the burst units (when sync-method is burst[[-with]-keyframe]).</p>
 <p>Default value: Undefined</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610153"></a><h3>
-<a name="GstMultiFdSink--burst-value"></a>The "<code class="literal">burst-value</code>" property</h3>
-<a class="indexterm" name="id2610165"></a><pre class="programlisting">  "burst-value"              guint64               : Read / Write</pre>
+<a name="GstMultiFdSink--burst-value"></a><h3>The <code class="literal">"burst-value"</code> property</h3>
+<pre class="programlisting">  "burst-value"              guint64               : Read / Write</pre>
 <p>The amount of burst expressed in burst-unit.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610189"></a><h3>
-<a name="GstMultiFdSink--bytes-min"></a>The "<code class="literal">bytes-min</code>" property</h3>
-<a class="indexterm" name="id2610202"></a><pre class="programlisting">  "bytes-min"                gint                  : Read / Write</pre>
+<a name="GstMultiFdSink--bytes-min"></a><h3>The <code class="literal">"bytes-min"</code> property</h3>
+<pre class="programlisting">  "bytes-min"                gint                  : Read / Write</pre>
 <p>min number of bytes to queue (-1 = as little as possible).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610230"></a><h3>
-<a name="GstMultiFdSink--time-min"></a>The "<code class="literal">time-min</code>" property</h3>
-<a class="indexterm" name="id2610242"></a><pre class="programlisting">  "time-min"                 gint64                : Read / Write</pre>
+<a name="GstMultiFdSink--time-min"></a><h3>The <code class="literal">"time-min"</code> property</h3>
+<pre class="programlisting">  "time-min"                 gint64                : Read / Write</pre>
 <p>min number of time to queue (-1 = as little as possible).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610270"></a><h3>
-<a name="GstMultiFdSink--unit-type"></a>The "<code class="literal">unit-type</code>" property</h3>
-<a class="indexterm" name="id2610282"></a><pre class="programlisting">  "unit-type"                GstTCPUnitType        : Read / Write</pre>
+<a name="GstMultiFdSink--unit-type"></a><h3>The <code class="literal">"unit-type"</code> property</h3>
+<pre class="programlisting">  "unit-type"                <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>        : Read / Write</pre>
 <p>The unit to measure the max/soft-max/queued properties.</p>
 <p>Default value: Buffers</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610306"></a><h3>
-<a name="GstMultiFdSink--units-max"></a>The "<code class="literal">units-max</code>" property</h3>
-<a class="indexterm" name="id2610318"></a><pre class="programlisting">  "units-max"                gint64                : Read / Write</pre>
+<a name="GstMultiFdSink--units-max"></a><h3>The <code class="literal">"units-max"</code> property</h3>
+<pre class="programlisting">  "units-max"                gint64                : Read / Write</pre>
 <p>max number of units to queue (-1 = no limit).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610346"></a><h3>
-<a name="GstMultiFdSink--units-soft-max"></a>The "<code class="literal">units-soft-max</code>" property</h3>
-<a class="indexterm" name="id2610360"></a><pre class="programlisting">  "units-soft-max"           gint64                : Read / Write</pre>
+<a name="GstMultiFdSink--units-soft-max"></a><h3>The <code class="literal">"units-soft-max"</code> property</h3>
+<pre class="programlisting">  "units-soft-max"           gint64                : Read / Write</pre>
 <p>Recover client when going over this limit (-1 = no limit).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610389"></a><h2>Signal Details</h2>
+<a name="gst-plugins-base-plugins-multifdsink.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2610398"></a><h3>
-<a name="GstMultiFdSink-add"></a>The "add" signal</h3>
-<a class="indexterm" name="id2610406"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-add"></a><h3>The <code class="literal">"add"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
-                                                        gpointer        user_data)           : Run Last</pre>
+                                                        gpointer        user_data)           : Run Last / Action</pre>
 <p>
 Hand the given open file descriptor to multifdsink to write to.</p>
 <p>
@@ -603,17 +651,17 @@ Hand the given open file descriptor to multifdsink to write to.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor to add to multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -621,10 +669,9 @@ Hand the given open file descriptor to multifdsink to write to.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610492"></a><h3>
-<a name="GstMultiFdSink-clear"></a>The "clear" signal</h3>
-<a class="indexterm" name="id2610500"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
-                                                        gpointer        user_data)           : Run Last</pre>
+<a name="GstMultiFdSink-clear"></a><h3>The <code class="literal">"clear"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+                                                        gpointer        user_data)           : Run Last / Action</pre>
 <p>
 Remove all file descriptors from multifdsink.  Since multifdsink did not
 open fd's itself, it does not explicitly close the fd.  The application
@@ -636,12 +683,12 @@ should do so by connecting to the client-fd-removed callback.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -649,9 +696,8 @@ should do so by connecting to the client-fd-removed callback.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610568"></a><h3>
-<a name="GstMultiFdSink-client-added"></a>The "client-added" signal</h3>
-<a class="indexterm" name="id2610575"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-client-added"></a><h3>The <code class="literal">"client-added"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
                                                         gpointer        user_data)           : Run Last</pre>
 <p>
@@ -665,17 +711,17 @@ for that.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element that emitted this signal
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor that was added to multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -683,11 +729,10 @@ for that.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610664"></a><h3>
-<a name="GstMultiFdSink-client-removed"></a>The "client-removed" signal</h3>
-<a class="indexterm" name="id2610673"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-client-removed"></a><h3>The <code class="literal">"client-removed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
-                                                        <a href="gst-plugins-base-plugins-multifdsink.html#GstClientStatus">GstClientStatus</a> status,
+                                                        <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstClientStatus" title="enum GstClientStatus">GstClientStatus</a> status,
                                                         gpointer        user_data)           : Run Last</pre>
 <p>
 The given file descriptor is about to be removed from multifdsink. This
@@ -705,22 +750,22 @@ not safe to <code class="function">close()</code> and reuse <em class="parameter
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element that emitted this signal
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor that is to be removed from multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>status</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>status</code></em> :</span></p></td>
 <td>         the reason why the client was removed
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -728,11 +773,10 @@ not safe to <code class="function">close()</code> and reuse <em class="parameter
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610811"></a><h3>
-<a name="GstMultiFdSink-get-stats"></a>The "get-stats" signal</h3>
-<a class="indexterm" name="id2610818"></a><pre class="programlisting">GValueArray*        user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-get-stats"></a><h3>The <code class="literal">"get-stats"</code> signal</h3>
+<pre class="programlisting">GValueArray*        user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
-                                                        gpointer        user_data)           : Run Last</pre>
+                                                        gpointer        user_data)           : Run Last / Action</pre>
 <p>
 Get statistics about <em class="parameter"><code>fd</code></em>. This function returns a GValueArray to ease
 automatic wrapping for bindings.</p>
@@ -743,21 +787,21 @@ automatic wrapping for bindings.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor to get stats of from multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a GValueArray with the statistics. The array contains guint64
     values that represent respectively: total number of bytes sent, time
     when the client was added, time when the client was
@@ -772,11 +816,10 @@ automatic wrapping for bindings.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610927"></a><h3>
-<a name="GstMultiFdSink-remove"></a>The "remove" signal</h3>
-<a class="indexterm" name="id2610934"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-remove"></a><h3>The <code class="literal">"remove"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
-                                                        gpointer        user_data)           : Run Last</pre>
+                                                        gpointer        user_data)           : Run Last / Action</pre>
 <p>
 Remove the given open file descriptor from multifdsink.</p>
 <p>
@@ -786,17 +829,17 @@ Remove the given open file descriptor from multifdsink.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor to remove from multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -804,9 +847,8 @@ Remove the given open file descriptor from multifdsink.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611021"></a><h3>
-<a name="GstMultiFdSink-client-fd-removed"></a>The "client-fd-removed" signal</h3>
-<a class="indexterm" name="id2611030"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-client-fd-removed"></a><h3>The <code class="literal">"client-fd-removed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
                                                         gpointer        user_data)           : Run Last</pre>
 <p>
@@ -825,17 +867,17 @@ with <em class="parameter"><code>fd</code></em>. It is however safe to <code cla
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element that emitted this signal
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor that was removed from multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -845,16 +887,15 @@ with <em class="parameter"><code>fd</code></em>. It is however safe to <code cla
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611157"></a><h3>
-<a name="GstMultiFdSink-add-full"></a>The "add-full" signal</h3>
-<a class="indexterm" name="id2611165"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+<a name="GstMultiFdSink-add-full"></a><h3>The <code class="literal">"add-full"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
                                                         gint            fd,
                                                         gboolean        keyframe,
-                                                        GstTCPUnitType  unit_type_min,
+                                                        <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>  unit_type_min,
                                                         guint64         value_min,
-                                                        GstTCPUnitType  unit_type_max,
+                                                        <a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstTCPUnitType" title="enum GstTCPUnitType">GstTCPUnitType</a>  unit_type_max,
                                                         guint64         value_max,
-                                                        gpointer        user_data)           : Run Last</pre>
+                                                        gpointer        user_data)           : Run Last / Action</pre>
 <p>
 Hand the given open file descriptor to multifdsink to write to and
 specify the burst parameters for the new connection.</p>
@@ -865,44 +906,44 @@ specify the burst parameters for the new connection.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
 <td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>fd</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td>             the file descriptor to add to multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>keyframe</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>keyframe</code></em> :</span></p></td>
 <td>       start bursting from a keyframe
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>unit_type_min</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>unit_type_min</code></em> :</span></p></td>
 <td>  the unit-type of <em class="parameter"><code>value_min</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value_min</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value_min</code></em> :</span></p></td>
 <td>      the minimum amount of data to burst expressed in
                  <em class="parameter"><code>unit_type_min</code></em> units.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>unit_type_max</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>unit_type_max</code></em> :</span></p></td>
 <td>  the unit-type of <em class="parameter"><code>value_max</code></em>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value_max</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value_max</code></em> :</span></p></td>
 <td>      the maximum amount of data to burst expressed in
                  <em class="parameter"><code>unit_type_max</code></em> units.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -910,11 +951,13 @@ specify the burst parameters for the new connection.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611372"></a><h3>
-<a name="GstMultiFdSink-remove-flush"></a>The "remove-flush" signal</h3>
-<a class="indexterm" name="id2611380"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
-                                                        gint            arg1,
-                                                        gpointer        user_data)           : Run Last</pre>
+<a name="GstMultiFdSink-remove-flush"></a><h3>The <code class="literal">"remove-flush"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-multifdsink.html#GstMultiFdSink">GstMultiFdSink</a> *gstmultifdsink,
+                                                        gint            fd,
+                                                        gpointer        user_data)           : Run Last / Action</pre>
+<p>
+Remove the given open file descriptor from multifdsink after flushing all
+the pending data to the fd.</p>
 <p>
 
 </p>
@@ -922,18 +965,17 @@ specify the burst parameters for the new connection.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmultifdsink</code></em>&#160;:</span></td>
-<td>the object which received the signal.
+<td><p><span class="term"><em class="parameter"><code>gstmultifdsink</code></em> :</span></p></td>
+<td> the multifdsink element to emit this signal on
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
-<td>
-
+<td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
+<td>             the file descriptor to remove from multifdsink
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -941,9 +983,12 @@ specify the burst parameters for the new connection.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2611463"></a><h2>See Also</h2>
+<a name="gst-plugins-base-plugins-multifdsink.see-also"></a><h2>See Also</h2>
 tcpserversink
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

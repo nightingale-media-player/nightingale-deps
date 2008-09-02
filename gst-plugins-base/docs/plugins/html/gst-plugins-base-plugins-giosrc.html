@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>giosrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-giosink.html" title="giosink">
+<link rel="next" href="gst-plugins-base-plugins-giostreamsink.html" title="giostreamsink">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-giosink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-giostreamsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-giosrc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-giosrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-giosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-giosrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-giosrc.properties" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-giosrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-giosrc.top_of_page"></a>giosrc</span></h2>
+<p>giosrc — Read from any GIO-supported location</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-plugins-giosrc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstGioSrc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc-struct" title="GstGioSrc">GstGioSrc</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstObject
+         +----GstElement
+               +----GstBaseSrc
+                     +----GstGioBaseSrc
+                           +----GstGioSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstGioSrc implements
+ GstURIHandler.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--file" title='The "file" property'>file</a>"                     GFile*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2626331"></a><p>
+This plugin reads data from a local or remote location specified
+by an URI. This location can be specified using any protocol supported by
+the GIO library or it's VFS backends. Common protocols are 'file', 'http',
+'ftp', or 'smb'.
+</p>
+<p>
+Example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v giosrc location=file:///home/joe/foo.xyz ! fakesink
+</pre>
+<p>
+The above pipeline will simply read a local file and do nothing with the
+data read. Instead of giosrc, we could just as well have used the
+filesrc element here.
+</p>
+<p>
+Another example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v giosrc location=smb://othercomputer/foo.xyz ! filesink location=/home/joe/foo.xyz
+</pre>
+<p>
+The above pipeline will copy a file from a remote host to the local file
+system using the Samba protocol.
+</p>
+<p>
+Yet another example pipeline:
+</p>
+<pre class="programlisting">
+gst-launch -v giosrc location=http://music.foobar.com/demo.mp3 ! mad ! audioconvert ! audioresample ! alsasink
+</pre>
+<p>
+The above pipeline will read and decode and play an mp3 file from a
+web server using the http protocol.
+</p>
+</div>
+<div class="refsect2" lang="en">
+<a name="id2626381"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+          <a class="link" href="gst-plugins-base-plugins-plugin-gio.html#plugin-gio">gio</a>
+        </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>René Stadler &lt;mail@renestadler.de&gt;, Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/File</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstGioSrc-struct"></a><h3>GstGioSrc</h3>
+<pre class="programlisting">typedef struct _GstGioSrc GstGioSrc;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstGioSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
+<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<p>URI location to read from.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstGioSrc--file"></a><h3>The <code class="literal">"file"</code> property</h3>
+<pre class="programlisting">  "file"                     GFile*                : Read / Write</pre>
+<p>
+<code class="literal">GFile</code> to read from.</p>
+<p>
+
+</p>
+<p>Since  0.10.20
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-giosrc.see-also"></a><h2>See Also</h2>
+<span class="type">GstFileSrc</span>, <a class="link" href="gst-plugins-base-plugins-gnomevfssrc.html#GstGnomeVFSSrc"><span class="type">GstGnomeVFSSrc</span></a>, <a class="link" href="gst-plugins-base-plugins-giosink.html#GstGioSink"><span class="type">GstGioSink</span></a>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

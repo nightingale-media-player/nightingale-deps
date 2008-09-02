@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gnomevfssink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-gdpdepay.html" title="gdpdepay">
+<link rel="prev" href="gst-plugins-base-plugins-giostreamsrc.html" title="giostreamsrc">
 <link rel="next" href="gst-plugins-base-plugins-gnomevfssrc.html" title="gnomevfssrc">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -16,49 +16,42 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-gdpdepay.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-giostreamsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-gnomevfssrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2558359" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2509874" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2573695" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2593370" class="shortcut">Implemented Interfaces</a>
-                  &#160;|&#160;
-                  <a href="#id2563040" class="shortcut">Properties</a>
-                  &#160;|&#160;
-                  <a href="#id2509850" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-gnomevfssink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-gnomevfssink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-gnomevfssink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-gnomevfssink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-gnomevfssink.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-gnomevfssink.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-gnomevfssink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2558359"></a><span class="refentrytitle">gnomevfssink</span>
-</h2>
-<p>gnomevfssink &#8212; Write a stream to a GnomeVFS URI</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-gnomevfssink.top_of_page"></a>gnomevfssink</span></h2>
+<p>gnomevfssink — Write a stream to a GnomeVFS URI</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstGnomeVFSSink"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink-struct">GstGnomeVFSSink</a>;
-
+                    <a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink-struct" title="GstGnomeVFSSink">GstGnomeVFSSink</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2573695"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -67,33 +60,33 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2593370"></a><h2>Implemented Interfaces</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstGnomeVFSSink implements
  GstURIHandler.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2563040"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--handle">handle</a>"                   GnomeVFSHandle*       : Read / Write
-  "<a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--location">location</a>"                 gchar*                : Read / Write
-  "<a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--uri">uri</a>"                      GnomeVFSURI*          : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--handle" title='The "handle" property'>handle</a>"                   GnomeVFSHandle*       : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--uri" title='The "uri" property'>uri</a>"                      <a
+href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURI"
+>GnomeVFSURI</a>*          : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2509850"></a><h2>Signals</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink-allow-overwrite">allow-overwrite</a>"                                : Cleanup
+  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink-allow-overwrite" title='The "allow-overwrite" signal'>allow-overwrite</a>"                                : Cleanup
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2509874"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2509887"></a><p>
+<a name="id2628057"></a><p>
 This plugin writes incoming data to a local or remote location specified
 by an URI. This location can be specified using any protocol supported by
 the GnomeVFS library. Common protocols are 'file', 'ftp', or 'smb'.
@@ -129,44 +122,43 @@ gnomevfssink will overwrite the resource or abort with an error.
 <p>
 Last reviewed on 2006-02-28 (0.10.4)</p>
 <div class="refsect2" lang="en">
-<a name="id2509938"></a><h3>Element Information</h3>
+<a name="id2628108"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-gnomevfs.html#plugin-gnomevfs">gnomevfs</a>
+          <a class="link" href="gst-plugins-base-plugins-plugin-gnomevfs.html#plugin-gnomevfs">gnomevfs</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Bastien Nocera &lt;hadess@hadess.net&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink/File</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -177,11 +169,10 @@ Last reviewed on 2006-02-28 (0.10.4)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2558457"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2558468"></a><h3>
-<a name="GstGnomeVFSSink-struct"></a>GstGnomeVFSSink</h3>
-<a class="indexterm" name="id2558480"></a><pre class="programlisting">typedef struct _GstGnomeVFSSink GstGnomeVFSSink;</pre>
+<a name="GstGnomeVFSSink-struct"></a><h3>GstGnomeVFSSink</h3>
+<pre class="programlisting">typedef struct _GstGnomeVFSSink GstGnomeVFSSink;</pre>
 <p>
 Opaque data structure.</p>
 <p>
@@ -190,35 +181,33 @@ Opaque data structure.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2558501"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2558512"></a><h3>
-<a name="GstGnomeVFSSink--handle"></a>The "<code class="literal">handle</code>" property</h3>
-<a class="indexterm" name="id2558525"></a><pre class="programlisting">  "handle"                   GnomeVFSHandle*       : Read / Write</pre>
+<a name="GstGnomeVFSSink--handle"></a><h3>The <code class="literal">"handle"</code> property</h3>
+<pre class="programlisting">  "handle"                   GnomeVFSHandle*       : Read / Write</pre>
 <p>Handle for GnomeVFS.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558546"></a><h3>
-<a name="GstGnomeVFSSink--location"></a>The "<code class="literal">location</code>" property</h3>
-<a class="indexterm" name="id2558560"></a><pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<a name="GstGnomeVFSSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
+<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
 <p>Location of the file to write.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558584"></a><h3>
-<a name="GstGnomeVFSSink--uri"></a>The "<code class="literal">uri</code>" property</h3>
-<a class="indexterm" name="id2597757"></a><pre class="programlisting">  "uri"                      GnomeVFSURI*          : Read / Write</pre>
+<a name="GstGnomeVFSSink--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
+<pre class="programlisting">  "uri"                      <a
+href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURI"
+>GnomeVFSURI</a>*          : Read / Write</pre>
 <p>URI for GnomeVFS.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597780"></a><h2>Signal Details</h2>
+<a name="gst-plugins-base-plugins-gnomevfssink.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2597791"></a><h3>
-<a name="GstGnomeVFSSink-allow-overwrite"></a>The "allow-overwrite" signal</h3>
-<a class="indexterm" name="id2597798"></a><pre class="programlisting">gboolean            user_function                      (<a href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink">GstGnomeVFSSink</a> *sink,
+<a name="GstGnomeVFSSink-allow-overwrite"></a><h3>The <code class="literal">"allow-overwrite"</code> signal</h3>
+<pre class="programlisting">gboolean            user_function                      (<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink">GstGnomeVFSSink</a> *sink,
                                                         <a
 href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURI"
 >GnomeVFSURI</a>     *uri,
@@ -234,21 +223,21 @@ the user if the resource may be overwritten.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>sink</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>sink</code></em> :</span></p></td>
 <td> the object which received the signal
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>uri</code></em> :</span></p></td>
 <td> the URI to be overwritten
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A boolean indicating that the resource may be overwritten.
 </td>
 </tr>
@@ -257,9 +246,12 @@ the user if the resource may be overwritten.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597906"></a><h2>See Also</h2>
-<span class="type">GstFileSink</span>, <a href="gst-plugins-base-plugins-gnomevfssrc.html#GstGnomeVFSSrc"><span class="type">GstGnomeVFSSrc</span></a>
+<a name="gst-plugins-base-plugins-gnomevfssink.see-also"></a><h2>See Also</h2>
+<span class="type">GstFileSink</span>, <a class="link" href="gst-plugins-base-plugins-gnomevfssrc.html#GstGnomeVFSSrc"><span class="type">GstGnomeVFSSrc</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

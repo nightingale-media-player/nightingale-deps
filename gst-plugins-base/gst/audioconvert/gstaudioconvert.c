@@ -107,7 +107,8 @@ static void gst_audio_convert_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_audio_convert_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-
+static gboolean structure_has_fixed_channel_positions (GstStructure * s,
+    gboolean * unpositioned_layout);
 
 /* AudioConvert signals and args */
 enum
@@ -135,37 +136,37 @@ GST_BOILERPLATE_FULL (GstAudioConvert, gst_audio_convert, GstBaseTransform,
 GST_STATIC_CAPS ( \
   "audio/x-raw-float, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], " \
+    "channels = (int) [ 1, MAX ], " \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
     "width = (int) 64;" \
   "audio/x-raw-float, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], " \
+    "channels = (int) [ 1, MAX ], " \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
     "width = (int) 32;" \
   "audio/x-raw-int, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], " \
+    "channels = (int) [ 1, MAX ], " \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
     "width = (int) 32, " \
     "depth = (int) [ 1, 32 ], " \
     "signed = (boolean) { true, false }; " \
   "audio/x-raw-int, "   \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], "       \
+    "channels = (int) [ 1, MAX ], "       \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, "        \
     "width = (int) 24, "        \
     "depth = (int) [ 1, 24 ], " "signed = (boolean) { true, false }; "  \
   "audio/x-raw-int, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], " \
+    "channels = (int) [ 1, MAX ], " \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
     "width = (int) 16, " \
     "depth = (int) [ 1, 16 ], " \
     "signed = (boolean) { true, false }; " \
   "audio/x-raw-int, " \
     "rate = (int) [ 1, MAX ], " \
-    "channels = (int) [ 1, 8 ], " \
+    "channels = (int) [ 1, MAX ], " \
     "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
     "width = (int) 8, " \
     "depth = (int) [ 1, 8 ], " \
@@ -263,13 +264,14 @@ gst_audio_convert_class_init (GstAudioConvertClass * klass)
   g_object_class_install_property (gobject_class, ARG_DITHERING,
       g_param_spec_enum ("dithering", "Dithering",
           "Selects between different dithering methods.",
-          GST_TYPE_AUDIO_CONVERT_DITHERING, DITHER_TPDF, G_PARAM_READWRITE));
+          GST_TYPE_AUDIO_CONVERT_DITHERING, DITHER_TPDF,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, ARG_NOISE_SHAPING,
       g_param_spec_enum ("noise-shaping", "Noise shaping",
           "Selects between different noise shaping methods.",
           GST_TYPE_AUDIO_CONVERT_NOISE_SHAPING, NOISE_SHAPING_NONE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   basetransform_class->get_unit_size =
       GST_DEBUG_FUNCPTR (gst_audio_convert_get_unit_size);
@@ -293,6 +295,8 @@ gst_audio_convert_init (GstAudioConvert * this, GstAudioConvertClass * g_class)
   this->dither = DITHER_TPDF;
   this->ns = NOISE_SHAPING_NONE;
   memset (&this->ctx, 0, sizeof (AudioConvertCtx));
+
+  gst_base_transform_set_gap_aware (GST_BASE_TRANSFORM (this), TRUE);
 }
 
 static void
@@ -330,6 +334,10 @@ gst_audio_convert_parse_caps (const GstCaps * caps, AudioConvertFmt * fmt)
     goto no_values;
   if (!(fmt->pos = gst_audio_get_channel_positions (structure)))
     goto no_values;
+
+  fmt->unpositioned_layout = FALSE;
+  structure_has_fixed_channel_positions (structure, &fmt->unpositioned_layout);
+
   if (!gst_structure_get_int (structure, "width", &fmt->width))
     goto no_values;
   if (!gst_structure_get_int (structure, "rate", &fmt->rate))
@@ -529,6 +537,40 @@ append_with_other_format (GstCaps * caps, GstStructure * s, gboolean isfloat)
   }
 }
 
+static gboolean
+structure_has_fixed_channel_positions (GstStructure * s,
+    gboolean * unpositioned_layout)
+{
+  GstAudioChannelPosition *pos;
+  const GValue *val;
+  gint channels = 0;
+
+  if (!gst_structure_get_int (s, "channels", &channels))
+    return FALSE;               /* probably a range */
+
+  val = gst_structure_get_value (s, "channel-positions");
+  if ((val == NULL || !gst_value_is_fixed (val)) && channels <= 8) {
+    GST_LOG ("no or unfixed channel-positions in %" GST_PTR_FORMAT, s);
+    return FALSE;
+  } else if (val == NULL || !gst_value_is_fixed (val)) {
+    GST_LOG ("implicit undefined channel-positions");
+    *unpositioned_layout = TRUE;
+    return TRUE;
+  }
+
+  pos = gst_audio_get_channel_positions (s);
+  if (pos && pos[0] == GST_AUDIO_CHANNEL_POSITION_NONE) {
+    GST_LOG ("fixed undefined channel-positions in %" GST_PTR_FORMAT, s);
+    *unpositioned_layout = TRUE;
+  } else {
+    GST_LOG ("fixed defined channel-positions in %" GST_PTR_FORMAT, s);
+    *unpositioned_layout = FALSE;
+  }
+  g_free (pos);
+
+  return TRUE;
+}
+
 /* Audioconvert can perform all conversions on audio except for resampling. 
  * However, there are some conversions we _prefer_ not to do. For example, it's
  * better to convert format (float<->int, endianness, etc) than the number of
@@ -546,8 +588,8 @@ gst_audio_convert_transform_caps (GstBaseTransform * base,
 {
   GstCaps *ret;
   GstStructure *s, *structure;
-  gboolean isfloat;
-  gint width, depth, channels;
+  gboolean isfloat, allow_mixing;
+  gint width, depth, channels = 0;
   const gchar *fields_used[] = {
     "width", "depth", "rate", "channels", "endianness", "signed"
   };
@@ -603,11 +645,28 @@ gst_audio_convert_transform_caps (GstBaseTransform * base,
     }
   }
 
+  allow_mixing = TRUE;
   if (gst_structure_get_int (structure, "channels", &channels)) {
-    if (channels == 8)
-      gst_structure_set (s, "channels", G_TYPE_INT, 8, NULL);
+    gboolean unpositioned;
+
+    /* we don't support mixing for channels without channel positions */
+    if (structure_has_fixed_channel_positions (structure, &unpositioned))
+      allow_mixing = (unpositioned == FALSE);
+  }
+
+  if (!allow_mixing) {
+    gst_structure_set (s, "channels", G_TYPE_INT, channels, NULL);
+    if (gst_structure_has_field (structure, "channel-positions"))
+      gst_structure_set_value (s, "channel-positions",
+          gst_structure_get_value (structure, "channel-positions"));
+  } else {
+    if (channels == 0)
+      gst_structure_set (s, "channels", GST_TYPE_INT_RANGE, 1, 11, NULL);
+    else if (channels == 11)
+      gst_structure_set (s, "channels", G_TYPE_INT, 11, NULL);
     else
-      gst_structure_set (s, "channels", GST_TYPE_INT_RANGE, channels, 8, NULL);
+      gst_structure_set (s, "channels", GST_TYPE_INT_RANGE, channels, 11, NULL);
+    gst_structure_remove_field (s, "channel-positions");
   }
   gst_caps_append_structure (ret, s);
 
@@ -636,7 +695,16 @@ gst_audio_convert_transform_caps (GstBaseTransform * base,
    * it's very bad to drop channels entirely.
    */
   s = gst_structure_copy (s);
-  gst_structure_set (s, "channels", GST_TYPE_INT_RANGE, 1, 8, NULL);
+  if (allow_mixing) {
+    gst_structure_set (s, "channels", GST_TYPE_INT_RANGE, 1, 11, NULL);
+    gst_structure_remove_field (s, "channel-positions");
+  } else {
+    /* allow_mixing can only be FALSE if we got a fixed number of channels */
+    gst_structure_set (s, "channels", G_TYPE_INT, channels, NULL);
+    if (gst_structure_has_field (structure, "channel-positions"))
+      gst_structure_set_value (s, "channel-positions",
+          gst_structure_get_value (structure, "channel-positions"));
+  }
   gst_caps_append_structure (ret, s);
 
   /* Same, plus a float<->int conversion */
@@ -723,7 +791,7 @@ static const GstAudioChannelPosition default_positions[8][8] = {
       }
 };
 
-const GValue *
+static const GValue *
 find_suitable_channel_layout (const GValue * val, guint chans)
 {
   /* if output layout is fixed already and looks sane, we're done */
@@ -751,7 +819,7 @@ static void
 gst_audio_convert_fixate_channels (GstBaseTransform * base, GstStructure * ins,
     GstStructure * outs)
 {
-  const GValue *out_layout;
+  const GValue *in_layout, *out_layout;
   gint in_chans, out_chans;
 
   if (!gst_structure_get_int (ins, "channels", &in_chans))
@@ -776,18 +844,17 @@ gst_audio_convert_fixate_channels (GstBaseTransform * base, GstStructure * ins,
   /* check if the output has a channel layout (or a list of layouts) */
   out_layout = gst_structure_get_value (outs, "channel-positions");
 
+  /* get the channel layout of the input if any */
+  in_layout = gst_structure_get_value (ins, "channel-positions");
+
   if (out_layout == NULL) {
-    if (out_chans <= 2)
+    if (out_chans <= 2 && (in_chans != out_chans || in_layout == NULL))
       return;                   /* nothing to do, default layout will be assumed */
     GST_WARNING_OBJECT (base, "downstream caps contain no channel layout");
   }
 
-  if (in_chans == out_chans) {
-    const GValue *in_layout;
+  if (in_chans == out_chans && in_layout != NULL) {
     GValue res = { 0, };
-
-    in_layout = gst_structure_get_value (ins, "channel-positions");
-    g_return_if_fail (in_layout != NULL);
 
     /* same number of channels and no output layout: just use input layout */
     if (out_layout == NULL) {
@@ -846,7 +913,7 @@ gst_audio_convert_fixate_channels (GstBaseTransform * base, GstStructure * ins,
    * and try to add/remove channels from the input layout, or pick a default
    * layout based on LFE-presence in input layout, but let's save that for
    * another day) */
-  if (out_chans > 0 && out_chans < G_N_ELEMENTS (default_positions[0])) {
+  if (out_chans > 0 && out_chans <= G_N_ELEMENTS (default_positions[0])) {
     GST_DEBUG_OBJECT (base, "using default channel layout as fallback");
     gst_audio_set_channel_positions (outs, default_positions[out_chans - 1]);
   }
@@ -946,6 +1013,79 @@ gst_audio_convert_transform_ip (GstBaseTransform * base, GstBuffer * buf)
   return GST_FLOW_OK;
 }
 
+static void
+gst_audio_convert_create_silence_buffer (GstAudioConvert * this, gpointer dst,
+    gint size)
+{
+  if (this->ctx.out.is_int && !this->ctx.out.sign) {
+    gint i;
+
+    switch (this->ctx.out.width) {
+      case 8:{
+        guint8 zero = 0x80 >> (8 - this->ctx.out.depth);
+
+        memset (dst, zero, size);
+        break;
+      }
+      case 16:{
+        guint16 *data = (guint16 *) dst;
+        guint16 zero = 0x8000 >> (16 - this->ctx.out.depth);
+
+        if (this->ctx.out.endianness == G_LITTLE_ENDIAN)
+          zero = GUINT16_TO_LE (zero);
+        else
+          zero = GUINT16_TO_BE (zero);
+
+        size /= 2;
+
+        for (i = 0; i < size; i++)
+          data[i] = zero;
+        break;
+      }
+      case 24:{
+        guint32 zero = 0x800000 >> (24 - this->ctx.out.depth);
+        guint8 *data = (guint8 *) dst;
+
+        if (this->ctx.out.endianness == G_LITTLE_ENDIAN) {
+          for (i = 0; i < size; i += 3) {
+            data[i] = zero & 0xff;
+            data[i + 1] = (zero >> 8) & 0xff;
+            data[i + 2] = (zero >> 16) & 0xff;
+          }
+        } else {
+          for (i = 0; i < size; i += 3) {
+            data[i + 2] = zero & 0xff;
+            data[i + 1] = (zero >> 8) & 0xff;
+            data[i] = (zero >> 16) & 0xff;
+          }
+        }
+        break;
+      }
+      case 32:{
+        guint32 *data = (guint32 *) dst;
+        guint32 zero = (0x80000000 >> (32 - this->ctx.out.depth));
+
+        if (this->ctx.out.endianness == G_LITTLE_ENDIAN)
+          zero = GUINT32_TO_LE (zero);
+        else
+          zero = GUINT32_TO_BE (zero);
+
+        size /= 4;
+
+        for (i = 0; i < size; i++)
+          data[i] = zero;
+        break;
+      }
+      default:
+        memset (dst, 0, size);
+        g_return_if_reached ();
+        break;
+    }
+  } else {
+    memset (dst, 0, size);
+  }
+}
+
 static GstFlowReturn
 gst_audio_convert_transform (GstBaseTransform * base, GstBuffer * inbuf,
     GstBuffer * outbuf)
@@ -978,9 +1118,14 @@ gst_audio_convert_transform (GstBaseTransform * base, GstBuffer * inbuf,
   dst = GST_BUFFER_DATA (outbuf);
 
   /* and convert the samples */
-  if (!(res = audio_convert_convert (&this->ctx, src, dst,
-              samples, gst_buffer_is_writable (inbuf))))
-    goto convert_error;
+  if (!GST_BUFFER_FLAG_IS_SET (inbuf, GST_BUFFER_FLAG_GAP)) {
+    if (!(res = audio_convert_convert (&this->ctx, src, dst,
+                samples, gst_buffer_is_writable (inbuf))))
+      goto convert_error;
+  } else {
+    /* Create silence buffer */
+    gst_audio_convert_create_silence_buffer (this, dst, outsize);
+  }
 
   GST_BUFFER_SIZE (outbuf) = outsize;
 

@@ -186,24 +186,27 @@ gst_audio_test_src_class_init (GstAudioTestSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_SAMPLES_PER_BUFFER,
       g_param_spec_int ("samplesperbuffer", "Samples per buffer",
           "Number of samples in each outgoing buffer",
-          1, G_MAXINT, 1024, G_PARAM_READWRITE));
+          1, G_MAXINT, 1024, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_WAVE, g_param_spec_enum ("wave", "Waveform", "Oscillator waveform", GST_TYPE_AUDIO_TEST_SRC_WAVE,        /* enum type */
           GST_AUDIO_TEST_SRC_WAVE_SINE, /* default value */
-          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
+          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_FREQ,
       g_param_spec_double ("freq", "Frequency", "Frequency of test signal",
-          0.0, 20000.0, 440.0, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
+          0.0, 20000.0, 440.0,
+          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_VOLUME,
-      g_param_spec_double ("volume", "Volume", "Volume of test signal",
-          0.0, 1.0, 0.8, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
+      g_param_spec_double ("volume", "Volume", "Volume of test signal", 0.0,
+          1.0, 0.8,
+          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_IS_LIVE,
       g_param_spec_boolean ("is-live", "Is Live",
-          "Whether to act as a live source", FALSE, G_PARAM_READWRITE));
+          "Whether to act as a live source", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
-      PROP_TIMESTAMP_OFFSET,
-      g_param_spec_int64 ("timestamp-offset", "Timestamp offset",
+      PROP_TIMESTAMP_OFFSET, g_param_spec_int64 ("timestamp-offset",
+          "Timestamp offset",
           "An offset added to timestamps set on buffers (in ns)", G_MININT64,
-          G_MAXINT64, 0, G_PARAM_READWRITE));
+          G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstbasesrc_class->set_caps = GST_DEBUG_FUNCPTR (gst_audio_test_src_setcaps);
   gstbasesrc_class->is_seekable =
@@ -577,7 +580,6 @@ gst_audio_test_src_generate_pink_noise_value (GstPinkNoise * pink)
      * values together. Only one changes each time.
      */
     pink->running_sum -= pink->rows[num_zeros];
-    //new_random = ((glong)GenerateRandomNumber()) >> PINK_RANDOM_SHIFT;
     new_random = 32768.0 - (65536.0 * (gulong) rand () / (RAND_MAX + 1.0));
     pink->running_sum += new_random;
     pink->rows[num_zeros] = new_random;
@@ -875,7 +877,8 @@ gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
 
   src->process (src, GST_BUFFER_DATA (buf));
 
-  if (src->wave == G_UNLIKELY (GST_AUDIO_TEST_SRC_WAVE_SILENCE)) {
+  if (G_UNLIKELY ((src->wave == GST_AUDIO_TEST_SRC_WAVE_SILENCE)
+          || (src->volume == 0.0))) {
     GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_GAP);
   }
 

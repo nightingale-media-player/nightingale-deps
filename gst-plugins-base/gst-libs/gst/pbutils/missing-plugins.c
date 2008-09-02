@@ -130,6 +130,8 @@ copy_and_clean_caps (const GstCaps * caps)
   gst_structure_remove_field (s, "framerate");
   gst_structure_remove_field (s, "leaf_size");
   gst_structure_remove_field (s, "packet_size");
+  gst_structure_remove_field (s, "block_align");
+  gst_structure_remove_field (s, "metadata-interval");  /* icy caps */
   /* decoders/encoders almost always handle the usual width/height/channel/rate
    * range (and if we don't remove this then the app will have a much harder
    * time blacklisting formats it has unsuccessfully tried to install before) */
@@ -147,6 +149,7 @@ copy_and_clean_caps (const GstCaps * caps)
   gst_structure_remove_field (s, "npt-stop");
   gst_structure_remove_field (s, "play-speed");
   gst_structure_remove_field (s, "play-scale");
+  gst_structure_remove_field (s, "dynamic_range");
 
   return ret;
 }
@@ -202,9 +205,9 @@ gst_missing_uri_sink_message_new (GstElement * element, const gchar * protocol)
   GstStructure *s;
   gchar *description;
 
-  g_return_val_if_fail (element != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
-  g_return_val_if_fail (protocol != NULL, FALSE);
+  g_return_val_if_fail (element != NULL, NULL);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
+  g_return_val_if_fail (protocol != NULL, NULL);
 
   description = gst_pb_utils_get_sink_description (protocol);
 
@@ -235,9 +238,9 @@ gst_missing_element_message_new (GstElement * element,
   GstStructure *s;
   gchar *description;
 
-  g_return_val_if_fail (element != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
-  g_return_val_if_fail (factory_name != NULL, FALSE);
+  g_return_val_if_fail (element != NULL, NULL);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
+  g_return_val_if_fail (factory_name != NULL, NULL);
 
   description = gst_pb_utils_get_element_description (factory_name);
 
@@ -268,13 +271,13 @@ gst_missing_decoder_message_new (GstElement * element,
   GstCaps *caps;
   gchar *description;
 
-  g_return_val_if_fail (element != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
-  g_return_val_if_fail (decode_caps != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_CAPS (decode_caps), FALSE);
-  g_return_val_if_fail (!gst_caps_is_any (decode_caps), FALSE);
-  g_return_val_if_fail (!gst_caps_is_empty (decode_caps), FALSE);
-  g_return_val_if_fail (gst_caps_is_fixed (decode_caps), FALSE);
+  g_return_val_if_fail (element != NULL, NULL);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
+  g_return_val_if_fail (decode_caps != NULL, NULL);
+  g_return_val_if_fail (GST_IS_CAPS (decode_caps), NULL);
+  g_return_val_if_fail (!gst_caps_is_any (decode_caps), NULL);
+  g_return_val_if_fail (!gst_caps_is_empty (decode_caps), NULL);
+  g_return_val_if_fail (gst_caps_is_fixed (decode_caps), NULL);
 
   description = gst_pb_utils_get_decoder_description (decode_caps);
   caps = copy_and_clean_caps (decode_caps);
@@ -308,13 +311,13 @@ gst_missing_encoder_message_new (GstElement * element,
   GstCaps *caps;
   gchar *description;
 
-  g_return_val_if_fail (element != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_ELEMENT (element), FALSE);
-  g_return_val_if_fail (encode_caps != NULL, FALSE);
-  g_return_val_if_fail (GST_IS_CAPS (encode_caps), FALSE);
-  g_return_val_if_fail (!gst_caps_is_any (encode_caps), FALSE);
-  g_return_val_if_fail (!gst_caps_is_empty (encode_caps), FALSE);
-  g_return_val_if_fail (gst_caps_is_fixed (encode_caps), FALSE);
+  g_return_val_if_fail (element != NULL, NULL);
+  g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
+  g_return_val_if_fail (encode_caps != NULL, NULL);
+  g_return_val_if_fail (GST_IS_CAPS (encode_caps), NULL);
+  g_return_val_if_fail (!gst_caps_is_any (encode_caps), NULL);
+  g_return_val_if_fail (!gst_caps_is_empty (encode_caps), NULL);
+  g_return_val_if_fail (gst_caps_is_fixed (encode_caps), NULL);
 
   description = gst_pb_utils_get_encoder_description (encode_caps);
   caps = copy_and_clean_caps (encode_caps);

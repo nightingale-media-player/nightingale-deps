@@ -340,6 +340,8 @@ gstvideo
 @GST_VIDEO_FORMAT_ABGR: 
 @GST_VIDEO_FORMAT_RGB: 
 @GST_VIDEO_FORMAT_BGR: 
+@GST_VIDEO_FORMAT_Y41B: 
+@GST_VIDEO_FORMAT_Y42B: 
 
 <!-- ##### FUNCTION gst_video_calculate_display_ratio ##### -->
 <para>

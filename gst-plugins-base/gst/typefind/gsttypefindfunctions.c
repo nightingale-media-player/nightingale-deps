@@ -37,6 +37,67 @@
 GST_DEBUG_CATEGORY_STATIC (type_find_debug);
 #define GST_CAT_DEFAULT type_find_debug
 
+/* DataScanCtx: helper for typefind functions that scan through data
+ * step-by-step, to avoid doing a peek at each and every offset */
+
+#define DATA_SCAN_CTX_CHUNK_SIZE 4096
+
+typedef struct
+{
+  guint64 offset;
+  const guint8 *data;
+  gint size;
+} DataScanCtx;
+
+static inline void
+data_scan_ctx_advance (GstTypeFind * tf, DataScanCtx * c, guint bytes_to_skip)
+{
+  c->offset += bytes_to_skip;
+  if (G_LIKELY (c->size > bytes_to_skip)) {
+    c->size -= bytes_to_skip;
+    c->data += bytes_to_skip;
+  } else {
+    c->data += c->size;
+    c->size = 0;
+  }
+}
+
+static inline gboolean
+data_scan_ctx_ensure_data (GstTypeFind * tf, DataScanCtx * c, gint min_len)
+{
+  const guint8 *data;
+  guint64 len;
+
+  if (G_LIKELY (c->size >= min_len))
+    return TRUE;
+
+  data = gst_type_find_peek (tf, c->offset, DATA_SCAN_CTX_CHUNK_SIZE);
+  if (G_LIKELY (data != NULL)) {
+    c->data = data;
+    c->size = DATA_SCAN_CTX_CHUNK_SIZE;
+    return TRUE;
+  }
+
+  /* if there's less than our chunk size, try to get as much as we can, but
+   * always at least min_len bytes (we might be typefinding the first buffer
+   * of the stream and not have as much data available as we'd like) */
+  len = gst_type_find_get_length (tf);
+  if (len > 0) {
+    len = CLAMP (len - c->offset, min_len, DATA_SCAN_CTX_CHUNK_SIZE);
+  } else {
+    len = min_len;
+  }
+
+  data = gst_type_find_peek (tf, c->offset, len);
+  if (data != NULL) {
+    c->data = data;
+    c->size = len;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 /*** text/plain ***/
 static gboolean xml_check_first_element (GstTypeFind * tf,
     const gchar * element, guint elen, gboolean strict);
@@ -336,6 +397,22 @@ html_type_find (GstTypeFind * tf, gpointer unused)
   }
 }
 
+/*** audio/midi ***/
+
+static GstStaticCaps mid_caps = GST_STATIC_CAPS ("audio/midi");
+
+#define MID_CAPS gst_static_caps_get(&mid_caps)
+static void
+mid_type_find (GstTypeFind * tf, gpointer unused)
+{
+  guint8 *data = gst_type_find_peek (tf, 0, 4);
+
+  /* http://jedi.ks.uiuc.edu/~johns/links/music/midifile.html */
+  if (data && data[0] == 'M' && data[1] == 'T' && data[2] == 'h'
+      && data[3] == 'd')
+    gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, MID_CAPS);
+}
+
 /*** video/x-fli ***/
 
 static GstStaticCaps flx_caps = GST_STATIC_CAPS ("video/x-fli");
@@ -470,68 +547,58 @@ static GstStaticCaps aac_caps = GST_STATIC_CAPS ("audio/mpeg, "
 static void
 aac_type_find (GstTypeFind * tf, gpointer unused)
 {
-  guint8 *data = gst_type_find_peek (tf, 0, AAC_AMOUNT);
-  gint snc;
+  DataScanCtx c = { 0, NULL, 0 };
 
-  /* detect adts header or adif header.
-   * The ADIF header is 4 bytes, that should be OK. The ADTS header, on
-   * the other hand, is 14 bits only, so we require one valid frame with
-   * again a valid syncpoint on the next one (28 bits) for certainty. We
-   * require 4 kB, which is quite a lot, since frames are generally 200-400
-   * bytes.
-   */
-  if (data) {
-    gint n;
+  while (c.offset < AAC_AMOUNT) {
+    guint snc, len;
 
-    for (n = 0; n < AAC_AMOUNT - 3; n++) {
-      snc = GST_READ_UINT16_BE (&data[n]);
-      if ((snc & 0xfff6) == 0xfff0) {
-        /* ADTS header - find frame length */
-        gint len;
+    /* detect adts header or adif header.
+     * The ADIF header is 4 bytes, that should be OK. The ADTS header, on
+     * the other hand, is 14 bits only, so we require one valid frame with
+     * again a valid syncpoint on the next one (28 bits) for certainty. We
+     * require 4 kB, which is quite a lot, since frames are generally 200-400
+     * bytes.
+     */
+    if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 6)))
+      break;
 
-        GST_DEBUG ("Found one ADTS syncpoint at offset 0x%x, tracing next...",
-            n);
-        if (AAC_AMOUNT - n < 5) {
-          GST_DEBUG ("Not enough data to parse ADTS header");
-          break;
-        }
-        len = ((data[n + 3] & 0x03) << 11) |
-            (data[n + 4] << 3) | ((data[n + 5] & 0xe0) >> 5);
-        if (n + len + 2 >= AAC_AMOUNT) {
-          GST_DEBUG ("Next frame is not within reach");
-          break;
-        } else if (len == 0) {
-          continue;
-        }
+    snc = GST_READ_UINT16_BE (c.data);
+    if (G_UNLIKELY ((snc & 0xfff6) == 0xfff0)) {
+      /* ADTS header - find frame length */
+      GST_DEBUG ("Found one ADTS syncpoint at offset 0x%" G_GINT64_MODIFIER
+          "x, tracing next...", c.offset);
+      len = ((c.data[3] & 0x03) << 11) |
+          (c.data[4] << 3) | ((c.data[5] & 0xe0) >> 5);
 
-        snc = GST_READ_UINT16_BE (&data[n + len]);
-        if ((snc & 0xfff6) == 0xfff0) {
-          gint mpegversion = (data[n + 1] & 0x08) ? 2 : 4;
-          GstCaps *caps = gst_caps_new_simple ("audio/mpeg",
-              "framed", G_TYPE_BOOLEAN, FALSE,
-              "mpegversion", G_TYPE_INT, mpegversion,
-              NULL);
-
-          gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, caps);
-          gst_caps_unref (caps);
-
-          GST_DEBUG ("Found ADTS-%d syncpoint at offset 0x%x (framelen %u)",
-              mpegversion, n, len);
-          break;
-        }
-
-        GST_DEBUG ("No next frame found... (should be at 0x%x)", n + len);
-      } else if (!memcmp (&data[n], "ADIF", 4)) {
-        /* ADIF header */
-        GstCaps *caps = gst_caps_new_simple ("audio/mpeg",
-            "framed", G_TYPE_BOOLEAN, FALSE,
-            "mpegversion", G_TYPE_INT, 4,
-            NULL);
-
-        gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, caps);
-        gst_caps_unref (caps);
+      if (len == 0 || !data_scan_ctx_ensure_data (tf, &c, len + 2)) {
+        GST_DEBUG ("Wrong sync or next frame not within reach, len=%u", len);
+        goto next;
       }
+
+      snc = GST_READ_UINT16_BE (c.data + len);
+      if ((snc & 0xfff6) == 0xfff0) {
+        gint mpegversion;
+
+        mpegversion = (c.data[1] & 0x08) ? 2 : 4;
+        GST_DEBUG ("Found second ADTS-%d syncpoint at offset 0x%"
+            G_GINT64_MODIFIER "x, framelen %u", mpegversion, c.offset, len);
+        gst_type_find_suggest_simple (tf, GST_TYPE_FIND_LIKELY, "audio/mpeg",
+            "framed", G_TYPE_BOOLEAN, FALSE,
+            "mpegversion", G_TYPE_INT, mpegversion, NULL);
+        break;
+      }
+
+      GST_DEBUG ("No next frame found... (should have been at 0x%x)", len);
+    } else if (!memcmp (c.data, "ADIF", 4)) {
+      /* ADIF header */
+      gst_type_find_suggest_simple (tf, GST_TYPE_FIND_LIKELY, "audio/mpeg",
+          "framed", G_TYPE_BOOLEAN, FALSE, "mpegversion", G_TYPE_INT, 4, NULL);
+      break;
     }
+
+  next:
+
+    data_scan_ctx_advance (tf, &c, 1);
   }
 }
 
@@ -875,35 +942,41 @@ mp3_type_find (GstTypeFind * tf, gpointer unused)
 
 suggest:
   {
-    GstCaps *caps;
+    g_return_if_fail (layer >= 1 && layer <= 3);
 
-    g_assert (layer > 0);
-
-    caps = gst_caps_make_writable (MP3_CAPS);
-    gst_structure_set (gst_caps_get_structure (caps, 0), "layer",
-        G_TYPE_INT, layer, NULL);
-    gst_type_find_suggest (tf, prob, caps);
-    gst_caps_unref (caps);
-    return;
+    gst_type_find_suggest_simple (tf, prob, "audio/mpeg",
+        "mpegversion", G_TYPE_INT, 1, "layer", G_TYPE_INT, layer, NULL);
   }
 }
 
 /*** audio/x-musepack ***/
 
-static GstStaticCaps musepack_caps = GST_STATIC_CAPS ("audio/x-musepack");
+static GstStaticCaps musepack_caps =
+GST_STATIC_CAPS ("audio/x-musepack, streamversion= (int) { 7, 8 }");
 
 #define MUSEPACK_CAPS (gst_static_caps_get(&musepack_caps))
 static void
 musepack_type_find (GstTypeFind * tf, gpointer unused)
 {
   guint8 *data = gst_type_find_peek (tf, 0, 4);
+  GstTypeFindProbability prop = GST_TYPE_FIND_MINIMUM;
+  gint streamversion = -1;
 
   if (data && memcmp (data, "MP+", 3) == 0) {
+    streamversion = 7;
     if ((data[3] & 0x7f) == 7) {
-      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, MUSEPACK_CAPS);
+      prop = GST_TYPE_FIND_MAXIMUM;
     } else {
-      gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY + 10, MUSEPACK_CAPS);
+      prop = GST_TYPE_FIND_LIKELY + 10;
     }
+  } else if (data && memcmp (data, "MPCK", 4) == 0) {
+    streamversion = 8;
+    prop = GST_TYPE_FIND_MAXIMUM;
+  }
+
+  if (streamversion != -1) {
+    gst_type_find_suggest_simple (tf, prop, "audio/x-musepack",
+        "streamversion", G_TYPE_INT, streamversion, NULL);
   }
 }
 
@@ -1113,10 +1186,7 @@ multipart_type_find (GstTypeFind * tf, gpointer unused)
     }
     if (*x == '\n' &&
         !g_ascii_strncasecmp ("content-type:", (gchar *) x + 1, 13)) {
-      GstCaps *caps = gst_caps_copy (MULTIPART_CAPS);
-
-      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, caps);
-      gst_caps_unref (caps);
+      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, MULTIPART_CAPS);
       return;
     }
   }
@@ -1127,9 +1197,9 @@ static GstStaticCaps mpeg_sys_caps = GST_STATIC_CAPS ("video/mpeg, "
     "systemstream = (boolean) true, mpegversion = (int) [ 1, 2 ]");
 
 #define MPEG_SYS_CAPS gst_static_caps_get(&mpeg_sys_caps)
-#define IS_MPEG_HEADER(data)            ((((guint8 *)(data))[0] == 0x00) &&  \
+#define IS_MPEG_HEADER(data) (G_UNLIKELY((((guint8 *)(data))[0] == 0x00) &&  \
                                          (((guint8 *)(data))[1] == 0x00) &&  \
-                                         (((guint8 *)(data))[2] == 0x01))
+                                         (((guint8 *)(data))[2] == 0x01)))
 
 #define IS_MPEG_PACK_CODE(b) ((b) == 0xBA)
 #define IS_MPEG_SYS_CODE(b) ((b) == 0xBB)
@@ -1141,15 +1211,14 @@ static GstStaticCaps mpeg_sys_caps = GST_STATIC_CAPS ("video/mpeg, "
 #define IS_MPEG_PES_HEADER(data)        (IS_MPEG_HEADER (data) &&            \
                                          IS_MPEG_PES_CODE (((guint8 *)(data))[3]))
 
-#define MPEG2_MAX_PROBE_LENGTH (32 * 1024)      /* 32kB should be 16 packs of the 
-                                                 * most common 2kB pack size, but HD
-                                                 * streams might be bigger. */
+#define MPEG2_MAX_PROBE_LENGTH (128 * 1024)     /* 128kB should be 64 packs of the 
+                                                 * most common 2kB pack size. */
 
 #define MPEG2_MIN_SYS_HEADERS 2
 #define MPEG2_MAX_SYS_HEADERS 5
 
 static gboolean
-mpeg_sys_is_valid_pack (GstTypeFind * tf, guint8 * data, guint len,
+mpeg_sys_is_valid_pack (GstTypeFind * tf, const guint8 * data, guint len,
     guint * pack_size)
 {
   /* Check the pack header @ offset for validity, assuming that the 4 byte header
@@ -1365,7 +1434,6 @@ mpeg_sys_type_find (GstTypeFind * tf, gpointer unused)
   return;
 suggest:
   {
-    GstCaps *caps = gst_caps_copy (MPEG_SYS_CAPS);
     guint prob;
 
     prob = GST_TYPE_FIND_POSSIBLE + (10 * (pack_headers + pes_headers));
@@ -1378,10 +1446,9 @@ suggest:
     GST_LOG ("Suggesting MPEG %d system stream, %d packs, %d pes, prob %u%%\n",
         mpegversion, pack_headers, pes_headers, prob);
 
-    gst_structure_set (gst_caps_get_structure (caps, 0), "mpegversion",
-        G_TYPE_INT, mpegversion, NULL);
-    gst_type_find_suggest (tf, prob, caps);
-    gst_caps_unref (caps);
+    gst_type_find_suggest_simple (tf, prob, "video/mpeg",
+        "systemstream", G_TYPE_BOOLEAN, TRUE,
+        "mpegversion", G_TYPE_INT, mpegversion, NULL);
   }
 };
 
@@ -1406,7 +1473,7 @@ static GstStaticCaps mpegts_caps = GST_STATIC_CAPS ("video/mpegts, "
 
 /* Helper function to search ahead at intervals of packet_size for mpegts
  * headers */
-gint
+static gint
 mpeg_ts_probe_headers (GstTypeFind * tf, guint64 offset, gint packet_size)
 {
   /* We always enter this function having found at least one header already */
@@ -1459,18 +1526,15 @@ mpeg_ts_type_find (GstTypeFind * tf, gpointer unused)
         found = mpeg_ts_probe_headers (tf, skipped, pack_sizes[p]);
         if (found >= GST_MPEGTS_TYPEFIND_MIN_HEADERS) {
           gint probability;
-          GstCaps *caps = gst_caps_copy (MPEGTS_CAPS);
-
-          gst_structure_set (gst_caps_get_structure (caps, 0), "packetsize",
-              G_TYPE_INT, pack_sizes[p], NULL);
 
           /* found at least 4 headers. 10 headers = MAXIMUM probability. 
            * Arbitrarily, I assigned 10% probability for each header we
            * found, 40% -> 100% */
           probability = MIN (10 * found, GST_TYPE_FIND_MAXIMUM);
 
-          gst_type_find_suggest (tf, probability, caps);
-          gst_caps_unref (caps);
+          gst_type_find_suggest_simple (tf, probability, "video/mpegts",
+              "systemstream", G_TYPE_BOOLEAN, TRUE,
+              "packetsize", G_TYPE_INT, pack_sizes[p], NULL);
           return;
         }
       }
@@ -1513,10 +1577,8 @@ mpeg4_video_type_find (GstTypeFind * tf, gpointer unused)
         seen_vos = TRUE;
       } else if (sc >= 0x20 && sc <= 0x2F) {    /* video_object_layer_start_code */
         if (seen_vos) {
-          GstCaps *caps = gst_caps_copy (MPEG4_VIDEO_CAPS);
-
-          gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM - 1, caps);
-          gst_caps_unref (caps);
+          gst_type_find_suggest (tf, GST_TYPE_FIND_NEARLY_CERTAIN,
+              MPEG4_VIDEO_CAPS);
           return;
         } else
           return;
@@ -1527,28 +1589,77 @@ mpeg4_video_type_find (GstTypeFind * tf, gpointer unused)
   }
 }
 
+/*** video/x-h264 H264 elementary video stream ***/
+
+static GstStaticCaps h264_video_caps = GST_STATIC_CAPS ("video/x-h264");
+
+#define H264_VIDEO_CAPS gst_static_caps_get(&h264_video_caps)
+
+#define H264_MAX_PROBE_LENGTH (128 * 1024)      /* 128kB for HD should be enough. */
+
+static void
+h264_video_type_find (GstTypeFind * tf, gpointer unused)
+{
+  DataScanCtx c = { 0, NULL, 0 };
+
+  /* Stream consists of: a series of sync codes (00 00 00 01) followed 
+   * by NALs
+   */
+  int stat_slice = 0;
+  int stat_dpa = 0;
+  int stat_dpb = 0;
+  int stat_dpc = 0;
+  int stat_idr = 0;
+  int stat_sps = 0;
+  int stat_pps = 0;
+  int nut, ref;
+
+  while (c.offset < H264_MAX_PROBE_LENGTH) {
+    if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 4)))
+      break;
+
+    if (IS_MPEG_HEADER (c.data)) {
+      nut = c.data[3] & 0x9f;   /* forbiden_zero_bit | nal_unit_type */
+      ref = c.data[3] & 0x60;   /* nal_ref_idc */
+
+      /* if forbiden bit is different to 0 won't be h264 */
+      if (nut > 0x1f)
+        break;
+
+      /* collect statistics about the NAL types */
+      if (nut == 1)
+        stat_slice++;
+      else if (nut == 2)
+        stat_dpa++;
+      else if (nut == 3)
+        stat_dpb++;
+      else if (nut == 4)
+        stat_dpc++;
+      else if ((nut == 5) && (ref != 0))
+        stat_idr++;
+      else if ((nut == 7) && (ref != 0))
+        stat_sps++;
+      else if ((nut == 8) && (ref != 0))
+        stat_pps++;
+
+      if ((stat_slice > 4 || (stat_dpa > 4 && stat_dpb > 4 && stat_dpc > 4)) &&
+          stat_idr >= 1 && stat_sps >= 1 && stat_pps >= 1) {
+        gst_type_find_suggest (tf, GST_TYPE_FIND_NEARLY_CERTAIN,
+            H264_VIDEO_CAPS);
+        return;
+      }
+
+      data_scan_ctx_advance (tf, &c, 4);
+    }
+    data_scan_ctx_advance (tf, &c, 1);
+  }
+}
+
 /*** video/mpeg video stream ***/
 
 static GstStaticCaps mpeg_video_caps = GST_STATIC_CAPS ("video/mpeg, "
     "systemstream = (boolean) false");
 #define MPEG_VIDEO_CAPS gst_static_caps_get(&mpeg_video_caps)
-static void
-mpeg_video_type_find (GstTypeFind * tf, gpointer unused)
-{
-  static const guint8 sequence_header[] = { 0x00, 0x00, 0x01, 0xb3 };
-  guint8 *data = NULL;
-
-  data = gst_type_find_peek (tf, 0, 8);
-
-  if (data && memcmp (data, sequence_header, 4) == 0) {
-    GstCaps *caps = gst_caps_copy (MPEG_VIDEO_CAPS);
-
-    gst_structure_set (gst_caps_get_structure (caps, 0), "mpegversion",
-        G_TYPE_INT, 1, NULL);
-    gst_type_find_suggest (tf, GST_TYPE_FIND_POSSIBLE, caps);
-    gst_caps_unref (caps);
-  }
-}
 
 /*
  * Idea is the same as MPEG system stream typefinding: We check each
@@ -1561,85 +1672,97 @@ mpeg_video_type_find (GstTypeFind * tf, gpointer unused)
 
 #define GST_MPEGVID_TYPEFIND_TRY_PICTURES 6
 #define GST_MPEGVID_TYPEFIND_TRY_SYNC (100 * 1024)      /* 100 kB */
-#define GST_MPEGVID_TYPEFIND_SYNC_SIZE 2048
 
 static void
 mpeg_video_stream_type_find (GstTypeFind * tf, gpointer unused)
 {
-  gint size = 0, found = 0;
-  guint64 skipped = 0;
-  guint8 *data = NULL;
+  DataScanCtx c = { 0, NULL, 0 };
+  gboolean seen_seq_at_0 = FALSE;
+  gboolean seen_seq = FALSE;
+  gboolean seen_gop = FALSE;
+  guint64 last_pic_offset = 0;
+  guint num_pic_headers = 0;
+  gint found = 0;
 
-  while (1) {
-    if (found >= GST_MPEGVID_TYPEFIND_TRY_PICTURES) {
-      GstCaps *caps = gst_caps_copy (MPEG_VIDEO_CAPS);
-
-      gst_structure_set (gst_caps_get_structure (caps, 0), "mpegversion",
-          G_TYPE_INT, 1, NULL);
-      gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM - 2, caps);
-      gst_caps_unref (caps);
-      return;
-    }
-
-    if (skipped > GST_MPEGVID_TYPEFIND_TRY_SYNC)
+  while (c.offset < GST_MPEGVID_TYPEFIND_TRY_SYNC) {
+    if (found >= GST_MPEGVID_TYPEFIND_TRY_PICTURES)
       break;
 
-    if (size < 5) {
-      data = gst_type_find_peek (tf, skipped, GST_MPEGVID_TYPEFIND_SYNC_SIZE);
-      if (!data)
-        break;
-      size = GST_MPEGVID_TYPEFIND_SYNC_SIZE;
+    if (!data_scan_ctx_ensure_data (tf, &c, 5))
+      break;
+
+    if (!IS_MPEG_HEADER (c.data))
+      goto next;
+
+    /* a pack header indicates that this isn't an elementary stream */
+    if (c.data[3] == 0xBA && mpeg_sys_is_valid_pack (tf, c.data, c.size, NULL))
+      return;
+
+    /* do we have a sequence header? */
+    if (c.data[3] == 0xB3) {
+      seen_seq_at_0 = seen_seq_at_0 || (c.offset == 0);
+      seen_seq = TRUE;
+      data_scan_ctx_advance (tf, &c, 4 + 8);
+      continue;
     }
 
-    if (IS_MPEG_HEADER (data)) {
-      /* An MPEG PACK header indicates that this isn't an elementary stream */
-      if (IS_MPEG_PACK_CODE (data[3])) {
-        if (mpeg_sys_is_valid_pack (tf, data, size, NULL))
-          break;
-      }
-
-      /* are we a sequence (0xB3) or GOP (0xB8) header? */
-      if (data[3] == 0xB3 || data[3] == 0xB8) {
-        size -= 8;
-        data += 8;
-        skipped += 8;
-        if (data[3] == 0xB3)
-          continue;
-        else if (size < 4) {
-          data =
-              gst_type_find_peek (tf, skipped, GST_MPEGVID_TYPEFIND_SYNC_SIZE);
-          size = GST_MPEGVID_TYPEFIND_SYNC_SIZE;
-          if (!data)
-            break;
-        }
-        /* else, we should now see an image */
-      }
+    /* or a GOP header */
+    if (c.data[3] == 0xB8) {
+      seen_gop = TRUE;
+      data_scan_ctx_advance (tf, &c, 8);
+      continue;
     }
 
-    /* image header (and, when found, slice header) */
-    if (IS_MPEG_HEADER (data) && data[4] == 0x0) {
-      size -= 8;
-      data += 8;
-      skipped += 8;
-      if (size < 5) {
-        data = gst_type_find_peek (tf, skipped, GST_MPEGVID_TYPEFIND_SYNC_SIZE);
-        size = GST_MPEGVID_TYPEFIND_SYNC_SIZE;
-        if (!data)
-          break;
-      }
-      if ((IS_MPEG_HEADER (data) && data[3] == 0x1) ||
-          (IS_MPEG_HEADER (data + 1) && data[4] == 0x1)) {
-        size -= 4;
-        data += 4;
-        skipped += 4;
-        found += 1;
-        continue;
-      }
+    /* but what we'd really like to see is a picture header */
+    if (c.data[3] == 0x00) {
+      ++num_pic_headers;
+      last_pic_offset = c.offset;
+      data_scan_ctx_advance (tf, &c, 8);
+      continue;
     }
 
-    size--;
-    data++;
-    skipped++;
+    /* ... each followed by a slice header with slice_vertical_pos=1 that's
+     * not too far away from the previously seen picture header. */
+    if (c.data[3] == 0x01 && num_pic_headers > found &&
+        (c.offset - last_pic_offset) >= 4 &&
+        (c.offset - last_pic_offset) <= 64) {
+      data_scan_ctx_advance (tf, &c, 4);
+      found += 1;
+      continue;
+    }
+
+  next:
+
+    data_scan_ctx_advance (tf, &c, 1);
+  }
+
+  if (found > 0 || seen_seq) {
+    GstTypeFindProbability probability = 0;
+
+    GST_LOG ("Found %d pictures, seq:%d, gop:%d", found, seen_seq, seen_gop);
+
+    if (found >= GST_MPEGVID_TYPEFIND_TRY_PICTURES && seen_seq && seen_gop)
+      probability = GST_TYPE_FIND_NEARLY_CERTAIN - 1;
+    else if (found >= GST_MPEGVID_TYPEFIND_TRY_PICTURES && seen_seq)
+      probability = GST_TYPE_FIND_NEARLY_CERTAIN - 9;
+    else if (found >= GST_MPEGVID_TYPEFIND_TRY_PICTURES)
+      probability = GST_TYPE_FIND_LIKELY;
+    else if (seen_seq_at_0 && seen_gop && found > 2)
+      probability = GST_TYPE_FIND_LIKELY - 10;
+    else if (seen_seq && seen_gop && found > 2)
+      probability = GST_TYPE_FIND_LIKELY - 20;
+    else if (seen_seq_at_0 && found > 0)
+      probability = GST_TYPE_FIND_POSSIBLE;
+    else if (seen_seq && found > 0)
+      probability = GST_TYPE_FIND_POSSIBLE - 5;
+    else if (found > 0)
+      probability = GST_TYPE_FIND_POSSIBLE - 10;
+    else if (seen_seq)
+      probability = GST_TYPE_FIND_POSSIBLE - 20;
+
+    gst_type_find_suggest_simple (tf, probability, "video/mpeg",
+        "systemstream", G_TYPE_BOOLEAN, FALSE,
+        "mpegversion", G_TYPE_INT, 1, NULL);
   }
 }
 
@@ -2221,19 +2344,17 @@ dv_type_find (GstTypeFind * tf, gpointer private)
   /* check for DIF  and DV flag */
   if (data && (data[0] == 0x1f) && (data[1] == 0x07) && (data[2] == 0x00) &&
       ((data[4] & 0x01) == 0)) {
-    gchar *format;
-    GstCaps *caps = gst_caps_copy (DV_CAPS);
+    const gchar *format;
 
     if (data[3] & 0x80) {
       format = "PAL";
     } else {
       format = "NTSC";
     }
-    gst_structure_set (gst_caps_get_structure (caps, 0), "format",
-        G_TYPE_STRING, format, NULL);
 
-    gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, caps);
-    gst_caps_unref (caps);
+    gst_type_find_suggest_simple (tf, GST_TYPE_FIND_MAXIMUM, "video/x-dv",
+        "systemstream", G_TYPE_BOOLEAN, TRUE,
+        "format", G_TYPE_STRING, format, NULL);
   }
 }
 
@@ -2626,11 +2747,7 @@ mmsh_type_find (GstTypeFind * tf, gpointer unused)
   if (data && data[0] == 0x24 && data[1] == 0x48 &&
       GST_READ_UINT16_LE (data + 2) > 2 + 2 + 4 + 2 + 2 + 16 &&
       memcmp (data + 2 + 2 + 4 + 2 + 2, asf_marker, 16) == 0) {
-    GstCaps *caps = gst_caps_copy (MMSH_CAPS);
-
-    gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, caps);
-    gst_caps_unref (caps);
-    return;
+    gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, MMSH_CAPS);
   }
 }
 
@@ -2811,7 +2928,7 @@ plugin_init (GstPlugin * plugin)
   };
   static gchar *mp3_exts[] = { "mp3", "mp2", "mp1", "mpga", NULL };
   static gchar *ac3_exts[] = { "ac3", NULL };
-  static gchar *musepack_exts[] = { "mpc", NULL };
+  static gchar *musepack_exts[] = { "mpc", "mpp", "mp+", NULL };
   static gchar *mpeg_sys_exts[] = { "mpe", "mpeg", "mpg", NULL };
   static gchar *mpeg_video_exts[] = { "mpv", "mpeg", "mpg", NULL };
   static gchar *mpeg_ts_exts[] = { "ts", NULL };
@@ -2871,9 +2988,12 @@ plugin_init (GstPlugin * plugin)
   };
   static gchar *flv_exts[] = { "flv", NULL };
   static gchar *m4v_exts[] = { "m4v", NULL };
+  static gchar *h264_exts[] = { "h264", "x264", "264", NULL };
   static gchar *nuv_exts[] = { "nuv", NULL };
   static gchar *vivo_exts[] = { "viv", NULL };
   static gchar *nsf_exts[] = { "nsf", NULL };
+  static gchar *mid_exts[] = { "mid", "midi", NULL };
+  static gchar *imelody_exts[] = { "imy", "ime", "imelody", NULL };
 
   GST_DEBUG_CATEGORY_INIT (type_find_debug, "typefindfunctions",
       GST_DEBUG_FG_GREEN | GST_DEBUG_BG_RED, "generic type find functions");
@@ -2896,13 +3016,21 @@ plugin_init (GstPlugin * plugin)
   TYPE_FIND_REGISTER_START_WITH (plugin, "video/x-vcd", GST_RANK_PRIMARY,
       cdxa_exts, "\000\377\377\377\377\377\377\377\377\377\377\000", 12,
       GST_TYPE_FIND_MAXIMUM);
+  TYPE_FIND_REGISTER_START_WITH (plugin, "audio/x-imelody", GST_RANK_PRIMARY,
+      imelody_exts, "BEGIN:IMELODY", 13, GST_TYPE_FIND_MAXIMUM);
+#if 0
+  TYPE_FIND_REGISTER_START_WITH (plugin, "video/x-smoke", GST_RANK_PRIMARY,
+      NULL, "\x80smoke\x00\x01\x00", 6, GST_TYPE_FIND_MAXIMUM);
+#endif
+  TYPE_FIND_REGISTER (plugin, "audio/midi", GST_RANK_PRIMARY, mid_type_find,
+      mid_exts, MID_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/x-fli", GST_RANK_MARGINAL, flx_type_find,
       flx_exts, FLX_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "application/x-id3v2", GST_RANK_PRIMARY + 3,
+  TYPE_FIND_REGISTER (plugin, "application/x-id3v2", GST_RANK_PRIMARY + 103,
       id3v2_type_find, id3_exts, ID3_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "application/x-id3v1", GST_RANK_PRIMARY + 1,
+  TYPE_FIND_REGISTER (plugin, "application/x-id3v1", GST_RANK_PRIMARY + 101,
       id3v1_type_find, id3_exts, ID3_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "application/x-apetag", GST_RANK_PRIMARY + 2,
+  TYPE_FIND_REGISTER (plugin, "application/x-apetag", GST_RANK_PRIMARY + 102,
       apetag_type_find, apetag_exts, APETAG_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "audio/x-ttafile", GST_RANK_PRIMARY,
       tta_type_find, tta_exts, TTA_CAPS, NULL, NULL);
@@ -2918,13 +3046,13 @@ plugin_init (GstPlugin * plugin)
       mpeg_ts_type_find, mpeg_ts_exts, MPEGTS_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/ogg", GST_RANK_PRIMARY,
       ogganx_type_find, ogg_exts, OGGANX_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "video/mpeg,elementary", GST_RANK_SECONDARY,
-      mpeg_video_type_find, mpeg_video_exts, MPEG_VIDEO_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "video/mpeg-stream", GST_RANK_MARGINAL,
+  TYPE_FIND_REGISTER (plugin, "video/mpeg-elementary", GST_RANK_MARGINAL,
       mpeg_video_stream_type_find, mpeg_video_exts, MPEG_VIDEO_CAPS, NULL,
       NULL);
   TYPE_FIND_REGISTER (plugin, "video/mpeg4", GST_RANK_PRIMARY,
       mpeg4_video_type_find, m4v_exts, MPEG_VIDEO_CAPS, NULL, NULL);
+  TYPE_FIND_REGISTER (plugin, "video/x-h264", GST_RANK_PRIMARY,
+      h264_video_type_find, h264_exts, MPEG_VIDEO_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/x-nuv", GST_RANK_SECONDARY,
       nuv_type_find, nuv_exts, NUV_CAPS, NULL, NULL);
 
@@ -2980,11 +3108,11 @@ plugin_init (GstPlugin * plugin)
       shn_type_find, shn_exts, SHN_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/x-ape", GST_RANK_SECONDARY,
       ape_type_find, ape_exts, APE_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "image/jpeg", GST_RANK_PRIMARY, jpeg_type_find,
-      jpeg_exts, JPEG_CAPS, NULL, NULL);
+  TYPE_FIND_REGISTER (plugin, "image/jpeg", GST_RANK_PRIMARY + 15,
+      jpeg_type_find, jpeg_exts, JPEG_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER_START_WITH (plugin, "image/gif", GST_RANK_PRIMARY,
       gif_exts, "GIF8", 4, GST_TYPE_FIND_MAXIMUM);
-  TYPE_FIND_REGISTER_START_WITH (plugin, "image/png", GST_RANK_PRIMARY,
+  TYPE_FIND_REGISTER_START_WITH (plugin, "image/png", GST_RANK_PRIMARY + 14,
       png_exts, "\211PNG\015\012\032\012", 8, GST_TYPE_FIND_MAXIMUM);
   TYPE_FIND_REGISTER (plugin, "image/bmp", GST_RANK_PRIMARY, bmp_type_find,
       bmp_exts, BMP_CAPS, NULL, NULL);

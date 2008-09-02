@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Part&#160;II.&#160;Object Hierarchy</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Part II. Object Hierarchy</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="prev" href="gst-plugins-base-libs-gstvideofilter.html" title="gstvideofilter">
 <link rel="next" href="api-index.html" title="Index">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,57 +24,60 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
 <td><a accesskey="p" href="gst-plugins-base-libs-gstvideofilter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td>&#160;</td>
+<td> </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="api-index.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="part" lang="en">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="gstreamer-libs-hierarchy"></a>Part&#160;II.&#160;Object Hierarchy</h1></div></div></div>
+<a name="gstreamer-libs-hierarchy"></a>Part II. Object Hierarchy</h1></div></div></div>
 <pre class="screen">
     GObject
         GstObject
             GstElement
                 GstBaseTransform
-                    <a href="gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
-                    <a href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
+                    <a class="link" href="gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
+                    <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
                 GstBaseSink
-                    <a href="gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink">GstBaseAudioSink</a>
-                        <a href="gst-plugins-base-libs-gstaudiosink.html#GstAudioSink">GstAudioSink</a>
-                    <a href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink">GstVideoSink</a>
+                    <a class="link" href="gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink">GstBaseAudioSink</a>
+                        <a class="link" href="gst-plugins-base-libs-gstaudiosink.html#GstAudioSink">GstAudioSink</a>
+                    <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoSink">GstVideoSink</a>
                 GstBaseSrc
                     GstPushSrc
-                        <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a>
-                            <a href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc">GstAudioSrc</a>
-                        <a href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc">GstCddaBaseSrc</a>
-                <a href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a>
-                <a href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a>
-                    <a href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a>
+                        <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a>
+                            <a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc">GstAudioSrc</a>
+                        <a class="link" href="gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc">GstCddaBaseSrc</a>
+                <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a>
+                <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a>
+                    <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a>
             GstClock
                 GstSystemClock
-                    <a href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClock">GstAudioClock</a>
-            <a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>
-        <a href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel">GstColorBalanceChannel</a>
-        <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a>
-            <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a>
-        <a href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>
-        <a href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>
+                    <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClock">GstAudioClock</a>
+            <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>
+        <a class="link" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel">GstColorBalanceChannel</a>
+        <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a>
+            <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a>
+        <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a>
+        <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm">GstTunerNorm</a>
     GInterface
-        <a href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance">GstColorBalance</a>
-        <a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>
-        <a href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a>
-        <a href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a>
-        <a href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a>
-        <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a>
-        <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a>
+        <a class="link" href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance">GstColorBalance</a>
+        <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>
+        <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a>
+        <a class="link" href="gst-plugins-base-libs-gstpropertyprobe.html#GstPropertyProbe">GstPropertyProbe</a>
+        <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner">GstTuner</a>
+        <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a>
+        <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a>
 </pre>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

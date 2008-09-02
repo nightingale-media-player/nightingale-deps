@@ -108,12 +108,15 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_EXAMPLES_FALSE = @BUILD_EXAMPLES_FALSE@
 BUILD_EXAMPLES_TRUE = @BUILD_EXAMPLES_TRUE@
+BUILD_EXPERIMENTAL_FALSE = @BUILD_EXPERIMENTAL_FALSE@
+BUILD_EXPERIMENTAL_TRUE = @BUILD_EXPERIMENTAL_TRUE@
 BUILD_EXTERNAL_FALSE = @BUILD_EXTERNAL_FALSE@
 BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CC = @CC@
@@ -133,6 +136,7 @@ DEFAULT_VISUALIZER = @DEFAULT_VISUALIZER@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -154,6 +158,9 @@ GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
@@ -195,14 +202,10 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -236,7 +239,6 @@ HAVE_FT2_FALSE = @HAVE_FT2_FALSE@
 HAVE_FT2_TRUE = @HAVE_FT2_TRUE@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
@@ -282,6 +284,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
@@ -319,8 +322,12 @@ USE_ALSA_FALSE = @USE_ALSA_FALSE@
 USE_ALSA_TRUE = @USE_ALSA_TRUE@
 USE_CDPARANOIA_FALSE = @USE_CDPARANOIA_FALSE@
 USE_CDPARANOIA_TRUE = @USE_CDPARANOIA_TRUE@
+USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
+USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
 USE_EXTERNAL_TRUE = @USE_EXTERNAL_TRUE@
+USE_GIO_FALSE = @USE_GIO_FALSE@
+USE_GIO_TRUE = @USE_GIO_TRUE@
 USE_GNOME_VFS_FALSE = @USE_GNOME_VFS_FALSE@
 USE_GNOME_VFS_TRUE = @USE_GNOME_VFS_TRUE@
 USE_GST_V4L_FALSE = @USE_GST_V4L_FALSE@
@@ -332,6 +339,36 @@ USE_OGG_FALSE = @USE_OGG_FALSE@
 USE_OGG_TRUE = @USE_OGG_TRUE@
 USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
+USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
+USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
+USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
+USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
+USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
+USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
+USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
+USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
+USE_PLUGIN_FFMPEGCOLORSPACE_TRUE = @USE_PLUGIN_FFMPEGCOLORSPACE_TRUE@
+USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
+USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
+USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
+USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
+USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
+USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
+USE_PLUGIN_TCP_TRUE = @USE_PLUGIN_TCP_TRUE@
+USE_PLUGIN_TYPEFIND_FALSE = @USE_PLUGIN_TYPEFIND_FALSE@
+USE_PLUGIN_TYPEFIND_TRUE = @USE_PLUGIN_TYPEFIND_TRUE@
+USE_PLUGIN_VIDEORATE_FALSE = @USE_PLUGIN_VIDEORATE_FALSE@
+USE_PLUGIN_VIDEORATE_TRUE = @USE_PLUGIN_VIDEORATE_TRUE@
+USE_PLUGIN_VIDEOSCALE_FALSE = @USE_PLUGIN_VIDEOSCALE_FALSE@
+USE_PLUGIN_VIDEOSCALE_TRUE = @USE_PLUGIN_VIDEOSCALE_TRUE@
+USE_PLUGIN_VIDEOTESTSRC_FALSE = @USE_PLUGIN_VIDEOTESTSRC_FALSE@
+USE_PLUGIN_VIDEOTESTSRC_TRUE = @USE_PLUGIN_VIDEOTESTSRC_TRUE@
+USE_PLUGIN_VOLUME_FALSE = @USE_PLUGIN_VOLUME_FALSE@
+USE_PLUGIN_VOLUME_TRUE = @USE_PLUGIN_VOLUME_TRUE@
 USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
@@ -490,29 +527,38 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/alsa/gstalsasink.h \
 	$(top_srcdir)/ext/alsa/gstalsasrc.h \
 	$(top_srcdir)/ext/cdparanoia/gstcdparanoiasrc.h \
+	$(top_srcdir)/ext/gio/gstgiosink.h \
+	$(top_srcdir)/ext/gio/gstgiosrc.h \
+	$(top_srcdir)/ext/gio/gstgiostreamsink.h \
+	$(top_srcdir)/ext/gio/gstgiostreamsrc.h \
 	$(top_srcdir)/ext/gnomevfs/gstgnomevfssink.h \
 	$(top_srcdir)/ext/gnomevfs/gstgnomevfssrc.h \
 	$(top_srcdir)/ext/ogg/gstoggdemux.h \
+	$(top_srcdir)/ext/ogg/gstoggmux.h \
 	$(top_srcdir)/ext/pango/gstclockoverlay.h \
 	$(top_srcdir)/ext/pango/gsttextoverlay.h \
 	$(top_srcdir)/ext/pango/gsttextrender.h \
 	$(top_srcdir)/ext/pango/gsttimeoverlay.h \
 	$(top_srcdir)/ext/theora/gsttheoradec.h \
 	$(top_srcdir)/ext/theora/gsttheoraenc.h \
+	$(top_srcdir)/ext/theora/gsttheoraparse.h \
 	$(top_srcdir)/ext/vorbis/vorbisdec.h \
 	$(top_srcdir)/ext/vorbis/vorbisenc.h \
 	$(top_srcdir)/ext/vorbis/vorbisparse.h \
 	$(top_srcdir)/ext/vorbis/vorbistag.h \
 	$(top_srcdir)/gst/adder/gstadder.h \
+	$(top_srcdir)/gst/audioconvert/audioconvert.h \
 	$(top_srcdir)/gst/audioconvert/gstaudioconvert.h \
 	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/audiotestsrc/gstaudiotestsrc.h \
 	$(top_srcdir)/gst/ffmpegcolorspace/gstffmpegcolorspace.h \
 	$(top_srcdir)/gst/gdp/gstgdpdepay.h \
 	$(top_srcdir)/gst/gdp/gstgdppay.h \
-	$(top_srcdir)/gst/playback/gstdecodebin2.c \
+	$(top_srcdir)/gst/playback/gstplay-enum.h \
 	$(top_srcdir)/gst/tcp/gstmultifdsink.h \
 	$(top_srcdir)/gst/tcp/gsttcpserversink.h \
+	$(top_srcdir)/gst/tcp/gsttcp-enumtypes.h \
+	$(top_srcdir)/gst/tcp/gsttcp.h \
 	$(top_srcdir)/gst/videorate/gstvideorate.h \
 	$(top_srcdir)/gst/videoscale/gstvideoscale.h \
 	$(top_srcdir)/gst/videotestsrc/gstvideotestsrc.h \
@@ -623,12 +669,15 @@ CLEANFILES = \
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
+@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(builddir)/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
-@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src \
+@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
 @ENABLE_GTK_DOC_TRUE@        GST_REGISTRY=$(INSPECT_REGISTRY)
 
+
+# wildcard is apparently not portable to other makes, hence the use of find
+inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
 all: all-am
 
 .SUFFIXES:
@@ -812,8 +861,15 @@ upload: $(FORMATS)
 	echo Done
 
 help:
+	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
 	@echo "the documentation files maintained in CVS"
+	@echo
+	@echo Other useful make targets:
+	@echo
+	@echo  check-inspected-versions: make sure the inspected plugin info
+	@echo                            is up to date before a release
+	@echo
 
 # update the stuff maintained by doc maintainers
 update:
@@ -860,12 +916,11 @@ update:
 @ENABLE_GTK_DOC_TRUE@	mkdir inspect
 
 @ENABLE_GTK_DOC_TRUE@inspect-update: inspect
-@ENABLE_GTK_DOC_TRUE@	-rm $(INSPECT_REGISTRY)
-@ENABLE_GTK_DOC_TRUE@	-rm inspect-build.stamp
+@ENABLE_GTK_DOC_TRUE@	-rm -f $(INSPECT_REGISTRY) inspect-build.stamp
 @ENABLE_GTK_DOC_TRUE@	$(MAKE) inspect-build.stamp
 
 # FIXME: inspect.stamp should be written to by gst-xmlinspect.py
-# IFF the output changed; see gtkdoc-mktmpl
+# IF the output changed; see gtkdoc-mktmpl
 @ENABLE_GTK_DOC_TRUE@inspect-build.stamp:
 @ENABLE_GTK_DOC_TRUE@	@echo '*** Rebuilding plugin inspection files ***'
 @ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
@@ -957,6 +1012,9 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@if grep "warning:" html-build.log > /dev/null; then \
 @ENABLE_GTK_DOC_TRUE@		echo "ERROR"; grep "warning:" html-build.log; exit 1; fi
 @ENABLE_GTK_DOC_TRUE@	@rm html-build.log
+@ENABLE_GTK_DOC_TRUE@	mv html/index.sgml html/index.sgml.bak
+@ENABLE_GTK_DOC_TRUE@	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
+@ENABLE_GTK_DOC_TRUE@	rm -f html/index.sgml.bak
 @ENABLE_GTK_DOC_TRUE@	rm -f html/$(DOC_MAIN_SGML_FILE)
 @ENABLE_GTK_DOC_TRUE@	rm -rf html/xml
 @ENABLE_GTK_DOC_TRUE@	rm -f html/version.entities
@@ -965,22 +1023,19 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@echo '-- Fixing Crossreferences' 
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 @ENABLE_GTK_DOC_TRUE@	touch html-build.stamp
-@ENABLE_GTK_DOC_FALSE@all-local:
 
-# FIXME: these rules need a little cleaning up
-clean-local:
+@ENABLE_GTK_DOC_TRUE@clean-local-gtkdoc:
+@ENABLE_GTK_DOC_TRUE@	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+@ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
+@ENABLE_GTK_DOC_TRUE@	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES); \
+@ENABLE_GTK_DOC_TRUE@	fi
+@ENABLE_GTK_DOC_FALSE@all-local:
+@ENABLE_GTK_DOC_FALSE@clean-local-gtkdoc:
+
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
-# clean files generated for tmpl build
-	-rm -rf tmpl
-# clean files copied/generated for nonsrcdir tmpl build
-	if test x"$(srcdir)" != x. ; then \
-	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES);			\
-	fi
-# clean files generated for xml build
-	-rm -rf xml
-# clean files generate for html build
-	-rm -rf html
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
@@ -1062,6 +1117,19 @@ check-hierarchy: $(DOC_MODULE).hierarchy
 
 check: check-hierarchy
 
+check-inspected-versions:
+	@echo Checking plugin versions of inspected plugin data ...; \
+	fail=0 ; \
+	for each in $(inspect_files) ; do \
+	  if (grep -H '<version>' $$each | grep -v '<version>$(VERSION)'); then \
+	    echo $$each should be fixed to say version $(VERSION) or be removed ; \
+	    echo "sed -i -e 's/<version.*version>/<version>$(VERSION)<\/version>/'" $$each; \
+	    echo ; \
+	    fail=1; \
+	  fi ; \
+	done ; \
+	exit $$fail
+
 #
 # Require gtk-doc when making dist
 #
@@ -1078,7 +1146,7 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
 	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
+	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
 	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
 
 	images=$(HTML_IMAGES) ;    	      \

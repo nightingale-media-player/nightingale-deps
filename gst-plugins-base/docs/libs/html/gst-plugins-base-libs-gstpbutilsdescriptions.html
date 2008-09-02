@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstpbutilsdescriptions</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="prev" href="gst-plugins-base-libs-gstpbutils.html" title="gstpbutils">
 <link rel="next" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html" title="gstpbutilsmissingplugins">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,58 +36,54 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2743627" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2744338" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstpbutilsdescriptions.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstpbutilsdescriptions.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstpbutilsdescriptions"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2743627"></a><span class="refentrytitle">gstpbutilsdescriptions</span>
-</h2>
-<p>gstpbutilsdescriptions &#8212; Provides human-readable descriptions for caps/codecs
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstpbutilsdescriptions.top_of_page"></a>gstpbutilsdescriptions</span></h2>
+<p>gstpbutilsdescriptions — Provides human-readable descriptions for caps/codecs
 and encoder, decoder, URI source and URI sink elements</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstpbutilsdescriptions.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/pbutils/descriptions.h&gt;
 
-
-
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-source-description">gst_pb_utils_get_source_description</a> (const gchar *protocol);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-sink-description">gst_pb_utils_get_sink_description</a>   (const gchar *protocol);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-decoder-description">gst_pb_utils_get_decoder_description</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-source-description" title="gst_pb_utils_get_source_description ()">gst_pb_utils_get_source_description</a> (const gchar *protocol);
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-sink-description" title="gst_pb_utils_get_sink_description ()">gst_pb_utils_get_sink_description</a>   (const gchar *protocol);
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-decoder-description" title="gst_pb_utils_get_decoder_description ()">gst_pb_utils_get_decoder_description</a>
                                                         (const GstCaps *caps);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-encoder-description">gst_pb_utils_get_encoder_description</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-encoder-description" title="gst_pb_utils_get_encoder_description ()">gst_pb_utils_get_encoder_description</a>
                                                         (const GstCaps *caps);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-element-description">gst_pb_utils_get_element_description</a>
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-element-description" title="gst_pb_utils_get_element_description ()">gst_pb_utils_get_element_description</a>
                                                         (const gchar *factory_name);
 
-gboolean            <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list">gst_pb_utils_add_codec_description_to_tag_list</a>
+gboolean            <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list" title="gst_pb_utils_add_codec_description_to_tag_list ()">gst_pb_utils_add_codec_description_to_tag_list</a>
                                                         (GstTagList *taglist,
                                                          const gchar *codec_tag,
                                                          const GstCaps *caps);
-gchar*              <a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-codec-description">gst_pb_utils_get_codec_description</a>  (const GstCaps *caps);
+gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-codec-description" title="gst_pb_utils_get_codec_description ()">gst_pb_utils_get_codec_description</a>  (const GstCaps *caps);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2744338"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstpbutilsdescriptions.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2744350"></a><p>
+<a name="id2774325"></a><p>
 The above functions provide human-readable strings for media formats
 and decoder/demuxer/depayloader/encoder/muxer/payloader elements for use
 in error dialogs or other messages shown to users.
 </p>
 <p>
-<a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list"><code class="function">gst_pb_utils_add_codec_description_to_tag_list()</code></a> is a utility function
+<a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list" title="gst_pb_utils_add_codec_description_to_tag_list ()"><code class="function">gst_pb_utils_add_codec_description_to_tag_list()</code></a> is a utility function
 for demuxer and decoder elements to add audio/video codec tags from a
 given (fixed) <span class="type">GstCaps</span>.
 </p>
@@ -97,11 +93,10 @@ given (fixed) <span class="type">GstCaps</span>.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2744389"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstpbutilsdescriptions.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2744399"></a><h3>
-<a name="gst-pb-utils-get-source-description"></a>gst_pb_utils_get_source_description ()</h3>
-<a class="indexterm" name="id2744413"></a><pre class="programlisting">gchar*              gst_pb_utils_get_source_description (const gchar *protocol);</pre>
+<a name="gst-pb-utils-get-source-description"></a><h3>gst_pb_utils_get_source_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_source_description (const gchar *protocol);</pre>
 <p>
 Returns a localised string describing a source element handling the protocol
 specified in <em class="parameter"><code>protocol</code></em>, for use in error dialogs or other messages to be
@@ -109,7 +104,7 @@ seen by the user. Should never return NULL unless <em class="parameter"><code>pr
 </p>
 <p>
 This function is mainly for internal use, applications would typically
-use <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
+use <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
 a missing feature from a missing-plugin message.</p>
 <p>
 
@@ -118,12 +113,12 @@ a missing feature from a missing-plugin message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the protocol the source element needs to handle, e.g. "http"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -133,9 +128,8 @@ a missing feature from a missing-plugin message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2744521"></a><h3>
-<a name="gst-pb-utils-get-sink-description"></a>gst_pb_utils_get_sink_description ()</h3>
-<a class="indexterm" name="id2744534"></a><pre class="programlisting">gchar*              gst_pb_utils_get_sink_description   (const gchar *protocol);</pre>
+<a name="gst-pb-utils-get-sink-description"></a><h3>gst_pb_utils_get_sink_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_sink_description   (const gchar *protocol);</pre>
 <p>
 Returns a localised string describing a sink element handling the protocol
 specified in <em class="parameter"><code>protocol</code></em>, for use in error dialogs or other messages to be
@@ -143,7 +137,7 @@ seen by the user. Should never return NULL unless <em class="parameter"><code>pr
 </p>
 <p>
 This function is mainly for internal use, applications would typically
-use <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
+use <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
 a missing feature from a missing-plugin message.</p>
 <p>
 
@@ -152,12 +146,12 @@ a missing feature from a missing-plugin message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>protocol</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>protocol</code></em> :</span></p></td>
 <td> the protocol the sink element needs to handle, e.g. "http"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -167,9 +161,8 @@ a missing feature from a missing-plugin message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2744641"></a><h3>
-<a name="gst-pb-utils-get-decoder-description"></a>gst_pb_utils_get_decoder_description ()</h3>
-<a class="indexterm" name="id2744654"></a><pre class="programlisting">gchar*              gst_pb_utils_get_decoder_description
+<a name="gst-pb-utils-get-decoder-description"></a><h3>gst_pb_utils_get_decoder_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_decoder_description
                                                         (const GstCaps *caps);</pre>
 <p>
 Returns a localised string describing an decoder for the format specified
@@ -178,7 +171,7 @@ Should never return NULL unless <em class="parameter"><code>factory_name</code><
 </p>
 <p>
 This function is mainly for internal use, applications would typically
-use <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
+use <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
 a missing feature from a missing-plugin message.</p>
 <p>
 
@@ -187,12 +180,12 @@ a missing feature from a missing-plugin message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the (fixed) <span class="type">GstCaps</span> for which an decoder description is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -202,9 +195,8 @@ a missing feature from a missing-plugin message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2744775"></a><h3>
-<a name="gst-pb-utils-get-encoder-description"></a>gst_pb_utils_get_encoder_description ()</h3>
-<a class="indexterm" name="id2744788"></a><pre class="programlisting">gchar*              gst_pb_utils_get_encoder_description
+<a name="gst-pb-utils-get-encoder-description"></a><h3>gst_pb_utils_get_encoder_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_encoder_description
                                                         (const GstCaps *caps);</pre>
 <p>
 Returns a localised string describing an encoder for the format specified
@@ -213,7 +205,7 @@ Should never return NULL unless <em class="parameter"><code>factory_name</code><
 </p>
 <p>
 This function is mainly for internal use, applications would typically
-use <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
+use <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
 a missing feature from a missing-plugin message.</p>
 <p>
 
@@ -222,12 +214,12 @@ a missing feature from a missing-plugin message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the (fixed) <span class="type">GstCaps</span> for which an encoder description is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -237,9 +229,8 @@ a missing feature from a missing-plugin message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2744910"></a><h3>
-<a name="gst-pb-utils-get-element-description"></a>gst_pb_utils_get_element_description ()</h3>
-<a class="indexterm" name="id2744923"></a><pre class="programlisting">gchar*              gst_pb_utils_get_element_description
+<a name="gst-pb-utils-get-element-description"></a><h3>gst_pb_utils_get_element_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_element_description
                                                         (const gchar *factory_name);</pre>
 <p>
 Returns a localised string describing the given element, for use in
@@ -248,7 +239,7 @@ return NULL unless <em class="parameter"><code>factory_name</code></em> is inval
 </p>
 <p>
 This function is mainly for internal use, applications would typically
-use <a href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
+use <a class="link" href="gst-plugins-base-libs-gstpbutilsmissingplugins.html#gst-missing-plugin-message-get-description" title="gst_missing_plugin_message_get_description ()"><code class="function">gst_missing_plugin_message_get_description()</code></a> to get a description of
 a missing feature from a missing-plugin message.</p>
 <p>
 
@@ -257,12 +248,12 @@ a missing feature from a missing-plugin message.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>factory_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>factory_name</code></em> :</span></p></td>
 <td> the name of the element, e.g. "gnomevfssrc"
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -272,9 +263,8 @@ a missing feature from a missing-plugin message.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2745025"></a><h3>
-<a name="gst-pb-utils-add-codec-description-to-tag-list"></a>gst_pb_utils_add_codec_description_to_tag_list ()</h3>
-<a class="indexterm" name="id2745039"></a><pre class="programlisting">gboolean            gst_pb_utils_add_codec_description_to_tag_list
+<a name="gst-pb-utils-add-codec-description-to-tag-list"></a><h3>gst_pb_utils_add_codec_description_to_tag_list ()</h3>
+<pre class="programlisting">gboolean            gst_pb_utils_add_codec_description_to_tag_list
                                                         (GstTagList *taglist,
                                                          const gchar *codec_tag,
                                                          const GstCaps *caps);</pre>
@@ -287,23 +277,23 @@ Adds a codec tag describing the format specified by <em class="parameter"><code>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>taglist</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>taglist</code></em> :</span></p></td>
 <td> a <span class="type">GstTagList</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>codec_tag</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>codec_tag</code></em> :</span></p></td>
 <td> a GStreamer codec tag such as <span class="type">GST_TAG_AUDIO_CODEC</span>,
             <span class="type">GST_TAG_VIDEO_CODEC</span> or <span class="type">GST_TAG_CODEC</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the (fixed) <span class="type">GstCaps</span> for which a codec tag should be added.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if a codec tag was added, FALSE otherwise.
 </td>
 </tr>
@@ -312,9 +302,8 @@ Adds a codec tag describing the format specified by <em class="parameter"><code>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2745203"></a><h3>
-<a name="gst-pb-utils-get-codec-description"></a>gst_pb_utils_get_codec_description ()</h3>
-<a class="indexterm" name="id2745218"></a><pre class="programlisting">gchar*              gst_pb_utils_get_codec_description  (const GstCaps *caps);</pre>
+<a name="gst-pb-utils-get-codec-description"></a><h3>gst_pb_utils_get_codec_description ()</h3>
+<pre class="programlisting">gchar*              gst_pb_utils_get_codec_description  (const GstCaps *caps);</pre>
 <p>
 Returns a localised (as far as this is possible) string describing the
 media format specified in <em class="parameter"><code>caps</code></em>, for use in error dialogs or other messages
@@ -322,7 +311,7 @@ to be seen by the user. Should never return NULL unless <em class="parameter"><c
 </p>
 <p>
 Also see the convenience function
-<a href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list"><code class="function">gst_pb_utils_add_codec_description_to_tag_list()</code></a>.</p>
+<a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list" title="gst_pb_utils_add_codec_description_to_tag_list ()"><code class="function">gst_pb_utils_add_codec_description_to_tag_list()</code></a>.</p>
 <p>
 
 </p>
@@ -330,12 +319,12 @@ Also see the convenience function
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>caps</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
 <td> the (fixed) <span class="type">GstCaps</span> for which an format description is needed
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
          string with <code class="function">g_free()</code> when not needed any longer.
 </td>
@@ -345,5 +334,8 @@ Also see the convenience function
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -24,12 +24,13 @@ libgstrtsp_@GST_MAJORMINOR@_la_SOURCES = gstrtspbase64.c \
 					 gstrtspmessage.c    \
 					 gstrtsprange.c      \
 					 gstrtsptransport.c  \
-					 gstrtspurl.c 
+					 gstrtspurl.c        \
+					 md5.c
 
 nodist_libgstrtsp_@GST_MAJORMINOR@_la_SOURCES = $(built_sources)
 nodist_libgstrtspinclude_HEADERS = gstrtsp-enumtypes.h
 
-noinst_HEADERS = gstrtsp.h
+noinst_HEADERS = gstrtsp.h md5.h
 
 #gstrtspextwms.c  
 #rtspextreal.c    

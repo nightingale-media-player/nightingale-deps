@@ -71,34 +71,61 @@
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 /* elementfactory information */
-static const GstElementDetails adder_details = GST_ELEMENT_DETAILS ("Adder",
-    "Generic/Audio",
-    "Add N audio channels together",
-    "Thomas <thomas@apestaart.org>");
+
+#define CAPS \
+  "audio/x-raw-int, " \
+  "rate = (int) [ 1, MAX ], " \
+  "channels = (int) [ 1, MAX ], " \
+  "endianness = (int) BYTE_ORDER, " \
+  "width = (int) 32, " \
+  "depth = (int) 32, " \
+  "signed = (boolean) { true, false } ;" \
+  "audio/x-raw-int, " \
+  "rate = (int) [ 1, MAX ], " \
+  "channels = (int) [ 1, MAX ], " \
+  "endianness = (int) BYTE_ORDER, " \
+  "width = (int) 16, " \
+  "depth = (int) 16, " \
+  "signed = (boolean) { true, false } ;" \
+  "audio/x-raw-int, " \
+  "rate = (int) [ 1, MAX ], " \
+  "channels = (int) [ 1, MAX ], " \
+  "endianness = (int) BYTE_ORDER, " \
+  "width = (int) 8, " \
+  "depth = (int) 8, " \
+  "signed = (boolean) { true, false } ;" \
+  "audio/x-raw-float, " \
+  "rate = (int) [ 1, MAX ], " \
+  "channels = (int) [ 1, MAX ], " \
+  "endianness = (int) BYTE_ORDER, " \
+  "width = (int) { 32, 64 }"
 
 static GstStaticPadTemplate gst_adder_src_template =
-    GST_STATIC_PAD_TEMPLATE ("src",
+GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_AUDIO_INT_PAD_TEMPLATE_CAPS "; "
-        GST_AUDIO_FLOAT_PAD_TEMPLATE_CAPS)
+    GST_STATIC_CAPS (CAPS)
     );
 
 static GstStaticPadTemplate gst_adder_sink_template =
-    GST_STATIC_PAD_TEMPLATE ("sink%d",
+GST_STATIC_PAD_TEMPLATE ("sink%d",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
-    GST_STATIC_CAPS (GST_AUDIO_INT_PAD_TEMPLATE_CAPS "; "
-        GST_AUDIO_FLOAT_PAD_TEMPLATE_CAPS)
+    GST_STATIC_CAPS (CAPS)
     );
 
 static void gst_adder_class_init (GstAdderClass * klass);
+
 static void gst_adder_init (GstAdder * adder);
+
 static void gst_adder_finalize (GObject * object);
 
 static gboolean gst_adder_setcaps (GstPad * pad, GstCaps * caps);
+
 static gboolean gst_adder_query (GstPad * pad, GstQuery * query);
+
 static gboolean gst_adder_src_event (GstPad * pad, GstEvent * event);
+
 static gboolean gst_adder_sink_event (GstPad * pad, GstEvent * event);
 
 static GstPad *gst_adder_request_new_pad (GstElement * element,
@@ -166,6 +193,7 @@ static GstCaps *
 gst_adder_sink_getcaps (GstPad * pad)
 {
   GstAdder *adder;
+
   GstCaps *result, *peercaps, *sinkcaps;
 
   adder = GST_ADDER (GST_PAD_PARENT (pad));
@@ -200,8 +228,11 @@ static gboolean
 gst_adder_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstAdder *adder;
+
   GList *pads;
+
   GstStructure *structure;
+
   const char *media_type;
 
   adder = GST_ADDER (GST_PAD_PARENT (pad));
@@ -257,6 +288,10 @@ gst_adder_setcaps (GstPad * pad, GstCaps * caps)
     GST_DEBUG_OBJECT (adder, "parse_caps sets adder to format float");
     adder->format = GST_ADDER_FORMAT_FLOAT;
     gst_structure_get_int (structure, "width", &adder->width);
+    gst_structure_get_int (structure, "endianness", &adder->endianness);
+
+    if (adder->endianness != G_BYTE_ORDER)
+      goto not_supported;
 
     switch (adder->width) {
       case 32:
@@ -307,9 +342,13 @@ static gboolean
 gst_adder_query_duration (GstAdder * adder, GstQuery * query)
 {
   gint64 max;
+
   gboolean res;
+
   GstFormat format;
+
   GstIterator *it;
+
   gboolean done;
 
   /* parse format */
@@ -322,6 +361,7 @@ gst_adder_query_duration (GstAdder * adder, GstQuery * query)
   it = gst_element_iterate_sink_pads (GST_ELEMENT_CAST (adder));
   while (!done) {
     GstIteratorResult ires;
+
     gpointer item;
 
     ires = gst_iterator_next (it, &item);
@@ -332,6 +372,7 @@ gst_adder_query_duration (GstAdder * adder, GstQuery * query)
       case GST_ITERATOR_OK:
       {
         GstPad *pad = GST_PAD_CAST (item);
+
         gint64 duration;
 
         /* ask sink peer for duration */
@@ -347,11 +388,13 @@ gst_adder_query_duration (GstAdder * adder, GstQuery * query)
           else if (duration > max)
             max = duration;
         }
+        gst_object_unref (pad);
         break;
       }
       case GST_ITERATOR_RESYNC:
         max = -1;
         res = TRUE;
+        gst_iterator_resync (it);
         break;
       default:
         res = FALSE;
@@ -363,7 +406,101 @@ gst_adder_query_duration (GstAdder * adder, GstQuery * query)
 
   if (res) {
     /* and store the max */
+    GST_DEBUG_OBJECT (adder, "Total duration in format %s: %"
+        GST_TIME_FORMAT, gst_format_get_name (format), GST_TIME_ARGS (max));
     gst_query_set_duration (query, format, max);
+  }
+
+  return res;
+}
+
+static gboolean
+gst_adder_query_latency (GstAdder * adder, GstQuery * query)
+{
+  GstClockTime min, max;
+
+  gboolean live;
+
+  gboolean res;
+
+  GstIterator *it;
+
+  gboolean done;
+
+  res = TRUE;
+  done = FALSE;
+
+  live = FALSE;
+  min = 0;
+  max = GST_CLOCK_TIME_NONE;
+
+  /* Take maximum of all latency values */
+  it = gst_element_iterate_sink_pads (GST_ELEMENT_CAST (adder));
+  while (!done) {
+    GstIteratorResult ires;
+
+    gpointer item;
+
+    ires = gst_iterator_next (it, &item);
+    switch (ires) {
+      case GST_ITERATOR_DONE:
+        done = TRUE;
+        break;
+      case GST_ITERATOR_OK:
+      {
+        GstPad *pad = GST_PAD_CAST (item);
+
+        GstQuery *peerquery;
+
+        GstClockTime min_cur, max_cur;
+
+        gboolean live_cur;
+
+        peerquery = gst_query_new_latency ();
+
+        /* Ask peer for latency */
+        res &= gst_pad_peer_query (pad, peerquery);
+
+        /* take max from all valid return values */
+        if (res) {
+          gst_query_parse_latency (peerquery, &live_cur, &min_cur, &max_cur);
+
+          if (min_cur > min)
+            min = min_cur;
+
+          if (max_cur != GST_CLOCK_TIME_NONE &&
+              ((max != GST_CLOCK_TIME_NONE && max_cur > max) ||
+                  (max == GST_CLOCK_TIME_NONE)))
+            max = max_cur;
+
+          live = live || live_cur;
+        }
+
+        gst_query_unref (peerquery);
+        gst_object_unref (pad);
+        break;
+      }
+      case GST_ITERATOR_RESYNC:
+        live = FALSE;
+        min = 0;
+        max = GST_CLOCK_TIME_NONE;
+        res = TRUE;
+        gst_iterator_resync (it);
+        break;
+      default:
+        res = FALSE;
+        done = TRUE;
+        break;
+    }
+  }
+  gst_iterator_free (it);
+
+  if (res) {
+    /* store the results */
+    GST_DEBUG_OBJECT (adder, "Calculated total latency: live %s, min %"
+        GST_TIME_FORMAT ", max %" GST_TIME_FORMAT,
+        (live ? "yes" : "no"), GST_TIME_ARGS (min), GST_TIME_ARGS (max));
+    gst_query_set_latency (query, live, min, max);
   }
 
   return res;
@@ -373,6 +510,7 @@ static gboolean
 gst_adder_query (GstPad * pad, GstQuery * query)
 {
   GstAdder *adder = GST_ADDER (gst_pad_get_parent (pad));
+
   gboolean res = FALSE;
 
   switch (GST_QUERY_TYPE (query)) {
@@ -399,6 +537,9 @@ gst_adder_query (GstPad * pad, GstQuery * query)
     }
     case GST_QUERY_DURATION:
       res = gst_adder_query_duration (adder, query);
+      break;
+    case GST_QUERY_LATENCY:
+      res = gst_adder_query_latency (adder, query);
       break;
     default:
       /* FIXME, needs a custom query handler because we have multiple
@@ -438,6 +579,7 @@ static gboolean
 forward_event (GstAdder * adder, GstEvent * event)
 {
   gboolean ret;
+
   GstIterator *it;
   GValue vret = { 0 };
 
@@ -463,6 +605,7 @@ static gboolean
 gst_adder_src_event (GstPad * pad, GstEvent * event)
 {
   GstAdder *adder;
+
   gboolean result;
 
   adder = GST_ADDER (gst_pad_get_parent (pad));
@@ -475,7 +618,9 @@ gst_adder_src_event (GstPad * pad, GstEvent * event)
     case GST_EVENT_SEEK:
     {
       GstSeekFlags flags;
+
       GstSeekType curtype;
+
       gint64 cur;
 
       /* parse the seek parameters */
@@ -523,6 +668,7 @@ static gboolean
 gst_adder_sink_event (GstPad * pad, GstEvent * event)
 {
   GstAdder *adder;
+
   gboolean ret;
 
   adder = GST_ADDER (gst_pad_get_parent (pad));
@@ -555,6 +701,7 @@ static void
 gst_adder_class_init (GstAdderClass * klass)
 {
   GObjectClass *gobject_class;
+
   GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
@@ -567,7 +714,9 @@ gst_adder_class_init (GstAdderClass * klass)
       gst_static_pad_template_get (&gst_adder_src_template));
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&gst_adder_sink_template));
-  gst_element_class_set_details (gstelement_class, &adder_details);
+  gst_element_class_set_details_simple (gstelement_class, "Adder",
+      "Generic/Audio",
+      "Add N audio channels together", "Thomas <thomas@apestaart.org>");
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -620,8 +769,11 @@ gst_adder_request_new_pad (GstElement * element, GstPadTemplate * templ,
     const gchar * unused)
 {
   gchar *name;
+
   GstAdder *adder;
+
   GstPad *newpad;
+
   gint padcount;
 
   if (templ->direction != GST_PAD_SINK)
@@ -696,11 +848,18 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
    * - push out the output buffer
    */
   GstAdder *adder;
+
   guint size;
+
   GSList *collected;
+
   GstBuffer *outbuf;
+
   GstFlowReturn ret;
+
   gpointer outbytes;
+
+  gboolean empty = TRUE;
 
   adder = GST_ADDER (user_data);
 
@@ -722,19 +881,26 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
 
   for (collected = pads->data; collected; collected = g_slist_next (collected)) {
     GstCollectData *data;
+
     guint8 *bytes;
+
     guint len;
+
+    GstBuffer *inbuf;
 
     data = (GstCollectData *) collected->data;
 
-    /* get pointer to copy size bytes */
-    len = gst_collect_pads_read (pads, data, &bytes, size);
-    /* length 0 means EOS or an empty buffer so we still need to flush in
+    /* get a subbuffer of size bytes */
+    inbuf = gst_collect_pads_take_buffer (pads, data, size);
+    /* NULL means EOS or an empty buffer so we still need to flush in
      * case of an empty buffer. */
-    if (len == 0) {
+    if (inbuf == NULL) {
       GST_LOG_OBJECT (adder, "channel %p: no bytes available", data);
       goto next;
     }
+
+    bytes = GST_BUFFER_DATA (inbuf);
+    len = GST_BUFFER_SIZE (inbuf);
 
     if (outbuf == NULL) {
       GST_LOG_OBJECT (adder, "channel %p: making output buffer of %d bytes",
@@ -746,23 +912,37 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
       outbytes = GST_BUFFER_DATA (outbuf);
       gst_buffer_set_caps (outbuf, GST_PAD_CAPS (adder->srcpad));
 
-      /* clear if we are only going to fill a partial buffer */
-      if (G_UNLIKELY (size > len))
+      if (!GST_BUFFER_FLAG_IS_SET (inbuf, GST_BUFFER_FLAG_GAP)) {
+        /* clear if we are only going to fill a partial buffer */
+        if (G_UNLIKELY (size > len))
+          memset (outbytes, 0, size);
+
+        GST_LOG_OBJECT (adder, "channel %p: copying %d bytes from data %p",
+            data, len, bytes);
+
+        /* and copy the data into it */
+        memcpy (outbytes, bytes, len);
+        empty = FALSE;
+      } else {
+        GST_LOG_OBJECT (adder, "channel %p: zeroing %d bytes from data %p",
+            data, len, bytes);
         memset (outbytes, 0, size);
-
-      GST_LOG_OBJECT (adder, "channel %p: copying %d bytes from data %p",
-          data, len, bytes);
-
-      /* and copy the data into it */
-      memcpy (outbytes, bytes, len);
+      }
     } else {
-      GST_LOG_OBJECT (adder, "channel %p: mixing %d bytes from data %p",
-          data, len, bytes);
-      /* other buffers, need to add them */
-      adder->func ((gpointer) outbytes, (gpointer) bytes, len);
+      if (!GST_BUFFER_FLAG_IS_SET (inbuf, GST_BUFFER_FLAG_GAP)) {
+        GST_LOG_OBJECT (adder, "channel %p: mixing %d bytes from data %p",
+            data, len, bytes);
+        /* other buffers, need to add them */
+        adder->func ((gpointer) outbytes, (gpointer) bytes, len);
+        empty = FALSE;
+      } else {
+        GST_LOG_OBJECT (adder, "channel %p: skipping %d bytes from data %p",
+            data, len, bytes);
+      }
     }
   next:
-    gst_collect_pads_flush (pads, data, len);
+    if (inbuf)
+      gst_buffer_unref (inbuf);
   }
 
   /* can only happen when no pads to collect or all EOS */
@@ -810,6 +990,10 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
   GST_BUFFER_DURATION (outbuf) = adder->timestamp -
       GST_BUFFER_TIMESTAMP (outbuf);
 
+  /* if we only processed silence, mark output again as silence */
+  if (empty)
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_GAP);
+
   /* send it out */
   GST_LOG_OBJECT (adder, "pushing outbuf, timestamp %" GST_TIME_FORMAT,
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)));
@@ -836,6 +1020,7 @@ static GstStateChangeReturn
 gst_adder_change_state (GstElement * element, GstStateChange transition)
 {
   GstAdder *adder;
+
   GstStateChangeReturn ret;
 
   adder = GST_ADDER (element);

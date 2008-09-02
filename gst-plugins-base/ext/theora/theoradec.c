@@ -136,7 +136,7 @@ gst_theora_dec_class_init (GstTheoraDecClass * klass)
   g_object_class_install_property (gobject_class, ARG_CROP,
       g_param_spec_boolean ("crop", "Crop",
           "Crop the image to the visible region", THEORA_DEF_CROP,
-          (GParamFlags) G_PARAM_READWRITE));
+          (GParamFlags) G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = theora_dec_change_state;
 
@@ -230,7 +230,7 @@ _theora_granule_frame (GstTheoraDec * dec, gint64 granulepos)
   framenum = granulepos >> ilog;
   framenum += granulepos - (framenum << ilog);
 
-  /* This is 1-based for current libtheora, 0 based for old. Fix up. */
+  /* This is 0-based for old bitstreams, 1-based for new. Fix up. */
   if (!dec->is_old_bitstream)
     framenum -= 1;
 
@@ -266,7 +266,8 @@ _inc_granulepos (GstTheoraDec * dec, gint64 granulepos)
 
   framecount = _theora_granule_frame (dec, granulepos);
 
-  return (framecount + 1) << dec->granule_shift;
+  return (framecount + 1 +
+      (dec->is_old_bitstream ? 0 : 1)) << dec->granule_shift;
 }
 
 #if 0
@@ -788,10 +789,13 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
 
   /* calculate par
    * the info.aspect_* values reflect PAR;
-   * 0:0 is allowed and can be interpreted as 1:1, so correct for it */
+   * 0:0 is allowed and can be interpreted as 1:1, so correct for it.
+   * x:0 for other x isn't technically allowed, but it's seen in the wild and
+   * is reasonable to treat the same. 
+   */
   par_num = dec->info.aspect_numerator;
   par_den = dec->info.aspect_denominator;
-  if (par_num == 0 && par_den == 0) {
+  if (par_den == 0) {
     par_num = par_den = 1;
   }
   /* theora has:
@@ -865,8 +869,6 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
         dec->segment.format, dec->segment.start, dec->segment.stop,
         dec->segment.time);
     eret = gst_pad_push_event (dec->srcpad, event);
-    if (!eret)
-      ret = GST_FLOW_ERROR;
     dec->sent_newsegment = TRUE;
   }
 
@@ -1450,7 +1452,7 @@ theora_dec_chain (GstPad * pad, GstBuffer * buf)
   dec = GST_THEORA_DEC (gst_pad_get_parent (pad));
 
   /* peel of DISCONT flag */
-  discont = GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_DISCONT);
+  discont = GST_BUFFER_IS_DISCONT (buf);
 
   /* resync on DISCONT */
   if (G_UNLIKELY (discont)) {

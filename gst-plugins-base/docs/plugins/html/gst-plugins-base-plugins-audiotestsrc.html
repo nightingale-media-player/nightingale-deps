@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>audiotestsrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-audioresample.html" title="audioresample">
 <link rel="next" href="gst-plugins-base-plugins-cdparanoiasrc.html" title="cdparanoiasrc">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
@@ -22,40 +22,33 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-plugins-cdparanoiasrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2580763" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2587829" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2565035" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2570093" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-audiotestsrc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-audiotestsrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-audiotestsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-audiotestsrc.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-audiotestsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2580763"></a><span class="refentrytitle">audiotestsrc</span>
-</h2>
-<p>audiotestsrc &#8212; Creates audio test signals of given frequency and volume</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-audiotestsrc.top_of_page"></a>audiotestsrc</span></h2>
+<p>audiotestsrc — Creates audio test signals of given frequency and volume</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.synopsis"></a><h2>Synopsis</h2>
 <a name="GstAudioTestSrc"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc-struct">GstAudioTestSrc</a>;
-enum                <a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave">GstAudioTestSrcWave</a>;
-
+                    <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc-struct" title="GstAudioTestSrc">GstAudioTestSrc</a>;
+enum                <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave" title="enum GstAudioTestSrcWave">GstAudioTestSrcWave</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2565035"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -64,27 +57,26 @@ enum                <a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudio
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2570093"></a><h2>Properties</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--freq">freq</a>"                     gdouble               : Read / Write
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--is-live">is-live</a>"                  gboolean              : Read / Write
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--samplesperbuffer">samplesperbuffer</a>"         gint                  : Read / Write
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--timestamp-offset">timestamp-offset</a>"         gint64                : Read / Write
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--volume">volume</a>"                   gdouble               : Read / Write
-  "<a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--wave">wave</a>"                     <a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--freq" title='The "freq" property'>freq</a>"                     gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--samplesperbuffer" title='The "samplesperbuffer" property'>samplesperbuffer</a>"         gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--wave" title='The "wave" property'>wave</a>"                     <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave" title="enum GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2587829"></a><h2>Description</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2587842"></a><p>
+<a name="id2617737"></a><h3>Example launch line</h3>
+<p>
 AudioTestSrc can be used to generate basic audio signals. It support several
 different waveforms and allows you to set the base frequency and volume.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -105,45 +97,52 @@ the saw wave is correct.
 </p>
 </div>
 <div class="refsect2" lang="en">
-<a name="id2587884"></a><h3>Element Information</h3>
+<a name="id2617778"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-base-plugins-plugin-audiotestsrc.html#plugin-audiotestsrc">audiotestsrc</a>
+          <a class="link" href="gst-plugins-base-plugins-plugin-audiotestsrc.html#plugin-audiotestsrc">audiotestsrc</a>
         </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Stefan Kost &lt;ensonic@users.sf.net&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Source/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)1; audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)1; audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)32, depth=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, endianness=(int)1234, width=(int){ 32, 64 }, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
 </tr>
 </tbody>
 </table></div>
@@ -153,11 +152,10 @@ the saw wave is correct.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2558674"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2558685"></a><h3>
-<a name="GstAudioTestSrc-struct"></a>GstAudioTestSrc</h3>
-<a class="indexterm" name="id2558697"></a><pre class="programlisting">typedef struct _GstAudioTestSrc GstAudioTestSrc;</pre>
+<a name="GstAudioTestSrc-struct"></a><h3>GstAudioTestSrc</h3>
+<pre class="programlisting">typedef struct _GstAudioTestSrc GstAudioTestSrc;</pre>
 <p>
 audiotestsrc object structure.</p>
 <p>
@@ -166,9 +164,8 @@ audiotestsrc object structure.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2558717"></a><h3>
-<a name="GstAudioTestSrcWave"></a>enum GstAudioTestSrcWave</h3>
-<a class="indexterm" name="id2558729"></a><pre class="programlisting">typedef enum {
+<a name="GstAudioTestSrcWave"></a><h3>enum GstAudioTestSrcWave</h3>
+<pre class="programlisting">typedef enum {
   GST_AUDIO_TEST_SRC_WAVE_SINE,
   GST_AUDIO_TEST_SRC_WAVE_SQUARE,
   GST_AUDIO_TEST_SRC_WAVE_SAW,
@@ -188,42 +185,42 @@ Different types of supported sound waves.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-SINE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE</code></span></p></td>
 <td> a sine wave
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-SQUARE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SQUARE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SQUARE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SQUARE</code></span></p></td>
 <td> a square wave
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-SAW:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SAW</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SAW:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SAW</code></span></p></td>
 <td> a saw wave
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-TRIANGLE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TRIANGLE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TRIANGLE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TRIANGLE</code></span></p></td>
 <td> a tringle wave
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-SILENCE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SILENCE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SILENCE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SILENCE</code></span></p></td>
 <td> silence
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-WHITE-NOISE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-WHITE-NOISE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE</code></span></p></td>
 <td> white noise
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-PINK-NOISE:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-PINK-NOISE:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE</code></span></p></td>
 <td> pink noise
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-AUDIO-TEST-SRC-WAVE-SINE-TAB:CAPS"></a><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE_TAB</code></span></td>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-SINE-TAB:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_SINE_TAB</code></span></p></td>
 <td> sine wave using a table
 </td>
 </tr>
@@ -232,58 +229,55 @@ Different types of supported sound waves.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2562225"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-plugins-audiotestsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2562235"></a><h3>
-<a name="GstAudioTestSrc--freq"></a>The "<code class="literal">freq</code>" property</h3>
-<a class="indexterm" name="id2562249"></a><pre class="programlisting">  "freq"                     gdouble               : Read / Write</pre>
+<a name="GstAudioTestSrc--freq"></a><h3>The <code class="literal">"freq"</code> property</h3>
+<pre class="programlisting">  "freq"                     gdouble               : Read / Write</pre>
 <p>Frequency of test signal.</p>
 <p>Allowed values: [0,20000]</p>
 <p>Default value: 440</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2562278"></a><h3>
-<a name="GstAudioTestSrc--is-live"></a>The "<code class="literal">is-live</code>" property</h3>
-<a class="indexterm" name="id2562292"></a><pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
+<a name="GstAudioTestSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
+<pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
 <p>Whether to act as a live source.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2562318"></a><h3>
-<a name="GstAudioTestSrc--samplesperbuffer"></a>The "<code class="literal">samplesperbuffer</code>" property</h3>
-<a class="indexterm" name="id2562334"></a><pre class="programlisting">  "samplesperbuffer"         gint                  : Read / Write</pre>
+<a name="GstAudioTestSrc--samplesperbuffer"></a><h3>The <code class="literal">"samplesperbuffer"</code> property</h3>
+<pre class="programlisting">  "samplesperbuffer"         gint                  : Read / Write</pre>
 <p>Number of samples in each outgoing buffer.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 1024</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2562363"></a><h3>
-<a name="GstAudioTestSrc--timestamp-offset"></a>The "<code class="literal">timestamp-offset</code>" property</h3>
-<a class="indexterm" name="id2562379"></a><pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
+<a name="GstAudioTestSrc--timestamp-offset"></a><h3>The <code class="literal">"timestamp-offset"</code> property</h3>
+<pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
 <p>An offset added to timestamps set on buffers (in ns).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2562406"></a><h3>
-<a name="GstAudioTestSrc--volume"></a>The "<code class="literal">volume</code>" property</h3>
-<a class="indexterm" name="id2562420"></a><pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<a name="GstAudioTestSrc--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
+<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
 <p>Volume of test signal.</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 0.8</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601240"></a><h3>
-<a name="GstAudioTestSrc--wave"></a>The "<code class="literal">wave</code>" property</h3>
-<a class="indexterm" name="id2601252"></a><pre class="programlisting">  "wave"                     <a href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write</pre>
+<a name="GstAudioTestSrc--wave"></a><h3>The <code class="literal">"wave"</code> property</h3>
+<pre class="programlisting">  "wave"                     <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave" title="enum GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write</pre>
 <p>Oscillator waveform.</p>
 <p>Default value: Sine</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

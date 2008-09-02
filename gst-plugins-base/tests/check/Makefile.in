@@ -40,21 +40,22 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/common/check.mak
 check_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6) \
-	elements/adder$(EXEEXT) elements/audioconvert$(EXEEXT) \
-	elements/audiorate$(EXEEXT) elements/audioresample$(EXEEXT) \
-	elements/audiotestsrc$(EXEEXT) elements/decodebin$(EXEEXT) \
-	elements/ffmpegcolorspace$(EXEEXT) elements/gdpdepay$(EXEEXT) \
-	elements/gdppay$(EXEEXT) elements/multifdsink$(EXEEXT) \
-	elements/playbin$(EXEEXT) elements/subparse$(EXEEXT) \
-	elements/videorate$(EXEEXT) elements/videotestsrc$(EXEEXT) \
-	elements/volume$(EXEEXT) generic/clock-selection$(EXEEXT) \
-	generic/states$(EXEEXT) gst/typefindfunctions$(EXEEXT) \
-	libs/audio$(EXEEXT) libs/cddabasesrc$(EXEEXT) \
-	libs/fft$(EXEEXT) libs/mixer$(EXEEXT) libs/netbuffer$(EXEEXT) \
+	$(am__EXEEXT_7) elements/adder$(EXEEXT) \
+	elements/audioconvert$(EXEEXT) elements/audiorate$(EXEEXT) \
+	elements/audioresample$(EXEEXT) elements/audiotestsrc$(EXEEXT) \
+	elements/decodebin$(EXEEXT) elements/ffmpegcolorspace$(EXEEXT) \
+	elements/gdpdepay$(EXEEXT) elements/gdppay$(EXEEXT) \
+	elements/multifdsink$(EXEEXT) elements/playbin$(EXEEXT) \
+	$(am__EXEEXT_8) elements/videorate$(EXEEXT) \
+	elements/videotestsrc$(EXEEXT) elements/volume$(EXEEXT) \
+	generic/clock-selection$(EXEEXT) generic/states$(EXEEXT) \
+	gst/typefindfunctions$(EXEEXT) libs/audio$(EXEEXT) \
+	libs/cddabasesrc$(EXEEXT) libs/fft$(EXEEXT) \
+	libs/mixer$(EXEEXT) libs/netbuffer$(EXEEXT) \
 	libs/pbutils$(EXEEXT) libs/rtp$(EXEEXT) libs/tag$(EXEEXT) \
 	libs/video$(EXEEXT) pipelines/simple-launch-lines$(EXEEXT) \
 	pipelines/streamheader$(EXEEXT)
-noinst_PROGRAMS = $(am__EXEEXT_7)
+noinst_PROGRAMS = $(am__EXEEXT_9)
 subdir = tests/check
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
@@ -96,14 +97,16 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @USE_ALSA_TRUE@am__EXEEXT_1 = elements/alsa$(EXEEXT)
 @USE_GNOME_VFS_TRUE@am__EXEEXT_2 = elements/gnomevfssink$(EXEEXT)
-@USE_OGG_TRUE@am__EXEEXT_3 = pipelines/oggmux$(EXEEXT)
-@USE_PANGO_TRUE@am__EXEEXT_4 = elements/textoverlay$(EXEEXT)
-@USE_VORBIS_TRUE@am__EXEEXT_5 = elements/vorbisdec$(EXEEXT) \
+@USE_GIO_TRUE@am__EXEEXT_3 = pipelines/gio$(EXEEXT)
+@USE_OGG_TRUE@am__EXEEXT_4 = pipelines/oggmux$(EXEEXT)
+@USE_PANGO_TRUE@am__EXEEXT_5 = elements/textoverlay$(EXEEXT)
+@USE_VORBIS_TRUE@am__EXEEXT_6 = elements/vorbisdec$(EXEEXT) \
 @USE_VORBIS_TRUE@	pipelines/vorbisenc$(EXEEXT) \
 @USE_VORBIS_TRUE@	pipelines/vorbisdec$(EXEEXT) \
 @USE_VORBIS_TRUE@	elements/vorbistag$(EXEEXT)
-@USE_THEORA_TRUE@am__EXEEXT_6 = pipelines/theoraenc$(EXEEXT)
-@USE_LIBVISUAL_TRUE@am__EXEEXT_7 = elements/libvisual$(EXEEXT)
+@USE_THEORA_TRUE@am__EXEEXT_7 = pipelines/theoraenc$(EXEEXT)
+@USE_PLUGIN_SUBPARSE_TRUE@am__EXEEXT_8 = elements/subparse$(EXEEXT)
+@USE_LIBVISUAL_TRUE@am__EXEEXT_9 = elements/libvisual$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 elements_adder_SOURCES = elements/adder.c
 elements_adder_OBJECTS = adder.$(OBJEXT)
@@ -253,6 +256,10 @@ libs_video_SOURCES = libs/video.c
 libs_video_OBJECTS = libs_video-video.$(OBJEXT)
 libs_video_DEPENDENCIES = $(top_builddir)/gst-libs/gst/video/libgstvideo-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+pipelines_gio_SOURCES = pipelines/gio.c
+pipelines_gio_OBJECTS = pipelines_gio-gio.$(OBJEXT)
+pipelines_gio_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
 pipelines_oggmux_SOURCES = pipelines/oggmux.c
 pipelines_oggmux_OBJECTS = pipelines_oggmux-oggmux.$(OBJEXT)
 pipelines_oggmux_DEPENDENCIES = $(am__DEPENDENCIES_2) \
@@ -306,9 +313,10 @@ SOURCES = elements/adder.c elements/alsa.c elements/audioconvert.c \
 	generic/states.c gst/typefindfunctions.c libs/audio.c \
 	libs/cddabasesrc.c libs/fft.c libs/mixer.c libs/netbuffer.c \
 	libs/pbutils.c libs/rtp.c libs/tag.c libs/video.c \
-	pipelines/oggmux.c pipelines/simple-launch-lines.c \
-	pipelines/streamheader.c pipelines/theoraenc.c \
-	pipelines/vorbisdec.c pipelines/vorbisenc.c
+	pipelines/gio.c pipelines/oggmux.c \
+	pipelines/simple-launch-lines.c pipelines/streamheader.c \
+	pipelines/theoraenc.c pipelines/vorbisdec.c \
+	pipelines/vorbisenc.c
 DIST_SOURCES = elements/adder.c elements/alsa.c \
 	elements/audioconvert.c elements/audiorate.c \
 	elements/audioresample.c elements/audiotestsrc.c \
@@ -321,10 +329,10 @@ DIST_SOURCES = elements/adder.c elements/alsa.c \
 	generic/clock-selection.c generic/states.c \
 	gst/typefindfunctions.c libs/audio.c libs/cddabasesrc.c \
 	libs/fft.c libs/mixer.c libs/netbuffer.c libs/pbutils.c \
-	libs/rtp.c libs/tag.c libs/video.c pipelines/oggmux.c \
-	pipelines/simple-launch-lines.c pipelines/streamheader.c \
-	pipelines/theoraenc.c pipelines/vorbisdec.c \
-	pipelines/vorbisenc.c
+	libs/rtp.c libs/tag.c libs/video.c pipelines/gio.c \
+	pipelines/oggmux.c pipelines/simple-launch-lines.c \
+	pipelines/streamheader.c pipelines/theoraenc.c \
+	pipelines/vorbisdec.c pipelines/vorbisenc.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -339,12 +347,15 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_EXAMPLES_FALSE = @BUILD_EXAMPLES_FALSE@
 BUILD_EXAMPLES_TRUE = @BUILD_EXAMPLES_TRUE@
+BUILD_EXPERIMENTAL_FALSE = @BUILD_EXPERIMENTAL_FALSE@
+BUILD_EXPERIMENTAL_TRUE = @BUILD_EXPERIMENTAL_TRUE@
 BUILD_EXTERNAL_FALSE = @BUILD_EXTERNAL_FALSE@
 BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CC = @CC@
@@ -364,6 +375,7 @@ DEFAULT_VISUALIZER = @DEFAULT_VISUALIZER@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -385,6 +397,9 @@ GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
@@ -426,14 +441,10 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -467,7 +478,6 @@ HAVE_FT2_FALSE = @HAVE_FT2_FALSE@
 HAVE_FT2_TRUE = @HAVE_FT2_TRUE@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
@@ -513,6 +523,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
@@ -550,8 +561,12 @@ USE_ALSA_FALSE = @USE_ALSA_FALSE@
 USE_ALSA_TRUE = @USE_ALSA_TRUE@
 USE_CDPARANOIA_FALSE = @USE_CDPARANOIA_FALSE@
 USE_CDPARANOIA_TRUE = @USE_CDPARANOIA_TRUE@
+USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
+USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
 USE_EXTERNAL_TRUE = @USE_EXTERNAL_TRUE@
+USE_GIO_FALSE = @USE_GIO_FALSE@
+USE_GIO_TRUE = @USE_GIO_TRUE@
 USE_GNOME_VFS_FALSE = @USE_GNOME_VFS_FALSE@
 USE_GNOME_VFS_TRUE = @USE_GNOME_VFS_TRUE@
 USE_GST_V4L_FALSE = @USE_GST_V4L_FALSE@
@@ -563,6 +578,36 @@ USE_OGG_FALSE = @USE_OGG_FALSE@
 USE_OGG_TRUE = @USE_OGG_TRUE@
 USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
+USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
+USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
+USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
+USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
+USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
+USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
+USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
+USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
+USE_PLUGIN_FFMPEGCOLORSPACE_TRUE = @USE_PLUGIN_FFMPEGCOLORSPACE_TRUE@
+USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
+USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
+USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
+USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
+USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
+USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
+USE_PLUGIN_TCP_TRUE = @USE_PLUGIN_TCP_TRUE@
+USE_PLUGIN_TYPEFIND_FALSE = @USE_PLUGIN_TYPEFIND_FALSE@
+USE_PLUGIN_TYPEFIND_TRUE = @USE_PLUGIN_TYPEFIND_TRUE@
+USE_PLUGIN_VIDEORATE_FALSE = @USE_PLUGIN_VIDEORATE_FALSE@
+USE_PLUGIN_VIDEORATE_TRUE = @USE_PLUGIN_VIDEORATE_TRUE@
+USE_PLUGIN_VIDEOSCALE_FALSE = @USE_PLUGIN_VIDEOSCALE_FALSE@
+USE_PLUGIN_VIDEOSCALE_TRUE = @USE_PLUGIN_VIDEOSCALE_TRUE@
+USE_PLUGIN_VIDEOTESTSRC_FALSE = @USE_PLUGIN_VIDEOTESTSRC_FALSE@
+USE_PLUGIN_VIDEOTESTSRC_TRUE = @USE_PLUGIN_VIDEOTESTSRC_TRUE@
+USE_PLUGIN_VOLUME_FALSE = @USE_PLUGIN_VOLUME_FALSE@
+USE_PLUGIN_VOLUME_TRUE = @USE_PLUGIN_VOLUME_TRUE@
 USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
@@ -667,6 +712,8 @@ TESTS = $(check_PROGRAMS)
 @USE_ALSA_TRUE@check_alsa = elements/alsa
 @USE_GNOME_VFS_FALSE@check_gnomevfs = 
 @USE_GNOME_VFS_TRUE@check_gnomevfs = elements/gnomevfssink
+@USE_GIO_FALSE@check_gio = 
+@USE_GIO_TRUE@check_gio = pipelines/gio
 @USE_LIBVISUAL_FALSE@check_libvisual = 
 @USE_LIBVISUAL_TRUE@check_libvisual = elements/libvisual
 @USE_OGG_FALSE@check_ogg = 
@@ -679,6 +726,8 @@ TESTS = $(check_PROGRAMS)
 
 @USE_THEORA_FALSE@check_theora = 
 @USE_THEORA_TRUE@check_theora = pipelines/theoraenc
+@USE_PLUGIN_SUBPARSE_FALSE@check_subparse = 
+@USE_PLUGIN_SUBPARSE_TRUE@check_subparse = elements/subparse
 
 # TORTURE_TO_FIX = \
 #       elements/adder
@@ -842,6 +891,8 @@ libs_video_LDADD = \
 	$(GST_BASE_LIBS) \
 	$(LDADD)
 
+pipelines_gio_CFLAGS = $(GIO_CFLAGS) $(AM_CFLAGS)
+pipelines_gio_LDADD = $(GIO_LIBS) $(LDADD)
 pipelines_vorbisenc_CFLAGS = \
         $(GST_PLUGINS_BASE_CFLAGS) \
         $(AM_CFLAGS)
@@ -1027,6 +1078,9 @@ libs/video$(EXEEXT): $(libs_video_OBJECTS) $(libs_video_DEPENDENCIES) libs/$(am_
 pipelines/$(am__dirstamp):
 	@$(mkdir_p) pipelines
 	@: > pipelines/$(am__dirstamp)
+pipelines/gio$(EXEEXT): $(pipelines_gio_OBJECTS) $(pipelines_gio_DEPENDENCIES) pipelines/$(am__dirstamp)
+	@rm -f pipelines/gio$(EXEEXT)
+	$(LINK) $(pipelines_gio_LDFLAGS) $(pipelines_gio_OBJECTS) $(pipelines_gio_LDADD) $(LIBS)
 pipelines/oggmux$(EXEEXT): $(pipelines_oggmux_OBJECTS) $(pipelines_oggmux_DEPENDENCIES) pipelines/$(am__dirstamp)
 	@rm -f pipelines/oggmux$(EXEEXT)
 	$(LINK) $(pipelines_oggmux_LDFLAGS) $(pipelines_oggmux_OBJECTS) $(pipelines_oggmux_LDADD) $(LIBS)
@@ -1082,6 +1136,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libs_tag-tag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libs_video-video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multifdsink.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipelines_gio-gio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipelines_oggmux-oggmux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipelines_simple_launch_lines-simple-launch-lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipelines_theoraenc-theoraenc.Po@am__quote@
@@ -1575,6 +1630,20 @@ libs_video-video.obj: libs/video.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libs_video_CFLAGS) $(CFLAGS) -c -o libs_video-video.obj `if test -f 'libs/video.c'; then $(CYGPATH_W) 'libs/video.c'; else $(CYGPATH_W) '$(srcdir)/libs/video.c'; fi`
 
+pipelines_gio-gio.o: pipelines/gio.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pipelines_gio_CFLAGS) $(CFLAGS) -MT pipelines_gio-gio.o -MD -MP -MF "$(DEPDIR)/pipelines_gio-gio.Tpo" -c -o pipelines_gio-gio.o `test -f 'pipelines/gio.c' || echo '$(srcdir)/'`pipelines/gio.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/pipelines_gio-gio.Tpo" "$(DEPDIR)/pipelines_gio-gio.Po"; else rm -f "$(DEPDIR)/pipelines_gio-gio.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pipelines/gio.c' object='pipelines_gio-gio.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pipelines_gio_CFLAGS) $(CFLAGS) -c -o pipelines_gio-gio.o `test -f 'pipelines/gio.c' || echo '$(srcdir)/'`pipelines/gio.c
+
+pipelines_gio-gio.obj: pipelines/gio.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pipelines_gio_CFLAGS) $(CFLAGS) -MT pipelines_gio-gio.obj -MD -MP -MF "$(DEPDIR)/pipelines_gio-gio.Tpo" -c -o pipelines_gio-gio.obj `if test -f 'pipelines/gio.c'; then $(CYGPATH_W) 'pipelines/gio.c'; else $(CYGPATH_W) '$(srcdir)/pipelines/gio.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/pipelines_gio-gio.Tpo" "$(DEPDIR)/pipelines_gio-gio.Po"; else rm -f "$(DEPDIR)/pipelines_gio-gio.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pipelines/gio.c' object='pipelines_gio-gio.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pipelines_gio_CFLAGS) $(CFLAGS) -c -o pipelines_gio-gio.obj `if test -f 'pipelines/gio.c'; then $(CYGPATH_W) 'pipelines/gio.c'; else $(CYGPATH_W) '$(srcdir)/pipelines/gio.c'; fi`
+
 pipelines_oggmux-oggmux.o: pipelines/oggmux.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pipelines_oggmux_CFLAGS) $(CFLAGS) -MT pipelines_oggmux-oggmux.o -MD -MP -MF "$(DEPDIR)/pipelines_oggmux-oggmux.Tpo" -c -o pipelines_oggmux-oggmux.o `test -f 'pipelines/oggmux.c' || echo '$(srcdir)/'`pipelines/oggmux.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/pipelines_oggmux-oggmux.Tpo" "$(DEPDIR)/pipelines_oggmux-oggmux.Po"; else rm -f "$(DEPDIR)/pipelines_oggmux-oggmux.Tpo"; exit 1; fi
@@ -2043,6 +2112,7 @@ inspect:
 	     $(GST_INSPECT) $$e > /dev/null 2>&1; done
 
 help:
+	@echo
 	@echo "make check                         -- run all checks"
 	@echo "make torture                       -- run all checks $(LOOPS) times"
 	@echo "make (dir)/(test).check            -- run the given check once"
@@ -2057,6 +2127,18 @@ help:
 	@echo "make (dir)/(test).valgrind.gen-suppressions -- generate suppressions"
 	@echo "                                               and save to suppressions.log"
 	@echo "make inspect                       -- inspect all plugin features"
+	@echo
+	@echo
+	@echo "Additionally, you can use the GST_CHECKS environment variable to"
+	@echo "specify which test(s) should be run. This is useful if you are"
+	@echo "debugging a failure in one particular test, or want to reproduce"
+	@echo "a race condition in a single test."
+	@echo
+	@echo "Examples:"
+	@echo
+	@echo "  GST_CHECKS=test_this,test_that  make element/foobar.check"
+	@echo "  GST_CHECKS=test_many_threads    make element/foobar.forever"
+	@echo
 
 clean-local: clean-local-check
 

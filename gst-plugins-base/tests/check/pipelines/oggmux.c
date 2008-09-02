@@ -46,8 +46,8 @@ typedef struct
   ChainCodec codec;
 } ChainState;
 
-ogg_sync_state oggsync;
-GHashTable *eos_chain_states;
+static ogg_sync_state oggsync;
+static GHashTable *eos_chain_states;
 static gulong probe_id;
 
 
@@ -263,14 +263,14 @@ test_pipeline (const char *pipeline)
   bin = gst_parse_launch (pipeline, &error);
   fail_unless (bin != NULL, "Error parsing pipeline: %s",
       error ? error->message : "(invalid error)");
-  pad = gst_bin_find_unconnected_pad (GST_BIN (bin), GST_PAD_SRC);
+  pad = gst_bin_find_unlinked_pad (GST_BIN (bin), GST_PAD_SRC);
   fail_unless (pad != NULL, "Could not locate free src pad");
 
   /* connect the fake sink */
   sink = gst_element_factory_make ("fakesink", "fake_sink");
   fail_unless (sink != NULL, "Could create fakesink");
   fail_unless (gst_bin_add (GST_BIN (bin), sink), "Could not insert fakesink");
-  sinkpad = gst_element_get_pad (sink, "sink");
+  sinkpad = gst_element_get_static_pad (sink, "sink");
   fail_unless (sinkpad != NULL, "Could not get fakesink src pad");
 
   linkret = gst_pad_link (pad, sinkpad);

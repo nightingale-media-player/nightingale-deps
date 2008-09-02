@@ -3,7 +3,8 @@
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:exsl="http://exslt.org/common"
-  extension-element-prefixes="exsl"
+  xmlns:str="http://exslt.org/strings"
+  extension-element-prefixes="exsl str"
   version="1.0">
 <xsl:output method="xml" indent="yes"
             doctype-public ="-//OASIS//DTD DocBook XML V4.1.2//EN"
@@ -85,12 +86,16 @@
               </xsl:element>
             </xsl:element>
             
-            <xsl:element name="varlistentry">
-              <xsl:element name="term">details</xsl:element>
-              <xsl:element name="listitem">
-                <xsl:element name="simpara"><xsl:value-of select="details" /></xsl:element>
+            <xsl:for-each select='str:tokenize(details, ";")'>
+              <xsl:element name="varlistentry">
+                <xsl:element name="term">
+                  <xsl:if test="position()=1">details</xsl:if>
+                </xsl:element>
+                <xsl:element name="listitem">
+                  <xsl:element name="simpara"><xsl:value-of select='.'/></xsl:element>
+                </xsl:element>
               </xsl:element>
-            </xsl:element>
+            </xsl:for-each>
 
           </xsl:element> <!-- variablelist -->
 

@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+giosink
+
+<!-- ##### SECTION Short_Description ##### -->
+Write to any GIO-supported location
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-giosink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstGioSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstGioSink:location ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstGioSink:file ##### -->
+<para>
+
+</para>
+

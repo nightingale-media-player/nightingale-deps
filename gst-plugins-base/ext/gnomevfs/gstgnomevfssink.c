@@ -181,14 +181,15 @@ gst_gnome_vfs_sink_class_init (GstGnomeVFSSinkClass * klass)
 
   g_object_class_install_property (gobject_class, ARG_LOCATION,
       g_param_spec_string ("location", "File Location",
-          "Location of the file to write", NULL, G_PARAM_READWRITE));
+          "Location of the file to write", NULL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_URI,
       g_param_spec_boxed ("uri", "GnomeVFSURI", "URI for GnomeVFS",
-          GST_TYPE_GNOME_VFS_URI, G_PARAM_READWRITE));
+          GST_TYPE_GNOME_VFS_URI, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_HANDLE,
-      g_param_spec_boxed ("handle",
-          "GnomeVFSHandle", "Handle for GnomeVFS",
-          GST_TYPE_GNOME_VFS_HANDLE, G_PARAM_READWRITE));
+      g_param_spec_boxed ("handle", "GnomeVFSHandle", "Handle for GnomeVFS",
+          GST_TYPE_GNOME_VFS_HANDLE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstGnomeVFSSink::allow-overwrite
@@ -448,6 +449,7 @@ static gboolean
 gst_gnome_vfs_sink_handle_event (GstBaseSink * basesink, GstEvent * event)
 {
   GstGnomeVFSSink *sink;
+  gboolean ret = TRUE;
 
   sink = GST_GNOME_VFS_SINK (basesink);
 
@@ -474,6 +476,7 @@ gst_gnome_vfs_sink_handle_event (GstBaseSink * basesink, GstEvent * event)
       if (res != GNOME_VFS_OK) {
         GST_ERROR_OBJECT (sink, "Failed to seek to offset %"
             G_GINT64_FORMAT ": %s", offset, gnome_vfs_result_to_string (res));
+        ret = FALSE;
       } else {
         sink->current_pos = offset;
       }
@@ -483,14 +486,14 @@ gst_gnome_vfs_sink_handle_event (GstBaseSink * basesink, GstEvent * event)
 
     case GST_EVENT_FLUSH_START:
     case GST_EVENT_EOS:{
-      /* how does Gnome-VFS flush? Do we need to flush? */
+      /* No need to flush with GnomeVfs */
       break;
     }
     default:
       break;
   }
 
-  return TRUE;
+  return ret;
 }
 
 static gboolean
@@ -593,12 +596,7 @@ gst_gnome_vfs_sink_uri_get_type (void)
 static gchar **
 gst_gnome_vfs_sink_uri_get_protocols (void)
 {
-  static gchar **protocols = NULL;
-
-  if (!protocols)
-    protocols = gst_gnomevfs_get_supported_uris ();
-
-  return protocols;
+  return gst_gnomevfs_get_supported_uris ();
 }
 
 static const gchar *

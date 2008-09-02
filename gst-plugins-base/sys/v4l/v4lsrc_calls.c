@@ -49,7 +49,7 @@ GST_DEBUG_CATEGORY_EXTERN (v4l_debug);
 
 #ifndef GST_DISABLE_GST_DEBUG
 /* palette names */
-const char *v4l_palette_name[] = {
+static const char *v4l_palette_name[] = {
   "",                           /* 0 */
   "grayscale",                  /* VIDEO_PALETTE_GREY */
   "Hi-420",                     /* VIDEO_PALETTE_HI420 */
@@ -197,7 +197,7 @@ gst_v4lsrc_capture_init (GstV4lSrc * v4lsrc)
   v4lsrc->cond_queue_state = g_cond_new ();
 
   /* Map the buffers */
-  GST_V4LELEMENT (v4lsrc)->buffer = mmap (0, v4lsrc->mbuf.size,
+  GST_V4LELEMENT (v4lsrc)->buffer = mmap (NULL, v4lsrc->mbuf.size,
       PROT_READ | PROT_WRITE, MAP_SHARED, GST_V4LELEMENT (v4lsrc)->video_fd, 0);
   if (GST_V4LELEMENT (v4lsrc)->buffer == MAP_FAILED) {
     GST_ELEMENT_ERROR (v4lsrc, RESOURCE, OPEN_READ_WRITE, (NULL),
@@ -461,7 +461,7 @@ gst_v4lsrc_try_capture (GstV4lSrc * v4lsrc, gint width, gint height,
     return FALSE;
   }
   /* Map the buffers */
-  buffer = mmap (0, vmbuf.size, PROT_READ | PROT_WRITE,
+  buffer = mmap (NULL, vmbuf.size, PROT_READ | PROT_WRITE,
       MAP_SHARED, GST_V4LELEMENT (v4lsrc)->video_fd, 0);
   if (buffer == MAP_FAILED) {
     GST_ELEMENT_ERROR (v4lsrc, RESOURCE, OPEN_READ_WRITE, (NULL),
@@ -611,7 +611,6 @@ gst_v4lsrc_get_fps_list (GstV4lSrc * v4lsrc)
     gst_v4l_set_window_properties (v4lelement);
     return list;
   }
-  return NULL;
 }
 
 #define GST_TYPE_V4LSRC_BUFFER (gst_v4lsrc_buffer_get_type())
@@ -632,7 +631,9 @@ static void gst_v4lsrc_buffer_class_init (gpointer g_class,
 static void gst_v4lsrc_buffer_init (GTypeInstance * instance, gpointer g_class);
 static void gst_v4lsrc_buffer_finalize (GstV4lSrcBuffer * v4lsrc_buffer);
 
-GType
+static GstBufferClass *v4lbuffer_parent_class = NULL;
+
+static GType
 gst_v4lsrc_buffer_get_type (void)
 {
   static GType _gst_v4lsrc_buffer_type;
@@ -660,6 +661,8 @@ static void
 gst_v4lsrc_buffer_class_init (gpointer g_class, gpointer class_data)
 {
   GstMiniObjectClass *mini_object_class = GST_MINI_OBJECT_CLASS (g_class);
+
+  v4lbuffer_parent_class = g_type_class_peek_parent (g_class);
 
   mini_object_class->finalize = (GstMiniObjectFinalizeFunction)
       gst_v4lsrc_buffer_finalize;
@@ -689,6 +692,9 @@ gst_v4lsrc_buffer_finalize (GstV4lSrcBuffer * v4lsrc_buffer)
   }
 
   gst_object_unref (v4lsrc);
+
+  GST_MINI_OBJECT_CLASS (v4lbuffer_parent_class)->
+      finalize (GST_MINI_OBJECT (v4lsrc_buffer));
 }
 
 /* Create a V4lSrc buffer from our mmap'd data area */
@@ -725,9 +731,6 @@ gst_v4lsrc_buffer_new (GstV4lSrc * v4lsrc, gint num)
 
   GST_BUFFER_TIMESTAMP (buf) = timestamp;
   GST_BUFFER_DURATION (buf) = duration;
-
-  /* the negotiate() method already set caps on the source pad */
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (GST_BASE_SRC_PAD (v4lsrc)));
 
   return buf;
 }

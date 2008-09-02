@@ -127,9 +127,6 @@ struct _GstOggPadClass
   GstPadClass parent_class;
 };
 
-#define GST_CHAIN_LOCK(ogg)     g_mutex_lock((ogg)->chain_lock)
-#define GST_CHAIN_UNLOCK(ogg)   g_mutex_unlock((ogg)->chain_lock)
-
 /**
  * GstOggDemux:
  *
@@ -169,6 +166,7 @@ struct _GstOggDemux
   /* annodex stuff */
   gboolean have_fishead;
   gint64 basetime;
+  gint64 prestime;
 
   /* ogg stuff */
   ogg_sync_state sync;

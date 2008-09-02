@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstmixer</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstcolorbalancechannel.html" title="gstcolorbalancechannel">
 <link rel="next" href="gst-plugins-base-libs-gstmixeroptions.html" title="gstmixeroptions">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,116 +36,116 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstmixeroptions.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2598380" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2599994" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2599875" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2599899" class="shortcut">Prerequisites</a>
-                  &#160;|&#160;
-                  <a href="#id2599935" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstmixer.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixer.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixer.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixer.prerequisites" class="shortcut">Prerequisites</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstmixer.signals" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstmixer"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2598380"></a><span class="refentrytitle">gstmixer</span>
-</h2>
-<p>gstmixer &#8212; Interface for elements that provide mixer operations</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstmixer.top_of_page"></a>gstmixer</span></h2>
+<p>gstmixer — Interface for elements that provide mixer operations</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstmixer.synopsis"></a><h2>Synopsis</h2>
 <a name="GstMixer"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/mixer.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstmixer.html#GstMixer-struct">GstMixer</a>;
-enum                <a href="gst-plugins-base-libs-gstmixer.html#GstMixerType">GstMixerType</a>;
-enum                <a href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags">GstMixerFlags</a>;
-enum                <a href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType">GstMixerMessageType</a>;
-const GList*        <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-list-tracks">gst_mixer_list_tracks</a>               (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-volume">gst_mixer_get_volume</a>                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+                    <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer-struct" title="GstMixer">GstMixer</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerType" title="enum GstMixerType">GstMixerType</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags" title="enum GstMixerFlags">GstMixerFlags</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType" title="enum GstMixerMessageType">GstMixerMessageType</a>;
+const GList*        <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-list-tracks" title="gst_mixer_list_tracks ()">gst_mixer_list_tracks</a>               (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-volume" title="gst_mixer_get_volume ()">gst_mixer_get_volume</a>                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-volume">gst_mixer_set_volume</a>                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-volume" title="gst_mixer_set_volume ()">gst_mixer_set_volume</a>                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-mute">gst_mixer_set_mute</a>                  (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-mute" title="gst_mixer_set_mute ()">gst_mixer_set_mute</a>                  (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean mute);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-record">gst_mixer_set_record</a>                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-record" title="gst_mixer_set_record ()">gst_mixer_set_record</a>                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean record);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-option">gst_mixer_set_option</a>                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-set-option" title="gst_mixer_set_option ()">gst_mixer_set_option</a>                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
                                                          gchar *value);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-mute-toggled">gst_mixer_mute_toggled</a>              (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-mute-toggled" title="gst_mixer_mute_toggled ()">gst_mixer_mute_toggled</a>              (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean mute);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-record-toggled">gst_mixer_record_toggled</a>            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-record-toggled" title="gst_mixer_record_toggled ()">gst_mixer_record_toggled</a>            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean record);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-volume-changed">gst_mixer_volume_changed</a>            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-volume-changed" title="gst_mixer_volume_changed ()">gst_mixer_volume_changed</a>            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-option-changed">gst_mixer_option_changed</a>            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-option-changed" title="gst_mixer_option_changed ()">gst_mixer_option_changed</a>            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
                                                          gchar *value);
-const gchar*        <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-option">gst_mixer_get_option</a>                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);
-<a href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags">GstMixerFlags</a>       <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-mixer-flags">gst_mixer_get_mixer_flags</a>           (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);
-<a href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType">GstMixerMessageType</a> <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-get-type">gst_mixer_message_get_type</a>          (GstMessage *message);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-mute-toggled">gst_mixer_message_parse_mute_toggled</a>
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-options-list-changed" title="gst_mixer_options_list_changed ()">gst_mixer_options_list_changed</a>      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);
+const gchar*        <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-option" title="gst_mixer_get_option ()">gst_mixer_get_option</a>                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-mixer-changed" title="gst_mixer_mixer_changed ()">gst_mixer_mixer_changed</a>             (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);
+<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags" title="enum GstMixerFlags">GstMixerFlags</a>       <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-get-mixer-flags" title="gst_mixer_get_mixer_flags ()">gst_mixer_get_mixer_flags</a>           (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);
+<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType" title="enum GstMixerMessageType">GstMixerMessageType</a> <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-get-type" title="gst_mixer_message_get_type ()">gst_mixer_message_get_type</a>          (GstMessage *message);
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-mute-toggled" title="gst_mixer_message_parse_mute_toggled ()">gst_mixer_message_parse_mute_toggled</a>
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gboolean *mute);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-option-changed">gst_mixer_message_parse_option_changed</a>
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-option-changed" title="gst_mixer_message_parse_option_changed ()">gst_mixer_message_parse_option_changed</a>
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options,
                                                          const gchar **value);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-record-toggled">gst_mixer_message_parse_record_toggled</a>
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-record-toggled" title="gst_mixer_message_parse_record_toggled ()">gst_mixer_message_parse_record_toggled</a>
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gboolean *record);
-void                <a href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-volume-changed">gst_mixer_message_parse_volume_changed</a>
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-volume-changed" title="gst_mixer_message_parse_volume_changed ()">gst_mixer_message_parse_volume_changed</a>
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gint **volumes,
                                                          gint *num_channels);
-
+void                <a class="link" href="gst-plugins-base-libs-gstmixer.html#gst-mixer-message-parse-options-list-changed" title="gst_mixer_message_parse_options_list_changed ()">gst_mixer_message_parse_options_list_changed</a>
+                                                        (GstMessage *message,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2599875"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstmixer.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GInterface
    +----GstMixer
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2599899"></a><h2>Prerequisites</h2>
+<a name="gst-plugins-base-libs-gstmixer.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstMixer requires
  GstObject,  GstImplementsInterface and  GstElement.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2599935"></a><h2>Signals</h2>
+<a name="gst-plugins-base-libs-gstmixer.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-libs-gstmixer.html#GstMixer-mute-toggled">mute-toggled</a>"                                   : Run Last
-  "<a href="gst-plugins-base-libs-gstmixer.html#GstMixer-option-changed">option-changed</a>"                                 : Run Last
-  "<a href="gst-plugins-base-libs-gstmixer.html#GstMixer-record-toggled">record-toggled</a>"                                 : Run Last
-  "<a href="gst-plugins-base-libs-gstmixer.html#GstMixer-volume-changed">volume-changed</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer-mute-toggled" title='The "mute-toggled" signal'>mute-toggled</a>"                                   : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer-option-changed" title='The "option-changed" signal'>option-changed</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer-record-toggled" title='The "record-toggled" signal'>record-toggled</a>"                                 : Run Last
+  "<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer-volume-changed" title='The "volume-changed" signal'>volume-changed</a>"                                 : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2599994"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstmixer.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -153,20 +153,18 @@ GstMixer requires
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2600011"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstmixer.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2600022"></a><h3>
-<a name="GstMixer-struct"></a>GstMixer</h3>
-<a class="indexterm" name="id2600034"></a><pre class="programlisting">typedef struct _GstMixer GstMixer;</pre>
+<a name="GstMixer-struct"></a><h3>GstMixer</h3>
+<pre class="programlisting">typedef struct _GstMixer GstMixer;</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600049"></a><h3>
-<a name="GstMixerType"></a>enum GstMixerType</h3>
-<a class="indexterm" name="id2600062"></a><pre class="programlisting">typedef enum
+<a name="GstMixerType"></a><h3>enum GstMixerType</h3>
+<pre class="programlisting">typedef enum
 {
   GST_MIXER_HARDWARE,
   GST_MIXER_SOFTWARE
@@ -178,9 +176,8 @@ GstMixer requires
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600078"></a><h3>
-<a name="GstMixerFlags"></a>enum GstMixerFlags</h3>
-<a class="indexterm" name="id2600093"></a><pre class="programlisting">typedef enum
+<a name="GstMixerFlags"></a><h3>enum GstMixerFlags</h3>
+<pre class="programlisting">typedef enum
 {
   GST_MIXER_FLAG_NONE                = 0,
   GST_MIXER_FLAG_AUTO_NOTIFICATIONS  = (1&lt;&lt;0)
@@ -196,12 +193,12 @@ notifications on the bus is the only one for now.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-MIXER-FLAG-NONE:CAPS"></a><code class="literal">GST_MIXER_FLAG_NONE</code></span></td>
+<td><p><a name="GST-MIXER-FLAG-NONE:CAPS"></a><span class="term"><code class="literal">GST_MIXER_FLAG_NONE</code></span></p></td>
 <td> No flags
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MIXER-FLAG-AUTO-NOTIFICATIONS:CAPS"></a><code class="literal">GST_MIXER_FLAG_AUTO_NOTIFICATIONS</code></span></td>
+<td><p><a name="GST-MIXER-FLAG-AUTO-NOTIFICATIONS:CAPS"></a><span class="term"><code class="literal">GST_MIXER_FLAG_AUTO_NOTIFICATIONS</code></span></p></td>
 <td> The mixer implementation automatically sends
    notification messages.
 </td>
@@ -213,15 +210,16 @@ notifications on the bus is the only one for now.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600176"></a><h3>
-<a name="GstMixerMessageType"></a>enum GstMixerMessageType</h3>
-<a class="indexterm" name="id2600191"></a><pre class="programlisting">typedef enum
+<a name="GstMixerMessageType"></a><h3>enum GstMixerMessageType</h3>
+<pre class="programlisting">typedef enum
 {
   GST_MIXER_MESSAGE_INVALID,
   GST_MIXER_MESSAGE_MUTE_TOGGLED,
   GST_MIXER_MESSAGE_RECORD_TOGGLED,
   GST_MIXER_MESSAGE_VOLUME_CHANGED,
-  GST_MIXER_MESSAGE_OPTION_CHANGED
+  GST_MIXER_MESSAGE_OPTION_CHANGED,
+  GST_MIXER_MESSAGE_OPTIONS_LIST_CHANGED,
+  GST_MIXER_MESSAGE_MIXER_CHANGED
 } GstMixerMessageType;
 </pre>
 <p>
@@ -233,28 +231,42 @@ An enumeration for the type of a GstMixer message received on the bus</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-MIXER-MESSAGE-INVALID:CAPS"></a><code class="literal">GST_MIXER_MESSAGE_INVALID</code></span></td>
+<td><p><a name="GST-MIXER-MESSAGE-INVALID:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_INVALID</code></span></p></td>
 <td> Not a GstMixer message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MIXER-MESSAGE-MUTE-TOGGLED:CAPS"></a><code class="literal">GST_MIXER_MESSAGE_MUTE_TOGGLED</code></span></td>
+<td><p><a name="GST-MIXER-MESSAGE-MUTE-TOGGLED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_MUTE_TOGGLED</code></span></p></td>
 <td> A mute-toggled GstMixer message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MIXER-MESSAGE-RECORD-TOGGLED:CAPS"></a><code class="literal">GST_MIXER_MESSAGE_RECORD_TOGGLED</code></span></td>
+<td><p><a name="GST-MIXER-MESSAGE-RECORD-TOGGLED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_RECORD_TOGGLED</code></span></p></td>
 <td> A record-toggled GstMixer message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MIXER-MESSAGE-VOLUME-CHANGED:CAPS"></a><code class="literal">GST_MIXER_MESSAGE_VOLUME_CHANGED</code></span></td>
+<td><p><a name="GST-MIXER-MESSAGE-VOLUME-CHANGED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_VOLUME_CHANGED</code></span></p></td>
 <td> A volume-changed GstMixer message
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-MIXER-MESSAGE-OPTION-CHANGED:CAPS"></a><code class="literal">GST_MIXER_MESSAGE_OPTION_CHANGED</code></span></td>
+<td><p><a name="GST-MIXER-MESSAGE-OPTION-CHANGED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_OPTION_CHANGED</code></span></p></td>
 <td> An option-changed GstMixer message
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-MIXER-MESSAGE-OPTIONS-LIST-CHANGED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_OPTIONS_LIST_CHANGED</code></span></p></td>
+<td> An options-list-changed
+    GstMixer message, posted when the list of available options for a
+    GstMixerOptions object has changed (Since: 0.10.18)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-MIXER-MESSAGE-MIXER-CHANGED:CAPS"></a><span class="term"><code class="literal">GST_MIXER_MESSAGE_MIXER_CHANGED</code></span></p></td>
+<td> A mixer-changed GstMixer message, posted
+    when the list of available mixer tracks has changed. The application
+    should re-build its interface in this case (Since: 0.10.18)
 </td>
 </tr>
 </tbody>
@@ -264,9 +276,8 @@ An enumeration for the type of a GstMixer message received on the bus</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600341"></a><h3>
-<a name="gst-mixer-list-tracks"></a>gst_mixer_list_tracks ()</h3>
-<a class="indexterm" name="id2600354"></a><pre class="programlisting">const GList*        gst_mixer_list_tracks               (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);</pre>
+<a name="gst-mixer-list-tracks"></a><h3>gst_mixer_list_tracks ()</h3>
+<pre class="programlisting">const GList*        gst_mixer_list_tracks               (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);</pre>
 <p>
 Returns a list of available tracks for this mixer/element. Note
 that it is allowed for sink (output) elements to only provide
@@ -279,12 +290,12 @@ it is allowed to only provide input elements in this list.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) to get the tracks from.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) to get the tracks from.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A <span class="type">GList</span> consisting of zero or more <span class="type">GstMixerTracks</span>.
 </td>
 </tr>
@@ -293,10 +304,9 @@ it is allowed to only provide input elements in this list.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600453"></a><h3>
-<a name="gst-mixer-get-volume"></a>gst_mixer_get_volume ()</h3>
-<a class="indexterm" name="id2600466"></a><pre class="programlisting">void                gst_mixer_get_volume                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-get-volume"></a><h3>gst_mixer_get_volume ()</h3>
+<pre class="programlisting">void                gst_mixer_get_volume                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);</pre>
 <p>
 Get the current volume(s) on the given track.</p>
@@ -307,17 +317,17 @@ Get the current volume(s) on the given track.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> the GstMixerTrack to get the volume from.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>volumes</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>volumes</code></em> :</span></p></td>
 <td> a pre-allocated array of integers (of size
           track-&gt;num_channels) to store the current volume
           of each channel in the given track in.
@@ -328,10 +338,9 @@ Get the current volume(s) on the given track.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600580"></a><h3>
-<a name="gst-mixer-set-volume"></a>gst_mixer_set_volume ()</h3>
-<a class="indexterm" name="id2600593"></a><pre class="programlisting">void                gst_mixer_set_volume                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-set-volume"></a><h3>gst_mixer_set_volume ()</h3>
+<pre class="programlisting">void                gst_mixer_set_volume                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);</pre>
 <p>
 Sets the volume on each channel in a track. Short note about
@@ -346,17 +355,17 @@ stereo track thus contains two channels.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to set the volume on.
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to set the volume on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>volumes</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>volumes</code></em> :</span></p></td>
 <td> an array of integers (of size track-&gt;num_channels)
           that gives the wanted volume for each channel in
           this track.
@@ -367,14 +376,13 @@ stereo track thus contains two channels.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600718"></a><h3>
-<a name="gst-mixer-set-mute"></a>gst_mixer_set_mute ()</h3>
-<a class="indexterm" name="id2600731"></a><pre class="programlisting">void                gst_mixer_set_mute                  (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-set-mute"></a><h3>gst_mixer_set_mute ()</h3>
+<pre class="programlisting">void                gst_mixer_set_mute                  (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean mute);</pre>
 <p>
 Mutes or unmutes the given channel. To find out whether a
-track is currently muted, use <a href="gst-plugins-base-libs-gstmixertrack.html#GST-MIXER-TRACK-HAS-FLAG:CAPS"><code class="function">GST_MIXER_TRACK_HAS_FLAG()</code></a>.</p>
+track is currently muted, use <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GST-MIXER-TRACK-HAS-FLAG:CAPS" title="GST_MIXER_TRACK_HAS_FLAG()"><code class="function">GST_MIXER_TRACK_HAS_FLAG()</code></a>.</p>
 <p>
 
 </p>
@@ -382,17 +390,17 @@ track is currently muted, use <a href="gst-plugins-base-libs-gstmixertrack.html#
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to operate on.
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to operate on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mute</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mute</code></em> :</span></p></td>
 <td> a boolean value indicating whether to turn on or off
        muting.
 </td>
@@ -402,15 +410,14 @@ track is currently muted, use <a href="gst-plugins-base-libs-gstmixertrack.html#
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600864"></a><h3>
-<a name="gst-mixer-set-record"></a>gst_mixer_set_record ()</h3>
-<a class="indexterm" name="id2600878"></a><pre class="programlisting">void                gst_mixer_set_record                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-set-record"></a><h3>gst_mixer_set_record ()</h3>
+<pre class="programlisting">void                gst_mixer_set_record                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean record);</pre>
 <p>
 Enables or disables recording on the given track. Note that
 this is only possible on input tracks, not on output tracks
-(see <a href="gst-plugins-base-libs-gstmixertrack.html#GST-MIXER-TRACK-HAS-FLAG:CAPS"><code class="function">GST_MIXER_TRACK_HAS_FLAG()</code></a> and the GST_MIXER_TRACK_INPUT
+(see <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GST-MIXER-TRACK-HAS-FLAG:CAPS" title="GST_MIXER_TRACK_HAS_FLAG()"><code class="function">GST_MIXER_TRACK_HAS_FLAG()</code></a> and the GST_MIXER_TRACK_INPUT
 flag).</p>
 <p>
 
@@ -419,17 +426,17 @@ flag).</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to operate on.
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack"><span class="type">GstMixerTrack</span></a> to operate on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>record</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>record</code></em> :</span></p></td>
 <td> a boolean value that indicates whether to turn on
          or off recording.
 </td>
@@ -439,10 +446,9 @@ flag).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601011"></a><h3>
-<a name="gst-mixer-set-option"></a>gst_mixer_set_option ()</h3>
-<a class="indexterm" name="id2601025"></a><pre class="programlisting">void                gst_mixer_set_option                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
+<a name="gst-mixer-set-option"></a><h3>gst_mixer_set_option ()</h3>
+<pre class="programlisting">void                gst_mixer_set_option                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
                                                          gchar *value);</pre>
 <p>
 Sets a name/value option in the mixer to the requested value.</p>
@@ -453,17 +459,17 @@ Sets a name/value option in the mixer to the requested value.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the optionlist.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the optionlist.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>opts</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> that we operate on.
+<td><p><span class="term"><em class="parameter"><code>opts</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> that we operate on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> The requested new option value.
 </td>
 </tr>
@@ -472,10 +478,9 @@ Sets a name/value option in the mixer to the requested value.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601144"></a><h3>
-<a name="gst-mixer-mute-toggled"></a>gst_mixer_mute_toggled ()</h3>
-<a class="indexterm" name="id2601157"></a><pre class="programlisting">void                gst_mixer_mute_toggled              (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-mute-toggled"></a><h3>gst_mixer_mute_toggled ()</h3>
+<pre class="programlisting">void                gst_mixer_mute_toggled              (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean mute);</pre>
 <p>
 This function is called by the mixer implementation to produce
@@ -492,17 +497,17 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> the GstMixerTrack that has change mute state.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mute</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mute</code></em> :</span></p></td>
 <td> the new state of the mute flag on the track
 </td>
 </tr>
@@ -511,10 +516,9 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601276"></a><h3>
-<a name="gst-mixer-record-toggled"></a>gst_mixer_record_toggled ()</h3>
-<a class="indexterm" name="id2601289"></a><pre class="programlisting">void                gst_mixer_record_toggled            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-record-toggled"></a><h3>gst_mixer_record_toggled ()</h3>
+<pre class="programlisting">void                gst_mixer_record_toggled            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gboolean record);</pre>
 <p>
 This function is called by the mixer implementation to produce
@@ -531,17 +535,17 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> the GstMixerTrack that has changed recording state.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>record</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>record</code></em> :</span></p></td>
 <td> the new state of the record flag on the track
 </td>
 </tr>
@@ -550,10 +554,9 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601409"></a><h3>
-<a name="gst-mixer-volume-changed"></a>gst_mixer_volume_changed ()</h3>
-<a class="indexterm" name="id2601422"></a><pre class="programlisting">void                gst_mixer_volume_changed            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
+<a name="gst-mixer-volume-changed"></a><h3>gst_mixer_volume_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_volume_changed            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *track,
                                                          gint *volumes);</pre>
 <p>
 This function is called by the mixer implementation to produce
@@ -570,17 +573,17 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the track
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> the GstMixerTrack that has changed.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>volumes</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>volumes</code></em> :</span></p></td>
 <td> Array of volume values, one per channel on the mixer track.
 </td>
 </tr>
@@ -589,10 +592,9 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601542"></a><h3>
-<a name="gst-mixer-option-changed"></a>gst_mixer_option_changed ()</h3>
-<a class="indexterm" name="id2601554"></a><pre class="programlisting">void                gst_mixer_option_changed            (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
+<a name="gst-mixer-option-changed"></a><h3>gst_mixer_option_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_option_changed            (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts,
                                                          gchar *value);</pre>
 <p>
 This function is called by the mixer implementation to produce
@@ -609,17 +611,17 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> the <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the options 
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the options 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>opts</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>opts</code></em> :</span></p></td>
 <td> the GstMixerOptions that has changed value.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> the new value of the GstMixerOptions.
 </td>
 </tr>
@@ -628,10 +630,49 @@ GstMixer interface, and the element needs to have been provided a bus.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601674"></a><h3>
-<a name="gst-mixer-get-option"></a>gst_mixer_get_option ()</h3>
-<a class="indexterm" name="id2601687"></a><pre class="programlisting">const gchar*        gst_mixer_get_option                (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);</pre>
+<a name="gst-mixer-options-list-changed"></a><h3>gst_mixer_options_list_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_options_list_changed      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);</pre>
+<p>
+This function is called by the mixer implementation to produce
+a notification message on the bus indicating that the list of possible
+options of a given options object has changed.
+</p>
+<p>
+The new options are not contained in the message on purpose. Applications
+should call <code class="function">gst_mixer_option_get_values()</code> on <em class="parameter"><code>opts</code></em> to make <em class="parameter"><code>opts</code></em> update
+its internal state and obtain the new list of values.
+</p>
+<p>
+This function only works for GstElements that are implementing the
+GstMixer interface, and the element needs to have been provided a bus
+for this to work.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the options 
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>opts</code></em> :</span></p></td>
+<td> the GstMixerOptions whose list of values has changed
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.18
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-mixer-get-option"></a><h3>gst_mixer_get_option ()</h3>
+<pre class="programlisting">const gchar*        gst_mixer_get_option                (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *opts);</pre>
 <p>
 Get the current value of a name/value option in the mixer.</p>
 <p>
@@ -641,17 +682,17 @@ Get the current value of a name/value option in the mixer.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the optionlist.
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) that owns the optionlist.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>opts</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> that we operate on.
+<td><p><span class="term"><em class="parameter"><code>opts</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions"><span class="type">GstMixerOptions</span></a> that we operate on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> current value of the name/value option.
 </td>
 </tr>
@@ -660,9 +701,35 @@ Get the current value of a name/value option in the mixer.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601797"></a><h3>
-<a name="gst-mixer-get-mixer-flags"></a>gst_mixer_get_mixer_flags ()</h3>
-<a class="indexterm" name="id2601811"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags">GstMixerFlags</a>       gst_mixer_get_mixer_flags           (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);</pre>
+<a name="gst-mixer-mixer-changed"></a><h3>gst_mixer_mixer_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_mixer_changed             (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);</pre>
+<p>
+This function is called by the mixer implementation to produce
+a notification message on the bus indicating that the list of available
+mixer tracks for a given mixer object has changed. Applications should
+rebuild their interface when they receive this message.
+</p>
+<p>
+This function only works for GstElements that are implementing the
+GstMixer interface, and the element needs to have been provided a bus.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> the <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> (a <span class="type">GstElement</span>) which has changed
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.18
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-mixer-get-mixer-flags"></a><h3>gst_mixer_get_mixer_flags ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerFlags" title="enum GstMixerFlags">GstMixerFlags</a>       gst_mixer_get_mixer_flags           (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a> *mixer);</pre>
 <p>
 Get the set of supported flags for this mixer implementation.</p>
 <p>
@@ -672,12 +739,12 @@ Get the set of supported flags for this mixer implementation.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>mixer</code></em>&#160;:</span></td>
-<td> The <a href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> implementation
+<td><p><span class="term"><em class="parameter"><code>mixer</code></em> :</span></p></td>
+<td> The <a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer"><span class="type">GstMixer</span></a> implementation
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> A set of or-ed GstMixerFlags for supported features.
 </td>
 </tr>
@@ -686,9 +753,8 @@ Get the set of supported flags for this mixer implementation.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601881"></a><h3>
-<a name="gst-mixer-message-get-type"></a>gst_mixer_message_get_type ()</h3>
-<a class="indexterm" name="id2601897"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType">GstMixerMessageType</a> gst_mixer_message_get_type          (GstMessage *message);</pre>
+<a name="gst-mixer-message-get-type"></a><h3>gst_mixer_message_get_type ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixerMessageType" title="enum GstMixerMessageType">GstMixerMessageType</a> gst_mixer_message_get_type          (GstMessage *message);</pre>
 <p>
 Check a bus message to see if it is a GstMixer notification
 message and return the GstMixerMessageType identifying which
@@ -700,12 +766,12 @@ type of notification it is.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> A GstMessage to inspect.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The type of the GstMixerMessage, or GST_MIXER_MESSAGE_NONE
 if the message is not a GstMixer notification.
 
@@ -718,11 +784,10 @@ if the message is not a GstMixer notification.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601968"></a><h3>
-<a name="gst-mixer-message-parse-mute-toggled"></a>gst_mixer_message_parse_mute_toggled ()</h3>
-<a class="indexterm" name="id2601985"></a><pre class="programlisting">void                gst_mixer_message_parse_mute_toggled
+<a name="gst-mixer-message-parse-mute-toggled"></a><h3>gst_mixer_message_parse_mute_toggled ()</h3>
+<pre class="programlisting">void                gst_mixer_message_parse_mute_toggled
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gboolean *mute);</pre>
 <p>
 Extracts the contents of a mute-toggled bus message. Reads
@@ -738,17 +803,17 @@ The GstMixerTrack remains valid until the message is freed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> A mute-toggled change notification message.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> Pointer to hold a GstMixerTrack object, or NULL.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>mute</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>mute</code></em> :</span></p></td>
 <td> A pointer to a gboolean variable, or NULL.
 </td>
 </tr>
@@ -759,11 +824,10 @@ The GstMixerTrack remains valid until the message is freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602095"></a><h3>
-<a name="gst-mixer-message-parse-option-changed"></a>gst_mixer_message_parse_option_changed ()</h3>
-<a class="indexterm" name="id2602112"></a><pre class="programlisting">void                gst_mixer_message_parse_option_changed
+<a name="gst-mixer-message-parse-option-changed"></a><h3>gst_mixer_message_parse_option_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_message_parse_option_changed
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options,
                                                          const gchar **value);</pre>
 <p>
 Extracts the GstMixerOptions and new value from a option-changed bus notification
@@ -778,17 +842,17 @@ The options and value returned remain valid until the message is freed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> A volume-changed change notification message.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>options</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>options</code></em> :</span></p></td>
 <td> Pointer to hold a GstMixerOptions object, or NULL.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
 <td> Result location to receive the new options value, or NULL.
 </td>
 </tr>
@@ -799,11 +863,10 @@ The options and value returned remain valid until the message is freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602222"></a><h3>
-<a name="gst-mixer-message-parse-record-toggled"></a>gst_mixer_message_parse_record_toggled ()</h3>
-<a class="indexterm" name="id2602239"></a><pre class="programlisting">void                gst_mixer_message_parse_record_toggled
+<a name="gst-mixer-message-parse-record-toggled"></a><h3>gst_mixer_message_parse_record_toggled ()</h3>
+<pre class="programlisting">void                gst_mixer_message_parse_record_toggled
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gboolean *record);</pre>
 <p>
 Extracts the contents of a record-toggled bus message. Reads
@@ -819,17 +882,17 @@ The GstMixerTrack remains valid until the message is freed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> A record-toggled change notification message.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> Pointer to hold a GstMixerTrack object, or NULL.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>record</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>record</code></em> :</span></p></td>
 <td> A pointer to a gboolean variable, or NULL.
 </td>
 </tr>
@@ -840,11 +903,10 @@ The GstMixerTrack remains valid until the message is freed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602350"></a><h3>
-<a name="gst-mixer-message-parse-volume-changed"></a>gst_mixer_message_parse_volume_changed ()</h3>
-<a class="indexterm" name="id2602366"></a><pre class="programlisting">void                gst_mixer_message_parse_volume_changed
+<a name="gst-mixer-message-parse-volume-changed"></a><h3>gst_mixer_message_parse_volume_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_message_parse_volume_changed
                                                         (GstMessage *message,
-                                                         <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> **track,
                                                          gint **volumes,
                                                          gint *num_channels);</pre>
 <p>
@@ -864,22 +926,22 @@ when they are done with it.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>message</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
 <td> A volume-changed change notification message.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>track</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>track</code></em> :</span></p></td>
 <td> Pointer to hold a GstMixerTrack object, or NULL.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>volumes</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>volumes</code></em> :</span></p></td>
 <td> A pointer to receive an array of gint values, or NULL.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>num_channels</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>num_channels</code></em> :</span></p></td>
 <td> Result location to receive the number of channels, or NULL.
 </td>
 </tr>
@@ -888,14 +950,47 @@ when they are done with it.</p>
 <p class="since">Since  0.10.14
 </p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-mixer-message-parse-options-list-changed"></a><h3>gst_mixer_message_parse_options_list_changed ()</h3>
+<pre class="programlisting">void                gst_mixer_message_parse_options_list_changed
+                                                        (GstMessage *message,
+                                                         <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> **options);</pre>
+<p>
+Extracts the GstMixerOptions whose value list has changed from an
+options-list-changed bus notification message.
+</p>
+<p>
+The options object returned remains valid until the message is freed. You
+do not need to unref it.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
+<td> A volume-changed change notification message.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em> :</span></p></td>
+<td> Pointer to hold a GstMixerOptions object, or NULL.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.18
+</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2602506"></a><h2>Signal Details</h2>
+<a name="gst-plugins-base-libs-gstmixer.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2602517"></a><h3>
-<a name="GstMixer-mute-toggled"></a>The "mute-toggled" signal</h3>
-<a class="indexterm" name="id2602527"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
-                                                        <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
+<a name="GstMixer-mute-toggled"></a><h3>The <code class="literal">"mute-toggled"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
+                                                        <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
                                                         gboolean       arg2,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
@@ -905,23 +1000,23 @@ when they are done with it.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmixer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmixer</code></em> :</span></p></td>
 <td>the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
 <td>
 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -929,10 +1024,9 @@ when they are done with it.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602639"></a><h3>
-<a name="GstMixer-option-changed"></a>The "option-changed" signal</h3>
-<a class="indexterm" name="id2602649"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>        *gstmixer,
-                                                        <a href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *arg1,
+<a name="GstMixer-option-changed"></a><h3>The <code class="literal">"option-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>        *gstmixer,
+                                                        <a class="link" href="gst-plugins-base-libs-gstmixeroptions.html#GstMixerOptions">GstMixerOptions</a> *arg1,
                                                         gchar           *arg2,
                                                         gpointer         user_data)      : Run Last</pre>
 <p>
@@ -942,23 +1036,23 @@ when they are done with it.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmixer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmixer</code></em> :</span></p></td>
 <td>the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
 <td>
 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -966,10 +1060,9 @@ when they are done with it.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602761"></a><h3>
-<a name="GstMixer-record-toggled"></a>The "record-toggled" signal</h3>
-<a class="indexterm" name="id2602772"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
-                                                        <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
+<a name="GstMixer-record-toggled"></a><h3>The <code class="literal">"record-toggled"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
+                                                        <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
                                                         gboolean       arg2,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
@@ -979,23 +1072,23 @@ when they are done with it.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmixer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmixer</code></em> :</span></p></td>
 <td>the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
 <td>
 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -1003,10 +1096,9 @@ when they are done with it.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602883"></a><h3>
-<a name="GstMixer-volume-changed"></a>The "volume-changed" signal</h3>
-<a class="indexterm" name="id2602894"></a><pre class="programlisting">void                user_function                      (<a href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
-                                                        <a href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
+<a name="GstMixer-volume-changed"></a><h3>The <code class="literal">"volume-changed"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>      *gstmixer,
+                                                        <a class="link" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack">GstMixerTrack</a> *arg1,
                                                         gpointer       arg2,
                                                         gpointer       user_data)      : Run Last</pre>
 <p>
@@ -1016,23 +1108,23 @@ when they are done with it.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>gstmixer</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>gstmixer</code></em> :</span></p></td>
 <td>the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
 <td>
 
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
 <td>user data set when the signal handler was connected.</td>
 </tr>
 </tbody>
@@ -1040,5 +1132,8 @@ when they are done with it.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

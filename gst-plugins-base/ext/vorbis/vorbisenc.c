@@ -197,28 +197,32 @@ gst_vorbis_enc_class_init (GstVorbisEncClass * klass)
       g_param_spec_int ("max-bitrate", "Maximum Bitrate",
           "Specify a maximum bitrate (in bps). Useful for streaming "
           "applications. (-1 == disabled)",
-          -1, HIGHEST_BITRATE, MAX_BITRATE_DEFAULT, G_PARAM_READWRITE));
+          -1, HIGHEST_BITRATE, MAX_BITRATE_DEFAULT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BITRATE,
       g_param_spec_int ("bitrate", "Target Bitrate",
           "Attempt to encode at a bitrate averaging this (in bps). "
           "This uses the bitrate management engine, and is not recommended for most users. "
-          "Quality is a better alternative. (-1 == disabled)",
-          -1, HIGHEST_BITRATE, BITRATE_DEFAULT, G_PARAM_READWRITE));
+          "Quality is a better alternative. (-1 == disabled)", -1,
+          HIGHEST_BITRATE, BITRATE_DEFAULT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MIN_BITRATE,
-      g_param_spec_int ("min_bitrate", "Minimum Bitrate",
+      g_param_spec_int ("min-bitrate", "Minimum Bitrate",
           "Specify a minimum bitrate (in bps). Useful for encoding for a "
-          "fixed-size channel. (-1 == disabled)",
-          -1, HIGHEST_BITRATE, MIN_BITRATE_DEFAULT, G_PARAM_READWRITE));
+          "fixed-size channel. (-1 == disabled)", -1, HIGHEST_BITRATE,
+          MIN_BITRATE_DEFAULT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_QUALITY,
       g_param_spec_float ("quality", "Quality",
-          "Specify quality instead of specifying a particular bitrate.",
-          -0.1, 1.0, QUALITY_DEFAULT, G_PARAM_READWRITE));
+          "Specify quality instead of specifying a particular bitrate.", -0.1,
+          1.0, QUALITY_DEFAULT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MANAGED,
       g_param_spec_boolean ("managed", "Managed",
-          "Enable bitrate management engine", FALSE, G_PARAM_READWRITE));
+          "Enable bitrate management engine", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LAST_MESSAGE,
       g_param_spec_string ("last-message", "last-message",
-          "The last status message", NULL, G_PARAM_READABLE));
+          "The last status message", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_vorbis_enc_change_state);
@@ -237,7 +241,7 @@ gst_vorbis_enc_dispose (GObject * object)
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
-static const GstAudioChannelPosition vorbischannelpositions[][6] = {
+static const GstAudioChannelPosition vorbischannelpositions[][8] = {
   {                             /* Mono */
       GST_AUDIO_CHANNEL_POSITION_FRONT_MONO},
   {                             /* Stereo */
@@ -268,6 +272,25 @@ static const GstAudioChannelPosition vorbischannelpositions[][6] = {
         GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
         GST_AUDIO_CHANNEL_POSITION_LFE,
       },
+  {                             /* Not defined by spec, GStreamer default */
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_REAR_CENTER,
+      },
+  {                             /* Not defined by spec, GStreamer default */
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT,
+      },
 };
 static GstCaps *
 gst_vorbis_enc_generate_sink_caps (void)
@@ -287,7 +310,7 @@ gst_vorbis_enc_generate_sink_caps (void)
           "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32,
           NULL));
 
-  for (i = 3; i <= 6; i++) {
+  for (i = 3; i <= 8; i++) {
     GValue chanpos = { 0 };
     GValue pos = { 0 };
     GstStructure *structure;
@@ -313,7 +336,7 @@ gst_vorbis_enc_generate_sink_caps (void)
 
   gst_caps_append_structure (caps, gst_structure_new ("audio/x-raw-float",
           "rate", GST_TYPE_INT_RANGE, 1, 200000,
-          "channels", GST_TYPE_INT_RANGE, 7, 256,
+          "channels", GST_TYPE_INT_RANGE, 9, 256,
           "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32,
           NULL));
 

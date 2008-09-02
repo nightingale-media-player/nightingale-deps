@@ -20,10 +20,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/* FIXME: remove #if 0 code
- * FIXME: is the flush_seek part after sending the seek still needed?
- *
- */
 #include <stdlib.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -47,6 +43,7 @@ GST_DEBUG_CATEGORY_STATIC (seek_debug);
 //#define VSINK "aasink"
 //#define VSINK "cacasink"
 
+#define FILL_INTERVAL 100
 //#define UPDATE_INTERVAL 500
 //#define UPDATE_INTERVAL 100
 #define UPDATE_INTERVAL 10
@@ -76,16 +73,38 @@ static const gchar *pipeline_spec;
 static gint64 position = -1;
 static gint64 duration = -1;
 static GtkAdjustment *adjustment;
-static GtkWidget *hscale;
+static GtkWidget *hscale, *statusbar;
+static guint status_id = 0;
 static gboolean stats = FALSE;
 static gboolean elem_seek = FALSE;
 static gboolean verbose = FALSE;
 
+static gboolean is_live = FALSE;
+static gboolean buffering = FALSE;
+static GstBufferingMode mode;
+static gint64 buffering_left;
 static GstState state = GST_STATE_NULL;
 static guint update_id = 0;
 static guint seek_timeout_id = 0;
 static gulong changed_id;
+static guint fill_id = 0;
 
+static gint n_video = 0, n_audio = 0, n_text = 0;
+static gboolean need_streams = TRUE;
+static GtkWidget *video_combo, *audio_combo, *text_combo, *vis_combo;
+static GtkWidget *vis_checkbox, *video_checkbox, *audio_checkbox;
+static GtkWidget *text_checkbox, *mute_checkbox, *volume_spinbutton;
+
+/* we keep an array of the visualisation entries so that we can easily switch
+ * with the combo box index. */
+typedef struct
+{
+  GstElementFactory *factory;
+} VisEntry;
+
+static GArray *vis_entries;
+
+static void clear_streams (GstElement * pipeline);
 
 /* pipeline construction */
 
@@ -166,10 +185,11 @@ make_mod_pipeline (const gchar * location)
   gst_element_link (src, decoder);
   gst_element_link (decoder, audiosink);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -207,12 +227,12 @@ make_dv_pipeline (const gchar * location)
   gst_element_link (v_queue, decoder);
   gst_element_link (decoder, videosink);
 
-  setup_dynamic_link (demux, "video", gst_element_get_pad (v_queue, "sink"),
-      NULL);
-  setup_dynamic_link (demux, "audio", gst_element_get_pad (a_queue, "sink"),
-      NULL);
+  setup_dynamic_link (demux, "video", gst_element_get_static_pad (v_queue,
+          "sink"), NULL);
+  setup_dynamic_link (demux, "audio", gst_element_get_static_pad (a_queue,
+          "sink"), NULL);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
 
@@ -239,8 +259,8 @@ make_wav_pipeline (const gchar * location)
 
   gst_element_link (src, decoder);
 
-  setup_dynamic_link (decoder, "src", gst_element_get_pad (audiosink, "sink"),
-      NULL);
+  setup_dynamic_link (decoder, "src", gst_element_get_static_pad (audiosink,
+          "sink"), NULL);
 
   seekable_elements = g_list_prepend (seekable_elements, audiosink);
 
@@ -273,10 +293,11 @@ make_flac_pipeline (const gchar * location)
   gst_element_link (src, decoder);
   gst_element_link (decoder, audiosink);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -304,10 +325,11 @@ make_sid_pipeline (const gchar * location)
   gst_element_link (src, decoder);
   gst_element_link (decoder, audiosink);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -336,10 +358,11 @@ make_parse_pipeline (const gchar * location)
   gst_element_link (src, parser);
   gst_element_link (parser, fakesink);
 
-  seekable = gst_element_get_pad (parser, "src");
+  seekable = gst_element_get_static_pad (parser, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (parser, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (parser, "sink"));
 
   return pipeline;
 }
@@ -375,17 +398,18 @@ make_vorbis_pipeline (const gchar * location)
   gst_element_link (decoder, convert);
   gst_element_link (convert, audiosink);
 
-  pad = gst_element_get_pad (decoder, "sink");
+  pad = gst_element_get_static_pad (decoder, "sink");
   gst_element_add_pad (audio_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (audio_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (audio_bin,
+          "sink"), NULL);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -420,17 +444,18 @@ make_theora_pipeline (const gchar * location)
   gst_element_link (decoder, convert);
   gst_element_link (convert, videosink);
 
-  pad = gst_element_get_pad (decoder, "sink");
+  pad = gst_element_get_static_pad (decoder, "sink");
   gst_element_add_pad (video_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (video_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (video_bin,
+          "sink"), NULL);
 
-  seekable = gst_element_get_pad (decoder, "src");
+  seekable = gst_element_get_static_pad (decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -473,12 +498,12 @@ make_vorbis_theora_pipeline (const gchar * location)
   gst_element_link (a_decoder, a_convert);
   gst_element_link (a_convert, audiosink);
 
-  pad = gst_element_get_pad (a_queue, "sink");
+  pad = gst_element_get_static_pad (a_queue, "sink");
   gst_element_add_pad (audio_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (audio_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (audio_bin,
+          "sink"), NULL);
 
   video_bin = gst_bin_new ("v_decoder_bin");
   v_queue = gst_element_factory_make_or_warn ("queue", "v_queue");
@@ -499,18 +524,19 @@ make_vorbis_theora_pipeline (const gchar * location)
   gst_element_link_many (v_queue, v_decoder, v_convert, v_scale, videosink,
       NULL);
 
-  pad = gst_element_get_pad (v_queue, "sink");
+  pad = gst_element_get_static_pad (v_queue, "sink");
   gst_element_add_pad (video_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (video_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (video_bin,
+          "sink"), NULL);
 
-  seekable = gst_element_get_pad (a_decoder, "src");
+  seekable = gst_element_get_static_pad (a_decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (a_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (a_decoder,
+          "sink"));
 
   return pipeline;
 }
@@ -552,12 +578,12 @@ make_avi_msmpeg4v3_mp3_pipeline (const gchar * location)
 
   gst_bin_add (GST_BIN (pipeline), audio_bin);
 
-  pad = gst_element_get_pad (a_queue, "sink");
+  pad = gst_element_get_static_pad (a_queue, "sink");
   gst_element_add_pad (audio_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (audio_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (audio_bin,
+          "sink"), NULL);
 
   video_bin = gst_bin_new ("v_decoder_bin");
   v_queue = gst_element_factory_make_or_warn ("queue", "v_queue");
@@ -575,18 +601,19 @@ make_avi_msmpeg4v3_mp3_pipeline (const gchar * location)
 
   gst_bin_add (GST_BIN (pipeline), video_bin);
 
-  pad = gst_element_get_pad (v_queue, "sink");
+  pad = gst_element_get_static_pad (v_queue, "sink");
   gst_element_add_pad (video_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, NULL, gst_element_get_pad (video_bin, "sink"),
-      NULL);
+  setup_dynamic_link (demux, NULL, gst_element_get_static_pad (video_bin,
+          "sink"), NULL);
 
-  seekable = gst_element_get_pad (a_decoder, "src");
+  seekable = gst_element_get_static_pad (a_decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (a_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (a_decoder,
+          "sink"));
 
   return pipeline;
 }
@@ -619,10 +646,11 @@ make_mp3_pipeline (const gchar * location)
   gst_element_link (decoder, queue);
   gst_element_link (queue, osssink);
 
-  seekable = gst_element_get_pad (queue, "src");
+  seekable = gst_element_get_static_pad (queue, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
-  rate_pads = g_list_prepend (rate_pads, gst_element_get_pad (decoder, "sink"));
+  rate_pads =
+      g_list_prepend (rate_pads, gst_element_get_static_pad (decoder, "sink"));
 
   return pipeline;
 }
@@ -658,14 +686,15 @@ make_avi_pipeline (const gchar * location)
   gst_bin_add (GST_BIN (audio_bin), audiosink);
   gst_element_set_state (audio_bin, GST_STATE_PAUSED);
 
-  setup_dynamic_link (demux, "audio_00", gst_element_get_pad (a_decoder,
+  setup_dynamic_link (demux, "audio_00", gst_element_get_static_pad (a_decoder,
           "sink"), audio_bin);
 
-  seekable = gst_element_get_pad (a_queue, "src");
+  seekable = gst_element_get_static_pad (a_queue, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (a_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (a_decoder,
+          "sink"));
 
   video_bin = gst_bin_new ("v_decoder_bin");
   v_decoder = gst_element_factory_make_or_warn ("ffmpegdecall", "v_dec");
@@ -679,14 +708,15 @@ make_avi_pipeline (const gchar * location)
 
   gst_element_set_state (video_bin, GST_STATE_PAUSED);
 
-  setup_dynamic_link (demux, "video_00", gst_element_get_pad (v_decoder,
+  setup_dynamic_link (demux, "video_00", gst_element_get_static_pad (v_decoder,
           "sink"), video_bin);
 
-  seekable = gst_element_get_pad (v_queue, "src");
+  seekable = gst_element_get_static_pad (v_queue, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (v_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (v_decoder,
+          "sink"));
 
   return pipeline;
 }
@@ -726,11 +756,11 @@ make_mpeg_pipeline (const gchar * location)
 
   gst_bin_add (GST_BIN (pipeline), audio_bin);
 
-  pad = gst_element_get_pad (a_decoder, "sink");
+  pad = gst_element_get_static_pad (a_decoder, "sink");
   gst_element_add_pad (audio_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, "audio_c0", gst_element_get_pad (audio_bin,
+  setup_dynamic_link (demux, "audio_c0", gst_element_get_static_pad (audio_bin,
           "sink"), NULL);
 
   video_bin = gst_bin_new ("v_decoder_bin");
@@ -750,18 +780,19 @@ make_mpeg_pipeline (const gchar * location)
 
   gst_bin_add (GST_BIN (pipeline), video_bin);
 
-  pad = gst_element_get_pad (v_decoder, "sink");
+  pad = gst_element_get_static_pad (v_decoder, "sink");
   gst_element_add_pad (video_bin, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
-  setup_dynamic_link (demux, "video_e0", gst_element_get_pad (video_bin,
+  setup_dynamic_link (demux, "video_e0", gst_element_get_static_pad (video_bin,
           "sink"), NULL);
 
-  seekable = gst_element_get_pad (v_filter, "src");
+  seekable = gst_element_get_static_pad (v_filter, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (v_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (v_decoder,
+          "sink"));
 
   return pipeline;
 }
@@ -801,14 +832,15 @@ make_mpegnt_pipeline (const gchar * location)
   gst_bin_add (GST_BIN (audio_bin), a_queue);
   gst_bin_add (GST_BIN (audio_bin), audiosink);
 
-  setup_dynamic_link (demux, "audio_00", gst_element_get_pad (a_decoder,
+  setup_dynamic_link (demux, "audio_00", gst_element_get_static_pad (a_decoder,
           "sink"), audio_bin);
 
-  seekable = gst_element_get_pad (a_queue, "src");
+  seekable = gst_element_get_static_pad (a_queue, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (a_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (a_decoder,
+          "sink"));
 
   video_bin = gst_bin_new ("v_decoder_bin");
   v_decoder = gst_element_factory_make_or_warn ("mpeg2dec", "v_dec");
@@ -818,14 +850,15 @@ make_mpegnt_pipeline (const gchar * location)
 
   gst_bin_add_many (GST_BIN (video_bin), v_decoder, v_filter, videosink, NULL);
 
-  setup_dynamic_link (demux, "video_00", gst_element_get_pad (v_decoder,
+  setup_dynamic_link (demux, "video_00", gst_element_get_static_pad (v_decoder,
           "sink"), video_bin);
 
-  seekable = gst_element_get_pad (v_decoder, "src");
+  seekable = gst_element_get_static_pad (v_decoder, "src");
   seekable_pads = g_list_prepend (seekable_pads, seekable);
   rate_pads = g_list_prepend (rate_pads, seekable);
   rate_pads =
-      g_list_prepend (rate_pads, gst_element_get_pad (v_decoder, "sink"));
+      g_list_prepend (rate_pads, gst_element_get_static_pad (v_decoder,
+          "sink"));
 
   return pipeline;
 }
@@ -871,7 +904,7 @@ static GstElement *
 make_parselaunch_pipeline (const gchar * description)
 {
   GstElement *pipeline;
-  GError *error;
+  GError *error = NULL;
 
   pipeline = gst_parse_launch (description, &error);
 
@@ -979,7 +1012,7 @@ query_rates (void)
 }
 
 G_GNUC_UNUSED static void
-query_positions_elems ()
+query_positions_elems (void)
 {
   GList *walk = seekable_elements;
 
@@ -1011,7 +1044,7 @@ query_positions_elems ()
 }
 
 G_GNUC_UNUSED static void
-query_positions_pads ()
+query_positions_pads (void)
 {
   GList *walk = seekable_pads;
 
@@ -1047,6 +1080,7 @@ static gboolean start_seek (GtkWidget * widget, GdkEventButton * event,
     gpointer user_data);
 static gboolean stop_seek (GtkWidget * widget, GdkEventButton * event,
     gpointer user_data);
+static void seek_cb (GtkWidget * widget);
 
 static void
 set_scale (gdouble value)
@@ -1055,12 +1089,64 @@ set_scale (gdouble value)
       (void *) pipeline);
   g_signal_handlers_block_by_func (hscale, (void *) stop_seek,
       (void *) pipeline);
+  g_signal_handlers_block_by_func (hscale, (void *) seek_cb, (void *) pipeline);
   gtk_adjustment_set_value (adjustment, value);
   g_signal_handlers_unblock_by_func (hscale, (void *) start_seek,
       (void *) pipeline);
   g_signal_handlers_unblock_by_func (hscale, (void *) stop_seek,
       (void *) pipeline);
+  g_signal_handlers_unblock_by_func (hscale, (void *) seek_cb,
+      (void *) pipeline);
   gtk_widget_queue_draw (hscale);
+}
+
+static gboolean
+update_fill (gpointer data)
+{
+  if (elem_seek) {
+    if (seekable_elements) {
+      GstElement *element = GST_ELEMENT (seekable_elements->data);
+      GstQuery *query;
+
+      query = gst_query_new_buffering (GST_FORMAT_PERCENT);
+      if (gst_element_query (element, query)) {
+        gint64 start, stop;
+        GstFormat format;
+        gdouble fill;
+        gboolean busy;
+        gint percent;
+
+        gst_query_parse_buffering_percent (query, &busy, &percent);
+
+        if (buffering && !busy) {
+          /* if we were buffering but not anymore, start playing */
+          if (state == GST_STATE_PLAYING && !is_live) {
+            fprintf (stderr, "setting pipeline to PLAYING ...\n");
+            gst_element_set_state (pipeline, GST_STATE_PLAYING);
+            gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
+            gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id,
+                "Playing");
+          }
+          state = GST_STATE_PAUSED;
+          buffering = FALSE;
+        }
+
+        gst_query_parse_buffering_range (query, &format, &start, &stop, NULL);
+
+        GST_DEBUG ("start %" G_GINT64_FORMAT ", stop %" G_GINT64_FORMAT,
+            start, stop);
+
+        if (stop != -1)
+          fill = 100.0 * stop / GST_FORMAT_PERCENT_MAX;
+        else
+          fill = 100.0;
+
+        gtk_range_set_fill_level (GTK_RANGE (hscale), fill);
+      }
+      gst_query_unref (query);
+    }
+  }
+  return TRUE;
 }
 
 static gboolean
@@ -1106,8 +1192,9 @@ update_scale (gpointer data)
 }
 
 static void do_seek (GtkWidget * widget);
-
+static void connect_bus_signals (GstElement * pipeline);
 static void set_update_scale (gboolean active);
+static void set_update_fill (gboolean active);
 
 static gboolean
 end_scrub (GtkWidget * widget)
@@ -1192,7 +1279,6 @@ do_seek (GtkWidget * widget)
 
   if (res) {
     if (flush_seek) {
-      gst_pipeline_set_new_stream_time (GST_PIPELINE (pipeline), 0);
       gst_element_get_state (GST_ELEMENT (pipeline), NULL, NULL, SEEK_TIMEOUT);
     } else {
       set_update_scale (TRUE);
@@ -1222,6 +1308,24 @@ seek_cb (GtkWidget * widget)
     if (seek_timeout_id == 0) {
       seek_timeout_id =
           g_timeout_add (SCRUB_TIME, (GSourceFunc) end_scrub, widget);
+    }
+  }
+}
+
+static void
+set_update_fill (gboolean active)
+{
+  GST_DEBUG ("fill scale is %d", active);
+
+  if (active) {
+    if (fill_id == 0) {
+      fill_id =
+          g_timeout_add (FILL_INTERVAL, (GtkFunction) update_fill, pipeline);
+    }
+  } else {
+    if (fill_id) {
+      g_source_remove (fill_id);
+      fill_id = 0;
     }
   }
 }
@@ -1305,18 +1409,27 @@ play_cb (GtkButton * button, gpointer data)
 
   if (state != GST_STATE_PLAYING) {
     g_print ("PLAY pipeline\n");
-    ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-      goto failed;
-    //do_seek(hscale);
+    gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
 
+    ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
+    switch (ret) {
+      case GST_STATE_CHANGE_FAILURE:
+        goto failed;
+      case GST_STATE_CHANGE_NO_PREROLL:
+        is_live = TRUE;
+        break;
+      default:
+        break;
+    }
     state = GST_STATE_PLAYING;
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Playing");
   }
   return;
 
 failed:
   {
     g_print ("PLAY failed\n");
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Play failed");
   }
 }
 
@@ -1326,18 +1439,28 @@ pause_cb (GtkButton * button, gpointer data)
   if (state != GST_STATE_PAUSED) {
     GstStateChangeReturn ret;
 
+    gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
     g_print ("PAUSE pipeline\n");
     ret = gst_element_set_state (pipeline, GST_STATE_PAUSED);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-      goto failed;
+    switch (ret) {
+      case GST_STATE_CHANGE_FAILURE:
+        goto failed;
+      case GST_STATE_CHANGE_NO_PREROLL:
+        is_live = TRUE;
+        break;
+      default:
+        break;
+    }
 
     state = GST_STATE_PAUSED;
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Paused");
   }
   return;
 
 failed:
   {
     g_print ("PAUSE failed\n");
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Pause failed");
   }
 }
 
@@ -1348,14 +1471,23 @@ stop_cb (GtkButton * button, gpointer data)
     GstStateChangeReturn ret;
 
     g_print ("READY pipeline\n");
+    gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
+
     ret = gst_element_set_state (pipeline, GST_STATE_READY);
     if (ret == GST_STATE_CHANGE_FAILURE)
       goto failed;
 
     state = GST_STATE_READY;
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Stopped");
 
+    is_live = FALSE;
+    buffering = FALSE;
     set_update_scale (FALSE);
     set_scale (0.0);
+    set_update_fill (FALSE);
+
+    if (pipeline_type == 16)
+      clear_streams (pipeline);
 
     /* if one uses parse_launch, play, stop and play again it fails as all the
      * pads after the demuxer can't be reconnected
@@ -1367,6 +1499,7 @@ stop_cb (GtkButton * button, gpointer data)
       pipeline = pipelines[pipeline_type].func (pipeline_spec);
       g_assert (pipeline);
       gst_element_set_state (pipeline, GST_STATE_READY);
+      connect_bus_signals (pipeline);
     }
   }
   return;
@@ -1374,6 +1507,7 @@ stop_cb (GtkButton * button, gpointer data)
 failed:
   {
     g_print ("STOP failed\n");
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Stop failed");
   }
 }
 
@@ -1430,6 +1564,10 @@ rate_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
     flags |= GST_SEEK_FLAG_FLUSH;
   if (loop_seek)
     flags |= GST_SEEK_FLAG_SEGMENT;
+  if (accurate_seek)
+    flags |= GST_SEEK_FLAG_ACCURATE;
+  if (keyframe_seek)
+    flags |= GST_SEEK_FLAG_KEY_UNIT;
 
   if (rate >= 0) {
     s_event = gst_event_new_seek (rate,
@@ -1447,11 +1585,316 @@ rate_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
 
   if (res) {
     if (flush_seek) {
-      gst_pipeline_set_new_stream_time (GST_PIPELINE (pipeline), 0);
       gst_element_get_state (GST_ELEMENT (pipeline), NULL, NULL, SEEK_TIMEOUT);
     }
   } else
     g_print ("seek failed\n");
+}
+
+static void
+update_flag (GstPipeline * pipeline, gint num, gboolean state)
+{
+  gint flags;
+
+  g_object_get (pipeline, "flags", &flags, NULL);
+  if (state)
+    flags |= (1 << num);
+  else
+    flags &= ~(1 << num);
+  g_object_set (pipeline, "flags", flags, NULL);
+}
+
+static void
+vis_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean state;
+
+  state = gtk_toggle_button_get_active (button);
+  update_flag (pipeline, 3, state);
+  gtk_widget_set_sensitive (vis_combo, state);
+}
+
+static void
+audio_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean state;
+
+  state = gtk_toggle_button_get_active (button);
+  update_flag (pipeline, 1, state);
+  gtk_widget_set_sensitive (audio_combo, state);
+}
+
+static void
+video_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean state;
+
+  state = gtk_toggle_button_get_active (button);
+  update_flag (pipeline, 0, state);
+  gtk_widget_set_sensitive (video_combo, state);
+}
+
+static void
+text_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean state;
+
+  state = gtk_toggle_button_get_active (button);
+  update_flag (pipeline, 2, state);
+  gtk_widget_set_sensitive (text_combo, state);
+}
+
+static void
+mute_toggle_cb (GtkToggleButton * button, GstPipeline * pipeline)
+{
+  gboolean mute;
+
+  mute = gtk_toggle_button_get_active (button);
+  g_object_set (pipeline, "mute", mute, NULL);
+}
+
+static void
+clear_streams (GstElement * pipeline)
+{
+  gint i;
+
+  /* remove previous info */
+  for (i = 0; i < n_video; i++)
+    gtk_combo_box_remove_text (GTK_COMBO_BOX (video_combo), 0);
+  for (i = 0; i < n_audio; i++)
+    gtk_combo_box_remove_text (GTK_COMBO_BOX (audio_combo), 0);
+  for (i = 0; i < n_text; i++)
+    gtk_combo_box_remove_text (GTK_COMBO_BOX (text_combo), 0);
+
+  n_audio = n_video = n_text = 0;
+  gtk_widget_set_sensitive (video_combo, FALSE);
+  gtk_widget_set_sensitive (audio_combo, FALSE);
+  gtk_widget_set_sensitive (text_combo, FALSE);
+
+  need_streams = TRUE;
+}
+
+static void
+update_streams (GstPipeline * pipeline)
+{
+  gint i;
+
+  if (pipeline_type == 16 && need_streams) {
+    GstTagList *tags;
+    gchar *name;
+    gint active_idx;
+    gboolean state;
+
+    /* remove previous info */
+    clear_streams (GST_ELEMENT_CAST (pipeline));
+
+    /* here we get and update the different streams detected by playbin2 */
+    g_object_get (pipeline, "n-video", &n_video, NULL);
+    g_object_get (pipeline, "n-audio", &n_audio, NULL);
+    g_object_get (pipeline, "n-text", &n_text, NULL);
+
+    g_print ("video %d, audio %d, text %d\n", n_video, n_audio, n_text);
+
+    active_idx = 0;
+    for (i = 0; i < n_video; i++) {
+      g_signal_emit_by_name (pipeline, "get-video-tags", i, &tags);
+      /* find good name for the label */
+      name = g_strdup_printf ("video %d", i + 1);
+      gtk_combo_box_append_text (GTK_COMBO_BOX (video_combo), name);
+      g_free (name);
+    }
+    state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (video_checkbox));
+    gtk_widget_set_sensitive (video_combo, state && n_video > 0);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (video_combo), active_idx);
+
+    active_idx = 0;
+    for (i = 0; i < n_audio; i++) {
+      g_signal_emit_by_name (pipeline, "get-audio-tags", i, &tags);
+      /* find good name for the label */
+      name = g_strdup_printf ("audio %d", i + 1);
+      gtk_combo_box_append_text (GTK_COMBO_BOX (audio_combo), name);
+      g_free (name);
+    }
+    state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (audio_checkbox));
+    gtk_widget_set_sensitive (audio_combo, state && n_audio > 0);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (audio_combo), active_idx);
+
+    active_idx = 0;
+    for (i = 0; i < n_text; i++) {
+      g_signal_emit_by_name (pipeline, "get-text-tags", i, &tags);
+      name = NULL;
+      if (tags) {
+        const GValue *value;
+
+        /* get the language code if we can */
+        value = gst_tag_list_get_value_index (tags, GST_TAG_LANGUAGE_CODE, 0);
+        if (value && G_VALUE_HOLDS_STRING (value)) {
+          name = g_strdup_printf ("text %s", g_value_get_string (value));
+        }
+      }
+      /* find good name for the label if we didn't use a tag */
+      if (name == NULL)
+        name = g_strdup_printf ("text %d", i + 1);
+
+      gtk_combo_box_append_text (GTK_COMBO_BOX (text_combo), name);
+      g_free (name);
+    }
+    state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (text_checkbox));
+    gtk_widget_set_sensitive (text_combo, state && n_text > 0);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (text_combo), active_idx);
+
+    need_streams = FALSE;
+  }
+}
+
+static void
+video_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
+{
+  g_object_set (pipeline, "current-video", gtk_combo_box_get_active (combo),
+      NULL);
+}
+
+static void
+audio_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
+{
+  g_object_set (pipeline, "current-audio", gtk_combo_box_get_active (combo),
+      NULL);
+}
+
+static void
+text_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
+{
+  g_object_set (pipeline, "current-text", gtk_combo_box_get_active (combo),
+      NULL);
+}
+
+static gboolean
+filter_features (GstPluginFeature * feature, gpointer data)
+{
+  GstElementFactory *f;
+
+  if (!GST_IS_ELEMENT_FACTORY (feature))
+    return FALSE;
+  f = GST_ELEMENT_FACTORY (feature);
+  if (!g_strrstr (gst_element_factory_get_klass (f), "Visualization"))
+    return FALSE;
+
+  return TRUE;
+}
+
+static void
+init_visualization_features (void)
+{
+  GList *list, *walk;
+
+  vis_entries = g_array_new (FALSE, FALSE, sizeof (VisEntry));
+
+  list = gst_registry_feature_filter (gst_registry_get_default (),
+      filter_features, FALSE, NULL);
+
+  for (walk = list; walk; walk = g_list_next (walk)) {
+    VisEntry entry;
+    const gchar *name;
+
+    entry.factory = GST_ELEMENT_FACTORY (walk->data);
+    name = gst_element_factory_get_longname (entry.factory);
+
+    g_array_append_val (vis_entries, entry);
+    gtk_combo_box_append_text (GTK_COMBO_BOX (vis_combo), name);
+  }
+  gtk_combo_box_set_active (GTK_COMBO_BOX (vis_combo), 0);
+}
+
+static void
+vis_combo_cb (GtkComboBox * combo, GstPipeline * pipeline)
+{
+  guint index;
+  VisEntry *entry;
+  GstElement *element;
+
+  /* get the selected index and get the factory for this index */
+  index = gtk_combo_box_get_active (GTK_COMBO_BOX (vis_combo));
+  entry = &g_array_index (vis_entries, VisEntry, index);
+  /* create an instance of the element from the factory */
+  element = gst_element_factory_create (entry->factory, NULL);
+  if (!element)
+    return;
+
+  /* set vis plugin for playbin2 */
+  g_object_set (pipeline, "vis-plugin", element, NULL);
+}
+
+static void
+volume_spinbutton_changed_cb (GtkSpinButton * button, GstPipeline * pipeline)
+{
+  gdouble volume;
+
+  volume = gtk_spin_button_get_value (button);
+
+  g_object_set (pipeline, "volume", volume, NULL);
+}
+
+static void
+shot_cb (GtkButton * button, gpointer data)
+{
+  GstBuffer *buffer;
+  GstCaps *caps;
+
+  /* convert to our desired format (RGB24) */
+  caps = gst_caps_new_simple ("video/x-raw-rgb",
+      "bpp", G_TYPE_INT, 24, "depth", G_TYPE_INT, 24,
+      /* Note: we don't ask for a specific width/height here, so that
+       * videoscale can adjust dimensions from a non-1/1 pixel aspect
+       * ratio to a 1/1 pixel-aspect-ratio */
+      "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1,
+      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
+      "red_mask", G_TYPE_INT, 0xff0000,
+      "green_mask", G_TYPE_INT, 0x00ff00,
+      "blue_mask", G_TYPE_INT, 0x0000ff, NULL);
+
+  /* convert the latest frame to the requested format */
+  g_signal_emit_by_name (pipeline, "convert-frame", caps, &buffer);
+  gst_caps_unref (caps);
+
+  if (buffer) {
+    GstCaps *caps;
+    GstStructure *s;
+    gboolean res;
+    gint width, height;
+    GdkPixbuf *pixbuf;
+    GError *error = NULL;
+
+    /* get the snapshot buffer format now. We set the caps on the appsink so
+     * that it can only be an rgb buffer. The only thing we have not specified
+     * on the caps is the height, which is dependant on the pixel-aspect-ratio
+     * of the source material */
+    caps = GST_BUFFER_CAPS (buffer);
+    if (!caps) {
+      g_warning ("could not get snapshot format\n");
+      goto done;
+    }
+    s = gst_caps_get_structure (caps, 0);
+
+    /* we need to get the final caps on the buffer to get the size */
+    res = gst_structure_get_int (s, "width", &width);
+    res |= gst_structure_get_int (s, "height", &height);
+    if (!res) {
+      g_warning ("could not get snapshot dimension\n");
+      goto done;
+    }
+
+    /* create pixmap from buffer and save, gstreamer video buffers have a stride
+     * that is rounded up to the nearest multiple of 4 */
+    pixbuf = gdk_pixbuf_new_from_data (GST_BUFFER_DATA (buffer),
+        GDK_COLORSPACE_RGB, FALSE, 8, width, height,
+        GST_ROUND_UP_4 (width * 3), NULL, NULL);
+
+    /* save the pixbuf */
+    gdk_pixbuf_save (pixbuf, "snapshot.png", "png", &error, NULL);
+
+  done:
+    gst_buffer_unref (buffer);
+  }
 }
 
 static void
@@ -1475,6 +1918,18 @@ message_received (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
 }
 
 static void
+msg_async_done (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
+{
+  GST_DEBUG ("async done");
+  /* when we get ASYNC_DONE we can query position, duration and other
+   * properties */
+  update_scale (pipeline);
+
+  /* update the available streams */
+  update_streams (pipeline);
+}
+
+static void
 msg_state_changed (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
 {
   const GstStructure *s;
@@ -1487,7 +1942,7 @@ msg_state_changed (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
 
     gst_message_parse_state_changed (message, &old, &new, &pending);
 
-    /* When state of the pipeline changes to playing we start updating scale */
+    /* When state of the pipeline changes to paused or playing we start updating scale */
     if (new == GST_STATE_PLAYING) {
       set_update_scale (TRUE);
     } else {
@@ -1526,6 +1981,123 @@ msg_segment_done (GstBus * bus, GstMessage * message, GstPipeline * pipeline)
     g_print ("segment seek failed\n");
 }
 
+/* in stream buffering mode we PAUSE the pipeline until we receive a 100%
+ * message */
+static void
+do_stream_buffering (gint percent)
+{
+  gchar *bufstr;
+
+  gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
+  bufstr = g_strdup_printf ("Buffering...%d", percent);
+  gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, bufstr);
+  g_free (bufstr);
+
+  if (percent == 100) {
+    /* a 100% message means buffering is done */
+    buffering = FALSE;
+    /* if the desired state is playing, go back */
+    if (state == GST_STATE_PLAYING) {
+      /* no state management needed for live pipelines */
+      if (!is_live) {
+        fprintf (stderr, "Done buffering, setting pipeline to PLAYING ...\n");
+        gst_element_set_state (pipeline, GST_STATE_PLAYING);
+      }
+      gtk_statusbar_pop (GTK_STATUSBAR (statusbar), status_id);
+      gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Playing");
+    }
+  } else {
+    /* buffering busy */
+    if (buffering == FALSE && state == GST_STATE_PLAYING) {
+      /* we were not buffering but PLAYING, PAUSE  the pipeline. */
+      if (!is_live) {
+        fprintf (stderr, "Buffering, setting pipeline to PAUSED ...\n");
+        gst_element_set_state (pipeline, GST_STATE_PAUSED);
+      }
+    }
+    buffering = TRUE;
+  }
+}
+
+static void
+do_download_buffering (gint percent)
+{
+  if (!buffering && percent < 100) {
+    gchar *bufstr;
+
+    buffering = TRUE;
+
+    bufstr = g_strdup_printf ("Downloading...");
+    gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, bufstr);
+    g_free (bufstr);
+
+    /* once we get a buffering message, we'll do the fill update */
+    set_update_fill (TRUE);
+
+    if (state == GST_STATE_PLAYING && !is_live) {
+      fprintf (stderr, "Downloading, setting pipeline to PAUSED ...\n");
+      gst_element_set_state (pipeline, GST_STATE_PAUSED);
+    }
+  }
+}
+
+static void
+msg_buffering (GstBus * bus, GstMessage * message, GstPipeline * data)
+{
+  gint percent;
+
+  gst_message_parse_buffering (message, &percent);
+
+  /* get more stats */
+  gst_message_parse_buffering_stats (message, &mode, NULL, NULL,
+      &buffering_left);
+
+  switch (mode) {
+    case GST_BUFFERING_DOWNLOAD:
+      do_download_buffering (percent);
+      break;
+    case GST_BUFFERING_LIVE:
+    case GST_BUFFERING_TIMESHIFT:
+    case GST_BUFFERING_STREAM:
+      do_stream_buffering (percent);
+      break;
+  }
+}
+
+static void
+connect_bus_signals (GstElement * pipeline)
+{
+  GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+
+  gst_bus_add_signal_watch_full (bus, G_PRIORITY_HIGH);
+
+  g_signal_connect (bus, "message::state-changed",
+      (GCallback) msg_state_changed, pipeline);
+  g_signal_connect (bus, "message::segment-done", (GCallback) msg_segment_done,
+      pipeline);
+  g_signal_connect (bus, "message::async-done", (GCallback) msg_async_done,
+      pipeline);
+
+  g_signal_connect (bus, "message::new-clock", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::error", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::warning", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::eos", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::tag", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::element", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::segment-done", (GCallback) message_received,
+      pipeline);
+  g_signal_connect (bus, "message::buffering", (GCallback) msg_buffering,
+      pipeline);
+
+  gst_object_unref (bus);
+}
+
 static void
 print_usage (int argc, char **argv)
 {
@@ -1542,8 +2114,8 @@ print_usage (int argc, char **argv)
 int
 main (int argc, char **argv)
 {
-  GtkWidget *window, *hbox, *vbox, *flagtable;
-  GtkWidget *play_button, *pause_button, *stop_button;
+  GtkWidget *window, *hbox, *vbox, *panel, *boxes, *flagtable, *boxes2;
+  GtkWidget *play_button, *pause_button, *stop_button, *shot_button;
   GtkWidget *accurate_checkbox, *key_checkbox, *loop_checkbox, *flush_checkbox;
   GtkWidget *scrub_checkbox, *play_scrub_checkbox, *rate_spinbutton;
   GtkWidget *rate_label;
@@ -1596,6 +2168,9 @@ main (int argc, char **argv)
   /* initialize gui elements ... */
   tips = gtk_tooltips_new ();
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  statusbar = gtk_statusbar_new ();
+  status_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar), "seek");
+  gtk_statusbar_push (GTK_STATUSBAR (statusbar), status_id, "Stopped");
   hbox = gtk_hbox_new (FALSE, 0);
   vbox = gtk_vbox_new (FALSE, 0);
   flagtable = gtk_table_new (4, 2, FALSE);
@@ -1614,6 +2189,7 @@ main (int argc, char **argv)
   scrub_checkbox = gtk_check_button_new_with_label ("Scrub");
   play_scrub_checkbox = gtk_check_button_new_with_label ("Play Scrub");
   rate_spinbutton = gtk_spin_button_new_with_range (-100, 100, 0.1);
+  gtk_spin_button_set_digits (GTK_SPIN_BUTTON (rate_spinbutton), 3);
   rate_label = gtk_label_new ("Rate");
 
   gtk_tooltips_set_tip (tips, accurate_checkbox,
@@ -1655,6 +2231,76 @@ main (int argc, char **argv)
   gtk_signal_connect (GTK_OBJECT (hscale),
       "format_value", G_CALLBACK (format_value), pipeline);
 
+  if (pipeline_type == 16) {
+    /* the playbin2 panel controls for the video/audio/subtitle tracks */
+    panel = gtk_hbox_new (FALSE, 0);
+    video_combo = gtk_combo_box_new_text ();
+    audio_combo = gtk_combo_box_new_text ();
+    text_combo = gtk_combo_box_new_text ();
+    gtk_widget_set_sensitive (video_combo, FALSE);
+    gtk_widget_set_sensitive (audio_combo, FALSE);
+    gtk_widget_set_sensitive (text_combo, FALSE);
+    gtk_box_pack_start (GTK_BOX (panel), video_combo, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (panel), audio_combo, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (panel), text_combo, TRUE, TRUE, 2);
+    g_signal_connect (G_OBJECT (video_combo), "changed",
+        G_CALLBACK (video_combo_cb), pipeline);
+    g_signal_connect (G_OBJECT (audio_combo), "changed",
+        G_CALLBACK (audio_combo_cb), pipeline);
+    g_signal_connect (G_OBJECT (text_combo), "changed",
+        G_CALLBACK (text_combo_cb), pipeline);
+    /* playbin2 panel for flag checkboxes and volume/mute */
+    boxes = gtk_hbox_new (FALSE, 0);
+    vis_checkbox = gtk_check_button_new_with_label ("Vis");
+    video_checkbox = gtk_check_button_new_with_label ("Video");
+    audio_checkbox = gtk_check_button_new_with_label ("Audio");
+    text_checkbox = gtk_check_button_new_with_label ("Text");
+    mute_checkbox = gtk_check_button_new_with_label ("Mute");
+    volume_spinbutton = gtk_spin_button_new_with_range (0, 10.0, 0.1);
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (volume_spinbutton), 1.0);
+    gtk_box_pack_start (GTK_BOX (boxes), video_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), audio_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), text_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), vis_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), mute_checkbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes), volume_spinbutton, TRUE, TRUE, 2);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (vis_checkbox), FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (audio_checkbox), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (video_checkbox), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (text_checkbox), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mute_checkbox), FALSE);
+    g_signal_connect (G_OBJECT (vis_checkbox), "toggled",
+        G_CALLBACK (vis_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (audio_checkbox), "toggled",
+        G_CALLBACK (audio_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (video_checkbox), "toggled",
+        G_CALLBACK (video_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (text_checkbox), "toggled",
+        G_CALLBACK (text_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (mute_checkbox), "toggled",
+        G_CALLBACK (mute_toggle_cb), pipeline);
+    g_signal_connect (G_OBJECT (volume_spinbutton), "value_changed",
+        G_CALLBACK (volume_spinbutton_changed_cb), pipeline);
+    /* playbin2 panel for snapshot */
+    boxes2 = gtk_hbox_new (FALSE, 0);
+    shot_button = gtk_button_new_from_stock (GTK_STOCK_SAVE);
+    gtk_tooltips_set_tip (tips, shot_button,
+        "save a screenshot .png in the current directory", NULL);
+    g_signal_connect (G_OBJECT (shot_button), "clicked", G_CALLBACK (shot_cb),
+        pipeline);
+    vis_combo = gtk_combo_box_new_text ();
+    g_signal_connect (G_OBJECT (vis_combo), "changed",
+        G_CALLBACK (vis_combo_cb), pipeline);
+    gtk_widget_set_sensitive (vis_combo, FALSE);
+    gtk_box_pack_start (GTK_BOX (boxes2), shot_button, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (boxes2), vis_combo, TRUE, TRUE, 2);
+
+    /* fill the vis combo box and the array of factories */
+    init_visualization_features ();
+  } else {
+    panel = boxes = boxes2 = NULL;
+  }
+
   /* do the packing stuff ... */
   gtk_window_set_default_size (GTK_WINDOW (window), 250, 96);
   gtk_container_add (GTK_CONTAINER (window), vbox);
@@ -1674,7 +2320,13 @@ main (int argc, char **argv)
   gtk_table_attach_defaults (GTK_TABLE (flagtable), rate_label, 3, 4, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (flagtable), rate_spinbutton, 3, 4, 1,
       2);
+  if (panel && boxes && boxes2) {
+    gtk_box_pack_start (GTK_BOX (vbox), panel, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (vbox), boxes, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX (vbox), boxes2, TRUE, TRUE, 2);
+  }
   gtk_box_pack_start (GTK_BOX (vbox), hscale, TRUE, TRUE, 2);
+  gtk_box_pack_start (GTK_BOX (vbox), statusbar, TRUE, TRUE, 2);
 
   /* connect things ... */
   g_signal_connect (G_OBJECT (play_button), "clicked", G_CALLBACK (play_cb),
@@ -1698,7 +2350,7 @@ main (int argc, char **argv)
   g_signal_connect (G_OBJECT (rate_spinbutton), "value_changed",
       G_CALLBACK (rate_spinbutton_changed_cb), pipeline);
 
-  g_signal_connect (G_OBJECT (window), "destroy", gtk_main_quit, NULL);
+  g_signal_connect (G_OBJECT (window), "delete-event", gtk_main_quit, NULL);
 
   /* show the gui. */
   gtk_widget_show_all (window);
@@ -1707,32 +2359,8 @@ main (int argc, char **argv)
     g_signal_connect (pipeline, "deep_notify",
         G_CALLBACK (gst_object_default_deep_notify), NULL);
   }
-  {
-    GstBus *bus;
 
-    bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-    gst_bus_add_signal_watch_full (bus, G_PRIORITY_HIGH);
-
-    g_signal_connect (bus, "message::state-changed",
-        (GCallback) msg_state_changed, pipeline);
-    g_signal_connect (bus, "message::segment-done",
-        (GCallback) msg_segment_done, pipeline);
-
-    g_signal_connect (bus, "message::new-clock", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::error", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::warning", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::eos", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::tag", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::element", (GCallback) message_received,
-        pipeline);
-    g_signal_connect (bus, "message::segment-done",
-        (GCallback) message_received, pipeline);
-  }
+  connect_bus_signals (pipeline);
   gtk_main ();
 
   g_print ("NULL pipeline\n");

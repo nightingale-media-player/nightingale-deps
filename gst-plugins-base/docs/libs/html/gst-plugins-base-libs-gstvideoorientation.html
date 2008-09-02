@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstvideoorientation</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gsttunernorm.html" title="gsttunernorm">
 <link rel="next" href="gst-plugins-base-libs-gstxoverlay.html" title="gstxoverlay">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,70 +36,65 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstxoverlay.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2619226" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2619955" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2619894" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2619919" class="shortcut">Prerequisites</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstvideoorientation.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideoorientation.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideoorientation.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideoorientation.prerequisites" class="shortcut">Prerequisites</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstvideoorientation"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2619226"></a><span class="refentrytitle">gstvideoorientation</span>
-</h2>
-<p>gstvideoorientation &#8212; Interface for elements providing video orientation
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstvideoorientation.top_of_page"></a>gstvideoorientation</span></h2>
+<p>gstvideoorientation — Interface for elements providing video orientation
 controls</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstvideoorientation.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoOrientation"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/videoorientation.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation-struct">GstVideoOrientation</a>;
-                    <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientationInterface">GstVideoOrientationInterface</a>;
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-hcenter">gst_video_orientation_get_hcenter</a>   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+                    <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation-struct" title="GstVideoOrientation">GstVideoOrientation</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientationInterface" title="GstVideoOrientationInterface">GstVideoOrientationInterface</a>;
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-hcenter" title="gst_video_orientation_get_hcenter ()">gst_video_orientation_get_hcenter</a>   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint *center);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-hflip">gst_video_orientation_get_hflip</a>     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-hflip" title="gst_video_orientation_get_hflip ()">gst_video_orientation_get_hflip</a>     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean *flip);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-vcenter">gst_video_orientation_get_vcenter</a>   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-vcenter" title="gst_video_orientation_get_vcenter ()">gst_video_orientation_get_vcenter</a>   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint *center);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-vflip">gst_video_orientation_get_vflip</a>     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-get-vflip" title="gst_video_orientation_get_vflip ()">gst_video_orientation_get_vflip</a>     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean *flip);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-hcenter">gst_video_orientation_set_hcenter</a>   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-hcenter" title="gst_video_orientation_set_hcenter ()">gst_video_orientation_set_hcenter</a>   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint center);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-hflip">gst_video_orientation_set_hflip</a>     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-hflip" title="gst_video_orientation_set_hflip ()">gst_video_orientation_set_hflip</a>     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean flip);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-vcenter">gst_video_orientation_set_vcenter</a>   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-vcenter" title="gst_video_orientation_set_vcenter ()">gst_video_orientation_set_vcenter</a>   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint center);
-gboolean            <a href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-vflip">gst_video_orientation_set_vflip</a>     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+gboolean            <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#gst-video-orientation-set-vflip" title="gst_video_orientation_set_vflip ()">gst_video_orientation_set_vflip</a>     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean flip);
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619894"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstvideoorientation.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GInterface
    +----GstVideoOrientation
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619919"></a><h2>Prerequisites</h2>
+<a name="gst-plugins-base-libs-gstvideoorientation.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstVideoOrientation requires
  GstObject,  GstImplementsInterface and  GstElement.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619955"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstvideoorientation.description"></a><h2>Description</h2>
 <p>
 The interface allows unified access to control flipping and autocenter
 operation of video-sources or operators.</p>
@@ -108,22 +103,20 @@ operation of video-sources or operators.</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619975"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstvideoorientation.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2619985"></a><h3>
-<a name="GstVideoOrientation-struct"></a>GstVideoOrientation</h3>
-<a class="indexterm" name="id2619999"></a><pre class="programlisting">typedef struct _GstVideoOrientation GstVideoOrientation;</pre>
+<a name="GstVideoOrientation-struct"></a><h3>GstVideoOrientation</h3>
+<pre class="programlisting">typedef struct _GstVideoOrientation GstVideoOrientation;</pre>
 <p>
-Opaque <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> data structure.</p>
+Opaque <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> data structure.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620026"></a><h3>
-<a name="GstVideoOrientationInterface"></a>GstVideoOrientationInterface</h3>
-<a class="indexterm" name="id2620040"></a><pre class="programlisting">typedef struct {
+<a name="GstVideoOrientationInterface"></a><h3>GstVideoOrientationInterface</h3>
+<pre class="programlisting">typedef struct {
   GTypeInterface parent;
 
   /* virtual functions */
@@ -139,7 +132,7 @@ Opaque <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientati
 } GstVideoOrientationInterface;
 </pre>
 <p>
-<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientationInterface"><span class="type">GstVideoOrientationInterface</span></a> interface.</p>
+<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientationInterface" title="GstVideoOrientationInterface"><span class="type">GstVideoOrientationInterface</span></a> interface.</p>
 <p>
 
 </p>
@@ -147,47 +140,47 @@ Opaque <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientati
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GTypeInterface&#160;<em class="structfield"><code>parent</code></em>;</span></td>
+<td><p><span class="term">GTypeInterface <em class="structfield"><code>parent</code></em>;</span></p></td>
 <td> parent interface type.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>get_hflip</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>get_hflip</code></em> ()</span></p></td>
 <td> virtual method to get horizontal flipping state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>get_vflip</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>get_vflip</code></em> ()</span></p></td>
 <td> virtual method to get vertical flipping state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>get_hcenter</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>get_hcenter</code></em> ()</span></p></td>
 <td> virtual method to get horizontal centering state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>get_vcenter</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>get_vcenter</code></em> ()</span></p></td>
 <td> virtual method to get vertical centering state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>set_hflip</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>set_hflip</code></em> ()</span></p></td>
 <td> virtual method to set horizontal flipping state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>set_vflip</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>set_vflip</code></em> ()</span></p></td>
 <td> virtual method to set vertical flipping state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>set_hcenter</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>set_hcenter</code></em> ()</span></p></td>
 <td> virtual method to set horizontal centering state
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>set_vcenter</code></em>&#160;()</span></td>
+<td><p><span class="term"><em class="structfield"><code>set_vcenter</code></em> ()</span></p></td>
 <td> virtual method to set vertical centering state
 </td>
 </tr>
@@ -196,15 +189,11 @@ Opaque <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientati
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620220"></a><h3>
-<a name="gst-video-orientation-get-hcenter"></a>gst_video_orientation_get_hcenter ()</h3>
-<a class="indexterm" name="id2620237"></a><pre class="programlisting">gboolean            gst_video_orientation_get_hcenter   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-get-hcenter"></a><h3>gst_video_orientation_get_hcenter ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_get_hcenter   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint *center);</pre>
 <p>
-Get the horizontal centering offset from the given object.
-</p>
-<p>
-Returns:</p>
+Get the horizontal centering offset from the given object.</p>
 <p>
 
 </p>
@@ -212,17 +201,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>center</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>center</code></em> :</span></p></td>
 <td> return location for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports centering
 </td>
 </tr>
@@ -233,9 +222,8 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620357"></a><h3>
-<a name="gst-video-orientation-get-hflip"></a>gst_video_orientation_get_hflip ()</h3>
-<a class="indexterm" name="id2620373"></a><pre class="programlisting">gboolean            gst_video_orientation_get_hflip     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-get-hflip"></a><h3>gst_video_orientation_get_hflip ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_get_hflip     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean *flip);</pre>
 <p>
 Get the horizontal flipping state (<code class="literal">TRUE</code> for flipped) from the given object.</p>
@@ -246,17 +234,17 @@ Get the horizontal flipping state (<code class="literal">TRUE</code> for flipped
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flip</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flip</code></em> :</span></p></td>
 <td> return location for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports flipping
 </td>
 </tr>
@@ -267,15 +255,11 @@ Get the horizontal flipping state (<code class="literal">TRUE</code> for flipped
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620501"></a><h3>
-<a name="gst-video-orientation-get-vcenter"></a>gst_video_orientation_get_vcenter ()</h3>
-<a class="indexterm" name="id2620518"></a><pre class="programlisting">gboolean            gst_video_orientation_get_vcenter   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-get-vcenter"></a><h3>gst_video_orientation_get_vcenter ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_get_vcenter   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint *center);</pre>
 <p>
-Get the vertical centering offset from the given object.
-</p>
-<p>
-Returns:</p>
+Get the vertical centering offset from the given object.</p>
 <p>
 
 </p>
@@ -283,17 +267,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>center</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>center</code></em> :</span></p></td>
 <td> return location for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports centering
 </td>
 </tr>
@@ -304,15 +288,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620638"></a><h3>
-<a name="gst-video-orientation-get-vflip"></a>gst_video_orientation_get_vflip ()</h3>
-<a class="indexterm" name="id2620654"></a><pre class="programlisting">gboolean            gst_video_orientation_get_vflip     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-get-vflip"></a><h3>gst_video_orientation_get_vflip ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_get_vflip     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean *flip);</pre>
 <p>
-Get the vertical flipping state (<code class="literal">TRUE</code> for flipped) from the given object.
-</p>
-<p>
-Returns:</p>
+Get the vertical flipping state (<code class="literal">TRUE</code> for flipped) from the given object.</p>
 <p>
 
 </p>
@@ -320,17 +300,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flip</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flip</code></em> :</span></p></td>
 <td> return location for the result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports flipping
 </td>
 </tr>
@@ -341,15 +321,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620786"></a><h3>
-<a name="gst-video-orientation-set-hcenter"></a>gst_video_orientation_set_hcenter ()</h3>
-<a class="indexterm" name="id2620802"></a><pre class="programlisting">gboolean            gst_video_orientation_set_hcenter   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-set-hcenter"></a><h3>gst_video_orientation_set_hcenter ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_set_hcenter   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint center);</pre>
 <p>
-Set the horizontal centering offset for the given object.
-</p>
-<p>
-Returns:</p>
+Set the horizontal centering offset for the given object.</p>
 <p>
 
 </p>
@@ -357,17 +333,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>center</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>center</code></em> :</span></p></td>
 <td> centering offset
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports centering
 </td>
 </tr>
@@ -378,15 +354,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620922"></a><h3>
-<a name="gst-video-orientation-set-hflip"></a>gst_video_orientation_set_hflip ()</h3>
-<a class="indexterm" name="id2620938"></a><pre class="programlisting">gboolean            gst_video_orientation_set_hflip     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-set-hflip"></a><h3>gst_video_orientation_set_hflip ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_set_hflip     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean flip);</pre>
 <p>
-Set the horizontal flipping state (<code class="literal">TRUE</code> for flipped) for the given object.
-</p>
-<p>
-Returns:</p>
+Set the horizontal flipping state (<code class="literal">TRUE</code> for flipped) for the given object.</p>
 <p>
 
 </p>
@@ -394,17 +366,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flip</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flip</code></em> :</span></p></td>
 <td> use flipping
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports flipping
 </td>
 </tr>
@@ -415,15 +387,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2621070"></a><h3>
-<a name="gst-video-orientation-set-vcenter"></a>gst_video_orientation_set_vcenter ()</h3>
-<a class="indexterm" name="id2621086"></a><pre class="programlisting">gboolean            gst_video_orientation_set_vcenter   (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-set-vcenter"></a><h3>gst_video_orientation_set_vcenter ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_set_vcenter   (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gint center);</pre>
 <p>
-Set the vertical centering offset for the given object.
-</p>
-<p>
-Returns:</p>
+Set the vertical centering offset for the given object.</p>
 <p>
 
 </p>
@@ -431,17 +399,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>center</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>center</code></em> :</span></p></td>
 <td> centering offset
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports centering
 </td>
 </tr>
@@ -452,15 +420,11 @@ Returns:</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2621206"></a><h3>
-<a name="gst-video-orientation-set-vflip"></a>gst_video_orientation_set_vflip ()</h3>
-<a class="indexterm" name="id2621222"></a><pre class="programlisting">gboolean            gst_video_orientation_set_vflip     (<a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
+<a name="gst-video-orientation-set-vflip"></a><h3>gst_video_orientation_set_vflip ()</h3>
+<pre class="programlisting">gboolean            gst_video_orientation_set_vflip     (<a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation">GstVideoOrientation</a> *video_orientation,
                                                          gboolean flip);</pre>
 <p>
-Set the vertical flipping state (<code class="literal">TRUE</code> for flipped) for the given object.
-</p>
-<p>
-Returns:</p>
+Set the vertical flipping state (<code class="literal">TRUE</code> for flipped) for the given object.</p>
 <p>
 
 </p>
@@ -468,17 +432,17 @@ Returns:</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>video_orientation</code></em>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
+<td><p><span class="term"><em class="parameter"><code>video_orientation</code></em> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstvideoorientation.html#GstVideoOrientation"><span class="type">GstVideoOrientation</span></a> interface of a <span class="type">GstElement</span>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flip</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flip</code></em> :</span></p></td>
 <td> use flipping
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> in case the element supports flipping
 </td>
 </tr>
@@ -489,5 +453,8 @@ Returns:</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

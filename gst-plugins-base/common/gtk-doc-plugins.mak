@@ -2,8 +2,15 @@
 # for GStreamer plug-ins
 
 help:
+	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
 	@echo "the documentation files maintained in CVS"
+	@echo
+	@echo Other useful make targets:
+	@echo
+	@echo  check-inspected-versions: make sure the inspected plugin info
+	@echo                            is up to date before a release
+	@echo
 
 # update the stuff maintained by doc maintainers
 update:
@@ -125,10 +132,10 @@ $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(SCANOBJ_FILES_O): scan-build.stamp
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-INSPECT_REGISTRY=$(top_builddir)/docs/plugins/inspect-registry.xml
+INSPECT_REGISTRY=$(builddir)/inspect-registry.xml
 INSPECT_ENVIRONMENT=\
         GST_PLUGIN_SYSTEM_PATH= \
-        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src \
+        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
         GST_REGISTRY=$(INSPECT_REGISTRY)
 
 # update the element and plugin XML descriptions; store in inspect/
@@ -136,12 +143,11 @@ inspect:
 	mkdir inspect
 
 inspect-update: inspect
-	-rm $(INSPECT_REGISTRY)
-	-rm inspect-build.stamp
+	-rm -f $(INSPECT_REGISTRY) inspect-build.stamp
 	$(MAKE) inspect-build.stamp
 
 # FIXME: inspect.stamp should be written to by gst-xmlinspect.py
-# IFF the output changed; see gtkdoc-mktmpl
+# IF the output changed; see gtkdoc-mktmpl
 inspect-build.stamp:
 	@echo '*** Rebuilding plugin inspection files ***'
 	if test x"$(srcdir)" != x. ; then \
@@ -233,6 +239,9 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@if grep "warning:" html-build.log > /dev/null; then \
 		echo "ERROR"; grep "warning:" html-build.log; exit 1; fi
 	@rm html-build.log
+	mv html/index.sgml html/index.sgml.bak
+	$(SED) "s/ href=\"$(DOC_MODULE)\// href=\"$(DOC_MODULE)-@GST_MAJORMINOR@\//g" html/index.sgml.bak >html/index.sgml
+	rm -f html/index.sgml.bak
 	rm -f html/$(DOC_MAIN_SGML_FILE)
 	rm -rf html/xml
 	rm -f html/version.entities
@@ -241,24 +250,21 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@echo '-- Fixing Crossreferences' 
 	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
+
+clean-local-gtkdoc:
+	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+	if test x"$(srcdir)" != x. ; then \
+	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES); \
+	fi
 else
 all-local:
+clean-local-gtkdoc:
 endif
 
-# FIXME: these rules need a little cleaning up
-clean-local:
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
-# clean files generated for tmpl build
-	-rm -rf tmpl
-# clean files copied/generated for nonsrcdir tmpl build
-	if test x"$(srcdir)" != x. ; then \
-	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES);			\
-	fi
-# clean files generated for xml build
-	-rm -rf xml
-# clean files generate for html build
-	-rm -rf html
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
@@ -340,6 +346,21 @@ check-hierarchy: $(DOC_MODULE).hierarchy
 
 check: check-hierarchy
 
+# wildcard is apparently not portable to other makes, hence the use of find
+inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
+
+check-inspected-versions:
+	@echo Checking plugin versions of inspected plugin data ...; \
+	fail=0 ; \
+	for each in $(inspect_files) ; do \
+	  if (grep -H '<version>' $$each | grep -v '<version>$(VERSION)'); then \
+	    echo $$each should be fixed to say version $(VERSION) or be removed ; \
+	    echo "sed -i -e 's/<version.*version>/<version>$(VERSION)<\/version>/'" $$each; \
+	    echo ; \
+	    fail=1; \
+	  fi ; \
+	done ; \
+	exit $$fail
 
 #
 # Require gtk-doc when making dist
@@ -360,7 +381,7 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
 	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
+	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
 	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
 
 	images=$(HTML_IMAGES) ;    	      \

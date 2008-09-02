@@ -32,12 +32,16 @@
 
 #include <gst/gst.h>
 
-gchar **
-gst_gnomevfs_get_supported_uris (void)
+/* FIXME: move this to source and sink and remove this file:
+ * e.g. sinks cannot save to http:// and src cannot read from burn://
+ */
+static gpointer
+_internal_get_supported_uris (gpointer data)
 {
-  GnomeVFSURI *uri;
+  /* no dav/davs in the list, because they don't appear to be reliable enough */
   const gchar *uris[] = {
     "http://localhost/bla",
+    "https://localhost/bla",
     "file:///bla",
     "smb://localhost/bla",
     "ftp://localhost/bla",
@@ -46,6 +50,7 @@ gst_gnomevfs_get_supported_uris (void)
     "ssh://localhost/bla",
     "burn://"
   };
+  GnomeVFSURI *uri;
   gchar **result;
   gint n, r = 0;
 
@@ -73,4 +78,13 @@ gst_gnomevfs_get_supported_uris (void)
   result[r] = NULL;
 
   return result;
+}
+
+gchar **
+gst_gnomevfs_get_supported_uris (void)
+{
+  static GOnce once = G_ONCE_INIT;
+
+  g_once (&once, _internal_get_supported_uris, NULL);
+  return (gchar **) once.retval;
 }

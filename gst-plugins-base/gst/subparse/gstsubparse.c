@@ -170,7 +170,8 @@ gst_sub_parse_class_init (GstSubParseClass * klass)
           "Encoding to assume if input subtitles are not in UTF-8 encoding. "
           "If not set, the GST_SUBTITLE_ENCODING environment variable will "
           "be checked for an encoding to use. If that is not set either, "
-          "ISO-8859-15 will be assumed.", DEFAULT_ENCODING, G_PARAM_READWRITE));
+          "ISO-8859-15 will be assumed.", DEFAULT_ENCODING,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -455,10 +456,22 @@ parse_mdvdsub (ParserState * state, const gchar * line)
     if (sscanf (line, "{s:%u}", &fontsize) == 1) {
       line = strchr (line, '}') + 1;
     }
+    /* forward slashes at beginning/end signify italics too */
+    if (g_str_has_prefix (line, "/")) {
+      italic = TRUE;
+      ++line;
+    }
     if ((line_split = strchr (line, '|')))
       line_chunk = g_markup_escape_text (line, line_split - line);
     else
       line_chunk = g_markup_escape_text (line, strlen (line));
+
+    /* Remove italics markers at end of line/stanza (CHECKME: are end slashes
+     * always at the end of a line or can they span multiple lines?) */
+    if (g_str_has_suffix (line_chunk, "/")) {
+      line_chunk[strlen (line_chunk) - 1] = '\0';
+    }
+
     markup = g_string_append (markup, "<span");
     if (italic)
       g_string_append (markup, " style=\"italic\"");
@@ -857,6 +870,7 @@ parser_state_init (ParserState * state)
 
   state->start_time = 0;
   state->duration = 0;
+  state->max_duration = 0;      /* no limit */
   state->state = 0;
   state->segment = NULL;
 }
@@ -978,6 +992,7 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
       return gst_caps_new_simple ("text/x-pango-markup", NULL);
     case GST_SUB_PARSE_FORMAT_TMPLAYER:
       self->parse_line = parse_tmplayer;
+      self->state.max_duration = 5 * GST_SECOND;
       return gst_caps_new_simple ("text/plain", NULL);
     case GST_SUB_PARSE_FORMAT_MPL2:
       self->parse_line = parse_mpl2;
@@ -997,11 +1012,25 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
 static void
 feed_textbuf (GstSubParse * self, GstBuffer * buf)
 {
-  if (GST_BUFFER_OFFSET (buf) != self->offset) {
+  gboolean discont;
+
+  discont = GST_BUFFER_IS_DISCONT (buf);
+
+  if (GST_BUFFER_OFFSET_IS_VALID (buf) &&
+      GST_BUFFER_OFFSET (buf) != self->offset) {
+    self->offset = GST_BUFFER_OFFSET (buf);
+    discont = TRUE;
+  }
+
+  if (discont) {
+    GST_INFO ("discontinuity");
     /* flush the parser state */
     parser_state_init (&self->state);
     g_string_truncate (self->textbuf, 0);
     sami_context_reset (&self->state);
+    /* we could set a flag to make sure that the next buffer we push out also
+     * has the DISCONT flag set, but there's no point really given that it's
+     * subtitles which are discontinuous by nature. */
   }
 
   self->textbuf = g_string_append_len (self->textbuf,
@@ -1056,6 +1085,16 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
         GST_BUFFER_TIMESTAMP (buf) = self->state.start_time;
         GST_BUFFER_DURATION (buf) = self->state.duration;
 
+        /* in some cases (e.g. tmplayer) we can only determine the duration
+         * of a text chunk from the timestamp of the next text chunk; in those
+         * cases, we probably want to limit the duration to something
+         * reasonable, so we don't end up showing some text for e.g. 40 seconds
+         * just because nothing else is being said during that time */
+        if (self->state.max_duration > 0 && GST_BUFFER_DURATION_IS_VALID (buf)) {
+          if (GST_BUFFER_DURATION (buf) > self->state.max_duration)
+            GST_BUFFER_DURATION (buf) = self->state.max_duration;
+        }
+
         gst_segment_set_last_stop (&self->segment, GST_FORMAT_TIME,
             self->state.start_time);
 
@@ -1065,6 +1104,10 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
 
         ret = gst_pad_push (self->srcpad, buf);
       }
+
+      /* move this forward (the tmplayer parser needs this) */
+      if (self->state.duration != GST_CLOCK_TIME_NONE)
+        self->state.start_time += self->state.duration;
 
       g_free (subtitle);
       subtitle = NULL;
@@ -1116,13 +1159,15 @@ gst_sub_parse_sink_event (GstPad * pad, GstEvent * event)
       /* Make sure the last subrip chunk is pushed out even
        * if the file does not have an empty line at the end */
       if (self->parser_type == GST_SUB_PARSE_FORMAT_SUBRIP ||
+          self->parser_type == GST_SUB_PARSE_FORMAT_TMPLAYER ||
           self->parser_type == GST_SUB_PARSE_FORMAT_MPL2) {
-        GstBuffer *buf = gst_buffer_new_and_alloc (1 + 1);
+        GstBuffer *buf = gst_buffer_new_and_alloc (2 + 1);
 
         GST_DEBUG ("EOS. Pushing remaining text (if any)");
         GST_BUFFER_DATA (buf)[0] = '\n';
-        GST_BUFFER_DATA (buf)[1] = '\0';        /* play it safe */
-        GST_BUFFER_SIZE (buf) = 1;
+        GST_BUFFER_DATA (buf)[1] = '\n';
+        GST_BUFFER_DATA (buf)[2] = '\0';        /* play it safe */
+        GST_BUFFER_SIZE (buf) = 2;
         GST_BUFFER_OFFSET (buf) = self->offset;
         gst_sub_parse_chain (pad, buf);
       }

@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstvideofilter</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideosink.html" title="gstvideosink">
-<link rel="next" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="next" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,39 +36,34 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-libs-hierarchy.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2768440" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2768523" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2768477" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstvideofilter.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideofilter.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstvideofilter.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstvideofilter"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2768440"></a><span class="refentrytitle">gstvideofilter</span>
-</h2>
-<p>gstvideofilter &#8212; Base class for video filters</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstvideofilter.top_of_page"></a>gstvideofilter</span></h2>
+<p>gstvideofilter — Base class for video filters</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstvideofilter.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoFilter"></a><pre class="synopsis">
 
 #include &lt;gst/video/gstvideofilter.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter-struct">GstVideoFilter</a>;
-                    <a href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilterClass">GstVideoFilterClass</a>;
-
+                    <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter-struct" title="GstVideoFilter">GstVideoFilter</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilterClass" title="GstVideoFilterClass">GstVideoFilterClass</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2768477"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstvideofilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -77,11 +72,11 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2768523"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstvideofilter.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2768535"></a><p>
+<a name="id2799932"></a><p>
 Provides useful functions and a base class for video filters.
 </p>
 <p>
@@ -94,20 +89,18 @@ to implement frame dropping.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2768552"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstvideofilter.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2768562"></a><h3>
-<a name="GstVideoFilter-struct"></a>GstVideoFilter</h3>
-<a class="indexterm" name="id2768576"></a><pre class="programlisting">typedef struct _GstVideoFilter GstVideoFilter;</pre>
+<a name="GstVideoFilter-struct"></a><h3>GstVideoFilter</h3>
+<pre class="programlisting">typedef struct _GstVideoFilter GstVideoFilter;</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2768591"></a><h3>
-<a name="GstVideoFilterClass"></a>GstVideoFilterClass</h3>
-<a class="indexterm" name="id2768604"></a><pre class="programlisting">typedef struct {
+<a name="GstVideoFilterClass"></a><h3>GstVideoFilterClass</h3>
+<pre class="programlisting">typedef struct {
   GstBaseTransformClass parent_class;
 } GstVideoFilterClass;
 </pre>
@@ -117,5 +110,8 @@ to implement frame dropping.
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

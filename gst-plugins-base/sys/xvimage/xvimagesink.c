@@ -117,6 +117,8 @@
  * </refsect2>
  */
 
+/* for developers: there are two useful tools : xvinfo and xvattr */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -369,7 +371,7 @@ gst_xvimage_buffer_class_init (gpointer g_class, gpointer class_data)
       gst_xvimage_buffer_finalize;
 }
 
-GType
+static GType
 gst_xvimage_buffer_get_type (void)
 {
   static GType _gst_xvimage_buffer_type;
@@ -395,7 +397,6 @@ gst_xvimage_buffer_get_type (void)
 
 /* X11 stuff */
 
-#ifdef HAVE_XSHM
 static gboolean error_caught = FALSE;
 
 static int
@@ -409,6 +410,7 @@ gst_xvimagesink_handle_xerror (Display * display, XErrorEvent * xevent)
   return 0;
 }
 
+#ifdef HAVE_XSHM
 /* This function checks that it is actually really possible to create an image
    using XShm */
 static gboolean
@@ -453,18 +455,18 @@ gst_xvimagesink_check_xshm_calls (GstXContext * xcontext)
     goto beach;
   }
 
-  SHMInfo.shmaddr = shmat (SHMInfo.shmid, 0, 0);
+  SHMInfo.shmaddr = shmat (SHMInfo.shmid, NULL, 0);
   if (SHMInfo.shmaddr == ((void *) -1)) {
     GST_WARNING ("Failed to shmat: %s", g_strerror (errno));
     /* Clean up the shared memory segment */
-    shmctl (SHMInfo.shmid, IPC_RMID, 0);
+    shmctl (SHMInfo.shmid, IPC_RMID, NULL);
     goto beach;
   }
 
   /* Delete the shared memory segment as soon as we manage to attach.
    * This way, it will be deleted as soon as we detach later, and not
    * leaked if we crash. */
-  shmctl (SHMInfo.shmid, IPC_RMID, 0);
+  shmctl (SHMInfo.shmid, IPC_RMID, NULL);
 
   xvimage->data = SHMInfo.shmaddr;
   SHMInfo.readOnly = FALSE;
@@ -579,6 +581,7 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink, GstCaps * caps)
      * number we get from X. */
     switch (xvimage->im_format) {
       case GST_MAKE_FOURCC ('I', '4', '2', '0'):
+      case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
         expected_size =
             GST_ROUND_UP_2 (xvimage->height) * GST_ROUND_UP_4 (xvimage->width);
         expected_size +=
@@ -586,7 +589,6 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink, GstCaps * caps)
             2;
         break;
       case GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'):
-      case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
       case GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'):
         expected_size = xvimage->height * GST_ROUND_UP_4 (xvimage->width * 2);
         break;
@@ -623,7 +625,7 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink, GstCaps * caps)
       goto beach_unlocked;
     }
 
-    xvimage->SHMInfo.shmaddr = shmat (xvimage->SHMInfo.shmid, 0, 0);
+    xvimage->SHMInfo.shmaddr = shmat (xvimage->SHMInfo.shmid, NULL, 0);
     if (xvimage->SHMInfo.shmaddr == ((void *) -1)) {
       g_mutex_unlock (xvimagesink->x_lock);
       GST_ELEMENT_ERROR (xvimagesink, RESOURCE, WRITE,
@@ -631,14 +633,14 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink, GstCaps * caps)
               xvimage->width, xvimage->height),
           ("Failed to shmat: %s", g_strerror (errno)));
       /* Clean up the shared memory segment */
-      shmctl (xvimage->SHMInfo.shmid, IPC_RMID, 0);
+      shmctl (xvimage->SHMInfo.shmid, IPC_RMID, NULL);
       goto beach_unlocked;
     }
 
     /* Delete the shared memory segment as soon as we manage to attach.
      * This way, it will be deleted as soon as we detach later, and not
      * leaked if we crash. */
-    shmctl (xvimage->SHMInfo.shmid, IPC_RMID, 0);
+    shmctl (xvimage->SHMInfo.shmid, IPC_RMID, NULL);
 
     xvimage->xvimage->data = xvimage->SHMInfo.shmaddr;
     xvimage->SHMInfo.readOnly = FALSE;
@@ -1243,19 +1245,26 @@ gst_lookup_xv_port_from_adaptor (GstXContext * xcontext,
     XvAdaptorInfo * adaptors, int adaptor_no)
 {
   gint j;
+  gint res;
 
   /* Do we support XvImageMask ? */
-  if (!(adaptors[adaptor_no].type & XvImageMask))
+  if (!(adaptors[adaptor_no].type & XvImageMask)) {
+    GST_DEBUG ("XV Adaptor %s has no support for XvImageMask",
+        adaptors[adaptor_no].name);
     return;
+  }
 
   /* We found such an adaptor, looking for an available port */
   for (j = 0; j < adaptors[adaptor_no].num_ports && !xcontext->xv_port_id; j++) {
     /* We try to grab the port */
-    if (Success == XvGrabPort (xcontext->disp, adaptors[adaptor_no].base_id + j,
-            0)) {
+    res = XvGrabPort (xcontext->disp, adaptors[adaptor_no].base_id + j, 0);
+    if (Success == res) {
       xcontext->xv_port_id = adaptors[adaptor_no].base_id + j;
       GST_DEBUG ("XV Adaptor %s with %ld ports", adaptors[adaptor_no].name,
           adaptors[adaptor_no].num_ports);
+    } else {
+      GST_DEBUG ("GrabPort %d for XV Adaptor %s failed: %d", j,
+          adaptors[adaptor_no].name, res);
     }
   }
 }
@@ -1336,34 +1345,30 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
 
   /* Set XV_AUTOPAINT_COLORKEY and XV_DOUBLE_BUFFER and XV_COLORKEY */
   {
-    int count;
+    int count, todo = 3;
     XvAttribute *const attr = XvQueryPortAttributes (xcontext->disp,
         xcontext->xv_port_id, &count);
     static const char autopaint[] = "XV_AUTOPAINT_COLORKEY";
     static const char dbl_buffer[] = "XV_DOUBLE_BUFFER";
     static const char colorkey[] = "XV_COLORKEY";
 
-    for (i = 0; i < count; i++)
+    GST_DEBUG_OBJECT (xvimagesink, "Checking %d Xv port attributes", count);
+
+    for (i = 0; ((i < count) && todo); i++)
       if (!strcmp (attr[i].name, autopaint)) {
         const Atom atom = XInternAtom (xcontext->disp, autopaint, False);
 
         XvSetPortAttribute (xcontext->disp, xcontext->xv_port_id, atom, 1);
-        break;
-      }
-
-    for (i = 0; i < count; i++)
-      if (!strcmp (attr[i].name, dbl_buffer)) {
+        todo--;
+      } else if (!strcmp (attr[i].name, dbl_buffer)) {
         const Atom atom = XInternAtom (xcontext->disp, dbl_buffer, False);
 
         XvSetPortAttribute (xcontext->disp, xcontext->xv_port_id, atom,
             (xvimagesink->double_buffer ? 1 : 0));
-        break;
-      }
-
-    /* Set the colorkey to something that is dark but hopefully won't randomly
-     * appear on the screen elsewhere (ie not black or greys) */
-    for (i = 0; i < count; i++)
-      if (!strcmp (attr[i].name, colorkey)) {
+        todo--;
+      } else if (!strcmp (attr[i].name, colorkey)) {
+        /* Set the colorkey to something that is dark but hopefully won't randomly
+         * appear on the screen elsewhere (ie not black or greys) */
         const Atom atom = XInternAtom (xcontext->disp, colorkey, False);
         guint32 ckey;
         guint32 keymask;
@@ -1382,12 +1387,11 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
          * they're the only types of devices we've encountered. If we don't
          * recognise it, leave it alone  */
         if (bits == 16)
-          ckey = (1 << 10) | (2 << 5) | 3;
+          ckey = (1 << 11) | (2 << 5) | 3;
         else if (bits == 24 || bits == 32)
           ckey = (1 << 16) | (2 << 8) | 3;
         else
           set_attr = FALSE;
-
 
         if (set_attr) {
           ckey = CLAMP (ckey, (guint32) attr[i].min_value,
@@ -1399,10 +1403,10 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
           XvSetPortAttribute (xcontext->disp, xcontext->xv_port_id, atom,
               (gint) ckey);
         } else {
-          GST_LOG_OBJECT (xvimagesink,
-              "Unknown bit depth for Xv Colorkey - not adjusting ");
+          GST_DEBUG_OBJECT (xvimagesink,
+              "Unknown bit depth %d for Xv Colorkey - not adjusting", bits);
         }
-        break;
+        todo--;
       }
 
     XFree (attr);
@@ -2187,11 +2191,11 @@ gst_xvimagesink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
   /* If this buffer has been allocated using our buffer management we simply
      put the ximage which is in the PRIVATE pointer */
   if (GST_IS_XVIMAGE_BUFFER (buf)) {
-    GST_LOG_OBJECT (xvimagesink, "fast put of bufferpool buffer");
+    GST_LOG_OBJECT (xvimagesink, "fast put of bufferpool buffer %p", buf);
     if (!gst_xvimagesink_xvimage_put (xvimagesink, GST_XVIMAGE_BUFFER (buf)))
       goto no_window;
   } else {
-    GST_LOG_OBJECT (xvimagesink, "slow copy into bufferpool buffer");
+    GST_LOG_OBJECT (xvimagesink, "slow copy into bufferpool buffer %p", buf);
     /* Else we have to copy the data into our private image, */
     /* if we have one... */
     if (!xvimagesink->xvimage) {
@@ -2266,9 +2270,9 @@ gst_xvimagesink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
     goto reuse_last_caps;
   }
 
-  GST_DEBUG_OBJECT (xvimagesink, "buffer alloc requested with caps %"
-      GST_PTR_FORMAT ", intersecting with our caps %" GST_PTR_FORMAT, caps,
-      xvimagesink->xcontext->caps);
+  GST_DEBUG_OBJECT (xvimagesink, "buffer alloc requested size %d with caps %"
+      GST_PTR_FORMAT ", intersecting with our caps %" GST_PTR_FORMAT, size,
+      caps, xvimagesink->xcontext->caps);
 
   /* Check the caps against our xcontext */
   intersection = gst_caps_intersect (xvimagesink->xcontext->caps, caps);
@@ -2387,6 +2391,8 @@ reuse_last_caps:
     xvimage = gst_xvimagesink_xvimage_new (xvimagesink, intersection);
     if (xvimage && xvimage->size < size) {
       /* This image is unusable. Destroying... */
+      GST_LOG_OBJECT (xvimagesink, "Discarding allocated buffer as unsuitable. "
+          "Falling back to normal buffer");
       gst_xvimage_buffer_free (xvimage);
       xvimage = NULL;
     }
@@ -3099,48 +3105,55 @@ gst_xvimagesink_class_init (GstXvImageSinkClass * klass)
 
   g_object_class_install_property (gobject_class, ARG_CONTRAST,
       g_param_spec_int ("contrast", "Contrast", "The contrast of the video",
-          -1000, 1000, 0, G_PARAM_READWRITE));
+          -1000, 1000, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_BRIGHTNESS,
       g_param_spec_int ("brightness", "Brightness",
-          "The brightness of the video", -1000, 1000, 0, G_PARAM_READWRITE));
+          "The brightness of the video", -1000, 1000, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_HUE,
       g_param_spec_int ("hue", "Hue", "The hue of the video", -1000, 1000, 0,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_SATURATION,
       g_param_spec_int ("saturation", "Saturation",
-          "The saturation of the video", -1000, 1000, 0, G_PARAM_READWRITE));
+          "The saturation of the video", -1000, 1000, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_DISPLAY,
       g_param_spec_string ("display", "Display", "X Display name", NULL,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_SYNCHRONOUS,
       g_param_spec_boolean ("synchronous", "Synchronous",
           "When enabled, runs "
           "the X display in synchronous mode. (used only for debugging)", FALSE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_PIXEL_ASPECT_RATIO,
       g_param_spec_string ("pixel-aspect-ratio", "Pixel Aspect Ratio",
-          "The pixel aspect ratio of the device", "1/1", G_PARAM_READWRITE));
+          "The pixel aspect ratio of the device", "1/1",
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_FORCE_ASPECT_RATIO,
       g_param_spec_boolean ("force-aspect-ratio", "Force aspect ratio",
           "When enabled, scaling will respect original aspect ratio", FALSE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_HANDLE_EVENTS,
       g_param_spec_boolean ("handle-events", "Handle XEvents",
           "When enabled, XEvents will be selected and handled", TRUE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_DEVICE,
       g_param_spec_string ("device", "Adaptor number",
-          "The number of the video adaptor", "0", G_PARAM_READWRITE));
+          "The number of the video adaptor", "0",
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_DEVICE_NAME,
       g_param_spec_string ("device-name", "Adaptor name",
-          "The name of the video adaptor", NULL, G_PARAM_READABLE));
+          "The name of the video adaptor", NULL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_HANDLE_EXPOSE,
-      g_param_spec_boolean ("handle-expose", "Handle expose", "When enabled, "
+      g_param_spec_boolean ("handle-expose", "Handle expose",
+          "When enabled, "
           "the current frame will always be drawn in response to X Expose "
-          "events", TRUE, G_PARAM_READWRITE));
+          "events", TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, ARG_DOUBLE_BUFFER,
       g_param_spec_boolean ("double-buffer", "Double-buffer",
-          "Whether to double-buffer the output", TRUE, G_PARAM_READWRITE));
+          "Whether to double-buffer the output", TRUE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gobject_class->finalize = gst_xvimagesink_finalize;
 

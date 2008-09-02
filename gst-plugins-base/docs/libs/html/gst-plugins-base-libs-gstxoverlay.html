@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstxoverlay</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideoorientation.html" title="gstvideoorientation">
 <link rel="next" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,65 +36,60 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gstreamer-netbuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2623126" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2623354" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2623293" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2623318" class="shortcut">Prerequisites</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstxoverlay.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstxoverlay.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstxoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstxoverlay.prerequisites" class="shortcut">Prerequisites</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstxoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2623126"></a><span class="refentrytitle">gstxoverlay</span>
-</h2>
-<p>gstxoverlay &#8212; Interface for setting/getting a Window on elements
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstxoverlay.top_of_page"></a>gstxoverlay</span></h2>
+<p>gstxoverlay — Interface for setting/getting a Window on elements
 supporting it</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstxoverlay.synopsis"></a><h2>Synopsis</h2>
 <a name="GstXOverlay"></a><pre class="synopsis">
 
 #include &lt;gst/interfaces/xoverlay.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay-struct">GstXOverlay</a>;
-void                <a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-set-xwindow-id">gst_x_overlay_set_xwindow_id</a>        (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+                    <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay-struct" title="GstXOverlay">GstXOverlay</a>;
+void                <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-set-xwindow-id" title="gst_x_overlay_set_xwindow_id ()">gst_x_overlay_set_xwindow_id</a>        (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gulong xwindow_id);
-void                <a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-got-xwindow-id">gst_x_overlay_got_xwindow_id</a>        (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+void                <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-got-xwindow-id" title="gst_x_overlay_got_xwindow_id ()">gst_x_overlay_got_xwindow_id</a>        (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gulong xwindow_id);
-void                <a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-prepare-xwindow-id">gst_x_overlay_prepare_xwindow_id</a>    (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);
-void                <a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-expose">gst_x_overlay_expose</a>                (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);
-void                <a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-handle-events">gst_x_overlay_handle_events</a>         (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+void                <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-prepare-xwindow-id" title="gst_x_overlay_prepare_xwindow_id ()">gst_x_overlay_prepare_xwindow_id</a>    (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);
+void                <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-expose" title="gst_x_overlay_expose ()">gst_x_overlay_expose</a>                (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);
+void                <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-handle-events" title="gst_x_overlay_handle_events ()">gst_x_overlay_handle_events</a>         (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gboolean handle_events);
-
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2623293"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstxoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GInterface
    +----GstXOverlay
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2623318"></a><h2>Prerequisites</h2>
+<a name="gst-plugins-base-libs-gstxoverlay.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GstXOverlay requires
  GstObject,  GstImplementsInterface and  GstElement.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2623354"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstxoverlay.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2623367"></a><p>
+<a name="id2650078"></a><p>
 The XOverlay interface is used for 2 main purposes :
 </p>
 <div class="itemizedlist"><ul type="disc">
@@ -172,20 +167,18 @@ main (int argc, char **argv)
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2623500"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstxoverlay.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2623511"></a><h3>
-<a name="GstXOverlay-struct"></a>GstXOverlay</h3>
-<a class="indexterm" name="id2623523"></a><pre class="programlisting">typedef struct _GstXOverlay GstXOverlay;</pre>
+<a name="GstXOverlay-struct"></a><h3>GstXOverlay</h3>
+<pre class="programlisting">typedef struct _GstXOverlay GstXOverlay;</pre>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2623537"></a><h3>
-<a name="gst-x-overlay-set-xwindow-id"></a>gst_x_overlay_set_xwindow_id ()</h3>
-<a class="indexterm" name="id2623551"></a><pre class="programlisting">void                gst_x_overlay_set_xwindow_id        (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+<a name="gst-x-overlay-set-xwindow-id"></a><h3>gst_x_overlay_set_xwindow_id ()</h3>
+<pre class="programlisting">void                gst_x_overlay_set_xwindow_id        (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gulong xwindow_id);</pre>
 <p>
 This will call the video overlay's set_xwindow_id method. You should
@@ -199,12 +192,12 @@ stop using that window and create an internal one.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>overlay</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to set the XWindow on.
+<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to set the XWindow on.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>xwindow_id</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>xwindow_id</code></em> :</span></p></td>
 <td> a <span class="type">XID</span> referencing the XWindow.
 </td>
 </tr>
@@ -213,9 +206,8 @@ stop using that window and create an internal one.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2623644"></a><h3>
-<a name="gst-x-overlay-got-xwindow-id"></a>gst_x_overlay_got_xwindow_id ()</h3>
-<a class="indexterm" name="id2623657"></a><pre class="programlisting">void                gst_x_overlay_got_xwindow_id        (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+<a name="gst-x-overlay-got-xwindow-id"></a><h3>gst_x_overlay_got_xwindow_id ()</h3>
+<pre class="programlisting">void                gst_x_overlay_got_xwindow_id        (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gulong xwindow_id);</pre>
 <p>
 This will post a "have-xwindow-id" element message on the bus.
@@ -229,12 +221,12 @@ This function should only be used by video overlay plugin developers.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>overlay</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> which got a XWindow.
+<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> which got a XWindow.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>xwindow_id</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>xwindow_id</code></em> :</span></p></td>
 <td> a <span class="type">XID</span> referencing the XWindow.
 </td>
 </tr>
@@ -243,13 +235,12 @@ This function should only be used by video overlay plugin developers.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2623751"></a><h3>
-<a name="gst-x-overlay-prepare-xwindow-id"></a>gst_x_overlay_prepare_xwindow_id ()</h3>
-<a class="indexterm" name="id2623764"></a><pre class="programlisting">void                gst_x_overlay_prepare_xwindow_id    (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);</pre>
+<a name="gst-x-overlay-prepare-xwindow-id"></a><h3>gst_x_overlay_prepare_xwindow_id ()</h3>
+<pre class="programlisting">void                gst_x_overlay_prepare_xwindow_id    (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);</pre>
 <p>
 This will post a "prepare-xwindow-id" element message on the bus
 to give applications an opportunity to call 
-<a href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-set-xwindow-id"><code class="function">gst_x_overlay_set_xwindow_id()</code></a> before a plugin creates its own
+<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#gst-x-overlay-set-xwindow-id" title="gst_x_overlay_set_xwindow_id ()"><code class="function">gst_x_overlay_set_xwindow_id()</code></a> before a plugin creates its own
 window.
 </p>
 <p>
@@ -260,17 +251,16 @@ This function should only be used by video overlay plugin developers.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>overlay</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> which does not yet have an XWindow.
+<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> which does not yet have an XWindow.
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2623840"></a><h3>
-<a name="gst-x-overlay-expose"></a>gst_x_overlay_expose ()</h3>
-<a class="indexterm" name="id2623853"></a><pre class="programlisting">void                gst_x_overlay_expose                (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);</pre>
+<a name="gst-x-overlay-expose"></a><h3>gst_x_overlay_expose ()</h3>
+<pre class="programlisting">void                gst_x_overlay_expose                (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay);</pre>
 <p>
 Tell an overlay that it has been exposed. This will redraw the current frame
 in the drawable even if the pipeline is PAUSED.</p>
@@ -280,17 +270,16 @@ in the drawable even if the pipeline is PAUSED.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>overlay</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to expose.
+<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to expose.
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2623913"></a><h3>
-<a name="gst-x-overlay-handle-events"></a>gst_x_overlay_handle_events ()</h3>
-<a class="indexterm" name="id2623927"></a><pre class="programlisting">void                gst_x_overlay_handle_events         (<a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
+<a name="gst-x-overlay-handle-events"></a><h3>gst_x_overlay_handle_events ()</h3>
+<pre class="programlisting">void                gst_x_overlay_handle_events         (<a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay">GstXOverlay</a> *overlay,
                                                          gboolean handle_events);</pre>
 <p>
 Tell an overlay that it should handle events from the window system. These
@@ -305,12 +294,12 @@ from the XOverlay.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>overlay</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to expose.
+<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"><span class="type">GstXOverlay</span></a> to expose.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>handle_events</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>handle_events</code></em> :</span></p></td>
 <td> a <span class="type">gboolean</span> indicating if events should be handled or not.
 </td>
 </tr>
@@ -319,5 +308,8 @@ from the XOverlay.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -5,8 +5,10 @@ EXTRA_DIST = \
 	as-compiler-flag.m4 \
 	as-compiler.m4 \
 	as-docbook.m4 \
+	as-gcc-inline-assembly.m4 \
 	as-libtool.m4 \
 	as-libtool-tags.m4 \
+	as-objc.m4 \
 	as-python.m4 \
 	as-scrub-include.m4 \
 	as-version.m4 \
@@ -18,11 +20,19 @@ EXTRA_DIST = \
 	gst-debuginfo.m4 \
 	gst-default.m4 \
 	gst-doc.m4 \
+	gst-dowhile.m4 \
+	gst-error.m4 \
 	gst-feature.m4 \
 	gst-function.m4 \
 	gst-gettext.m4 \
 	gst-glib2.m4 \
 	gst-libxml2.m4 \
+	gst-parser.m4 \
 	gst-plugindir.m4 \
+	gst-plugin-docs.m4 \
 	gst-valgrind.m4 \
-	pkg.m4
+	gst-x11.m4 \
+	gst.m4 \
+	gtk-doc.m4 \
+	pkg.m4 \
+	check.m4

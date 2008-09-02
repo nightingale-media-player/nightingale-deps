@@ -22,6 +22,7 @@
 /**
  * SECTION:element-oggdemux
  * @short_description: a demuxer for ogg files
+ * @see_also: <link linkend="gst-plugins-base-plugins-oggmux">oggmux</link>
  *
  * <refsect2>
  * <para>
@@ -60,6 +61,9 @@ GST_ELEMENT_DETAILS ("Ogg demuxer",
 #define SKELETON_FISBONE_MIN_SIZE 52
 
 #define GST_FLOW_LIMIT GST_FLOW_CUSTOM_ERROR
+
+#define GST_CHAIN_LOCK(ogg)     g_mutex_lock((ogg)->chain_lock)
+#define GST_CHAIN_UNLOCK(ogg)   g_mutex_unlock((ogg)->chain_lock)
 
 GST_DEBUG_CATEGORY_STATIC (gst_ogg_demux_debug);
 GST_DEBUG_CATEGORY_STATIC (gst_ogg_demux_setup_debug);
@@ -431,6 +435,8 @@ gst_ogg_pad_reset (GstOggPad * pad)
 {
   ogg_stream_reset (&pad->stream);
 
+  GST_DEBUG_OBJECT (pad, "doing reset");
+
   /* clear continued pages */
   g_list_foreach (pad->continued, (GFunc) gst_ogg_page_free, NULL);
   g_list_free (pad->continued);
@@ -544,13 +550,15 @@ gst_ogg_pad_parse_skeleton_fishead (GstOggPad * pad, ogg_packet * packet)
   data += 8;
 
   ogg->basetime = gst_util_uint64_scale (GST_SECOND, basetime_n, basetime_d);
+  ogg->prestime = gst_util_uint64_scale (GST_SECOND, prestime_n, prestime_d);
   ogg->have_fishead = TRUE;
   pad->is_skeleton = TRUE;
   pad->start_time = GST_CLOCK_TIME_NONE;
   pad->first_granule = -1;
   pad->first_time = GST_CLOCK_TIME_NONE;
   GST_INFO_OBJECT (ogg, "skeleton fishead parsed (basetime: %"
-      GST_TIME_FORMAT ")", GST_TIME_ARGS (ogg->basetime));
+      GST_TIME_FORMAT ", prestime: %" GST_TIME_FORMAT ")",
+      GST_TIME_ARGS (ogg->basetime), GST_TIME_ARGS (ogg->prestime));
 }
 
 /* function called when a skeleton fisbone is found. Caller ensures that
@@ -558,6 +566,7 @@ gst_ogg_pad_parse_skeleton_fishead (GstOggPad * pad, ogg_packet * packet)
 static void
 gst_ogg_pad_parse_skeleton_fisbone (GstOggPad * pad, ogg_packet * packet)
 {
+  GstOggDemux *ogg = pad->ogg;
   GstOggPad *fisbone_pad;
   gint64 start_granule;
   guint32 serialno;
@@ -593,7 +602,8 @@ gst_ogg_pad_parse_skeleton_fisbone (GstOggPad * pad, ogg_packet * packet)
     /* padding */
     data += 3;
 
-    fisbone_pad->start_time = gst_annodex_granule_to_time (start_granule,
+    fisbone_pad->start_time = ogg->prestime - ogg->basetime;
+    fisbone_pad->start_time += gst_annodex_granule_to_time (start_granule,
         fisbone_pad->granulerate_n, fisbone_pad->granulerate_d,
         fisbone_pad->granuleshift);
 
@@ -760,7 +770,7 @@ gst_ogg_pad_typefind (GstOggPad * pad, ogg_packet * packet)
         gst_object_sink (GST_OBJECT (element));
 
         /* FIXME, it might not be named "sink" */
-        pad->elem_pad = gst_element_get_pad (element, "sink");
+        pad->elem_pad = gst_element_get_static_pad (element, "sink");
         gst_element_set_state (element, GST_STATE_PAUSED);
         template = gst_static_pad_template_get (&internaltemplate);
         pad->elem_out = gst_pad_new_from_template (template, "internal");
@@ -774,7 +784,7 @@ gst_ogg_pad_typefind (GstOggPad * pad, ogg_packet * packet)
         {
           GstPad *p;
 
-          p = gst_element_get_pad (element, "src");
+          p = gst_element_get_static_pad (element, "src");
           if (p) {
             gst_pad_link (p, pad->elem_out);
             gst_object_unref (p);
@@ -786,7 +796,7 @@ gst_ogg_pad_typefind (GstOggPad * pad, ogg_packet * packet)
         }
       }
     }
-    g_list_free (factories);
+    gst_plugin_feature_list_free (factories);
   }
   pad->element = element;
 
@@ -834,7 +844,7 @@ no_decoder:
 decoder_error:
   {
     GST_WARNING_OBJECT (ogg, "internal decoder error");
-    return GST_FLOW_ERROR;
+    return ret;
   }
 }
 
@@ -1768,35 +1778,35 @@ gst_ogg_demux_activate_chain (GstOggDemux * ogg, GstOggChain * chain,
     return TRUE;
   }
 
+  /* FIXME, should not be called with NULL */
+  if (chain != NULL) {
+    GST_DEBUG_OBJECT (ogg, "activating chain %p", chain);
+
+    /* first add the pads */
+    for (i = 0; i < chain->streams->len; i++) {
+      GstOggPad *pad;
+
+      pad = g_array_index (chain->streams, GstOggPad *, i);
+      GST_DEBUG_OBJECT (ogg, "adding pad %" GST_PTR_FORMAT, pad);
+
+      /* mark discont */
+      pad->discont = TRUE;
+      pad->last_ret = GST_FLOW_OK;
+
+      /* activate first */
+      gst_pad_set_active (GST_PAD_CAST (pad), TRUE);
+
+      gst_element_add_pad (GST_ELEMENT (ogg), GST_PAD_CAST (pad));
+    }
+  }
+
+  /* after adding the new pads, remove the old pads */
   gst_ogg_demux_deactivate_current_chain (ogg);
 
-  /* FIXME, should not be called with NULL */
-  if (chain == NULL) {
-    ogg->current_chain = chain;
-    return TRUE;
-  }
-
-  GST_DEBUG_OBJECT (ogg, "activating chain %p", chain);
-
-  /* first add the pads */
-  for (i = 0; i < chain->streams->len; i++) {
-    GstOggPad *pad;
-
-    pad = g_array_index (chain->streams, GstOggPad *, i);
-    GST_DEBUG_OBJECT (ogg, "adding pad %" GST_PTR_FORMAT, pad);
-
-    /* mark discont */
-    pad->discont = TRUE;
-    pad->last_ret = GST_FLOW_OK;
-
-    /* activate first */
-    gst_pad_set_active (GST_PAD_CAST (pad), TRUE);
-
-    gst_element_add_pad (GST_ELEMENT (ogg), GST_PAD_CAST (pad));
-  }
-
-  gst_element_no_more_pads (GST_ELEMENT (ogg));
   ogg->current_chain = chain;
+
+  /* we are finished now */
+  gst_element_no_more_pads (GST_ELEMENT (ogg));
 
   /* FIXME, must be sent from the streaming thread */
   if (event)
@@ -2357,7 +2367,10 @@ gst_ogg_demux_read_chain (GstOggDemux * ogg, GstOggChain ** res_chain)
   }
 
   if (ret != GST_FLOW_OK || chain == NULL) {
-    if (ret != GST_FLOW_UNEXPECTED) {
+    if (ret == GST_FLOW_OK) {
+      GST_WARNING_OBJECT (ogg, "no chain was found");
+      ret = GST_FLOW_ERROR;
+    } else if (ret != GST_FLOW_UNEXPECTED) {
       GST_WARNING_OBJECT (ogg, "failed to read chain");
     } else {
       GST_DEBUG_OBJECT (ogg, "done reading chains");
@@ -2762,7 +2775,8 @@ gst_ogg_demux_handle_page (GstOggDemux * ogg, ogg_page * page)
           GST_TIME_ARGS (chain->segment_stop),
           GST_TIME_ARGS (chain->begin_time));
 
-      /* activate it as it means we have a non-header */
+      /* activate it as it means we have a non-header, this will also deactivate
+       * the currently running chain. */
       gst_ogg_demux_activate_chain (ogg, chain, event);
       pad = gst_ogg_demux_find_pad (ogg, serialno);
     } else {
@@ -2777,10 +2791,6 @@ gst_ogg_demux_handle_page (GstOggDemux * ogg, ogg_page * page)
       current_chain = ogg->current_chain;
       current_time = ogg->segment.last_stop;
 
-      if (current_chain) {
-        /* remove existing pads */
-        gst_ogg_demux_deactivate_current_chain (ogg);
-      }
       /* time of new chain is current time */
       chain_time = current_time;
 

@@ -1336,6 +1336,7 @@ gstriff
 
 @id: 
 @flags: 
+@offset: 
 @size: 
 
 <!-- ##### FUNCTION gst_riff_init ##### -->
@@ -1445,6 +1446,7 @@ gstriff
 </para>
 
 @format: 
+@channels: 
 @rate: 
 @av_bps: 
 @blockalign: 
@@ -1489,6 +1491,7 @@ gstriff
 @type: 
 @fcc_handler: 
 @flags: 
+@priority: 
 @init_frames: 
 @scale: 
 @rate: 

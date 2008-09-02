@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstbaseaudiosrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-audio.html" title="Audio Library">
 <link rel="prev" href="gst-plugins-base-libs-gstbaseaudiosink.html" title="gstbaseaudiosink">
 <link rel="next" href="gst-plugins-base-libs-gstaudiosink.html" title="gstaudiosink">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,70 +36,67 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstaudiosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2565711" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2565980" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2565849" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2565912" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstbaseaudiosrc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstbaseaudiosrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstbaseaudiosrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstbaseaudiosrc.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstbaseaudiosrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2565711"></a><span class="refentrytitle">gstbaseaudiosrc</span>
-</h2>
-<p>gstbaseaudiosrc &#8212; Base class for audio sources</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstbaseaudiosrc.top_of_page"></a>gstbaseaudiosrc</span></h2>
+<p>gstbaseaudiosrc — Base class for audio sources</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.synopsis"></a><h2>Synopsis</h2>
 <a name="GstBaseAudioSrc"></a><pre class="synopsis">
 
 #include &lt;gst/audio/gstbaseaudiosrc.h&gt;
 
-
-                    <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc-struct">GstBaseAudioSrc</a>;
-                    <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrcClass">GstBaseAudioSrcClass</a>;
-#define             <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GST-BASE-AUDIO-SRC-CLOCK:CAPS">GST_BASE_AUDIO_SRC_CLOCK</a>            (obj)
-#define             <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GST-BASE-AUDIO-SRC-PAD:CAPS">GST_BASE_AUDIO_SRC_PAD</a>              (obj)
-<a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>*      <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-create-ringbuffer">gst_base_audio_src_create_ringbuffer</a>
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);
-void                <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-set-provide-clock">gst_base_audio_src_set_provide_clock</a>
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src,
+                    <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc-struct" title="GstBaseAudioSrc">GstBaseAudioSrc</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrcClass" title="GstBaseAudioSrcClass">GstBaseAudioSrcClass</a>;
+#define             <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GST-BASE-AUDIO-SRC-CLOCK:CAPS" title="GST_BASE_AUDIO_SRC_CLOCK()">GST_BASE_AUDIO_SRC_CLOCK</a>            (obj)
+#define             <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GST-BASE-AUDIO-SRC-PAD:CAPS" title="GST_BASE_AUDIO_SRC_PAD()">GST_BASE_AUDIO_SRC_PAD</a>              (obj)
+<a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>*      <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-create-ringbuffer" title="gst_base_audio_src_create_ringbuffer ()">gst_base_audio_src_create_ringbuffer</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);
+void                <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-set-provide-clock" title="gst_base_audio_src_set_provide_clock ()">gst_base_audio_src_set_provide_clock</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src,
                                                          gboolean provide);
-gboolean            <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-get-provide-clock">gst_base_audio_src_get_provide_clock</a>
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);
-
+gboolean            <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#gst-base-audio-src-get-provide-clock" title="gst_base_audio_src_get_provide_clock ()">gst_base_audio_src_get_provide_clock</a>
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2565849"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseSrc
                      +----GstPushSrc
                            +----GstBaseAudioSrc
-                                 +----<a href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc">GstAudioSrc</a>
+                                 +----<a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc">GstAudioSrc</a>
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2565912"></a><h2>Properties</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--buffer-time">buffer-time</a>"              gint64                : Read / Write
-  "<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--latency-time">latency-time</a>"             gint64                : Read / Write
-  "<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--provide-clock">provide-clock</a>"            gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--actual-buffer-time" title='The "actual-buffer-time" property'>actual-buffer-time</a>"       gint64                : Read
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--actual-latency-time" title='The "actual-latency-time" property'>actual-latency-time</a>"      gint64                : Read
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--buffer-time" title='The "buffer-time" property'>buffer-time</a>"              gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--latency-time" title='The "latency-time" property'>latency-time</a>"             gint64                : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--provide-clock" title='The "provide-clock" property'>provide-clock</a>"            gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc--slave-method" title='The "slave-method" property'>slave-method</a>"             GstBaseAudioSrcSlaveMethod  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2565980"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.description"></a><h2>Description</h2>
 <p>
 This is the base class for audio sources. Subclasses need to implement the
 ::create_ringbuffer vmethod. This base class will then take care of
@@ -112,22 +109,20 @@ Last reviewed on 2006-09-27 (0.10.12)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2566005"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2566015"></a><h3>
-<a name="GstBaseAudioSrc-struct"></a>GstBaseAudioSrc</h3>
-<a class="indexterm" name="id2566028"></a><pre class="programlisting">typedef struct _GstBaseAudioSrc GstBaseAudioSrc;</pre>
+<a name="GstBaseAudioSrc-struct"></a><h3>GstBaseAudioSrc</h3>
+<pre class="programlisting">typedef struct _GstBaseAudioSrc GstBaseAudioSrc;</pre>
 <p>
-Opaque <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>.</p>
+Opaque <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566056"></a><h3>
-<a name="GstBaseAudioSrcClass"></a>GstBaseAudioSrcClass</h3>
-<a class="indexterm" name="id2566068"></a><pre class="programlisting">typedef struct {
+<a name="GstBaseAudioSrcClass"></a><h3>GstBaseAudioSrcClass</h3>
+<pre class="programlisting">typedef struct {
   GstPushSrcClass parent_class;
 
   /* subclass ringbuffer allocation */
@@ -135,7 +130,7 @@ Opaque <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><spa
 } GstBaseAudioSrcClass;
 </pre>
 <p>
-<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a> class. Override the vmethod to implement
+<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a> class. Override the vmethod to implement
 functionality.</p>
 <p>
 
@@ -144,13 +139,13 @@ functionality.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">GstPushSrcClass&#160;<em class="structfield"><code>parent_class</code></em>;</span></td>
+<td><p><span class="term">GstPushSrcClass <em class="structfield"><code>parent_class</code></em>;</span></p></td>
 <td> the parent class.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="structfield"><code>create_ringbuffer</code></em>&#160;()</span></td>
-<td> create and return a <a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a> to read from.
+<td><p><span class="term"><em class="structfield"><code>create_ringbuffer</code></em> ()</span></p></td>
+<td> create and return a <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a> to read from.
 </td>
 </tr>
 </tbody>
@@ -158,9 +153,8 @@ functionality.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566148"></a><h3>
-<a name="GST-BASE-AUDIO-SRC-CLOCK:CAPS"></a>GST_BASE_AUDIO_SRC_CLOCK()</h3>
-<a class="indexterm" name="id2566161"></a><pre class="programlisting">#define GST_BASE_AUDIO_SRC_CLOCK(obj)    (GST_BASE_AUDIO_SRC (obj)-&gt;clock)
+<a name="GST-BASE-AUDIO-SRC-CLOCK:CAPS"></a><h3>GST_BASE_AUDIO_SRC_CLOCK()</h3>
+<pre class="programlisting">#define GST_BASE_AUDIO_SRC_CLOCK(obj)    (GST_BASE_AUDIO_SRC (obj)-&gt;clock)
 </pre>
 <p>
 Get the <span class="type">GstClock</span> of <em class="parameter"><code>obj</code></em>.</p>
@@ -170,17 +164,16 @@ Get the <span class="type">GstClock</span> of <em class="parameter"><code>obj</c
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566221"></a><h3>
-<a name="GST-BASE-AUDIO-SRC-PAD:CAPS"></a>GST_BASE_AUDIO_SRC_PAD()</h3>
-<a class="indexterm" name="id2566234"></a><pre class="programlisting">#define GST_BASE_AUDIO_SRC_PAD(obj)      (GST_BASE_SRC (obj)-&gt;srcpad)
+<a name="GST-BASE-AUDIO-SRC-PAD:CAPS"></a><h3>GST_BASE_AUDIO_SRC_PAD()</h3>
+<pre class="programlisting">#define GST_BASE_AUDIO_SRC_PAD(obj)      (GST_BASE_SRC (obj)-&gt;srcpad)
 </pre>
 <p>
 Get the source <span class="type">GstPad</span> of <em class="parameter"><code>obj</code></em>.</p>
@@ -190,20 +183,19 @@ Get the source <span class="type">GstPad</span> of <em class="parameter"><code>o
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>obj</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
+<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566294"></a><h3>
-<a name="gst-base-audio-src-create-ringbuffer"></a>gst_base_audio_src_create_ringbuffer ()</h3>
-<a class="indexterm" name="id2566308"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>*      gst_base_audio_src_create_ringbuffer
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);</pre>
+<a name="gst-base-audio-src-create-ringbuffer"></a><h3>gst_base_audio_src_create_ringbuffer ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer">GstRingBuffer</a>*      gst_base_audio_src_create_ringbuffer
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);</pre>
 <p>
-Create and return the <a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a> for <em class="parameter"><code>src</code></em>. This function will call the
+Create and return the <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a> for <em class="parameter"><code>src</code></em>. This function will call the
 ::create_ringbuffer vmethod and will set <em class="parameter"><code>src</code></em> as the parent of the returned
 buffer (see <code class="function">gst_object_set_parent()</code>).</p>
 <p>
@@ -213,12 +205,12 @@ buffer (see <code class="function">gst_object_set_parent()</code>).</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>.
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>.
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> The new ringbuffer of <em class="parameter"><code>src</code></em>.
 </td>
 </tr>
@@ -227,10 +219,9 @@ buffer (see <code class="function">gst_object_set_parent()</code>).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566416"></a><h3>
-<a name="gst-base-audio-src-set-provide-clock"></a>gst_base_audio_src_set_provide_clock ()</h3>
-<a class="indexterm" name="id2566433"></a><pre class="programlisting">void                gst_base_audio_src_set_provide_clock
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src,
+<a name="gst-base-audio-src-set-provide-clock"></a><h3>gst_base_audio_src_set_provide_clock ()</h3>
+<pre class="programlisting">void                gst_base_audio_src_set_provide_clock
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src,
                                                          gboolean provide);</pre>
 <p>
 Controls whether <em class="parameter"><code>src</code></em> will provide a clock or not. If <em class="parameter"><code>provide</code></em> is <code class="literal">TRUE</code>, 
@@ -243,12 +234,12 @@ of <em class="parameter"><code>src</code></em>. If <em class="parameter"><code>p
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>provide</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>provide</code></em> :</span></p></td>
 <td> new state
 </td>
 </tr>
@@ -259,10 +250,9 @@ of <em class="parameter"><code>src</code></em>. If <em class="parameter"><code>p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566587"></a><h3>
-<a name="gst-base-audio-src-get-provide-clock"></a>gst_base_audio_src_get_provide_clock ()</h3>
-<a class="indexterm" name="id2566603"></a><pre class="programlisting">gboolean            gst_base_audio_src_get_provide_clock
-                                                        (<a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);</pre>
+<a name="gst-base-audio-src-get-provide-clock"></a><h3>gst_base_audio_src_get_provide_clock ()</h3>
+<pre class="programlisting">gboolean            gst_base_audio_src_get_provide_clock
+                                                        (<a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc">GstBaseAudioSrc</a> *src);</pre>
 <p>
 Queries whether <em class="parameter"><code>src</code></em> will provide a clock or not. See also
 gst_base_audio_src_set_provide_clock.</p>
@@ -273,12 +263,12 @@ gst_base_audio_src_set_provide_clock.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>src</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrc"><span class="type">GstBaseAudioSrc</span></a>
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> <code class="literal">TRUE</code> if <em class="parameter"><code>src</code></em> will provide a clock.
 
 </td>
@@ -290,37 +280,72 @@ gst_base_audio_src_set_provide_clock.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2566704"></a><h2>Property Details</h2>
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2566714"></a><h3>
-<a name="GstBaseAudioSrc--buffer-time"></a>The "<code class="literal">buffer-time</code>" property</h3>
-<a class="indexterm" name="id2566731"></a><pre class="programlisting">  "buffer-time"              gint64                : Read / Write</pre>
+<a name="GstBaseAudioSrc--actual-buffer-time"></a><h3>The <code class="literal">"actual-buffer-time"</code> property</h3>
+<pre class="programlisting">  "actual-buffer-time"       gint64                : Read</pre>
+<p>
+Actual configured size of audio buffer in microseconds.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  0.10.20
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstBaseAudioSrc--actual-latency-time"></a><h3>The <code class="literal">"actual-latency-time"</code> property</h3>
+<pre class="programlisting">  "actual-latency-time"      gint64                : Read</pre>
+<p>
+Actual configured audio latency in microseconds.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  0.10.20
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstBaseAudioSrc--buffer-time"></a><h3>The <code class="literal">"buffer-time"</code> property</h3>
+<pre class="programlisting">  "buffer-time"              gint64                : Read / Write</pre>
 <p>Size of audio buffer in microseconds.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 200000</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566762"></a><h3>
-<a name="GstBaseAudioSrc--latency-time"></a>The "<code class="literal">latency-time</code>" property</h3>
-<a class="indexterm" name="id2566778"></a><pre class="programlisting">  "latency-time"             gint64                : Read / Write</pre>
+<a name="GstBaseAudioSrc--latency-time"></a><h3>The <code class="literal">"latency-time"</code> property</h3>
+<pre class="programlisting">  "latency-time"             gint64                : Read / Write</pre>
 <p>Audio latency in microseconds.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 10000</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566809"></a><h3>
-<a name="GstBaseAudioSrc--provide-clock"></a>The "<code class="literal">provide-clock</code>" property</h3>
-<a class="indexterm" name="id2566825"></a><pre class="programlisting">  "provide-clock"            gboolean              : Read / Write</pre>
+<a name="GstBaseAudioSrc--provide-clock"></a><h3>The <code class="literal">"provide-clock"</code> property</h3>
+<pre class="programlisting">  "provide-clock"            gboolean              : Read / Write</pre>
 <p>Provide a clock to be used as the global pipeline clock.</p>
 <p>Default value: TRUE</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstBaseAudioSrc--slave-method"></a><h3>The <code class="literal">"slave-method"</code> property</h3>
+<pre class="programlisting">  "slave-method"             GstBaseAudioSrcSlaveMethod  : Read / Write</pre>
+<p>Algorithm to use to match the rate of the masterclock.</p>
+<p>Default value: Re-timestamp</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2566853"></a><h2>See Also</h2>
-<a href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"><span class="type">GstAudioSrc</span></a>, <a href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a>.
+<a name="gst-plugins-base-libs-gstbaseaudiosrc.see-also"></a><h2>See Also</h2>
+<a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"><span class="type">GstAudioSrc</span></a>, <a class="link" href="gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"><span class="type">GstRingBuffer</span></a>.
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

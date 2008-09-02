@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gstrtsprange</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-rtsp.html" title="RTSP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtspmessage.html" title="gstrtspmessage">
 <link rel="next" href="gst-plugins-base-libs-gstrtsptransport.html" title="gstrtsptransport">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part&#160;I.&#160;GStreamer Base Plugins Libraries">
+<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -24,7 +24,7 @@
 <link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
 <link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part&#160;II.&#160;Object Hierarchy">
+<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
 <link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -36,43 +36,40 @@
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-base-libs-gstrtsptransport.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2703315" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2703417" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-libs-gstrtsprange.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-libs-gstrtsprange.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-libs-gstrtsprange"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2703315"></a><span class="refentrytitle">gstrtsprange</span>
-</h2>
-<p>gstrtsprange &#8212; dealing with time ranges</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtsprange.top_of_page"></a>gstrtsprange</span></h2>
+<p>gstrtsprange — dealing with time ranges</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-base-libs-gstrtsprange.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 
 #include &lt;gst/rtsp/gstrtsrange.h&gt;
 
-
-enum                <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPRangeUnit">GstRTSPRangeUnit</a>;
-                    <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange">GstRTSPTimeRange</a>;
-                    <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime">GstRTSPTime</a>;
-enum                <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeType">GstRTSPTimeType</a>;
-<a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       <a href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-parse">gst_rtsp_range_parse</a>                (const gchar *rangestr,
-                                                         <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange">GstRTSPTimeRange</a> **range);
-void                <a href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-free">gst_rtsp_range_free</a>                 (<a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange">GstRTSPTimeRange</a> *range);
+enum                <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPRangeUnit" title="enum GstRTSPRangeUnit">GstRTSPRangeUnit</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a>;
+                    <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime" title="GstRTSPTime">GstRTSPTime</a>;
+enum                <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeType" title="enum GstRTSPTimeType">GstRTSPTimeType</a>;
+<a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-parse" title="gst_rtsp_range_parse ()">gst_rtsp_range_parse</a>                (const gchar *rangestr,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> **range);
+void                <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#gst-rtsp-range-free" title="gst_rtsp_range_free ()">gst_rtsp_range_free</a>                 (<a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> *range);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2703417"></a><h2>Description</h2>
+<a name="gst-plugins-base-libs-gstrtsprange.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2703429"></a><p>
+<a name="id2732999"></a><p>
 Provides helper functions to deal with time ranges.
 </p>
 </div>
@@ -84,11 +81,10 @@ Last reviewed on 2007-07-25 (0.10.14)</p>
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2703443"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtsprange.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2703453"></a><h3>
-<a name="GstRTSPRangeUnit"></a>enum GstRTSPRangeUnit</h3>
-<a class="indexterm" name="id2703467"></a><pre class="programlisting">typedef enum
+<a name="GstRTSPRangeUnit"></a><h3>enum GstRTSPRangeUnit</h3>
+<pre class="programlisting">typedef enum
 {
   GST_RTSP_RANGE_SMPTE,
   GST_RTSP_RANGE_SMPTE_30_DROP,
@@ -106,27 +102,27 @@ Different possible time range units.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-RANGE-SMPTE:CAPS"></a><code class="literal">GST_RTSP_RANGE_SMPTE</code></span></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE</code></span></p></td>
 <td> SMPTE timecode
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-RANGE-SMPTE-30-DROP:CAPS"></a><code class="literal">GST_RTSP_RANGE_SMPTE_30_DROP</code></span></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE-30-DROP:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_30_DROP</code></span></p></td>
 <td> 29.97 frames per second
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-RANGE-SMPTE-25:CAPS"></a><code class="literal">GST_RTSP_RANGE_SMPTE_25</code></span></td>
+<td><p><a name="GST-RTSP-RANGE-SMPTE-25:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_SMPTE_25</code></span></p></td>
 <td> 25 frames per second
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-RANGE-NPT:CAPS"></a><code class="literal">GST_RTSP_RANGE_NPT</code></span></td>
+<td><p><a name="GST-RTSP-RANGE-NPT:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_NPT</code></span></p></td>
 <td> Normal play time 
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-RANGE-CLOCK:CAPS"></a><code class="literal">GST_RTSP_RANGE_CLOCK</code></span></td>
+<td><p><a name="GST-RTSP-RANGE-CLOCK:CAPS"></a><span class="term"><code class="literal">GST_RTSP_RANGE_CLOCK</code></span></p></td>
 <td> Absolute time expressed as ISO 8601 timestamps
 </td>
 </tr>
@@ -135,9 +131,8 @@ Different possible time range units.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2703608"></a><h3>
-<a name="GstRTSPTimeRange"></a>GstRTSPTimeRange</h3>
-<a class="indexterm" name="id2703621"></a><pre class="programlisting">typedef struct {
+<a name="GstRTSPTimeRange"></a><h3>GstRTSPTimeRange</h3>
+<pre class="programlisting">typedef struct {
   GstRTSPRangeUnit unit;
 
   GstRTSPTime min;
@@ -153,17 +148,17 @@ A time range.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPRangeUnit">GstRTSPRangeUnit</a>&#160;<em class="structfield"><code>unit</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPRangeUnit" title="enum GstRTSPRangeUnit">GstRTSPRangeUnit</a> <em class="structfield"><code>unit</code></em>;</span></p></td>
 <td> the time units used
 </td>
 </tr>
 <tr>
-<td><span class="term"><a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime">GstRTSPTime</a>&#160;<em class="structfield"><code>min</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime" title="GstRTSPTime">GstRTSPTime</a> <em class="structfield"><code>min</code></em>;</span></p></td>
 <td> the minimum interval
 </td>
 </tr>
 <tr>
-<td><span class="term"><a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime">GstRTSPTime</a>&#160;<em class="structfield"><code>max</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTime" title="GstRTSPTime">GstRTSPTime</a> <em class="structfield"><code>max</code></em>;</span></p></td>
 <td> the maximum interval
 </td>
 </tr>
@@ -172,9 +167,8 @@ A time range.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2703708"></a><h3>
-<a name="GstRTSPTime"></a>GstRTSPTime</h3>
-<a class="indexterm" name="id2703720"></a><pre class="programlisting">typedef struct {
+<a name="GstRTSPTime"></a><h3>GstRTSPTime</h3>
+<pre class="programlisting">typedef struct {
   GstRTSPTimeType type;
   gdouble         seconds;
 } GstRTSPTime;
@@ -188,12 +182,12 @@ A time indication.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeType">GstRTSPTimeType</a>&#160;<em class="structfield"><code>type</code></em>;</span></td>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeType" title="enum GstRTSPTimeType">GstRTSPTimeType</a> <em class="structfield"><code>type</code></em>;</span></p></td>
 <td> the time of the time
 </td>
 </tr>
 <tr>
-<td><span class="term">gdouble&#160;<em class="structfield"><code>seconds</code></em>;</span></td>
+<td><p><span class="term">gdouble <em class="structfield"><code>seconds</code></em>;</span></p></td>
 <td> seconds when <em class="parameter"><code>type</code></em> is GST_RTSP_TIME_SECONDS 
 </td>
 </tr>
@@ -202,9 +196,8 @@ A time indication.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2703792"></a><h3>
-<a name="GstRTSPTimeType"></a>enum GstRTSPTimeType</h3>
-<a class="indexterm" name="id2703806"></a><pre class="programlisting">typedef enum {
+<a name="GstRTSPTimeType"></a><h3>enum GstRTSPTimeType</h3>
+<pre class="programlisting">typedef enum {
   GST_RTSP_TIME_SECONDS,
   GST_RTSP_TIME_NOW,
   GST_RTSP_TIME_END
@@ -219,17 +212,17 @@ Possible time types.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TIME-SECONDS:CAPS"></a><code class="literal">GST_RTSP_TIME_SECONDS</code></span></td>
+<td><p><a name="GST-RTSP-TIME-SECONDS:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_SECONDS</code></span></p></td>
 <td> seconds
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TIME-NOW:CAPS"></a><code class="literal">GST_RTSP_TIME_NOW</code></span></td>
+<td><p><a name="GST-RTSP-TIME-NOW:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_NOW</code></span></p></td>
 <td> now
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-RTSP-TIME-END:CAPS"></a><code class="literal">GST_RTSP_TIME_END</code></span></td>
+<td><p><a name="GST-RTSP-TIME-END:CAPS"></a><span class="term"><code class="literal">GST_RTSP_TIME_END</code></span></p></td>
 <td> end
 </td>
 </tr>
@@ -238,12 +231,11 @@ Possible time types.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2703898"></a><h3>
-<a name="gst-rtsp-range-parse"></a>gst_rtsp_range_parse ()</h3>
-<a class="indexterm" name="id2703911"></a><pre class="programlisting"><a href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult">GstRTSPResult</a>       gst_rtsp_range_parse                (const gchar *rangestr,
-                                                         <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange">GstRTSPTimeRange</a> **range);</pre>
+<a name="gst-rtsp-range-parse"></a><h3>gst_rtsp_range_parse ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_range_parse                (const gchar *rangestr,
+                                                         <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> **range);</pre>
 <p>
-Parse <em class="parameter"><code>rangestr</code></em> to a <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>.</p>
+Parse <em class="parameter"><code>rangestr</code></em> to a <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>.</p>
 <p>
 
 </p>
@@ -251,18 +243,18 @@ Parse <em class="parameter"><code>rangestr</code></em> to a <a href="gst-plugins
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>rangestr</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>rangestr</code></em> :</span></p></td>
 <td> a range string to parse
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>range</code></em>&#160;:</span></td>
-<td> location to hold the <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a> result
+<td><p><span class="term"><em class="parameter"><code>range</code></em> :</span></p></td>
+<td> location to hold the <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a> result
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> <a href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-OK:CAPS"><span class="type">GST_RTSP_OK</span></a> on success.
 </td>
 </tr>
 </tbody>
@@ -270,9 +262,8 @@ Parse <em class="parameter"><code>rangestr</code></em> to a <a href="gst-plugins
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2704025"></a><h3>
-<a name="gst-rtsp-range-free"></a>gst_rtsp_range_free ()</h3>
-<a class="indexterm" name="id2704038"></a><pre class="programlisting">void                gst_rtsp_range_free                 (<a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange">GstRTSPTimeRange</a> *range);</pre>
+<a name="gst-rtsp-range-free"></a><h3>gst_rtsp_range_free ()</h3>
+<pre class="programlisting">void                gst_rtsp_range_free                 (<a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange">GstRTSPTimeRange</a> *range);</pre>
 <p>
 Free the memory alocated by <em class="parameter"><code>range</code></em>.</p>
 <p>
@@ -281,13 +272,16 @@ Free the memory alocated by <em class="parameter"><code>range</code></em>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>range</code></em>&#160;:</span></td>
-<td> a <a href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>
+<td><p><span class="term"><em class="parameter"><code>range</code></em> :</span></p></td>
+<td> a <a class="link" href="gst-plugins-base-libs-gstrtsprange.html#GstRTSPTimeRange" title="GstRTSPTimeRange"><span class="type">GstRTSPTimeRange</span></a>
 </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

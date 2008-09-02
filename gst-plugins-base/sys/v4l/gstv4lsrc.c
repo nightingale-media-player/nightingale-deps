@@ -98,20 +98,21 @@ gst_v4lsrc_class_init (GstV4lSrcClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_AUTOPROBE,
       g_param_spec_boolean ("autoprobe", "Autoprobe",
           "Whether the device should be probed for all possible features",
-          TRUE, G_PARAM_READWRITE));
+          TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_AUTOPROBE_FPS,
       g_param_spec_boolean ("autoprobe-fps", "Autoprobe FPS",
           "Whether the device should be probed for framerates",
-          TRUE, G_PARAM_READWRITE));
+          TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_COPY_MODE,
       g_param_spec_boolean ("copy-mode", "Copy mode",
           "Whether to send out copies of buffers, or direct pointers to the mmap region",
-          TRUE, G_PARAM_READWRITE));
+          TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_TIMESTAMP_OFFSET, g_param_spec_int64 ("timestamp-offset",
           "Timestamp offset",
           "A time offset subtracted from timestamps set on buffers (in ns)",
-          G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE));
+          G_MININT64, G_MAXINT64, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   GST_DEBUG_CATEGORY_INIT (v4lsrc_debug, "v4lsrc", 0, "V4L source element");
 
@@ -349,7 +350,7 @@ gst_v4lsrc_palette_to_caps (int palette)
 }
 
 static GstCaps *
-gst_v4lsrc_get_any_caps ()
+gst_v4lsrc_get_any_caps (void)
 {
   gint i;
   GstCaps *caps = gst_caps_new_empty (), *one;

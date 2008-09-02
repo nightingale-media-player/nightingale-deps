@@ -64,6 +64,28 @@ static PixFmtInfo pix_fmt_info[PIX_FMT_NB] = {
         /* .y_chroma_shift = */ 1,
         /* .depth          = */ 8,
       },
+  /* [PIX_FMT_NV12] = */ {
+        /* .format         = */ PIX_FMT_NV12,
+        /* .name           = */ "nv12",
+        /* .nb_channels    = */ 2,
+        /* .color_type     = */ FF_COLOR_YUV,
+        /* .pixel_type     = */ FF_PIXEL_PACKED,
+        /* .is_alpha       = */ 0,
+        /* .x_chroma_shift = */ 1,
+        /* .y_chroma_shift = */ 1,
+        /* .depth          = */ 8,
+      },
+  /* [PIX_FMT_NV21] = */ {
+        /* .format         = */ PIX_FMT_NV21,
+        /* .name           = */ "nv21",
+        /* .nb_channels    = */ 2,
+        /* .color_type     = */ FF_COLOR_YUV,
+        /* .pixel_type     = */ FF_PIXEL_PACKED,
+        /* .is_alpha       = */ 0,
+        /* .x_chroma_shift = */ 1,
+        /* .y_chroma_shift = */ 1,
+        /* .depth          = */ 8,
+      },
   /* [PIX_FMT_YUV422P] = */ {
         /* .format         = */ PIX_FMT_YUV422P,
         /* .name           = */ "yuv422p",
@@ -439,7 +461,8 @@ avcodec_get_pix_fmt (const char *name)
   return pix_fmt_info[i].format;
 }
 
-int
+#if 0
+static int
 avpicture_layout (const AVPicture * src, int pix_fmt, int width, int height,
     unsigned char *dest, int dest_size)
 {
@@ -490,6 +513,7 @@ avpicture_layout (const AVPicture * src, int pix_fmt, int width, int height,
 
   return size;
 }
+#endif
 
 int
 avpicture_get_size (int pix_fmt, int width, int height)
@@ -670,7 +694,7 @@ img_copy_plane (uint8_t * dst, int dst_wrap,
 /**
  * Copy image 'src' to 'dst'.
  */
-void
+static void
 img_copy (AVPicture * dst, const AVPicture * src,
     int pix_fmt, int width, int height)
 {
@@ -1079,6 +1103,55 @@ yuv420p_to_yuv422 (AVPicture * dst, const AVPicture * src,
     }
   }
 }
+
+static void
+nv12_to_nv21 (AVPicture * dst, const AVPicture * src, int width, int height)
+{
+  const uint8_t *s_c_ptr;
+  uint8_t *d_c_ptr;
+  int w;
+
+  s_c_ptr = src->data[1];
+  d_c_ptr = dst->data[1];
+
+  for (; height >= 2; height -= 2) {
+    for (w = width; w >= 2; w -= 2) {
+      d_c_ptr[0] = s_c_ptr[1];
+      d_c_ptr[1] = s_c_ptr[0];
+      s_c_ptr += 2;
+      d_c_ptr += 2;
+    }
+
+    /* handle odd width */
+    if (w) {
+      d_c_ptr[0] = s_c_ptr[1];
+      d_c_ptr[1] = s_c_ptr[0];
+      s_c_ptr += 2;
+      d_c_ptr += 2;
+    }
+    s_c_ptr += src->linesize[1] - width;
+    d_c_ptr += src->linesize[1] - width;
+  }
+  /* handle odd height */
+  if (height) {
+    for (w = width; w >= 2; w -= 2) {
+      d_c_ptr[0] = s_c_ptr[1];
+      d_c_ptr[1] = s_c_ptr[0];
+      s_c_ptr += 2;
+      d_c_ptr += 2;
+    }
+
+    /* handle odd width */
+    if (w) {
+      d_c_ptr[0] = s_c_ptr[1];
+      d_c_ptr[1] = s_c_ptr[0];
+      s_c_ptr += 2;
+      d_c_ptr += 2;
+    }
+  }
+}
+
+#define nv21_to_nv12 nv12_to_nv21
 
 #define SCALEBITS 10
 #define ONE_HALF  (1 << (SCALEBITS - 1))
@@ -2035,6 +2108,34 @@ static ConvertEntry convert_table[] = {
   {PIX_FMT_YUV420P, PIX_FMT_ARGB32, yuv420p_to_argb32},
   {PIX_FMT_YUV420P, PIX_FMT_ABGR32, yuv420p_to_abgr32},
 
+  {PIX_FMT_NV12, PIX_FMT_RGB555, nv12_to_rgb555},
+  {PIX_FMT_NV12, PIX_FMT_RGB565, nv12_to_rgb565},
+  {PIX_FMT_NV12, PIX_FMT_BGR24, nv12_to_bgr24},
+  {PIX_FMT_NV12, PIX_FMT_RGB24, nv12_to_rgb24},
+  {PIX_FMT_NV12, PIX_FMT_RGB32, nv12_to_rgb32},
+  {PIX_FMT_NV12, PIX_FMT_BGR32, nv12_to_bgr32},
+  {PIX_FMT_NV12, PIX_FMT_xRGB32, nv12_to_xrgb32},
+  {PIX_FMT_NV12, PIX_FMT_BGRx32, nv12_to_bgrx32},
+  {PIX_FMT_NV12, PIX_FMT_RGBA32, nv12_to_rgba32},
+  {PIX_FMT_NV12, PIX_FMT_BGRA32, nv12_to_bgra32},
+  {PIX_FMT_NV12, PIX_FMT_ARGB32, nv12_to_argb32},
+  {PIX_FMT_NV12, PIX_FMT_ABGR32, nv12_to_abgr32},
+  {PIX_FMT_NV12, PIX_FMT_ABGR32, nv12_to_nv21},
+
+  {PIX_FMT_NV21, PIX_FMT_RGB555, nv21_to_rgb555},
+  {PIX_FMT_NV21, PIX_FMT_RGB565, nv21_to_rgb565},
+  {PIX_FMT_NV21, PIX_FMT_BGR24, nv21_to_bgr24},
+  {PIX_FMT_NV21, PIX_FMT_RGB24, nv21_to_rgb24},
+  {PIX_FMT_NV21, PIX_FMT_RGB32, nv21_to_rgb32},
+  {PIX_FMT_NV21, PIX_FMT_BGR32, nv21_to_bgr32},
+  {PIX_FMT_NV21, PIX_FMT_xRGB32, nv21_to_xrgb32},
+  {PIX_FMT_NV21, PIX_FMT_BGRx32, nv21_to_bgrx32},
+  {PIX_FMT_NV21, PIX_FMT_RGBA32, nv21_to_rgba32},
+  {PIX_FMT_NV21, PIX_FMT_BGRA32, nv21_to_bgra32},
+  {PIX_FMT_NV21, PIX_FMT_ARGB32, nv21_to_argb32},
+  {PIX_FMT_NV21, PIX_FMT_ABGR32, nv21_to_abgr32},
+  {PIX_FMT_NV12, PIX_FMT_ABGR32, nv21_to_nv12},
+
   {PIX_FMT_YUV422P, PIX_FMT_YUV422, yuv422p_to_yuv422},
   {PIX_FMT_YUV422P, PIX_FMT_UYVY422, yuv422p_to_uyvy422},
 
@@ -2062,6 +2163,8 @@ static ConvertEntry convert_table[] = {
   {PIX_FMT_UYVY422, PIX_FMT_YUV422P, uyvy422_to_yuv422p},
 
   {PIX_FMT_RGB24, PIX_FMT_YUV420P, rgb24_to_yuv420p},
+  {PIX_FMT_RGB24, PIX_FMT_NV12, rgb24_to_nv12},
+  {PIX_FMT_RGB24, PIX_FMT_NV21, rgb24_to_nv21},
   {PIX_FMT_RGB24, PIX_FMT_RGB565, rgb24_to_rgb565},
   {PIX_FMT_RGB24, PIX_FMT_RGB555, rgb24_to_rgb555},
   {PIX_FMT_RGB24, PIX_FMT_RGB32, rgb24_to_rgb32},
@@ -2084,11 +2187,15 @@ static ConvertEntry convert_table[] = {
   {PIX_FMT_RGB32, PIX_FMT_RGB555, rgba32_to_rgb555},
   {PIX_FMT_RGB32, PIX_FMT_PAL8, rgb32_to_pal8},
   {PIX_FMT_RGB32, PIX_FMT_YUV420P, rgb32_to_yuv420p},
+  {PIX_FMT_RGB32, PIX_FMT_NV12, rgb32_to_nv12},
+  {PIX_FMT_RGB32, PIX_FMT_NV21, rgb32_to_nv21},
   {PIX_FMT_RGB32, PIX_FMT_GRAY8, rgb32_to_gray},
 
   {PIX_FMT_xRGB32, PIX_FMT_RGB24, xrgb32_to_rgb24},
   {PIX_FMT_xRGB32, PIX_FMT_PAL8, xrgb32_to_pal8},
   {PIX_FMT_xRGB32, PIX_FMT_YUV420P, xrgb32_to_yuv420p},
+  {PIX_FMT_xRGB32, PIX_FMT_NV12, xrgb32_to_nv12},
+  {PIX_FMT_xRGB32, PIX_FMT_NV21, xrgb32_to_nv21},
   {PIX_FMT_xRGB32, PIX_FMT_GRAY8, xrgb32_to_gray},
 
   {PIX_FMT_RGBA32, PIX_FMT_BGRA32, rgba32_to_bgra32},
@@ -2101,47 +2208,65 @@ static ConvertEntry convert_table[] = {
   {PIX_FMT_RGBA32, PIX_FMT_RGB555, rgba32_to_rgb555},
   {PIX_FMT_RGBA32, PIX_FMT_PAL8, rgba32_to_pal8},
   {PIX_FMT_RGBA32, PIX_FMT_YUV420P, rgba32_to_yuv420p},
+  {PIX_FMT_RGBA32, PIX_FMT_NV12, rgba32_to_nv12},
+  {PIX_FMT_RGBA32, PIX_FMT_NV21, rgba32_to_nv21},
   {PIX_FMT_RGBA32, PIX_FMT_GRAY8, rgba32_to_gray},
   {PIX_FMT_RGBA32, PIX_FMT_AYUV4444, rgba32_to_ayuv4444},
 
   {PIX_FMT_BGR24, PIX_FMT_RGB24, bgr24_to_rgb24},
   {PIX_FMT_BGR24, PIX_FMT_YUV420P, bgr24_to_yuv420p},
+  {PIX_FMT_BGR24, PIX_FMT_NV12, bgr24_to_nv12},
+  {PIX_FMT_BGR24, PIX_FMT_NV21, bgr24_to_nv21},
   {PIX_FMT_BGR24, PIX_FMT_GRAY8, bgr24_to_gray},
 
   {PIX_FMT_BGR32, PIX_FMT_RGB24, bgr32_to_rgb24},
   {PIX_FMT_BGR32, PIX_FMT_RGBA32, bgr32_to_rgba32},
   {PIX_FMT_BGR32, PIX_FMT_YUV420P, bgr32_to_yuv420p},
+  {PIX_FMT_BGR32, PIX_FMT_NV12, bgr32_to_nv12},
+  {PIX_FMT_BGR32, PIX_FMT_NV21, bgr32_to_nv21},
   {PIX_FMT_BGR32, PIX_FMT_GRAY8, bgr32_to_gray},
 
   {PIX_FMT_BGRx32, PIX_FMT_RGB24, bgrx32_to_rgb24},
   {PIX_FMT_BGRx32, PIX_FMT_RGBA32, bgrx32_to_rgba32},
   {PIX_FMT_BGRx32, PIX_FMT_YUV420P, bgrx32_to_yuv420p},
+  {PIX_FMT_BGRx32, PIX_FMT_NV12, bgrx32_to_nv12},
+  {PIX_FMT_BGRx32, PIX_FMT_NV21, bgrx32_to_nv21},
   {PIX_FMT_BGRx32, PIX_FMT_GRAY8, bgrx32_to_gray},
 
   {PIX_FMT_BGRA32, PIX_FMT_RGB24, bgra32_to_rgb24},
   {PIX_FMT_BGRA32, PIX_FMT_RGBA32, bgra32_to_rgba32},
   {PIX_FMT_BGRA32, PIX_FMT_YUV420P, bgra32_to_yuv420p},
+  {PIX_FMT_BGRA32, PIX_FMT_NV12, bgra32_to_nv12},
+  {PIX_FMT_BGRA32, PIX_FMT_NV21, bgra32_to_nv21},
   {PIX_FMT_BGRA32, PIX_FMT_GRAY8, bgra32_to_gray},
   {PIX_FMT_BGRA32, PIX_FMT_AYUV4444, bgra32_to_ayuv4444},
 
   {PIX_FMT_ABGR32, PIX_FMT_RGB24, abgr32_to_rgb24},
   {PIX_FMT_ABGR32, PIX_FMT_RGBA32, abgr32_to_rgba32},
   {PIX_FMT_ABGR32, PIX_FMT_YUV420P, abgr32_to_yuv420p},
+  {PIX_FMT_ABGR32, PIX_FMT_NV12, abgr32_to_nv12},
+  {PIX_FMT_ABGR32, PIX_FMT_NV21, abgr32_to_nv21},
   {PIX_FMT_ABGR32, PIX_FMT_GRAY8, abgr32_to_gray},
 
   {PIX_FMT_ARGB32, PIX_FMT_RGB24, argb32_to_rgb24},
   {PIX_FMT_ARGB32, PIX_FMT_RGBA32, argb32_to_rgba32},
   {PIX_FMT_ARGB32, PIX_FMT_YUV420P, argb32_to_yuv420p},
+  {PIX_FMT_ARGB32, PIX_FMT_NV12, argb32_to_nv12},
+  {PIX_FMT_ARGB32, PIX_FMT_NV21, argb32_to_nv21},
   {PIX_FMT_ARGB32, PIX_FMT_GRAY8, argb32_to_gray},
 
   {PIX_FMT_RGB555, PIX_FMT_RGB24, rgb555_to_rgb24},
   {PIX_FMT_RGB555, PIX_FMT_RGB32, rgb555_to_rgba32},
   {PIX_FMT_RGB555, PIX_FMT_RGBA32, rgb555_to_rgba32},
   {PIX_FMT_RGB555, PIX_FMT_YUV420P, rgb555_to_yuv420p},
+  {PIX_FMT_RGB555, PIX_FMT_NV12, rgb555_to_nv12},
+  {PIX_FMT_RGB555, PIX_FMT_NV21, rgb555_to_nv21},
   {PIX_FMT_RGB555, PIX_FMT_GRAY8, rgb555_to_gray},
 
   {PIX_FMT_RGB565, PIX_FMT_RGB24, rgb565_to_rgb24},
   {PIX_FMT_RGB565, PIX_FMT_YUV420P, rgb565_to_yuv420p},
+  {PIX_FMT_RGB565, PIX_FMT_NV12, rgb565_to_nv12},
+  {PIX_FMT_RGB565, PIX_FMT_NV21, rgb565_to_nv21},
   {PIX_FMT_RGB565, PIX_FMT_GRAY8, rgb565_to_gray},
 
   {PIX_FMT_GRAY8, PIX_FMT_RGB555, gray_to_rgb555},
@@ -2198,7 +2323,7 @@ get_convert_table_entry (int src_pix_fmt, int dst_pix_fmt)
   return NULL;
 }
 
-int
+static int
 avpicture_alloc (AVPicture * picture, int pix_fmt, int width, int height)
 {
   unsigned int size;
@@ -2215,7 +2340,7 @@ fail:
   return -1;
 }
 
-void
+static void
 avpicture_free (AVPicture * picture)
 {
   av_free (picture->data[0]);
@@ -2593,6 +2718,7 @@ img_get_alpha_info (const AVPicture * src, int pix_fmt, int width, int height)
 #endif
 
 /* filter parameters: [-1 4 2 4 -1] // 8 */
+#if 0
 static void
 deinterlace_line (uint8_t * dst,
     const uint8_t * lum_m4, const uint8_t * lum_m3,
@@ -2684,10 +2810,12 @@ deinterlace_line_inplace (uint8_t * lum_m4, uint8_t * lum_m3, uint8_t * lum_m2,
   }
 #endif
 }
+#endif
 
 /* deinterlacing : 2 temporal taps, 3 spatial taps linear filter. The
    top field is copied as is, but the bottom field is deinterlaced
    against the top field. */
+#if 0
 static void
 deinterlace_bottom_field (uint8_t * dst, int dst_wrap,
     const uint8_t * src1, int src_wrap, int width, int height)
@@ -2743,10 +2871,11 @@ deinterlace_bottom_field_inplace (uint8_t * src1, int src_wrap,
   deinterlace_line_inplace (buf, src_m1, src_0, src_0, src_0, width);
   av_free (buf);
 }
-
+#endif
 
 /* deinterlace - if not supported return -1 */
-int
+#if 0
+static int
 avpicture_deinterlace (AVPicture * dst, const AVPicture * src,
     int pix_fmt, int width, int height)
 {
@@ -2789,5 +2918,6 @@ avpicture_deinterlace (AVPicture * dst, const AVPicture * src,
 #endif
   return 0;
 }
+#endif
 
 #undef FIX
