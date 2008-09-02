@@ -166,7 +166,8 @@ endif
 
 liboil_@LIBOIL_MAJORMINOR@_la_LIBADD = \
 	liboilfunctions.la \
-	$(LIBM)
+	$(LIBM) \
+	$(LIBRT)
 liboil_@LIBOIL_MAJORMINOR@_la_CFLAGS = $(LIBOIL_CFLAGS)
 liboil_@LIBOIL_MAJORMINOR@_la_LDFLAGS = \
 	-no-undefined \

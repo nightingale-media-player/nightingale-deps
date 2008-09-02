@@ -34,5 +34,19 @@ AM_CONDITIONAL(HAVE_AMD64, test "x$HAVE_AMD64" = "xyes")
 AM_CONDITIONAL(HAVE_POWERPC, test "x$HAVE_POWERPC" = "xyes")
 AM_CONDITIONAL(HAVE_ARM, test "x$HAVE_ARM" = "xyes")
 
+  case "${host_os}" in
+    mingw*)
+      HAVE_OS_WIN32=yes
+      AC_DEFINE(HAVE_OS_WIN32, 1, [Defined if host OS is MS Windows])
+      ;;
+    linux*)
+      HAVE_OS_LINUX=yes
+      AC_DEFINE(HAVE_OS_LINUX, 1, [Defined if host OS is linux])
+      ;;
+  esac
+
+AM_CONDITIONAL(HAVE_OS_WIN32, test "$HAVE_WIN32" = "yes")
+AM_CONDITIONAL(HAVE_OS_LINUX, test "$HAVE_LINUX" = "yes")
+
 ])
 

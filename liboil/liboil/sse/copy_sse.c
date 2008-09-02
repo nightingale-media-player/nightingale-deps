@@ -31,7 +31,11 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
-#include "sse_wrapper.h"
+#ifdef __GNUC__
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#else
+#define SSE_FUNCTION
+#endif
 
 SSE_FUNCTION static void
 copy_u8_sse (uint8_t *dest, const uint8_t *src, int n)

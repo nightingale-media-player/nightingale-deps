@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilimpl-unstable">
 <refmeta>
-<refentrytitle role="top_of_page">OilFunctionImpl</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilimpl-unstable.top_of_page">OilFunctionImpl</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilimpl-unstable.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
                     <link linkend="OilFunctionImpl">OilFunctionImpl</link>;
 <link linkend="OilFunctionImpl">OilFunctionImpl</link>*    <link linkend="oil-impl-get-by-index">oil_impl_get_by_index</link>               (<link linkend="int">int</link> i);
 <link linkend="int">int</link>                 <link linkend="oil-impl-is-runnable">oil_impl_is_runnable</link>                (<link linkend="OilFunctionImpl">OilFunctionImpl</link> *impl);
@@ -43,7 +40,7 @@ enum                <link linkend="OilImplFlag">OilImplFlag</link>;
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilimpl-unstable.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -52,11 +49,11 @@ enum                <link linkend="OilImplFlag">OilImplFlag</link>;
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilimpl-unstable.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="OilFunctionImpl" role="struct"/>OilFunctionImpl</title>
-<indexterm><primary>OilFunctionImpl</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="OilFunctionImpl" role="struct">
+<title>OilFunctionImpl</title>
+<indexterm zone="OilFunctionImpl"><primary>OilFunctionImpl</primary></indexterm><programlisting>typedef struct {
 } OilFunctionImpl;
 </programlisting>
 <para>
@@ -64,9 +61,9 @@ An opaque structure representing a function implementation.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="oil-impl-get-by-index" role="function"/>oil_impl_get_by_index ()</title>
-<indexterm><primary>oil_impl_get_by_index</primary></indexterm><programlisting><link linkend="OilFunctionImpl">OilFunctionImpl</link>*    oil_impl_get_by_index               (<link linkend="int">int</link> i);</programlisting>
+<refsect2 id="oil-impl-get-by-index" role="function">
+<title>oil_impl_get_by_index ()</title>
+<indexterm zone="oil-impl-get-by-index"><primary>oil_impl_get_by_index</primary></indexterm><programlisting><link linkend="OilFunctionImpl">OilFunctionImpl</link>*    oil_impl_get_by_index               (<link linkend="int">int</link> i);</programlisting>
 <para>
 Returns a pointer to the function implementation with index <parameter>i</parameter>.</para>
 <para>
@@ -78,9 +75,9 @@ Returns a pointer to the function implementation with index <parameter>i</parame
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a pointer to a function implementation structure
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-impl-is-runnable" role="function"/>oil_impl_is_runnable ()</title>
-<indexterm><primary>oil_impl_is_runnable</primary></indexterm><programlisting><link linkend="int">int</link>                 oil_impl_is_runnable                (<link linkend="OilFunctionImpl">OilFunctionImpl</link> *impl);</programlisting>
+<refsect2 id="oil-impl-is-runnable" role="function">
+<title>oil_impl_is_runnable ()</title>
+<indexterm zone="oil-impl-is-runnable"><primary>oil_impl_is_runnable</primary></indexterm><programlisting><link linkend="int">int</link>                 oil_impl_is_runnable                (<link linkend="OilFunctionImpl">OilFunctionImpl</link> *impl);</programlisting>
 <para>
 Determines whether the function implementation given by <parameter>impl</parameter>
 can be executed by the current CPU.</para>
@@ -93,9 +90,9 @@ can be executed by the current CPU.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 1 if the implementation can be executed, otherwise 0
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OilImplFlag" role="enum"/>enum OilImplFlag</title>
-<indexterm><primary>OilImplFlag</primary></indexterm><programlisting>typedef enum {
+<refsect2 id="OilImplFlag" role="enum">
+<title>enum OilImplFlag</title>
+<indexterm zone="OilImplFlag"><primary>OilImplFlag</primary></indexterm><programlisting>typedef enum {
   OIL_IMPL_FLAG_REF = (1&lt;&lt;0),
   OIL_IMPL_FLAG_OPT = (1&lt;&lt;1),
   OIL_IMPL_FLAG_ASM = (1&lt;&lt;2),
@@ -170,9 +167,9 @@ not <parameter>OIL_IMPL_FLAG_SSE2</parameter>.
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="OIL-CPU-FLAG-MASK:CAPS" role="macro"/>OIL_CPU_FLAG_MASK</title>
-<indexterm><primary>OIL_CPU_FLAG_MASK</primary></indexterm><programlisting>#define OIL_CPU_FLAG_MASK 0xffff0000
+<refsect2 id="OIL-CPU-FLAG-MASK:CAPS" role="macro">
+<title>OIL_CPU_FLAG_MASK</title>
+<indexterm zone="OIL-CPU-FLAG-MASK:CAPS"><primary>OIL_CPU_FLAG_MASK</primary></indexterm><programlisting>#define OIL_CPU_FLAG_MASK 0xffff0000
 </programlisting>
 <para>
 Mask describing which bits in <link linkend="OilImplFlag"><type>OilImplFlag</type></link> depend on the current
@@ -180,9 +177,9 @@ CPU.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="OIL-DEFINE-IMPL-FULL:CAPS" role="macro"/>OIL_DEFINE_IMPL_FULL()</title>
-<indexterm><primary>OIL_DEFINE_IMPL_FULL</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_FULL(function,klass,flags)</programlisting>
+<refsect2 id="OIL-DEFINE-IMPL-FULL:CAPS" role="macro">
+<title>OIL_DEFINE_IMPL_FULL()</title>
+<indexterm zone="OIL-DEFINE-IMPL-FULL:CAPS"><primary>OIL_DEFINE_IMPL_FULL</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_FULL(function,klass,flags)</programlisting>
 <para>
 Defines a <link linkend="OilFunctionImpl"><type>OilFunctionImpl</type></link> structure for the function <parameter>function</parameter>
 and class <parameter>klass</parameter>.  CPU-dependent flags in <parameter>flags</parameter> will indicate
@@ -200,9 +197,9 @@ that this implementation requires the given CPU flags.</para>
 <listitem><simpara> implementation flags and CPU requirements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-DEFINE-IMPL:CAPS" role="macro"/>OIL_DEFINE_IMPL()</title>
-<indexterm><primary>OIL_DEFINE_IMPL</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL(function,klass)</programlisting>
+<refsect2 id="OIL-DEFINE-IMPL:CAPS" role="macro">
+<title>OIL_DEFINE_IMPL()</title>
+<indexterm zone="OIL-DEFINE-IMPL:CAPS"><primary>OIL_DEFINE_IMPL</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL(function,klass)</programlisting>
 <para>
 Shorthand for defining a C implementation.  See <link linkend="OIL-DEFINE-IMPL-FULL:CAPS"><function>OIL_DEFINE_IMPL_FULL()</function></link>.</para>
 <para>
@@ -215,9 +212,9 @@ Shorthand for defining a C implementation.  See <link linkend="OIL-DEFINE-IMPL-F
 <listitem><simpara> name of class to declare (without oil_ prefix)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-DEFINE-IMPL-REF:CAPS" role="macro"/>OIL_DEFINE_IMPL_REF()</title>
-<indexterm><primary>OIL_DEFINE_IMPL_REF</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_REF(function,klass)</programlisting>
+<refsect2 id="OIL-DEFINE-IMPL-REF:CAPS" role="macro">
+<title>OIL_DEFINE_IMPL_REF()</title>
+<indexterm zone="OIL-DEFINE-IMPL-REF:CAPS"><primary>OIL_DEFINE_IMPL_REF</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_REF(function,klass)</programlisting>
 <para>
 Shorthand for defining a reference implementation.  See <link linkend="OIL-DEFINE-IMPL-FULL:CAPS"><function>OIL_DEFINE_IMPL_FULL()</function></link>.</para>
 <para>
@@ -230,9 +227,9 @@ Shorthand for defining a reference implementation.  See <link linkend="OIL-DEFIN
 <listitem><simpara> name of class to declare (without oil_ prefix)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-DEFINE-IMPL-ASM:CAPS" role="macro"/>OIL_DEFINE_IMPL_ASM()</title>
-<indexterm><primary>OIL_DEFINE_IMPL_ASM</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_ASM(function,klass)</programlisting>
+<refsect2 id="OIL-DEFINE-IMPL-ASM:CAPS" role="macro">
+<title>OIL_DEFINE_IMPL_ASM()</title>
+<indexterm zone="OIL-DEFINE-IMPL-ASM:CAPS"><primary>OIL_DEFINE_IMPL_ASM</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_ASM(function,klass)</programlisting>
 <para>
 Shorthand for defining an implementation written in inline
 assembly code.  See <link linkend="OIL-DEFINE-IMPL-FULL:CAPS"><function>OIL_DEFINE_IMPL_FULL()</function></link>.</para>
@@ -246,9 +243,9 @@ assembly code.  See <link linkend="OIL-DEFINE-IMPL-FULL:CAPS"><function>OIL_DEFI
 <listitem><simpara> name of class to declare (without oil_ prefix)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-DEFINE-IMPL-DEPENDS:CAPS" role="macro"/>OIL_DEFINE_IMPL_DEPENDS()</title>
-<indexterm><primary>OIL_DEFINE_IMPL_DEPENDS</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_DEPENDS(function,klass,...)</programlisting>
+<refsect2 id="OIL-DEFINE-IMPL-DEPENDS:CAPS" role="macro">
+<title>OIL_DEFINE_IMPL_DEPENDS()</title>
+<indexterm zone="OIL-DEFINE-IMPL-DEPENDS:CAPS"><primary>OIL_DEFINE_IMPL_DEPENDS</primary></indexterm><programlisting>#define             OIL_DEFINE_IMPL_DEPENDS(function,klass,...)</programlisting>
 <para>
 Shorthand for defining an implementation that uses another Liboil
 function class.  This is not currently used.  See

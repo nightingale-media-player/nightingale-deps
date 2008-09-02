@@ -369,6 +369,7 @@ OIL_DECLARE_CLASS(scalarmult_u16);
 OIL_DECLARE_CLASS(scalarmult_u32);
 OIL_DECLARE_CLASS(scalarmult_u8);
 OIL_DECLARE_CLASS(scalarmultiply_f32_ns);
+OIL_DECLARE_CLASS(scalarmultiply_f64_ns);
 OIL_DECLARE_CLASS(scaleconv_f32_s16);
 OIL_DECLARE_CLASS(scaleconv_f32_s32);
 OIL_DECLARE_CLASS(scaleconv_f32_s8);

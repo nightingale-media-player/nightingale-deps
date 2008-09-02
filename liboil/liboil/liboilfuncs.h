@@ -1035,6 +1035,9 @@ typedef void (*_oil_type_scalarmult_u8)(uint8_t * d, int dstr, const uint8_t * s
 OIL_EXPORT OilFunctionClass *oil_function_class_ptr_scalarmultiply_f32_ns;
 typedef void (*_oil_type_scalarmultiply_f32_ns)(float * d, const float * s1, const float * s2_1, int n);
 #define oil_scalarmultiply_f32_ns ((_oil_type_scalarmultiply_f32_ns)(*(void **)oil_function_class_ptr_scalarmultiply_f32_ns))
+OIL_EXPORT OilFunctionClass *oil_function_class_ptr_scalarmultiply_f64_ns;
+typedef void (*_oil_type_scalarmultiply_f64_ns)(double * d, const double * s1, const double * s2_1, int n);
+#define oil_scalarmultiply_f64_ns ((_oil_type_scalarmultiply_f64_ns)(*(void **)oil_function_class_ptr_scalarmultiply_f64_ns))
 OIL_EXPORT OilFunctionClass *oil_function_class_ptr_scaleconv_f32_s16;
 typedef void (*_oil_type_scaleconv_f32_s16)(float * dest, const int16_t * src, int n, const double * s2_1, const double * s3_1);
 #define oil_scaleconv_f32_s16 ((_oil_type_scaleconv_f32_s16)(*(void **)oil_function_class_ptr_scaleconv_f32_s16))

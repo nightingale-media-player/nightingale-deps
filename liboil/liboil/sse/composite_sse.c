@@ -32,7 +32,11 @@
 #include <emmintrin.h>
 #include <liboil/liboilcolorspace.h>
 
-#include "sse_wrapper.h"
+#ifdef __GNUC__
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#else
+#define SSE_FUNCTION
+#endif
 
 #define COMPOSITE_ADD(d,s) oil_clamp_255((d) + (s))
 

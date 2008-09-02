@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Debug</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="liboil-liboilcpu.html" title="CPU">
 <link rel="next" href="liboil-liboilclass-unstable.html" title="OilFunctionClass">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,48 +22,43 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboilclass-unstable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2564141" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2608766" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboildebug.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboildebug.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboildebug"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2564141"></a><span class="refentrytitle">Debug</span>
-</h2>
-<p>Debug &#8212; Printing and formatting debug information</p>
+<h2><span class="refentrytitle"><a name="liboil-liboildebug.top_of_page"></a>Debug</span></h2>
+<p>Debug — Printing and formatting debug information</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboildebug.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-void                (<a href="liboil-liboildebug.html#OilDebugPrintFunc">*OilDebugPrintFunc</a>)                (int level,
+void                (<a class="link" href="liboil-liboildebug.html#OilDebugPrintFunc" title="OilDebugPrintFunc ()">*OilDebugPrintFunc</a>)                (int level,
                                                          const char *file,
                                                          const char *func,
                                                          int line,
                                                          const char *format,
                                                          va_list varargs);
-enum                <a href="liboil-liboildebug.html#OilDebugLevel">OilDebugLevel</a>;
-void                <a href="liboil-liboildebug.html#oil-debug-set-print-function">oil_debug_set_print_function</a>        (<a href="liboil-liboildebug.html#OilDebugPrintFunc">OilDebugPrintFunc</a> func);
-int                 <a href="liboil-liboildebug.html#oil-debug-get-level">oil_debug_get_level</a>                 (void);
-void                <a href="liboil-liboildebug.html#oil-debug-set-level">oil_debug_set_level</a>                 (int level);
-#define             <a href="liboil-liboildebug.html#OIL-ERROR:CAPS">OIL_ERROR</a>                           (...)
-#define             <a href="liboil-liboildebug.html#OIL-WARNING:CAPS">OIL_WARNING</a>                         (...)
-#define             <a href="liboil-liboildebug.html#OIL-INFO:CAPS">OIL_INFO</a>                            (...)
-#define             <a href="liboil-liboildebug.html#OIL-DEBUG:CAPS">OIL_DEBUG</a>                           (...)
-#define             <a href="liboil-liboildebug.html#OIL-LOG:CAPS">OIL_LOG</a>                             (...)
-#define             <a href="liboil-liboildebug.html#OIL-FUNCTION:CAPS">OIL_FUNCTION</a>
-#define             <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS">OIL_DEBUG_PRINT</a>                     (level, ...)
+enum                <a class="link" href="liboil-liboildebug.html#OilDebugLevel" title="enum OilDebugLevel">OilDebugLevel</a>;
+void                <a class="link" href="liboil-liboildebug.html#oil-debug-set-print-function" title="oil_debug_set_print_function ()">oil_debug_set_print_function</a>        (<a class="link" href="liboil-liboildebug.html#OilDebugPrintFunc" title="OilDebugPrintFunc ()">OilDebugPrintFunc</a> func);
+int                 <a class="link" href="liboil-liboildebug.html#oil-debug-get-level" title="oil_debug_get_level ()">oil_debug_get_level</a>                 (void);
+void                <a class="link" href="liboil-liboildebug.html#oil-debug-set-level" title="oil_debug_set_level ()">oil_debug_set_level</a>                 (int level);
+#define             <a class="link" href="liboil-liboildebug.html#OIL-ERROR:CAPS" title="OIL_ERROR()">OIL_ERROR</a>                           (...)
+#define             <a class="link" href="liboil-liboildebug.html#OIL-WARNING:CAPS" title="OIL_WARNING()">OIL_WARNING</a>                         (...)
+#define             <a class="link" href="liboil-liboildebug.html#OIL-INFO:CAPS" title="OIL_INFO()">OIL_INFO</a>                            (...)
+#define             <a class="link" href="liboil-liboildebug.html#OIL-DEBUG:CAPS" title="OIL_DEBUG()">OIL_DEBUG</a>                           (...)
+#define             <a class="link" href="liboil-liboildebug.html#OIL-LOG:CAPS" title="OIL_LOG()">OIL_LOG</a>                             (...)
+#define             <a class="link" href="liboil-liboildebug.html#OIL-FUNCTION:CAPS" title="OIL_FUNCTION">OIL_FUNCTION</a>
+#define             <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()">OIL_DEBUG_PRINT</a>                     (level, ...)
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608766"></a><h2>Description</h2>
+<a name="liboil-liboildebug.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -71,11 +66,10 @@ void                <a href="liboil-liboildebug.html#oil-debug-set-level">oil_de
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608920"></a><h2>Details</h2>
+<a name="liboil-liboildebug.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2608931"></a><h3>
-<a name="OilDebugPrintFunc"></a>OilDebugPrintFunc ()</h3>
-<a class="indexterm" name="id2608944"></a><pre class="programlisting">void                (*OilDebugPrintFunc)                (int level,
+<a name="OilDebugPrintFunc"></a><h3>OilDebugPrintFunc ()</h3>
+<pre class="programlisting">void                (*OilDebugPrintFunc)                (int level,
                                                          const char *file,
                                                          const char *func,
                                                          int line,
@@ -83,7 +77,7 @@ void                <a href="liboil-liboildebug.html#oil-debug-set-level">oil_de
                                                          va_list varargs);</pre>
 <p>
 Typedef describing functions that can be registered using
-<a href="liboil-liboildebug.html#oil-debug-set-print-function"><code class="function">oil_debug_set_print_function()</code></a> so that it is called to
+<a class="link" href="liboil-liboildebug.html#oil-debug-set-print-function" title="oil_debug_set_print_function ()"><code class="function">oil_debug_set_print_function()</code></a> so that it is called to
 print debugging messages.</p>
 <p>
 
@@ -92,32 +86,32 @@ print debugging messages.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>level</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>level</code></em> :</span></p></td>
 <td> the debug level
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>file</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>file</code></em> :</span></p></td>
 <td> name of the file where the debug message occurs
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> name of the function where the debug message occurs
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>line</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>line</code></em> :</span></p></td>
 <td> line in the file where the debug message occurs
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>format</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
 <td> a printf format
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>varargs</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>varargs</code></em> :</span></p></td>
 <td> varargs for the printf format
 </td>
 </tr>
@@ -126,9 +120,8 @@ print debugging messages.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609112"></a><h3>
-<a name="OilDebugLevel"></a>enum OilDebugLevel</h3>
-<a class="indexterm" name="id2609124"></a><pre class="programlisting">typedef enum {
+<a name="OilDebugLevel"></a><h3>enum OilDebugLevel</h3>
+<pre class="programlisting">typedef enum {
   OIL_DEBUG_NONE = 0,
   OIL_DEBUG_ERROR,
   OIL_DEBUG_WARNING,
@@ -145,9 +138,8 @@ Enumeration describing debug levels in Liboil.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609147"></a><h3>
-<a name="oil-debug-set-print-function"></a>oil_debug_set_print_function ()</h3>
-<a class="indexterm" name="id2609158"></a><pre class="programlisting">void                oil_debug_set_print_function        (<a href="liboil-liboildebug.html#OilDebugPrintFunc">OilDebugPrintFunc</a> func);</pre>
+<a name="oil-debug-set-print-function"></a><h3>oil_debug_set_print_function ()</h3>
+<pre class="programlisting">void                oil_debug_set_print_function        (<a class="link" href="liboil-liboildebug.html#OilDebugPrintFunc" title="OilDebugPrintFunc ()">OilDebugPrintFunc</a> func);</pre>
 <p>
 Sets the function to call when outputting debugging information.
 A value of NULL for <em class="parameter"><code>func</code></em> will restore the default handler,
@@ -158,7 +150,7 @@ which prints debugging information to stderr.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td>
 </td>
 </tr></tbody>
@@ -166,9 +158,8 @@ which prints debugging information to stderr.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609216"></a><h3>
-<a name="oil-debug-get-level"></a>oil_debug_get_level ()</h3>
-<a class="indexterm" name="id2609228"></a><pre class="programlisting">int                 oil_debug_get_level                 (void);</pre>
+<a name="oil-debug-get-level"></a><h3>oil_debug_get_level ()</h3>
+<pre class="programlisting">int                 oil_debug_get_level                 (void);</pre>
 <p>
 Gets the current debug level.</p>
 <p>
@@ -177,7 +168,7 @@ Gets the current debug level.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the current debug level
 </td>
 </tr></tbody>
@@ -185,9 +176,8 @@ Gets the current debug level.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609268"></a><h3>
-<a name="oil-debug-set-level"></a>oil_debug_set_level ()</h3>
-<a class="indexterm" name="id2609280"></a><pre class="programlisting">void                oil_debug_set_level                 (int level);</pre>
+<a name="oil-debug-set-level"></a><h3>oil_debug_set_level ()</h3>
+<pre class="programlisting">void                oil_debug_set_level                 (int level);</pre>
 <p>
 Sets the current debug level.</p>
 <p>
@@ -196,7 +186,7 @@ Sets the current debug level.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>level</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>level</code></em> :</span></p></td>
 <td> the new debug level
 </td>
 </tr></tbody>
@@ -204,19 +194,18 @@ Sets the current debug level.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649743"></a><h3>
-<a name="OIL-ERROR:CAPS"></a>OIL_ERROR()</h3>
-<a class="indexterm" name="id2649756"></a><pre class="programlisting">#define OIL_ERROR(...) OIL_DEBUG_PRINT(OIL_DEBUG_ERROR, __VA_ARGS__)
+<a name="OIL-ERROR:CAPS"></a><h3>OIL_ERROR()</h3>
+<pre class="programlisting">#define OIL_ERROR(...) OIL_DEBUG_PRINT(OIL_DEBUG_ERROR, __VA_ARGS__)
 </pre>
 <p>
-Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_ERROR</span>.</p>
+Macro to call <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_ERROR</span>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 
 
@@ -226,19 +215,18 @@ Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649811"></a><h3>
-<a name="OIL-WARNING:CAPS"></a>OIL_WARNING()</h3>
-<a class="indexterm" name="id2649824"></a><pre class="programlisting">#define OIL_WARNING(...) OIL_DEBUG_PRINT(OIL_DEBUG_WARNING, __VA_ARGS__)
+<a name="OIL-WARNING:CAPS"></a><h3>OIL_WARNING()</h3>
+<pre class="programlisting">#define OIL_WARNING(...) OIL_DEBUG_PRINT(OIL_DEBUG_WARNING, __VA_ARGS__)
 </pre>
 <p>
-Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_WARNING</span>.</p>
+Macro to call <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_WARNING</span>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 
 
@@ -248,19 +236,18 @@ Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649880"></a><h3>
-<a name="OIL-INFO:CAPS"></a>OIL_INFO()</h3>
-<a class="indexterm" name="id2649892"></a><pre class="programlisting">#define OIL_INFO(...) OIL_DEBUG_PRINT(OIL_DEBUG_INFO, __VA_ARGS__)
+<a name="OIL-INFO:CAPS"></a><h3>OIL_INFO()</h3>
+<pre class="programlisting">#define OIL_INFO(...) OIL_DEBUG_PRINT(OIL_DEBUG_INFO, __VA_ARGS__)
 </pre>
 <p>
-Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_INFO</span>.</p>
+Macro to call <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_INFO</span>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 
 
@@ -270,19 +257,18 @@ Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2649948"></a><h3>
-<a name="OIL-DEBUG:CAPS"></a>OIL_DEBUG()</h3>
-<a class="indexterm" name="id2649960"></a><pre class="programlisting">#define OIL_DEBUG(...) OIL_DEBUG_PRINT(OIL_DEBUG_DEBUG, __VA_ARGS__)
+<a name="OIL-DEBUG:CAPS"></a><h3>OIL_DEBUG()</h3>
+<pre class="programlisting">#define OIL_DEBUG(...) OIL_DEBUG_PRINT(OIL_DEBUG_DEBUG, __VA_ARGS__)
 </pre>
 <p>
-Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_DEBUG</span>.</p>
+Macro to call <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_DEBUG</span>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 
 
@@ -292,19 +278,18 @@ Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650016"></a><h3>
-<a name="OIL-LOG:CAPS"></a>OIL_LOG()</h3>
-<a class="indexterm" name="id2650028"></a><pre class="programlisting">#define OIL_LOG(...) OIL_DEBUG_PRINT(OIL_DEBUG_LOG, __VA_ARGS__)
+<a name="OIL-LOG:CAPS"></a><h3>OIL_LOG()</h3>
+<pre class="programlisting">#define OIL_LOG(...) OIL_DEBUG_PRINT(OIL_DEBUG_LOG, __VA_ARGS__)
 </pre>
 <p>
-Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_LOG</span>.</p>
+Macro to call <a class="link" href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS" title="OIL_DEBUG_PRINT()"><code class="function">OIL_DEBUG_PRINT()</code></a> with a level of <span class="type">OIL_DEBUG_LOG</span>.</p>
 <p>
 
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 
 
@@ -314,9 +299,8 @@ Macro to call <a href="liboil-liboildebug.html#OIL-DEBUG-PRINT:CAPS"><code class
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650084"></a><h3>
-<a name="OIL-FUNCTION:CAPS"></a>OIL_FUNCTION</h3>
-<a class="indexterm" name="id2650096"></a><pre class="programlisting">#define             OIL_FUNCTION</pre>
+<a name="OIL-FUNCTION:CAPS"></a><h3>OIL_FUNCTION</h3>
+<pre class="programlisting">#define             OIL_FUNCTION</pre>
 <p>
 Internal macro that points to __PRETTY_FUNCTION__ or __func__
 if the former is not available.</p>
@@ -326,9 +310,8 @@ if the former is not available.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650117"></a><h3>
-<a name="OIL-DEBUG-PRINT:CAPS"></a>OIL_DEBUG_PRINT()</h3>
-<a class="indexterm" name="id2650129"></a><pre class="programlisting">#define             OIL_DEBUG_PRINT(level, ...)</pre>
+<a name="OIL-DEBUG-PRINT:CAPS"></a><h3>OIL_DEBUG_PRINT()</h3>
+<pre class="programlisting">#define             OIL_DEBUG_PRINT(level, ...)</pre>
 <p>
 Macro to call <code class="function">oil_debug_print()</code> with the correct values for
 the name of the source file, line of source file, and function.</p>
@@ -339,12 +322,12 @@ the name of the source file, line of source file, and function.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>level</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>level</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -353,5 +336,8 @@ the name of the source file, line of source file, and function.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

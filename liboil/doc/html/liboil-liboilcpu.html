@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>CPU</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="liboil-liboilinit-unstable.html" title="Intialization">
 <link rel="next" href="liboil-liboildebug.html" title="Debug">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,33 +22,28 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboildebug.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2583911" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2579652" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilcpu.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilcpu.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilcpu"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2583911"></a><span class="refentrytitle">CPU</span>
-</h2>
-<p>CPU &#8212; Check the capabilities of the current CPU</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilcpu.top_of_page"></a>CPU</span></h2>
+<p>CPU — Check the capabilities of the current CPU</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilcpu.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-unsigned int        <a href="liboil-liboilcpu.html#oil-cpu-get-flags">oil_cpu_get_flags</a>                   (void);
-double              <a href="liboil-liboilcpu.html#oil-cpu-get-ticks-per-second">oil_cpu_get_ticks_per_second</a>        (void);
+unsigned int        <a class="link" href="liboil-liboilcpu.html#oil-cpu-get-flags" title="oil_cpu_get_flags ()">oil_cpu_get_flags</a>                   (void);
+double              <a class="link" href="liboil-liboilcpu.html#oil-cpu-get-ticks-per-second" title="oil_cpu_get_ticks_per_second ()">oil_cpu_get_ticks_per_second</a>        (void);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2579652"></a><h2>Description</h2>
+<a name="liboil-liboilcpu.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -56,11 +51,10 @@ double              <a href="liboil-liboilcpu.html#oil-cpu-get-ticks-per-second"
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2569124"></a><h2>Details</h2>
+<a name="liboil-liboilcpu.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2569135"></a><h3>
-<a name="oil-cpu-get-flags"></a>oil_cpu_get_flags ()</h3>
-<a class="indexterm" name="id2569146"></a><pre class="programlisting">unsigned int        oil_cpu_get_flags                   (void);</pre>
+<a name="oil-cpu-get-flags"></a><h3>oil_cpu_get_flags ()</h3>
+<pre class="programlisting">unsigned int        oil_cpu_get_flags                   (void);</pre>
 <p>
 Returns a bitmask containing the available CPU features.</p>
 <p>
@@ -69,7 +63,7 @@ Returns a bitmask containing the available CPU features.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the CPU features.
 </td>
 </tr></tbody>
@@ -77,9 +71,8 @@ Returns a bitmask containing the available CPU features.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2587970"></a><h3>
-<a name="oil-cpu-get-ticks-per-second"></a>oil_cpu_get_ticks_per_second ()</h3>
-<a class="indexterm" name="id2587982"></a><pre class="programlisting">double              oil_cpu_get_ticks_per_second        (void);</pre>
+<a name="oil-cpu-get-ticks-per-second"></a><h3>oil_cpu_get_ticks_per_second ()</h3>
+<pre class="programlisting">double              oil_cpu_get_ticks_per_second        (void);</pre>
 <p>
 Returns the estimated number of ticks per second.  This feature
 is currently unimplemented.
@@ -97,7 +90,7 @@ function may be incorrect as soon as it is returned.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a double
 </td>
 </tr></tbody>
@@ -105,5 +98,8 @@ function may be incorrect as soon as it is returned.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

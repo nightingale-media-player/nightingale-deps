@@ -67,7 +67,7 @@ OIL_DEFINE_IMPL_FULL (vfp_scalaradd_f32_ns, scalaradd_f32_ns, OIL_IMPL_FLAG_VFP)
 //OIL_DEFINE_IMPL_FULL (vfp_scalaradd_f64_ns, scalaradd_f64_ns, OIL_IMPL_FLAG_VFP);
 
 OIL_DEFINE_IMPL_FULL (vfp_scalarmultiply_f32_ns, scalarmultiply_f32_ns, OIL_IMPL_FLAG_VFP);
-//OIL_DEFINE_IMPL_FULL (vfp_scalarmultiply_f64_ns, scalarmultiply_f64_ns, OIL_IMPL_FLAG_VFP);
+OIL_DEFINE_IMPL_FULL (vfp_scalarmultiply_f64_ns, scalarmultiply_f64_ns, OIL_IMPL_FLAG_VFP);
 
 //OIL_DEFINE_IMPL_FULL (vfp_abs_f32_f32_ns, abs_f32_f32_ns, OIL_IMPL_FLAG_VFP);
 //OIL_DEFINE_IMPL_FULL (vfp_abs_f64_f64_ns, abs_f64_f64_ns, OIL_IMPL_FLAG_VFP);

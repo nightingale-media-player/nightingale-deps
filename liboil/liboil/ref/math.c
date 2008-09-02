@@ -274,6 +274,18 @@ OIL_DEFINE_CLASS (scalaradd_f32_ns, "float *d, float *s1, float *s2_1, int n");
  */
 OIL_DEFINE_CLASS (scalarmultiply_f32_ns, "float *d, float *s1, float *s2_1, int n");
 
+/**
+ * oil_scalarmultiply_f64_ns:
+ * @d: destination
+ * @s1: source
+ * @s2_1: source
+ * @n: number of elements
+ *
+ * Multiplies the constant value @s2_1 and each source element and places
+ * the result in @d.
+ */
+OIL_DEFINE_CLASS (scalarmultiply_f64_ns, "double *d, double *s1, double *s2_1, int n");
+
 static void
 add_s16_ref (int16_t *d, int16_t *src1, int16_t *src2, int n)
 {
@@ -514,4 +526,14 @@ scalarmultiply_f32_ns_ref (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL_REF (scalarmultiply_f32_ns_ref, scalarmultiply_f32_ns);
 
+static void
+scalarmultiply_f64_ns_ref (double *dest, double *src1, double *src2, int n)
+{
+  int i;
+
+  for(i=0;i<n;i++){
+    dest[i] = src1[i] * src2[0];
+  }
+}
+OIL_DEFINE_IMPL_REF (scalarmultiply_f64_ns_ref, scalarmultiply_f64_ns);
 

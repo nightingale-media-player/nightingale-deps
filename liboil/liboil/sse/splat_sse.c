@@ -31,7 +31,11 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
-#include "sse_wrapper.h"
+#ifdef __GNUC__
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#else
+#define SSE_FUNCTION
+#endif
 
 SSE_FUNCTION static void
 splat_u32_ns_sse (uint32_t *dest, const uint32_t *param, int n)

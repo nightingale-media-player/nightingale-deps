@@ -32,7 +32,12 @@
 #include <emmintrin.h>
 #include <xmmintrin.h>
 
-#include "sse_wrapper.h"
+/* TODO: If we have gcc 4.2 or above, do this. Otherwise, disable all SSE use */
+#ifdef __GNUC__
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#else
+#define SSE_FUNCTION
+#endif
 
 SSE_FUNCTION static void
 clamp_u8_sse (uint8_t *dest, uint8_t *src1, int n, uint8_t *src2_1,

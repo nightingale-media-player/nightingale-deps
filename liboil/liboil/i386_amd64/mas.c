@@ -735,6 +735,7 @@ mas8_u8_sym_mmx_5 (uint8_t *d, const uint8_t *s1_np7, const int16_t *s2_8,
 }
 OIL_DEFINE_IMPL_FULL (mas8_u8_sym_mmx_5, mas8_u8_sym_l15, OIL_IMPL_FLAG_MMX|OIL_IMPL_FLAG_MMXEXT);
 
+#ifdef HAVE_SSSE3_ASM
 void
 mas8_u8_sym_mmx_6 (uint8_t *d, const uint8_t *s1_np7, const int16_t *s2_8,
         const int16_t *s3_2, int n)
@@ -798,6 +799,7 @@ mas8_u8_sym_mmx_6 (uint8_t *d, const uint8_t *s1_np7, const int16_t *s2_8,
       : "ecx");
 }
 OIL_DEFINE_IMPL_FULL (mas8_u8_sym_mmx_6, mas8_u8_sym_l15, OIL_IMPL_FLAG_MMX|OIL_IMPL_FLAG_MMXEXT|OIL_IMPL_FLAG_SSSE3);
+#endif
 
 #ifdef ENABLE_BROKEN_IMPLS
 /* This only works for the taps array: -1, 3, -7, 21, 21, -7, 3, -1 */

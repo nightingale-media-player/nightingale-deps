@@ -84,7 +84,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_libtool_tags.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -104,7 +105,7 @@ LTLIBRARIES = $(buildnoinst_LTLIBRARIES) $(lib_LTLIBRARIES) \
 	$(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 liboil_@LIBOIL_MAJORMINOR@_la_DEPENDENCIES = liboilfunctions.la \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__liboil_@LIBOIL_MAJORMINOR@_la_SOURCES_DIST = liboil.h \
 	liboilcolorspace.h liboilcpu.c liboildebug.c liboildebug.h \
 	liboilfault.c liboilfault.h liboilfuncs.h liboilfunction.c \
@@ -296,6 +297,10 @@ HAVE_I386_FALSE = @HAVE_I386_FALSE@
 HAVE_I386_TRUE = @HAVE_I386_TRUE@
 HAVE_MMX_INTRINSICS_FALSE = @HAVE_MMX_INTRINSICS_FALSE@
 HAVE_MMX_INTRINSICS_TRUE = @HAVE_MMX_INTRINSICS_TRUE@
+HAVE_OS_LINUX_FALSE = @HAVE_OS_LINUX_FALSE@
+HAVE_OS_LINUX_TRUE = @HAVE_OS_LINUX_TRUE@
+HAVE_OS_WIN32_FALSE = @HAVE_OS_WIN32_FALSE@
+HAVE_OS_WIN32_TRUE = @HAVE_OS_WIN32_TRUE@
 HAVE_POWERPC_FALSE = @HAVE_POWERPC_FALSE@
 HAVE_POWERPC_TRUE = @HAVE_POWERPC_TRUE@
 HAVE_SSE2_INTRINSICS_FALSE = @HAVE_SSE2_INTRINSICS_FALSE@
@@ -355,6 +360,7 @@ USE_ALT_OPT_TRUE = @USE_ALT_OPT_TRUE@
 USE_NEW_ABI_FALSE = @USE_NEW_ABI_FALSE@
 USE_NEW_ABI_TRUE = @USE_NEW_ABI_TRUE@
 VERSION = @VERSION@
+VFP_CFLAGS = @VFP_CFLAGS@
 _3DNOWEXT_CFLAGS = @_3DNOWEXT_CFLAGS@
 _3DNOW_CFLAGS = @_3DNOW_CFLAGS@
 ac_ct_AR = @ac_ct_AR@
@@ -462,7 +468,8 @@ nodist_liboil_@LIBOIL_MAJORMINOR@_la_SOURCES = \
 
 liboil_@LIBOIL_MAJORMINOR@_la_LIBADD = \
 	liboilfunctions.la \
-	$(LIBM)
+	$(LIBM) \
+	$(LIBRT)
 
 liboil_@LIBOIL_MAJORMINOR@_la_CFLAGS = $(LIBOIL_CFLAGS)
 liboil_@LIBOIL_MAJORMINOR@_la_LDFLAGS = \

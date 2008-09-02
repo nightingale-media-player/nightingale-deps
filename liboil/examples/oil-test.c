@@ -267,7 +267,7 @@ int main (int argc, char *argv[])
   for (impl = klass->first_impl; impl; impl = impl->next) {
     if (impl == klass->reference_impl) continue;
     printf ("impl %s\n", impl->name);
-    if (oil_impl_is_usable (impl)) {
+    if (oil_impl_is_runnable (impl)) {
       printf("  ave=%g std=%g\n", impl->profile_ave, impl->profile_std);
       oil_test_check_impl (test, impl);
       printf("  (this test) ave=%g std=%g\n", test->profile_ave, test->profile_std);

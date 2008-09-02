@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilfuncs-conv">
 <refmeta>
-<refentrytitle role="top_of_page">Type Conversion</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilfuncs-conv.top_of_page">Type Conversion</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilfuncs-conv.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 <link linkend="void">void</link>                <link linkend="oil-clipconv8x8-u8-s16">oil_clipconv8x8_u8_s16</link>              (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s_8x8,
@@ -595,7 +592,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilfuncs-conv.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 The functions in this section perform type conversion.
@@ -620,11 +617,11 @@ is undefined and may vary between implementations.</para>
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilfuncs-conv.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-clipconv8x8-u8-s16" role="function"/>oil_clipconv8x8_u8_s16 ()</title>
-<indexterm><primary>oil_clipconv8x8_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv8x8_u8_s16              (<link linkend="uint8-t">uint8_t</link> *d_8x8,
+<refsect2 id="oil-clipconv8x8-u8-s16" role="function">
+<title>oil_clipconv8x8_u8_s16 ()</title>
+<indexterm zone="oil-clipconv8x8-u8-s16"><primary>oil_clipconv8x8_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv8x8_u8_s16              (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s_8x8,
                                                          <link linkend="int">int</link> sstr);</programlisting>
@@ -648,9 +645,9 @@ the destination range are clipped to the destination range.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s16-f32" role="function"/>oil_clipconv_s16_f32 ()</title>
-<indexterm><primary>oil_clipconv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_f32                (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clipconv-s16-f32" role="function">
+<title>oil_clipconv_s16_f32 ()</title>
+<indexterm zone="oil-clipconv-s16-f32"><primary>oil_clipconv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_f32                (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -680,9 +677,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s16-f64" role="function"/>oil_clipconv_s16_f64 ()</title>
-<indexterm><primary>oil_clipconv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_f64                (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clipconv-s16-f64" role="function">
+<title>oil_clipconv_s16_f64 ()</title>
+<indexterm zone="oil-clipconv-s16-f64"><primary>oil_clipconv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_f64                (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -712,9 +709,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s16-s32" role="function"/>oil_clipconv_s16_s32 ()</title>
-<indexterm><primary>oil_clipconv_s16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_s32                (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clipconv-s16-s32" role="function">
+<title>oil_clipconv_s16_s32 ()</title>
+<indexterm zone="oil-clipconv-s16-s32"><primary>oil_clipconv_s16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_s32                (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -744,9 +741,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s16-u16" role="function"/>oil_clipconv_s16_u16 ()</title>
-<indexterm><primary>oil_clipconv_s16_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_u16                (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clipconv-s16-u16" role="function">
+<title>oil_clipconv_s16_u16 ()</title>
+<indexterm zone="oil-clipconv-s16-u16"><primary>oil_clipconv_s16_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_u16                (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -776,9 +773,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s16-u32" role="function"/>oil_clipconv_s16_u32 ()</title>
-<indexterm><primary>oil_clipconv_s16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_u32                (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clipconv-s16-u32" role="function">
+<title>oil_clipconv_s16_u32 ()</title>
+<indexterm zone="oil-clipconv-s16-u32"><primary>oil_clipconv_s16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s16_u32                (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -808,9 +805,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s32-f32" role="function"/>oil_clipconv_s32_f32 ()</title>
-<indexterm><primary>oil_clipconv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_f32                (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-clipconv-s32-f32" role="function">
+<title>oil_clipconv_s32_f32 ()</title>
+<indexterm zone="oil-clipconv-s32-f32"><primary>oil_clipconv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_f32                (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -840,9 +837,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s32-f64" role="function"/>oil_clipconv_s32_f64 ()</title>
-<indexterm><primary>oil_clipconv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_f64                (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-clipconv-s32-f64" role="function">
+<title>oil_clipconv_s32_f64 ()</title>
+<indexterm zone="oil-clipconv-s32-f64"><primary>oil_clipconv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_f64                (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -872,9 +869,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s32-u32" role="function"/>oil_clipconv_s32_u32 ()</title>
-<indexterm><primary>oil_clipconv_s32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_u32                (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-clipconv-s32-u32" role="function">
+<title>oil_clipconv_s32_u32 ()</title>
+<indexterm zone="oil-clipconv-s32-u32"><primary>oil_clipconv_s32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s32_u32                (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -904,9 +901,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-f32" role="function"/>oil_clipconv_s8_f32 ()</title>
-<indexterm><primary>oil_clipconv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_f32                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-f32" role="function">
+<title>oil_clipconv_s8_f32 ()</title>
+<indexterm zone="oil-clipconv-s8-f32"><primary>oil_clipconv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_f32                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -936,9 +933,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-f64" role="function"/>oil_clipconv_s8_f64 ()</title>
-<indexterm><primary>oil_clipconv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_f64                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-f64" role="function">
+<title>oil_clipconv_s8_f64 ()</title>
+<indexterm zone="oil-clipconv-s8-f64"><primary>oil_clipconv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_f64                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -968,9 +965,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-s16" role="function"/>oil_clipconv_s8_s16 ()</title>
-<indexterm><primary>oil_clipconv_s8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_s16                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-s16" role="function">
+<title>oil_clipconv_s8_s16 ()</title>
+<indexterm zone="oil-clipconv-s8-s16"><primary>oil_clipconv_s8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_s16                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1000,9 +997,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-s32" role="function"/>oil_clipconv_s8_s32 ()</title>
-<indexterm><primary>oil_clipconv_s8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_s32                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-s32" role="function">
+<title>oil_clipconv_s8_s32 ()</title>
+<indexterm zone="oil-clipconv-s8-s32"><primary>oil_clipconv_s8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_s32                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1032,9 +1029,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-u16" role="function"/>oil_clipconv_s8_u16 ()</title>
-<indexterm><primary>oil_clipconv_s8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u16                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-u16" role="function">
+<title>oil_clipconv_s8_u16 ()</title>
+<indexterm zone="oil-clipconv-s8-u16"><primary>oil_clipconv_s8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u16                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1064,9 +1061,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-u32" role="function"/>oil_clipconv_s8_u32 ()</title>
-<indexterm><primary>oil_clipconv_s8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u32                 (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-u32" role="function">
+<title>oil_clipconv_s8_u32 ()</title>
+<indexterm zone="oil-clipconv-s8-u32"><primary>oil_clipconv_s8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u32                 (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1096,9 +1093,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-s8-u8" role="function"/>oil_clipconv_s8_u8 ()</title>
-<indexterm><primary>oil_clipconv_s8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u8                  (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clipconv-s8-u8" role="function">
+<title>oil_clipconv_s8_u8 ()</title>
+<indexterm zone="oil-clipconv-s8-u8"><primary>oil_clipconv_s8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_s8_u8                  (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1128,9 +1125,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u16-f32" role="function"/>oil_clipconv_u16_f32 ()</title>
-<indexterm><primary>oil_clipconv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_f32                (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clipconv-u16-f32" role="function">
+<title>oil_clipconv_u16_f32 ()</title>
+<indexterm zone="oil-clipconv-u16-f32"><primary>oil_clipconv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_f32                (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1160,9 +1157,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u16-f64" role="function"/>oil_clipconv_u16_f64 ()</title>
-<indexterm><primary>oil_clipconv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_f64                (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clipconv-u16-f64" role="function">
+<title>oil_clipconv_u16_f64 ()</title>
+<indexterm zone="oil-clipconv-u16-f64"><primary>oil_clipconv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_f64                (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1192,9 +1189,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u16-s16" role="function"/>oil_clipconv_u16_s16 ()</title>
-<indexterm><primary>oil_clipconv_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_s16                (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clipconv-u16-s16" role="function">
+<title>oil_clipconv_u16_s16 ()</title>
+<indexterm zone="oil-clipconv-u16-s16"><primary>oil_clipconv_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_s16                (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1224,9 +1221,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u16-s32" role="function"/>oil_clipconv_u16_s32 ()</title>
-<indexterm><primary>oil_clipconv_u16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_s32                (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clipconv-u16-s32" role="function">
+<title>oil_clipconv_u16_s32 ()</title>
+<indexterm zone="oil-clipconv-u16-s32"><primary>oil_clipconv_u16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_s32                (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1256,9 +1253,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u16-u32" role="function"/>oil_clipconv_u16_u32 ()</title>
-<indexterm><primary>oil_clipconv_u16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_u32                (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clipconv-u16-u32" role="function">
+<title>oil_clipconv_u16_u32 ()</title>
+<indexterm zone="oil-clipconv-u16-u32"><primary>oil_clipconv_u16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u16_u32                (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1288,9 +1285,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u32-f32" role="function"/>oil_clipconv_u32_f32 ()</title>
-<indexterm><primary>oil_clipconv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_f32                (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-clipconv-u32-f32" role="function">
+<title>oil_clipconv_u32_f32 ()</title>
+<indexterm zone="oil-clipconv-u32-f32"><primary>oil_clipconv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_f32                (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1320,9 +1317,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u32-f64" role="function"/>oil_clipconv_u32_f64 ()</title>
-<indexterm><primary>oil_clipconv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_f64                (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-clipconv-u32-f64" role="function">
+<title>oil_clipconv_u32_f64 ()</title>
+<indexterm zone="oil-clipconv-u32-f64"><primary>oil_clipconv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_f64                (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1352,9 +1349,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u32-s32" role="function"/>oil_clipconv_u32_s32 ()</title>
-<indexterm><primary>oil_clipconv_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_s32                (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-clipconv-u32-s32" role="function">
+<title>oil_clipconv_u32_s32 ()</title>
+<indexterm zone="oil-clipconv-u32-s32"><primary>oil_clipconv_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u32_s32                (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1384,9 +1381,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-f32" role="function"/>oil_clipconv_u8_f32 ()</title>
-<indexterm><primary>oil_clipconv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_f32                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-f32" role="function">
+<title>oil_clipconv_u8_f32 ()</title>
+<indexterm zone="oil-clipconv-u8-f32"><primary>oil_clipconv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_f32                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1416,9 +1413,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-f64" role="function"/>oil_clipconv_u8_f64 ()</title>
-<indexterm><primary>oil_clipconv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_f64                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-f64" role="function">
+<title>oil_clipconv_u8_f64 ()</title>
+<indexterm zone="oil-clipconv-u8-f64"><primary>oil_clipconv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_f64                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1448,9 +1445,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-s16" role="function"/>oil_clipconv_u8_s16 ()</title>
-<indexterm><primary>oil_clipconv_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s16                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-s16" role="function">
+<title>oil_clipconv_u8_s16 ()</title>
+<indexterm zone="oil-clipconv-u8-s16"><primary>oil_clipconv_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s16                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1480,9 +1477,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-s32" role="function"/>oil_clipconv_u8_s32 ()</title>
-<indexterm><primary>oil_clipconv_u8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s32                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-s32" role="function">
+<title>oil_clipconv_u8_s32 ()</title>
+<indexterm zone="oil-clipconv-u8-s32"><primary>oil_clipconv_u8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s32                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1512,9 +1509,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-s8" role="function"/>oil_clipconv_u8_s8 ()</title>
-<indexterm><primary>oil_clipconv_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s8                  (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-s8" role="function">
+<title>oil_clipconv_u8_s8 ()</title>
+<indexterm zone="oil-clipconv-u8-s8"><primary>oil_clipconv_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_s8                  (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1544,9 +1541,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-u16" role="function"/>oil_clipconv_u8_u16 ()</title>
-<indexterm><primary>oil_clipconv_u8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_u16                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-u16" role="function">
+<title>oil_clipconv_u8_u16 ()</title>
+<indexterm zone="oil-clipconv-u8-u16"><primary>oil_clipconv_u8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_u16                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1576,9 +1573,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clipconv-u8-u32" role="function"/>oil_clipconv_u8_u32 ()</title>
-<indexterm><primary>oil_clipconv_u8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_u32                 (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clipconv-u8-u32" role="function">
+<title>oil_clipconv_u8_u32 ()</title>
+<indexterm zone="oil-clipconv-u8-u32"><primary>oil_clipconv_u8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clipconv_u8_u32                 (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1608,9 +1605,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv8x8-f64-s16" role="function"/>oil_conv8x8_f64_s16 ()</title>
-<indexterm><primary>oil_conv8x8_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv8x8_f64_s16                 (<link linkend="double">double</link> *d_8x8,
+<refsect2 id="oil-conv8x8-f64-s16" role="function">
+<title>oil_conv8x8_f64_s16 ()</title>
+<indexterm zone="oil-conv8x8-f64-s16"><primary>oil_conv8x8_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv8x8_f64_s16                 (<link linkend="double">double</link> *d_8x8,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s_8x8,
                                                          <link linkend="int">int</link> sstr);</programlisting>
@@ -1635,9 +1632,9 @@ implementation dependent.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv8x8-s16-f64" role="function"/>oil_conv8x8_s16_f64 ()</title>
-<indexterm><primary>oil_conv8x8_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv8x8_s16_f64                 (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-conv8x8-s16-f64" role="function">
+<title>oil_conv8x8_s16_f64 ()</title>
+<indexterm zone="oil-conv8x8-s16-f64"><primary>oil_conv8x8_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv8x8_s16_f64                 (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *s_8x8,
                                                          <link linkend="int">int</link> sstr);</programlisting>
@@ -1660,9 +1657,9 @@ type, placing the results in <parameter>d_8x8</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-f64" role="function"/>oil_conv_f32_f64 ()</title>
-<indexterm><primary>oil_conv_f32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_f64                    (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-f64" role="function">
+<title>oil_conv_f32_f64 ()</title>
+<indexterm zone="oil-conv-f32-f64"><primary>oil_conv_f32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_f64                    (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1692,9 +1689,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-s16" role="function"/>oil_conv_f32_s16 ()</title>
-<indexterm><primary>oil_conv_f32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s16                    (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-s16" role="function">
+<title>oil_conv_f32_s16 ()</title>
+<indexterm zone="oil-conv-f32-s16"><primary>oil_conv_f32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s16                    (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1724,9 +1721,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-s32" role="function"/>oil_conv_f32_s32 ()</title>
-<indexterm><primary>oil_conv_f32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s32                    (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-s32" role="function">
+<title>oil_conv_f32_s32 ()</title>
+<indexterm zone="oil-conv-f32-s32"><primary>oil_conv_f32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s32                    (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1756,9 +1753,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-s8" role="function"/>oil_conv_f32_s8 ()</title>
-<indexterm><primary>oil_conv_f32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s8                     (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-s8" role="function">
+<title>oil_conv_f32_s8 ()</title>
+<indexterm zone="oil-conv-f32-s8"><primary>oil_conv_f32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_s8                     (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1788,9 +1785,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-u16" role="function"/>oil_conv_f32_u16 ()</title>
-<indexterm><primary>oil_conv_f32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u16                    (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-u16" role="function">
+<title>oil_conv_f32_u16 ()</title>
+<indexterm zone="oil-conv-f32-u16"><primary>oil_conv_f32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u16                    (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1820,9 +1817,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-u32" role="function"/>oil_conv_f32_u32 ()</title>
-<indexterm><primary>oil_conv_f32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u32                    (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-u32" role="function">
+<title>oil_conv_f32_u32 ()</title>
+<indexterm zone="oil-conv-f32-u32"><primary>oil_conv_f32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u32                    (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1852,9 +1849,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f32-u8" role="function"/>oil_conv_f32_u8 ()</title>
-<indexterm><primary>oil_conv_f32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u8                     (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-conv-f32-u8" role="function">
+<title>oil_conv_f32_u8 ()</title>
+<indexterm zone="oil-conv-f32-u8"><primary>oil_conv_f32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f32_u8                     (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1884,9 +1881,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-f32" role="function"/>oil_conv_f64_f32 ()</title>
-<indexterm><primary>oil_conv_f64_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_f32                    (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-f32" role="function">
+<title>oil_conv_f64_f32 ()</title>
+<indexterm zone="oil-conv-f64-f32"><primary>oil_conv_f64_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_f32                    (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1916,9 +1913,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-s16" role="function"/>oil_conv_f64_s16 ()</title>
-<indexterm><primary>oil_conv_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s16                    (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-s16" role="function">
+<title>oil_conv_f64_s16 ()</title>
+<indexterm zone="oil-conv-f64-s16"><primary>oil_conv_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s16                    (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1948,9 +1945,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-s32" role="function"/>oil_conv_f64_s32 ()</title>
-<indexterm><primary>oil_conv_f64_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s32                    (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-s32" role="function">
+<title>oil_conv_f64_s32 ()</title>
+<indexterm zone="oil-conv-f64-s32"><primary>oil_conv_f64_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s32                    (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -1980,9 +1977,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-s8" role="function"/>oil_conv_f64_s8 ()</title>
-<indexterm><primary>oil_conv_f64_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s8                     (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-s8" role="function">
+<title>oil_conv_f64_s8 ()</title>
+<indexterm zone="oil-conv-f64-s8"><primary>oil_conv_f64_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_s8                     (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2012,9 +2009,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-u16" role="function"/>oil_conv_f64_u16 ()</title>
-<indexterm><primary>oil_conv_f64_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u16                    (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-u16" role="function">
+<title>oil_conv_f64_u16 ()</title>
+<indexterm zone="oil-conv-f64-u16"><primary>oil_conv_f64_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u16                    (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2044,9 +2041,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-u32" role="function"/>oil_conv_f64_u32 ()</title>
-<indexterm><primary>oil_conv_f64_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u32                    (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-u32" role="function">
+<title>oil_conv_f64_u32 ()</title>
+<indexterm zone="oil-conv-f64-u32"><primary>oil_conv_f64_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u32                    (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2076,9 +2073,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-f64-u8" role="function"/>oil_conv_f64_u8 ()</title>
-<indexterm><primary>oil_conv_f64_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u8                     (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-conv-f64-u8" role="function">
+<title>oil_conv_f64_u8 ()</title>
+<indexterm zone="oil-conv-f64-u8"><primary>oil_conv_f64_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_f64_u8                     (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2108,9 +2105,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-f32" role="function"/>oil_conv_s16_f32 ()</title>
-<indexterm><primary>oil_conv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_f32                    (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-f32" role="function">
+<title>oil_conv_s16_f32 ()</title>
+<indexterm zone="oil-conv-s16-f32"><primary>oil_conv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_f32                    (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2140,9 +2137,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-f64" role="function"/>oil_conv_s16_f64 ()</title>
-<indexterm><primary>oil_conv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_f64                    (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-f64" role="function">
+<title>oil_conv_s16_f64 ()</title>
+<indexterm zone="oil-conv-s16-f64"><primary>oil_conv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_f64                    (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2172,9 +2169,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-s32" role="function"/>oil_conv_s16_s32 ()</title>
-<indexterm><primary>oil_conv_s16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_s32                    (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-s32" role="function">
+<title>oil_conv_s16_s32 ()</title>
+<indexterm zone="oil-conv-s16-s32"><primary>oil_conv_s16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_s32                    (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2204,9 +2201,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-s8" role="function"/>oil_conv_s16_s8 ()</title>
-<indexterm><primary>oil_conv_s16_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_s8                     (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-s8" role="function">
+<title>oil_conv_s16_s8 ()</title>
+<indexterm zone="oil-conv-s16-s8"><primary>oil_conv_s16_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_s8                     (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2236,9 +2233,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-u16" role="function"/>oil_conv_s16_u16 ()</title>
-<indexterm><primary>oil_conv_s16_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u16                    (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-u16" role="function">
+<title>oil_conv_s16_u16 ()</title>
+<indexterm zone="oil-conv-s16-u16"><primary>oil_conv_s16_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u16                    (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2268,9 +2265,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-u32" role="function"/>oil_conv_s16_u32 ()</title>
-<indexterm><primary>oil_conv_s16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u32                    (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-u32" role="function">
+<title>oil_conv_s16_u32 ()</title>
+<indexterm zone="oil-conv-s16-u32"><primary>oil_conv_s16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u32                    (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2300,9 +2297,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s16-u8" role="function"/>oil_conv_s16_u8 ()</title>
-<indexterm><primary>oil_conv_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u8                     (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-conv-s16-u8" role="function">
+<title>oil_conv_s16_u8 ()</title>
+<indexterm zone="oil-conv-s16-u8"><primary>oil_conv_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s16_u8                     (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2332,9 +2329,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-f32" role="function"/>oil_conv_s32_f32 ()</title>
-<indexterm><primary>oil_conv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_f32                    (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-f32" role="function">
+<title>oil_conv_s32_f32 ()</title>
+<indexterm zone="oil-conv-s32-f32"><primary>oil_conv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_f32                    (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2364,9 +2361,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-f64" role="function"/>oil_conv_s32_f64 ()</title>
-<indexterm><primary>oil_conv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_f64                    (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-f64" role="function">
+<title>oil_conv_s32_f64 ()</title>
+<indexterm zone="oil-conv-s32-f64"><primary>oil_conv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_f64                    (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2396,9 +2393,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-s16" role="function"/>oil_conv_s32_s16 ()</title>
-<indexterm><primary>oil_conv_s32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_s16                    (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-s16" role="function">
+<title>oil_conv_s32_s16 ()</title>
+<indexterm zone="oil-conv-s32-s16"><primary>oil_conv_s32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_s16                    (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2428,9 +2425,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-s8" role="function"/>oil_conv_s32_s8 ()</title>
-<indexterm><primary>oil_conv_s32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_s8                     (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-s8" role="function">
+<title>oil_conv_s32_s8 ()</title>
+<indexterm zone="oil-conv-s32-s8"><primary>oil_conv_s32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_s8                     (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2460,9 +2457,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-u16" role="function"/>oil_conv_s32_u16 ()</title>
-<indexterm><primary>oil_conv_s32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u16                    (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-u16" role="function">
+<title>oil_conv_s32_u16 ()</title>
+<indexterm zone="oil-conv-s32-u16"><primary>oil_conv_s32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u16                    (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2492,9 +2489,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-u32" role="function"/>oil_conv_s32_u32 ()</title>
-<indexterm><primary>oil_conv_s32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u32                    (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-u32" role="function">
+<title>oil_conv_s32_u32 ()</title>
+<indexterm zone="oil-conv-s32-u32"><primary>oil_conv_s32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u32                    (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2524,9 +2521,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s32-u8" role="function"/>oil_conv_s32_u8 ()</title>
-<indexterm><primary>oil_conv_s32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u8                     (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-conv-s32-u8" role="function">
+<title>oil_conv_s32_u8 ()</title>
+<indexterm zone="oil-conv-s32-u8"><primary>oil_conv_s32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s32_u8                     (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2556,9 +2553,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-f32" role="function"/>oil_conv_s8_f32 ()</title>
-<indexterm><primary>oil_conv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_f32                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-f32" role="function">
+<title>oil_conv_s8_f32 ()</title>
+<indexterm zone="oil-conv-s8-f32"><primary>oil_conv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_f32                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2588,9 +2585,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-f64" role="function"/>oil_conv_s8_f64 ()</title>
-<indexterm><primary>oil_conv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_f64                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-f64" role="function">
+<title>oil_conv_s8_f64 ()</title>
+<indexterm zone="oil-conv-s8-f64"><primary>oil_conv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_f64                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2620,9 +2617,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-s16" role="function"/>oil_conv_s8_s16 ()</title>
-<indexterm><primary>oil_conv_s8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_s16                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-s16" role="function">
+<title>oil_conv_s8_s16 ()</title>
+<indexterm zone="oil-conv-s8-s16"><primary>oil_conv_s8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_s16                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2652,9 +2649,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-s32" role="function"/>oil_conv_s8_s32 ()</title>
-<indexterm><primary>oil_conv_s8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_s32                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-s32" role="function">
+<title>oil_conv_s8_s32 ()</title>
+<indexterm zone="oil-conv-s8-s32"><primary>oil_conv_s8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_s32                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2684,9 +2681,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-u16" role="function"/>oil_conv_s8_u16 ()</title>
-<indexterm><primary>oil_conv_s8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u16                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-u16" role="function">
+<title>oil_conv_s8_u16 ()</title>
+<indexterm zone="oil-conv-s8-u16"><primary>oil_conv_s8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u16                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2716,9 +2713,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-u32" role="function"/>oil_conv_s8_u32 ()</title>
-<indexterm><primary>oil_conv_s8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u32                     (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-u32" role="function">
+<title>oil_conv_s8_u32 ()</title>
+<indexterm zone="oil-conv-s8-u32"><primary>oil_conv_s8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u32                     (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2748,9 +2745,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-s8-u8" role="function"/>oil_conv_s8_u8 ()</title>
-<indexterm><primary>oil_conv_s8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u8                      (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-conv-s8-u8" role="function">
+<title>oil_conv_s8_u8 ()</title>
+<indexterm zone="oil-conv-s8-u8"><primary>oil_conv_s8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_s8_u8                      (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2780,9 +2777,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-f32" role="function"/>oil_conv_u16_f32 ()</title>
-<indexterm><primary>oil_conv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_f32                    (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-f32" role="function">
+<title>oil_conv_u16_f32 ()</title>
+<indexterm zone="oil-conv-u16-f32"><primary>oil_conv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_f32                    (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2812,9 +2809,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-f64" role="function"/>oil_conv_u16_f64 ()</title>
-<indexterm><primary>oil_conv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_f64                    (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-f64" role="function">
+<title>oil_conv_u16_f64 ()</title>
+<indexterm zone="oil-conv-u16-f64"><primary>oil_conv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_f64                    (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2844,9 +2841,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-s16" role="function"/>oil_conv_u16_s16 ()</title>
-<indexterm><primary>oil_conv_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s16                    (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-s16" role="function">
+<title>oil_conv_u16_s16 ()</title>
+<indexterm zone="oil-conv-u16-s16"><primary>oil_conv_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s16                    (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2876,9 +2873,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-s32" role="function"/>oil_conv_u16_s32 ()</title>
-<indexterm><primary>oil_conv_u16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s32                    (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-s32" role="function">
+<title>oil_conv_u16_s32 ()</title>
+<indexterm zone="oil-conv-u16-s32"><primary>oil_conv_u16_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s32                    (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2908,9 +2905,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-s8" role="function"/>oil_conv_u16_s8 ()</title>
-<indexterm><primary>oil_conv_u16_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s8                     (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-s8" role="function">
+<title>oil_conv_u16_s8 ()</title>
+<indexterm zone="oil-conv-u16-s8"><primary>oil_conv_u16_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_s8                     (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2940,9 +2937,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-u32" role="function"/>oil_conv_u16_u32 ()</title>
-<indexterm><primary>oil_conv_u16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_u32                    (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-u32" role="function">
+<title>oil_conv_u16_u32 ()</title>
+<indexterm zone="oil-conv-u16-u32"><primary>oil_conv_u16_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_u32                    (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -2972,9 +2969,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u16-u8" role="function"/>oil_conv_u16_u8 ()</title>
-<indexterm><primary>oil_conv_u16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_u8                     (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-conv-u16-u8" role="function">
+<title>oil_conv_u16_u8 ()</title>
+<indexterm zone="oil-conv-u16-u8"><primary>oil_conv_u16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u16_u8                     (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3004,9 +3001,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-f32" role="function"/>oil_conv_u32_f32 ()</title>
-<indexterm><primary>oil_conv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_f32                    (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-f32" role="function">
+<title>oil_conv_u32_f32 ()</title>
+<indexterm zone="oil-conv-u32-f32"><primary>oil_conv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_f32                    (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3036,9 +3033,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-f64" role="function"/>oil_conv_u32_f64 ()</title>
-<indexterm><primary>oil_conv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_f64                    (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-f64" role="function">
+<title>oil_conv_u32_f64 ()</title>
+<indexterm zone="oil-conv-u32-f64"><primary>oil_conv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_f64                    (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3068,9 +3065,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-s16" role="function"/>oil_conv_u32_s16 ()</title>
-<indexterm><primary>oil_conv_u32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s16                    (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-s16" role="function">
+<title>oil_conv_u32_s16 ()</title>
+<indexterm zone="oil-conv-u32-s16"><primary>oil_conv_u32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s16                    (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3100,9 +3097,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-s32" role="function"/>oil_conv_u32_s32 ()</title>
-<indexterm><primary>oil_conv_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s32                    (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-s32" role="function">
+<title>oil_conv_u32_s32 ()</title>
+<indexterm zone="oil-conv-u32-s32"><primary>oil_conv_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s32                    (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3132,9 +3129,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-s8" role="function"/>oil_conv_u32_s8 ()</title>
-<indexterm><primary>oil_conv_u32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s8                     (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-s8" role="function">
+<title>oil_conv_u32_s8 ()</title>
+<indexterm zone="oil-conv-u32-s8"><primary>oil_conv_u32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_s8                     (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3164,9 +3161,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-u16" role="function"/>oil_conv_u32_u16 ()</title>
-<indexterm><primary>oil_conv_u32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_u16                    (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-u16" role="function">
+<title>oil_conv_u32_u16 ()</title>
+<indexterm zone="oil-conv-u32-u16"><primary>oil_conv_u32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_u16                    (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3196,9 +3193,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u32-u8" role="function"/>oil_conv_u32_u8 ()</title>
-<indexterm><primary>oil_conv_u32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_u8                     (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-conv-u32-u8" role="function">
+<title>oil_conv_u32_u8 ()</title>
+<indexterm zone="oil-conv-u32-u8"><primary>oil_conv_u32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u32_u8                     (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3228,9 +3225,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-f32" role="function"/>oil_conv_u8_f32 ()</title>
-<indexterm><primary>oil_conv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_f32                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-f32" role="function">
+<title>oil_conv_u8_f32 ()</title>
+<indexterm zone="oil-conv-u8-f32"><primary>oil_conv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_f32                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3260,9 +3257,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-f64" role="function"/>oil_conv_u8_f64 ()</title>
-<indexterm><primary>oil_conv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_f64                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-f64" role="function">
+<title>oil_conv_u8_f64 ()</title>
+<indexterm zone="oil-conv-u8-f64"><primary>oil_conv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_f64                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3292,9 +3289,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-s16" role="function"/>oil_conv_u8_s16 ()</title>
-<indexterm><primary>oil_conv_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s16                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-s16" role="function">
+<title>oil_conv_u8_s16 ()</title>
+<indexterm zone="oil-conv-u8-s16"><primary>oil_conv_u8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s16                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3324,9 +3321,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-s32" role="function"/>oil_conv_u8_s32 ()</title>
-<indexterm><primary>oil_conv_u8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s32                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-s32" role="function">
+<title>oil_conv_u8_s32 ()</title>
+<indexterm zone="oil-conv-u8-s32"><primary>oil_conv_u8_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s32                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3356,9 +3353,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-s8" role="function"/>oil_conv_u8_s8 ()</title>
-<indexterm><primary>oil_conv_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s8                      (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-s8" role="function">
+<title>oil_conv_u8_s8 ()</title>
+<indexterm zone="oil-conv-u8-s8"><primary>oil_conv_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_s8                      (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3388,9 +3385,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-u16" role="function"/>oil_conv_u8_u16 ()</title>
-<indexterm><primary>oil_conv_u8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_u16                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-u16" role="function">
+<title>oil_conv_u8_u16 ()</title>
+<indexterm zone="oil-conv-u8-u16"><primary>oil_conv_u8_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_u16                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3420,9 +3417,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-conv-u8-u32" role="function"/>oil_conv_u8_u32 ()</title>
-<indexterm><primary>oil_conv_u8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_u32                     (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-conv-u8-u32" role="function">
+<title>oil_conv_u8_u32 ()</title>
+<indexterm zone="oil-conv-u8-u32"><primary>oil_conv_u8_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_conv_u8_u32                     (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -3452,231 +3449,9 @@ See the comments at the beginning of this section.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-s16" role="function"/>oil_scaleconv_f32_s16 ()</title>
-<indexterm><primary>oil_scaleconv_f32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s16               (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="int16-t">int16_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-s32" role="function"/>oil_scaleconv_f32_s32 ()</title>
-<indexterm><primary>oil_scaleconv_f32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s32               (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="int32-t">int32_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-s8" role="function"/>oil_scaleconv_f32_s8 ()</title>
-<indexterm><primary>oil_scaleconv_f32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s8                (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="int8-t">int8_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-u16" role="function"/>oil_scaleconv_f32_u16 ()</title>
-<indexterm><primary>oil_scaleconv_f32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u16               (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="uint16-t">uint16_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-u32" role="function"/>oil_scaleconv_f32_u32 ()</title>
-<indexterm><primary>oil_scaleconv_f32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u32               (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="uint32-t">uint32_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f32-u8" role="function"/>oil_scaleconv_f32_u8 ()</title>
-<indexterm><primary>oil_scaleconv_f32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u8                (<link linkend="float">float</link> *dest,
-                                                         const <link linkend="uint8-t">uint8_t</link> *src,
-                                                         <link linkend="int">int</link> n,
-                                                         const <link linkend="double">double</link> *s2_1,
-                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
-<para>
-Multiplies elements in  by  and adds  and then
-converts the result
-to the destination type and places the result in .
-Values outside the destination range are undefined and
-implementation dependent.
-See the comments at the beginning of this section.</para>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
-<listitem><simpara>
- # <parameter>s2_1</parameter>:
- # <parameter>s3_1</parameter>:
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-s16" role="function"/>oil_scaleconv_f64_s16 ()</title>
-<indexterm><primary>oil_scaleconv_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s16               (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-s16" role="function">
+<title>oil_scaleconv_f32_s16 ()</title>
+<indexterm zone="oil-scaleconv-f32-s16"><primary>oil_scaleconv_f32_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s16               (<link linkend="float">float</link> *dest,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3711,9 +3486,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-s32" role="function"/>oil_scaleconv_f64_s32 ()</title>
-<indexterm><primary>oil_scaleconv_f64_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s32               (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-s32" role="function">
+<title>oil_scaleconv_f32_s32 ()</title>
+<indexterm zone="oil-scaleconv-f32-s32"><primary>oil_scaleconv_f32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s32               (<link linkend="float">float</link> *dest,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3748,9 +3523,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-s8" role="function"/>oil_scaleconv_f64_s8 ()</title>
-<indexterm><primary>oil_scaleconv_f64_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s8                (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-s8" role="function">
+<title>oil_scaleconv_f32_s8 ()</title>
+<indexterm zone="oil-scaleconv-f32-s8"><primary>oil_scaleconv_f32_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_s8                (<link linkend="float">float</link> *dest,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3785,9 +3560,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-u16" role="function"/>oil_scaleconv_f64_u16 ()</title>
-<indexterm><primary>oil_scaleconv_f64_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u16               (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-u16" role="function">
+<title>oil_scaleconv_f32_u16 ()</title>
+<indexterm zone="oil-scaleconv-f32-u16"><primary>oil_scaleconv_f32_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u16               (<link linkend="float">float</link> *dest,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3822,9 +3597,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-u32" role="function"/>oil_scaleconv_f64_u32 ()</title>
-<indexterm><primary>oil_scaleconv_f64_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u32               (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-u32" role="function">
+<title>oil_scaleconv_f32_u32 ()</title>
+<indexterm zone="oil-scaleconv-f32-u32"><primary>oil_scaleconv_f32_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u32               (<link linkend="float">float</link> *dest,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3859,9 +3634,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-f64-u8" role="function"/>oil_scaleconv_f64_u8 ()</title>
-<indexterm><primary>oil_scaleconv_f64_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u8                (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-scaleconv-f32-u8" role="function">
+<title>oil_scaleconv_f32_u8 ()</title>
+<indexterm zone="oil-scaleconv-f32-u8"><primary>oil_scaleconv_f32_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f32_u8                (<link linkend="float">float</link> *dest,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3896,9 +3671,231 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s16-f32" role="function"/>oil_scaleconv_s16_f32 ()</title>
-<indexterm><primary>oil_scaleconv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s16_f32               (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-scaleconv-f64-s16" role="function">
+<title>oil_scaleconv_f64_s16 ()</title>
+<indexterm zone="oil-scaleconv-f64-s16"><primary>oil_scaleconv_f64_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s16               (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="int16-t">int16_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-f64-s32" role="function">
+<title>oil_scaleconv_f64_s32 ()</title>
+<indexterm zone="oil-scaleconv-f64-s32"><primary>oil_scaleconv_f64_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s32               (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="int32-t">int32_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-f64-s8" role="function">
+<title>oil_scaleconv_f64_s8 ()</title>
+<indexterm zone="oil-scaleconv-f64-s8"><primary>oil_scaleconv_f64_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_s8                (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="int8-t">int8_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-f64-u16" role="function">
+<title>oil_scaleconv_f64_u16 ()</title>
+<indexterm zone="oil-scaleconv-f64-u16"><primary>oil_scaleconv_f64_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u16               (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="uint16-t">uint16_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-f64-u32" role="function">
+<title>oil_scaleconv_f64_u32 ()</title>
+<indexterm zone="oil-scaleconv-f64-u32"><primary>oil_scaleconv_f64_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u32               (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="uint32-t">uint32_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-f64-u8" role="function">
+<title>oil_scaleconv_f64_u8 ()</title>
+<indexterm zone="oil-scaleconv-f64-u8"><primary>oil_scaleconv_f64_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_f64_u8                (<link linkend="double">double</link> *dest,
+                                                         const <link linkend="uint8-t">uint8_t</link> *src,
+                                                         <link linkend="int">int</link> n,
+                                                         const <link linkend="double">double</link> *s2_1,
+                                                         const <link linkend="double">double</link> *s3_1);</programlisting>
+<para>
+Multiplies elements in  by  and adds  and then
+converts the result
+to the destination type and places the result in .
+Values outside the destination range are undefined and
+implementation dependent.
+See the comments at the beginning of this section.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+ # <parameter>s2_1</parameter>:
+ # <parameter>s3_1</parameter>:
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s2_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s3_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="oil-scaleconv-s16-f32" role="function">
+<title>oil_scaleconv_s16_f32 ()</title>
+<indexterm zone="oil-scaleconv-s16-f32"><primary>oil_scaleconv_s16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s16_f32               (<link linkend="int16-t">int16_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3933,9 +3930,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s16-f64" role="function"/>oil_scaleconv_s16_f64 ()</title>
-<indexterm><primary>oil_scaleconv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s16_f64               (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-scaleconv-s16-f64" role="function">
+<title>oil_scaleconv_s16_f64 ()</title>
+<indexterm zone="oil-scaleconv-s16-f64"><primary>oil_scaleconv_s16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s16_f64               (<link linkend="int16-t">int16_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -3970,9 +3967,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s32-f32" role="function"/>oil_scaleconv_s32_f32 ()</title>
-<indexterm><primary>oil_scaleconv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s32_f32               (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-scaleconv-s32-f32" role="function">
+<title>oil_scaleconv_s32_f32 ()</title>
+<indexterm zone="oil-scaleconv-s32-f32"><primary>oil_scaleconv_s32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s32_f32               (<link linkend="int32-t">int32_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4007,9 +4004,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s32-f64" role="function"/>oil_scaleconv_s32_f64 ()</title>
-<indexterm><primary>oil_scaleconv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s32_f64               (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-scaleconv-s32-f64" role="function">
+<title>oil_scaleconv_s32_f64 ()</title>
+<indexterm zone="oil-scaleconv-s32-f64"><primary>oil_scaleconv_s32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s32_f64               (<link linkend="int32-t">int32_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4044,9 +4041,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s8-f32" role="function"/>oil_scaleconv_s8_f32 ()</title>
-<indexterm><primary>oil_scaleconv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s8_f32                (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-scaleconv-s8-f32" role="function">
+<title>oil_scaleconv_s8_f32 ()</title>
+<indexterm zone="oil-scaleconv-s8-f32"><primary>oil_scaleconv_s8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s8_f32                (<link linkend="int8-t">int8_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4081,9 +4078,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-s8-f64" role="function"/>oil_scaleconv_s8_f64 ()</title>
-<indexterm><primary>oil_scaleconv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s8_f64                (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-scaleconv-s8-f64" role="function">
+<title>oil_scaleconv_s8_f64 ()</title>
+<indexterm zone="oil-scaleconv-s8-f64"><primary>oil_scaleconv_s8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_s8_f64                (<link linkend="int8-t">int8_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4118,9 +4115,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u16-f32" role="function"/>oil_scaleconv_u16_f32 ()</title>
-<indexterm><primary>oil_scaleconv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u16_f32               (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-scaleconv-u16-f32" role="function">
+<title>oil_scaleconv_u16_f32 ()</title>
+<indexterm zone="oil-scaleconv-u16-f32"><primary>oil_scaleconv_u16_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u16_f32               (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4155,9 +4152,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u16-f64" role="function"/>oil_scaleconv_u16_f64 ()</title>
-<indexterm><primary>oil_scaleconv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u16_f64               (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-scaleconv-u16-f64" role="function">
+<title>oil_scaleconv_u16_f64 ()</title>
+<indexterm zone="oil-scaleconv-u16-f64"><primary>oil_scaleconv_u16_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u16_f64               (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4192,9 +4189,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u32-f32" role="function"/>oil_scaleconv_u32_f32 ()</title>
-<indexterm><primary>oil_scaleconv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u32_f32               (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-scaleconv-u32-f32" role="function">
+<title>oil_scaleconv_u32_f32 ()</title>
+<indexterm zone="oil-scaleconv-u32-f32"><primary>oil_scaleconv_u32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u32_f32               (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4229,9 +4226,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u32-f64" role="function"/>oil_scaleconv_u32_f64 ()</title>
-<indexterm><primary>oil_scaleconv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u32_f64               (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-scaleconv-u32-f64" role="function">
+<title>oil_scaleconv_u32_f64 ()</title>
+<indexterm zone="oil-scaleconv-u32-f64"><primary>oil_scaleconv_u32_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u32_f64               (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4266,9 +4263,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u8-f32" role="function"/>oil_scaleconv_u8_f32 ()</title>
-<indexterm><primary>oil_scaleconv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u8_f32                (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-scaleconv-u8-f32" role="function">
+<title>oil_scaleconv_u8_f32 ()</title>
+<indexterm zone="oil-scaleconv-u8-f32"><primary>oil_scaleconv_u8_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u8_f32                (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,
@@ -4303,9 +4300,9 @@ See the comments at the beginning of this section.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scaleconv-u8-f64" role="function"/>oil_scaleconv_u8_f64 ()</title>
-<indexterm><primary>oil_scaleconv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u8_f64                (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-scaleconv-u8-f64" role="function">
+<title>oil_scaleconv_u8_f64 ()</title>
+<indexterm zone="oil-scaleconv-u8-f64"><primary>oil_scaleconv_u8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scaleconv_u8_f64                (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s2_1,

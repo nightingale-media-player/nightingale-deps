@@ -53,3 +53,28 @@ AC_DEFUN([AS_GCC_ASM_POWERPC_FPU],
   AC_MSG_RESULT([$flag_ok])
 ])
 
+AC_DEFUN([AS_GCC_INLINE_ASM_INSTRUCTION],
+[
+  AC_MSG_CHECKING([if compiler supports '$1' asm instruction])
+
+  AC_TRY_COMPILE([], [
+#ifndef __GNUC__
+#error Not GCC
+#endif
+#ifdef __GNUC_MINOR__
+#if (__GNUC__ * 1000 + __GNUC_MINOR__) < 3004
+#error GCC before 3.4 has critical bugs compiling inline assembly
+#endif
+#endif
+__asm__ ("$1"::) ], [flag_ok=yes], [flag_ok=no])
+
+  if test "X$flag_ok" = Xyes ; then
+    $2
+    true
+  else
+    $3
+    true
+  fi
+  AC_MSG_RESULT([$flag_ok])
+])
+

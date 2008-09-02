@@ -6,7 +6,6 @@ void
 multiply_and_acc_6xn_s16_u8_mmx (int16_t *i1, int is1, int16_t *s1,
     int ss1, uint8_t *s2, int ss2, int n)
 {
-  /* FIXME this reads outside the arrays.  Bad. */
   if (n==0) return;
   __asm__ __volatile__ ("\n"
       "  pxor %%mm7, %%mm7\n"
@@ -16,10 +15,11 @@ multiply_and_acc_6xn_s16_u8_mmx (int16_t *i1, int is1, int16_t *s1,
       "  pmullw 0(%1), %%mm0\n"
       "  paddw 0(%0), %%mm0\n"
       "  movq %%mm0, 0(%0)\n"
-      "   movd 4(%2), %%mm1\n"
+      "   movd 2(%2), %%mm1\n"
       "   punpcklbw %%mm7, %%mm1\n"
-      "   pmullw 8(%1), %%mm1\n"
-      "   paddw 8(%0), %%mm1\n"
+      "   pmullw 4(%1), %%mm1\n"
+      "   paddw 4(%0), %%mm1\n"
+      "   pshufw $0xee, %%mm1, %%mm1\n"
       "   movd %%mm1, 8(%0)\n"
 
       "  add %4, %0\n"
@@ -37,7 +37,7 @@ multiply_and_acc_6xn_s16_u8_mmx (int16_t *i1, int is1, int16_t *s1,
       );
 }
 OIL_DEFINE_IMPL_FULL (multiply_and_acc_6xn_s16_u8_mmx,
-    multiply_and_acc_6xn_s16_u8, OIL_IMPL_FLAG_MMX);
+    multiply_and_acc_6xn_s16_u8, OIL_IMPL_FLAG_MMX | OIL_IMPL_FLAG_MMXEXT);
 
 void
 multiply_and_acc_8xn_s16_u8_mmx (int16_t *i1, int is1, int16_t *s1,

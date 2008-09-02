@@ -28,5 +28,5 @@ lib_c_opt1_la_CFLAGS = $(LIBOIL_CFLAGS) \
 
 
 ag_clamp.c: generate_clamp.pl
-	./generate_clamp.pl >ag_clamp.c
+	$(srcdir)/generate_clamp.pl >ag_clamp.c
 

@@ -51,7 +51,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_libtool_tags.m4 \
 	$(top_srcdir)/m4/gtk-doc.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -158,6 +159,10 @@ HAVE_I386_FALSE = @HAVE_I386_FALSE@
 HAVE_I386_TRUE = @HAVE_I386_TRUE@
 HAVE_MMX_INTRINSICS_FALSE = @HAVE_MMX_INTRINSICS_FALSE@
 HAVE_MMX_INTRINSICS_TRUE = @HAVE_MMX_INTRINSICS_TRUE@
+HAVE_OS_LINUX_FALSE = @HAVE_OS_LINUX_FALSE@
+HAVE_OS_LINUX_TRUE = @HAVE_OS_LINUX_TRUE@
+HAVE_OS_WIN32_FALSE = @HAVE_OS_WIN32_FALSE@
+HAVE_OS_WIN32_TRUE = @HAVE_OS_WIN32_TRUE@
 HAVE_POWERPC_FALSE = @HAVE_POWERPC_FALSE@
 HAVE_POWERPC_TRUE = @HAVE_POWERPC_TRUE@
 HAVE_SSE2_INTRINSICS_FALSE = @HAVE_SSE2_INTRINSICS_FALSE@
@@ -217,6 +222,7 @@ USE_ALT_OPT_TRUE = @USE_ALT_OPT_TRUE@
 USE_NEW_ABI_FALSE = @USE_NEW_ABI_FALSE@
 USE_NEW_ABI_TRUE = @USE_NEW_ABI_TRUE@
 VERSION = @VERSION@
+VFP_CFLAGS = @VFP_CFLAGS@
 _3DNOWEXT_CFLAGS = @_3DNOWEXT_CFLAGS@
 _3DNOW_CFLAGS = @_3DNOW_CFLAGS@
 ac_ct_AR = @ac_ct_AR@

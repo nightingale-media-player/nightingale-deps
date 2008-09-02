@@ -63,6 +63,7 @@ static void conv_ ## desttype ## _ ## srctype ## _c ( \
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _c,	\
 	conv_ ## desttype ## _ ## srctype);
 
+#ifdef HAVE_RINT
 #define CONV_DEFINE_FLOAT(desttype,srctype) \
 static void conv_ ## desttype ## _ ## srctype ## _c ( \
 	oil_type_ ## desttype *dest,	\
@@ -79,6 +80,9 @@ static void conv_ ## desttype ## _ ## srctype ## _c ( \
 }					\
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _c,	\
 	conv_ ## desttype ## _ ## srctype);
+#else
+#define CONV_DEFINE_FLOAT(desttype,srctype)
+#endif
 
 CONV_DEFINE_CAST(s8,u8);
 CONV_DEFINE_CAST(s8,s16);
@@ -208,6 +212,7 @@ static void clipconv_ ## desttype ## _ ## srctype ## _c ( \
 OIL_DEFINE_IMPL(clipconv_ ## desttype ## _ ## srctype ## _c,	\
 	clipconv_ ## desttype ## _ ## srctype);
 
+#ifdef HAVE_RINT
 #define CLIPCONV_DEFINE_FLOAT(desttype,srctype) \
 static void clipconv_ ## desttype ## _ ## srctype ## _c ( \
 	oil_type_ ## desttype *dest,	\
@@ -228,6 +233,9 @@ static void clipconv_ ## desttype ## _ ## srctype ## _c ( \
 }					\
 OIL_DEFINE_IMPL(clipconv_ ## desttype ## _ ## srctype ## _c,	\
 	clipconv_ ## desttype ## _ ## srctype);
+#else
+#define CLIPCONV_DEFINE_FLOAT(desttype,srctype)
+#endif
 
 /* clip upper */
 CLIPCONV_DEFINE_UPPER(s8,u8);
@@ -296,6 +304,7 @@ static void conv_ ## desttype ## _ ## srctype ## _unroll2 ( \
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _unroll2,	\
 	conv_ ## desttype ## _ ## srctype);
 
+#ifdef HAVE_RINT
 #define CONV_DEFINE_FLOAT_UNROLL2(desttype,srctype) \
 static void conv_ ## desttype ## _ ## srctype ## _unroll2 ( \
 	oil_type_ ## desttype *dest,	\
@@ -321,6 +330,9 @@ static void conv_ ## desttype ## _ ## srctype ## _unroll2 ( \
 }					\
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _unroll2,	\
 	conv_ ## desttype ## _ ## srctype);
+#else
+#define CONV_DEFINE_FLOAT_UNROLL2(desttype,srctype)
+#endif
 
 CONV_DEFINE_CAST_UNROLL2(s8,u8);
 CONV_DEFINE_CAST_UNROLL2(s8,s16);
@@ -428,6 +440,7 @@ static void conv_ ## desttype ## _ ## srctype ## _unroll4 ( \
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _unroll4,	\
 	conv_ ## desttype ## _ ## srctype);
 
+#ifdef HAVE_RINT
 #define CONV_DEFINE_FLOAT_UNROLL4(desttype,srctype) \
 static void conv_ ## desttype ## _ ## srctype ## _unroll4 ( \
 	oil_type_ ## desttype *dest,	\
@@ -467,6 +480,9 @@ static void conv_ ## desttype ## _ ## srctype ## _unroll4 ( \
 }					\
 OIL_DEFINE_IMPL(conv_ ## desttype ## _ ## srctype ## _unroll4,	\
 	conv_ ## desttype ## _ ## srctype);
+#else
+#define CONV_DEFINE_FLOAT_UNROLL4(desttype,srctype)
+#endif
 
 CONV_DEFINE_CAST_UNROLL4(s8,u8);
 CONV_DEFINE_CAST_UNROLL4(s8,s16);

@@ -43,7 +43,7 @@
 #include <stdio.h>
 #include <setjmp.h>
 #include <signal.h>
-#ifndef _MSC_VER
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #include <time.h>
@@ -207,9 +207,11 @@ oil_cpu_detect_cpuid (void)
 
   get_cpuid (0x00000001, &eax, &ebx, &ecx, &edx);
 
+#ifdef HAVE_GCC_ASM
   if (edx & (1<<4)) {
     _oil_profile_stamp = oil_profile_stamp_rdtsc;
   }
+#endif
 
   /* Intel flags */
   if (edx & (1<<15)) {

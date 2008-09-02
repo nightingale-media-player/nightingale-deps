@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilfuncs-math">
 <refmeta>
-<refentrytitle role="top_of_page">Simple Arithmetic</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilfuncs-math.top_of_page">Simple Arithmetic</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilfuncs-math.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 <link linkend="void">void</link>                <link linkend="oil-abs-f32-f32">oil_abs_f32_f32</link>                     (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
@@ -341,7 +338,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilfuncs-math.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -350,11 +347,11 @@
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilfuncs-math.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-abs-f32-f32" role="function"/>oil_abs_f32_f32 ()</title>
-<indexterm><primary>oil_abs_f32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_f32_f32                     (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-abs-f32-f32" role="function">
+<title>oil_abs_f32_f32 ()</title>
+<indexterm zone="oil-abs-f32-f32"><primary>oil_abs_f32_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_f32_f32                     (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -381,9 +378,9 @@ and writes it into the destination array.</para>
 <listitem><simpara> number of elements in arrays
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-abs-f64-f64" role="function"/>oil_abs_f64_f64 ()</title>
-<indexterm><primary>oil_abs_f64_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_f64_f64                     (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-abs-f64-f64" role="function">
+<title>oil_abs_f64_f64 ()</title>
+<indexterm zone="oil-abs-f64-f64"><primary>oil_abs_f64_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_f64_f64                     (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -410,9 +407,9 @@ and writes it into the destination array.</para>
 <listitem><simpara> number of elements in arrays
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-abs-u16-s16" role="function"/>oil_abs_u16_s16 ()</title>
-<indexterm><primary>oil_abs_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u16_s16                     (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-abs-u16-s16" role="function">
+<title>oil_abs_u16_s16 ()</title>
+<indexterm zone="oil-abs-u16-s16"><primary>oil_abs_u16_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u16_s16                     (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -439,9 +436,9 @@ and writes it into the destination array.</para>
 <listitem><simpara> number of elements in arrays
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-abs-u32-s32" role="function"/>oil_abs_u32_s32 ()</title>
-<indexterm><primary>oil_abs_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u32_s32                     (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-abs-u32-s32" role="function">
+<title>oil_abs_u32_s32 ()</title>
+<indexterm zone="oil-abs-u32-s32"><primary>oil_abs_u32_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u32_s32                     (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -468,9 +465,9 @@ and writes it into the destination array.</para>
 <listitem><simpara> number of elements in arrays
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-abs-u8-s8" role="function"/>oil_abs_u8_s8 ()</title>
-<indexterm><primary>oil_abs_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u8_s8                       (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-abs-u8-s8" role="function">
+<title>oil_abs_u8_s8 ()</title>
+<indexterm zone="oil-abs-u8-s8"><primary>oil_abs_u8_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_abs_u8_s8                       (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -497,9 +494,9 @@ and writes it into the destination array.</para>
 <listitem><simpara> number of elements in arrays
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-average2-u8" role="function"/>oil_average2_u8 ()</title>
-<indexterm><primary>oil_average2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_average2_u8                     (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-average2-u8" role="function">
+<title>oil_average2_u8 ()</title>
+<indexterm zone="oil-average2-u8"><primary>oil_average2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_average2_u8                     (<link linkend="uint8-t">uint8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -537,9 +534,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-multsum-f32" role="function"/>oil_multsum_f32 ()</title>
-<indexterm><primary>oil_multsum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multsum_f32                     (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-multsum-f32" role="function">
+<title>oil_multsum_f32 ()</title>
+<indexterm zone="oil-multsum-f32"><primary>oil_multsum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multsum_f32                     (<link linkend="float">float</link> *dest,
                                                          const <link linkend="float">float</link> *src1,
                                                          <link linkend="int">int</link> sstr1,
                                                          const <link linkend="float">float</link> *src2,
@@ -570,9 +567,9 @@ over the entire array, and places the sum into <parameter>dest</parameter>.</par
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-multsum-f64" role="function"/>oil_multsum_f64 ()</title>
-<indexterm><primary>oil_multsum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multsum_f64                     (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-multsum-f64" role="function">
+<title>oil_multsum_f64 ()</title>
+<indexterm zone="oil-multsum-f64"><primary>oil_multsum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multsum_f64                     (<link linkend="double">double</link> *dest,
                                                          const <link linkend="double">double</link> *src1,
                                                          <link linkend="int">int</link> sstr1,
                                                          const <link linkend="double">double</link> *src2,
@@ -603,9 +600,9 @@ over the entire array, and places the sum into <parameter>dest</parameter>.</par
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-f32" role="function"/>oil_scalaradd_f32 ()</title>
-<indexterm><primary>oil_scalaradd_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f32                   (<link linkend="float">float</link> *d,
+<refsect2 id="oil-scalaradd-f32" role="function">
+<title>oil_scalaradd_f32 ()</title>
+<indexterm zone="oil-scalaradd-f32"><primary>oil_scalaradd_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f32                   (<link linkend="float">float</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -640,9 +637,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-f64" role="function"/>oil_scalaradd_f64 ()</title>
-<indexterm><primary>oil_scalaradd_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f64                   (<link linkend="double">double</link> *d,
+<refsect2 id="oil-scalaradd-f64" role="function">
+<title>oil_scalaradd_f64 ()</title>
+<indexterm zone="oil-scalaradd-f64"><primary>oil_scalaradd_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f64                   (<link linkend="double">double</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -677,9 +674,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-s16" role="function"/>oil_scalaradd_s16 ()</title>
-<indexterm><primary>oil_scalaradd_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s16                   (<link linkend="int16-t">int16_t</link> *d,
+<refsect2 id="oil-scalaradd-s16" role="function">
+<title>oil_scalaradd_s16 ()</title>
+<indexterm zone="oil-scalaradd-s16"><primary>oil_scalaradd_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s16                   (<link linkend="int16-t">int16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -714,9 +711,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-s32" role="function"/>oil_scalaradd_s32 ()</title>
-<indexterm><primary>oil_scalaradd_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s32                   (<link linkend="int32-t">int32_t</link> *d,
+<refsect2 id="oil-scalaradd-s32" role="function">
+<title>oil_scalaradd_s32 ()</title>
+<indexterm zone="oil-scalaradd-s32"><primary>oil_scalaradd_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s32                   (<link linkend="int32-t">int32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -751,9 +748,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-s8" role="function"/>oil_scalaradd_s8 ()</title>
-<indexterm><primary>oil_scalaradd_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s8                    (<link linkend="int8-t">int8_t</link> *d,
+<refsect2 id="oil-scalaradd-s8" role="function">
+<title>oil_scalaradd_s8 ()</title>
+<indexterm zone="oil-scalaradd-s8"><primary>oil_scalaradd_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_s8                    (<link linkend="int8-t">int8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -788,9 +785,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-u16" role="function"/>oil_scalaradd_u16 ()</title>
-<indexterm><primary>oil_scalaradd_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u16                   (<link linkend="uint16-t">uint16_t</link> *d,
+<refsect2 id="oil-scalaradd-u16" role="function">
+<title>oil_scalaradd_u16 ()</title>
+<indexterm zone="oil-scalaradd-u16"><primary>oil_scalaradd_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u16                   (<link linkend="uint16-t">uint16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -825,9 +822,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-u32" role="function"/>oil_scalaradd_u32 ()</title>
-<indexterm><primary>oil_scalaradd_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u32                   (<link linkend="uint32-t">uint32_t</link> *d,
+<refsect2 id="oil-scalaradd-u32" role="function">
+<title>oil_scalaradd_u32 ()</title>
+<indexterm zone="oil-scalaradd-u32"><primary>oil_scalaradd_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u32                   (<link linkend="uint32-t">uint32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -862,9 +859,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-u8" role="function"/>oil_scalaradd_u8 ()</title>
-<indexterm><primary>oil_scalaradd_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u8                    (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-scalaradd-u8" role="function">
+<title>oil_scalaradd_u8 ()</title>
+<indexterm zone="oil-scalaradd-u8"><primary>oil_scalaradd_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_u8                    (<link linkend="uint8-t">uint8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -899,9 +896,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-f32" role="function"/>oil_scalarmult_f32 ()</title>
-<indexterm><primary>oil_scalarmult_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_f32                  (<link linkend="float">float</link> *d,
+<refsect2 id="oil-scalarmult-f32" role="function">
+<title>oil_scalarmult_f32 ()</title>
+<indexterm zone="oil-scalarmult-f32"><primary>oil_scalarmult_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_f32                  (<link linkend="float">float</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -936,9 +933,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-f64" role="function"/>oil_scalarmult_f64 ()</title>
-<indexterm><primary>oil_scalarmult_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_f64                  (<link linkend="double">double</link> *d,
+<refsect2 id="oil-scalarmult-f64" role="function">
+<title>oil_scalarmult_f64 ()</title>
+<indexterm zone="oil-scalarmult-f64"><primary>oil_scalarmult_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_f64                  (<link linkend="double">double</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -973,9 +970,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-s16" role="function"/>oil_scalarmult_s16 ()</title>
-<indexterm><primary>oil_scalarmult_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s16                  (<link linkend="int16-t">int16_t</link> *d,
+<refsect2 id="oil-scalarmult-s16" role="function">
+<title>oil_scalarmult_s16 ()</title>
+<indexterm zone="oil-scalarmult-s16"><primary>oil_scalarmult_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s16                  (<link linkend="int16-t">int16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1010,9 +1007,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-s32" role="function"/>oil_scalarmult_s32 ()</title>
-<indexterm><primary>oil_scalarmult_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s32                  (<link linkend="int32-t">int32_t</link> *d,
+<refsect2 id="oil-scalarmult-s32" role="function">
+<title>oil_scalarmult_s32 ()</title>
+<indexterm zone="oil-scalarmult-s32"><primary>oil_scalarmult_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s32                  (<link linkend="int32-t">int32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1047,9 +1044,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-s8" role="function"/>oil_scalarmult_s8 ()</title>
-<indexterm><primary>oil_scalarmult_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s8                   (<link linkend="int8-t">int8_t</link> *d,
+<refsect2 id="oil-scalarmult-s8" role="function">
+<title>oil_scalarmult_s8 ()</title>
+<indexterm zone="oil-scalarmult-s8"><primary>oil_scalarmult_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_s8                   (<link linkend="int8-t">int8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1084,9 +1081,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-u16" role="function"/>oil_scalarmult_u16 ()</title>
-<indexterm><primary>oil_scalarmult_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u16                  (<link linkend="uint16-t">uint16_t</link> *d,
+<refsect2 id="oil-scalarmult-u16" role="function">
+<title>oil_scalarmult_u16 ()</title>
+<indexterm zone="oil-scalarmult-u16"><primary>oil_scalarmult_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u16                  (<link linkend="uint16-t">uint16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1121,9 +1118,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-u32" role="function"/>oil_scalarmult_u32 ()</title>
-<indexterm><primary>oil_scalarmult_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u32                  (<link linkend="uint32-t">uint32_t</link> *d,
+<refsect2 id="oil-scalarmult-u32" role="function">
+<title>oil_scalarmult_u32 ()</title>
+<indexterm zone="oil-scalarmult-u32"><primary>oil_scalarmult_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u32                  (<link linkend="uint32-t">uint32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1158,9 +1155,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmult-u8" role="function"/>oil_scalarmult_u8 ()</title>
-<indexterm><primary>oil_scalarmult_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u8                   (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-scalarmult-u8" role="function">
+<title>oil_scalarmult_u8 ()</title>
+<indexterm zone="oil-scalarmult-u8"><primary>oil_scalarmult_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmult_u8                   (<link linkend="uint8-t">uint8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr,
@@ -1195,9 +1192,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-f32" role="function"/>oil_vectoradd_f32 ()</title>
-<indexterm><primary>oil_vectoradd_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_f32                   (<link linkend="float">float</link> *d,
+<refsect2 id="oil-vectoradd-f32" role="function">
+<title>oil_vectoradd_f32 ()</title>
+<indexterm zone="oil-vectoradd-f32"><primary>oil_vectoradd_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_f32                   (<link linkend="float">float</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1246,9 +1243,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-f64" role="function"/>oil_vectoradd_f64 ()</title>
-<indexterm><primary>oil_vectoradd_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_f64                   (<link linkend="double">double</link> *d,
+<refsect2 id="oil-vectoradd-f64" role="function">
+<title>oil_vectoradd_f64 ()</title>
+<indexterm zone="oil-vectoradd-f64"><primary>oil_vectoradd_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_f64                   (<link linkend="double">double</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1297,9 +1294,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s16" role="function"/>oil_vectoradd_s16 ()</title>
-<indexterm><primary>oil_vectoradd_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s16                   (<link linkend="int16-t">int16_t</link> *d,
+<refsect2 id="oil-vectoradd-s16" role="function">
+<title>oil_vectoradd_s16 ()</title>
+<indexterm zone="oil-vectoradd-s16"><primary>oil_vectoradd_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s16                   (<link linkend="int16-t">int16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1348,9 +1345,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s32" role="function"/>oil_vectoradd_s32 ()</title>
-<indexterm><primary>oil_vectoradd_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s32                   (<link linkend="int32-t">int32_t</link> *d,
+<refsect2 id="oil-vectoradd-s32" role="function">
+<title>oil_vectoradd_s32 ()</title>
+<indexterm zone="oil-vectoradd-s32"><primary>oil_vectoradd_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s32                   (<link linkend="int32-t">int32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1399,9 +1396,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s8" role="function"/>oil_vectoradd_s8 ()</title>
-<indexterm><primary>oil_vectoradd_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s8                    (<link linkend="int8-t">int8_t</link> *d,
+<refsect2 id="oil-vectoradd-s8" role="function">
+<title>oil_vectoradd_s8 ()</title>
+<indexterm zone="oil-vectoradd-s8"><primary>oil_vectoradd_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s8                    (<link linkend="int8-t">int8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1450,9 +1447,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-u16" role="function"/>oil_vectoradd_u16 ()</title>
-<indexterm><primary>oil_vectoradd_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u16                   (<link linkend="uint16-t">uint16_t</link> *d,
+<refsect2 id="oil-vectoradd-u16" role="function">
+<title>oil_vectoradd_u16 ()</title>
+<indexterm zone="oil-vectoradd-u16"><primary>oil_vectoradd_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u16                   (<link linkend="uint16-t">uint16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1501,9 +1498,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-u32" role="function"/>oil_vectoradd_u32 ()</title>
-<indexterm><primary>oil_vectoradd_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u32                   (<link linkend="uint32-t">uint32_t</link> *d,
+<refsect2 id="oil-vectoradd-u32" role="function">
+<title>oil_vectoradd_u32 ()</title>
+<indexterm zone="oil-vectoradd-u32"><primary>oil_vectoradd_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u32                   (<link linkend="uint32-t">uint32_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1552,9 +1549,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-u8" role="function"/>oil_vectoradd_u8 ()</title>
-<indexterm><primary>oil_vectoradd_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u8                    (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-vectoradd-u8" role="function">
+<title>oil_vectoradd_u8 ()</title>
+<indexterm zone="oil-vectoradd-u8"><primary>oil_vectoradd_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_u8                    (<link linkend="uint8-t">uint8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1603,9 +1600,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-s8" role="function"/>oil_vectoradd_s_s8 ()</title>
-<indexterm><primary>oil_vectoradd_s_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_s8                  (<link linkend="int8-t">int8_t</link> *d,
+<refsect2 id="oil-vectoradd-s-s8" role="function">
+<title>oil_vectoradd_s_s8 ()</title>
+<indexterm zone="oil-vectoradd-s-s8"><primary>oil_vectoradd_s_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_s8                  (<link linkend="int8-t">int8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1644,9 +1641,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-u8" role="function"/>oil_vectoradd_s_u8 ()</title>
-<indexterm><primary>oil_vectoradd_s_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_u8                  (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-vectoradd-s-u8" role="function">
+<title>oil_vectoradd_s_u8 ()</title>
+<indexterm zone="oil-vectoradd-s-u8"><primary>oil_vectoradd_s_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_u8                  (<link linkend="uint8-t">uint8_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1685,9 +1682,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-s16" role="function"/>oil_vectoradd_s_s16 ()</title>
-<indexterm><primary>oil_vectoradd_s_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_s16                 (<link linkend="int16-t">int16_t</link> *d,
+<refsect2 id="oil-vectoradd-s-s16" role="function">
+<title>oil_vectoradd_s_s16 ()</title>
+<indexterm zone="oil-vectoradd-s-s16"><primary>oil_vectoradd_s_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_s16                 (<link linkend="int16-t">int16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1726,9 +1723,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-u16" role="function"/>oil_vectoradd_s_u16 ()</title>
-<indexterm><primary>oil_vectoradd_s_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_u16                 (<link linkend="uint16-t">uint16_t</link> *d,
+<refsect2 id="oil-vectoradd-s-u16" role="function">
+<title>oil_vectoradd_s_u16 ()</title>
+<indexterm zone="oil-vectoradd-s-u16"><primary>oil_vectoradd_s_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_u16                 (<link linkend="uint16-t">uint16_t</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1767,9 +1764,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-f32" role="function"/>oil_vectoradd_s_f32 ()</title>
-<indexterm><primary>oil_vectoradd_s_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_f32                 (<link linkend="float">float</link> *d,
+<refsect2 id="oil-vectoradd-s-f32" role="function">
+<title>oil_vectoradd_s_f32 ()</title>
+<indexterm zone="oil-vectoradd-s-f32"><primary>oil_vectoradd_s_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_f32                 (<link linkend="float">float</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1808,9 +1805,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-vectoradd-s-f64" role="function"/>oil_vectoradd_s_f64 ()</title>
-<indexterm><primary>oil_vectoradd_s_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_f64                 (<link linkend="double">double</link> *d,
+<refsect2 id="oil-vectoradd-s-f64" role="function">
+<title>oil_vectoradd_s_f64 ()</title>
+<indexterm zone="oil-vectoradd-s-f64"><primary>oil_vectoradd_s_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_vectoradd_s_f64                 (<link linkend="double">double</link> *d,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *s1,
                                                          <link linkend="int">int</link> sstr1,
@@ -1849,9 +1846,9 @@ replaced.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-squaresum-f64" role="function"/>oil_squaresum_f64 ()</title>
-<indexterm><primary>oil_squaresum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_squaresum_f64                   (<link linkend="double">double</link> *d,
+<refsect2 id="oil-squaresum-f64" role="function">
+<title>oil_squaresum_f64 ()</title>
+<indexterm zone="oil-squaresum-f64"><primary>oil_squaresum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_squaresum_f64                   (<link linkend="double">double</link> *d,
                                                          const <link linkend="double">double</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -1870,9 +1867,9 @@ Sums the square of each element in <parameter>s</parameter> and places the resul
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-squaresum-shifted-s16" role="function"/>oil_squaresum_shifted_s16 ()</title>
-<indexterm><primary>oil_squaresum_shifted_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_squaresum_shifted_s16           (<link linkend="uint32-t">uint32_t</link> *d,
+<refsect2 id="oil-squaresum-shifted-s16" role="function">
+<title>oil_squaresum_shifted_s16 ()</title>
+<indexterm zone="oil-squaresum-shifted-s16"><primary>oil_squaresum_shifted_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_squaresum_shifted_s16           (<link linkend="uint32-t">uint32_t</link> *d,
                                                          const <link linkend="int16-t">int16_t</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -1891,9 +1888,9 @@ results, placing the final result in <parameter>d</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sum-f64" role="function"/>oil_sum_f64 ()</title>
-<indexterm><primary>oil_sum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sum_f64                         (<link linkend="double">double</link> *d_1,
+<refsect2 id="oil-sum-f64" role="function">
+<title>oil_sum_f64 ()</title>
+<indexterm zone="oil-sum-f64"><primary>oil_sum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sum_f64                         (<link linkend="double">double</link> *d_1,
                                                          const <link linkend="double">double</link> *s,
                                                          <link linkend="int">int</link> sstr,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -1916,9 +1913,9 @@ Sums the elements in the source array and places the result in
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-add-f32" role="function"/>oil_add_f32 ()</title>
-<indexterm><primary>oil_add_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_add_f32                         (<link linkend="float">float</link> *d,
+<refsect2 id="oil-add-f32" role="function">
+<title>oil_add_f32 ()</title>
+<indexterm zone="oil-add-f32"><primary>oil_add_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_add_f32                         (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -1940,9 +1937,9 @@ Adds elements in <parameter>s2</parameter> and <parameter>s1</parameter> and pla
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-divide-f32" role="function"/>oil_divide_f32 ()</title>
-<indexterm><primary>oil_divide_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_divide_f32                      (<link linkend="float">float</link> *d,
+<refsect2 id="oil-divide-f32" role="function">
+<title>oil_divide_f32 ()</title>
+<indexterm zone="oil-divide-f32"><primary>oil_divide_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_divide_f32                      (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -1964,9 +1961,9 @@ Divides elements in <parameter>s1</parameter> by <parameter>s2</parameter> and p
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-floor-f32" role="function"/>oil_floor_f32 ()</title>
-<indexterm><primary>oil_floor_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_floor_f32                       (<link linkend="float">float</link> *d,
+<refsect2 id="oil-floor-f32" role="function">
+<title>oil_floor_f32 ()</title>
+<indexterm zone="oil-floor-f32"><primary>oil_floor_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_floor_f32                       (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -1985,9 +1982,9 @@ in <parameter>s</parameter> and places the result in <parameter>d</parameter>.</
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-inverse-f32" role="function"/>oil_inverse_f32 ()</title>
-<indexterm><primary>oil_inverse_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_inverse_f32                     (<link linkend="float">float</link> *d,
+<refsect2 id="oil-inverse-f32" role="function">
+<title>oil_inverse_f32 ()</title>
+<indexterm zone="oil-inverse-f32"><primary>oil_inverse_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_inverse_f32                     (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -2006,9 +2003,9 @@ places the result in <parameter>d</parameter>.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-maximum-f32" role="function"/>oil_maximum_f32 ()</title>
-<indexterm><primary>oil_maximum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_maximum_f32                     (<link linkend="float">float</link> *d,
+<refsect2 id="oil-maximum-f32" role="function">
+<title>oil_maximum_f32 ()</title>
+<indexterm zone="oil-maximum-f32"><primary>oil_maximum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_maximum_f32                     (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -2030,9 +2027,9 @@ Places the greater of <parameter>s1</parameter> and <parameter>s2</parameter> in
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-minimum-f32" role="function"/>oil_minimum_f32 ()</title>
-<indexterm><primary>oil_minimum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_minimum_f32                     (<link linkend="float">float</link> *d,
+<refsect2 id="oil-minimum-f32" role="function">
+<title>oil_minimum_f32 ()</title>
+<indexterm zone="oil-minimum-f32"><primary>oil_minimum_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_minimum_f32                     (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -2054,9 +2051,9 @@ Places the lesser of <parameter>s1</parameter> and <parameter>s2</parameter> in 
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-multiply-f32" role="function"/>oil_multiply_f32 ()</title>
-<indexterm><primary>oil_multiply_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multiply_f32                    (<link linkend="float">float</link> *d,
+<refsect2 id="oil-multiply-f32" role="function">
+<title>oil_multiply_f32 ()</title>
+<indexterm zone="oil-multiply-f32"><primary>oil_multiply_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_multiply_f32                    (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -2078,9 +2075,9 @@ Multiplies elements in <parameter>s1</parameter> and <parameter>s2</parameter> a
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-negative-f32" role="function"/>oil_negative_f32 ()</title>
-<indexterm><primary>oil_negative_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_negative_f32                    (<link linkend="float">float</link> *d,
+<refsect2 id="oil-negative-f32" role="function">
+<title>oil_negative_f32 ()</title>
+<indexterm zone="oil-negative-f32"><primary>oil_negative_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_negative_f32                    (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -2098,9 +2095,9 @@ Negates each element in <parameter>s</parameter> and places the result in <param
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalaradd-f32-ns" role="function"/>oil_scalaradd_f32_ns ()</title>
-<indexterm><primary>oil_scalaradd_f32_ns</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f32_ns                (<link linkend="float">float</link> *d,
+<refsect2 id="oil-scalaradd-f32-ns" role="function">
+<title>oil_scalaradd_f32_ns ()</title>
+<indexterm zone="oil-scalaradd-f32-ns"><primary>oil_scalaradd_f32_ns</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalaradd_f32_ns                (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2_1,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -2123,9 +2120,9 @@ the result in <parameter>d</parameter>.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-scalarmultiply-f32-ns" role="function"/>oil_scalarmultiply_f32_ns ()</title>
-<indexterm><primary>oil_scalarmultiply_f32_ns</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmultiply_f32_ns           (<link linkend="float">float</link> *d,
+<refsect2 id="oil-scalarmultiply-f32-ns" role="function">
+<title>oil_scalarmultiply_f32_ns ()</title>
+<indexterm zone="oil-scalarmultiply-f32-ns"><primary>oil_scalarmultiply_f32_ns</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scalarmultiply_f32_ns           (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2_1,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -2148,9 +2145,9 @@ the result in <parameter>d</parameter>.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sign-f32" role="function"/>oil_sign_f32 ()</title>
-<indexterm><primary>oil_sign_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sign_f32                        (<link linkend="float">float</link> *d,
+<refsect2 id="oil-sign-f32" role="function">
+<title>oil_sign_f32 ()</title>
+<indexterm zone="oil-sign-f32"><primary>oil_sign_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sign_f32                        (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -2169,9 +2166,9 @@ places the result in <parameter>d</parameter>.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-subtract-f32" role="function"/>oil_subtract_f32 ()</title>
-<indexterm><primary>oil_subtract_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_subtract_f32                    (<link linkend="float">float</link> *d,
+<refsect2 id="oil-subtract-f32" role="function">
+<title>oil_subtract_f32 ()</title>
+<indexterm zone="oil-subtract-f32"><primary>oil_subtract_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_subtract_f32                    (<link linkend="float">float</link> *d,
                                                          const <link linkend="float">float</link> *s1,
                                                          const <link linkend="float">float</link> *s2,
                                                          <link linkend="int">int</link> n);</programlisting>

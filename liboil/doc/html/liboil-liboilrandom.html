@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Random Number Generation</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="liboil-liboilprototype.html" title="OilPrototype">
 <link rel="next" href="liboil-liboiltest.html" title="OilTest">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,65 +22,60 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboiltest.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2599360" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2660019" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilrandom.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilrandom.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilrandom"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2599360"></a><span class="refentrytitle">Random Number Generation</span>
-</h2>
-<p>Random Number Generation &#8212; Random number generation</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilrandom.top_of_page"></a>Random Number Generation</span></h2>
+<p>Random Number Generation — Random number generation</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilrandom.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-#define             <a href="liboil-liboilrandom.html#oil-rand-s32">oil_rand_s32</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-s16">oil_rand_s16</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-s8">oil_rand_s8</a>                         ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-u32">oil_rand_u32</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-u16">oil_rand_u16</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-u8">oil_rand_u8</a>                         ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-s64">oil_rand_s64</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-u64">oil_rand_u64</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-f32">oil_rand_f32</a>                        ()
-#define             <a href="liboil-liboilrandom.html#oil-rand-f64">oil_rand_f64</a>                        ()
-void                <a href="liboil-liboilrandom.html#oil-random-alpha">oil_random_alpha</a>                    (<a href="liboil-liboiltypes.html#oil-type-u8">oil_type_u8</a> *dest,
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-s32" title="oil_rand_s32()">oil_rand_s32</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-s16" title="oil_rand_s16()">oil_rand_s16</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-s8" title="oil_rand_s8()">oil_rand_s8</a>                         ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-u32" title="oil_rand_u32()">oil_rand_u32</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-u16" title="oil_rand_u16()">oil_rand_u16</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-u8" title="oil_rand_u8()">oil_rand_u8</a>                         ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-s64" title="oil_rand_s64()">oil_rand_s64</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-u64" title="oil_rand_u64()">oil_rand_u64</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-f32" title="oil_rand_f32()">oil_rand_f32</a>                        ()
+#define             <a class="link" href="liboil-liboilrandom.html#oil-rand-f64" title="oil_rand_f64()">oil_rand_f64</a>                        ()
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-alpha" title="oil_random_alpha ()">oil_random_alpha</a>                    (<a class="link" href="liboil-liboiltypes.html#oil-type-u8" title="oil_type_u8">oil_type_u8</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-argb">oil_random_argb</a>                     (<a href="liboil-liboiltypes.html#oil-type-u32">oil_type_u32</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-argb" title="oil_random_argb ()">oil_random_argb</a>                     (<a class="link" href="liboil-liboiltypes.html#oil-type-u32" title="oil_type_u32">oil_type_u32</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-f32">oil_random_f32</a>                      (<a href="liboil-liboiltypes.html#oil-type-f32">oil_type_f32</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-f32" title="oil_random_f32 ()">oil_random_f32</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-f32" title="oil_type_f32">oil_type_f32</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-f64">oil_random_f64</a>                      (<a href="liboil-liboiltypes.html#oil-type-f64">oil_type_f64</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-f64" title="oil_random_f64 ()">oil_random_f64</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-f64" title="oil_type_f64">oil_type_f64</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-s16">oil_random_s16</a>                      (<a href="liboil-liboiltypes.html#oil-type-s16">oil_type_s16</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-s16" title="oil_random_s16 ()">oil_random_s16</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s16" title="oil_type_s16">oil_type_s16</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-s32">oil_random_s32</a>                      (<a href="liboil-liboiltypes.html#oil-type-s32">oil_type_s32</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-s32" title="oil_random_s32 ()">oil_random_s32</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s32" title="oil_type_s32">oil_type_s32</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-s64">oil_random_s64</a>                      (<a href="liboil-liboiltypes.html#oil-type-s64">oil_type_s64</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-s64" title="oil_random_s64 ()">oil_random_s64</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s64" title="oil_type_s64">oil_type_s64</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-s8">oil_random_s8</a>                       (<a href="liboil-liboiltypes.html#oil-type-s8">oil_type_s8</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-s8" title="oil_random_s8 ()">oil_random_s8</a>                       (<a class="link" href="liboil-liboiltypes.html#oil-type-s8" title="oil_type_s8">oil_type_s8</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-u16">oil_random_u16</a>                      (<a href="liboil-liboiltypes.html#oil-type-u16">oil_type_u16</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-u16" title="oil_random_u16 ()">oil_random_u16</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u16" title="oil_type_u16">oil_type_u16</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-u32">oil_random_u32</a>                      (<a href="liboil-liboiltypes.html#oil-type-u32">oil_type_u32</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-u32" title="oil_random_u32 ()">oil_random_u32</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u32" title="oil_type_u32">oil_type_u32</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-u64">oil_random_u64</a>                      (<a href="liboil-liboiltypes.html#oil-type-u64">oil_type_u64</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-u64" title="oil_random_u64 ()">oil_random_u64</a>                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u64" title="oil_type_u64">oil_type_u64</a> *dest,
                                                          int n);
-void                <a href="liboil-liboilrandom.html#oil-random-u8">oil_random_u8</a>                       (<a href="liboil-liboiltypes.html#oil-type-u8">oil_type_u8</a> *dest,
+void                <a class="link" href="liboil-liboilrandom.html#oil-random-u8" title="oil_random_u8 ()">oil_random_u8</a>                       (<a class="link" href="liboil-liboiltypes.html#oil-type-u8" title="oil_type_u8">oil_type_u8</a> *dest,
                                                          int n);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2660019"></a><h2>Description</h2>
+<a name="liboil-liboilrandom.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -88,11 +83,10 @@ void                <a href="liboil-liboilrandom.html#oil-random-u8">oil_random_
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2660039"></a><h2>Details</h2>
+<a name="liboil-liboilrandom.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2660050"></a><h3>
-<a name="oil-rand-s32"></a>oil_rand_s32()</h3>
-<a class="indexterm" name="id2660062"></a><pre class="programlisting">#define oil_rand_s32() ((rand()&amp;0xffff)&lt;&lt;16 | (rand()&amp;0xffff))
+<a name="oil-rand-s32"></a><h3>oil_rand_s32()</h3>
+<pre class="programlisting">#define oil_rand_s32() ((rand()&amp;0xffff)&lt;&lt;16 | (rand()&amp;0xffff))
 </pre>
 <p>
 Evaluates to a random integer in the range [-(1&lt;&lt;31), (1&lt;&lt;31)-1].</p>
@@ -102,9 +96,8 @@ Evaluates to a random integer in the range [-(1&lt;&lt;31), (1&lt;&lt;31)-1].</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2660083"></a><h3>
-<a name="oil-rand-s16"></a>oil_rand_s16()</h3>
-<a class="indexterm" name="id2652651"></a><pre class="programlisting">#define oil_rand_s16() ((int16_t)(rand()&amp;0xffff))
+<a name="oil-rand-s16"></a><h3>oil_rand_s16()</h3>
+<pre class="programlisting">#define oil_rand_s16() ((int16_t)(rand()&amp;0xffff))
 </pre>
 <p>
 Evaluates to a random integer in the range [-(1&lt;&lt;15), (1&lt;&lt;15)-1].</p>
@@ -114,9 +107,8 @@ Evaluates to a random integer in the range [-(1&lt;&lt;15), (1&lt;&lt;15)-1].</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652672"></a><h3>
-<a name="oil-rand-s8"></a>oil_rand_s8()</h3>
-<a class="indexterm" name="id2652684"></a><pre class="programlisting">#define oil_rand_s8() ((int8_t)(rand()&amp;0xffff))
+<a name="oil-rand-s8"></a><h3>oil_rand_s8()</h3>
+<pre class="programlisting">#define oil_rand_s8() ((int8_t)(rand()&amp;0xffff))
 </pre>
 <p>
 Evaluates to a random integer in the range [-(1&lt;&lt;7), (1&lt;&lt;7)-1].</p>
@@ -126,9 +118,8 @@ Evaluates to a random integer in the range [-(1&lt;&lt;7), (1&lt;&lt;7)-1].</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652705"></a><h3>
-<a name="oil-rand-u32"></a>oil_rand_u32()</h3>
-<a class="indexterm" name="id2652717"></a><pre class="programlisting">#define oil_rand_u32() ((uint32_t)((rand()&amp;0xffff)&lt;&lt;16 | (rand()&amp;0xffff)))
+<a name="oil-rand-u32"></a><h3>oil_rand_u32()</h3>
+<pre class="programlisting">#define oil_rand_u32() ((uint32_t)((rand()&amp;0xffff)&lt;&lt;16 | (rand()&amp;0xffff)))
 </pre>
 <p>
 Evaluates to a random integer in the range [0, (1&lt;&lt;32)-1].</p>
@@ -138,9 +129,8 @@ Evaluates to a random integer in the range [0, (1&lt;&lt;32)-1].</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652738"></a><h3>
-<a name="oil-rand-u16"></a>oil_rand_u16()</h3>
-<a class="indexterm" name="id2652751"></a><pre class="programlisting">#define oil_rand_u16() ((uint16_t)(rand()&amp;0xffff))
+<a name="oil-rand-u16"></a><h3>oil_rand_u16()</h3>
+<pre class="programlisting">#define oil_rand_u16() ((uint16_t)(rand()&amp;0xffff))
 </pre>
 <p>
 Evaluates to a random integer in the range [0, (1&lt;&lt;16)-1].</p>
@@ -150,9 +140,8 @@ Evaluates to a random integer in the range [0, (1&lt;&lt;16)-1].</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652772"></a><h3>
-<a name="oil-rand-u8"></a>oil_rand_u8()</h3>
-<a class="indexterm" name="id2652784"></a><pre class="programlisting">#define oil_rand_u8() ((uint8_t)(rand()&amp;0xffff))
+<a name="oil-rand-u8"></a><h3>oil_rand_u8()</h3>
+<pre class="programlisting">#define oil_rand_u8() ((uint8_t)(rand()&amp;0xffff))
 </pre>
 <p>
 Evaluates to a random integer in the range [0, (1&lt;&lt;8)-1].</p>
@@ -162,9 +151,8 @@ Evaluates to a random integer in the range [0, (1&lt;&lt;8)-1].</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652805"></a><h3>
-<a name="oil-rand-s64"></a>oil_rand_s64()</h3>
-<a class="indexterm" name="id2652817"></a><pre class="programlisting">#define oil_rand_s64() ((int64_t)(oil_rand_s32())&lt;&lt;32 | oil_rand_s32())
+<a name="oil-rand-s64"></a><h3>oil_rand_s64()</h3>
+<pre class="programlisting">#define oil_rand_s64() ((int64_t)(oil_rand_s32())&lt;&lt;32 | oil_rand_s32())
 </pre>
 <p>
 Evaluates to a random integer in the range [-(1&lt;&lt;63), (1&lt;&lt;63)-1].</p>
@@ -174,9 +162,8 @@ Evaluates to a random integer in the range [-(1&lt;&lt;63), (1&lt;&lt;63)-1].</p
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652839"></a><h3>
-<a name="oil-rand-u64"></a>oil_rand_u64()</h3>
-<a class="indexterm" name="id2652851"></a><pre class="programlisting">#define oil_rand_u64() ((uint64_t)(oil_rand_u32())&lt;&lt;32 | oil_rand_u32())
+<a name="oil-rand-u64"></a><h3>oil_rand_u64()</h3>
+<pre class="programlisting">#define oil_rand_u64() ((uint64_t)(oil_rand_u32())&lt;&lt;32 | oil_rand_u32())
 </pre>
 <p>
 Evaluates to a random integer in the range [0, (1&lt;&lt;64)-1].</p>
@@ -186,9 +173,8 @@ Evaluates to a random integer in the range [0, (1&lt;&lt;64)-1].</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652872"></a><h3>
-<a name="oil-rand-f32"></a>oil_rand_f32()</h3>
-<a class="indexterm" name="id2652885"></a><pre class="programlisting">#define oil_rand_f32() (rand()/(RAND_MAX+1.0))
+<a name="oil-rand-f32"></a><h3>oil_rand_f32()</h3>
+<pre class="programlisting">#define oil_rand_f32() (rand()/(RAND_MAX+1.0))
 </pre>
 <p>
 Evaluates to a random single-precision floating point number
@@ -199,9 +185,8 @@ in the range [0, 1.0).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652906"></a><h3>
-<a name="oil-rand-f64"></a>oil_rand_f64()</h3>
-<a class="indexterm" name="id2652919"></a><pre class="programlisting">#define oil_rand_f64() (((rand()/(RAND_MAX+1.0))+rand())/(RAND_MAX+1.0))
+<a name="oil-rand-f64"></a><h3>oil_rand_f64()</h3>
+<pre class="programlisting">#define oil_rand_f64() (((rand()/(RAND_MAX+1.0))+rand())/(RAND_MAX+1.0))
 </pre>
 <p>
 Evaluates to a random double-precision floating point number
@@ -212,13 +197,12 @@ in the range [0, 1.0).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2652940"></a><h3>
-<a name="oil-random-alpha"></a>oil_random_alpha ()</h3>
-<a class="indexterm" name="id2652953"></a><pre class="programlisting">void                oil_random_alpha                    (<a href="liboil-liboiltypes.html#oil-type-u8">oil_type_u8</a> *dest,
+<a name="oil-random-alpha"></a><h3>oil_random_alpha ()</h3>
+<pre class="programlisting">void                oil_random_alpha                    (<a class="link" href="liboil-liboiltypes.html#oil-type-u8" title="oil_type_u8">oil_type_u8</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [0, 255] to the destination
-array suitable for alpha values.  This is similar to <a href="liboil-liboilrandom.html#oil-random-u8"><code class="function">oil_random_u8()</code></a>,
+array suitable for alpha values.  This is similar to <a class="link" href="liboil-liboilrandom.html#oil-random-u8" title="oil_random_u8 ()"><code class="function">oil_random_u8()</code></a>,
 except the values 0 and 255 are strongly favored.</p>
 <p>
 
@@ -227,12 +211,12 @@ except the values 0 and 255 are strongly favored.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -243,9 +227,8 @@ except the values 0 and 255 are strongly favored.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2653036"></a><h3>
-<a name="oil-random-argb"></a>oil_random_argb ()</h3>
-<a class="indexterm" name="id2653048"></a><pre class="programlisting">void                oil_random_argb                     (<a href="liboil-liboiltypes.html#oil-type-u32">oil_type_u32</a> *dest,
+<a name="oil-random-argb"></a><h3>oil_random_argb ()</h3>
+<pre class="programlisting">void                oil_random_argb                     (<a class="link" href="liboil-liboiltypes.html#oil-type-u32" title="oil_type_u32">oil_type_u32</a> *dest,
                                                          int n);</pre>
 <p>
 Creates valid random RGBA values and places them in the destination
@@ -257,12 +240,12 @@ array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td> destination array.
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td> number of values to write.
 </td>
 </tr>
@@ -271,9 +254,8 @@ array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661055"></a><h3>
-<a name="oil-random-f32"></a>oil_random_f32 ()</h3>
-<a class="indexterm" name="id2661066"></a><pre class="programlisting">void                oil_random_f32                      (<a href="liboil-liboiltypes.html#oil-type-f32">oil_type_f32</a> *dest,
+<a name="oil-random-f32"></a><h3>oil_random_f32 ()</h3>
+<pre class="programlisting">void                oil_random_f32                      (<a class="link" href="liboil-liboiltypes.html#oil-type-f32" title="oil_type_f32">oil_type_f32</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random single-precision floating point values in the
@@ -285,12 +267,12 @@ range [0, 1.0) to the destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -301,9 +283,8 @@ range [0, 1.0) to the destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661112"></a><h3>
-<a name="oil-random-f64"></a>oil_random_f64 ()</h3>
-<a class="indexterm" name="id2661122"></a><pre class="programlisting">void                oil_random_f64                      (<a href="liboil-liboiltypes.html#oil-type-f64">oil_type_f64</a> *dest,
+<a name="oil-random-f64"></a><h3>oil_random_f64 ()</h3>
+<pre class="programlisting">void                oil_random_f64                      (<a class="link" href="liboil-liboiltypes.html#oil-type-f64" title="oil_type_f64">oil_type_f64</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random double-precision floating point values in the
@@ -315,12 +296,12 @@ range [0, 1.0) to the destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -331,9 +312,8 @@ range [0, 1.0) to the destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661187"></a><h3>
-<a name="oil-random-s16"></a>oil_random_s16 ()</h3>
-<a class="indexterm" name="id2661197"></a><pre class="programlisting">void                oil_random_s16                      (<a href="liboil-liboiltypes.html#oil-type-s16">oil_type_s16</a> *dest,
+<a name="oil-random-s16"></a><h3>oil_random_s16 ()</h3>
+<pre class="programlisting">void                oil_random_s16                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s16" title="oil_type_s16">oil_type_s16</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [-(1&lt;&lt;15), (1&lt;&lt;15)-1] to the
@@ -345,12 +325,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -361,9 +341,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661262"></a><h3>
-<a name="oil-random-s32"></a>oil_random_s32 ()</h3>
-<a class="indexterm" name="id2661272"></a><pre class="programlisting">void                oil_random_s32                      (<a href="liboil-liboiltypes.html#oil-type-s32">oil_type_s32</a> *dest,
+<a name="oil-random-s32"></a><h3>oil_random_s32 ()</h3>
+<pre class="programlisting">void                oil_random_s32                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s32" title="oil_type_s32">oil_type_s32</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [-(1&lt;&lt;31), (1&lt;&lt;31)-1] to the
@@ -375,12 +354,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -389,9 +368,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661337"></a><h3>
-<a name="oil-random-s64"></a>oil_random_s64 ()</h3>
-<a class="indexterm" name="id2661347"></a><pre class="programlisting">void                oil_random_s64                      (<a href="liboil-liboiltypes.html#oil-type-s64">oil_type_s64</a> *dest,
+<a name="oil-random-s64"></a><h3>oil_random_s64 ()</h3>
+<pre class="programlisting">void                oil_random_s64                      (<a class="link" href="liboil-liboiltypes.html#oil-type-s64" title="oil_type_s64">oil_type_s64</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [-(1&lt;&lt;63), (1&lt;&lt;63)-1] to the
@@ -403,12 +381,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -419,9 +397,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661412"></a><h3>
-<a name="oil-random-s8"></a>oil_random_s8 ()</h3>
-<a class="indexterm" name="id2661422"></a><pre class="programlisting">void                oil_random_s8                       (<a href="liboil-liboiltypes.html#oil-type-s8">oil_type_s8</a> *dest,
+<a name="oil-random-s8"></a><h3>oil_random_s8 ()</h3>
+<pre class="programlisting">void                oil_random_s8                       (<a class="link" href="liboil-liboiltypes.html#oil-type-s8" title="oil_type_s8">oil_type_s8</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [-(1&lt;&lt;7), (1&lt;&lt;7)-1] to the
@@ -433,12 +410,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -449,9 +426,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661487"></a><h3>
-<a name="oil-random-u16"></a>oil_random_u16 ()</h3>
-<a class="indexterm" name="id2661497"></a><pre class="programlisting">void                oil_random_u16                      (<a href="liboil-liboiltypes.html#oil-type-u16">oil_type_u16</a> *dest,
+<a name="oil-random-u16"></a><h3>oil_random_u16 ()</h3>
+<pre class="programlisting">void                oil_random_u16                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u16" title="oil_type_u16">oil_type_u16</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [0, (1&lt;&lt;16)-1] to the
@@ -463,12 +439,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -479,9 +455,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661561"></a><h3>
-<a name="oil-random-u32"></a>oil_random_u32 ()</h3>
-<a class="indexterm" name="id2661572"></a><pre class="programlisting">void                oil_random_u32                      (<a href="liboil-liboiltypes.html#oil-type-u32">oil_type_u32</a> *dest,
+<a name="oil-random-u32"></a><h3>oil_random_u32 ()</h3>
+<pre class="programlisting">void                oil_random_u32                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u32" title="oil_type_u32">oil_type_u32</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [0, (1&lt;&lt;32)-1] to the
@@ -493,12 +468,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -509,9 +484,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661636"></a><h3>
-<a name="oil-random-u64"></a>oil_random_u64 ()</h3>
-<a class="indexterm" name="id2661647"></a><pre class="programlisting">void                oil_random_u64                      (<a href="liboil-liboiltypes.html#oil-type-u64">oil_type_u64</a> *dest,
+<a name="oil-random-u64"></a><h3>oil_random_u64 ()</h3>
+<pre class="programlisting">void                oil_random_u64                      (<a class="link" href="liboil-liboiltypes.html#oil-type-u64" title="oil_type_u64">oil_type_u64</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [0, (1&lt;&lt;64)-1] to the
@@ -523,12 +497,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -539,9 +513,8 @@ destination array.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2661711"></a><h3>
-<a name="oil-random-u8"></a>oil_random_u8 ()</h3>
-<a class="indexterm" name="id2661721"></a><pre class="programlisting">void                oil_random_u8                       (<a href="liboil-liboiltypes.html#oil-type-u8">oil_type_u8</a> *dest,
+<a name="oil-random-u8"></a><h3>oil_random_u8 ()</h3>
+<pre class="programlisting">void                oil_random_u8                       (<a class="link" href="liboil-liboiltypes.html#oil-type-u8" title="oil_type_u8">oil_type_u8</a> *dest,
                                                          int n);</pre>
 <p>
 Writes random values in the range [0, (1&lt;&lt;8)-1] to the
@@ -553,12 +526,12 @@ destination array.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>dest</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>n</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>n</code></em> :</span></p></td>
 <td>
 
 
@@ -569,5 +542,8 @@ destination array.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

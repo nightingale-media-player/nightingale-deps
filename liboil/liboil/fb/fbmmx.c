@@ -331,7 +331,7 @@ mmxCombineAddU (uint32_t *dest, const uint32_t *src, int width)
     }
     _mm_empty();
 }
-OIL_DEFINE_IMPL_FULL(mmxCombineAddU, composite_add_argb, OIL_IMPL_FLAG_MMX);
+OIL_DEFINE_IMPL_FULL(mmxCombineAddU, composite_add_argb, OIL_IMPL_FLAG_MMX | OIL_IMPL_FLAG_SSE);
 
 #if 0
 static FASTCALL void
@@ -1939,7 +1939,7 @@ fbCompositeSrcAdd_8888x8888mmx (uint32_t *dst, uint32_t *src, int w)
     
     _mm_empty();
 }
-OIL_DEFINE_IMPL_FULL (fbCompositeSrcAdd_8888x8888mmx, composite_add_argb, OIL_IMPL_FLAG_MMX);
+OIL_DEFINE_IMPL_FULL (fbCompositeSrcAdd_8888x8888mmx, composite_add_argb, OIL_IMPL_FLAG_MMX | OIL_IMPL_FLAG_SSE);
 
 #if 0
 #define GetStart(drw,x,y,type,stride,line,bpp) {\

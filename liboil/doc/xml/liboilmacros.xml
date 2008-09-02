@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilmacros">
 <refmeta>
-<refentrytitle role="top_of_page">Macros</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilmacros.top_of_page">Macros</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilmacros.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 #define             <link linkend="oil-min">oil_min</link>                             (x,y)
 #define             <link linkend="oil-max">oil_max</link>                             (x,y)
 #define             <link linkend="oil-divide-255">oil_divide_255</link>                      (x)
@@ -47,7 +44,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilmacros.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -56,11 +53,11 @@
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilmacros.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-min" role="macro"/>oil_min()</title>
-<indexterm><primary>oil_min</primary></indexterm><programlisting>#define oil_min(x,y) ((x)&lt;(y)?(x):(y))
+<refsect2 id="oil-min" role="macro">
+<title>oil_min()</title>
+<indexterm zone="oil-min"><primary>oil_min</primary></indexterm><programlisting>#define oil_min(x,y) ((x)&lt;(y)?(x):(y))
 </programlisting>
 <para>
 Evaluates to the minimum of <parameter>x</parameter> and <parameter>y</parameter>.</para>
@@ -74,9 +71,9 @@ Evaluates to the minimum of <parameter>x</parameter> and <parameter>y</parameter
 <listitem><simpara> a value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-max" role="macro"/>oil_max()</title>
-<indexterm><primary>oil_max</primary></indexterm><programlisting>#define oil_max(x,y) ((x)&gt;(y)?(x):(y))
+<refsect2 id="oil-max" role="macro">
+<title>oil_max()</title>
+<indexterm zone="oil-max"><primary>oil_max</primary></indexterm><programlisting>#define oil_max(x,y) ((x)&gt;(y)?(x):(y))
 </programlisting>
 <para>
 Evaluates to the maximum of <parameter>x</parameter> and <parameter>y</parameter>.</para>
@@ -90,9 +87,9 @@ Evaluates to the maximum of <parameter>x</parameter> and <parameter>y</parameter
 <listitem><simpara> a value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-divide-255" role="macro"/>oil_divide_255()</title>
-<indexterm><primary>oil_divide_255</primary></indexterm><programlisting>#define oil_divide_255(x) ((((x)+128) + (((x)+128)&gt;&gt;8))&gt;&gt;8)
+<refsect2 id="oil-divide-255" role="macro">
+<title>oil_divide_255()</title>
+<indexterm zone="oil-divide-255"><primary>oil_divide_255</primary></indexterm><programlisting>#define oil_divide_255(x) ((((x)+128) + (((x)+128)&gt;&gt;8))&gt;&gt;8)
 </programlisting>
 <para>
 Divides <parameter>x</parameter> by 255 in a way that is compatible with the pixel
@@ -107,9 +104,9 @@ Evaluates to <parameter>x</parameter> divided by 255.</para>
 <listitem><simpara> a value in the range [0,65025]
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb" role="macro"/>oil_argb()</title>
-<indexterm><primary>oil_argb</primary></indexterm><programlisting>#define             oil_argb(a,r,g,b)</programlisting>
+<refsect2 id="oil-argb" role="macro">
+<title>oil_argb()</title>
+<indexterm zone="oil-argb"><primary>oil_argb</primary></indexterm><programlisting>#define             oil_argb(a,r,g,b)</programlisting>
 <para>
 Creates a Liboil ARGB value from individual components.  Clamps
 each component to [0,255].
@@ -132,9 +129,9 @@ Evaluates to the ARGB value</para>
 <listitem><simpara> blue component
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb-noclamp" role="macro"/>oil_argb_noclamp()</title>
-<indexterm><primary>oil_argb_noclamp</primary></indexterm><programlisting>#define             oil_argb_noclamp(a,r,g,b)</programlisting>
+<refsect2 id="oil-argb-noclamp" role="macro">
+<title>oil_argb_noclamp()</title>
+<indexterm zone="oil-argb-noclamp"><primary>oil_argb_noclamp</primary></indexterm><programlisting>#define             oil_argb_noclamp(a,r,g,b)</programlisting>
 <para>
 Creates a Liboil ARGB value from individual components.  Does not
 clamp components.
@@ -157,9 +154,9 @@ Evaluates to the ARGB value</para>
 <listitem><simpara> blue component
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb-A" role="macro"/>oil_argb_A()</title>
-<indexterm><primary>oil_argb_A</primary></indexterm><programlisting>#define oil_argb_A(color) (((color)&gt;&gt;24)&amp;0xff)
+<refsect2 id="oil-argb-A" role="macro">
+<title>oil_argb_A()</title>
+<indexterm zone="oil-argb-A"><primary>oil_argb_A</primary></indexterm><programlisting>#define oil_argb_A(color) (((color)&gt;&gt;24)&amp;0xff)
 </programlisting>
 <para>
 Extracts the alpha component from <parameter>color</parameter>.
@@ -173,9 +170,9 @@ Evaluates to the alpha component</para>
 <listitem><simpara> an ARGB value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb-G" role="macro"/>oil_argb_G()</title>
-<indexterm><primary>oil_argb_G</primary></indexterm><programlisting>#define oil_argb_G(color) (((color)&gt;&gt;8)&amp;0xff)
+<refsect2 id="oil-argb-G" role="macro">
+<title>oil_argb_G()</title>
+<indexterm zone="oil-argb-G"><primary>oil_argb_G</primary></indexterm><programlisting>#define oil_argb_G(color) (((color)&gt;&gt;8)&amp;0xff)
 </programlisting>
 <para>
 Extracts the green component from <parameter>color</parameter>.
@@ -189,9 +186,9 @@ Evaluates to the green component</para>
 <listitem><simpara> an ARGB value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb-B" role="macro"/>oil_argb_B()</title>
-<indexterm><primary>oil_argb_B</primary></indexterm><programlisting>#define oil_argb_B(color) (((color)&gt;&gt;0)&amp;0xff)
+<refsect2 id="oil-argb-B" role="macro">
+<title>oil_argb_B()</title>
+<indexterm zone="oil-argb-B"><primary>oil_argb_B</primary></indexterm><programlisting>#define oil_argb_B(color) (((color)&gt;&gt;0)&amp;0xff)
 </programlisting>
 <para>
 Extracts the blue component from <parameter>color</parameter>.
@@ -205,9 +202,9 @@ Evaluates to the blue component</para>
 <listitem><simpara> an ARGB value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-argb-R" role="macro"/>oil_argb_R()</title>
-<indexterm><primary>oil_argb_R</primary></indexterm><programlisting>#define oil_argb_R(color) (((color)&gt;&gt;16)&amp;0xff)
+<refsect2 id="oil-argb-R" role="macro">
+<title>oil_argb_R()</title>
+<indexterm zone="oil-argb-R"><primary>oil_argb_R</primary></indexterm><programlisting>#define oil_argb_R(color) (((color)&gt;&gt;16)&amp;0xff)
 </programlisting>
 <para>
 Extracts the red component from <parameter>color</parameter>.
@@ -221,9 +218,9 @@ Evaluates to the red component</para>
 <listitem><simpara> an ARGB value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-muldiv-255" role="macro"/>oil_muldiv_255()</title>
-<indexterm><primary>oil_muldiv_255</primary></indexterm><programlisting>#define oil_muldiv_255(a,b) oil_divide_255((a)*(b))
+<refsect2 id="oil-muldiv-255" role="macro">
+<title>oil_muldiv_255()</title>
+<indexterm zone="oil-muldiv-255"><primary>oil_muldiv_255</primary></indexterm><programlisting>#define oil_muldiv_255(a,b) oil_divide_255((a)*(b))
 </programlisting>
 <para>
 Multiplies <parameter>a</parameter> and <parameter>b</parameter> and divides the result by 255 in a way that
@@ -241,9 +238,9 @@ Evaluates to the result.</para>
 <listitem><simpara> a value in the range [0,255]
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clamp-255" role="macro"/>oil_clamp_255()</title>
-<indexterm><primary>oil_clamp_255</primary></indexterm><programlisting>#define oil_clamp_255(x) oil_max(0,oil_min((x),255))
+<refsect2 id="oil-clamp-255" role="macro">
+<title>oil_clamp_255()</title>
+<indexterm zone="oil-clamp-255"><primary>oil_clamp_255</primary></indexterm><programlisting>#define oil_clamp_255(x) oil_max(0,oil_min((x),255))
 </programlisting>
 <para>
 Clamps <parameter>x</parameter> to the range [0,255].
@@ -257,9 +254,9 @@ Evaluates to the clamped value.</para>
 <listitem><simpara> a value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-GET:CAPS" role="macro"/>OIL_GET()</title>
-<indexterm><primary>OIL_GET</primary></indexterm><programlisting>#define OIL_GET(ptr, offset, type) (*(type *)((uint8_t *)(ptr) + (offset)) )
+<refsect2 id="OIL-GET:CAPS" role="macro">
+<title>OIL_GET()</title>
+<indexterm zone="OIL-GET:CAPS"><primary>OIL_GET</primary></indexterm><programlisting>#define OIL_GET(ptr, offset, type) (*(type *)((uint8_t *)(ptr) + (offset)) )
 </programlisting>
 <para>
 Offsets <parameter>ptr</parameter> by <parameter>offset</parameter> number of bytes, and dereferences it
@@ -278,9 +275,9 @@ the size of the pointer type.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-OFFSET:CAPS" role="macro"/>OIL_OFFSET()</title>
-<indexterm><primary>OIL_OFFSET</primary></indexterm><programlisting>#define OIL_OFFSET(ptr, offset) ((void *)((uint8_t *)(ptr) + (offset)) )
+<refsect2 id="OIL-OFFSET:CAPS" role="macro">
+<title>OIL_OFFSET()</title>
+<indexterm zone="OIL-OFFSET:CAPS"><primary>OIL_OFFSET</primary></indexterm><programlisting>#define OIL_OFFSET(ptr, offset) ((void *)((uint8_t *)(ptr) + (offset)) )
 </programlisting>
 <para>
 Add <parameter>offset</parameter> bytes to the pointer <parameter>ptr</parameter>.</para>
@@ -294,9 +291,9 @@ Add <parameter>offset</parameter> bytes to the pointer <parameter>ptr</parameter
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-INCREMENT:CAPS" role="macro"/>OIL_INCREMENT()</title>
-<indexterm><primary>OIL_INCREMENT</primary></indexterm><programlisting>#define OIL_INCREMENT(ptr, offset) (ptr = (void *)((uint8_t *)ptr + (offset)) )
+<refsect2 id="OIL-INCREMENT:CAPS" role="macro">
+<title>OIL_INCREMENT()</title>
+<indexterm zone="OIL-INCREMENT:CAPS"><primary>OIL_INCREMENT</primary></indexterm><programlisting>#define OIL_INCREMENT(ptr, offset) (ptr = (void *)((uint8_t *)ptr + (offset)) )
 </programlisting>
 <para>
 Increments the pointer <parameter>ptr</parameter> by <parameter>offset</parameter> number of bytes.</para>

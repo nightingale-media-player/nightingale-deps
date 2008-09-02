@@ -1353,9 +1353,9 @@ multiply_and_add_s16_u8_mmx_2(int16_t *d1, int16_t *s1, int16_t *s2,
   asm volatile ("\n"
       "  pxor %%mm7, %%mm7\n"
       "1:\n"
-      "  movq 0(%3), %%mm0\n"
+      "  movd 0(%3), %%mm0\n"
       "  punpcklbw %%mm7, %%mm0\n"
-      "   movq 4(%3), %%mm1\n"
+      "   movd 4(%3), %%mm1\n"
       "  pmullw 0(%2), %%mm0\n"
       "   punpcklbw %%mm7, %%mm1\n"
       "  paddw 0(%1), %%mm0\n"
@@ -1770,6 +1770,7 @@ lshift_s16_mmx(int16_t *d1, int16_t *s1, int16_t *s3_1, int n)
     n--;
   }
   n >>= 2;
+  if (n == 0) return;
   __asm__ __volatile__ ("\n"
       "  movzwl 0(%[s3_1]), %%ecx\n"
       "  movd %%ecx, %%mm1\n"
@@ -1800,6 +1801,7 @@ lshift_s16_mmx_2(int16_t *d1, int16_t *s1, int16_t *s3_1, int n)
     n--;
   }
   n >>= 3;
+  if (n == 0) return;
   __asm__ __volatile__ ("\n"
       "  movzwl 0(%[s3_1]), %%ecx\n"
       "  movd %%ecx, %%mm1\n"

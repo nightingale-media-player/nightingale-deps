@@ -30,6 +30,10 @@
 
 #include <liboil/liboilfunction.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 OIL_DECLARE_CLASS(dct12_f32);
 OIL_DECLARE_CLASS(dct36_f32);
 OIL_DECLARE_CLASS(fdct8_f64);

@@ -43,7 +43,13 @@ AC_DEFUN([AS_SSE_INTRINSICS],
 
   save_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -msse"
-  AC_TRY_COMPILE([#include <xmmintrin.h>], [__m128 a; a = _mm_or_ps(a,a)], [flag_ok=yes], [flag_ok=no])
+  AC_TRY_COMPILE([#include <xmmintrin.h>], [
+#ifdef __GNUC_MINOR__
+#if (__GNUC__ * 1000 + __GNUC_MINOR__) < 4002
+#error GCC before 4.2 has critical bugs compiling SSE intrinsics
+#endif
+#endif
+__m128 a; a = _mm_or_ps(a,a)], [flag_ok=yes], [flag_ok=no])
   CFLAGS="$save_CFLAGS"
 
   $1="-msse"
@@ -69,7 +75,13 @@ AC_DEFUN([AS_SSE2_INTRINSICS],
 
   save_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -msse2"
-  AC_TRY_COMPILE([#include <emmintrin.h>], [__m128i a; a = _mm_setzero_si128(); a = _mm_srli_epi16(a,8)], [flag_ok=yes], [flag_ok=no])
+  AC_TRY_COMPILE([#include <emmintrin.h>], [
+#ifdef __GNUC_MINOR__
+#if (__GNUC__ * 1000 + __GNUC_MINOR__) < 4002
+#error GCC before 4.2 has critical bugs compiling SSE2 intrinsics
+#endif
+#endif
+__m128i a; a = _mm_setzero_si128(); a = _mm_srli_epi16(a,8)], [flag_ok=yes], [flag_ok=no])
   CFLAGS="$save_CFLAGS"
 
   $1="-msse2"
@@ -95,7 +107,13 @@ AC_DEFUN([AS_SSE3_INTRINSICS],
 
   save_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -msse3"
-  AC_TRY_COMPILE([#include <pmmintrin.h>], [__m128 a; a = _mm_addsub_ps(a,a)], [flag_ok=yes], [flag_ok=no])
+  AC_TRY_COMPILE([#include <pmmintrin.h>], [
+#ifdef __GNUC_MINOR__
+#if (__GNUC__ * 1000 + __GNUC_MINOR__) < 4002
+#error GCC before 4.2 has critical bugs compiling SSE2 intrinsics
+#endif
+#endif
+__m128 a; a = _mm_addsub_ps(a,a)], [flag_ok=yes], [flag_ok=no])
   CFLAGS="$save_CFLAGS"
 
   $1="-msse3"

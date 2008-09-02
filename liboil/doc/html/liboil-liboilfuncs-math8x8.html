@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Simple Arithmetic on Blocks</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch01.html" title="Liboil Stable API">
 <link rel="prev" href="liboil-liboilfuncs-math.html" title="Simple Arithmetic">
 <link rel="next" href="liboil-liboilfuncs-dct.html" title="liboilfuncs-dct">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,88 +22,59 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboilfuncs-dct.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2565974" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2574304" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilfuncs-math8x8.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilfuncs-math8x8.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilfuncs-math8x8"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2565974"></a><span class="refentrytitle">Simple Arithmetic on Blocks</span>
-</h2>
-<p>Simple Arithmetic on Blocks &#8212; Aritmetic operations on 8x8 blocks</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilfuncs-math8x8.top_of_page"></a>Simple Arithmetic on Blocks</span></h2>
+<p>Simple Arithmetic on Blocks — Aritmetic operations on 8x8 blocks</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilfuncs-math8x8.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-mult8x8-s16">oil_mult8x8_s16</a>                     (<a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *d_8x8,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-mult8x8-s16" title="oil_mult8x8_s16 ()">oil_mult8x8_s16</a>                     (int16_t *d_8x8,
+                                                         const int16_t *s1_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ds,
                                                          int ss1,
                                                          int ss2);
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64">oil_sad8x8_f64</a>                      (double *d_8x8,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64" title="oil_sad8x8_f64 ()">oil_sad8x8_f64</a>                      (double *d_8x8,
                                                          int ds,
                                                          const double *s1_8x8,
                                                          int ss1,
                                                          const double *s2_8x8,
                                                          int ss2);
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16">oil_sad8x8_s16</a>                      (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_8x8,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16" title="oil_sad8x8_s16 ()">oil_sad8x8_s16</a>                      (uint32_t *d_8x8,
                                                          int ds,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
+                                                         const int16_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ss2);
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64-2">oil_sad8x8_f64_2</a>                    (double *d_1,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64-2" title="oil_sad8x8_f64_2 ()">oil_sad8x8_f64_2</a>                    (double *d_1,
                                                          const double *s1_8x8,
                                                          int ss1,
                                                          const double *s2_8x8,
                                                          int ss2);
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16-2">oil_sad8x8_s16_2</a>                    (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16-2" title="oil_sad8x8_s16_2 ()">oil_sad8x8_s16_2</a>                    (uint32_t *d_1,
+                                                         const int16_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ss2);
-void                <a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-u8">oil_sad8x8_u8</a>                       (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#uint8-t"
->uint8_t</a> *s1_8x8,
+void                <a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-u8" title="oil_sad8x8_u8 ()">oil_sad8x8_u8</a>                       (uint32_t *d_1,
+                                                         const uint8_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#uint8-t"
->uint8_t</a> *s2_8x8,
+                                                         const uint8_t *s2_8x8,
                                                          int ss2);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2574304"></a><h2>Description</h2>
+<a name="liboil-liboilfuncs-math8x8.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -111,19 +82,12 @@ href="../cog/cog-cog-stdint.html#uint8-t"
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2594171"></a><h2>Details</h2>
+<a name="liboil-liboilfuncs-math8x8.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2594182"></a><h3>
-<a name="oil-mult8x8-s16"></a>oil_mult8x8_s16 ()</h3>
-<a class="indexterm" name="id2594194"></a><pre class="programlisting">void                oil_mult8x8_s16                     (<a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *d_8x8,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+<a name="oil-mult8x8-s16"></a><h3>oil_mult8x8_s16 ()</h3>
+<pre class="programlisting">void                oil_mult8x8_s16                     (int16_t *d_8x8,
+                                                         const int16_t *s1_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ds,
                                                          int ss1,
                                                          int ss2);</pre>
@@ -137,32 +101,32 @@ in <em class="parameter"><code>d_8x8</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ds</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ds</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -171,9 +135,8 @@ in <em class="parameter"><code>d_8x8</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2566717"></a><h3>
-<a name="oil-sad8x8-f64"></a>oil_sad8x8_f64 ()</h3>
-<a class="indexterm" name="id2566729"></a><pre class="programlisting">void                oil_sad8x8_f64                      (double *d_8x8,
+<a name="oil-sad8x8-f64"></a><h3>oil_sad8x8_f64 ()</h3>
+<pre class="programlisting">void                oil_sad8x8_f64                      (double *d_8x8,
                                                          int ds,
                                                          const double *s1_8x8,
                                                          int ss1,
@@ -181,7 +144,7 @@ in <em class="parameter"><code>d_8x8</code></em>.</p>
                                                          int ss2);</pre>
 <p>
 FIXME: This function is broken and has been replaced by
-@<a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64-2"><code class="function">oil_sad8x8_f64_2()</code></a> because the destination of this function
+@<a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-f64-2" title="oil_sad8x8_f64_2 ()"><code class="function">oil_sad8x8_f64_2()</code></a> because the destination of this function
 is an 8x8 block instead of a single value.</p>
 <p>
 
@@ -190,32 +153,32 @@ is an 8x8 block instead of a single value.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ds</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ds</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -224,23 +187,16 @@ is an 8x8 block instead of a single value.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2568177"></a><h3>
-<a name="oil-sad8x8-s16"></a>oil_sad8x8_s16 ()</h3>
-<a class="indexterm" name="id2568189"></a><pre class="programlisting">void                oil_sad8x8_s16                      (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_8x8,
+<a name="oil-sad8x8-s16"></a><h3>oil_sad8x8_s16 ()</h3>
+<pre class="programlisting">void                oil_sad8x8_s16                      (uint32_t *d_8x8,
                                                          int ds,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
+                                                         const int16_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ss2);</pre>
 <p>
 FIXME: This function is broken and has been replaced by
-@<a href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16-2"><code class="function">oil_sad8x8_s16_2()</code></a> because the destination of this function
+@<a class="link" href="liboil-liboilfuncs-math8x8.html#oil-sad8x8-s16-2" title="oil_sad8x8_s16_2 ()"><code class="function">oil_sad8x8_s16_2()</code></a> because the destination of this function
 is an 8x8 block instead of a single value.</p>
 <p>
 
@@ -249,32 +205,32 @@ is an 8x8 block instead of a single value.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ds</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ds</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -283,9 +239,8 @@ is an 8x8 block instead of a single value.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2589972"></a><h3>
-<a name="oil-sad8x8-f64-2"></a>oil_sad8x8_f64_2 ()</h3>
-<a class="indexterm" name="id2589984"></a><pre class="programlisting">void                oil_sad8x8_f64_2                    (double *d_1,
+<a name="oil-sad8x8-f64-2"></a><h3>oil_sad8x8_f64_2 ()</h3>
+<pre class="programlisting">void                oil_sad8x8_f64_2                    (double *d_1,
                                                          const double *s1_8x8,
                                                          int ss1,
                                                          const double *s2_8x8,
@@ -300,27 +255,27 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -329,18 +284,11 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2572740"></a><h3>
-<a name="oil-sad8x8-s16-2"></a>oil_sad8x8_s16_2 ()</h3>
-<a class="indexterm" name="id2590957"></a><pre class="programlisting">void                oil_sad8x8_s16_2                    (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s1_8x8,
+<a name="oil-sad8x8-s16-2"></a><h3>oil_sad8x8_s16_2 ()</h3>
+<pre class="programlisting">void                oil_sad8x8_s16_2                    (uint32_t *d_1,
+                                                         const int16_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#int16-t"
->int16_t</a> *s2_8x8,
+                                                         const int16_t *s2_8x8,
                                                          int ss2);</pre>
 <p>
 Calculates the sum of absolute differences between elements in <em class="parameter"><code>s1_8x8</code></em>
@@ -352,27 +300,27 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -381,18 +329,11 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2603224"></a><h3>
-<a name="oil-sad8x8-u8"></a>oil_sad8x8_u8 ()</h3>
-<a class="indexterm" name="id2603236"></a><pre class="programlisting">void                oil_sad8x8_u8                       (<a
-href="../cog/cog-cog-stdint.html#uint32-t"
->uint32_t</a> *d_1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#uint8-t"
->uint8_t</a> *s1_8x8,
+<a name="oil-sad8x8-u8"></a><h3>oil_sad8x8_u8 ()</h3>
+<pre class="programlisting">void                oil_sad8x8_u8                       (uint32_t *d_1,
+                                                         const uint8_t *s1_8x8,
                                                          int ss1,
-                                                         const <a
-href="../cog/cog-cog-stdint.html#uint8-t"
->uint8_t</a> *s2_8x8,
+                                                         const uint8_t *s2_8x8,
                                                          int ss2);</pre>
 <p>
 Calculates the sum of absolute differences between elements in <em class="parameter"><code>s1_8x8</code></em>
@@ -404,27 +345,27 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>d_1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>d_1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s1_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s1_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss1</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss1</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>s2_8x8</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>s2_8x8</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ss2</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ss2</code></em> :</span></p></td>
 <td>
 </td>
 </tr>
@@ -433,5 +374,8 @@ and <em class="parameter"><code>s2_8x8</code></em>, and places the result in <em
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

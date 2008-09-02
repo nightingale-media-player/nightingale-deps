@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilfuncs-math8x8">
 <refmeta>
-<refentrytitle role="top_of_page">Simple Arithmetic on Blocks</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilfuncs-math8x8.top_of_page">Simple Arithmetic on Blocks</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilfuncs-math8x8.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 <link linkend="void">void</link>                <link linkend="oil-mult8x8-s16">oil_mult8x8_s16</link>                     (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          const <link linkend="int16-t">int16_t</link> *s1_8x8,
                                                          const <link linkend="int16-t">int16_t</link> *s2_8x8,
@@ -66,7 +63,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilfuncs-math8x8.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -75,11 +72,11 @@
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilfuncs-math8x8.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-mult8x8-s16" role="function"/>oil_mult8x8_s16 ()</title>
-<indexterm><primary>oil_mult8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_mult8x8_s16                     (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-mult8x8-s16" role="function">
+<title>oil_mult8x8_s16 ()</title>
+<indexterm zone="oil-mult8x8-s16"><primary>oil_mult8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_mult8x8_s16                     (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          const <link linkend="int16-t">int16_t</link> *s1_8x8,
                                                          const <link linkend="int16-t">int16_t</link> *s2_8x8,
                                                          <link linkend="int">int</link> ds,
@@ -110,9 +107,9 @@ in <parameter>d_8x8</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-f64" role="function"/>oil_sad8x8_f64 ()</title>
-<indexterm><primary>oil_sad8x8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_f64                      (<link linkend="double">double</link> *d_8x8,
+<refsect2 id="oil-sad8x8-f64" role="function">
+<title>oil_sad8x8_f64 ()</title>
+<indexterm zone="oil-sad8x8-f64"><primary>oil_sad8x8_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_f64                      (<link linkend="double">double</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="double">double</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
@@ -144,9 +141,9 @@ is an 8x8 block instead of a single value.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-s16" role="function"/>oil_sad8x8_s16 ()</title>
-<indexterm><primary>oil_sad8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_s16                      (<link linkend="uint32-t">uint32_t</link> *d_8x8,
+<refsect2 id="oil-sad8x8-s16" role="function">
+<title>oil_sad8x8_s16 ()</title>
+<indexterm zone="oil-sad8x8-s16"><primary>oil_sad8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_s16                      (<link linkend="uint32-t">uint32_t</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="int16-t">int16_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
@@ -178,9 +175,9 @@ is an 8x8 block instead of a single value.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-f64-2" role="function"/>oil_sad8x8_f64_2 ()</title>
-<indexterm><primary>oil_sad8x8_f64_2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_f64_2                    (<link linkend="double">double</link> *d_1,
+<refsect2 id="oil-sad8x8-f64-2" role="function">
+<title>oil_sad8x8_f64_2 ()</title>
+<indexterm zone="oil-sad8x8-f64-2"><primary>oil_sad8x8_f64_2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_f64_2                    (<link linkend="double">double</link> *d_1,
                                                          const <link linkend="double">double</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="double">double</link> *s2_8x8,
@@ -207,9 +204,9 @@ and <parameter>s2_8x8</parameter>, and places the result in <parameter>d_1</para
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-s16-2" role="function"/>oil_sad8x8_s16_2 ()</title>
-<indexterm><primary>oil_sad8x8_s16_2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_s16_2                    (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-sad8x8-s16-2" role="function">
+<title>oil_sad8x8_s16_2 ()</title>
+<indexterm zone="oil-sad8x8-s16-2"><primary>oil_sad8x8_s16_2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_s16_2                    (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="int16-t">int16_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="int16-t">int16_t</link> *s2_8x8,
@@ -236,9 +233,9 @@ and <parameter>s2_8x8</parameter>, and places the result in <parameter>d_1</para
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-u8" role="function"/>oil_sad8x8_u8 ()</title>
-<indexterm><primary>oil_sad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_u8                       (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-sad8x8-u8" role="function">
+<title>oil_sad8x8_u8 ()</title>
+<indexterm zone="oil-sad8x8-u8"><primary>oil_sad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_u8                       (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,

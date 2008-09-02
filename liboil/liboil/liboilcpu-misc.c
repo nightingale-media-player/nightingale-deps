@@ -89,7 +89,7 @@ static unsigned long
 oil_profile_stamp_s390(void)
 {
   uint64_t ts;
-  __asm__ __volatile__ ("STCK %0\n" : : "m" (ts));
+  __asm__ __volatile__ ("STCK %0(%0)\n" : : "r" (&ts));
   return ts;
 }
 

@@ -3361,6 +3361,16 @@ oil_scalarmultiply_f32_ns (float * d, const float * s1, const float * s2_1, int 
   ((void (*)(float * d, const float * s1, const float * s2_1, int n))(_oil_function_class_scalarmultiply_f32_ns.func))(d, s1, s2_1, n);
 }
 
+#undef oil_scalarmultiply_f64_ns
+void
+oil_scalarmultiply_f64_ns (double * d, const double * s1, const double * s2_1, int n)
+{
+  if (_oil_function_class_scalarmultiply_f64_ns.func == NULL) {
+    oil_class_optimize (&_oil_function_class_scalarmultiply_f64_ns);
+  }
+  ((void (*)(double * d, const double * s1, const double * s2_1, int n))(_oil_function_class_scalarmultiply_f64_ns.func))(d, s1, s2_1, n);
+}
+
 #undef oil_scaleconv_f32_s16
 void
 oil_scaleconv_f32_s16 (float * dest, const int16_t * src, int n, const double * s2_1, const double * s3_1)

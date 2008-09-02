@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilfuncs-pixel">
 <refmeta>
-<refentrytitle role="top_of_page">Pixel Operations</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilfuncs-pixel.top_of_page">Pixel Operations</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilfuncs-pixel.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 <link linkend="void">void</link>                <link linkend="oil-argb-paint-u8">oil_argb_paint_u8</link>                   (<link linkend="uint8-t">uint8_t</link> *i_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_4,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
@@ -130,7 +127,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilfuncs-pixel.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Pixels are 4-element arrays of type uint8_t.  The elements, in
@@ -147,11 +144,11 @@ as cairo.</para>
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilfuncs-pixel.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-argb-paint-u8" role="function"/>oil_argb_paint_u8 ()</title>
-<indexterm><primary>oil_argb_paint_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_argb_paint_u8                   (<link linkend="uint8-t">uint8_t</link> *i_4xn,
+<refsect2 id="oil-argb-paint-u8" role="function">
+<title>oil_argb_paint_u8 ()</title>
+<indexterm zone="oil-argb-paint-u8"><primary>oil_argb_paint_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_argb_paint_u8                   (<link linkend="uint8-t">uint8_t</link> *i_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_4,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -177,9 +174,9 @@ Deprecated.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-ayuv2argb-u8" role="function"/>oil_ayuv2argb_u8 ()</title>
-<indexterm><primary>oil_ayuv2argb_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2argb_u8                    (<link linkend="uint8-t">uint8_t</link> *d_4xn,
+<refsect2 id="oil-ayuv2argb-u8" role="function">
+<title>oil_ayuv2argb_u8 ()</title>
+<indexterm zone="oil-ayuv2argb-u8"><primary>oil_ayuv2argb_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2argb_u8                    (<link linkend="uint8-t">uint8_t</link> *d_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *s_4xn,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -203,9 +200,9 @@ conversion factors.)</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-ayuv2uyvy" role="function"/>oil_ayuv2uyvy ()</title>
-<indexterm><primary>oil_ayuv2uyvy</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2uyvy                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-ayuv2uyvy" role="function">
+<title>oil_ayuv2uyvy ()</title>
+<indexterm zone="oil-ayuv2uyvy"><primary>oil_ayuv2uyvy</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2uyvy                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -227,9 +224,9 @@ n:
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-ayuv2yuyv" role="function"/>oil_ayuv2yuyv ()</title>
-<indexterm><primary>oil_ayuv2yuyv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2yuyv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-ayuv2yuyv" role="function">
+<title>oil_ayuv2yuyv ()</title>
+<indexterm zone="oil-ayuv2yuyv"><primary>oil_ayuv2yuyv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2yuyv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -251,9 +248,9 @@ n:
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-ayuv2yvyu" role="function"/>oil_ayuv2yvyu ()</title>
-<indexterm><primary>oil_ayuv2yvyu</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2yvyu                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-ayuv2yvyu" role="function">
+<title>oil_ayuv2yvyu ()</title>
+<indexterm zone="oil-ayuv2yvyu"><primary>oil_ayuv2yvyu</primary></indexterm><programlisting><link linkend="void">void</link>                oil_ayuv2yvyu                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -275,9 +272,9 @@ n:
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-add-argb" role="function"/>oil_composite_add_argb ()</title>
-<indexterm><primary>oil_composite_add_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_argb              (<link linkend="uint32-t">uint32_t</link> *i_n,
+<refsect2 id="oil-composite-add-argb" role="function">
+<title>oil_composite_add_argb ()</title>
+<indexterm zone="oil-composite-add-argb"><primary>oil_composite_add_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_argb              (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -295,9 +292,9 @@ Performs the compositing operation DEST = SRC ADD DEST.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-add-argb-const-src" role="function"/>oil_composite_add_argb_const_src ()</title>
-<indexterm><primary>oil_composite_add_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_argb_const_src    (<link linkend="uint32-t">uint32_t</link> *i_n,
+<refsect2 id="oil-composite-add-argb-const-src" role="function">
+<title>oil_composite_add_argb_const_src ()</title>
+<indexterm zone="oil-composite-add-argb-const-src"><primary>oil_composite_add_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_argb_const_src    (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_1,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -316,9 +313,9 @@ constant SRC.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-argb" role="function"/>oil_composite_in_argb ()</title>
-<indexterm><primary>oil_composite_in_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb               (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-composite-in-argb" role="function">
+<title>oil_composite_in_argb ()</title>
+<indexterm zone="oil-composite-in-argb"><primary>oil_composite_in_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb               (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -340,9 +337,9 @@ Performs the compositing operation DEST = SRC IN MASK.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-argb-const-mask" role="function"/>oil_composite_in_argb_const_mask ()</title>
-<indexterm><primary>oil_composite_in_argb_const_mask</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb_const_mask    (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-composite-in-argb-const-mask" role="function">
+<title>oil_composite_in_argb_const_mask ()</title>
+<indexterm zone="oil-composite-in-argb-const-mask"><primary>oil_composite_in_argb_const_mask</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb_const_mask    (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_1,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -365,9 +362,9 @@ MASK.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-argb-const-src" role="function"/>oil_composite_in_argb_const_src ()</title>
-<indexterm><primary>oil_composite_in_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb_const_src     (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-composite-in-argb-const-src" role="function">
+<title>oil_composite_in_argb_const_src ()</title>
+<indexterm zone="oil-composite-in-argb-const-src"><primary>oil_composite_in_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_argb_const_src     (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -390,9 +387,9 @@ SRC.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-over-argb" role="function"/>oil_composite_in_over_argb ()</title>
-<indexterm><primary>oil_composite_in_over_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb          (<link linkend="uint32-t">uint32_t</link> *i_n,
+<refsect2 id="oil-composite-in-over-argb" role="function">
+<title>oil_composite_in_over_argb ()</title>
+<indexterm zone="oil-composite-in-over-argb"><primary>oil_composite_in_over_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb          (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
                                                          <link linkend="int">int</link> n);</programlisting>
@@ -414,9 +411,9 @@ Performs the compositing operation DEST = (SRC IN MASK) OVER DEST.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-over-argb-const-mask" role="function"/>oil_composite_in_over_argb_const_mask ()</title>
-<indexterm><primary>oil_composite_in_over_argb_const_mask</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb_const_mask
+<refsect2 id="oil-composite-in-over-argb-const-mask" role="function">
+<title>oil_composite_in_over_argb_const_mask ()</title>
+<indexterm zone="oil-composite-in-over-argb-const-mask"><primary>oil_composite_in_over_argb_const_mask</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb_const_mask
                                                         (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_1,
@@ -440,9 +437,9 @@ for a constant MASK.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-in-over-argb-const-src" role="function"/>oil_composite_in_over_argb_const_src ()</title>
-<indexterm><primary>oil_composite_in_over_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb_const_src
+<refsect2 id="oil-composite-in-over-argb-const-src" role="function">
+<title>oil_composite_in_over_argb_const_src ()</title>
+<indexterm zone="oil-composite-in-over-argb-const-src"><primary>oil_composite_in_over_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_in_over_argb_const_src
                                                         (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_n,
@@ -466,9 +463,9 @@ for a constant SRC.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-over-argb" role="function"/>oil_composite_over_argb ()</title>
-<indexterm><primary>oil_composite_over_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_argb             (<link linkend="uint32-t">uint32_t</link> *i_n,
+<refsect2 id="oil-composite-over-argb" role="function">
+<title>oil_composite_over_argb ()</title>
+<indexterm zone="oil-composite-over-argb"><primary>oil_composite_over_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_argb             (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -486,9 +483,9 @@ Performs the compositing operation DEST = SRC OVER DEST.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-over-argb-const-src" role="function"/>oil_composite_over_argb_const_src ()</title>
-<indexterm><primary>oil_composite_over_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_argb_const_src   (<link linkend="uint32-t">uint32_t</link> *i_n,
+<refsect2 id="oil-composite-over-argb-const-src" role="function">
+<title>oil_composite_over_argb_const_src ()</title>
+<indexterm zone="oil-composite-over-argb-const-src"><primary>oil_composite_over_argb_const_src</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_argb_const_src   (<link linkend="uint32-t">uint32_t</link> *i_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s1_1,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -507,9 +504,9 @@ constant SRC.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-merge-linear-argb" role="function"/>oil_merge_linear_argb ()</title>
-<indexterm><primary>oil_merge_linear_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_merge_linear_argb               (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-merge-linear-argb" role="function">
+<title>oil_merge_linear_argb ()</title>
+<indexterm zone="oil-merge-linear-argb"><primary>oil_merge_linear_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_merge_linear_argb               (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s2_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s3_1,
@@ -543,9 +540,9 @@ compositing functions instead.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-resample-linear-argb" role="function"/>oil_resample_linear_argb ()</title>
-<indexterm><primary>oil_resample_linear_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_resample_linear_argb            (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-resample-linear-argb" role="function">
+<title>oil_resample_linear_argb ()</title>
+<indexterm zone="oil-resample-linear-argb"><primary>oil_resample_linear_argb</primary></indexterm><programlisting><link linkend="void">void</link>                oil_resample_linear_argb            (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_2xn,
                                                          <link linkend="int">int</link> n,
                                                          <link linkend="uint32-t">uint32_t</link> *i_2);</programlisting>
@@ -567,9 +564,9 @@ Linearly resamples a row of pixels.  FIXME.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-resample-linear-u8" role="function"/>oil_resample_linear_u8 ()</title>
-<indexterm><primary>oil_resample_linear_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_resample_linear_u8              (<link linkend="uint8-t">uint8_t</link> *d_n,
+<refsect2 id="oil-resample-linear-u8" role="function">
+<title>oil_resample_linear_u8 ()</title>
+<indexterm zone="oil-resample-linear-u8"><primary>oil_resample_linear_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_resample_linear_u8              (<link linkend="uint8-t">uint8_t</link> *d_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s_2xn,
                                                          <link linkend="int">int</link> n,
                                                          <link linkend="uint32-t">uint32_t</link> *i_2);</programlisting>
@@ -591,9 +588,9 @@ Linearly resamples a row of pixels.  FIXME.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-rgb2bgr" role="function"/>oil_rgb2bgr ()</title>
-<indexterm><primary>oil_rgb2bgr</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rgb2bgr                         (<link linkend="uint8-t">uint8_t</link> *d_3xn,
+<refsect2 id="oil-rgb2bgr" role="function">
+<title>oil_rgb2bgr ()</title>
+<indexterm zone="oil-rgb2bgr"><primary>oil_rgb2bgr</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rgb2bgr                         (<link linkend="uint8-t">uint8_t</link> *d_3xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *s_3xn,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -612,9 +609,9 @@ BGRBGRBGR ordering (and vice-versa).</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-rgb2rgba" role="function"/>oil_rgb2rgba ()</title>
-<indexterm><primary>oil_rgb2rgba</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rgb2rgba                        (<link linkend="uint8-t">uint8_t</link> *d_4xn,
+<refsect2 id="oil-rgb2rgba" role="function">
+<title>oil_rgb2rgba ()</title>
+<indexterm zone="oil-rgb2rgba"><primary>oil_rgb2rgba</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rgb2rgba                        (<link linkend="uint8-t">uint8_t</link> *d_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *s_3xn,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -633,9 +630,9 @@ to 32-bit RGBA pixels in RGBARGBA order.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-yuv2rgbx-sub2-u8" role="function"/>oil_yuv2rgbx_sub2_u8 ()</title>
-<indexterm><primary>oil_yuv2rgbx_sub2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_sub2_u8                (<link linkend="uint8-t">uint8_t</link> *d_4xn,
+<refsect2 id="oil-yuv2rgbx-sub2-u8" role="function">
+<title>oil_yuv2rgbx_sub2_u8 ()</title>
+<indexterm zone="oil-yuv2rgbx-sub2-u8"><primary>oil_yuv2rgbx_sub2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_sub2_u8                (<link linkend="uint8-t">uint8_t</link> *d_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *src1,
                                                          const <link linkend="uint8-t">uint8_t</link> *src2,
                                                          const <link linkend="uint8-t">uint8_t</link> *src3,
@@ -667,9 +664,9 @@ This function should be replaced by one that makes sense.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-yuv2rgbx-sub4-u8" role="function"/>oil_yuv2rgbx_sub4_u8 ()</title>
-<indexterm><primary>oil_yuv2rgbx_sub4_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_sub4_u8                (<link linkend="uint8-t">uint8_t</link> *d_4xn,
+<refsect2 id="oil-yuv2rgbx-sub4-u8" role="function">
+<title>oil_yuv2rgbx_sub4_u8 ()</title>
+<indexterm zone="oil-yuv2rgbx-sub4-u8"><primary>oil_yuv2rgbx_sub4_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_sub4_u8                (<link linkend="uint8-t">uint8_t</link> *d_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *src1,
                                                          const <link linkend="uint8-t">uint8_t</link> *src2,
                                                          const <link linkend="uint8-t">uint8_t</link> *src3,
@@ -701,9 +698,9 @@ This function should be replaced by one that makes sense.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-yuv2rgbx-u8" role="function"/>oil_yuv2rgbx_u8 ()</title>
-<indexterm><primary>oil_yuv2rgbx_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_u8                     (<link linkend="uint8-t">uint8_t</link> *d_4xn,
+<refsect2 id="oil-yuv2rgbx-u8" role="function">
+<title>oil_yuv2rgbx_u8 ()</title>
+<indexterm zone="oil-yuv2rgbx-u8"><primary>oil_yuv2rgbx_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuv2rgbx_u8                     (<link linkend="uint8-t">uint8_t</link> *d_4xn,
                                                          const <link linkend="uint8-t">uint8_t</link> *src1,
                                                          const <link linkend="uint8-t">uint8_t</link> *src2,
                                                          const <link linkend="uint8-t">uint8_t</link> *src3,
@@ -733,9 +730,9 @@ This function should be replaced by one that makes sense.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-uyvy2ayuv" role="function"/>oil_uyvy2ayuv ()</title>
-<indexterm><primary>oil_uyvy2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_uyvy2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-uyvy2ayuv" role="function">
+<title>oil_uyvy2ayuv ()</title>
+<indexterm zone="oil-uyvy2ayuv"><primary>oil_uyvy2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_uyvy2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -757,9 +754,9 @@ n:
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-yuyv2ayuv" role="function"/>oil_yuyv2ayuv ()</title>
-<indexterm><primary>oil_yuyv2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuyv2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-yuyv2ayuv" role="function">
+<title>oil_yuyv2ayuv ()</title>
+<indexterm zone="oil-yuyv2ayuv"><primary>oil_yuyv2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yuyv2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -781,9 +778,9 @@ n:
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-yvyu2ayuv" role="function"/>oil_yvyu2ayuv ()</title>
-<indexterm><primary>oil_yvyu2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yvyu2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
+<refsect2 id="oil-yvyu2ayuv" role="function">
+<title>oil_yvyu2ayuv ()</title>
+<indexterm zone="oil-yvyu2ayuv"><primary>oil_yvyu2ayuv</primary></indexterm><programlisting><link linkend="void">void</link>                oil_yvyu2ayuv                       (<link linkend="uint32-t">uint32_t</link> *d_n,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>

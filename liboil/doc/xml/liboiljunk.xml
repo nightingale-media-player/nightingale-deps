@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboiljunk">
 <refmeta>
-<refentrytitle role="top_of_page">liboiljunk</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboiljunk.top_of_page">liboiljunk</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboiljunk.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 #define             <link linkend="OIL-OPT-MANGLE:CAPS">OIL_OPT_MANGLE</link>                      (a)
 #define             <link linkend="OIL-OPT-SUFFIX:CAPS">OIL_OPT_SUFFIX</link>
 #define             <link linkend="OIL-CHECK-PROTOTYPE:CAPS">OIL_CHECK_PROTOTYPE</link>                 (a)
@@ -39,18 +36,18 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboiljunk.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboiljunk.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="OIL-OPT-MANGLE:CAPS" role="macro"/>OIL_OPT_MANGLE()</title>
-<indexterm><primary>OIL_OPT_MANGLE</primary></indexterm><programlisting>#define OIL_OPT_MANGLE(a) a
+<refsect2 id="OIL-OPT-MANGLE:CAPS" role="macro">
+<title>OIL_OPT_MANGLE()</title>
+<indexterm zone="OIL-OPT-MANGLE:CAPS"><primary>OIL_OPT_MANGLE</primary></indexterm><programlisting>#define OIL_OPT_MANGLE(a) a
 </programlisting>
 <para>
 Used internally to implement the --enable-alternate-optimizations
@@ -64,9 +61,9 @@ configure option.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-OPT-SUFFIX:CAPS" role="macro"/>OIL_OPT_SUFFIX</title>
-<indexterm><primary>OIL_OPT_SUFFIX</primary></indexterm><programlisting>#define OIL_OPT_SUFFIX
+<refsect2 id="OIL-OPT-SUFFIX:CAPS" role="macro">
+<title>OIL_OPT_SUFFIX</title>
+<indexterm zone="OIL-OPT-SUFFIX:CAPS"><primary>OIL_OPT_SUFFIX</primary></indexterm><programlisting>#define OIL_OPT_SUFFIX
 </programlisting>
 <para>
 Used internally to implement the --enable-alternate-optimizations
@@ -74,9 +71,9 @@ configure option.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="OIL-CHECK-PROTOTYPE:CAPS" role="macro"/>OIL_CHECK_PROTOTYPE()</title>
-<indexterm><primary>OIL_CHECK_PROTOTYPE</primary></indexterm><programlisting>#define             OIL_CHECK_PROTOTYPE(a)</programlisting>
+<refsect2 id="OIL-CHECK-PROTOTYPE:CAPS" role="macro">
+<title>OIL_CHECK_PROTOTYPE()</title>
+<indexterm zone="OIL-CHECK-PROTOTYPE:CAPS"><primary>OIL_CHECK_PROTOTYPE</primary></indexterm><programlisting>#define             OIL_CHECK_PROTOTYPE(a)</programlisting>
 <para>
 Macro used internally to implement the --enable-prototype-checking
 configure option.</para>
@@ -87,9 +84,9 @@ configure option.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-OPT-FLAG-MANGLE:CAPS" role="macro"/>OIL_OPT_FLAG_MANGLE()</title>
-<indexterm><primary>OIL_OPT_FLAG_MANGLE</primary></indexterm><programlisting>#define             OIL_OPT_FLAG_MANGLE(a)</programlisting>
+<refsect2 id="OIL-OPT-FLAG-MANGLE:CAPS" role="macro">
+<title>OIL_OPT_FLAG_MANGLE()</title>
+<indexterm zone="OIL-OPT-FLAG-MANGLE:CAPS"><primary>OIL_OPT_FLAG_MANGLE</primary></indexterm><programlisting>#define             OIL_OPT_FLAG_MANGLE(a)</programlisting>
 <para>
 Used internally to implement the --enable-alternate-optimizations
 configure option.</para>
@@ -102,9 +99,9 @@ configure option.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="OIL-NO-CLASSES:CAPS" role="macro"/>OIL_NO_CLASSES</title>
-<indexterm><primary>OIL_NO_CLASSES</primary></indexterm><programlisting>#define OIL_NO_CLASSES
+<refsect2 id="OIL-NO-CLASSES:CAPS" role="macro">
+<title>OIL_NO_CLASSES</title>
+<indexterm zone="OIL-NO-CLASSES:CAPS"><primary>OIL_NO_CLASSES</primary></indexterm><programlisting>#define OIL_NO_CLASSES
 </programlisting>
 <para>
 Used internally to implement the --enable-alternate-optimizations
@@ -112,9 +109,9 @@ configure option.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="NULL:CAPS" role="macro"/>NULL</title>
-<indexterm><primary>NULL</primary></indexterm><programlisting>#define NULL ((void *)0)
+<refsect2 id="NULL:CAPS" role="macro">
+<title>NULL</title>
+<indexterm zone="NULL:CAPS"><primary>NULL</primary></indexterm><programlisting>#define NULL ((void *)0)
 </programlisting>
 <para>
 FIXME: gtk-doc is broken and doesn't know how to ignore this.</para>

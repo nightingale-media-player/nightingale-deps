@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>OilFunctionClass</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="liboil-liboildebug.html" title="Debug">
 <link rel="next" href="liboil-liboilimpl-unstable.html" title="OilFunctionImpl">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,49 +22,44 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboilimpl-unstable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2591784" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2612575" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilclass-unstable.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilclass-unstable.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilclass-unstable"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2591784"></a><span class="refentrytitle">OilFunctionClass</span>
-</h2>
-<p>OilFunctionClass &#8212; Functions for manipulating function classes</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilclass-unstable.top_of_page"></a>OilFunctionClass</span></h2>
+<p>OilFunctionClass — Functions for manipulating function classes</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilclass-unstable.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-                    <a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a>;
-#define             <a href="liboil-liboilclass-unstable.html#OIL-DECLARE-CLASS:CAPS">OIL_DECLARE_CLASS</a>                   (klass)
-#define             <a href="liboil-liboilclass-unstable.html#OIL-DEFINE-CLASS-FULL:CAPS">OIL_DEFINE_CLASS_FULL</a>               (klass, string, test)
-#define             <a href="liboil-liboilclass-unstable.html#OIL-DEFINE-CLASS:CAPS">OIL_DEFINE_CLASS</a>                    (klass, string)
-<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a>*   <a href="liboil-liboilclass-unstable.html#oil-class-get-by-index">oil_class_get_by_index</a>              (int i);
-<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a>*   <a href="liboil-liboilclass-unstable.html#oil-class-get">oil_class_get</a>                       (const char *class_name);
-void                <a href="liboil-liboilclass-unstable.html#oil-class-optimize">oil_class_optimize</a>                  (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass);
-int                 <a href="liboil-liboilclass-unstable.html#oil-class-get-n-classes">oil_class_get_n_classes</a>             (void);
-void                <a href="liboil-liboilclass-unstable.html#oil-class-choose-by-name">oil_class_choose_by_name</a>            (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
+                    <a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a>;
+#define             <a class="link" href="liboil-liboilclass-unstable.html#OIL-DECLARE-CLASS:CAPS" title="OIL_DECLARE_CLASS()">OIL_DECLARE_CLASS</a>                   (klass)
+#define             <a class="link" href="liboil-liboilclass-unstable.html#OIL-DEFINE-CLASS-FULL:CAPS" title="OIL_DEFINE_CLASS_FULL()">OIL_DEFINE_CLASS_FULL</a>               (klass, string, test)
+#define             <a class="link" href="liboil-liboilclass-unstable.html#OIL-DEFINE-CLASS:CAPS" title="OIL_DEFINE_CLASS()">OIL_DEFINE_CLASS</a>                    (klass, string)
+<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a>*   <a class="link" href="liboil-liboilclass-unstable.html#oil-class-get-by-index" title="oil_class_get_by_index ()">oil_class_get_by_index</a>              (int i);
+<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a>*   <a class="link" href="liboil-liboilclass-unstable.html#oil-class-get" title="oil_class_get ()">oil_class_get</a>                       (const char *class_name);
+void                <a class="link" href="liboil-liboilclass-unstable.html#oil-class-optimize" title="oil_class_optimize ()">oil_class_optimize</a>                  (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass);
+int                 <a class="link" href="liboil-liboilclass-unstable.html#oil-class-get-n-classes" title="oil_class_get_n_classes ()">oil_class_get_n_classes</a>             (void);
+void                <a class="link" href="liboil-liboilclass-unstable.html#oil-class-choose-by-name" title="oil_class_choose_by_name ()">oil_class_choose_by_name</a>            (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
                                                          const char *name);
-void                <a href="liboil-liboilclass-unstable.html#oil-class-register-impl-by-name">oil_class_register_impl_by_name</a>     (const char *klass_name,
-                                                         <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);
-void                <a href="liboil-liboilclass-unstable.html#oil-class-register-impl">oil_class_register_impl</a>             (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
-                                                         <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);
-void                <a href="liboil-liboilclass-unstable.html#oil-class-register-impl-full">oil_class_register_impl_full</a>        (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
-                                                         void (*func) (void),
+void                <a class="link" href="liboil-liboilclass-unstable.html#oil-class-register-impl-by-name" title="oil_class_register_impl_by_name ()">oil_class_register_impl_by_name</a>     (const char *klass_name,
+                                                         <a class="link" href="liboil-liboilimpl-unstable.html#OilFunctionImpl" title="OilFunctionImpl">OilFunctionImpl</a> *impl);
+void                <a class="link" href="liboil-liboilclass-unstable.html#oil-class-register-impl" title="oil_class_register_impl ()">oil_class_register_impl</a>             (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
+                                                         <a class="link" href="liboil-liboilimpl-unstable.html#OilFunctionImpl" title="OilFunctionImpl">OilFunctionImpl</a> *impl);
+void                <a class="link" href="liboil-liboilclass-unstable.html#oil-class-register-impl-full" title="oil_class_register_impl_full ()">oil_class_register_impl_full</a>        (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
+                                                         void (funcvoid) (),
                                                          const char *name,
                                                          unsigned int flags);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2612575"></a><h2>Description</h2>
+<a name="liboil-liboilclass-unstable.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -127,11 +122,10 @@ array, the rows of the array are contiguous.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2612635"></a><h2>Details</h2>
+<a name="liboil-liboilclass-unstable.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2612646"></a><h3>
-<a name="OilFunctionClass"></a>OilFunctionClass</h3>
-<a class="indexterm" name="id2612658"></a><pre class="programlisting">typedef struct {
+<a name="OilFunctionClass"></a><h3>OilFunctionClass</h3>
+<pre class="programlisting">typedef struct {
 } OilFunctionClass;
 </pre>
 <p>
@@ -142,9 +136,8 @@ An opaque structure representing a function class.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612678"></a><h3>
-<a name="OIL-DECLARE-CLASS:CAPS"></a>OIL_DECLARE_CLASS()</h3>
-<a class="indexterm" name="id2612690"></a><pre class="programlisting">#define             OIL_DECLARE_CLASS(klass)</pre>
+<a name="OIL-DECLARE-CLASS:CAPS"></a><h3>OIL_DECLARE_CLASS()</h3>
+<pre class="programlisting">#define             OIL_DECLARE_CLASS(klass)</pre>
 <p>
 Declares the Liboil function class <em class="parameter"><code>klass</code></em>.</p>
 <p>
@@ -153,7 +146,7 @@ Declares the Liboil function class <em class="parameter"><code>klass</code></em>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> the name of a function class (without the oil_ prefix)
 </td>
 </tr></tbody>
@@ -161,11 +154,10 @@ Declares the Liboil function class <em class="parameter"><code>klass</code></em>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612735"></a><h3>
-<a name="OIL-DEFINE-CLASS-FULL:CAPS"></a>OIL_DEFINE_CLASS_FULL()</h3>
-<a class="indexterm" name="id2612746"></a><pre class="programlisting">#define             OIL_DEFINE_CLASS_FULL(klass, string, test)</pre>
+<a name="OIL-DEFINE-CLASS-FULL:CAPS"></a><h3>OIL_DEFINE_CLASS_FULL()</h3>
+<pre class="programlisting">#define             OIL_DEFINE_CLASS_FULL(klass, string, test)</pre>
 <p>
-Defines a <a href="liboil-liboilclass-unstable.html#OilFunctionClass"><span class="type">OilFunctionClass</span></a> structure for <em class="parameter"><code>klass</code></em>.  Classes
+Defines a <a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass"><span class="type">OilFunctionClass</span></a> structure for <em class="parameter"><code>klass</code></em>.  Classes
 defined this way will be automatically at Liboil initialization
 time.</p>
 <p>
@@ -175,17 +167,17 @@ time.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> name of class to declare (without oil_ prefix)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>string</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
 <td> prototype of class
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>test</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>test</code></em> :</span></p></td>
 <td> test function
 </td>
 </tr>
@@ -194,11 +186,10 @@ time.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612828"></a><h3>
-<a name="OIL-DEFINE-CLASS:CAPS"></a>OIL_DEFINE_CLASS()</h3>
-<a class="indexterm" name="id2612840"></a><pre class="programlisting">#define             OIL_DEFINE_CLASS(klass, string)</pre>
+<a name="OIL-DEFINE-CLASS:CAPS"></a><h3>OIL_DEFINE_CLASS()</h3>
+<pre class="programlisting">#define             OIL_DEFINE_CLASS(klass, string)</pre>
 <p>
-Defines a <a href="liboil-liboilclass-unstable.html#OilFunctionClass"><span class="type">OilFunctionClass</span></a> structure for <em class="parameter"><code>klass</code></em>.  Classes
+Defines a <a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass"><span class="type">OilFunctionClass</span></a> structure for <em class="parameter"><code>klass</code></em>.  Classes
 defined this way will be automatically at Liboil initialization
 time.</p>
 <p>
@@ -208,12 +199,12 @@ time.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> name of class to declare (without oil_ prefix)
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>string</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>string</code></em> :</span></p></td>
 <td> prototype of class
 </td>
 </tr>
@@ -222,9 +213,8 @@ time.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612908"></a><h3>
-<a name="oil-class-get-by-index"></a>oil_class_get_by_index ()</h3>
-<a class="indexterm" name="id2612919"></a><pre class="programlisting"><a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a>*   oil_class_get_by_index              (int i);</pre>
+<a name="oil-class-get-by-index"></a><h3>oil_class_get_by_index ()</h3>
+<pre class="programlisting"><a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a>*   oil_class_get_by_index              (int i);</pre>
 <p>
 Returns a pointer to the function class with index <em class="parameter"><code>i</code></em>.</p>
 <p>
@@ -234,12 +224,12 @@ Returns a pointer to the function class with index <em class="parameter"><code>i
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>i</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>i</code></em> :</span></p></td>
 <td> index
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> an <em class="parameter"><code>OilFunctionClass</code></em>
 </td>
 </tr>
@@ -248,9 +238,8 @@ Returns a pointer to the function class with index <em class="parameter"><code>i
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2612991"></a><h3>
-<a name="oil-class-get"></a>oil_class_get ()</h3>
-<a class="indexterm" name="id2613004"></a><pre class="programlisting"><a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a>*   oil_class_get                       (const char *class_name);</pre>
+<a name="oil-class-get"></a><h3>oil_class_get ()</h3>
+<pre class="programlisting"><a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a>*   oil_class_get                       (const char *class_name);</pre>
 <p>
 Returns a pointer to the function class that has the given class
 name.  If no such class is found, NULL is returned.</p>
@@ -261,12 +250,12 @@ name.  If no such class is found, NULL is returned.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>class_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>class_name</code></em> :</span></p></td>
 <td> the name of the function class
 </td>
 </tr>
 <tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a pointer to a function class
 </td>
 </tr>
@@ -275,9 +264,8 @@ name.  If no such class is found, NULL is returned.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650415"></a><h3>
-<a name="oil-class-optimize"></a>oil_class_optimize ()</h3>
-<a class="indexterm" name="id2650426"></a><pre class="programlisting">void                oil_class_optimize                  (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass);</pre>
+<a name="oil-class-optimize"></a><h3>oil_class_optimize ()</h3>
+<pre class="programlisting">void                oil_class_optimize                  (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass);</pre>
 <p>
 Tests and profiles each implementation for the given function
 class.  Testing compares the output of running each implementation
@@ -289,7 +277,7 @@ same input.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> a function class
 </td>
 </tr></tbody>
@@ -297,9 +285,8 @@ same input.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650480"></a><h3>
-<a name="oil-class-get-n-classes"></a>oil_class_get_n_classes ()</h3>
-<a class="indexterm" name="id2650491"></a><pre class="programlisting">int                 oil_class_get_n_classes             (void);</pre>
+<a name="oil-class-get-n-classes"></a><h3>oil_class_get_n_classes ()</h3>
+<pre class="programlisting">int                 oil_class_get_n_classes             (void);</pre>
 <p>
 Returns the number of function classes.</p>
 <p>
@@ -308,7 +295,7 @@ Returns the number of function classes.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> the number of function classes
 </td>
 </tr></tbody>
@@ -316,9 +303,8 @@ Returns the number of function classes.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650530"></a><h3>
-<a name="oil-class-choose-by-name"></a>oil_class_choose_by_name ()</h3>
-<a class="indexterm" name="id2650541"></a><pre class="programlisting">void                oil_class_choose_by_name            (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
+<a name="oil-class-choose-by-name"></a><h3>oil_class_choose_by_name ()</h3>
+<pre class="programlisting">void                oil_class_choose_by_name            (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
                                                          const char *name);</pre>
 <p>
 Sets the chosen implementation for the given function class to
@@ -332,12 +318,12 @@ not changed.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> a function class
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> the name of an implementation
 </td>
 </tr>
@@ -346,10 +332,9 @@ not changed.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650616"></a><h3>
-<a name="oil-class-register-impl-by-name"></a>oil_class_register_impl_by_name ()</h3>
-<a class="indexterm" name="id2650627"></a><pre class="programlisting">void                oil_class_register_impl_by_name     (const char *klass_name,
-                                                         <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);</pre>
+<a name="oil-class-register-impl-by-name"></a><h3>oil_class_register_impl_by_name ()</h3>
+<pre class="programlisting">void                oil_class_register_impl_by_name     (const char *klass_name,
+                                                         <a class="link" href="liboil-liboilimpl-unstable.html#OilFunctionImpl" title="OilFunctionImpl">OilFunctionImpl</a> *impl);</pre>
 <p>
 Adds <em class="parameter"><code>impl</code></em> to the list of implementations associated with
 the function class given by <em class="parameter"><code>klass_name</code></em>.</p>
@@ -360,12 +345,12 @@ the function class given by <em class="parameter"><code>klass_name</code></em>.<
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass_name</code></em> :</span></p></td>
 <td> the name of the class
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>impl</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>impl</code></em> :</span></p></td>
 <td> an implementation
 </td>
 </tr>
@@ -374,10 +359,9 @@ the function class given by <em class="parameter"><code>klass_name</code></em>.<
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650711"></a><h3>
-<a name="oil-class-register-impl"></a>oil_class_register_impl ()</h3>
-<a class="indexterm" name="id2650722"></a><pre class="programlisting">void                oil_class_register_impl             (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
-                                                         <a href="liboil-liboilimpl-unstable.html#OilFunctionImpl">OilFunctionImpl</a> *impl);</pre>
+<a name="oil-class-register-impl"></a><h3>oil_class_register_impl ()</h3>
+<pre class="programlisting">void                oil_class_register_impl             (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
+                                                         <a class="link" href="liboil-liboilimpl-unstable.html#OilFunctionImpl" title="OilFunctionImpl">OilFunctionImpl</a> *impl);</pre>
 <p>
 Adds <em class="parameter"><code>impl</code></em> to the list of implementations associated with
 the function class given by <em class="parameter"><code>klass</code></em>.</p>
@@ -388,12 +372,12 @@ the function class given by <em class="parameter"><code>klass</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> the class
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>impl</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>impl</code></em> :</span></p></td>
 <td> an implementation
 </td>
 </tr>
@@ -402,10 +386,9 @@ the function class given by <em class="parameter"><code>klass</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2650807"></a><h3>
-<a name="oil-class-register-impl-full"></a>oil_class_register_impl_full ()</h3>
-<a class="indexterm" name="id2650818"></a><pre class="programlisting">void                oil_class_register_impl_full        (<a href="liboil-liboilclass-unstable.html#OilFunctionClass">OilFunctionClass</a> *klass,
-                                                         void (*func) (void),
+<a name="oil-class-register-impl-full"></a><h3>oil_class_register_impl_full ()</h3>
+<pre class="programlisting">void                oil_class_register_impl_full        (<a class="link" href="liboil-liboilclass-unstable.html#OilFunctionClass" title="OilFunctionClass">OilFunctionClass</a> *klass,
+                                                         void (funcvoid) (),
                                                          const char *name,
                                                          unsigned int flags);</pre>
 <p>
@@ -418,22 +401,22 @@ the function class given by <em class="parameter"><code>klass</code></em>.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>klass</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>klass</code></em> :</span></p></td>
 <td> the class
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>func</code></em> :</span></p></td>
 <td> the function
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td> name of the function
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
 <td> CPU flags
 </td>
 </tr>
@@ -442,5 +425,8 @@ the function class given by <em class="parameter"><code>klass</code></em>.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -34,15 +34,25 @@
 #include <liboil/liboilfault.h>
 #include <liboil/liboilutils.h>
 
-//#include <unistd.h>
-//#include <fcntl.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdio.h>
-//#include <setjmp.h>
-//#include <signal.h>
-//#include <sys/time.h>
-//#include <time.h>
+#if defined(__linux__)
+#include <linux/auxvec.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+
+#ifndef PPC_FEATURE_HAS_ALTIVEC
+/* From linux-2.6/include/asm-powerpc/cputable.h */
+#define PPC_FEATURE_HAS_ALTIVEC 0x10000000
+#endif
+
+#endif
+
+#if defined(__APPLE__)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
 
 #if defined(__FreeBSD__)
 #include <sys/types.h>
@@ -60,20 +70,22 @@ oil_profile_stamp_tb(void)
   return ts;
 }
 
+#if !defined(__FreeBSD__) && !defined(__FreeBSD_kernel__) && !defined(__APPLE__) && !defined(__linux__)
 static void
 test_altivec (void * ignored)
 {
   asm volatile ("vor v0, v0, v0\n");
 }
+#endif
 
-#if defined(__FreeBSD__)
-void
-oil_check_altivec_sysctl (void)
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+static void
+oil_check_altivec_sysctl_freebsd (void)
 {
   int ret, av;
   size_t len;
 
-  len = sizeof(enabled);
+  len = sizeof(av);
   ret = sysctlbyname("hw.altivec", &av, &len, NULL, 0);
   if (!ret && av) {
     oil_cpu_flags |= OIL_IMPL_FLAG_ALTIVEC;
@@ -81,7 +93,73 @@ oil_check_altivec_sysctl (void)
 }
 #endif
 
-void
+#if defined(__APPLE__)
+static void
+oil_check_altivec_sysctl_darwin (void)
+{
+  int ret, vu;
+  size_t len;
+
+  len = sizeof(vu);
+  ret = sysctlbyname("hw.vectorunit", &vu, &len, NULL, 0);
+  if (!ret && vu) {
+    oil_cpu_flags |= OIL_IMPL_FLAG_ALTIVEC;
+  }
+}
+#endif
+
+#if defined(__linux__)
+static void
+oil_check_altivec_proc_auxv (void)
+{
+  static int available = -1;
+  int new_avail = 0;
+  unsigned long buf[64];
+  ssize_t count;
+  int fd, i;
+
+  /* Flags already set */
+  if (available != -1) {
+    return;
+  }
+
+  fd = open("/proc/self/auxv", O_RDONLY);
+  if (fd < 0) {
+    goto out;
+  }
+
+more:
+  count = read(fd, buf, sizeof(buf));
+  if (count < 0) {
+    goto out_close;
+  }
+
+  for (i=0; i < (count / sizeof(unsigned long)); i += 2) {
+    if (buf[i] == AT_HWCAP) {
+      new_avail = !!(buf[i+1] & PPC_FEATURE_HAS_ALTIVEC);
+      goto out_close;
+    } else if (buf[i] == AT_NULL) {
+      goto out_close;
+    }
+  }
+
+  if (count == sizeof(buf)) {
+    goto more;
+  }
+
+out_close:
+  close(fd);
+
+out:
+  available = new_avail;
+  if (available) {
+    oil_cpu_flags |= OIL_IMPL_FLAG_ALTIVEC;
+  }
+}
+#endif
+
+#if !defined(__FreeBSD__) && !defined(__FreeBSD_kernel__) && !defined(__APPLE__) && !defined(__linux__)
+static void
 oil_check_altivec_fault (void)
 {
   oil_fault_check_enable ();
@@ -91,12 +169,17 @@ oil_check_altivec_fault (void)
   }
   oil_fault_check_disable ();
 }
+#endif
 
 void
 oil_cpu_detect_arch(void)
 {
-#if defined(__FreeBSD__)
-  oil_check_altivec_sysctl();
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  oil_check_altivec_sysctl_freebsd();
+#elif defined(__APPLE__)
+  oil_check_altivec_sysctl_darwin();
+#elif defined(__linux__)
+  oil_check_altivec_proc_auxv();
 #else
   oil_check_altivec_fault();
 #endif

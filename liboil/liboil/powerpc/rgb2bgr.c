@@ -60,22 +60,22 @@ rgb2bgr_ppc (uint8_t *dest, uint8_t* src, int n)
 	"	rotlwi r12, r12, 16	\n" /* -g-- ..x */
 	"	or r10, r10, r12		\n" /* bgr- x.. */
 	"	lwzu r12, 4(%1)		\n" /* gbrg ..x */
-	"	and r13, r12, %4		\n" /* -br- ...x */
-	"	sub r12, r12, r13		\n" /* g--g ..x. */
-	"	rotlwi r13, r13, 16	\n" /* r--b ...x */
+	"	and r9, r12, %4		\n" /* -br- ...x */
+	"	sub r12, r12, r9		\n" /* g--g ..x. */
+	"	rotlwi r9, r9, 16	\n" /* r--b ...x */
 	"	andis. r11, r11, 0xFF	\n" /* -r-- .x.. */
 	"	or r12, r12, r11		\n" /* gr-g ..x. */
-	"	andi. r11, r13, 0xFF	\n" /* ---b .x.. */
+	"	andi. r11, r9, 0xFF	\n" /* ---b .x.. */
 	"	or r10, r10, r11		\n" /* bgrb x... */
 	"	stwu r10, 4(%0)		\n"
 	"	lwzu r10, 4(%1)		\n" /* brgb x... */
 	"	rotlwi r10, r10, 16	\n" /* gbbr x... */
 	"	and r11, r10, %3		\n" /* -b-r .x.. */
 	"	sub r10, r10, r11		\n" /* g-b- x... */
-	"	andis. r13, r13, 0xFF00	\n" /* r--- ...x */
-	"	or r11, r11, r13		\n" /* rb-r .x.. */
-	"	andi. r13, r10, 0xFF00	\n" /* --b- ...x */
-	"       or r12, r12, r13		\n" /* grbg ..x. */
+	"	andis. r9, r9, 0xFF00	\n" /* r--- ...x */
+	"	or r11, r11, r9		\n" /* rb-r .x.. */
+	"	andi. r9, r10, 0xFF00	\n" /* --b- ...x */
+	"       or r12, r12, r9		\n" /* grbg ..x. */
 	"	stwu r12, 4(%0)		\n"
 	"	andis. r10, r10, 0xFF00	\n" /* g--- x... */
 	"	rotlwi r10, r10, 16	\n" /* --g- x... */
@@ -84,11 +84,13 @@ rgb2bgr_ppc (uint8_t *dest, uint8_t* src, int n)
 	"	bdnz 1b			\n"
       : "+b" (dest), "+b" (src)
       : "b" (n), "b" (0x00FF00FF), "b" (0x00FFFF00)
-      : "10", "11", "12", "13", "ctr");
+      : "10", "11", "12", "9", "ctr");
 }
 
 OIL_DEFINE_IMPL_ASM (rgb2bgr_ppc, rgb2bgr);
 
+#ifdef HAVE_UNALIGNED_ACCESS
+/* This doesn't work on ppc64. */
 static void
 rgb2bgr_ppc2 (uint8_t *dest, uint8_t* src, int n)
 {
@@ -108,6 +110,7 @@ rgb2bgr_ppc2 (uint8_t *dest, uint8_t* src, int n)
 }
 
 OIL_DEFINE_IMPL_ASM (rgb2bgr_ppc2, rgb2bgr);
+#endif
 
 static void
 rgb2bgr_ppc3 (uint8_t *dest, uint8_t* src, int n)

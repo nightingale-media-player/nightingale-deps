@@ -5,7 +5,11 @@
 #include <liboil/liboilfunction.h>
 #include <emmintrin.h>
 
-#include "sse_wrapper.h"
+#ifdef __GNUC__
+#define SSE_FUNCTION __attribute__((force_align_arg_pointer))
+#else
+#define SSE_FUNCTION
+#endif
 
 #define MULTSUM_SSE2_NSTRIDED(i) { \
   t1 = _mm_load_pd(&OIL_GET(src1, i, double)); \

@@ -44,6 +44,7 @@ convert_u8_s16_mmx (uint8_t * dest, const int16_t * src, int n)
     dest++;
     n--;
   }
+  if (n==0) return;
 
   n>>=3;
   __asm__ __volatile__ ("\n"
@@ -115,8 +116,10 @@ convert_s16_u8_mmx (int16_t * dest, const uint8_t * src, int n)
     dest++;
     n--;
   }
+  if (n==0) return;
 
   n>>=3;
+
   __asm__ __volatile__ ("\n"
       "  pxor %%mm0, %%mm0\n"
       "1:\n"

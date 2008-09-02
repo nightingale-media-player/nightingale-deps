@@ -103,3 +103,13 @@ New Classes
 
 
 
+Test Machines
+-------------
+
+  Machines that ds has access to:
+
+    power5.infradead.org - powerpc POWER5
+    bombadil.infradead.org - powerpc PPC970MP (G5)
+
+
+

@@ -238,16 +238,24 @@ void realign(int align)
 #ifdef HAVE_GCC_ASM
 #ifdef HAVE_I386
   __asm__ __volatile__ (
-      "  sub %%ebx, %%esp\n"
+      "  sub %%edi, %%esp\n"
+#ifdef HAVE_SYMBOL_UNDERSCORE
+      "  call _check_class_with_alignment\n"
+#else
       "  call check_class_with_alignment\n"
-      "  add %%ebx, %%esp\n"
-      :: "b" (align)
+#endif
+      "  add %%edi, %%esp\n"
+      :: "D" (align)
   );
 #endif
 #ifdef HAVE_AMD64
   __asm__ __volatile__ (
       "  sub %%rbx, %%rsp\n"
+#ifdef HAVE_SYMBOL_UNDERSCORE
+      "  call _check_class_with_alignment\n"
+#else
       "  call check_class_with_alignment\n"
+#endif
       "  add %%rbx, %%rsp\n"
       :: "b" (align)
   );
@@ -266,6 +274,7 @@ void check_class_with_alignment (void)
   test = oil_test_new(klass);
 
   oil_test_set_iterations(test, 1);
+  test->n = 100;
 
   impl = klass->reference_impl;
   oil_test_check_impl (test, impl);
@@ -323,6 +332,13 @@ int main (int argc, char *argv[])
   int i, n;
 
   oil_init ();
+
+#ifdef __APPLE__
+  /* the dynamic loader on MacOS/X crashes if someone unaligns the stack, so it's
+     unlikely that any code gets away with doing it.  Our test code doesn't get
+     away with it either, so we'll just bail out. */
+  return 0;
+#endif
 
   n = oil_class_get_n_classes ();
   for (i = 0; i < n; i++) {

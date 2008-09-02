@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ $(whoami) = ds ] ; then
+  confflags="--enable-gtk-doc"
+else
+  confflags="--enable-gtk-doc"
+fi
+
 autoreconf -i -f &&
-./configure --enable-maintainer-mode --disable-static --enable-gtk-doc $@
-#./configure --enable-maintainer-mode --disable-static --with-alternate-optimization="-O3 -funroll-all-loops" $@
+  ./configure --enable-maintainer-mode --disable-static $confflags $@
+
+

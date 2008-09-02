@@ -59,8 +59,8 @@ diffsquaresum_f32_ref(float *dest, float *src1, int sstr1, float *src2,
 	int i;
 
 	for(i=0;i<n;i++){
-		x = OIL_GET(src1, i*sstr1, double) -
-                  OIL_GET(src2, i*sstr2, double);
+		x = OIL_GET(src1, i*sstr1, float) -
+                  OIL_GET(src2, i*sstr2, float);
 		x = x*x;
 		tmp = sum;
 		sum += x;

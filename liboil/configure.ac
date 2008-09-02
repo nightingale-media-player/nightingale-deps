@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT(liboil,0.3.13)
+AC_INIT(liboil,0.3.15)
 
 AS_NANO(LIBOIL_CVS=no,LIBOIL_CVS=yes)
 
@@ -18,7 +18,7 @@ dnl - library source changed -> increment REVISION
 dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
-LIBOIL_LIBVERSION="1:0:1"
+LIBOIL_LIBVERSION="3:0:3"
 AC_SUBST(LIBOIL_LIBVERSION)
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_TAGS([])
@@ -121,6 +121,8 @@ fi
 AX_CREATE_STDINT_H([liboil/liboil-stdint.h])
 
 AC_FUNC_MMAP()
+AC_CHECK_LIB(m, rint,
+  AC_DEFINE(HAVE_RINT, 1, [Define if rint() is available]))
 AC_CHECK_LIB(m, rintf,
   AC_DEFINE(HAVE_RINTF, 1, [Define if rintf() is available]))
 AC_CHECK_LIB(m, lrint,
@@ -134,6 +136,8 @@ AC_CHECK_HEADER(ieee754.h,
   AC_DEFINE(HAVE_IEEE754_H, 1, [Define if ieee754.h exists]))
 
 AC_CHECK_HEADERS([inttypes.h])
+AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([unistd.h])
 
 AC_CHECK_FUNCS([gettimeofday])
 AC_CHECK_FUNCS([sigaction])
@@ -147,6 +151,21 @@ AC_CHECK_LIB(rt, clock_gettime,
    LIBRT=-lrt
    )
 AC_SUBST(LIBRT)
+
+AC_CACHE_CHECK(for monotonic clocks,
+    oil_cv_monotonic_clock,AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <time.h>
+#include <unistd.h>
+int main() {
+#if !(defined(_POSIX_MONOTONIC_CLOCK) && _POSIX_MONOTONIC_CLOCK >= 0 && defined(CLOCK_MONOTONIC))
+        #error No monotonic clock
+#endif
+        return 0;
+}
+]])],oil_cv_monotonic_clock=yes,oil_cv_monotonic_clock=no))
+if test "$oil_cv_monotonic_clock" = "yes"; then
+  AC_DEFINE(HAVE_MONOTONIC_CLOCK,1,[Defined if we have a monotonic clock])
+fi
 
 AS_COMPILER_FLAG(-Wall, LIBOIL_CFLAGS="$LIBOIL_CFLAGS -Wall")
 if test "x$LIBOIL_CVS" = "xyes"
@@ -170,12 +189,13 @@ fi
 
 if test x$HAVE_GCC_ASM = xyes -a x$HAVE_ARM = xyes ; then
   AS_COMPILER_FLAG(["-Wa,-mfpu=vfp"],
-    [LIBOIL_CFLAGS="$LIBOIL_CFLAGS -mfpu=vfp"],
+    [VFP_CFLAGS="$VFP_CFLAGS -mfpu=vfp"],
     true)
-  AS_COMPILER_FLAG(["-Wa,-mfloat-abi=softfp"],
-    [LIBOIL_CFLAGS="$LIBOIL_CFLAGS -mfloat-abi=softfp"],
-    true)
+  #AS_COMPILER_FLAG(["-Wa,-mfloat-abi=softfp"],
+  #  [VFP_CFLAGS="$VFP_CFLAGS -mfloat-abi=softfp"],
+  #  true)
 fi
+AC_SUBST(VFP_CFLAGS)
 
 #AS_COMPILER_FLAG(["-fasm-blocks"], HAVE_ASM_BLOCKS=yes, HAVE_ASM_BLOCKS=no)
 HAVE_ASM_BLOCKS=no
@@ -214,6 +234,12 @@ AC_SUBST(SSE3_CFLAGS)
 AC_SUBST(_3DNOW_CFLAGS)
 AC_SUBST(_3DNOWEXT_CFLAGS)
 AC_SUBST(ALTIVEC_CFLAGS)
+
+dnl binutils-2.18 required for this, but is too new for FreeBSD/Solaris
+AS_GCC_INLINE_ASM_INSTRUCTION([pmaddubsw %%mm0, %%mm0], [HAVE_SSSE3_ASM=yes], [HAVE_SSSE3_ASM=no])
+if test "x$HAVE_SSSE3_ASM" = xyes ; then
+  AC_DEFINE(HAVE_SSSE3_ASM, 1, [Defined if compiler/assembler can handle SSSE3 instructions])
+fi
 
 AC_DEFINE(OIL_EXPORTS, 1, [Defined for compiling internal code])
 
@@ -258,7 +284,6 @@ testsuite/instruction/Makefile
 examples/Makefile
 examples/audioresample/Makefile
 examples/huffman/Makefile
-examples/jit/Makefile
 examples/jpeg/Makefile
 examples/md5/Makefile
 examples/taylor/Makefile

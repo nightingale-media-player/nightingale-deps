@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilfuncs-doc">
 <refmeta>
-<refentrytitle role="top_of_page">liboilfuncs-doc</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilfuncs-doc.top_of_page">liboilfuncs-doc</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilfuncs-doc.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
 <link linkend="void">void</link>                <link linkend="oil-clip-f32">oil_clip_f32</link>                        (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
@@ -190,18 +187,18 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilfuncs-doc.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilfuncs-doc.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="oil-clip-f32" role="function"/>oil_clip_f32 ()</title>
-<indexterm><primary>oil_clip_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_f32                        (<link linkend="float">float</link> *dest,
+<refsect2 id="oil-clip-f32" role="function">
+<title>oil_clip_f32 ()</title>
+<indexterm zone="oil-clip-f32"><primary>oil_clip_f32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_f32                        (<link linkend="float">float</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="float">float</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -236,9 +233,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-f64" role="function"/>oil_clip_f64 ()</title>
-<indexterm><primary>oil_clip_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_f64                        (<link linkend="double">double</link> *dest,
+<refsect2 id="oil-clip-f64" role="function">
+<title>oil_clip_f64 ()</title>
+<indexterm zone="oil-clip-f64"><primary>oil_clip_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_f64                        (<link linkend="double">double</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="double">double</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -273,9 +270,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-s16" role="function"/>oil_clip_s16 ()</title>
-<indexterm><primary>oil_clip_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s16                        (<link linkend="int16-t">int16_t</link> *dest,
+<refsect2 id="oil-clip-s16" role="function">
+<title>oil_clip_s16 ()</title>
+<indexterm zone="oil-clip-s16"><primary>oil_clip_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s16                        (<link linkend="int16-t">int16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -310,9 +307,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-s32" role="function"/>oil_clip_s32 ()</title>
-<indexterm><primary>oil_clip_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s32                        (<link linkend="int32-t">int32_t</link> *dest,
+<refsect2 id="oil-clip-s32" role="function">
+<title>oil_clip_s32 ()</title>
+<indexterm zone="oil-clip-s32"><primary>oil_clip_s32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s32                        (<link linkend="int32-t">int32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int32-t">int32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -347,9 +344,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-s8" role="function"/>oil_clip_s8 ()</title>
-<indexterm><primary>oil_clip_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s8                         (<link linkend="int8-t">int8_t</link> *dest,
+<refsect2 id="oil-clip-s8" role="function">
+<title>oil_clip_s8 ()</title>
+<indexterm zone="oil-clip-s8"><primary>oil_clip_s8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_s8                         (<link linkend="int8-t">int8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int8-t">int8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -384,9 +381,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-u16" role="function"/>oil_clip_u16 ()</title>
-<indexterm><primary>oil_clip_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u16                        (<link linkend="uint16-t">uint16_t</link> *dest,
+<refsect2 id="oil-clip-u16" role="function">
+<title>oil_clip_u16 ()</title>
+<indexterm zone="oil-clip-u16"><primary>oil_clip_u16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u16                        (<link linkend="uint16-t">uint16_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint16-t">uint16_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -421,9 +418,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-u32" role="function"/>oil_clip_u32 ()</title>
-<indexterm><primary>oil_clip_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u32                        (<link linkend="uint32-t">uint32_t</link> *dest,
+<refsect2 id="oil-clip-u32" role="function">
+<title>oil_clip_u32 ()</title>
+<indexterm zone="oil-clip-u32"><primary>oil_clip_u32</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u32                        (<link linkend="uint32-t">uint32_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint32-t">uint32_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -458,9 +455,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-clip-u8" role="function"/>oil_clip_u8 ()</title>
-<indexterm><primary>oil_clip_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u8                         (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-clip-u8" role="function">
+<title>oil_clip_u8 ()</title>
+<indexterm zone="oil-clip-u8"><primary>oil_clip_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_clip_u8                         (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="uint8-t">uint8_t</link> *src,
                                                          <link linkend="int">int</link> sstr,
@@ -495,9 +492,9 @@ the result in <parameter>dest</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-dequantize8x8-s16" role="function"/>oil_dequantize8x8_s16 ()</title>
-<indexterm><primary>oil_dequantize8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_dequantize8x8_s16               (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-dequantize8x8-s16" role="function">
+<title>oil_dequantize8x8_s16 ()</title>
+<indexterm zone="oil-dequantize8x8-s16"><primary>oil_dequantize8x8_s16</primary></indexterm><programlisting><link linkend="void">void</link>                oil_dequantize8x8_s16               (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          <link linkend="int">int</link> dstr,
                                                          const <link linkend="int16-t">int16_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> sstr1,
@@ -530,9 +527,9 @@ in <parameter>s2_8x8</parameter> and places the result in <parameter>d_8x8</para
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-diffsquaresum-f64" role="function"/>oil_diffsquaresum_f64 ()</title>
-<indexterm><primary>oil_diffsquaresum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diffsquaresum_f64               (<link linkend="double">double</link> *d_1,
+<refsect2 id="oil-diffsquaresum-f64" role="function">
+<title>oil_diffsquaresum_f64 ()</title>
+<indexterm zone="oil-diffsquaresum-f64"><primary>oil_diffsquaresum_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diffsquaresum_f64               (<link linkend="double">double</link> *d_1,
                                                          const <link linkend="double">double</link> *src1,
                                                          <link linkend="int">int</link> sstr1,
                                                          const <link linkend="double">double</link> *src2,
@@ -563,9 +560,9 @@ and places the result in <parameter>d_1</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-md5" role="function"/>oil_md5 ()</title>
-<indexterm><primary>oil_md5</primary></indexterm><programlisting><link linkend="void">void</link>                oil_md5                             (<link linkend="uint32-t">uint32_t</link> *i_4,
+<refsect2 id="oil-md5" role="function">
+<title>oil_md5 ()</title>
+<indexterm zone="oil-md5"><primary>oil_md5</primary></indexterm><programlisting><link linkend="void">void</link>                oil_md5                             (<link linkend="uint32-t">uint32_t</link> *i_4,
                                                          const <link linkend="uint32-t">uint32_t</link> *s_16);</programlisting>
 <para>
 Performs an MD5 checksum iteration.  The iteration operates on
@@ -590,9 +587,9 @@ FIXME: need a reference here</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-mix-u8" role="function"/>oil_mix_u8 ()</title>
-<indexterm><primary>oil_mix_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_mix_u8                          (<link linkend="uint8-t">uint8_t</link> *dest,
+<refsect2 id="oil-mix-u8" role="function">
+<title>oil_mix_u8 ()</title>
+<indexterm zone="oil-mix-u8"><primary>oil_mix_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_mix_u8                          (<link linkend="uint8-t">uint8_t</link> *dest,
                                                          const <link linkend="uint8-t">uint8_t</link> *src1,
                                                          const <link linkend="uint8-t">uint8_t</link> *src2,
                                                          const <link linkend="uint8-t">uint8_t</link> *src3,
@@ -622,9 +619,9 @@ FIXME: This function is broken.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-null" role="function"/>oil_null ()</title>
-<indexterm><primary>oil_null</primary></indexterm><programlisting><link linkend="void">void</link>                oil_null                            (void);</programlisting>
+<refsect2 id="oil-null" role="function">
+<title>oil_null ()</title>
+<indexterm zone="oil-null"><primary>oil_null</primary></indexterm><programlisting><link linkend="void">void</link>                oil_null                            (void);</programlisting>
 <para>
 Does nothing, and does it fast.
 </para>
@@ -634,9 +631,9 @@ a Liboil function.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="oil-scanlinescale2-u8" role="function"/>oil_scanlinescale2_u8 ()</title>
-<indexterm><primary>oil_scanlinescale2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scanlinescale2_u8               (<link linkend="uint8-t">uint8_t</link> *d,
+<refsect2 id="oil-scanlinescale2-u8" role="function">
+<title>oil_scanlinescale2_u8 ()</title>
+<indexterm zone="oil-scanlinescale2-u8"><primary>oil_scanlinescale2_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_scanlinescale2_u8               (<link linkend="uint8-t">uint8_t</link> *d,
                                                          const <link linkend="uint8-t">uint8_t</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -657,9 +654,9 @@ written to <parameter>d</parameter>, and that half of <parameter>s</parameter> i
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sincos-f64" role="function"/>oil_sincos_f64 ()</title>
-<indexterm><primary>oil_sincos_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sincos_f64                      (<link linkend="double">double</link> *dest1,
+<refsect2 id="oil-sincos-f64" role="function">
+<title>oil_sincos_f64 ()</title>
+<indexterm zone="oil-sincos-f64"><primary>oil_sincos_f64</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sincos_f64                      (<link linkend="double">double</link> *dest1,
                                                          <link linkend="double">double</link> *dest2,
                                                          <link linkend="int">int</link> n,
                                                          const <link linkend="double">double</link> *s1_1,
@@ -687,9 +684,9 @@ by <parameter>s2_1</parameter> for each destination element.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-utf8-validate" role="function"/>oil_utf8_validate ()</title>
-<indexterm><primary>oil_utf8_validate</primary></indexterm><programlisting><link linkend="void">void</link>                oil_utf8_validate                   (<link linkend="int32-t">int32_t</link> *d_1,
+<refsect2 id="oil-utf8-validate" role="function">
+<title>oil_utf8_validate ()</title>
+<indexterm zone="oil-utf8-validate"><primary>oil_utf8_validate</primary></indexterm><programlisting><link linkend="void">void</link>                oil_utf8_validate                   (<link linkend="int32-t">int32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -710,9 +707,9 @@ invalid UTF-8 character is written to <parameter>d_1</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-diff8x8-s16-u8" role="function"/>oil_diff8x8_s16_u8 ()</title>
-<indexterm><primary>oil_diff8x8_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_s16_u8                  (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-diff8x8-s16-u8" role="function">
+<title>oil_diff8x8_s16_u8 ()</title>
+<indexterm zone="oil-diff8x8-s16-u8"><primary>oil_diff8x8_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_s16_u8                  (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,
@@ -740,9 +737,9 @@ is larger than the source type.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-diff8x8-average-s16-u8" role="function"/>oil_diff8x8_average_s16_u8 ()</title>
-<indexterm><primary>oil_diff8x8_average_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_average_s16_u8          (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-diff8x8-average-s16-u8" role="function">
+<title>oil_diff8x8_average_s16_u8 ()</title>
+<indexterm zone="oil-diff8x8-average-s16-u8"><primary>oil_diff8x8_average_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_average_s16_u8          (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,
@@ -779,9 +776,9 @@ is larger than the source type.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-err-inter8x8-u8-avg" role="function"/>oil_err_inter8x8_u8_avg ()</title>
-<indexterm><primary>oil_err_inter8x8_u8_avg</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_inter8x8_u8_avg             (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-err-inter8x8-u8-avg" role="function">
+<title>oil_err_inter8x8_u8_avg ()</title>
+<indexterm zone="oil-err-inter8x8-u8-avg"><primary>oil_err_inter8x8_u8_avg</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_inter8x8_u8_avg             (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,
@@ -821,9 +818,9 @@ FIXME: This function is broken, since the reference function uses
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-recon8x8-inter" role="function"/>oil_recon8x8_inter ()</title>
-<indexterm><primary>oil_recon8x8_inter</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_inter                  (<link linkend="uint8-t">uint8_t</link> *d_8x8,
+<refsect2 id="oil-recon8x8-inter" role="function">
+<title>oil_recon8x8_inter ()</title>
+<indexterm zone="oil-recon8x8-inter"><primary>oil_recon8x8_inter</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_inter                  (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
@@ -850,9 +847,9 @@ and places the result in the destination array.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-err-intra8x8-u8" role="function"/>oil_err_intra8x8_u8 ()</title>
-<indexterm><primary>oil_err_intra8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_intra8x8_u8                 (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-err-intra8x8-u8" role="function">
+<title>oil_err_intra8x8_u8 ()</title>
+<indexterm zone="oil-err-intra8x8-u8"><primary>oil_err_intra8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_intra8x8_u8                 (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1);</programlisting>
 <para>
@@ -872,9 +869,9 @@ the variance of the mean of <parameter>s1_8x8</parameter>.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-recon8x8-intra" role="function"/>oil_recon8x8_intra ()</title>
-<indexterm><primary>oil_recon8x8_intra</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_intra                  (<link linkend="uint8-t">uint8_t</link> *d_8x8,
+<refsect2 id="oil-recon8x8-intra" role="function">
+<title>oil_recon8x8_intra ()</title>
+<indexterm zone="oil-recon8x8-intra"><primary>oil_recon8x8_intra</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_intra                  (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="int16-t">int16_t</link> *s_8x8);</programlisting>
 <para>
@@ -893,9 +890,9 @@ and places the result in the destination array.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-colsad8x8-u8" role="function"/>oil_colsad8x8_u8 ()</title>
-<indexterm><primary>oil_colsad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_colsad8x8_u8                    (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-colsad8x8-u8" role="function">
+<title>oil_colsad8x8_u8 ()</title>
+<indexterm zone="oil-colsad8x8-u8"><primary>oil_colsad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_colsad8x8_u8                    (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,
@@ -926,9 +923,9 @@ placed in <parameter>d_1</parameter>.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-over-u8" role="function"/>oil_composite_over_u8 ()</title>
-<indexterm><primary>oil_composite_over_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_u8               (<link linkend="uint8-t">uint8_t</link> *i_n,
+<refsect2 id="oil-composite-over-u8" role="function">
+<title>oil_composite_over_u8 ()</title>
+<indexterm zone="oil-composite-over-u8"><primary>oil_composite_over_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_over_u8               (<link linkend="uint8-t">uint8_t</link> *i_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -946,9 +943,9 @@ Performs the compositing operation DEST = SRC OVER DEST.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-diff8x8-const128-s16-u8" role="function"/>oil_diff8x8_const128_s16_u8 ()</title>
-<indexterm><primary>oil_diff8x8_const128_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_const128_s16_u8         (<link linkend="int16-t">int16_t</link> *d_8x8,
+<refsect2 id="oil-diff8x8-const128-s16-u8" role="function">
+<title>oil_diff8x8_const128_s16_u8 ()</title>
+<indexterm zone="oil-diff8x8-const128-s16-u8"><primary>oil_diff8x8_const128_s16_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_diff8x8_const128_s16_u8         (<link linkend="int16-t">int16_t</link> *d_8x8,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1);</programlisting>
 <para>
@@ -968,9 +965,9 @@ is larger than the source type.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-copy8x8-u8" role="function"/>oil_copy8x8_u8 ()</title>
-<indexterm><primary>oil_copy8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_copy8x8_u8                      (<link linkend="uint8-t">uint8_t</link> *d_8x8,
+<refsect2 id="oil-copy8x8-u8" role="function">
+<title>oil_copy8x8_u8 ()</title>
+<indexterm zone="oil-copy8x8-u8"><primary>oil_copy8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_copy8x8_u8                      (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="uint8-t">uint8_t</link> *s_8x8,
                                                          <link linkend="int">int</link> ss);</programlisting>
@@ -992,9 +989,9 @@ Copies an 8x8 block.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-err-inter8x8-u8" role="function"/>oil_err_inter8x8_u8 ()</title>
-<indexterm><primary>oil_err_inter8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_inter8x8_u8                 (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-err-inter8x8-u8" role="function">
+<title>oil_err_inter8x8_u8 ()</title>
+<indexterm zone="oil-err-inter8x8-u8"><primary>oil_err_inter8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_err_inter8x8_u8                 (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,
@@ -1025,9 +1022,9 @@ equal to 64 times the variance of the mean of the intermediate block.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-fdct8x8theora" role="function"/>oil_fdct8x8theora ()</title>
-<indexterm><primary>oil_fdct8x8theora</primary></indexterm><programlisting><link linkend="void">void</link>                oil_fdct8x8theora                   (const <link linkend="int16-t">int16_t</link> *s_8x8,
+<refsect2 id="oil-fdct8x8theora" role="function">
+<title>oil_fdct8x8theora ()</title>
+<indexterm zone="oil-fdct8x8theora"><primary>oil_fdct8x8theora</primary></indexterm><programlisting><link linkend="void">void</link>                oil_fdct8x8theora                   (const <link linkend="int16-t">int16_t</link> *s_8x8,
                                                          <link linkend="int16-t">int16_t</link> *d_8x8);</programlisting>
 <para>
 Calculates the FDCT transformation of <parameter>s_8x8</parameter> according to the Theora
@@ -1046,9 +1043,9 @@ to normal Liboil order.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-rowsad8x8-u8" role="function"/>oil_rowsad8x8_u8 ()</title>
-<indexterm><primary>oil_rowsad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rowsad8x8_u8                    (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-rowsad8x8-u8" role="function">
+<title>oil_rowsad8x8_u8 ()</title>
+<indexterm zone="oil-rowsad8x8-u8"><primary>oil_rowsad8x8_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_rowsad8x8_u8                    (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8);</programlisting>
 <para>
@@ -1072,9 +1069,9 @@ FIXME: This function is declared incorrectly.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-recon8x8-inter2" role="function"/>oil_recon8x8_inter2 ()</title>
-<indexterm><primary>oil_recon8x8_inter2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_inter2                 (<link linkend="uint8-t">uint8_t</link> *d_8x8,
+<refsect2 id="oil-recon8x8-inter2" role="function">
+<title>oil_recon8x8_inter2 ()</title>
+<indexterm zone="oil-recon8x8-inter2"><primary>oil_recon8x8_inter2</primary></indexterm><programlisting><link linkend="void">void</link>                oil_recon8x8_inter2                 (<link linkend="uint8-t">uint8_t</link> *d_8x8,
                                                          <link linkend="int">int</link> ds,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
@@ -1110,9 +1107,9 @@ the destination array.</para>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-composite-add-u8" role="function"/>oil_composite_add_u8 ()</title>
-<indexterm><primary>oil_composite_add_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_u8                (<link linkend="uint8-t">uint8_t</link> *i_n,
+<refsect2 id="oil-composite-add-u8" role="function">
+<title>oil_composite_add_u8 ()</title>
+<indexterm zone="oil-composite-add-u8"><primary>oil_composite_add_u8</primary></indexterm><programlisting><link linkend="void">void</link>                oil_composite_add_u8                (<link linkend="uint8-t">uint8_t</link> *i_n,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_n,
                                                          <link linkend="int">int</link> n);</programlisting>
 <para>
@@ -1130,9 +1127,9 @@ Performs the compositing operation DEST = SRC ADD DEST.</para>
 <listitem><simpara> number of elements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="oil-sad8x8-u8-avg" role="function"/>oil_sad8x8_u8_avg ()</title>
-<indexterm><primary>oil_sad8x8_u8_avg</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_u8_avg                   (<link linkend="uint32-t">uint32_t</link> *d_1,
+<refsect2 id="oil-sad8x8-u8-avg" role="function">
+<title>oil_sad8x8_u8_avg ()</title>
+<indexterm zone="oil-sad8x8-u8-avg"><primary>oil_sad8x8_u8_avg</primary></indexterm><programlisting><link linkend="void">void</link>                oil_sad8x8_u8_avg                   (<link linkend="uint32-t">uint32_t</link> *d_1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s1_8x8,
                                                          <link linkend="int">int</link> ss1,
                                                          const <link linkend="uint8-t">uint8_t</link> *s2_8x8,

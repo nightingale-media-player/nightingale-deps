@@ -128,3 +128,20 @@ scalarmultiply_f32_ns_unroll4 (float *dest, float *src1, float *src2, int n)
 }
 OIL_DEFINE_IMPL (scalarmultiply_f32_ns_unroll4, scalarmultiply_f32_ns);
 
+static void
+scalarmultiply_f64_ns_unroll4 (double *dest, double *src1, double *src2, int n)
+{
+  int i;
+
+  for(i=0;i<(n&(~0x3));i+=4){
+    dest[i+0] = src1[i+0] * src2[0];
+    dest[i+1] = src1[i+1] * src2[0];
+    dest[i+2] = src1[i+2] * src2[0];
+    dest[i+3] = src1[i+3] * src2[0];
+  }
+  for(;i<n;i++){
+    dest[i] = src1[i] * src2[0];
+  }
+}
+OIL_DEFINE_IMPL (scalarmultiply_f64_ns_unroll4, scalarmultiply_f64_ns);
+

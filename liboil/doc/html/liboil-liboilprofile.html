@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>OilProfile</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="liboil-liboilparameter.html" title="OilParameter">
 <link rel="next" href="liboil-liboilprototype.html" title="OilPrototype">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,41 +22,36 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboilprototype.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2577511" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2611573" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilprofile.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilprofile.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilprofile"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2577511"></a><span class="refentrytitle">OilProfile</span>
-</h2>
-<p>OilProfile &#8212; Measuring the length of time needed to execute Liboil functions.</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilprofile.top_of_page"></a>OilProfile</span></h2>
+<p>OilProfile — Measuring the length of time needed to execute Liboil functions.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilprofile.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-                    <a href="liboil-liboilprofile.html#OilProfile">OilProfile</a>;
-#define             <a href="liboil-liboilprofile.html#OIL-PROFILE-HIST-LENGTH:CAPS">OIL_PROFILE_HIST_LENGTH</a>
-unsigned long       <a href="liboil-liboilprofile.html#oil-profile-stamp">oil_profile_stamp</a>                   (void);
-void                <a href="liboil-liboilprofile.html#oil-profile-init">oil_profile_init</a>                    (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof);
-void                <a href="liboil-liboilprofile.html#oil-profile-stop-handle">oil_profile_stop_handle</a>             (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof);
-void                <a href="liboil-liboilprofile.html#oil-profile-get-ave-std">oil_profile_get_ave_std</a>             (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof,
+                    <a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a>;
+#define             <a class="link" href="liboil-liboilprofile.html#OIL-PROFILE-HIST-LENGTH:CAPS" title="OIL_PROFILE_HIST_LENGTH">OIL_PROFILE_HIST_LENGTH</a>
+unsigned long       <a class="link" href="liboil-liboilprofile.html#oil-profile-stamp" title="oil_profile_stamp ()">oil_profile_stamp</a>                   (void);
+void                <a class="link" href="liboil-liboilprofile.html#oil-profile-init" title="oil_profile_init ()">oil_profile_init</a>                    (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof);
+void                <a class="link" href="liboil-liboilprofile.html#oil-profile-stop-handle" title="oil_profile_stop_handle ()">oil_profile_stop_handle</a>             (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof);
+void                <a class="link" href="liboil-liboilprofile.html#oil-profile-get-ave-std" title="oil_profile_get_ave_std ()">oil_profile_get_ave_std</a>             (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof,
                                                          double *ave_p,
                                                          double *std_p);
-#define             <a href="liboil-liboilprofile.html#oil-profile-start">oil_profile_start</a>                   (x)
-#define             <a href="liboil-liboilprofile.html#oil-profile-stop">oil_profile_stop</a>                    (x)
+#define             <a class="link" href="liboil-liboilprofile.html#oil-profile-start" title="oil_profile_start()">oil_profile_start</a>                   (x)
+#define             <a class="link" href="liboil-liboilprofile.html#oil-profile-stop" title="oil_profile_stop()">oil_profile_stop</a>                    (x)
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2611573"></a><h2>Description</h2>
+<a name="liboil-liboilprofile.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -64,11 +59,10 @@ void                <a href="liboil-liboilprofile.html#oil-profile-get-ave-std">
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2611593"></a><h2>Details</h2>
+<a name="liboil-liboilprofile.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2611604"></a><h3>
-<a name="OilProfile"></a>OilProfile</h3>
-<a class="indexterm" name="id2611616"></a><pre class="programlisting">typedef struct {
+<a name="OilProfile"></a><h3>OilProfile</h3>
+<pre class="programlisting">typedef struct {
 } OilProfile;
 </pre>
 <p>
@@ -79,21 +73,19 @@ An opaque structure representing profiling information.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611635"></a><h3>
-<a name="OIL-PROFILE-HIST-LENGTH:CAPS"></a>OIL_PROFILE_HIST_LENGTH</h3>
-<a class="indexterm" name="id2611647"></a><pre class="programlisting">#define OIL_PROFILE_HIST_LENGTH 10
+<a name="OIL-PROFILE-HIST-LENGTH:CAPS"></a><h3>OIL_PROFILE_HIST_LENGTH</h3>
+<pre class="programlisting">#define OIL_PROFILE_HIST_LENGTH 10
 </pre>
 <p>
-Internal definition of the number of histogram entries in <a href="liboil-liboilprofile.html#OilProfile"><span class="type">OilProfile</span></a>.</p>
+Internal definition of the number of histogram entries in <a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile"><span class="type">OilProfile</span></a>.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611673"></a><h3>
-<a name="oil-profile-stamp"></a>oil_profile_stamp ()</h3>
-<a class="indexterm" name="id2611686"></a><pre class="programlisting">unsigned long       oil_profile_stamp                   (void);</pre>
+<a name="oil-profile-stamp"></a><h3>oil_profile_stamp ()</h3>
+<pre class="programlisting">unsigned long       oil_profile_stamp                   (void);</pre>
 <p>
 Creates a timestamp based on a CPU-specific high-frequency
 counter, if available.</p>
@@ -103,7 +95,7 @@ counter, if available.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a timestamp
 </td>
 </tr></tbody>
@@ -111,9 +103,8 @@ counter, if available.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611728"></a><h3>
-<a name="oil-profile-init"></a>oil_profile_init ()</h3>
-<a class="indexterm" name="id2611740"></a><pre class="programlisting">void                oil_profile_init                    (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof);</pre>
+<a name="oil-profile-init"></a><h3>oil_profile_init ()</h3>
+<pre class="programlisting">void                oil_profile_init                    (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof);</pre>
 <p>
 Initializes a profiling structure.</p>
 <p>
@@ -122,7 +113,7 @@ Initializes a profiling structure.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>prof</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>prof</code></em> :</span></p></td>
 <td> the OilProfile structure
 </td>
 </tr></tbody>
@@ -130,9 +121,8 @@ Initializes a profiling structure.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611790"></a><h3>
-<a name="oil-profile-stop-handle"></a>oil_profile_stop_handle ()</h3>
-<a class="indexterm" name="id2611801"></a><pre class="programlisting">void                oil_profile_stop_handle             (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof);</pre>
+<a name="oil-profile-stop-handle"></a><h3>oil_profile_stop_handle ()</h3>
+<pre class="programlisting">void                oil_profile_stop_handle             (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof);</pre>
 <p>
 Handles post-processing of a single profiling run.
 </p>
@@ -144,7 +134,7 @@ FIXME: need more info</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>prof</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>prof</code></em> :</span></p></td>
 <td> the OilProfile structure
 </td>
 </tr></tbody>
@@ -152,9 +142,8 @@ FIXME: need more info</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611854"></a><h3>
-<a name="oil-profile-get-ave-std"></a>oil_profile_get_ave_std ()</h3>
-<a class="indexterm" name="id2611866"></a><pre class="programlisting">void                oil_profile_get_ave_std             (<a href="liboil-liboilprofile.html#OilProfile">OilProfile</a> *prof,
+<a name="oil-profile-get-ave-std"></a><h3>oil_profile_get_ave_std ()</h3>
+<pre class="programlisting">void                oil_profile_get_ave_std             (<a class="link" href="liboil-liboilprofile.html#OilProfile" title="OilProfile">OilProfile</a> *prof,
                                                          double *ave_p,
                                                          double *std_p);</pre>
 <p>
@@ -169,17 +158,17 @@ be NULL, in which case the values will not be written.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>prof</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>prof</code></em> :</span></p></td>
 <td> the OilProfile structure
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>ave_p</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>ave_p</code></em> :</span></p></td>
 <td> pointer to average
 </td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>std_p</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>std_p</code></em> :</span></p></td>
 <td> pointer to standard deviation
 </td>
 </tr>
@@ -188,11 +177,10 @@ be NULL, in which case the values will not be written.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2651318"></a><h3>
-<a name="oil-profile-start"></a>oil_profile_start()</h3>
-<a class="indexterm" name="id2651330"></a><pre class="programlisting">#define             oil_profile_start(x)</pre>
+<a name="oil-profile-start"></a><h3>oil_profile_start()</h3>
+<pre class="programlisting">#define             oil_profile_start(x)</pre>
 <p>
-Starts a profiling run by obtaining a timestamp via <a href="liboil-liboilprofile.html#oil-profile-stamp"><code class="function">oil_profile_stamp()</code></a>
+Starts a profiling run by obtaining a timestamp via <a class="link" href="liboil-liboilprofile.html#oil-profile-stamp" title="oil_profile_stamp ()"><code class="function">oil_profile_stamp()</code></a>
 and writing it into <em class="parameter"><code>x</code></em>.</p>
 <p>
 
@@ -200,7 +188,7 @@ and writing it into <em class="parameter"><code>x</code></em>.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> a pointer to an OilProfile structure
 </td>
 </tr></tbody>
@@ -208,12 +196,11 @@ and writing it into <em class="parameter"><code>x</code></em>.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2651384"></a><h3>
-<a name="oil-profile-stop"></a>oil_profile_stop()</h3>
-<a class="indexterm" name="id2651397"></a><pre class="programlisting">#define             oil_profile_stop(x)</pre>
+<a name="oil-profile-stop"></a><h3>oil_profile_stop()</h3>
+<pre class="programlisting">#define             oil_profile_stop(x)</pre>
 <p>
-Stops a profiling run by obtaining a timestamp via <a href="liboil-liboilprofile.html#oil-profile-stamp"><code class="function">oil_profile_stamp()</code></a>
-and writing it into <em class="parameter"><code>x</code></em>.  It then calls <a href="liboil-liboilprofile.html#oil-profile-stop-handle"><code class="function">oil_profile_stop_handle()</code></a> to
+Stops a profiling run by obtaining a timestamp via <a class="link" href="liboil-liboilprofile.html#oil-profile-stamp" title="oil_profile_stamp ()"><code class="function">oil_profile_stamp()</code></a>
+and writing it into <em class="parameter"><code>x</code></em>.  It then calls <a class="link" href="liboil-liboilprofile.html#oil-profile-stop-handle" title="oil_profile_stop_handle ()"><code class="function">oil_profile_stop_handle()</code></a> to
 handle post-processing of the profiling run.</p>
 <p>
 
@@ -221,7 +208,7 @@ handle post-processing of the profiling run.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
 <td> a pointer to an OilProfile structure
 </td>
 </tr></tbody>
@@ -229,5 +216,8 @@ handle post-processing of the profiling run.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

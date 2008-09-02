@@ -29,7 +29,7 @@
 #include "config.h"
 #endif
 #include <liboil/liboilfunction.h>
-#include <conv.h>
+#include "conv.h"
 
 #ifdef HAVE_IEEE754_H
 

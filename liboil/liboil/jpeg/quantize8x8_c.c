@@ -48,7 +48,7 @@ OIL_DEFINE_CLASS (dequantize8x8_s16,
     "int16_t *s2_8x8, int sstr2");
 
 #define BLOCK8x8_S16(ptr, stride, row, column) \
-	(*((int16_t *)((char *)ptr + stride*row) + column))
+	(*((int16_t *)((unsigned char *)ptr + stride*row) + column))
 
 static void
 dequantize8x8_s16_ref (int16_t *dest, int dstr, int16_t *src, int sstr,

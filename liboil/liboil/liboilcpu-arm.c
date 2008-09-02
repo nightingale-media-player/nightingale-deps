@@ -46,43 +46,6 @@
 #include <sys/time.h>
 #include <time.h>
 
-#if defined(__FreeBSD__)
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#endif
-
-#ifdef __sun
-#include <sys/auxv.h>
-#endif
-
-/**
- * SECTION:liboilcpu
- * @title: CPU
- * @short_description: Check the capabilities of the current CPU
- *
- */
-
-static void oil_cpu_detect_arch(void);
-
-static unsigned long oil_cpu_flags;
-
-extern unsigned long (*_oil_profile_stamp)(void);
-
-#if defined(__arm__)
-#define USE_CPUINFO
-#endif
-
-
-#ifdef HAVE_GETTIMEOFDAY
-static unsigned long
-oil_profile_stamp_gtod (void)
-{
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  return 1000000*(unsigned long)tv.tv_sec + (unsigned long)tv.tv_usec;
-}
-#endif
-
 /***** arm *****/
 
 #ifdef __arm__
@@ -128,8 +91,37 @@ oil_cpu_arm_getflags_cpuinfo (char *cpuinfo)
   free (cpuinfo_flags);
 }
 
-static void
-oil_cpu_detect_arm(void)
+static char *
+get_proc_cpuinfo (void)
+{
+  char *cpuinfo;
+  int fd;
+  int n;
+
+  cpuinfo = malloc(4096);
+  if (cpuinfo == NULL) return NULL;
+
+  fd = open("/proc/cpuinfo", O_RDONLY);
+  if (fd < 0) {
+    free (cpuinfo);
+    return NULL;
+  }
+
+  n = read(fd, cpuinfo, 4095);
+  if (n < 0) {
+    free (cpuinfo);
+    close (fd);
+    return NULL;
+  }
+  cpuinfo[n] = 0;
+
+  close (fd);
+
+  return cpuinfo;
+}
+
+void
+oil_cpu_detect_arch(void)
 {
 #ifdef __linux__
   int arm_implementer = 0;
@@ -170,110 +162,4 @@ oil_cpu_detect_arm(void)
 }
 #endif
 
-
-/***** alpha *****/
-
-#if defined(__alpha__)
-static unsigned long
-oil_profile_stamp_alpha(void)
-{
-	unsigned int ts;
-	__asm__ __volatile__ ("rpcc %0\n" : "=r"(ts));
-	return ts;
-}
-
-static void
-oil_cpu_detect_alpha(void)
-{
-  _oil_profile_stamp = oil_profile_stamp_alpha;
-}
-#endif
-
-/***** ia64 *****/
-
-#if defined(__ia64__)
-static unsigned long
-oil_profile_stamp_ia64(void)
-{
-	unsigned int ts;
-	__asm__ __volatile__("mov %0=ar.itc\n" : "=r"(ts) :: "memory");
-	return ts;
-}
-
-static void
-oil_cpu_detect_ia64(void)
-{
-  _oil_profile_stamp = oil_profile_stamp_ia64;
-}
-#endif
-
-/***** s390 *****/
-
-#if defined(__s390__)
-static unsigned long
-oil_profile_stamp_s390(void)
-{
-	uint64_t ts;
-	__asm__ __volatile__ ("STCK %0\n" : : "m" (ts));
-	return ts;
-}
-
-static void
-oil_cpu_detect_s390(void)
-{
-  _oil_profile_stamp = oil_profile_stamp_s390;
-}
-#endif
-
-/***** mips *****/
-
-#if defined(__mips__)
-#if 0
-/* broken */
-static unsigned long
-oil_profile_stamp_mips(void)
-{
-	unsigned int ts;
-	__asm__ __volatile__ (
-		"	.set	push		\n"
-		"	.set	reorder		\n"
-		"	mfc0	%0,$9		\n"
-		"	.set	pop		\n"
-	: "=m" (ts));
-	return ts;
-}
-#endif
-
-static void
-oil_cpu_detect_mips(void)
-{
-  //_oil_profile_stamp = oil_profile_stamp_mips;
-}
-#endif
-
-static void
-oil_cpu_detect_arch(void)
-{
-#if defined(__i386__) || defined(__amd64__)
-  oil_cpu_detect_i386();
-#endif
-#if defined(__powerpc__) || defined(__PPC__) || defined(__ppc__)
-  oil_cpu_detect_powerpc();
-#endif
-#ifdef __arm__
-  oil_cpu_detect_arm();
-#endif
-#ifdef __alpha__
-  oil_cpu_detect_alpha();
-#endif
-#ifdef __ia64__
-  oil_cpu_detect_ia64();
-#endif
-#ifdef __s390__
-  oil_cpu_detect_s390();
-#endif
-#ifdef __mips__
-  oil_cpu_detect_mips();
-#endif
-}
 

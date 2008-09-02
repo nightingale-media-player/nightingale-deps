@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Intialization</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="Liboil Reference Manual">
 <link rel="up" href="ch02.html" title="Liboil Unstable API">
 <link rel="prev" href="ch02.html" title="Liboil Unstable API">
 <link rel="next" href="liboil-liboilcpu.html" title="CPU">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="Liboil Stable API">
 <link rel="chapter" href="ch02.html" title="Liboil Unstable API">
@@ -22,34 +22,29 @@
 <th width="100%" align="center">Liboil Reference Manual</th>
 <td><a accesskey="n" href="liboil-liboilcpu.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2570800" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2595260" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#liboil-liboilinit-unstable.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#liboil-liboilinit-unstable.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="liboil-liboilinit-unstable"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2570800"></a><span class="refentrytitle">Intialization</span>
-</h2>
-<p>Intialization &#8212; Initialization functions</p>
+<h2><span class="refentrytitle"><a name="liboil-liboilinit-unstable.top_of_page"></a>Intialization</span></h2>
+<p>Intialization — Initialization functions</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="liboil-liboilinit-unstable.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-void                <a href="liboil-liboilinit-unstable.html#oil-init-no-optimize">oil_init_no_optimize</a>                (void);
-void                <a href="liboil-liboilinit-unstable.html#oil-optimize-all">oil_optimize_all</a>                    (void);
-void                <a href="liboil-liboilinit-unstable.html#oil-optimize">oil_optimize</a>                        (const char *class_name);
+void                <a class="link" href="liboil-liboilinit-unstable.html#oil-init-no-optimize" title="oil_init_no_optimize ()">oil_init_no_optimize</a>                (void);
+void                <a class="link" href="liboil-liboilinit-unstable.html#oil-optimize-all" title="oil_optimize_all ()">oil_optimize_all</a>                    (void);
+void                <a class="link" href="liboil-liboilinit-unstable.html#oil-optimize" title="oil_optimize ()">oil_optimize</a>                        (const char *class_name);
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2595260"></a><h2>Description</h2>
+<a name="liboil-liboilinit-unstable.description"></a><h2>Description</h2>
 <p>
 </p>
 <p>
@@ -57,13 +52,12 @@ void                <a href="liboil-liboilinit-unstable.html#oil-optimize">oil_o
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597029"></a><h2>Details</h2>
+<a name="liboil-liboilinit-unstable.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2597039"></a><h3>
-<a name="oil-init-no-optimize"></a>oil_init_no_optimize ()</h3>
-<a class="indexterm" name="id2597051"></a><pre class="programlisting">void                oil_init_no_optimize                (void);</pre>
+<a name="oil-init-no-optimize"></a><h3>oil_init_no_optimize ()</h3>
+<pre class="programlisting">void                oil_init_no_optimize                (void);</pre>
 <p>
-Initialize liboil similar to <a href="liboil-liboilinit.html#oil-init"><code class="function">oil_init()</code></a>, but do not run the
+Initialize liboil similar to <a class="link" href="liboil-liboilinit.html#oil-init" title="oil_init ()"><code class="function">oil_init()</code></a>, but do not run the
 profiling stage.  This function is mainly useful for internal
 programs.</p>
 <p>
@@ -72,9 +66,8 @@ programs.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2589516"></a><h3>
-<a name="oil-optimize-all"></a>oil_optimize_all ()</h3>
-<a class="indexterm" name="id2589528"></a><pre class="programlisting">void                oil_optimize_all                    (void);</pre>
+<a name="oil-optimize-all"></a><h3>oil_optimize_all ()</h3>
+<pre class="programlisting">void                oil_optimize_all                    (void);</pre>
 <p>
 Optimize all function classes.</p>
 <p>
@@ -83,9 +76,8 @@ Optimize all function classes.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2589553"></a><h3>
-<a name="oil-optimize"></a>oil_optimize ()</h3>
-<a class="indexterm" name="id2589565"></a><pre class="programlisting">void                oil_optimize                        (const char *class_name);</pre>
+<a name="oil-optimize"></a><h3>oil_optimize ()</h3>
+<pre class="programlisting">void                oil_optimize                        (const char *class_name);</pre>
 <p>
 Optimize the function class that has the name specified by <em class="parameter"><code>class_name</code></em>.</p>
 <p>
@@ -94,7 +86,7 @@ Optimize the function class that has the name specified by <em class="parameter"
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term"><em class="parameter"><code>class_name</code></em>&#160;:</span></td>
+<td><p><span class="term"><em class="parameter"><code>class_name</code></em> :</span></p></td>
 <td> a string
 </td>
 </tr></tbody>
@@ -102,5 +94,8 @@ Optimize the function class that has the name specified by <em class="parameter"
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

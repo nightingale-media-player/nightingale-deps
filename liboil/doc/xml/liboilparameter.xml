@@ -4,7 +4,7 @@
 >
 <refentry id="liboil-liboilparameter">
 <refmeta>
-<refentrytitle role="top_of_page">OilParameter</refentrytitle>
+<refentrytitle role="top_of_page" id="liboil-liboilparameter.top_of_page">OilParameter</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>LIBOIL Library</refmiscinfo>
 </refmeta>
@@ -15,13 +15,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="liboil-liboilparameter.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
                     <link linkend="OilParameter">OilParameter</link>;
 <link linkend="void">void</link>*               <link linkend="oil-param-get-source-data">oil_param_get_source_data</link>           (<link linkend="OilParameter">OilParameter</link> *param);
 </synopsis>
@@ -35,7 +32,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="liboil-liboilparameter.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 </para>
@@ -44,11 +41,11 @@
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="liboil-liboilparameter.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="OilParameter" role="struct"/>OilParameter</title>
-<indexterm><primary>OilParameter</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="OilParameter" role="struct">
+<title>OilParameter</title>
+<indexterm zone="OilParameter"><primary>OilParameter</primary></indexterm><programlisting>typedef struct {
 } OilParameter;
 </programlisting>
 <para>
@@ -57,9 +54,9 @@ function prototype of an OilFunctionClass.</para>
 <para>
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="oil-param-get-source-data" role="function"/>oil_param_get_source_data ()</title>
-<indexterm><primary>oil_param_get_source_data</primary></indexterm><programlisting><link linkend="void">void</link>*               oil_param_get_source_data           (<link linkend="OilParameter">OilParameter</link> *param);</programlisting>
+<refsect2 id="oil-param-get-source-data" role="function">
+<title>oil_param_get_source_data ()</title>
+<indexterm zone="oil-param-get-source-data"><primary>oil_param_get_source_data</primary></indexterm><programlisting><link linkend="void">void</link>*               oil_param_get_source_data           (<link linkend="OilParameter">OilParameter</link> *param);</programlisting>
 <para>
 
 </para><variablelist role="params">
