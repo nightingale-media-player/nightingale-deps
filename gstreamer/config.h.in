@@ -224,6 +224,9 @@
 /* Defined if compiling for Windows */
 #undef HAVE_WIN32
 
+/* Define to 1 if you have the <winsock2.h> header file. */
+#undef HAVE_WINSOCK2_H
+
 /* the host CPU */
 #undef HOST_CPU
 

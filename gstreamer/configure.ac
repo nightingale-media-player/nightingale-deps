@@ -271,8 +271,10 @@ if test x$PERL_PATH = xno; then
 fi
 
 dnl we require flex and bison for building the parser
-AG_GST_BISON_CHECK
-AG_GST_FLEX_CHECK
+if test "x$GST_DISABLE_PARSE" != xyes; then
+  AG_GST_BISON_CHECK
+  AG_GST_FLEX_CHECK
+fi
 
 AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
@@ -314,6 +316,14 @@ AC_CHECK_HEADERS([sys/utsname.h])
 
 dnl Check for stdio_ext.f for __fbufsize
 AC_CHECK_HEADERS([stdio_ext.h])
+
+dnl used in gst/gstpoll.c
+AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
+AM_CONDITIONAL(HAVE_WINSOCK2_H, test "x$HAVE_WINSOCK2_H" = "xyes")
+if test "x$HAVE_WINSOCK2_H" = "xyes"; then
+  WIN32_LIBS="-lws2_32"
+  AC_SUBST(WIN32_LIBS)
+fi
 
 dnl *** checks for types/defines ***
 

@@ -97,7 +97,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @GST_DISABLE_PARSE_FALSE@am__DEPENDENCIES_1 = parse/libgstparse.la
 am__DEPENDENCIES_2 =
 libgstreamer_@GST_MAJORMINOR@_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_2)
 am__libgstreamer_@GST_MAJORMINOR@_la_SOURCES_DIST = gst.c gstobject.c \
 	gstbin.c gstbuffer.c gstbus.c gstcaps.c gstchildproxy.c \
 	gstclock.c gstdebugutils.c gstelement.c gstelementfactory.c \
@@ -396,6 +397,8 @@ HAVE_SYS_TIMES_H_AND_UNISTD_H_FALSE = @HAVE_SYS_TIMES_H_AND_UNISTD_H_FALSE@
 HAVE_SYS_TIMES_H_AND_UNISTD_H_TRUE = @HAVE_SYS_TIMES_H_AND_UNISTD_H_TRUE@
 HAVE_VALGRIND_FALSE = @HAVE_VALGRIND_FALSE@
 HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
+HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
+HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
 HAVE_XMLLINT = @HAVE_XMLLINT@
 HOST_CPU = @HOST_CPU@
 HTML_DIR = @HTML_DIR@
@@ -466,6 +469,7 @@ VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
+WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
 XML_CATALOG = @XML_CATALOG@
 XML_CFLAGS = @XML_CFLAGS@
@@ -624,6 +628,7 @@ CLEANFILES = $(built_header_make) $(built_source_make) $(as_dll_cleanfiles) *.gc
 DISTCLEANFILES = $(built_header_configure)
 libgstreamer_@GST_MAJORMINOR@_la_CFLAGS = \
 	-D_GNU_SOURCE					\
+	-DGST_EXPORTS                   \
 	-DG_LOG_DOMAIN=g_log_domain_gstreamer 		\
 	-DGST_MAJORMINOR=\""$(GST_MAJORMINOR)"\" 	\
 	-DGST_DISABLE_DEPRECATED			\
@@ -633,6 +638,7 @@ libgstreamer_@GST_MAJORMINOR@_la_CFLAGS = \
 libgstreamer_@GST_MAJORMINOR@_la_LIBADD = \
 	$(GST_PARSE_LA)					\
 	$(GST_ALL_LIBS)					\
+	$(WIN32_LIBS)                   \
 	$(XML_LIBS)
 
 libgstreamer_@GST_MAJORMINOR@_la_LDFLAGS = \

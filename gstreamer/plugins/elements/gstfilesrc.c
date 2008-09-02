@@ -36,6 +36,20 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef G_OS_WIN32
+#include <io.h>                 /* lseek, open, close, read */
+/* On win32, stat* default to 32 bit; we need the 64-bit
+ * variants, so explicitly define it that way. */
+#define stat __stat64
+#define fstat _fstat64
+#undef lseek
+#define lseek _lseeki64
+#undef off_t
+#define off_t guint64
+/* Prevent stat.h from defining the stat* functions as
+ * _stat*, since we're explicitly overriding that */
+#undef _INC_STAT_INL
+#endif
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -45,10 +59,6 @@
 
 #ifdef HAVE_MMAP
 # include <sys/mman.h>
-#endif
-
-#ifdef HAVE_WIN32
-#  include <io.h>               /* lseek, open, close, read */
 #endif
 
 #include <errno.h>
@@ -79,20 +89,17 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
  * use the 'file descriptor' opened in glib (and returned from this function)
  * in this library, as they may have unrelated C runtimes. */
 int
-gst_open (const gchar *filename,
-    int          flags,
-    int          mode)
+gst_open (const gchar * filename, int flags, int mode)
 {
 #ifdef G_OS_WIN32
   wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
   int retval;
   int save_errno;
 
-  if (wfilename == NULL)
-    {
-      errno = EINVAL;
-      return -1;
-    }
+  if (wfilename == NULL) {
+    errno = EINVAL;
+    return -1;
+  }
 
   retval = _wopen (wfilename, flags, mode);
   save_errno = errno;
