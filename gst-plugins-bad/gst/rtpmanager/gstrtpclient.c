@@ -19,23 +19,19 @@
 
 /**
  * SECTION:element-gstrtpclient
- * @short_description: handle media from one RTP client
  * @see_also: gstrtpjitterbuffer, gstrtpbin, gstrtpsession
  *
- * <refsect2>
- * <para>
  * This element handles RTP data from one client. It accepts multiple RTP streams that
  * should be synchronized together.
- * </para>
- * <para>
+ * 
  * Normally the SSRCs that map to the same CNAME (as given in the RTCP SDES messages)
  * should be synchronized.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
- * </programlisting>
- * </para>
+ * |[
+ * FIXME: gst-launch
+ * ]| FIXME: describe
  * </refsect2>
  *
  * Last reviewed on 2007-04-02 (0.10.5)
@@ -151,8 +147,8 @@ create_stream (GstRtpClient * rtpclient, guint32 ssrc)
   gst_bin_add (GST_BIN_CAST (rtpclient), stream->ptdemux);
 
   /* link jitterbuffer and PT demuxer */
-  srcpad = gst_element_get_pad (stream->jitterbuffer, "src");
-  sinkpad = gst_element_get_pad (stream->ptdemux, "sink");
+  srcpad = gst_element_get_static_pad (stream->jitterbuffer, "src");
+  sinkpad = gst_element_get_static_pad (stream->ptdemux, "sink");
   res = gst_pad_link (srcpad, sinkpad);
   gst_object_unref (srcpad);
   gst_object_unref (sinkpad);
@@ -165,7 +161,7 @@ create_stream (GstRtpClient * rtpclient, guint32 ssrc)
 
   /* ghost sinkpad */
   name = g_strdup_printf ("rtp_sink_%d", ssrc);
-  sinkpad = gst_element_get_pad (stream->jitterbuffer, "sink");
+  sinkpad = gst_element_get_static_pad (stream->jitterbuffer, "sink");
   stream->rtp_sink = gst_ghost_pad_new (name, sinkpad);
   gst_object_unref (sinkpad);
   g_free (name);

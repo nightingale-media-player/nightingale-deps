@@ -24,40 +24,32 @@
  * SECTION:element-mpeg2enc
  * @see_also: mpeg2dec
  *
- * <refsect2>
- * <para>
  * This element encodes raw video into an MPEG ?? stream using the
  * <ulink url="http://mjpeg.sourceforge.net/">mjpegtools</ulink> library.
  * Documentation on MPEG encoding in general can be found in the 
  * <ulink url="https://sourceforge.net/docman/display_doc.php?docid=3456&group_id=5776#s7">MJPEG Howto</ulink>
  * and on the various available parameters in the documentation
  * of the mpeg2enc tool in particular, which shares options with this element.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example pipeline</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch-0.10 videotestsrc num-buffers=1000 ! mpeg2enc ! filesink location=videotestsrc.m1v
- * </programlisting>
- * This example pipeline will encode a test video source to a an 
- * MPEG1 elementary stream (with Generic MPEG1 profile).
- * </para>
+ * ]| This example pipeline will encode a test video source to a an MPEG1
+ * elementary stream (with Generic MPEG1 profile).
  * <para>
- * Likely, the <link linkend="GstMpeg2enc--format">format</link> property
+ * Likely, the #GstMpeg2enc:format property
  * is most important, as it selects the type of MPEG stream that is produced.
  * In particular, default property values are dependent on the format,
  * and can even be forcibly restrained to certain pre-sets (and thereby ignored).
  * Note that the (S)VCD profiles also restrict the image size, so some scaling
  * may be needed to accomodate this.  The so-called generic profiles (as used
  * in the example above) allow most parameters to be adjusted.
- * <programlisting>
- * gst-launch-0.10 videotestsrc num-buffers=1000 ! videoscale \
- * ! mpeg2enc format=1 norm=p ! filesink location=videotestsrc.m1v
- * </programlisting>
- * (write everything in one line, without the backslash characters)
- * This will produce an MPEG1 profile stream according to VCD2.0 specifications
- * for PAL <link linkend="GstMpeg2enc--norm">norm</link> (as the image height
- * is dependent on video norm).
  * </para>
+ * |[
+ * gst-launch-0.10 videotestsrc num-buffers=1000 ! videoscale ! mpeg2enc format=1 norm=p ! filesink location=videotestsrc.m1v
+ * ]| This will produce an MPEG1 profile stream according to VCD2.0 specifications
+ * for PAL #GstMpeg2enc:norm (as the image height is dependent on video norm).
  * </refsect2>
  */
 
@@ -90,29 +82,6 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
         "mpegversion = (int) { 1, 2 }, " COMMON_VIDEO_CAPS)
     );
 
-
-
-/* Workaround against stupid removal of the log_level_t enum in 1.9.0rc3.
- * Without it doesn't make much sense to implement a mjpeg_log_handler_t */
-#ifndef LOG_NONE
-#define LOG_NONE 0
-#endif
-
-#ifndef LOG_DEBUG
-#define LOG_DEBUG 1
-#endif
-
-#ifndef LOG_INFO
-#define LOG_INFO 2
-#endif
-
-#ifndef LOG_WARN
-#define LOG_WARN 3
-#endif
-
-#ifndef LOG_ERROR
-#define LOG_ERROR 4
-#endif
 
 static void gst_mpeg2enc_finalize (GObject * object);
 static void gst_mpeg2enc_reset (GstMpeg2enc * enc);
@@ -182,6 +151,7 @@ gst_mpeg2enc_finalize (GObject * object)
 
   g_mutex_free (enc->tlock);
   g_cond_free (enc->cond);
+  g_queue_free (enc->time);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -219,6 +189,7 @@ gst_mpeg2enc_init (GstMpeg2enc * enc, GstMpeg2encClass * g_class)
   enc->buffer = NULL;
   enc->tlock = g_mutex_new ();
   enc->cond = g_cond_new ();
+  enc->time = g_queue_new ();
 
   gst_mpeg2enc_reset (enc);
 }
@@ -226,6 +197,8 @@ gst_mpeg2enc_init (GstMpeg2enc * enc, GstMpeg2encClass * g_class)
 static void
 gst_mpeg2enc_reset (GstMpeg2enc * enc)
 {
+  GstBuffer *buf;
+
   enc->eos = FALSE;
   enc->srcresult = GST_FLOW_OK;
 
@@ -233,6 +206,8 @@ gst_mpeg2enc_reset (GstMpeg2enc * enc)
   if (enc->buffer)
     gst_buffer_unref (enc->buffer);
   enc->buffer = NULL;
+  while ((buf = (GstBuffer *) g_queue_pop_head (enc->time)))
+    gst_buffer_unref (buf);
 
   if (enc->encoder) {
     delete enc->encoder;
@@ -307,13 +282,14 @@ gst_mpeg2enc_structure_from_norm (GstMpeg2enc * enc, gint horiz,
       break;
     }
     case 'n':
-      gst_structure_set (structure, "height", G_TYPE_INT, ntsc_v, NULL);
+      gst_structure_set (structure, "height", G_TYPE_INT, ntsc_v,
+          (void *) NULL);
       break;
     default:
-      gst_structure_set (structure, "height", G_TYPE_INT, pal_v, NULL);
+      gst_structure_set (structure, "height", G_TYPE_INT, pal_v, (void *) NULL);
       break;
   }
-  gst_structure_set (structure, "width", G_TYPE_INT, horiz, NULL);
+  gst_structure_set (structure, "width", G_TYPE_INT, horiz, (void *) NULL);
   gst_mpeg2enc_add_fps (structure, gst_mpeg2enc_get_fps (enc));
 
   return structure;
@@ -572,6 +548,7 @@ gst_mpeg2enc_chain (GstPad * pad, GstBuffer * buffer)
   while (enc->buffer)
     GST_MPEG2ENC_WAIT (enc);
   enc->buffer = buffer;
+  g_queue_push_tail (enc->time, gst_buffer_ref (buffer));
   GST_MPEG2ENC_SIGNAL (enc);
   GST_MPEG2ENC_MUTEX_UNLOCK (enc);
 
@@ -597,13 +574,15 @@ eos:
   }
 ignore:
   {
+    GstFlowReturn ret = enc->srcresult;
+
     GST_DEBUG_OBJECT (enc,
         "ignoring buffer because encoding task encountered %s",
         gst_flow_get_name (enc->srcresult));
     GST_MPEG2ENC_MUTEX_UNLOCK (enc);
 
     gst_buffer_unref (buffer);
-    return enc->srcresult;
+    return ret;
   }
 }
 
@@ -673,31 +652,37 @@ done:
 static mjpeg_log_handler_t old_handler = NULL;
 
 /* note that this will affect all mjpegtools elements/threads */
-
 static void
 gst_mpeg2enc_log_callback (log_level_t level, const char *message)
 {
   GstDebugLevel gst_level;
 
-  switch (level) {
-    case LOG_NONE:
-      gst_level = GST_LEVEL_NONE;
-      break;
-    case LOG_ERROR:
-      gst_level = GST_LEVEL_ERROR;
-      break;
-    case LOG_INFO:
-      gst_level = GST_LEVEL_INFO;
-      break;
-    case LOG_DEBUG:
-      gst_level = GST_LEVEL_DEBUG;
-      break;
-    default:
-      gst_level = GST_LEVEL_INFO;
-      break;
+#if GST_MJPEGTOOLS_API >= 10903
+  static const gint mjpeg_log_error = mjpeg_loglev_t ("error");
+  static const gint mjpeg_log_warn = mjpeg_loglev_t ("warn");
+  static const gint mjpeg_log_info = mjpeg_loglev_t ("info");
+  static const gint mjpeg_log_debug = mjpeg_loglev_t ("debug");
+#else
+  static const gint mjpeg_log_error = LOG_ERROR;
+  static const gint mjpeg_log_warn = LOG_WARN;
+  static const gint mjpeg_log_info = LOG_INFO;
+  static const gint mjpeg_log_debug = LOG_DEBUG;
+#endif
+
+  if (level == mjpeg_log_error) {
+    gst_level = GST_LEVEL_ERROR;
+  } else if (level == mjpeg_log_warn) {
+    gst_level = GST_LEVEL_WARNING;
+  } else if (level == mjpeg_log_info) {
+    gst_level = GST_LEVEL_INFO;
+  } else if (level == mjpeg_log_debug) {
+    gst_level = GST_LEVEL_DEBUG;
+  } else {
+    gst_level = GST_LEVEL_INFO;
   }
 
-  gst_debug_log (mpeg2enc_debug, gst_level, "", "", 0, NULL, message);
+  /* message could have a % in it, do not segfault in such case */
+  gst_debug_log (mpeg2enc_debug, gst_level, "", "", 0, NULL, "%s", message);
 
   /* chain up to the old handler;
    * this could actually be a handler from another mjpegtools based

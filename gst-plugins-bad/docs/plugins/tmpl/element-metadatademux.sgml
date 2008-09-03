@@ -23,7 +23,6 @@ Send metadata tags (EXIF, IPTC and XMP) and remove metadata chunks from stream
 
 </para>
 
-@metadata: 
 
 <!-- ##### ARG GstMetadataDemux:parse-only ##### -->
 <para>

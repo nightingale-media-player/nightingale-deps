@@ -142,6 +142,24 @@ rtp_source_class_init (RTPSourceClass * klass)
   GST_DEBUG_CATEGORY_INIT (rtp_source_debug, "rtpsource", 0, "RTP Source");
 }
 
+/**
+ * rtp_source_reset:
+ * @src: an #RTPSource
+ *
+ * Reset the stats of @src.
+ */
+void
+rtp_source_reset (RTPSource * src)
+{
+  src->received_bye = FALSE;
+
+  src->stats.cycles = -1;
+  src->stats.jitter = 0;
+  src->stats.transit = -1;
+  src->stats.curr_sr = 0;
+  src->stats.curr_rr = 0;
+}
+
 static void
 rtp_source_init (RTPSource * src)
 {
@@ -153,15 +171,12 @@ rtp_source_init (RTPSource * src)
   src->payload = 0;
   src->clock_rate = -1;
   src->clock_base = -1;
+  src->clock_base_time = -1;
   src->packets = g_queue_new ();
   src->seqnum_base = -1;
   src->last_rtptime = -1;
 
-  src->stats.cycles = -1;
-  src->stats.jitter = 0;
-  src->stats.transit = -1;
-  src->stats.curr_sr = 0;
-  src->stats.curr_rr = 0;
+  rtp_source_reset (src);
 }
 
 static void
@@ -181,6 +196,8 @@ rtp_source_finalize (GObject * object)
     g_free (src->sdes[i]);
 
   g_free (src->bye_reason);
+
+  gst_caps_replace (&src->caps, NULL);
 
   G_OBJECT_CLASS (rtp_source_parent_class)->finalize (object);
 }
@@ -691,13 +708,13 @@ push_packet (RTPSource * src, GstBuffer * buffer)
   while (!g_queue_is_empty (src->packets)) {
     GstBuffer *buffer = GST_BUFFER_CAST (g_queue_pop_head (src->packets));
 
-    GST_DEBUG ("pushing queued packet");
+    GST_LOG ("pushing queued packet");
     if (src->callbacks.push_rtp)
       src->callbacks.push_rtp (src, buffer, src->user_data);
     else
       gst_buffer_unref (buffer);
   }
-  GST_DEBUG ("pushing new packet");
+  GST_LOG ("pushing new packet");
   /* push packet */
   if (src->callbacks.push_rtp)
     ret = src->callbacks.push_rtp (src, buffer, src->user_data);
@@ -746,7 +763,7 @@ calculate_jitter (RTPSource * src, GstBuffer * buffer,
 
   pt = gst_rtp_buffer_get_payload_type (buffer);
 
-  GST_DEBUG ("SSRC %08x got payload %d", src->ssrc, pt);
+  GST_LOG ("SSRC %08x got payload %d", src->ssrc, pt);
 
   /* get clockrate */
   if ((clock_rate = get_clock_rate (src, pt)) == -1)
@@ -758,6 +775,7 @@ calculate_jitter (RTPSource * src, GstBuffer * buffer,
   if (src->clock_base == -1) {
     GST_DEBUG ("using clock-base of %" G_GUINT32_FORMAT, rtptime);
     src->clock_base = rtptime;
+    src->clock_base_time = arrival->timestamp;
   }
 
   /* convert arrival time to RTP timestamp units, truncate to 32 bits, we don't
@@ -784,7 +802,7 @@ calculate_jitter (RTPSource * src, GstBuffer * buffer,
   src->stats.prev_rtptime = src->stats.last_rtptime;
   src->stats.last_rtptime = rtparrival;
 
-  GST_DEBUG ("rtparrival %u, rtptime %u, clock-rate %d, diff %d, jitter: %f",
+  GST_LOG ("rtparrival %u, rtptime %u, clock-rate %d, diff %d, jitter: %f",
       rtparrival, rtptime, clock_rate, diff, (src->stats.jitter) / 16.0);
 
   return;
@@ -919,10 +937,10 @@ rtp_source_process_rtp (RTPSource * src, GstBuffer * buffer,
   src->is_sender = TRUE;
   src->validated = TRUE;
 
-  GST_DEBUG ("seq %d, PC: %" G_GUINT64_FORMAT ", OC: %" G_GUINT64_FORMAT,
+  GST_LOG ("seq %d, PC: %" G_GUINT64_FORMAT ", OC: %" G_GUINT64_FORMAT,
       seqnr, src->stats.packets_received, src->stats.octets_received);
 
-  /* calculate jitter and perform skew correction */
+  /* calculate jitter for the stats */
   calculate_jitter (src, buffer, arrival);
 
   /* we're ready to push the RTP packet now */
@@ -1000,7 +1018,7 @@ rtp_source_send_rtp (RTPSource * src, GstBuffer * buffer, guint64 ntpnstime)
   ext_rtptime = src->last_rtptime;
   ext_rtptime = gst_rtp_buffer_ext_timestamp (&ext_rtptime, rtptime);
 
-  GST_DEBUG ("SSRC %08x, RTP %" G_GUINT64_FORMAT ", NTP %" GST_TIME_FORMAT,
+  GST_LOG ("SSRC %08x, RTP %" G_GUINT64_FORMAT ", NTP %" GST_TIME_FORMAT,
       src->ssrc, ext_rtptime, GST_TIME_ARGS (ntpnstime));
 
   if (ext_rtptime > src->last_rtptime) {
@@ -1010,7 +1028,7 @@ rtp_source_send_rtp (RTPSource * src, GstBuffer * buffer, guint64 ntpnstime)
     /* calc the diff so we can detect drift at the sender. This can also be used
      * to guestimate the clock rate if the NTP time is locked to the RTP
      * timestamps (as is the case when the capture device is providing the clock). */
-    GST_DEBUG ("SSRC %08x, diff RTP %" G_GUINT64_FORMAT ", diff NTP %"
+    GST_LOG ("SSRC %08x, diff RTP %" G_GUINT64_FORMAT ", diff NTP %"
         GST_TIME_FORMAT, src->ssrc, rtp_diff, GST_TIME_ARGS (ntp_diff));
   }
 
@@ -1035,8 +1053,7 @@ rtp_source_send_rtp (RTPSource * src, GstBuffer * buffer, guint64 ntpnstime)
           src->ssrc);
       gst_rtp_buffer_set_ssrc (buffer, src->ssrc);
     }
-    GST_DEBUG ("pushing RTP packet %" G_GUINT64_FORMAT,
-        src->stats.packets_sent);
+    GST_LOG ("pushing RTP packet %" G_GUINT64_FORMAT, src->stats.packets_sent);
     result = src->callbacks.push_rtp (src, buffer, src->user_data);
   } else {
     GST_WARNING ("no callback installed, dropping packet");
@@ -1167,7 +1184,7 @@ rtp_source_get_new_sr (RTPSource * src, guint64 ntpnstime,
 
   g_return_val_if_fail (RTP_IS_SOURCE (src), FALSE);
 
-  /* use the sync params to interpollate the date->time member to rtptime. We
+  /* use the sync params to interpolate the date->time member to rtptime. We
    * use the last sent timestamp and rtptime as reference points. We assume
    * that the slope of the rtptime vs timestamp curve is 1, which is certainly
    * sufficient for the frequency at which we report SR and the rate we send
@@ -1194,7 +1211,7 @@ rtp_source_get_new_sr (RTPSource * src, guint64 ntpnstime,
       t_rtp -= gst_util_uint64_scale_int (diff, src->clock_rate, GST_SECOND);
     }
   } else {
-    GST_WARNING ("no clock-rate, cannot interpollate rtp time");
+    GST_WARNING ("no clock-rate, cannot interpolate rtp time");
   }
 
   /* convert the NTP time in nanoseconds to 32.32 fixed point */

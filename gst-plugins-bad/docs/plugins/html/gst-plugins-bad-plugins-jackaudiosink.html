@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>jackaudiosink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-ivorbisdec.html" title="ivorbisdec">
 <link rel="next" href="gst-plugins-bad-plugins-metadatademux.html" title="metadatademux">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,68 +23,58 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-metadatademux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2601517" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2559077" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2586363" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2592459" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-jackaudiosink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-jackaudiosink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-jackaudiosink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-jackaudiosink.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-jackaudiosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2601517"></a><span class="refentrytitle">jackaudiosink</span>
-</h2>
-<p>jackaudiosink &#8212; JACK audio sink</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-jackaudiosink.top_of_page"></a>jackaudiosink</span></h2>
+<p>jackaudiosink — Output to Jack</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstJackAudioSink"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink-struct">GstJackAudioSink</a>;
-enum                <a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect">GstJackConnect</a>;
-
+                    <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink-struct" title="GstJackAudioSink">GstJackAudioSink</a>;
+enum                <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect" title="enum GstJackConnect">GstJackConnect</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2586363"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseSink
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"
 >GstBaseAudioSink</a>
                            +----GstJackAudioSink
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2592459"></a><h2>Properties</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--connect">connect</a>"                  <a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect">GstJackConnect</a>        : Read / Write
-  "<a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--server">server</a>"                   gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--connect" title='The "connect" property'>connect</a>"                  <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect" title="enum GstJackConnect">GstJackConnect</a>        : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--server" title='The "server" property'>server</a>"                   gchar*                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2559077"></a><h2>Description</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2559090"></a><p>
 A Sink that outputs data to Jack ports.
 </p>
 <p>
-It will create N Jack ports named out_&lt;num&gt; where &lt;num&gt; is starting from 1.
+It will create N Jack ports named out_&lt;name&gt;_&lt;num&gt; where 
+&lt;name&gt; is the element name and &lt;num&gt; is starting from 1.
 Each port corresponds to a gstreamer channel.
 </p>
 <p>
@@ -92,99 +82,102 @@ The samplerate as exposed on the caps is always the same as the samplerate of
 the jack server.
 </p>
 <p>
-When the ::connect property is set to auto, this element will try to connect
-each output port to a random physical jack input pin. In this mode, the sink
-will expose the number of physical channels on its pad caps.
+When the <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--connect" title='The "connect" property'><span class="type">"connect"</span></a> property is set to auto, this element
+will try to connect each output port to a random physical jack input pin. In
+this mode, the sink will expose the number of physical channels on its pad
+caps.
 </p>
 <p>
-When the ::connect property is set to none, the element will accept any
-number of input channels and will create (but not connect) an output port for
-each channel.
+When the <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink--connect" title='The "connect" property'><span class="type">"connect"</span></a> property is set to none, the element will
+accept any number of input channels and will create (but not connect) an
+output port for each channel.
 </p>
 <p>
 The element will generate an error when the Jack server is shut down when it
 was PAUSED or PLAYING. This element does not support dynamic rate and buffer
 size changes at runtime.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2590269"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc ! jackaudiosink
-</pre>
-<p>
-Play a sine wave to using jack.
-</p>
+</pre></div> Play a sine wave to using jack.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-11-30 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2559148"></a><h3>Element Information</h3>
+<a name="id2632051"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-bad-plugins-plugin-jack.html#plugin-jack">jack</a>
-        </td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-jack.html#plugin-jack">jack</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2632113"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>audio/x-raw-float, endianness=(int){ 1234 }, width=(int)32, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601489"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2601500"></a><h3>
-<a name="GstJackAudioSink-struct"></a>GstJackAudioSink</h3>
-<a class="indexterm" name="id2601148"></a><pre class="programlisting">typedef struct _GstJackAudioSink GstJackAudioSink;</pre>
+<a name="GstJackAudioSink-struct"></a><h3>GstJackAudioSink</h3>
+<pre class="programlisting">typedef struct _GstJackAudioSink GstJackAudioSink;</pre>
 <p>
-Opaque <a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink"><span class="type">GstJackAudioSink</span></a>.</p>
+Opaque <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackAudioSink"><span class="type">GstJackAudioSink</span></a>.</p>
 <p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2601175"></a><h3>
-<a name="GstJackConnect"></a>enum GstJackConnect</h3>
-<a class="indexterm" name="id2601188"></a><pre class="programlisting">typedef enum {
+<a name="GstJackConnect"></a><h3>enum GstJackConnect</h3>
+<pre class="programlisting">typedef enum {
   GST_JACK_CONNECT_NONE,
   GST_JACK_CONNECT_AUTO
 } GstJackConnect;
@@ -198,14 +191,14 @@ Specify how the output ports will be connected.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><a name="GST-JACK-CONNECT-NONE:CAPS"></a><code class="literal">GST_JACK_CONNECT_NONE</code></span></td>
+<td><p><a name="GST-JACK-CONNECT-NONE:CAPS"></a><span class="term"><code class="literal">GST_JACK_CONNECT_NONE</code></span></p></td>
 <td> Don't automatically connect to physical ports.
     In this mode, the element will accept any number of input channels and will
     create (but not connect) an output port for each channel.
 </td>
 </tr>
 <tr>
-<td><span class="term"><a name="GST-JACK-CONNECT-AUTO:CAPS"></a><code class="literal">GST_JACK_CONNECT_AUTO</code></span></td>
+<td><p><a name="GST-JACK-CONNECT-AUTO:CAPS"></a><span class="term"><code class="literal">GST_JACK_CONNECT_AUTO</code></span></p></td>
 <td> In this mode, the element will try to connect each
     output port to a random physical jack input pin. The sink will
     expose the number of physical channels on its pad caps.
@@ -216,31 +209,32 @@ Specify how the output ports will be connected.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2601262"></a><h2>Property Details</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2601273"></a><h3>
-<a name="GstJackAudioSink--connect"></a>The "<code class="literal">connect</code>" property</h3>
-<a class="indexterm" name="id2601287"></a><pre class="programlisting">  "connect"                  <a href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect">GstJackConnect</a>        : Read / Write</pre>
+<a name="GstJackAudioSink--connect"></a><h3>The <code class="literal">"connect"</code> property</h3>
+<pre class="programlisting">  "connect"                  <a class="link" href="gst-plugins-bad-plugins-jackaudiosink.html#GstJackConnect" title="enum GstJackConnect">GstJackConnect</a>        : Read / Write</pre>
 <p>Specify how the output ports will be connected.</p>
 <p>Default value: Automatically connect ports to physical ports</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2630159"></a><h3>
-<a name="GstJackAudioSink--server"></a>The "<code class="literal">server</code>" property</h3>
-<a class="indexterm" name="id2630173"></a><pre class="programlisting">  "server"                   gchar*                : Read / Write</pre>
+<a name="GstJackAudioSink--server"></a><h3>The <code class="literal">"server"</code> property</h3>
+<pre class="programlisting">  "server"                   gchar*                : Read / Write</pre>
 <p>The Jack server to connect to (NULL = default).</p>
 <p>Default value: NULL</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2630200"></a><h2>See Also</h2>
+<a name="gst-plugins-bad-plugins-jackaudiosink.see-also"></a><h2>See Also</h2>
 <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstbaseaudiosink.html#GstBaseAudioSink"
 ><span class="type">GstBaseAudioSink</span></a>, <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstringbuffer.html#GstRingBuffer"
 ><span class="type">GstRingBuffer</span></a>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

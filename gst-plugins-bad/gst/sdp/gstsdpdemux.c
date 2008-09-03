@@ -19,31 +19,25 @@
 /**
  * SECTION:element-sdpdemux
  *
- * <refsect2>
- * <para>
  * sdpdemux currently understands SDP as the input format of the session description.
  * For each stream listed in the SDP a new rtp_stream%d pad will be created
  * with caps derived from the SDP media description. This is a caps of mime type
  * "application/x-rtp" that can be connected to any available RTP depayloader
  * element. 
- * </para>
- * <para>
+ * 
  * sdpdemux will internally instantiate an RTP session manager element
  * that will handle the RTCP messages to and from the server, jitter removal,
  * packet reordering along with providing a clock for the pipeline. 
- * </para>
- * <para>
+ * 
  * sdpdemux acts like a live element and will therefore only generate data in the 
  * PLAYING state.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch gnomevfssrc location=http://some.server/session.sdp ! sdpdemux ! fakesink
- * </programlisting>
- * Establish a connection to an HTTP server that contains an SDP session description
+ * ]| Establish a connection to an HTTP server that contains an SDP session description
  * that gets parsed by sdpdemux and send the raw RTP packets to a fakesink.
- * </para>
  * </refsect2>
  *
  * Last reviewed on 2007-10-01 (0.10.6)
@@ -56,6 +50,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -768,6 +763,8 @@ request_pt_map (GstElement * sess, guint session, guint pt, GstSDPDemux * demux)
     goto unknown_stream;
 
   caps = stream->caps;
+  if (caps)
+    gst_caps_ref (caps);
   GST_SDP_STREAM_UNLOCK (demux);
 
   return caps;
@@ -918,7 +915,7 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
         NULL);
 
     /* get output pad of the UDP source. */
-    pad = gst_element_get_pad (stream->udpsrc[0], "src");
+    pad = gst_element_get_static_pad (stream->udpsrc[0], "src");
 
     name = g_strdup_printf ("recv_rtp_sink_%d", stream->id);
     stream->channelpad[0] = gst_element_get_request_pad (demux->session, name);
@@ -954,7 +951,7 @@ gst_sdp_demux_stream_configure_udp (GstSDPDemux * demux, GstSDPStream * stream)
     stream->channelpad[1] = gst_element_get_request_pad (demux->session, name);
     g_free (name);
 
-    pad = gst_element_get_pad (stream->udpsrc[1], "src");
+    pad = gst_element_get_static_pad (stream->udpsrc[1], "src");
     gst_pad_link (pad, stream->channelpad[1]);
     gst_object_unref (pad);
 
@@ -1021,7 +1018,7 @@ gst_sdp_demux_stream_configure_udp_sink (GstSDPDemux * demux,
 
   /* and link */
   if (pad) {
-    sinkpad = gst_element_get_pad (stream->udpsink, "sink");
+    sinkpad = gst_element_get_static_pad (stream->udpsink, "sink");
     gst_pad_link (pad, sinkpad);
     gst_object_unref (sinkpad);
   } else {
@@ -1126,7 +1123,7 @@ gst_sdp_demux_handle_message (GstBin * bin, GstMessage * message)
           GST_ELEMENT_ERROR (demux, RESOURCE, READ, (NULL),
               ("Could not receive any UDP packets for %.4f seconds, maybe your "
                   "firewall is blocking it.",
-                  gst_guint64_to_gdouble (demux->udp_timeout / 1000000)));
+                  gst_guint64_to_gdouble (demux->udp_timeout / 1000000.0)));
         }
         return;
       }

@@ -249,19 +249,20 @@ cam_build_ca_pmt (GstStructure * pmt, guint8 list_management, guint8 cmd_id,
       stream = g_value_get_boxed (value);
 
       value = gst_structure_get_value (stream, "descriptors");
-      stream_descriptors = g_value_get_boxed (value);
+      if (value != NULL) {
+        stream_descriptors = g_value_get_boxed (value);
 
-      len = get_ca_descriptors_length (stream_descriptors);
-      if (len > 0)
-        /* one byte for the stream level cmd_id */
-        len += 1;
+        len = get_ca_descriptors_length (stream_descriptors);
+        if (len > 0)
+          /* one byte for the stream level cmd_id */
+          len += 1;
+      }
 
       lengths = g_list_append (lengths, GINT_TO_POINTER (len));
       body_size += 5 + len;
 
     }
   }
-
   buffer = g_malloc0 (body_size);
   body = buffer;
 
@@ -282,9 +283,6 @@ cam_build_ca_pmt (GstStructure * pmt, guint8 list_management, guint8 cmd_id,
 
     body = write_ca_descriptors (body, program_descriptors);
   }
-
-  if (program_descriptors)
-    g_value_array_free (program_descriptors);
 
   for (i = 0; i < gst_value_list_get_size (streams); ++i) {
     guint stream_type;

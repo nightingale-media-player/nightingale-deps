@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>videodetect</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-videoanalyse.html" title="videoanalyse">
 <link rel="next" href="gst-plugins-bad-plugins-videomark.html" title="videomark">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,88 +23,76 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-videomark.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2613514" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2613366" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2613472" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2589690" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-videodetect.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-videodetect.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-videodetect.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-videodetect.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-videodetect"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2613514"></a><span class="refentrytitle">videodetect</span>
-</h2>
-<p>videodetect &#8212; Detect a pattern in a video signal</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-videodetect.top_of_page"></a>videodetect</span></h2>
+<p>videodetect — Detect patterns in a video signal</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-bad-plugins-videodetect.synopsis"></a><h2>Synopsis</h2>
 <a name="GstVideoDetect"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect-struct">GstVideoDetect</a>;
-
+                    <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect-struct" title="GstVideoDetect">GstVideoDetect</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2613472"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-bad-plugins-videodetect.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseTransform
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter"
 >GstVideoFilter</a>
                            +----GstVideoDetect
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2589690"></a><h2>Properties</h2>
+<a name="gst-plugins-bad-plugins-videodetect.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--message">message</a>"                  gboolean              : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-count">pattern-count</a>"            gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-data-count">pattern-data-count</a>"       gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-height">pattern-height</a>"           gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-sensitivity">pattern-sensitivity</a>"      gdouble               : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-width">pattern-width</a>"            gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--bottom-offset">bottom-offset</a>"            gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--left-offset">left-offset</a>"              gint                  : Read / Write / Construct
-  "<a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-center">pattern-center</a>"           gdouble               : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--message" title='The "message" property'>message</a>"                  gboolean              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-count" title='The "pattern-count" property'>pattern-count</a>"            gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-data-count" title='The "pattern-data-count" property'>pattern-data-count</a>"       gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-height" title='The "pattern-height" property'>pattern-height</a>"           gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-sensitivity" title='The "pattern-sensitivity" property'>pattern-sensitivity</a>"      gdouble               : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-width" title='The "pattern-width" property'>pattern-width</a>"            gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--bottom-offset" title='The "bottom-offset" property'>bottom-offset</a>"            gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--left-offset" title='The "left-offset" property'>left-offset</a>"              gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-center" title='The "pattern-center" property'>pattern-center</a>"           gdouble               : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2613366"></a><h2>Description</h2>
+<a name="gst-plugins-bad-plugins-videodetect.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2613380"></a><p>
-This plugin detects ::pattern-count squares in the bottom left corner of
-the video frames. The squares have a width and height of respectively
-::pattern-width and ::patern-height. Even squares must be black and odd
-squares must be white.
+This plugin detects <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-count" title='The "pattern-count" property'><span class="type">"pattern-count"</span></a> squares in the bottom left
+corner of the video frames. The squares have a width and height of
+respectively <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-width" title='The "pattern-width" property'><span class="type">"pattern-width"</span></a> and <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-height" title='The "pattern-height" property'><span class="type">"pattern-height"</span></a>.
+Even squares must be black and odd squares must be white.
 </p>
 <p>
-When the pattern has been found, ::pattern-data-count squares after the
-pattern squares are read as a bitarray. White squares represent a 1 bit and
-black squares a 0 bit. The bitarray will will included in the element message
-that is posted (see below).
+When the pattern has been found, <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--pattern-data-count" title='The "pattern-data-count" property'><span class="type">"pattern-data-count"</span></a> squares
+after the pattern squares are read as a bitarray. White squares represent a 1
+bit and black squares a 0 bit. The bitarray will will included in the element
+message that is posted (see below).
 </p>
 <p>
 After the pattern has been found and the data pattern has been read, an
 element message called <code class="classname">"GstVideoDetect"</code> will
 be posted on the bus. If the pattern is no longer found in the frame, the
 same element message is posted with the have-pattern field set to <span class="type">FALSE</span>.
-The message is only posted if the <a href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--message">message
-property</a> is <span class="type">TRUE</span>.
+The message is only posted if the <a class="link" href="gst-plugins-bad-plugins-videodetect.html#GstVideoDetect--message" title='The "message" property'><span class="type">"message"</span></a> property is <span class="type">TRUE</span>.
 </p>
 <p>
 The message's structure contains these fields:
@@ -145,94 +133,98 @@ The message's structure contains these fields:
 </ul></div>
 <p>
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2643019"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch videotestsrc ! videodetect ! ffmpegcolorspace ! ximagesink
-</pre>
-<p>
-</p>
+</pre></div>
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2007-05-30 (0.10.5)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2609994"></a><h3>Element Information</h3>
+<a name="id2643043"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-bad-plugins-plugin-videosignal.html#plugin-videosignal">videosignal</a>
-        </td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-videosignal.html#plugin-videosignal">videosignal</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Effect/Video</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2643106"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, YV12 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610198"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-videodetect.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2610209"></a><h3>
-<a name="GstVideoDetect-struct"></a>GstVideoDetect</h3>
-<a class="indexterm" name="id2610221"></a><pre class="programlisting">typedef struct _GstVideoDetect GstVideoDetect;</pre>
+<a name="GstVideoDetect-struct"></a><h3>GstVideoDetect</h3>
+<pre class="programlisting">typedef struct _GstVideoDetect GstVideoDetect;</pre>
 <p>
 Opaque datastructure.</p>
 <p>
@@ -241,87 +233,85 @@ Opaque datastructure.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2610242"></a><h2>Property Details</h2>
+<a name="gst-plugins-bad-plugins-videodetect.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2610253"></a><h3>
-<a name="GstVideoDetect--message"></a>The "<code class="literal">message</code>" property</h3>
-<a class="indexterm" name="id2610266"></a><pre class="programlisting">  "message"                  gboolean              : Read / Write / Construct</pre>
+<a name="GstVideoDetect--message"></a><h3>The <code class="literal">"message"</code> property</h3>
+<pre class="programlisting">  "message"                  gboolean              : Read / Write / Construct</pre>
 <p>Post statics messages.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610858"></a><h3>
-<a name="GstVideoDetect--pattern-count"></a>The "<code class="literal">pattern-count</code>" property</h3>
-<a class="indexterm" name="id2610873"></a><pre class="programlisting">  "pattern-count"            gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-count"></a><h3>The <code class="literal">"pattern-count"</code> property</h3>
+<pre class="programlisting">  "pattern-count"            gint                  : Read / Write / Construct</pre>
 <p>The number of pattern markers.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610903"></a><h3>
-<a name="GstVideoDetect--pattern-data-count"></a>The "<code class="literal">pattern-data-count</code>" property</h3>
-<a class="indexterm" name="id2610919"></a><pre class="programlisting">  "pattern-data-count"       gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-data-count"></a><h3>The <code class="literal">"pattern-data-count"</code> property</h3>
+<pre class="programlisting">  "pattern-data-count"       gint                  : Read / Write / Construct</pre>
 <p>The number of extra data pattern markers.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 5</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610950"></a><h3>
-<a name="GstVideoDetect--pattern-height"></a>The "<code class="literal">pattern-height</code>" property</h3>
-<a class="indexterm" name="id2610966"></a><pre class="programlisting">  "pattern-height"           gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-height"></a><h3>The <code class="literal">"pattern-height"</code> property</h3>
+<pre class="programlisting">  "pattern-height"           gint                  : Read / Write / Construct</pre>
 <p>The height of the pattern markers.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 16</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2610996"></a><h3>
-<a name="GstVideoDetect--pattern-sensitivity"></a>The "<code class="literal">pattern-sensitivity</code>" property</h3>
-<a class="indexterm" name="id2611012"></a><pre class="programlisting">  "pattern-sensitivity"      gdouble               : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-sensitivity"></a><h3>The <code class="literal">"pattern-sensitivity"</code> property</h3>
+<pre class="programlisting">  "pattern-sensitivity"      gdouble               : Read / Write / Construct</pre>
 <p>The sensitivity around the center for detecting the markers (0.0 = lowest, 1.0 highest).</p>
 <p>Allowed values: [0,1]</p>
-<p>Default value: 0.3</p>
+<p>Default value: 0,3</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611043"></a><h3>
-<a name="GstVideoDetect--pattern-width"></a>The "<code class="literal">pattern-width</code>" property</h3>
-<a class="indexterm" name="id2611059"></a><pre class="programlisting">  "pattern-width"            gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-width"></a><h3>The <code class="literal">"pattern-width"</code> property</h3>
+<pre class="programlisting">  "pattern-width"            gint                  : Read / Write / Construct</pre>
 <p>The width of the pattern markers.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 4</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611089"></a><h3>
-<a name="GstVideoDetect--bottom-offset"></a>The "<code class="literal">bottom-offset</code>" property</h3>
-<a class="indexterm" name="id2611105"></a><pre class="programlisting">  "bottom-offset"            gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--bottom-offset"></a><h3>The <code class="literal">"bottom-offset"</code> property</h3>
+<pre class="programlisting">  "bottom-offset"            gint                  : Read / Write / Construct</pre>
 <p>The offset from the bottom border where the pattern starts.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611135"></a><h3>
-<a name="GstVideoDetect--left-offset"></a>The "<code class="literal">left-offset</code>" property</h3>
-<a class="indexterm" name="id2611149"></a><pre class="programlisting">  "left-offset"              gint                  : Read / Write / Construct</pre>
+<a name="GstVideoDetect--left-offset"></a><h3>The <code class="literal">"left-offset"</code> property</h3>
+<pre class="programlisting">  "left-offset"              gint                  : Read / Write / Construct</pre>
 <p>The offset from the left border where the pattern starts.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2611180"></a><h3>
-<a name="GstVideoDetect--pattern-center"></a>The "<code class="literal">pattern-center</code>" property</h3>
-<a class="indexterm" name="id2611196"></a><pre class="programlisting">  "pattern-center"           gdouble               : Read / Write / Construct</pre>
+<a name="GstVideoDetect--pattern-center"></a><h3>The <code class="literal">"pattern-center"</code> property</h3>
+<pre class="programlisting">  "pattern-center"           gdouble               : Read / Write / Construct</pre>
 <p>The center of the black/white separation (0.0 = lowest, 1.0 highest).</p>
 <p>Allowed values: [0,1]</p>
-<p>Default value: 0.5</p>
+<p>Default value: 0,5</p>
 </div>
 </div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-videodetect.see-also"></a><h2>See Also</h2>
+<a class="link" href="gst-plugins-bad-plugins-videomark.html#GstVideoMark"><span class="type">GstVideoMark</span></a>
 </div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

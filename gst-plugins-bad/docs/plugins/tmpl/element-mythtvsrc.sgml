@@ -2,7 +2,7 @@
 mythtvsrc
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Control and receive data as a client over the network via raw socket connections using the MythTV protocol
 
 <!-- ##### SECTION Long_Description ##### -->
 <include xmlns="http://www.w3.org/2003/XInclude" href="element-mythtvsrc-details.xml" />

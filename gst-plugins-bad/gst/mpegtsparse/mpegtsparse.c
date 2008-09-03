@@ -33,6 +33,8 @@
 /* latency in mseconds */
 #define TS_LATENCY 700
 
+#define TABLE_ID_UNSET 0xFF
+
 GST_DEBUG_CATEGORY_STATIC (mpegts_parse_debug);
 #define GST_CAT_DEFAULT mpegts_parse_debug
 
@@ -246,18 +248,6 @@ mpegts_parse_reset (MpegTSParse * parse)
   /* PAT */
   g_hash_table_insert (parse->psi_pids,
       GINT_TO_POINTER (0), GINT_TO_POINTER (1));
-
-  /* NIT */
-  g_hash_table_insert (parse->psi_pids,
-      GINT_TO_POINTER (0x10), GINT_TO_POINTER (1));
-
-  /* SDT */
-  g_hash_table_insert (parse->psi_pids,
-      GINT_TO_POINTER (0x11), GINT_TO_POINTER (1));
-
-  /* EIT */
-  g_hash_table_insert (parse->psi_pids,
-      GINT_TO_POINTER (0x12), GINT_TO_POINTER (1));
 
   /* pmt pids will be added and removed dynamically */
 }
@@ -631,19 +621,52 @@ mpegts_parse_release_pad (GstElement * element, GstPad * pad)
 }
 
 static GstFlowReturn
+mpegts_parse_tspad_push_section (MpegTSParse * parse, MpegTSParsePad * tspad,
+    MpegTSPacketizerSection * section, GstBuffer * buffer)
+{
+  GstFlowReturn ret = GST_FLOW_NOT_LINKED;
+  gboolean to_push = TRUE;
+
+  if (tspad->program_number != -1) {
+    if (tspad->program) {
+      /* we push all sections to all pads except PMTs which we
+       * only push to pads meant to receive that program number */
+      if (section->table_id == 0x02) {
+        /* PMT */
+        if (section->subtable_extension != tspad->program_number)
+          to_push = FALSE;
+      }
+    } else {
+      /* there's a program filter on the pad but the PMT for the program has not
+       * been parsed yet, ignore the pad until we get a PMT */
+      to_push = FALSE;
+      ret = GST_FLOW_OK;
+    }
+  }
+  GST_DEBUG_OBJECT (parse,
+      "pushing section: %d program number: %d table_id: %d", to_push,
+      tspad->program_number, section->table_id);
+  if (to_push) {
+    ret = gst_pad_push (tspad->pad, buffer);
+  } else {
+    gst_buffer_unref (buffer);
+    if (gst_pad_is_linked (tspad->pad))
+      ret = GST_FLOW_OK;
+  }
+
+  return ret;
+}
+
+static GstFlowReturn
 mpegts_parse_tspad_push (MpegTSParse * parse, MpegTSParsePad * tspad,
     guint16 pid, GstBuffer * buffer)
 {
   GstFlowReturn ret = GST_FLOW_NOT_LINKED;
   GHashTable *pad_pids = NULL;
-  guint16 pmt_pid = G_MAXUINT16;
-  guint16 pcr_pid = G_MAXUINT16;
 
   if (tspad->program_number != -1) {
     if (tspad->program) {
       pad_pids = tspad->program->streams;
-      pmt_pid = tspad->program->pmt_pid;
-      pcr_pid = tspad->program->pcr_pid;
     } else {
       /* there's a program filter on the pad but the PMT for the program has not
        * been parsed yet, ignore the pad until we get a PMT */
@@ -653,9 +676,7 @@ mpegts_parse_tspad_push (MpegTSParse * parse, MpegTSParsePad * tspad,
     }
   }
 
-  /* FIXME: take the SI pids from a list not hardcoded here */
-  if (pad_pids == NULL || pid == pcr_pid || pid == pmt_pid || pid == 0 ||
-      pid == 0x10 || pid == 0x11 || pid == 0x12 ||
+  if (pad_pids == NULL ||
       g_hash_table_lookup (pad_pids, GINT_TO_POINTER ((gint) pid)) != NULL) {
     /* push if there's no filter or if the pid is in the filter */
     ret = gst_pad_push (tspad->pad, buffer);
@@ -679,7 +700,8 @@ pad_clear_for_push (GstPad * pad, MpegTSParse * parse)
 }
 
 static GstFlowReturn
-mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
+mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet,
+    MpegTSPacketizerSection * section)
 {
   GstIterator *iterator;
   gboolean done = FALSE;
@@ -688,12 +710,14 @@ mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
   guint16 pid;
   GstBuffer *buffer;
   GstFlowReturn ret;
+  GstCaps *caps;
 
   pid = packet->pid;
   buffer = packet->buffer;
   /* we have the same caps on all the src pads */
-  gst_buffer_set_caps (buffer,
-      gst_static_pad_template_get_caps (&src_template));
+  caps = gst_static_pad_template_get_caps (&src_template);
+  gst_buffer_set_caps (buffer, caps);
+  gst_caps_unref (caps);
 
   GST_OBJECT_LOCK (parse);
   /* clear tspad->pushed on pads */
@@ -716,8 +740,13 @@ mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
           /* ref the buffer as gst_pad_push takes a ref but we want to reuse the
            * same buffer for next pushes */
           gst_buffer_ref (buffer);
-          tspad->flow_return =
-              mpegts_parse_tspad_push (parse, tspad, pid, buffer);
+          if (section) {
+            tspad->flow_return =
+                mpegts_parse_tspad_push_section (parse, tspad, section, buffer);
+          } else {
+            tspad->flow_return =
+                mpegts_parse_tspad_push (parse, tspad, pid, buffer);
+          }
           tspad->pushed = TRUE;
 
           if (GST_FLOW_IS_FATAL (tspad->flow_return)) {
@@ -753,10 +782,54 @@ mpegts_parse_push (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
 }
 
 static gboolean
-mpegts_parse_is_psi_pid (MpegTSParse * parse, guint16 pid)
+mpegts_parse_is_psi (MpegTSParse * parse, MpegTSPacketizerPacket * packet)
 {
-  return g_hash_table_lookup (parse->psi_pids,
-      GINT_TO_POINTER ((gint) pid)) != NULL;
+  gboolean retval = FALSE;
+  guint8 table_id;
+  int i;
+  guint8 si_tables[] = { 0x00, 0x01, 0x02, 0x03, 0x40, 0x41, 0x42, 0x46, 0x4A,
+    0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
+    0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65,
+    0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x71,
+    0x72, 0x73, 0x7E, 0x7F, TABLE_ID_UNSET
+  };
+  if (g_hash_table_lookup (parse->psi_pids,
+          GINT_TO_POINTER ((gint) packet->pid)) != NULL)
+    retval = TRUE;
+  if (!retval) {
+    if (packet->payload_unit_start_indicator) {
+      table_id = *(packet->data);
+      i = 0;
+      while (si_tables[i] != TABLE_ID_UNSET) {
+        if (si_tables[i] == table_id) {
+          GST_DEBUG_OBJECT (parse, "Packet has table id 0x%x", table_id);
+          retval = TRUE;
+          break;
+        }
+        i++;
+      }
+    } else {
+      MpegTSPacketizerStream *stream = (MpegTSPacketizerStream *)
+          g_hash_table_lookup (parse->packetizer->streams,
+          GINT_TO_POINTER ((gint) packet->pid));
+
+      if (stream) {
+        i = 0;
+        GST_DEBUG_OBJECT (parse, "section table id: 0x%x",
+            stream->section_table_id);
+        while (si_tables[i] != TABLE_ID_UNSET) {
+          if (si_tables[i] == stream->section_table_id) {
+            retval = TRUE;
+            break;
+          }
+          i++;
+        }
+      }
+    }
+  }
+  GST_DEBUG_OBJECT (parse, "Packet of pid 0x%x is psi: %d", packet->pid,
+      retval);
+  return retval;
 }
 
 static void
@@ -904,7 +977,8 @@ mpegts_parse_apply_pmt (MpegTSParse * parse,
         gst_structure_get_uint (stream, "stream-type", &stream_type);
         mpegts_parse_program_remove_stream (parse, program, (guint16) pid);
       }
-
+      /* remove pcr stream */
+      mpegts_parse_program_remove_stream (parse, program, program->pcr_pid);
       gst_structure_free (program->pmt_info);
     }
   } else {
@@ -917,7 +991,6 @@ mpegts_parse_apply_pmt (MpegTSParse * parse,
   /* activate new pmt */
   program->pmt_info = pmt_info;
   program->pmt_pid = pmt_pid;
-  /* FIXME: check if the pcr pid is changed */
   program->pcr_pid = pcr_pid;
   mpegts_parse_program_add_stream (parse, program, (guint16) pcr_pid, -1);
 
@@ -975,6 +1048,7 @@ static gboolean
 mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
 {
   gboolean res = TRUE;
+  GstStructure *structure = NULL;
 
   if (mpegts_parse_calc_crc32 (GST_BUFFER_DATA (section->buffer),
           GST_BUFFER_SIZE (section->buffer)) != 0) {
@@ -984,59 +1058,43 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
 
   switch (section->table_id) {
     case 0x00:
-    {
       /* PAT */
-      GstStructure *pat_info;
-
-      pat_info = mpegts_packetizer_parse_pat (parse->packetizer, section);
-      if (pat_info)
-        mpegts_parse_apply_pat (parse, pat_info);
+      structure = mpegts_packetizer_parse_pat (parse->packetizer, section);
+      if (structure)
+        mpegts_parse_apply_pat (parse, structure);
       else
         res = FALSE;
 
       break;
-    }
     case 0x02:
-    {
-      /* PMT */
-      GstStructure *pmt_info;
-
-      pmt_info = mpegts_packetizer_parse_pmt (parse->packetizer, section);
-      if (pmt_info)
-        mpegts_parse_apply_pmt (parse, section->pid, pmt_info);
+      structure = mpegts_packetizer_parse_pmt (parse->packetizer, section);
+      if (structure)
+        mpegts_parse_apply_pmt (parse, section->pid, structure);
       else
         res = FALSE;
 
       break;
-    }
     case 0x40:
       /* NIT, actual network */
     case 0x41:
       /* NIT, other network */
-    {
-      GstStructure *nit_info;
-
-      nit_info = mpegts_packetizer_parse_nit (parse->packetizer, section);
-      if (nit_info)
-        mpegts_parse_apply_nit (parse, section->pid, nit_info);
+      structure = mpegts_packetizer_parse_nit (parse->packetizer, section);
+      if (structure)
+        mpegts_parse_apply_nit (parse, section->pid, structure);
       else
         res = FALSE;
 
       break;
-    }
     case 0x42:
-    {
-      /* SDT */
-      GstStructure *sdt_info;
-
-      sdt_info = mpegts_packetizer_parse_sdt (parse->packetizer, section);
-      if (sdt_info)
-        mpegts_parse_apply_sdt (parse, section->pid, sdt_info);
+    case 0x46:
+      structure = mpegts_packetizer_parse_sdt (parse->packetizer, section);
+      if (structure)
+        mpegts_parse_apply_sdt (parse, section->pid, structure);
       else
         res = FALSE;
       break;
-    }
     case 0x4E:
+    case 0x4F:
       /* EIT, present/following */
     case 0x50:
     case 0x51:
@@ -1054,21 +1112,35 @@ mpegts_parse_handle_psi (MpegTSParse * parse, MpegTSPacketizerSection * section)
     case 0x5D:
     case 0x5E:
     case 0x5F:
+    case 0x60:
+    case 0x61:
+    case 0x62:
+    case 0x63:
+    case 0x64:
+    case 0x65:
+    case 0x66:
+    case 0x67:
+    case 0x68:
+    case 0x69:
+    case 0x6A:
+    case 0x6B:
+    case 0x6C:
+    case 0x6D:
+    case 0x6E:
+    case 0x6F:
       /* EIT, schedule */
-    {
-      /* EIT */
-      GstStructure *eit_info;
-
-      eit_info = mpegts_packetizer_parse_eit (parse->packetizer, section);
-      if (eit_info)
-        mpegts_parse_apply_eit (parse, section->pid, eit_info);
+      structure = mpegts_packetizer_parse_eit (parse->packetizer, section);
+      if (structure)
+        mpegts_parse_apply_eit (parse, section->pid, structure);
       else
         res = FALSE;
       break;
-    }
     default:
       break;
   }
+
+  if (structure)
+    gst_structure_free (structure);
 
   return res;
 }
@@ -1115,7 +1187,7 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
       goto next;
 
     /* parse PSI data */
-    if (packet.payload != NULL && mpegts_parse_is_psi_pid (parse, packet.pid)) {
+    if (packet.payload != NULL && mpegts_parse_is_psi (parse, &packet)) {
       MpegTSPacketizerSection section;
 
       parsed = mpegts_packetizer_push_section (packetizer, &packet, &section);
@@ -1127,14 +1199,18 @@ mpegts_parse_chain (GstPad * pad, GstBuffer * buf)
         /* section complete */
         parsed = mpegts_parse_handle_psi (parse, &section);
         gst_buffer_unref (section.buffer);
+
         if (!parsed)
           /* bad PSI table */
           goto next;
       }
-    }
+      /* we need to push section packet downstream */
+      res = mpegts_parse_push (parse, &packet, &section);
 
-    /* push the packet downstream */
-    res = mpegts_parse_push (parse, &packet);
+    } else {
+      /* push the packet downstream */
+      res = mpegts_parse_push (parse, &packet, NULL);
+    }
 
   next:
     mpegts_packetizer_clear_packet (parse->packetizer, &packet);

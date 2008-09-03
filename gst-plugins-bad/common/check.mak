@@ -132,6 +132,7 @@ inspect:
 	     $(GST_INSPECT) $$e > /dev/null 2>&1; done
 
 help:
+	@echo
 	@echo "make check                         -- run all checks"
 	@echo "make torture                       -- run all checks $(LOOPS) times"
 	@echo "make (dir)/(test).check            -- run the given check once"
@@ -146,4 +147,16 @@ help:
 	@echo "make (dir)/(test).valgrind.gen-suppressions -- generate suppressions"
 	@echo "                                               and save to suppressions.log"
 	@echo "make inspect                       -- inspect all plugin features"
+	@echo
+	@echo
+	@echo "Additionally, you can use the GST_CHECKS environment variable to"
+	@echo "specify which test(s) should be run. This is useful if you are"
+	@echo "debugging a failure in one particular test, or want to reproduce"
+	@echo "a race condition in a single test."
+	@echo
+	@echo "Examples:"
+	@echo
+	@echo "  GST_CHECKS=test_this,test_that  make element/foobar.check"
+	@echo "  GST_CHECKS=test_many_threads    make element/foobar.forever"
+	@echo
 

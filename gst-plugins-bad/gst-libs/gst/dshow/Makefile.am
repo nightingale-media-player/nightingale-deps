@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libgstdshow-@GST_MAJORMINOR@.la
 
 libgstdshow_@GST_MAJORMINOR@_la_SOURCES = gstdshow.cpp gstdshowfakesink.cpp gstdshowfakesrc.cpp gstdshowinterface.cpp
 libgstdshow_@GST_MAJORMINOR@_la_CXXFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-	$(GST_PLUGINS_BASE_CFLAGS) ${DIRECTSHOW_CFLAGS}
+	$(GST_PLUGINS_BASE_CFLAGS) ${DIRECTSHOW_CFLAGS} -DLIBDSHOW_EXPORTS
 libgstdshow_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) ${DIRECTSHOW_LIBS}
 libgstdshow_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_ALL_LDFLAGS)
 

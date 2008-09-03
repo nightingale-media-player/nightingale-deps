@@ -16,20 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/*
+/**
  * SECTION:element-dvdspu
  *
- * <refsect2>
- * <para>
  * DVD sub picture overlay element.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * FIXME: gst-launch ...
- * </programlisting>
- * FIXME: description for the sample launch pipeline
- * </para>
+ * ]| FIXME: description for the sample launch pipeline
  * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
@@ -106,7 +102,7 @@ static void gst_dvd_spu_clear (GstDVDSpu * dvdspu);
 static void gst_dvd_spu_flush_spu_info (GstDVDSpu * dvdspu);
 static void gst_dvd_spu_advance_spu (GstDVDSpu * dvdspu, GstClockTime new_ts);
 static GstFlowReturn
-dvspu_handle_vid_buffer (GstDVDSpu * dvdspu, GstBuffer * buf);
+dvdspu_handle_vid_buffer (GstDVDSpu * dvdspu, GstBuffer * buf);
 
 static void
 gst_dvd_spu_base_init (gpointer gclass)
@@ -399,12 +395,22 @@ gst_dvd_spu_video_event (GstPad * pad, GstEvent * event)
       const GstStructure *structure = gst_event_get_structure (event);
       const char *event_type;
 
+      if (structure == NULL) {
+        res = gst_pad_event_default (pad, event);
+        break;
+      }
+
       if (!gst_structure_has_name (structure, "application/x-gst-dvd")) {
         res = gst_pad_event_default (pad, event);
         break;
       }
 
       event_type = gst_structure_get_string (structure, "event");
+      if (event_type == NULL) {
+        res = gst_pad_event_default (pad, event);
+        break;
+      }
+
       GST_DEBUG_OBJECT (dvdspu,
           "DVD event of type %s on video pad", event_type);
 
@@ -464,7 +470,7 @@ gst_dvd_spu_video_event (GstPad * pad, GstEvent * event)
         while (dvdspu->video_seg.last_stop < start &&
             !(state->flags & SPU_STATE_STILL_FRAME)) {
           DVD_SPU_UNLOCK (dvdspu);
-          if (dvspu_handle_vid_buffer (dvdspu, NULL) != GST_FLOW_OK) {
+          if (dvdspu_handle_vid_buffer (dvdspu, NULL) != GST_FLOW_OK) {
             DVD_SPU_LOCK (dvdspu);
             break;
           }
@@ -519,7 +525,7 @@ gst_dvd_spu_video_chain (GstPad * pad, GstBuffer * buf)
   GST_LOG_OBJECT (dvdspu, "video buffer %p with TS %" GST_TIME_FORMAT,
       buf, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
 
-  ret = dvspu_handle_vid_buffer (dvdspu, buf);
+  ret = dvdspu_handle_vid_buffer (dvdspu, buf);
 
   gst_object_unref (dvdspu);
 
@@ -527,7 +533,7 @@ gst_dvd_spu_video_chain (GstPad * pad, GstBuffer * buf)
 }
 
 static GstFlowReturn
-dvspu_handle_vid_buffer (GstDVDSpu * dvdspu, GstBuffer * buf)
+dvdspu_handle_vid_buffer (GstDVDSpu * dvdspu, GstBuffer * buf)
 {
   GstClockTime new_ts;
   GstFlowReturn ret;
@@ -1088,7 +1094,7 @@ gst_dvd_spu_advance_spu (GstDVDSpu * dvdspu, GstClockTime new_ts)
 
     /* If we get here, we have an SPU buffer, and it's time to process the
      * next cmd */
-    g_assert (state->buf != NULL && state->next_ts <= new_ts);
+    g_assert (state->buf != NULL);
 
     GST_DEBUG_OBJECT (dvdspu, "Executing cmd blk with TS %" GST_TIME_FORMAT
         " @ offset %u", GST_TIME_ARGS (state->next_ts), state->cur_cmd_blk);

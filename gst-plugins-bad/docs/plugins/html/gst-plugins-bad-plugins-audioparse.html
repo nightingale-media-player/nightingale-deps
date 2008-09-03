@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>audioparse</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-amrwbparse.html" title="amrwbparse">
-<link rel="next" href="gst-plugins-bad-plugins-dfbvideosink.html" title="dfbvideosink">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="next" href="gst-plugins-bad-plugins-deinterlace.html" title="deinterlace">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -21,41 +21,34 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-dfbvideosink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-deinterlace.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2570249" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2577673" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2570208" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2586884" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-audioparse.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-audioparse.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-audioparse.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-audioparse.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-audioparse"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2570249"></a><span class="refentrytitle">audioparse</span>
-</h2>
-<p>audioparse &#8212; parses a byte stream into audio frames</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-audioparse.top_of_page"></a>audioparse</span></h2>
+<p>audioparse — Converts stream into audio frames</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-bad-plugins-audioparse.synopsis"></a><h2>Synopsis</h2>
 <a name="GstAudioParse"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse-struct">GstAudioParse</a>;
-
+                    <a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse-struct" title="GstAudioParse">GstAudioParse</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2570208"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-bad-plugins-audioparse.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -64,164 +57,168 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2586884"></a><h2>Properties</h2>
+<a name="gst-plugins-bad-plugins-audioparse.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--channels">channels</a>"                 gint                  : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--depth">depth</a>"                    gint                  : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--endianness">endianness</a>"               GstAudioParseEndianness  : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--format">format</a>"                   GstAudioParseFormat   : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--rate">rate</a>"                     gint                  : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--signed">signed</a>"                   gboolean              : Read / Write
-  "<a href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--width">width</a>"                    gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--channels" title='The "channels" property'>channels</a>"                 gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--depth" title='The "depth" property'>depth</a>"                    gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--endianness" title='The "endianness" property'>endianness</a>"               GstAudioParseEndianness  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--format" title='The "format" property'>format</a>"                   GstAudioParseFormat   : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--rate" title='The "rate" property'>rate</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--signed" title='The "signed" property'>signed</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--width" title='The "width" property'>width</a>"                    gint                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2577673"></a><h2>Description</h2>
+<a name="gst-plugins-bad-plugins-audioparse.description"></a><h2>Description</h2>
 <p>
 Converts a byte stream into audio frames.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2570072"></a><h3>Element Information</h3>
+<a name="id2597077"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-bad-plugins-plugin-rawparse.html#plugin-rawparse">rawparse</a>
-        </td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-rawparse.html#plugin-rawparse">rawparse</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
-<td>Sebastian Dr&#246;ge &lt;slomo@circular-chaos.org&gt;</td>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2591872"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
-<td>src</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, depth=(int)[ 1, 32 ], width=(int){ 8, 16, 24, 32 }, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int){ 1234, 4321 }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, depth=(int)[ 1, 32 ], width=(int){ 8, 16, 24, 32 }, endianness=(int){ 1234, 4321 }, signed=(boolean){ true, false }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int){ 32, 64 }, endianness=(int){ 1234, 4321 }, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2588350"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-audioparse.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2588360"></a><h3>
-<a name="GstAudioParse-struct"></a>GstAudioParse</h3>
-<a class="indexterm" name="id2588372"></a><pre class="programlisting">typedef struct _GstAudioParse GstAudioParse;</pre>
+<a name="GstAudioParse-struct"></a><h3>GstAudioParse</h3>
+<pre class="programlisting">typedef struct _GstAudioParse GstAudioParse;</pre>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2588390"></a><h2>Property Details</h2>
+<a name="gst-plugins-bad-plugins-audioparse.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2588400"></a><h3>
-<a name="GstAudioParse--channels"></a>The "<code class="literal">channels</code>" property</h3>
-<a class="indexterm" name="id2584519"></a><pre class="programlisting">  "channels"                 gint                  : Read / Write</pre>
+<a name="GstAudioParse--channels"></a><h3>The <code class="literal">"channels"</code> property</h3>
+<pre class="programlisting">  "channels"                 gint                  : Read / Write</pre>
 <p>Number of channels in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 2</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584547"></a><h3>
-<a name="GstAudioParse--depth"></a>The "<code class="literal">depth</code>" property</h3>
-<a class="indexterm" name="id2584561"></a><pre class="programlisting">  "depth"                    gint                  : Read / Write</pre>
+<a name="GstAudioParse--depth"></a><h3>The <code class="literal">"depth"</code> property</h3>
+<pre class="programlisting">  "depth"                    gint                  : Read / Write</pre>
 <p>Depth of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 16</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584590"></a><h3>
-<a name="GstAudioParse--endianness"></a>The "<code class="literal">endianness</code>" property</h3>
-<a class="indexterm" name="id2584604"></a><pre class="programlisting">  "endianness"               GstAudioParseEndianness  : Read / Write</pre>
+<a name="GstAudioParse--endianness"></a><h3>The <code class="literal">"endianness"</code> property</h3>
+<pre class="programlisting">  "endianness"               GstAudioParseEndianness  : Read / Write</pre>
 <p>Endianness of audio samples in raw stream.</p>
 <p>Default value: Little Endian</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584628"></a><h3>
-<a name="GstAudioParse--format"></a>The "<code class="literal">format</code>" property</h3>
-<a class="indexterm" name="id2584642"></a><pre class="programlisting">  "format"                   GstAudioParseFormat   : Read / Write</pre>
+<a name="GstAudioParse--format"></a><h3>The <code class="literal">"format"</code> property</h3>
+<pre class="programlisting">  "format"                   GstAudioParseFormat   : Read / Write</pre>
 <p>Format of audio samples in raw stream.</p>
 <p>Default value: Integer</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584668"></a><h3>
-<a name="GstAudioParse--rate"></a>The "<code class="literal">rate</code>" property</h3>
-<a class="indexterm" name="id2584683"></a><pre class="programlisting">  "rate"                     gint                  : Read / Write</pre>
+<a name="GstAudioParse--rate"></a><h3>The <code class="literal">"rate"</code> property</h3>
+<pre class="programlisting">  "rate"                     gint                  : Read / Write</pre>
 <p>Rate of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 44100</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584712"></a><h3>
-<a name="GstAudioParse--signed"></a>The "<code class="literal">signed</code>" property</h3>
-<a class="indexterm" name="id2584726"></a><pre class="programlisting">  "signed"                   gboolean              : Read / Write</pre>
+<a name="GstAudioParse--signed"></a><h3>The <code class="literal">"signed"</code> property</h3>
+<pre class="programlisting">  "signed"                   gboolean              : Read / Write</pre>
 <p>Sign of audio samples in raw stream.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2584753"></a><h3>
-<a name="GstAudioParse--width"></a>The "<code class="literal">width</code>" property</h3>
-<a class="indexterm" name="id2597429"></a><pre class="programlisting">  "width"                    gint                  : Read / Write</pre>
+<a name="GstAudioParse--width"></a><h3>The <code class="literal">"width"</code> property</h3>
+<pre class="programlisting">  "width"                    gint                  : Read / Write</pre>
 <p>Width of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 16</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

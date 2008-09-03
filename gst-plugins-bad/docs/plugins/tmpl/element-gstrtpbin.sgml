@@ -153,3 +153,8 @@ Implement an RTP bin
 
 </para>
 
+<!-- ##### ARG GstRtpBin:do-lost ##### -->
+<para>
+
+</para>
+

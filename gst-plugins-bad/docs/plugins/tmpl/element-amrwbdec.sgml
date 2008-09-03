@@ -23,4 +23,15 @@ Adaptive Multi-Rate Wideband audio decoder
 
 </para>
 
+@element: 
+@sinkpad: 
+@srcpad: 
+@ts: 
+@adapter: 
+@handle: 
+@channels: 
+@rate: 
+@duration: 
+@segment: 
+@discont: 
 

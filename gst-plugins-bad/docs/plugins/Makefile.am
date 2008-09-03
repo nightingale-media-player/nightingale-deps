@@ -58,7 +58,7 @@ FIXXREF_OPTIONS=--extra-dir=$(GLIB_PREFIX)/share/gtk-doc/html \
 	--extra-dir=$(GSTPB_PREFIX)/share/gtk-doc/html
 
 # Used for dependencies.
-HFILE_GLOB=$(DOC_SOURCE_DIR)/*/*/*.h
+HFILE_GLOB=$(DOC_SOURCE_DIR)/*/*/*.h $(DOC_SOURCE_DIR)/*/*/*.hh
 CFILE_GLOB=$(DOC_SOURCE_DIR)/*/*/*.c $(DOC_SOURCE_DIR)/*/*/*.cc
 
 # this is a wingo addition
@@ -99,28 +99,26 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/amrwb/gstamrwbparse.h \
 	$(top_srcdir)/ext/dc1394/gstdc1394.h \
 	$(top_srcdir)/ext/directfb/dfbvideosink.h \
-	$(top_srcdir)/ext/soup/gstsouphttpsrc.h \
 	$(top_srcdir)/ext/ivorbis/vorbisdec.h \
 	$(top_srcdir)/ext/jack/gstjackaudiosink.h \
 	$(top_srcdir)/ext/musicbrainz/gsttrm.h \
 	$(top_srcdir)/ext/metadata/gstbasemetadata.h \
 	$(top_srcdir)/ext/metadata/gstmetadatademux.h \
 	$(top_srcdir)/ext/metadata/gstmetadatamux.h \
+	$(top_srcdir)/ext/mpeg2enc/gstmpeg2enc.hh \
 	$(top_srcdir)/ext/mythtv/gstmythtvsrc.h \
 	$(top_srcdir)/ext/sdl/sdlaudiosink.h \
 	$(top_srcdir)/ext/sdl/sdlvideosink.h \
 	$(top_srcdir)/ext/theora/theoradec.h \
 	$(top_srcdir)/ext/timidity/gsttimidity.h \
 	$(top_srcdir)/ext/timidity/gstwildmidi.h \
+	$(top_srcdir)/gst/deinterlace/gstdeinterlace.h \
 	$(top_srcdir)/gst/dvdspu/gstdvdspu.h \
 	$(top_srcdir)/gst/festival/gstfestival.h \
 	$(top_srcdir)/gst/modplug/gstmodplug.h \
 	$(top_srcdir)/gst/nuvdemux/gstnuvdemux.h \
 	$(top_srcdir)/gst/rawparse/gstaudioparse.h \
 	$(top_srcdir)/gst/rawparse/gstvideoparse.h \
-	$(top_srcdir)/gst/replaygain/gstrganalysis.h \
-	$(top_srcdir)/gst/replaygain/gstrglimiter.h \
-	$(top_srcdir)/gst/replaygain/gstrgvolume.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpbin.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpclient.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpjitterbuffer.h \
@@ -132,9 +130,11 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/selector/gstoutputselector.h \
 	$(top_srcdir)/gst/speed/gstspeed.h \
 	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
+	$(top_srcdir)/gst/stereo/gststereo.h \
 	$(top_srcdir)/gst/videosignal/gstvideoanalyse.h \
 	$(top_srcdir)/gst/videosignal/gstvideodetect.h \
 	$(top_srcdir)/gst/videosignal/gstvideomark.h \
+	$(top_srcdir)/gst/y4m/gsty4mencode.h \
 	$(top_srcdir)/sys/dvb/gstdvbsrc.h
 
 # Images to copy into HTML directory.

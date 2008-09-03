@@ -55,3 +55,8 @@ A buffer that deals with network jitter and other transmission faults
 
 </para>
 
+<!-- ##### ARG GstRtpJitterBuffer:do-lost ##### -->
+<para>
+
+</para>
+

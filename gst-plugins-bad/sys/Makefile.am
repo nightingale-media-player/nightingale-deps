@@ -34,6 +34,12 @@ else
 DVB_DIR=
 endif
 
+if USE_OSS4
+OSS4_DIR=oss4
+else
+OSS4_DIR=
+endif
+
 if USE_QUICKTIME
 QT_DIR=qtwrapper
 else
@@ -46,7 +52,14 @@ else
 DSHOW_DIR=
 endif
 
-SUBDIRS = $(FBDEV_DIR) $(DVB_DIR) $(VCD_DIR) $(QT_DIR) $(DSHOW_DIR)
+if USE_WININET
+WININET_DIR=wininet
+else
+WININET_DIR=
+endif
 
-DIST_SUBDIRS = dvb fbdev vcd qtwrapper dshowdecwrapper dshowsrcwrapper
+SUBDIRS = $(DSHOW_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+
+DIST_SUBDIRS = dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
+			   oss4 qtwrapper vcd wininet
 

@@ -39,34 +39,80 @@ G_BEGIN_DECLS
 typedef struct _GstAppSrc GstAppSrc;
 typedef struct _GstAppSrcClass GstAppSrcClass;
 
+/**
+ * GstAppStreamType:
+ * @GST_APP_STREAM_TYPE_STREAM: No seeking is supported in the stream, such as a
+ * live stream.
+ * @GST_APP_STREAM_TYPE_SEEKABLE: The stream is seekable but seeking might not
+ * be very fast, such as data from a webserver.
+ * @GST_APP_STREAM_TYPE_RANDOM_ACCESS: The stream is seekable and seeking is fast,
+ * such as in a local file.
+ *
+ * The stream type.
+ */
+typedef enum
+{
+  GST_APP_STREAM_TYPE_STREAM,
+  GST_APP_STREAM_TYPE_SEEKABLE,
+  GST_APP_STREAM_TYPE_RANDOM_ACCESS
+} GstAppStreamType;
+
 struct _GstAppSrc
 {
-  GstPushSrc pushsrc;
+  GstBaseSrc basesrc;
 
   /*< private >*/
-  gboolean unlock;
   GCond *cond;
   GMutex *mutex;
   GQueue *queue;
+
   GstCaps *caps;
-  gboolean end_of_stream;
-  gboolean flush;
+  gint64 size;
+  GstAppStreamType stream_type;
+  guint64 max_bytes;
+  GstFormat format;
+  gboolean block;
+
+  gboolean flushing;
+  gboolean started;
+  gboolean is_eos;
+  guint64 queued_bytes;
+  guint64 offset;
+  GstAppStreamType current_type;
 };
 
 struct _GstAppSrcClass
 {
-  GstPushSrcClass pushsrc_class;
+  GstBaseSrcClass basesrc_class;
+
+  /* signals */
+  void          (*need_data)       (GstAppSrc *src, guint length);
+  void          (*enough_data)     (GstAppSrc *src);
+  gboolean      (*seek_data)       (GstAppSrc *src, guint64 offset);
+
+  /* actions */
+  GstFlowReturn (*push_buffer)     (GstAppSrc *src, GstBuffer *buffer);
+  GstFlowReturn (*end_of_stream)   (GstAppSrc *src);
 };
 
 GType gst_app_src_get_type(void);
 
 GST_DEBUG_CATEGORY_EXTERN (app_src_debug);
 
+void             gst_app_src_set_caps         (GstAppSrc *appsrc, const GstCaps *caps);
+GstCaps*         gst_app_src_get_caps         (GstAppSrc *appsrc);
 
-void gst_app_src_push_buffer (GstAppSrc *appsrc, GstBuffer *buffer);
-void gst_app_src_set_caps (GstAppSrc *appsrc, GstCaps *caps);
-void gst_app_src_flush (GstAppSrc *appsrc);
-void gst_app_src_end_of_stream (GstAppSrc *appsrc);
+void             gst_app_src_set_size         (GstAppSrc *appsrc, gint64 size);
+gint64           gst_app_src_get_size         (GstAppSrc *appsrc);
+
+void             gst_app_src_set_stream_type  (GstAppSrc *appsrc, GstAppStreamType type);
+GstAppStreamType gst_app_src_get_stream_type  (GstAppSrc *appsrc);
+
+void             gst_app_src_set_max_bytes    (GstAppSrc *appsrc, guint64 max);
+guint64          gst_app_src_get_max_bytes    (GstAppSrc *appsrc);
+
+GstFlowReturn    gst_app_src_push_buffer      (GstAppSrc *appsrc, GstBuffer *buffer);
+GstFlowReturn    gst_app_src_end_of_stream    (GstAppSrc *appsrc);
 
 G_END_DECLS
 

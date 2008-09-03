@@ -23,22 +23,4 @@ Midi Synthesizer Element
 
 </para>
 
-@element: 
-@sinkpad: 
-@srcpad: 
-@initialized: 
-@mididata_size: 
-@mididata_offset: 
-@mididata: 
-@mididata_filled: 
-@song: 
-@o_new_segment: 
-@o_segment_changed: 
-@o_seek: 
-@o_segment: 
-@o_len: 
-@song_options: 
-@bytes_per_frame: 
-@time_per_frame: 
-@out_caps: 
 

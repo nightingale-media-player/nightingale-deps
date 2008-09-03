@@ -795,6 +795,7 @@ alsaspdifsink_change_state (GstElement * element, GstStateChange transition)
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       sink->frames = 0;
+      gst_audio_clock_reset (GST_AUDIO_CLOCK (sink->clock), 0);
       break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
       if (!alsaspdifsink_open (sink)) {
@@ -841,5 +842,4 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "alsaspdif",
     "Alsa plugin for S/PDIF output",
-    plugin_init,
-    VERSION, GST_LICENSE_UNKNOWN, PACKAGE, "http://www.fluendo.com");
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

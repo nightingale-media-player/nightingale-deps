@@ -63,16 +63,16 @@
 /**
  * SECTION:element-festival
  * 
- * <refsect2>
- * <para>
  * This element connects to a
- * <ulink url="http://www.festvox.org/festival/index.html">festival</ulink> server 
- * process and uses it to synthesize speech.
- * </para>
+ * <ulink url="http://www.festvox.org/festival/index.html">festival</ulink>
+ * server process and uses it to synthesize speech. Festival need to run already
+ * in server mode, started as <screen>festival --server</screen>
+ * 
+ * <refsect2>
  * <title>Example pipeline</title>
- * <programlisting>
- * echo "hi" | gst-launch fdsrc fd=0 ! festival ! wavparse ! audioconvert ! alsasink
- * </programlisting>
+ * |[
+ * echo 'Hello G-Streamer!' | gst-launch fdsrc fd=0 ! festival ! wavparse ! audioconvert ! alsasink
+ * ]|
  * </refsect2>
  */
 
@@ -80,16 +80,27 @@
 #include "config.h"
 #endif
 
+#include <glib.h>               /* Needed for G_OS_XXXX macros */
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
 #include <ctype.h>
 #include <string.h>
 #include <sys/types.h>
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
 
 #include "gstfestival.h"
 #include <gst/audio/audio.h>
@@ -456,8 +467,11 @@ gst_festival_open (GstFestival * festival)
   festival->info->server_fd =
       festival_socket_open (festival->info->server_host,
       festival->info->server_port);
-  if (festival->info->server_fd == -1)
+  if (festival->info->server_fd == -1) {
+    GST_ERROR
+        ("Could not talk to festival server (no server running or wrong host/port?)");
     return FALSE;
+  }
 
   return TRUE;
 }

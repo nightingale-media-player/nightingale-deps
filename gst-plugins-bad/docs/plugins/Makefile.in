@@ -60,6 +60,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
+	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
@@ -67,12 +68,14 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
 	$(top_srcdir)/common/m4/gst-args.m4 \
 	$(top_srcdir)/common/m4/gst-check.m4 \
+	$(top_srcdir)/common/m4/gst-dowhile.m4 \
 	$(top_srcdir)/common/m4/gst-error.m4 \
 	$(top_srcdir)/common/m4/gst-feature.m4 \
 	$(top_srcdir)/common/m4/gst-gettext.m4 \
 	$(top_srcdir)/common/m4/gst-glib2.m4 \
 	$(top_srcdir)/common/m4/gst-plugin-docs.m4 \
 	$(top_srcdir)/common/m4/gst-plugindir.m4 \
+	$(top_srcdir)/common/m4/gst-x11.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
@@ -103,6 +106,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -131,6 +135,8 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DIRAC_CFLAGS = @DIRAC_CFLAGS@
+DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DIRECTSHOW_CFLAGS = @DIRECTSHOW_CFLAGS@
@@ -138,9 +144,13 @@ DIRECTSHOW_LDFLAGS = @DIRECTSHOW_LDFLAGS@
 DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIVXDEC_LIBS = @DIVXDEC_LIBS@
 DIVXENC_LIBS = @DIVXENC_LIBS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DTS_LIBS = @DTS_LIBS@
 DUMPBIN = @DUMPBIN@
+DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
+DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -150,6 +160,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 EXEEXT = @EXEEXT@
 EXIF_CFLAGS = @EXIF_CFLAGS@
 EXIF_LIBS = @EXIF_LIBS@
@@ -183,6 +194,7 @@ GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -192,6 +204,7 @@ GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -204,7 +217,6 @@ GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -246,6 +258,8 @@ HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DTS = @HAVE_DTS@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
+HAVE_GCC_ASM_FALSE = @HAVE_GCC_ASM_FALSE@
+HAVE_GCC_ASM_TRUE = @HAVE_GCC_ASM_TRUE@
 HAVE_GLADE = @HAVE_GLADE@
 HAVE_GLADE_FALSE = @HAVE_GLADE_FALSE@
 HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
@@ -260,6 +274,9 @@ HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
 HAVE_VALGRIND_FALSE = @HAVE_VALGRIND_FALSE@
 HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
+HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
+HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
+HAVE_X = @HAVE_X@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -273,6 +290,7 @@ IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
@@ -298,9 +316,13 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
+MJPEG_CFLAGS = @MJPEG_CFLAGS@
+MJPEG_LIBS = @MJPEG_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
 MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
+MPLEX_CFLAGS = @MPLEX_CFLAGS@
+MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
@@ -312,7 +334,10 @@ NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OFA_CFLAGS = @OFA_CFLAGS@
+OFA_LIBS = @OFA_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -345,8 +370,6 @@ SNDFILE_CFLAGS = @SNDFILE_CFLAGS@
 SNDFILE_LIBS = @SNDFILE_LIBS@
 SOUNDTOUCH_CFLAGS = @SOUNDTOUCH_CFLAGS@
 SOUNDTOUCH_LIBS = @SOUNDTOUCH_LIBS@
-SOUP_CFLAGS = @SOUP_CFLAGS@
-SOUP_LIBS = @SOUP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 STRIP = @STRIP@
 SWFDEC_CFLAGS = @SWFDEC_CFLAGS@
@@ -365,6 +388,8 @@ USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
+USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
+USE_DIRAC_TRUE = @USE_DIRAC_TRUE@
 USE_DIRECTFB_FALSE = @USE_DIRECTFB_FALSE@
 USE_DIRECTFB_TRUE = @USE_DIRECTFB_TRUE@
 USE_DIRECTSHOW_FALSE = @USE_DIRECTSHOW_FALSE@
@@ -375,6 +400,8 @@ USE_DTS_FALSE = @USE_DTS_FALSE@
 USE_DTS_TRUE = @USE_DTS_TRUE@
 USE_DVB_FALSE = @USE_DVB_FALSE@
 USE_DVB_TRUE = @USE_DVB_TRUE@
+USE_DVDNAV_FALSE = @USE_DVDNAV_FALSE@
+USE_DVDNAV_TRUE = @USE_DVDNAV_TRUE@
 USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
 USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
@@ -399,6 +426,8 @@ USE_METADATA_FALSE = @USE_METADATA_FALSE@
 USE_METADATA_TRUE = @USE_METADATA_TRUE@
 USE_MPEG2ENC_FALSE = @USE_MPEG2ENC_FALSE@
 USE_MPEG2ENC_TRUE = @USE_MPEG2ENC_TRUE@
+USE_MPLEX_FALSE = @USE_MPLEX_FALSE@
+USE_MPLEX_TRUE = @USE_MPLEX_TRUE@
 USE_MUSEPACK_FALSE = @USE_MUSEPACK_FALSE@
 USE_MUSEPACK_TRUE = @USE_MUSEPACK_TRUE@
 USE_MUSICBRAINZ_FALSE = @USE_MUSICBRAINZ_FALSE@
@@ -410,6 +439,74 @@ USE_NAS_TRUE = @USE_NAS_TRUE@
 USE_NEON_FALSE = @USE_NEON_FALSE@
 USE_NEON_TRUE = @USE_NEON_TRUE@
 USE_NLS = @USE_NLS@
+USE_OFA_FALSE = @USE_OFA_FALSE@
+USE_OFA_TRUE = @USE_OFA_TRUE@
+USE_OSS4_FALSE = @USE_OSS4_FALSE@
+USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
+USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
+USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
+USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
+USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
+USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
+USE_PLUGIN_DEINTERLACE_TRUE = @USE_PLUGIN_DEINTERLACE_TRUE@
+USE_PLUGIN_DVDSPU_FALSE = @USE_PLUGIN_DVDSPU_FALSE@
+USE_PLUGIN_DVDSPU_TRUE = @USE_PLUGIN_DVDSPU_TRUE@
+USE_PLUGIN_FESTIVAL_FALSE = @USE_PLUGIN_FESTIVAL_FALSE@
+USE_PLUGIN_FESTIVAL_TRUE = @USE_PLUGIN_FESTIVAL_TRUE@
+USE_PLUGIN_FILTER_FALSE = @USE_PLUGIN_FILTER_FALSE@
+USE_PLUGIN_FILTER_TRUE = @USE_PLUGIN_FILTER_TRUE@
+USE_PLUGIN_FLV_FALSE = @USE_PLUGIN_FLV_FALSE@
+USE_PLUGIN_FLV_TRUE = @USE_PLUGIN_FLV_TRUE@
+USE_PLUGIN_FREEZE_FALSE = @USE_PLUGIN_FREEZE_FALSE@
+USE_PLUGIN_FREEZE_TRUE = @USE_PLUGIN_FREEZE_TRUE@
+USE_PLUGIN_H264PARSE_FALSE = @USE_PLUGIN_H264PARSE_FALSE@
+USE_PLUGIN_H264PARSE_TRUE = @USE_PLUGIN_H264PARSE_TRUE@
+USE_PLUGIN_LIBRFB_FALSE = @USE_PLUGIN_LIBRFB_FALSE@
+USE_PLUGIN_LIBRFB_TRUE = @USE_PLUGIN_LIBRFB_TRUE@
+USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
+USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
+USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
+USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
+USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
+USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
+USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
+USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
+USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
+USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
+USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
+USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
+USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
+USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
+USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
+USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
+USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
+USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
+USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
+USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
+USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
+USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
+USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
+USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
+USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
+USE_PLUGIN_SUBENC_TRUE = @USE_PLUGIN_SUBENC_TRUE@
+USE_PLUGIN_TTA_FALSE = @USE_PLUGIN_TTA_FALSE@
+USE_PLUGIN_TTA_TRUE = @USE_PLUGIN_TTA_TRUE@
+USE_PLUGIN_VIDEOSIGNAL_FALSE = @USE_PLUGIN_VIDEOSIGNAL_FALSE@
+USE_PLUGIN_VIDEOSIGNAL_TRUE = @USE_PLUGIN_VIDEOSIGNAL_TRUE@
+USE_PLUGIN_VMNC_FALSE = @USE_PLUGIN_VMNC_FALSE@
+USE_PLUGIN_VMNC_TRUE = @USE_PLUGIN_VMNC_TRUE@
+USE_PLUGIN_Y4M_FALSE = @USE_PLUGIN_Y4M_FALSE@
+USE_PLUGIN_Y4M_TRUE = @USE_PLUGIN_Y4M_TRUE@
 USE_QUICKTIME_FALSE = @USE_QUICKTIME_FALSE@
 USE_QUICKTIME_TRUE = @USE_QUICKTIME_TRUE@
 USE_SDL_FALSE = @USE_SDL_FALSE@
@@ -418,8 +515,6 @@ USE_SNDFILE_FALSE = @USE_SNDFILE_FALSE@
 USE_SNDFILE_TRUE = @USE_SNDFILE_TRUE@
 USE_SOUNDTOUCH_FALSE = @USE_SOUNDTOUCH_FALSE@
 USE_SOUNDTOUCH_TRUE = @USE_SOUNDTOUCH_TRUE@
-USE_SOUP_FALSE = @USE_SOUP_FALSE@
-USE_SOUP_TRUE = @USE_SOUP_TRUE@
 USE_SPC_FALSE = @USE_SPC_FALSE@
 USE_SPC_TRUE = @USE_SPC_TRUE@
 USE_SWFDEC_FALSE = @USE_SWFDEC_FALSE@
@@ -432,6 +527,8 @@ USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
 USE_WILDMIDI_TRUE = @USE_WILDMIDI_TRUE@
+USE_WININET_FALSE = @USE_WININET_FALSE@
+USE_WININET_TRUE = @USE_WININET_TRUE@
 USE_X264_FALSE = @USE_X264_FALSE@
 USE_X264_TRUE = @USE_X264_TRUE@
 USE_XVID_FALSE = @USE_XVID_FALSE@
@@ -445,11 +542,16 @@ WILDMIDI_LIBS = @WILDMIDI_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
 XMP_LIBS = @XMP_LIBS@
 XVID_LIBS = @XVID_LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -565,7 +667,7 @@ FIXXREF_OPTIONS = --extra-dir=$(GLIB_PREFIX)/share/gtk-doc/html \
 
 
 # Used for dependencies.
-HFILE_GLOB = $(DOC_SOURCE_DIR)/*/*/*.h
+HFILE_GLOB = $(DOC_SOURCE_DIR)/*/*/*.h $(DOC_SOURCE_DIR)/*/*/*.hh
 CFILE_GLOB = $(DOC_SOURCE_DIR)/*/*/*.c $(DOC_SOURCE_DIR)/*/*/*.cc
 
 # this is a wingo addition
@@ -605,28 +707,26 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/amrwb/gstamrwbparse.h \
 	$(top_srcdir)/ext/dc1394/gstdc1394.h \
 	$(top_srcdir)/ext/directfb/dfbvideosink.h \
-	$(top_srcdir)/ext/soup/gstsouphttpsrc.h \
 	$(top_srcdir)/ext/ivorbis/vorbisdec.h \
 	$(top_srcdir)/ext/jack/gstjackaudiosink.h \
 	$(top_srcdir)/ext/musicbrainz/gsttrm.h \
 	$(top_srcdir)/ext/metadata/gstbasemetadata.h \
 	$(top_srcdir)/ext/metadata/gstmetadatademux.h \
 	$(top_srcdir)/ext/metadata/gstmetadatamux.h \
+	$(top_srcdir)/ext/mpeg2enc/gstmpeg2enc.hh \
 	$(top_srcdir)/ext/mythtv/gstmythtvsrc.h \
 	$(top_srcdir)/ext/sdl/sdlaudiosink.h \
 	$(top_srcdir)/ext/sdl/sdlvideosink.h \
 	$(top_srcdir)/ext/theora/theoradec.h \
 	$(top_srcdir)/ext/timidity/gsttimidity.h \
 	$(top_srcdir)/ext/timidity/gstwildmidi.h \
+	$(top_srcdir)/gst/deinterlace/gstdeinterlace.h \
 	$(top_srcdir)/gst/dvdspu/gstdvdspu.h \
 	$(top_srcdir)/gst/festival/gstfestival.h \
 	$(top_srcdir)/gst/modplug/gstmodplug.h \
 	$(top_srcdir)/gst/nuvdemux/gstnuvdemux.h \
 	$(top_srcdir)/gst/rawparse/gstaudioparse.h \
 	$(top_srcdir)/gst/rawparse/gstvideoparse.h \
-	$(top_srcdir)/gst/replaygain/gstrganalysis.h \
-	$(top_srcdir)/gst/replaygain/gstrglimiter.h \
-	$(top_srcdir)/gst/replaygain/gstrgvolume.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpbin.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpclient.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpjitterbuffer.h \
@@ -638,9 +738,11 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/selector/gstoutputselector.h \
 	$(top_srcdir)/gst/speed/gstspeed.h \
 	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
+	$(top_srcdir)/gst/stereo/gststereo.h \
 	$(top_srcdir)/gst/videosignal/gstvideoanalyse.h \
 	$(top_srcdir)/gst/videosignal/gstvideodetect.h \
 	$(top_srcdir)/gst/videosignal/gstvideomark.h \
+	$(top_srcdir)/gst/y4m/gsty4mencode.h \
 	$(top_srcdir)/sys/dvb/gstdvbsrc.h
 
 
@@ -746,12 +848,16 @@ CLEANFILES = \
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
+@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(builddir)/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
-@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src \
+@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
 @ENABLE_GTK_DOC_TRUE@        GST_REGISTRY=$(INSPECT_REGISTRY)
 
+MAINTAINERCLEANFILES = $(MAINTAINER_DOC_STAMPS)
+
+# wildcard is apparently not portable to other makes, hence the use of find
+inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
 all: all-am
 
 .SUFFIXES:
@@ -861,6 +967,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -935,8 +1042,15 @@ upload: $(FORMATS)
 	echo Done
 
 help:
+	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
 	@echo "the documentation files maintained in CVS"
+	@echo
+	@echo Other useful make targets:
+	@echo
+	@echo  check-inspected-versions: make sure the inspected plugin info
+	@echo                            is up to date before a release
+	@echo
 
 # update the stuff maintained by doc maintainers
 update:
@@ -966,8 +1080,9 @@ update:
 @ENABLE_GTK_DOC_TRUE@	    done;							\
 @ENABLE_GTK_DOC_TRUE@	else								\
 @ENABLE_GTK_DOC_TRUE@	    $(INSPECT_ENVIRONMENT) 					\
-@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" 			\
-@ENABLE_GTK_DOC_TRUE@	    CFLAGS="-g $(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)"		\
+@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)"				\
+@ENABLE_GTK_DOC_TRUE@	    CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)"				\
+@ENABLE_GTK_DOC_TRUE@	    LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)"				\
 @ENABLE_GTK_DOC_TRUE@	    $(GST_DOC_SCANOBJ) --type-init-func="gst_init(NULL,NULL)"	\
 @ENABLE_GTK_DOC_TRUE@	        --module=$(DOC_MODULE) --source=$(PACKAGE) &&		\
 @ENABLE_GTK_DOC_TRUE@		$(PYTHON)						\
@@ -983,8 +1098,7 @@ update:
 @ENABLE_GTK_DOC_TRUE@	mkdir inspect
 
 @ENABLE_GTK_DOC_TRUE@inspect-update: inspect
-@ENABLE_GTK_DOC_TRUE@	-rm $(INSPECT_REGISTRY)
-@ENABLE_GTK_DOC_TRUE@	-rm inspect-build.stamp
+@ENABLE_GTK_DOC_TRUE@	-rm -f $(INSPECT_REGISTRY) inspect-build.stamp
 @ENABLE_GTK_DOC_TRUE@	$(MAKE) inspect-build.stamp
 
 # FIXME: inspect.stamp should be written to by gst-xmlinspect.py
@@ -1091,26 +1205,22 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@echo '-- Fixing Crossreferences' 
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 @ENABLE_GTK_DOC_TRUE@	touch html-build.stamp
-@ENABLE_GTK_DOC_FALSE@all-local:
 
-# FIXME: these rules need a little cleaning up
-clean-local:
+@ENABLE_GTK_DOC_TRUE@clean-local-gtkdoc:
+@ENABLE_GTK_DOC_TRUE@	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+@ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
+@ENABLE_GTK_DOC_TRUE@	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES); \
+@ENABLE_GTK_DOC_TRUE@	fi
+@ENABLE_GTK_DOC_FALSE@all-local:
+@ENABLE_GTK_DOC_FALSE@clean-local-gtkdoc:
+
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
-# clean files generated for tmpl build
-	-rm -rf tmpl
-# clean files copied/generated for nonsrcdir tmpl build
-	if test x"$(srcdir)" != x. ; then \
-	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES);			\
-	fi
-# clean files generated for xml build
-	-rm -rf xml
-# clean files generate for html build
-	-rm -rf html
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
-	rm -f *.stamp || true
 	rm -rf *.o
 
 # thomas: make docs parallel installable; devhelp requires majorminor too
@@ -1188,6 +1298,19 @@ check-hierarchy: $(DOC_MODULE).hierarchy
 
 check: check-hierarchy
 
+check-inspected-versions:
+	@echo Checking plugin versions of inspected plugin data ...; \
+	fail=0 ; \
+	for each in $(inspect_files) ; do \
+	  if (grep -H '<version>' $$each | grep -v '<version>$(VERSION)'); then \
+	    echo $$each should be fixed to say version $(VERSION) or be removed ; \
+	    echo "sed -i -e 's/<version.*version>/<version>$(VERSION)<\/version>/'" $$each; \
+	    echo ; \
+	    fail=1; \
+	  fi ; \
+	done ; \
+	exit $$fail
+
 #
 # Require gtk-doc when making dist
 #
@@ -1204,7 +1327,7 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
 	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
+	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
 	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
 
 	images=$(HTML_IMAGES) ;    	      \

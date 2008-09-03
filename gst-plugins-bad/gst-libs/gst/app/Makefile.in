@@ -14,6 +14,13 @@
 
 @SET_MAKE@
 
+# these are the variables your Makefile.am should set
+# the example is based on the colorbalance interface
+
+#glib_enum_headers=$(colorbalance_headers)
+#glib_enum_define=GST_COLOR_BALANCE
+#glib_enum_prefix=gst_color_balance
+
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -37,13 +44,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = gst-libs/gst/app
 DIST_COMMON = $(libgstapp_@GST_MAJORMINOR@include_HEADERS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(top_srcdir)/common/glib-gen.mak
+subdir = gst-libs/gst/app
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
+	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
@@ -51,12 +60,14 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
 	$(top_srcdir)/common/m4/gst-args.m4 \
 	$(top_srcdir)/common/m4/gst-check.m4 \
+	$(top_srcdir)/common/m4/gst-dowhile.m4 \
 	$(top_srcdir)/common/m4/gst-error.m4 \
 	$(top_srcdir)/common/m4/gst-feature.m4 \
 	$(top_srcdir)/common/m4/gst-gettext.m4 \
 	$(top_srcdir)/common/m4/gst-glib2.m4 \
 	$(top_srcdir)/common/m4/gst-plugin-docs.m4 \
 	$(top_srcdir)/common/m4/gst-plugindir.m4 \
+	$(top_srcdir)/common/m4/gst-x11.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
@@ -88,8 +99,11 @@ am_libgstapp_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstapp_@GST_MAJORMINOR@_la-gstappsrc.lo \
 	libgstapp_@GST_MAJORMINOR@_la-gstappbuffer.lo \
 	libgstapp_@GST_MAJORMINOR@_la-gstappsink.lo
+am__objects_1 = libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo
+nodist_libgstapp_@GST_MAJORMINOR@_la_OBJECTS = $(am__objects_1)
 libgstapp_@GST_MAJORMINOR@_la_OBJECTS =  \
-	$(am_libgstapp_@GST_MAJORMINOR@_la_OBJECTS)
+	$(am_libgstapp_@GST_MAJORMINOR@_la_OBJECTS) \
+	$(nodist_libgstapp_@GST_MAJORMINOR@_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -101,7 +115,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstapp_@GST_MAJORMINOR@_la_SOURCES)
+SOURCES = $(libgstapp_@GST_MAJORMINOR@_la_SOURCES) \
+	$(nodist_libgstapp_@GST_MAJORMINOR@_la_SOURCES)
 DIST_SOURCES = $(libgstapp_@GST_MAJORMINOR@_la_SOURCES)
 libgstapp_@GST_MAJORMINOR@includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(libgstapp_@GST_MAJORMINOR@include_HEADERS)
@@ -120,6 +135,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -148,6 +164,8 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DIRAC_CFLAGS = @DIRAC_CFLAGS@
+DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DIRECTSHOW_CFLAGS = @DIRECTSHOW_CFLAGS@
@@ -155,9 +173,13 @@ DIRECTSHOW_LDFLAGS = @DIRECTSHOW_LDFLAGS@
 DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIVXDEC_LIBS = @DIVXDEC_LIBS@
 DIVXENC_LIBS = @DIVXENC_LIBS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DTS_LIBS = @DTS_LIBS@
 DUMPBIN = @DUMPBIN@
+DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
+DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -167,6 +189,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 EXEEXT = @EXEEXT@
 EXIF_CFLAGS = @EXIF_CFLAGS@
 EXIF_LIBS = @EXIF_LIBS@
@@ -200,6 +223,7 @@ GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -209,6 +233,7 @@ GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -221,7 +246,6 @@ GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -263,6 +287,8 @@ HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DTS = @HAVE_DTS@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
+HAVE_GCC_ASM_FALSE = @HAVE_GCC_ASM_FALSE@
+HAVE_GCC_ASM_TRUE = @HAVE_GCC_ASM_TRUE@
 HAVE_GLADE = @HAVE_GLADE@
 HAVE_GLADE_FALSE = @HAVE_GLADE_FALSE@
 HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
@@ -277,6 +303,9 @@ HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
 HAVE_VALGRIND_FALSE = @HAVE_VALGRIND_FALSE@
 HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
+HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
+HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
+HAVE_X = @HAVE_X@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -290,6 +319,7 @@ IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
@@ -315,9 +345,13 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
+MJPEG_CFLAGS = @MJPEG_CFLAGS@
+MJPEG_LIBS = @MJPEG_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
 MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
+MPLEX_CFLAGS = @MPLEX_CFLAGS@
+MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
@@ -329,7 +363,10 @@ NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OFA_CFLAGS = @OFA_CFLAGS@
+OFA_LIBS = @OFA_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -362,8 +399,6 @@ SNDFILE_CFLAGS = @SNDFILE_CFLAGS@
 SNDFILE_LIBS = @SNDFILE_LIBS@
 SOUNDTOUCH_CFLAGS = @SOUNDTOUCH_CFLAGS@
 SOUNDTOUCH_LIBS = @SOUNDTOUCH_LIBS@
-SOUP_CFLAGS = @SOUP_CFLAGS@
-SOUP_LIBS = @SOUP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 STRIP = @STRIP@
 SWFDEC_CFLAGS = @SWFDEC_CFLAGS@
@@ -382,6 +417,8 @@ USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
+USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
+USE_DIRAC_TRUE = @USE_DIRAC_TRUE@
 USE_DIRECTFB_FALSE = @USE_DIRECTFB_FALSE@
 USE_DIRECTFB_TRUE = @USE_DIRECTFB_TRUE@
 USE_DIRECTSHOW_FALSE = @USE_DIRECTSHOW_FALSE@
@@ -392,6 +429,8 @@ USE_DTS_FALSE = @USE_DTS_FALSE@
 USE_DTS_TRUE = @USE_DTS_TRUE@
 USE_DVB_FALSE = @USE_DVB_FALSE@
 USE_DVB_TRUE = @USE_DVB_TRUE@
+USE_DVDNAV_FALSE = @USE_DVDNAV_FALSE@
+USE_DVDNAV_TRUE = @USE_DVDNAV_TRUE@
 USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
 USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
@@ -416,6 +455,8 @@ USE_METADATA_FALSE = @USE_METADATA_FALSE@
 USE_METADATA_TRUE = @USE_METADATA_TRUE@
 USE_MPEG2ENC_FALSE = @USE_MPEG2ENC_FALSE@
 USE_MPEG2ENC_TRUE = @USE_MPEG2ENC_TRUE@
+USE_MPLEX_FALSE = @USE_MPLEX_FALSE@
+USE_MPLEX_TRUE = @USE_MPLEX_TRUE@
 USE_MUSEPACK_FALSE = @USE_MUSEPACK_FALSE@
 USE_MUSEPACK_TRUE = @USE_MUSEPACK_TRUE@
 USE_MUSICBRAINZ_FALSE = @USE_MUSICBRAINZ_FALSE@
@@ -427,6 +468,74 @@ USE_NAS_TRUE = @USE_NAS_TRUE@
 USE_NEON_FALSE = @USE_NEON_FALSE@
 USE_NEON_TRUE = @USE_NEON_TRUE@
 USE_NLS = @USE_NLS@
+USE_OFA_FALSE = @USE_OFA_FALSE@
+USE_OFA_TRUE = @USE_OFA_TRUE@
+USE_OSS4_FALSE = @USE_OSS4_FALSE@
+USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
+USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
+USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
+USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
+USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
+USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
+USE_PLUGIN_DEINTERLACE_TRUE = @USE_PLUGIN_DEINTERLACE_TRUE@
+USE_PLUGIN_DVDSPU_FALSE = @USE_PLUGIN_DVDSPU_FALSE@
+USE_PLUGIN_DVDSPU_TRUE = @USE_PLUGIN_DVDSPU_TRUE@
+USE_PLUGIN_FESTIVAL_FALSE = @USE_PLUGIN_FESTIVAL_FALSE@
+USE_PLUGIN_FESTIVAL_TRUE = @USE_PLUGIN_FESTIVAL_TRUE@
+USE_PLUGIN_FILTER_FALSE = @USE_PLUGIN_FILTER_FALSE@
+USE_PLUGIN_FILTER_TRUE = @USE_PLUGIN_FILTER_TRUE@
+USE_PLUGIN_FLV_FALSE = @USE_PLUGIN_FLV_FALSE@
+USE_PLUGIN_FLV_TRUE = @USE_PLUGIN_FLV_TRUE@
+USE_PLUGIN_FREEZE_FALSE = @USE_PLUGIN_FREEZE_FALSE@
+USE_PLUGIN_FREEZE_TRUE = @USE_PLUGIN_FREEZE_TRUE@
+USE_PLUGIN_H264PARSE_FALSE = @USE_PLUGIN_H264PARSE_FALSE@
+USE_PLUGIN_H264PARSE_TRUE = @USE_PLUGIN_H264PARSE_TRUE@
+USE_PLUGIN_LIBRFB_FALSE = @USE_PLUGIN_LIBRFB_FALSE@
+USE_PLUGIN_LIBRFB_TRUE = @USE_PLUGIN_LIBRFB_TRUE@
+USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
+USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
+USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
+USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
+USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
+USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
+USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
+USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
+USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
+USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
+USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
+USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
+USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
+USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
+USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
+USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
+USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
+USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
+USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
+USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
+USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
+USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
+USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
+USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
+USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
+USE_PLUGIN_SUBENC_TRUE = @USE_PLUGIN_SUBENC_TRUE@
+USE_PLUGIN_TTA_FALSE = @USE_PLUGIN_TTA_FALSE@
+USE_PLUGIN_TTA_TRUE = @USE_PLUGIN_TTA_TRUE@
+USE_PLUGIN_VIDEOSIGNAL_FALSE = @USE_PLUGIN_VIDEOSIGNAL_FALSE@
+USE_PLUGIN_VIDEOSIGNAL_TRUE = @USE_PLUGIN_VIDEOSIGNAL_TRUE@
+USE_PLUGIN_VMNC_FALSE = @USE_PLUGIN_VMNC_FALSE@
+USE_PLUGIN_VMNC_TRUE = @USE_PLUGIN_VMNC_TRUE@
+USE_PLUGIN_Y4M_FALSE = @USE_PLUGIN_Y4M_FALSE@
+USE_PLUGIN_Y4M_TRUE = @USE_PLUGIN_Y4M_TRUE@
 USE_QUICKTIME_FALSE = @USE_QUICKTIME_FALSE@
 USE_QUICKTIME_TRUE = @USE_QUICKTIME_TRUE@
 USE_SDL_FALSE = @USE_SDL_FALSE@
@@ -435,8 +544,6 @@ USE_SNDFILE_FALSE = @USE_SNDFILE_FALSE@
 USE_SNDFILE_TRUE = @USE_SNDFILE_TRUE@
 USE_SOUNDTOUCH_FALSE = @USE_SOUNDTOUCH_FALSE@
 USE_SOUNDTOUCH_TRUE = @USE_SOUNDTOUCH_TRUE@
-USE_SOUP_FALSE = @USE_SOUP_FALSE@
-USE_SOUP_TRUE = @USE_SOUP_TRUE@
 USE_SPC_FALSE = @USE_SPC_FALSE@
 USE_SPC_TRUE = @USE_SPC_TRUE@
 USE_SWFDEC_FALSE = @USE_SWFDEC_FALSE@
@@ -449,6 +556,8 @@ USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
 USE_WILDMIDI_TRUE = @USE_WILDMIDI_TRUE@
+USE_WININET_FALSE = @USE_WININET_FALSE@
+USE_WININET_TRUE = @USE_WININET_TRUE@
 USE_X264_FALSE = @USE_X264_FALSE@
 USE_X264_TRUE = @USE_X264_TRUE@
 USE_XVID_FALSE = @USE_XVID_FALSE@
@@ -462,11 +571,16 @@ WILDMIDI_LIBS = @WILDMIDI_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
 XMP_LIBS = @XMP_LIBS@
 XVID_LIBS = @XVID_LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -522,7 +636,16 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 lib_LTLIBRARIES = libgstapp-@GST_MAJORMINOR@.la
-libgstapp_@GST_MAJORMINOR@_la_SOURCES = gstappsrc.c gstappbuffer.c gstappsink.c
+glib_enum_define = GST_APP
+glib_enum_prefix = gst_app
+enum_headers = $(foreach h,$(glib_enum_headers),\n\#include \"$(h)\")
+built_sources = gstapp-marshal.c
+built_headers = gstapp-marshal.h
+BUILT_SOURCES = $(built_sources) $(built_headers)
+nodist_libgstapp_@GST_MAJORMINOR@_la_SOURCES = \
+             $(built_sources)
+
+libgstapp_@GST_MAJORMINOR@_la_SOURCES = gstappsrc.c gstappbuffer.c gstappsink.c 
 libgstapp_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS)
 
@@ -534,11 +657,14 @@ libgstapp_@GST_MAJORMINOR@include_HEADERS = \
 	gstappbuffer.h \
 	gstappsink.h
 
-all: all-am
+CLEANFILES = $(BUILT_SOURCES)
+EXTRA_DIST = gstapp-marshal.list
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/common/glib-gen.mak $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -603,6 +729,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstappbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstappsink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstappsrc.Plo@am__quote@
@@ -648,6 +775,13 @@ libgstapp_@GST_MAJORMINOR@_la-gstappsink.lo: gstappsink.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstappsink.c' object='libgstapp_@GST_MAJORMINOR@_la-gstappsink.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapp_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstapp_@GST_MAJORMINOR@_la-gstappsink.lo `test -f 'gstappsink.c' || echo '$(srcdir)/'`gstappsink.c
+
+libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo: gstapp-marshal.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapp_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo -MD -MP -MF "$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.Tpo" -c -o libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo `test -f 'gstapp-marshal.c' || echo '$(srcdir)/'`gstapp-marshal.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.Tpo" "$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.Plo"; else rm -f "$(DEPDIR)/libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstapp-marshal.c' object='libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapp_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstapp_@GST_MAJORMINOR@_la-gstapp-marshal.lo `test -f 'gstapp-marshal.c' || echo '$(srcdir)/'`gstapp-marshal.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -725,6 +859,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/../../../common
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -752,13 +887,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libgstapp_@GST_MAJORMINOR@includedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -775,6 +912,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -782,6 +920,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -849,6 +988,42 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-libgstapp_@GST_MAJORMINOR@includeHEADERS
 
+
+# these are all the rules generating the relevant files
+%-marshal.h: %-marshal.list
+	glib-genmarshal --header --prefix=$(glib_enum_prefix)_marshal $^ > $*-marshal.h.tmp
+	mv $*-marshal.h.tmp $*-marshal.h
+
+%-marshal.c: %-marshal.list
+	echo "#include \"$*-marshal.h\"" >> $*-marshal.c.tmp
+	glib-genmarshal --body --prefix=$(glib_enum_prefix)_marshal $^ >> $*-marshal.c.tmp
+	mv $*-marshal.c.tmp $*-marshal.c
+
+%-enumtypes.h: $(glib_enum_headers)
+	glib-mkenums \
+	--fhead "#ifndef __$(glib_enum_define)_ENUM_TYPES_H__\n#define __$(glib_enum_define)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+	--fprod "\n/* enumerations from \"@filename@\" */\n" \
+	--vhead "GType @enum_name@_get_type (void);\n#define GST_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif /* __$(glib_enum_define)_ENUM_TYPES_H__ */" \
+	$^ > $@
+
+%-enumtypes.c: $(glib_enum_headers)
+	@if test "x$(glib_enum_headers)" == "x"; then echo "ERROR: glib_enum_headers is empty, please fix Makefile"; exit 1; fi
+	glib-mkenums \
+	--fhead "#include \"$*-enumtypes.h\"\n$(enum_headers)" \
+	--fprod "\n/* enumerations from \"@filename@\" */" \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+	$^ > $@
+
+# a hack rule to make sure .Plo files exist because they get include'd
+# from Makefile's
+.deps/%-marshal.Plo:
+	touch $@
+
+.deps/%-enumtypes.Plo:
+	touch $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

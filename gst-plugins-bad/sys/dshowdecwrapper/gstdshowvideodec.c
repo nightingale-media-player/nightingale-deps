@@ -330,6 +330,8 @@ gst_dshowvideodec_init (GstDshowVideoDec * vdec,
   vdec->decfilter = NULL;
   vdec->sinkfilter = NULL;
 
+  vdec->last_ret = GST_FLOW_OK;
+
   vdec->filtergraph = NULL;
   vdec->mediafilter = NULL;
   vdec->gstdshowsrcfilter = NULL;
@@ -666,20 +668,28 @@ gst_dshowvideodec_sink_event (GstPad * pad, GstEvent * event)
       ret = gst_pad_event_default (pad, event);
       break;
   }
+
+  gst_object_unref (vdec);
+
   return ret;
 }
 
 static GstFlowReturn
 gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
 {
-  GstFlowReturn ret = GST_FLOW_OK;
   GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
   gboolean discount = FALSE;
   GstClockTime stop;
 
   if (!vdec->gstdshowsrcfilter) {
     /* we are not setup */
-    ret = GST_FLOW_WRONG_STATE;
+    vdec->last_ret = GST_FLOW_WRONG_STATE;
+    goto beach;
+  }
+
+  if (GST_FLOW_IS_FATAL (vdec->last_ret)) {
+    GST_DEBUG_OBJECT (vdec, "last decoding iteration generated a fatal error "
+        "%s", gst_flow_get_name (vdec->last_ret));
     goto beach;
   }
 
@@ -714,7 +724,7 @@ beach:
   gst_buffer_unref (buffer);
   gst_object_unref (vdec);
 
-  return ret;
+  return vdec->last_ret;
 }
 
 static gboolean
@@ -740,8 +750,9 @@ gst_dshowvideodec_push_buffer (byte * buffer, long size, byte * src_object,
     return FALSE;
   }
 
-  /* buffer is in our segment allocate a new out buffer and clip its timestamps */
-  gst_pad_alloc_buffer (vdec->srcpad, GST_BUFFER_OFFSET_NONE,
+  /* buffer is in our segment allocate a new out buffer and clip its
+   * timestamps */
+  vdec->last_ret = gst_pad_alloc_buffer (vdec->srcpad, GST_BUFFER_OFFSET_NONE,
       size, GST_PAD_CAPS (vdec->srcpad), &buf);
   if (!buf) {
     GST_CAT_WARNING_OBJECT (dshowvideodec_debug, vdec,
@@ -750,7 +761,6 @@ gst_dshowvideodec_push_buffer (byte * buffer, long size, byte * src_object,
   }
 
   /* set buffer properties */
-  GST_BUFFER_SIZE (buf) = size;
   GST_BUFFER_TIMESTAMP (buf) = clip_start;
   GST_BUFFER_DURATION (buf) = clip_stop - clip_start;
 
@@ -767,7 +777,7 @@ gst_dshowvideodec_push_buffer (byte * buffer, long size, byte * src_object,
           buffer + (size - ((line + 1) * (stride))), stride);
     }
   } else {
-    memcpy (GST_BUFFER_DATA (buf), buffer, size);
+    memcpy (GST_BUFFER_DATA (buf), buffer, MIN (size, GST_BUFFER_SIZE (buf)));
   }
 
   GST_CAT_LOG_OBJECT (dshowvideodec_debug, vdec,
@@ -778,7 +788,7 @@ gst_dshowvideodec_push_buffer (byte * buffer, long size, byte * src_object,
       GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
 
   /* push the buffer downstream */
-  gst_pad_push (vdec->srcpad, buf);
+  vdec->last_ret = gst_pad_push (vdec->srcpad, buf);
 
   return TRUE;
 }
@@ -788,6 +798,7 @@ static GstCaps *
 gst_dshowvideodec_src_getcaps (GstPad * pad)
 {
   GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
+  GstCaps *caps = NULL;
 
   if (!vdec->srccaps)
     vdec->srccaps = gst_caps_new_empty ();
@@ -802,7 +813,7 @@ gst_dshowvideodec_src_getcaps (GstPad * pad)
             &output_pin)) {
       GST_ELEMENT_ERROR (vdec, STREAM, FAILED,
           ("failed getting ouput pin from the decoder"), (NULL));
-      return NULL;
+      goto beach;
     }
 
     hres = IPin_EnumMediaTypes (output_pin, &enum_mediatypes);
@@ -854,9 +865,12 @@ gst_dshowvideodec_src_getcaps (GstPad * pad)
   }
 
   if (vdec->srccaps)
-    return gst_caps_ref (vdec->srccaps);
+    caps = gst_caps_ref (vdec->srccaps);
 
-  return NULL;
+beach:
+  gst_object_unref (vdec);
+
+  return caps;
 }
 
 static gboolean
@@ -962,7 +976,7 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
           klass->entry->input_subtype,
           klass->entry->output_majortype,
           klass->entry->output_subtype,
-          klass->entry->prefered_filter_substring, &vdec->decfilter)) {
+          klass->entry->preferred_filter_substring, &vdec->decfilter)) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't create an instance "
             "of the decoder filter"), (NULL));
     goto error;
@@ -1091,7 +1105,7 @@ dshow_vdec_register (GstPlugin * plugin)
             video_dec_codecs[i].input_subtype,
             video_dec_codecs[i].output_majortype,
             video_dec_codecs[i].output_subtype,
-            video_dec_codecs[i].prefered_filter_substring, NULL)) {
+            video_dec_codecs[i].preferred_filter_substring, NULL)) {
 
       GST_CAT_DEBUG (dshowvideodec_debug, "Registering %s",
           video_dec_codecs[i].element_name);

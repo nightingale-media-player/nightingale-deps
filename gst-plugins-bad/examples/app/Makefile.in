@@ -36,13 +36,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = appsrc_ex$(EXEEXT)
+noinst_PROGRAMS = appsrc_ex$(EXEEXT) appsrc-stream$(EXEEXT) \
+	appsrc-stream2$(EXEEXT) appsrc-ra$(EXEEXT) \
+	appsrc-seekable$(EXEEXT) appsink-src$(EXEEXT)
 subdir = examples/app
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
+	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
@@ -50,12 +53,14 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
 	$(top_srcdir)/common/m4/gst-args.m4 \
 	$(top_srcdir)/common/m4/gst-check.m4 \
+	$(top_srcdir)/common/m4/gst-dowhile.m4 \
 	$(top_srcdir)/common/m4/gst-error.m4 \
 	$(top_srcdir)/common/m4/gst-feature.m4 \
 	$(top_srcdir)/common/m4/gst-gettext.m4 \
 	$(top_srcdir)/common/m4/gst-glib2.m4 \
 	$(top_srcdir)/common/m4/gst-plugin-docs.m4 \
 	$(top_srcdir)/common/m4/gst-plugindir.m4 \
+	$(top_srcdir)/common/m4/gst-x11.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
@@ -72,6 +77,22 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
+am_appsink_src_OBJECTS = appsink_src-appsink-src.$(OBJEXT)
+appsink_src_OBJECTS = $(am_appsink_src_OBJECTS)
+appsink_src_LDADD = $(LDADD)
+am_appsrc_ra_OBJECTS = appsrc_ra-appsrc-ra.$(OBJEXT)
+appsrc_ra_OBJECTS = $(am_appsrc_ra_OBJECTS)
+appsrc_ra_LDADD = $(LDADD)
+am_appsrc_seekable_OBJECTS =  \
+	appsrc_seekable-appsrc-seekable.$(OBJEXT)
+appsrc_seekable_OBJECTS = $(am_appsrc_seekable_OBJECTS)
+appsrc_seekable_LDADD = $(LDADD)
+am_appsrc_stream_OBJECTS = appsrc_stream-appsrc-stream.$(OBJEXT)
+appsrc_stream_OBJECTS = $(am_appsrc_stream_OBJECTS)
+appsrc_stream_LDADD = $(LDADD)
+am_appsrc_stream2_OBJECTS = appsrc_stream2-appsrc-stream2.$(OBJEXT)
+appsrc_stream2_OBJECTS = $(am_appsrc_stream2_OBJECTS)
+appsrc_stream2_LDADD = $(LDADD)
 am_appsrc_ex_OBJECTS = appsrc_ex-appsrc_ex.$(OBJEXT)
 appsrc_ex_OBJECTS = $(am_appsrc_ex_OBJECTS)
 appsrc_ex_LDADD = $(LDADD)
@@ -86,8 +107,12 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(appsrc_ex_SOURCES)
-DIST_SOURCES = $(appsrc_ex_SOURCES)
+SOURCES = $(appsink_src_SOURCES) $(appsrc_ra_SOURCES) \
+	$(appsrc_seekable_SOURCES) $(appsrc_stream_SOURCES) \
+	$(appsrc_stream2_SOURCES) $(appsrc_ex_SOURCES)
+DIST_SOURCES = $(appsink_src_SOURCES) $(appsrc_ra_SOURCES) \
+	$(appsrc_seekable_SOURCES) $(appsrc_stream_SOURCES) \
+	$(appsrc_stream2_SOURCES) $(appsrc_ex_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -103,6 +128,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -131,6 +157,8 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DIRAC_CFLAGS = @DIRAC_CFLAGS@
+DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DIRECTSHOW_CFLAGS = @DIRECTSHOW_CFLAGS@
@@ -138,9 +166,13 @@ DIRECTSHOW_LDFLAGS = @DIRECTSHOW_LDFLAGS@
 DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIVXDEC_LIBS = @DIVXDEC_LIBS@
 DIVXENC_LIBS = @DIVXENC_LIBS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DTS_LIBS = @DTS_LIBS@
 DUMPBIN = @DUMPBIN@
+DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
+DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -150,6 +182,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 EXEEXT = @EXEEXT@
 EXIF_CFLAGS = @EXIF_CFLAGS@
 EXIF_LIBS = @EXIF_LIBS@
@@ -183,6 +216,7 @@ GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -192,6 +226,7 @@ GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -204,7 +239,6 @@ GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -246,6 +280,8 @@ HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DTS = @HAVE_DTS@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
+HAVE_GCC_ASM_FALSE = @HAVE_GCC_ASM_FALSE@
+HAVE_GCC_ASM_TRUE = @HAVE_GCC_ASM_TRUE@
 HAVE_GLADE = @HAVE_GLADE@
 HAVE_GLADE_FALSE = @HAVE_GLADE_FALSE@
 HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
@@ -260,6 +296,9 @@ HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
 HAVE_VALGRIND_FALSE = @HAVE_VALGRIND_FALSE@
 HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
+HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
+HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
+HAVE_X = @HAVE_X@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -273,6 +312,7 @@ IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
@@ -298,9 +338,13 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
+MJPEG_CFLAGS = @MJPEG_CFLAGS@
+MJPEG_LIBS = @MJPEG_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
 MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
+MPLEX_CFLAGS = @MPLEX_CFLAGS@
+MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
@@ -312,7 +356,10 @@ NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OFA_CFLAGS = @OFA_CFLAGS@
+OFA_LIBS = @OFA_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -345,8 +392,6 @@ SNDFILE_CFLAGS = @SNDFILE_CFLAGS@
 SNDFILE_LIBS = @SNDFILE_LIBS@
 SOUNDTOUCH_CFLAGS = @SOUNDTOUCH_CFLAGS@
 SOUNDTOUCH_LIBS = @SOUNDTOUCH_LIBS@
-SOUP_CFLAGS = @SOUP_CFLAGS@
-SOUP_LIBS = @SOUP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 STRIP = @STRIP@
 SWFDEC_CFLAGS = @SWFDEC_CFLAGS@
@@ -365,6 +410,8 @@ USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
+USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
+USE_DIRAC_TRUE = @USE_DIRAC_TRUE@
 USE_DIRECTFB_FALSE = @USE_DIRECTFB_FALSE@
 USE_DIRECTFB_TRUE = @USE_DIRECTFB_TRUE@
 USE_DIRECTSHOW_FALSE = @USE_DIRECTSHOW_FALSE@
@@ -375,6 +422,8 @@ USE_DTS_FALSE = @USE_DTS_FALSE@
 USE_DTS_TRUE = @USE_DTS_TRUE@
 USE_DVB_FALSE = @USE_DVB_FALSE@
 USE_DVB_TRUE = @USE_DVB_TRUE@
+USE_DVDNAV_FALSE = @USE_DVDNAV_FALSE@
+USE_DVDNAV_TRUE = @USE_DVDNAV_TRUE@
 USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
 USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
@@ -399,6 +448,8 @@ USE_METADATA_FALSE = @USE_METADATA_FALSE@
 USE_METADATA_TRUE = @USE_METADATA_TRUE@
 USE_MPEG2ENC_FALSE = @USE_MPEG2ENC_FALSE@
 USE_MPEG2ENC_TRUE = @USE_MPEG2ENC_TRUE@
+USE_MPLEX_FALSE = @USE_MPLEX_FALSE@
+USE_MPLEX_TRUE = @USE_MPLEX_TRUE@
 USE_MUSEPACK_FALSE = @USE_MUSEPACK_FALSE@
 USE_MUSEPACK_TRUE = @USE_MUSEPACK_TRUE@
 USE_MUSICBRAINZ_FALSE = @USE_MUSICBRAINZ_FALSE@
@@ -410,6 +461,74 @@ USE_NAS_TRUE = @USE_NAS_TRUE@
 USE_NEON_FALSE = @USE_NEON_FALSE@
 USE_NEON_TRUE = @USE_NEON_TRUE@
 USE_NLS = @USE_NLS@
+USE_OFA_FALSE = @USE_OFA_FALSE@
+USE_OFA_TRUE = @USE_OFA_TRUE@
+USE_OSS4_FALSE = @USE_OSS4_FALSE@
+USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
+USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
+USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
+USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
+USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
+USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
+USE_PLUGIN_DEINTERLACE_TRUE = @USE_PLUGIN_DEINTERLACE_TRUE@
+USE_PLUGIN_DVDSPU_FALSE = @USE_PLUGIN_DVDSPU_FALSE@
+USE_PLUGIN_DVDSPU_TRUE = @USE_PLUGIN_DVDSPU_TRUE@
+USE_PLUGIN_FESTIVAL_FALSE = @USE_PLUGIN_FESTIVAL_FALSE@
+USE_PLUGIN_FESTIVAL_TRUE = @USE_PLUGIN_FESTIVAL_TRUE@
+USE_PLUGIN_FILTER_FALSE = @USE_PLUGIN_FILTER_FALSE@
+USE_PLUGIN_FILTER_TRUE = @USE_PLUGIN_FILTER_TRUE@
+USE_PLUGIN_FLV_FALSE = @USE_PLUGIN_FLV_FALSE@
+USE_PLUGIN_FLV_TRUE = @USE_PLUGIN_FLV_TRUE@
+USE_PLUGIN_FREEZE_FALSE = @USE_PLUGIN_FREEZE_FALSE@
+USE_PLUGIN_FREEZE_TRUE = @USE_PLUGIN_FREEZE_TRUE@
+USE_PLUGIN_H264PARSE_FALSE = @USE_PLUGIN_H264PARSE_FALSE@
+USE_PLUGIN_H264PARSE_TRUE = @USE_PLUGIN_H264PARSE_TRUE@
+USE_PLUGIN_LIBRFB_FALSE = @USE_PLUGIN_LIBRFB_FALSE@
+USE_PLUGIN_LIBRFB_TRUE = @USE_PLUGIN_LIBRFB_TRUE@
+USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
+USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
+USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
+USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
+USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
+USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
+USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
+USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
+USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
+USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
+USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
+USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
+USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
+USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
+USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
+USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
+USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
+USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
+USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
+USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
+USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
+USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
+USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
+USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
+USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
+USE_PLUGIN_SUBENC_TRUE = @USE_PLUGIN_SUBENC_TRUE@
+USE_PLUGIN_TTA_FALSE = @USE_PLUGIN_TTA_FALSE@
+USE_PLUGIN_TTA_TRUE = @USE_PLUGIN_TTA_TRUE@
+USE_PLUGIN_VIDEOSIGNAL_FALSE = @USE_PLUGIN_VIDEOSIGNAL_FALSE@
+USE_PLUGIN_VIDEOSIGNAL_TRUE = @USE_PLUGIN_VIDEOSIGNAL_TRUE@
+USE_PLUGIN_VMNC_FALSE = @USE_PLUGIN_VMNC_FALSE@
+USE_PLUGIN_VMNC_TRUE = @USE_PLUGIN_VMNC_TRUE@
+USE_PLUGIN_Y4M_FALSE = @USE_PLUGIN_Y4M_FALSE@
+USE_PLUGIN_Y4M_TRUE = @USE_PLUGIN_Y4M_TRUE@
 USE_QUICKTIME_FALSE = @USE_QUICKTIME_FALSE@
 USE_QUICKTIME_TRUE = @USE_QUICKTIME_TRUE@
 USE_SDL_FALSE = @USE_SDL_FALSE@
@@ -418,8 +537,6 @@ USE_SNDFILE_FALSE = @USE_SNDFILE_FALSE@
 USE_SNDFILE_TRUE = @USE_SNDFILE_TRUE@
 USE_SOUNDTOUCH_FALSE = @USE_SOUNDTOUCH_FALSE@
 USE_SOUNDTOUCH_TRUE = @USE_SOUNDTOUCH_TRUE@
-USE_SOUP_FALSE = @USE_SOUP_FALSE@
-USE_SOUP_TRUE = @USE_SOUP_TRUE@
 USE_SPC_FALSE = @USE_SPC_FALSE@
 USE_SPC_TRUE = @USE_SPC_TRUE@
 USE_SWFDEC_FALSE = @USE_SWFDEC_FALSE@
@@ -432,6 +549,8 @@ USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
 USE_WILDMIDI_TRUE = @USE_WILDMIDI_TRUE@
+USE_WININET_FALSE = @USE_WININET_FALSE@
+USE_WININET_TRUE = @USE_WININET_TRUE@
 USE_X264_FALSE = @USE_X264_FALSE@
 USE_X264_TRUE = @USE_X264_TRUE@
 USE_XVID_FALSE = @USE_XVID_FALSE@
@@ -445,11 +564,16 @@ WILDMIDI_LIBS = @WILDMIDI_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
 XMP_LIBS = @XMP_LIBS@
 XVID_LIBS = @XVID_LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -510,6 +634,24 @@ appsrc_ex_LDFLAGS = \
     $(GST_LIBS) \
     $(top_builddir)/gst-libs/gst/app/libgstapp-@GST_MAJORMINOR@.la
 
+appsrc_stream_SOURCES = appsrc-stream.c
+appsrc_stream_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
+appsrc_stream_LDFLAGS = $(GST_LIBS)
+appsrc_stream2_SOURCES = appsrc-stream2.c
+appsrc_stream2_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
+appsrc_stream2_LDFLAGS = $(GST_LIBS)
+appsrc_ra_SOURCES = appsrc-ra.c
+appsrc_ra_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
+appsrc_ra_LDFLAGS = $(GST_LIBS)
+appsrc_seekable_SOURCES = appsrc-seekable.c
+appsrc_seekable_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
+appsrc_seekable_LDFLAGS = $(GST_LIBS)
+appsink_src_SOURCES = appsink-src.c
+appsink_src_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
+appsink_src_LDFLAGS = \
+    $(GST_LIBS) \
+    $(top_builddir)/gst-libs/gst/app/libgstapp-@GST_MAJORMINOR@.la
+
 all: all-am
 
 .SUFFIXES:
@@ -550,6 +692,21 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+appsink-src$(EXEEXT): $(appsink_src_OBJECTS) $(appsink_src_DEPENDENCIES) 
+	@rm -f appsink-src$(EXEEXT)
+	$(LINK) $(appsink_src_LDFLAGS) $(appsink_src_OBJECTS) $(appsink_src_LDADD) $(LIBS)
+appsrc-ra$(EXEEXT): $(appsrc_ra_OBJECTS) $(appsrc_ra_DEPENDENCIES) 
+	@rm -f appsrc-ra$(EXEEXT)
+	$(LINK) $(appsrc_ra_LDFLAGS) $(appsrc_ra_OBJECTS) $(appsrc_ra_LDADD) $(LIBS)
+appsrc-seekable$(EXEEXT): $(appsrc_seekable_OBJECTS) $(appsrc_seekable_DEPENDENCIES) 
+	@rm -f appsrc-seekable$(EXEEXT)
+	$(LINK) $(appsrc_seekable_LDFLAGS) $(appsrc_seekable_OBJECTS) $(appsrc_seekable_LDADD) $(LIBS)
+appsrc-stream$(EXEEXT): $(appsrc_stream_OBJECTS) $(appsrc_stream_DEPENDENCIES) 
+	@rm -f appsrc-stream$(EXEEXT)
+	$(LINK) $(appsrc_stream_LDFLAGS) $(appsrc_stream_OBJECTS) $(appsrc_stream_LDADD) $(LIBS)
+appsrc-stream2$(EXEEXT): $(appsrc_stream2_OBJECTS) $(appsrc_stream2_DEPENDENCIES) 
+	@rm -f appsrc-stream2$(EXEEXT)
+	$(LINK) $(appsrc_stream2_LDFLAGS) $(appsrc_stream2_OBJECTS) $(appsrc_stream2_LDADD) $(LIBS)
 appsrc_ex$(EXEEXT): $(appsrc_ex_OBJECTS) $(appsrc_ex_DEPENDENCIES) 
 	@rm -f appsrc_ex$(EXEEXT)
 	$(LINK) $(appsrc_ex_LDFLAGS) $(appsrc_ex_OBJECTS) $(appsrc_ex_LDADD) $(LIBS)
@@ -560,7 +717,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsink_src-appsink-src.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsrc_ex-appsrc_ex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsrc_ra-appsrc-ra.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsrc_seekable-appsrc-seekable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsrc_stream-appsrc-stream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/appsrc_stream2-appsrc-stream2.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -582,6 +744,76 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+appsink_src-appsink-src.o: appsink-src.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsink_src_CFLAGS) $(CFLAGS) -MT appsink_src-appsink-src.o -MD -MP -MF "$(DEPDIR)/appsink_src-appsink-src.Tpo" -c -o appsink_src-appsink-src.o `test -f 'appsink-src.c' || echo '$(srcdir)/'`appsink-src.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsink_src-appsink-src.Tpo" "$(DEPDIR)/appsink_src-appsink-src.Po"; else rm -f "$(DEPDIR)/appsink_src-appsink-src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsink-src.c' object='appsink_src-appsink-src.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsink_src_CFLAGS) $(CFLAGS) -c -o appsink_src-appsink-src.o `test -f 'appsink-src.c' || echo '$(srcdir)/'`appsink-src.c
+
+appsink_src-appsink-src.obj: appsink-src.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsink_src_CFLAGS) $(CFLAGS) -MT appsink_src-appsink-src.obj -MD -MP -MF "$(DEPDIR)/appsink_src-appsink-src.Tpo" -c -o appsink_src-appsink-src.obj `if test -f 'appsink-src.c'; then $(CYGPATH_W) 'appsink-src.c'; else $(CYGPATH_W) '$(srcdir)/appsink-src.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsink_src-appsink-src.Tpo" "$(DEPDIR)/appsink_src-appsink-src.Po"; else rm -f "$(DEPDIR)/appsink_src-appsink-src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsink-src.c' object='appsink_src-appsink-src.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsink_src_CFLAGS) $(CFLAGS) -c -o appsink_src-appsink-src.obj `if test -f 'appsink-src.c'; then $(CYGPATH_W) 'appsink-src.c'; else $(CYGPATH_W) '$(srcdir)/appsink-src.c'; fi`
+
+appsrc_ra-appsrc-ra.o: appsrc-ra.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_ra_CFLAGS) $(CFLAGS) -MT appsrc_ra-appsrc-ra.o -MD -MP -MF "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo" -c -o appsrc_ra-appsrc-ra.o `test -f 'appsrc-ra.c' || echo '$(srcdir)/'`appsrc-ra.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo" "$(DEPDIR)/appsrc_ra-appsrc-ra.Po"; else rm -f "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-ra.c' object='appsrc_ra-appsrc-ra.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_ra_CFLAGS) $(CFLAGS) -c -o appsrc_ra-appsrc-ra.o `test -f 'appsrc-ra.c' || echo '$(srcdir)/'`appsrc-ra.c
+
+appsrc_ra-appsrc-ra.obj: appsrc-ra.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_ra_CFLAGS) $(CFLAGS) -MT appsrc_ra-appsrc-ra.obj -MD -MP -MF "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo" -c -o appsrc_ra-appsrc-ra.obj `if test -f 'appsrc-ra.c'; then $(CYGPATH_W) 'appsrc-ra.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-ra.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo" "$(DEPDIR)/appsrc_ra-appsrc-ra.Po"; else rm -f "$(DEPDIR)/appsrc_ra-appsrc-ra.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-ra.c' object='appsrc_ra-appsrc-ra.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_ra_CFLAGS) $(CFLAGS) -c -o appsrc_ra-appsrc-ra.obj `if test -f 'appsrc-ra.c'; then $(CYGPATH_W) 'appsrc-ra.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-ra.c'; fi`
+
+appsrc_seekable-appsrc-seekable.o: appsrc-seekable.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_seekable_CFLAGS) $(CFLAGS) -MT appsrc_seekable-appsrc-seekable.o -MD -MP -MF "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo" -c -o appsrc_seekable-appsrc-seekable.o `test -f 'appsrc-seekable.c' || echo '$(srcdir)/'`appsrc-seekable.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo" "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Po"; else rm -f "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-seekable.c' object='appsrc_seekable-appsrc-seekable.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_seekable_CFLAGS) $(CFLAGS) -c -o appsrc_seekable-appsrc-seekable.o `test -f 'appsrc-seekable.c' || echo '$(srcdir)/'`appsrc-seekable.c
+
+appsrc_seekable-appsrc-seekable.obj: appsrc-seekable.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_seekable_CFLAGS) $(CFLAGS) -MT appsrc_seekable-appsrc-seekable.obj -MD -MP -MF "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo" -c -o appsrc_seekable-appsrc-seekable.obj `if test -f 'appsrc-seekable.c'; then $(CYGPATH_W) 'appsrc-seekable.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-seekable.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo" "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Po"; else rm -f "$(DEPDIR)/appsrc_seekable-appsrc-seekable.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-seekable.c' object='appsrc_seekable-appsrc-seekable.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_seekable_CFLAGS) $(CFLAGS) -c -o appsrc_seekable-appsrc-seekable.obj `if test -f 'appsrc-seekable.c'; then $(CYGPATH_W) 'appsrc-seekable.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-seekable.c'; fi`
+
+appsrc_stream-appsrc-stream.o: appsrc-stream.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream_CFLAGS) $(CFLAGS) -MT appsrc_stream-appsrc-stream.o -MD -MP -MF "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo" -c -o appsrc_stream-appsrc-stream.o `test -f 'appsrc-stream.c' || echo '$(srcdir)/'`appsrc-stream.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo" "$(DEPDIR)/appsrc_stream-appsrc-stream.Po"; else rm -f "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-stream.c' object='appsrc_stream-appsrc-stream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream_CFLAGS) $(CFLAGS) -c -o appsrc_stream-appsrc-stream.o `test -f 'appsrc-stream.c' || echo '$(srcdir)/'`appsrc-stream.c
+
+appsrc_stream-appsrc-stream.obj: appsrc-stream.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream_CFLAGS) $(CFLAGS) -MT appsrc_stream-appsrc-stream.obj -MD -MP -MF "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo" -c -o appsrc_stream-appsrc-stream.obj `if test -f 'appsrc-stream.c'; then $(CYGPATH_W) 'appsrc-stream.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-stream.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo" "$(DEPDIR)/appsrc_stream-appsrc-stream.Po"; else rm -f "$(DEPDIR)/appsrc_stream-appsrc-stream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-stream.c' object='appsrc_stream-appsrc-stream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream_CFLAGS) $(CFLAGS) -c -o appsrc_stream-appsrc-stream.obj `if test -f 'appsrc-stream.c'; then $(CYGPATH_W) 'appsrc-stream.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-stream.c'; fi`
+
+appsrc_stream2-appsrc-stream2.o: appsrc-stream2.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream2_CFLAGS) $(CFLAGS) -MT appsrc_stream2-appsrc-stream2.o -MD -MP -MF "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo" -c -o appsrc_stream2-appsrc-stream2.o `test -f 'appsrc-stream2.c' || echo '$(srcdir)/'`appsrc-stream2.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo" "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Po"; else rm -f "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-stream2.c' object='appsrc_stream2-appsrc-stream2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream2_CFLAGS) $(CFLAGS) -c -o appsrc_stream2-appsrc-stream2.o `test -f 'appsrc-stream2.c' || echo '$(srcdir)/'`appsrc-stream2.c
+
+appsrc_stream2-appsrc-stream2.obj: appsrc-stream2.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream2_CFLAGS) $(CFLAGS) -MT appsrc_stream2-appsrc-stream2.obj -MD -MP -MF "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo" -c -o appsrc_stream2-appsrc-stream2.obj `if test -f 'appsrc-stream2.c'; then $(CYGPATH_W) 'appsrc-stream2.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-stream2.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo" "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Po"; else rm -f "$(DEPDIR)/appsrc_stream2-appsrc-stream2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appsrc-stream2.c' object='appsrc_stream2-appsrc-stream2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_stream2_CFLAGS) $(CFLAGS) -c -o appsrc_stream2-appsrc-stream2.obj `if test -f 'appsrc-stream2.c'; then $(CYGPATH_W) 'appsrc-stream2.c'; else $(CYGPATH_W) '$(srcdir)/appsrc-stream2.c'; fi`
 
 appsrc_ex-appsrc_ex.o: appsrc_ex.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(appsrc_ex_CFLAGS) $(CFLAGS) -MT appsrc_ex-appsrc_ex.o -MD -MP -MF "$(DEPDIR)/appsrc_ex-appsrc_ex.Tpo" -c -o appsrc_ex-appsrc_ex.o `test -f 'appsrc_ex.c' || echo '$(srcdir)/'`appsrc_ex.c; \

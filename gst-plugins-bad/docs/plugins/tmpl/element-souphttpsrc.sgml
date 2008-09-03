@@ -23,6 +23,30 @@ Receive data as a client over the network via HTTP using SOUP
 
 </para>
 
+@element: 
+@location: 
+@user_agent: 
+@automatic_redirect: 
+@proxy: 
+@context: 
+@loop: 
+@session: 
+@session_io_status: 
+@msg: 
+@ret: 
+@outbuf: 
+@interrupted: 
+@have_size: 
+@content_size: 
+@read_position: 
+@seekable: 
+@request_position: 
+@iradio_mode: 
+@icy_caps: 
+@iradio_name: 
+@iradio_genre: 
+@iradio_url: 
+@iradio_title: 
 
 <!-- ##### ARG GstSoupHTTPSrc:location ##### -->
 <para>

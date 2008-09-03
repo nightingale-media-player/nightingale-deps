@@ -23,4 +23,12 @@ Adaptive Multi-Rate WideBand audio parser
 
 </para>
 
+@element: 
+@sinkpad: 
+@srcpad: 
+@adapter: 
+@seekable: 
+@need_header: 
+@offset: 
+@ts: 
 

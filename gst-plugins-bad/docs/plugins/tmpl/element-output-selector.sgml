@@ -23,14 +23,6 @@ output-selector
 
 </para>
 
-@element: 
-@sinkpad: 
-@active_srcpad: 
-@pending_srcpad: 
-@nb_srcpads: 
-@segment: 
-@resend_latest: 
-@latest_buffer: 
 
 <!-- ##### ARG GstOutputSelector:active-pad ##### -->
 <para>

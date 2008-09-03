@@ -17,6 +17,25 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-dvbsrc
+ *
+ * dvbsrc can be used to capture video from DVB cards, DVB-T, DVB-S or DVB-T.
+ * 
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8MHz frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 ! flutsdemux crc-check=false name=demux ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync
+ * ]| Captures a full transport stream from dvb card 0 that is a DVB-T card at tuned frequency 514000000 with other parameters as seen in the 
+ * pipeline and outputs the first tv program on the transport stream.
+ * |[
+ * gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8 frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 pids=256:257 ! flutsdemux crc-check=false name=demux es-pids=256:257 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink
+ * ]| Captures a partial transport stream from dvb card 0 that is a DVB-T card for a program at tuned frequency 514000000 and pids of 256:257 with other parameters as seen in the pipeline and outputs the program with the pids 256 and 257.  
+ * |[
+ * gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=102:103 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink
+ * ]| Captures a partial transport stream from dvb card 0 that is a DVB-S card for a program at tuned frequency 11302000 Hz, symbol rate of 27500 kHz and pids of 256:257 and outputs the program with the pids 256 and 257.
+ * </refsect2>
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -36,6 +55,7 @@
 #define _XOPEN_SOURCE 500
 #include <unistd.h>
 
+#include <linux/dvb/version.h>
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/dmx.h>
 
@@ -56,35 +76,6 @@ static GstElementDetails dvbsrc_details = {
   "P2P-VCR, C-Lab, University of Paderborn\n"
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>"
 };
-
-/**
- * SECTION:element-dvbsrc
- *
- * <refsect2>
- * dvbsrc can be used to capture video from DVB cards, DVB-T, DVB-S or DVB-T.
- * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8MHz frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 ! flutsdemux crc-check=false name=demux ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
- * </programlisting>
- * This pipeline captures a full transport stream from dvb card 0 that is a DVB-T card at tuned frequency 514000000 with other parameters as seen in the 
- * pipeline and outputs the first tv program on the transport stream.  The reason the sinks have to be set to have sync=false is due to bug #340482.
- * </para>
- * <para>
- * <programlisting>
- * gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8 frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 pids=256:257 ! flutsdemux crc-check=false name=demux es-pids=256:257 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
- * </programlisting>
- * This pipeline captures a partial transport stream from dvb card 0 that is a DVB-T card for a program at tuned frequency 514000000 and pids of 256:257 with other parameters as seen in the pipeline and outputs the program with the pids 256 and 257.  The reason the sinks have to be set to
- * have sync=false is due to bug #340482.
- * </para>
- * <para>
- * <programlisting>
- * gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=102:103 ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync=false demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync=false
- * </programlisting>
- * This pipeline captures a partial transport stream from dvb card 0 that is a DVB-S card for a program at tuned frequency 11302000 Hz, symbol rate of 27500 kHz and pids of 256:257 and outputs the program with the pids 256 and 257.  The reason the sinks have to be set to have sync=false is due to bug #340482.
- * </para>
- * </refsect2>
- */
 
 /* Arguments */
 enum
@@ -395,7 +386,7 @@ gst_dvbsrc_class_init (GstDvbSrcClass * klass)
   g_object_class_install_property (gobject_class, ARG_DVBSRC_CODE_RATE_HP,
       g_param_spec_enum ("code-rate-hp",
           "code-rate-hp",
-          "High Priority Code Rate (DVB-T and DVB-S)",
+          "High Priority Code Rate (DVB-T, DVB-S and DVB-C)",
           GST_TYPE_DVBSRC_CODE_RATE, FEC_AUTO, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, ARG_DVBSRC_CODE_RATE_LP,
@@ -413,7 +404,7 @@ gst_dvbsrc_class_init (GstDvbSrcClass * klass)
   g_object_class_install_property (gobject_class, ARG_DVBSRC_MODULATION,
       g_param_spec_enum ("modulation",
           "modulation",
-          "Modulation (DVB-T)",
+          "Modulation (DVB-T and DVB-C)",
           GST_TYPE_DVBSRC_MODULATION, 1, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
@@ -431,7 +422,7 @@ gst_dvbsrc_class_init (GstDvbSrcClass * klass)
   g_object_class_install_property (gobject_class, ARG_DVBSRC_INVERSION,
       g_param_spec_enum ("inversion",
           "inversion",
-          "Inversion Information (DVB-T)",
+          "Inversion Information (DVB-T and DVB-C)",
           GST_TYPE_DVBSRC_INVERSION, 1, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
@@ -902,9 +893,6 @@ read_device (int fd, int adapter_number, int frontend_number, int size)
             ("Unable to read after %u attempts from device: /dev/dvb/adapter%d/dvr%d (%d)",
             attempts, adapter_number, frontend_number, errno);
       }
-      if (attempts % 100 == 0) {
-        return NULL;
-      }
     } else if (errno == -EINTR) {       // poll interrupted
       ;
     }
@@ -1134,7 +1122,7 @@ diseqc_send_msg (int fd, fe_sec_voltage_t v, struct diseqc_cmd *cmd,
     return;
   }
 
-  //usleep (cmd->wait * 1000);
+  usleep (cmd->wait * 1000);
   usleep (15 * 1000);
 
   if (ioctl (fd, FE_DISEQC_SEND_BURST, b) == -1) {
@@ -1165,7 +1153,10 @@ diseqc (int secfd, int sat_no, int voltage, int tone)
   cmd.cmd.msg[3] =
       0xf0 | (((sat_no * 4) & 0x0f) | (tone == SEC_TONE_ON ? 1 : 0) |
       (voltage == SEC_VOLTAGE_13 ? 0 : 2));
-
+  /* send twice because some diseqc switches do not respond correctly the
+   * first time */
+  diseqc_send_msg (secfd, voltage, &cmd, tone,
+      sat_no % 2 ? SEC_MINI_B : SEC_MINI_A);
   diseqc_send_msg (secfd, voltage, &cmd, tone,
       sat_no % 2 ? SEC_MINI_B : SEC_MINI_A);
 
@@ -1175,11 +1166,15 @@ diseqc (int secfd, int sat_no, int voltage, int tone)
 static gboolean
 gst_dvbsrc_tune (GstDvbSrc * object)
 {
+#if DVB_API_VERSION == 3 && DVB_API_VERSION_MINOR == 3
+  struct dvbfe_params feparams;
+#else
   struct dvb_frontend_parameters feparams;
+#endif
   fe_sec_voltage_t voltage;
-  int i;
   fe_status_t status;
-
+  int i;
+  int j;
   unsigned int freq = object->freq;
   unsigned int sym_rate = object->sym_rate * 1000;
 
@@ -1199,93 +1194,110 @@ gst_dvbsrc_tune (GstDvbSrc * object)
   }
 
   gst_dvbsrc_unset_pes_filters (object);
-
-  switch (object->adapter_type) {
-    case FE_QPSK:
-
-      object->tone = SEC_TONE_OFF;
-      if (freq > 2200000) {
-        // this must be an absolute frequency
-        if (freq < SLOF) {
-          feparams.frequency = (freq - LOF1);
+  for (j = 0; j < 5; j++) {
+    switch (object->adapter_type) {
+      case FE_QPSK:
+        object->tone = SEC_TONE_OFF;
+        if (freq > 2200000) {
+          // this must be an absolute frequency
+          if (freq < SLOF) {
+            feparams.frequency = (freq - LOF1);
+          } else {
+            feparams.frequency = (freq - LOF2);
+            object->tone = SEC_TONE_ON;
+          }
         } else {
-          feparams.frequency = (freq - LOF2);
-          object->tone = SEC_TONE_ON;
+          // this is an L-Band frequency
+          feparams.frequency = freq;
         }
-      } else {
-        // this is an L-Band frequency
+        feparams.inversion = INVERSION_AUTO;
+        GST_DEBUG_OBJECT (object, "api version %d.%d", DVB_API_VERSION,
+            DVB_API_VERSION_MINOR);
+#if DVB_API_VERSION == 3 && DVB_API_VERSION_MINOR == 3
+        GST_DEBUG_OBJECT (object, "using multiproto driver");
+        feparams.delsys.dvbs.symbol_rate = sym_rate;
+        feparams.delsys.dvbs.fec = object->code_rate_hp;
+#else
+        feparams.u.qpsk.symbol_rate = sym_rate;
+        feparams.u.qpsk.fec_inner = object->code_rate_hp;
+#endif
+        GST_INFO_OBJECT (object,
+            "tuning DVB-S to L-Band:%u, Pol:%d, srate=%u, 22kHz=%s",
+            feparams.frequency, object->pol, sym_rate,
+            object->tone == SEC_TONE_ON ? "on" : "off");
+
+        if (object->pol == DVB_POL_H)
+          voltage = SEC_VOLTAGE_18;
+        else
+          voltage = SEC_VOLTAGE_13;
+
+        if (object->diseqc_src == -1 || object->send_diseqc == FALSE) {
+          if (ioctl (object->fd_frontend, FE_SET_VOLTAGE, voltage) < 0) {
+            g_warning ("Unable to set voltage on dvb frontend device");
+          }
+
+          if (ioctl (object->fd_frontend, FE_SET_TONE, object->tone) < 0) {
+            g_warning ("Error setting tone: %s", strerror (errno));
+          }
+        } else {
+          GST_DEBUG_OBJECT (object, "Sending DISEqC");
+          diseqc (object->fd_frontend, object->diseqc_src, voltage,
+              object->tone);
+          /* Once diseqc source is set, do not set it again until
+           * app decides to change it */
+          //object->send_diseqc = FALSE;
+        }
+
+        break;
+      case FE_OFDM:
+
         feparams.frequency = freq;
-      }
-      GST_INFO_OBJECT (object,
-          "tuning DVB-S to L-Band:%u, Pol:%d, srate=%u, 22kHz=%s",
-          feparams.frequency, object->pol, sym_rate,
-          object->tone == SEC_TONE_ON ? "on" : "off");
+#if DVB_API_VERSION == 3 && DVB_API_VERSION_MINOR == 3
+#else
+        feparams.u.ofdm.bandwidth = object->bandwidth;
+        feparams.u.ofdm.code_rate_HP = object->code_rate_hp;
+        feparams.u.ofdm.code_rate_LP = object->code_rate_lp;
+        feparams.u.ofdm.constellation = object->modulation;
+        feparams.u.ofdm.transmission_mode = object->transmission_mode;
+        feparams.u.ofdm.guard_interval = object->guard_interval;
+        feparams.u.ofdm.hierarchy_information = object->hierarchy_information;
+#endif
+        feparams.inversion = object->inversion;
 
-      feparams.inversion = INVERSION_AUTO;
-      feparams.u.qpsk.symbol_rate = sym_rate;
-      feparams.u.qpsk.fec_inner = object->code_rate_hp;
+        GST_INFO_OBJECT (object, "tuning DVB-T to %d Hz\n", freq);
+        break;
+      case FE_QAM:
+        GST_INFO_OBJECT (object, "Tuning DVB-C to %d, srate=%d", freq,
+            sym_rate);
+        feparams.frequency = freq;
+        feparams.inversion = object->inversion;
+        feparams.u.qam.fec_inner = object->code_rate_hp;
+        feparams.u.qam.modulation = object->modulation;
+        feparams.u.qam.symbol_rate = sym_rate;
+        break;
+      default:
+        g_error ("Unknown frontend type: %d", object->adapter_type);
 
-      if (object->pol == DVB_POL_H)
-        voltage = SEC_VOLTAGE_18;
-      else
-        voltage = SEC_VOLTAGE_13;
-
-      if (object->diseqc_src == -1 || object->send_diseqc == FALSE) {
-        if (ioctl (object->fd_frontend, FE_SET_VOLTAGE, voltage) < 0) {
-          g_warning ("Unable to set voltage on dvb frontend device");
-        }
-
-        if (ioctl (object->fd_frontend, FE_SET_TONE, object->tone) < 0) {
-          g_warning ("Error setting tone: %s", strerror (errno));
-        }
-      } else {
-        GST_DEBUG_OBJECT (object, "Sending DISEqC");
-        diseqc (object->fd_frontend, object->diseqc_src, voltage, object->tone);
-        /* Once diseqc source is set, do not set it again until
-         * app decides to change it */
-        object->send_diseqc = FALSE;
-      }
-
-      break;
-    case FE_OFDM:
-      feparams.frequency = freq;
-      feparams.u.ofdm.bandwidth = object->bandwidth;
-      feparams.u.ofdm.code_rate_HP = object->code_rate_hp;
-      feparams.u.ofdm.code_rate_LP = object->code_rate_lp;
-      feparams.u.ofdm.constellation = object->modulation;
-      feparams.u.ofdm.transmission_mode = object->transmission_mode;
-      feparams.u.ofdm.guard_interval = object->guard_interval;
-      feparams.u.ofdm.hierarchy_information = object->hierarchy_information;
-      feparams.inversion = object->inversion;
-
-      GST_INFO_OBJECT (object, "tuning DVB-T to %d Hz\n", freq);
-      break;
-    case FE_QAM:
-      GST_INFO_OBJECT (object, "Tuning DVB-C to %d, srate=%d", freq, sym_rate);
-      feparams.frequency = freq;
-      feparams.inversion = INVERSION_OFF;
-      feparams.u.qam.fec_inner = FEC_AUTO;
-      feparams.u.qam.modulation = object->modulation;
-      feparams.u.qam.symbol_rate = sym_rate;
-      break;
-    default:
-      g_error ("Unknown frontend type: %d", object->adapter_type);
-
-  }
-  usleep (100000);
-  /* now tune the frontend */
-  if (ioctl (object->fd_frontend, FE_SET_FRONTEND, &feparams) < 0) {
-    g_warning ("Error tuning channel: %s", strerror (errno));
-  }
-  for (i = 0; i < 15; i++) {
+    }
     usleep (100000);
-    if (ioctl (object->fd_frontend, FE_READ_STATUS, &status) == -1) {
-      perror ("FE_READ_STATUS");
-      break;
+    /* now tune the frontend */
+#if DVB_API_VERSION == 3 && DVB_API_VERSION_MINOR == 3
+    if (ioctl (object->fd_frontend, DVBFE_SET_PARAMS, &feparams) < 0) {
+#else
+    if (ioctl (object->fd_frontend, FE_SET_FRONTEND, &feparams) < 0) {
+#endif
+      g_warning ("Error tuning channel: %s", strerror (errno));
     }
-    if (status & FE_HAS_LOCK) {
-      break;
+    for (i = 0; i < 5; i++) {
+      usleep (100000);
+      if (ioctl (object->fd_frontend, FE_READ_STATUS, &status) == -1) {
+        perror ("FE_READ_STATUS");
+        break;
+      }
+      GST_LOG_OBJECT (object, "status == 0x%02x", status);
     }
+    if (status & FE_HAS_LOCK)
+      break;
   }
   if (!(status & FE_HAS_LOCK))
     return FALSE;

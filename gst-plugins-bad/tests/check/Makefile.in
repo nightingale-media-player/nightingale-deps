@@ -40,14 +40,14 @@ DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/common/check.mak
 check_PROGRAMS = generic/states$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
-	elements/interleave$(EXEEXT) elements/rganalysis$(EXEEXT) \
-	elements/rglimiter$(EXEEXT) elements/rgvolume$(EXEEXT) \
+	$(am__EXEEXT_5) elements/selector$(EXEEXT) \
 	elements/y4menc$(EXEEXT)
 subdir = tests/check
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
+	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
@@ -55,12 +55,14 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
 	$(top_srcdir)/common/m4/gst-args.m4 \
 	$(top_srcdir)/common/m4/gst-check.m4 \
+	$(top_srcdir)/common/m4/gst-dowhile.m4 \
 	$(top_srcdir)/common/m4/gst-error.m4 \
 	$(top_srcdir)/common/m4/gst-feature.m4 \
 	$(top_srcdir)/common/m4/gst-gettext.m4 \
 	$(top_srcdir)/common/m4/gst-glib2.m4 \
 	$(top_srcdir)/common/m4/gst-plugin-docs.m4 \
 	$(top_srcdir)/common/m4/gst-plugindir.m4 \
+	$(top_srcdir)/common/m4/gst-x11.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
@@ -77,43 +79,35 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @USE_MPEG2ENC_TRUE@am__EXEEXT_1 = elements/mpeg2enc$(EXEEXT)
-@USE_NEON_TRUE@am__EXEEXT_2 = elements/neonhttpsrc$(EXEEXT)
-@USE_SOUP_TRUE@am__EXEEXT_3 = elements/souphttpsrc$(EXEEXT)
-@USE_TIMIDITY_TRUE@am__EXEEXT_4 = elements/timidity$(EXEEXT)
-elements_interleave_SOURCES = elements/interleave.c
-elements_interleave_OBJECTS = interleave.$(OBJEXT)
-elements_interleave_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
-elements_interleave_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__dirstamp = $(am__leading_dot)dirstamp
+@USE_MPLEX_TRUE@am__EXEEXT_2 = elements/mplex$(EXEEXT)
+@USE_NEON_TRUE@am__EXEEXT_3 = elements/neonhttpsrc$(EXEEXT)
+@USE_OFA_TRUE@am__EXEEXT_4 = elements/ofa$(EXEEXT)
+@USE_TIMIDITY_TRUE@am__EXEEXT_5 = elements/timidity$(EXEEXT)
 elements_mpeg2enc_SOURCES = elements/mpeg2enc.c
 elements_mpeg2enc_OBJECTS = mpeg2enc.$(OBJEXT)
 elements_mpeg2enc_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 elements_mpeg2enc_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__dirstamp = $(am__leading_dot)dirstamp
+elements_mplex_SOURCES = elements/mplex.c
+elements_mplex_OBJECTS = mplex.$(OBJEXT)
+elements_mplex_LDADD = $(LDADD)
+elements_mplex_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_neonhttpsrc_SOURCES = elements/neonhttpsrc.c
 elements_neonhttpsrc_OBJECTS = neonhttpsrc.$(OBJEXT)
 elements_neonhttpsrc_LDADD = $(LDADD)
 elements_neonhttpsrc_DEPENDENCIES = $(am__DEPENDENCIES_1)
-elements_rganalysis_SOURCES = elements/rganalysis.c
-elements_rganalysis_OBJECTS = rganalysis.$(OBJEXT)
-elements_rganalysis_LDADD = $(LDADD)
-elements_rganalysis_DEPENDENCIES = $(am__DEPENDENCIES_1)
-elements_rglimiter_SOURCES = elements/rglimiter.c
-elements_rglimiter_OBJECTS = rglimiter.$(OBJEXT)
-elements_rglimiter_LDADD = $(LDADD)
-elements_rglimiter_DEPENDENCIES = $(am__DEPENDENCIES_1)
-elements_rgvolume_SOURCES = elements/rgvolume.c
-elements_rgvolume_OBJECTS = rgvolume.$(OBJEXT)
-elements_rgvolume_LDADD = $(LDADD)
-elements_rgvolume_DEPENDENCIES = $(am__DEPENDENCIES_1)
-elements_souphttpsrc_SOURCES = elements/souphttpsrc.c
-elements_souphttpsrc_OBJECTS =  \
-	elements_souphttpsrc-souphttpsrc.$(OBJEXT)
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-elements_souphttpsrc_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2)
+elements_ofa_SOURCES = elements/ofa.c
+elements_ofa_OBJECTS = ofa.$(OBJEXT)
+elements_ofa_LDADD = $(LDADD)
+elements_ofa_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_selector_SOURCES = elements/selector.c
+elements_selector_OBJECTS = selector.$(OBJEXT)
+elements_selector_LDADD = $(LDADD)
+elements_selector_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_timidity_SOURCES = elements/timidity.c
 elements_timidity_OBJECTS = elements_timidity-timidity.$(OBJEXT)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 elements_timidity_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2)
 elements_y4menc_SOURCES = elements/y4menc.c
@@ -135,16 +129,12 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = elements/interleave.c elements/mpeg2enc.c \
-	elements/neonhttpsrc.c elements/rganalysis.c \
-	elements/rglimiter.c elements/rgvolume.c \
-	elements/souphttpsrc.c elements/timidity.c elements/y4menc.c \
-	generic/states.c
-DIST_SOURCES = elements/interleave.c elements/mpeg2enc.c \
-	elements/neonhttpsrc.c elements/rganalysis.c \
-	elements/rglimiter.c elements/rgvolume.c \
-	elements/souphttpsrc.c elements/timidity.c elements/y4menc.c \
-	generic/states.c
+SOURCES = elements/mpeg2enc.c elements/mplex.c elements/neonhttpsrc.c \
+	elements/ofa.c elements/selector.c elements/timidity.c \
+	elements/y4menc.c generic/states.c
+DIST_SOURCES = elements/mpeg2enc.c elements/mplex.c \
+	elements/neonhttpsrc.c elements/ofa.c elements/selector.c \
+	elements/timidity.c elements/y4menc.c generic/states.c
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -161,6 +151,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -189,6 +180,8 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DIRAC_CFLAGS = @DIRAC_CFLAGS@
+DIRAC_LIBS = @DIRAC_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DIRECTSHOW_CFLAGS = @DIRECTSHOW_CFLAGS@
@@ -196,9 +189,13 @@ DIRECTSHOW_LDFLAGS = @DIRECTSHOW_LDFLAGS@
 DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIVXDEC_LIBS = @DIVXDEC_LIBS@
 DIVXENC_LIBS = @DIVXENC_LIBS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DTS_LIBS = @DTS_LIBS@
 DUMPBIN = @DUMPBIN@
+DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
+DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -208,6 +205,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 EXEEXT = @EXEEXT@
 EXIF_CFLAGS = @EXIF_CFLAGS@
 EXIF_LIBS = @EXIF_LIBS@
@@ -241,6 +239,7 @@ GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -250,6 +249,7 @@ GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -262,7 +262,6 @@ GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = $(top_builddir)/tools
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -304,6 +303,8 @@ HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DTS = @HAVE_DTS@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
+HAVE_GCC_ASM_FALSE = @HAVE_GCC_ASM_FALSE@
+HAVE_GCC_ASM_TRUE = @HAVE_GCC_ASM_TRUE@
 HAVE_GLADE = @HAVE_GLADE@
 HAVE_GLADE_FALSE = @HAVE_GLADE_FALSE@
 HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
@@ -318,6 +319,9 @@ HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
 HAVE_VALGRIND_FALSE = @HAVE_VALGRIND_FALSE@
 HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
+HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
+HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
+HAVE_X = @HAVE_X@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -331,6 +335,7 @@ IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
@@ -356,9 +361,13 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
+MJPEG_CFLAGS = @MJPEG_CFLAGS@
+MJPEG_LIBS = @MJPEG_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
 MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
+MPLEX_CFLAGS = @MPLEX_CFLAGS@
+MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
@@ -370,7 +379,10 @@ NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OFA_CFLAGS = @OFA_CFLAGS@
+OFA_LIBS = @OFA_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -403,8 +415,6 @@ SNDFILE_CFLAGS = @SNDFILE_CFLAGS@
 SNDFILE_LIBS = @SNDFILE_LIBS@
 SOUNDTOUCH_CFLAGS = @SOUNDTOUCH_CFLAGS@
 SOUNDTOUCH_LIBS = @SOUNDTOUCH_LIBS@
-SOUP_CFLAGS = @SOUP_CFLAGS@
-SOUP_LIBS = @SOUP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 STRIP = @STRIP@
 SWFDEC_CFLAGS = @SWFDEC_CFLAGS@
@@ -423,6 +433,8 @@ USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
+USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
+USE_DIRAC_TRUE = @USE_DIRAC_TRUE@
 USE_DIRECTFB_FALSE = @USE_DIRECTFB_FALSE@
 USE_DIRECTFB_TRUE = @USE_DIRECTFB_TRUE@
 USE_DIRECTSHOW_FALSE = @USE_DIRECTSHOW_FALSE@
@@ -433,6 +445,8 @@ USE_DTS_FALSE = @USE_DTS_FALSE@
 USE_DTS_TRUE = @USE_DTS_TRUE@
 USE_DVB_FALSE = @USE_DVB_FALSE@
 USE_DVB_TRUE = @USE_DVB_TRUE@
+USE_DVDNAV_FALSE = @USE_DVDNAV_FALSE@
+USE_DVDNAV_TRUE = @USE_DVDNAV_TRUE@
 USE_EXPERIMENTAL_FALSE = @USE_EXPERIMENTAL_FALSE@
 USE_EXPERIMENTAL_TRUE = @USE_EXPERIMENTAL_TRUE@
 USE_EXTERNAL_FALSE = @USE_EXTERNAL_FALSE@
@@ -457,6 +471,8 @@ USE_METADATA_FALSE = @USE_METADATA_FALSE@
 USE_METADATA_TRUE = @USE_METADATA_TRUE@
 USE_MPEG2ENC_FALSE = @USE_MPEG2ENC_FALSE@
 USE_MPEG2ENC_TRUE = @USE_MPEG2ENC_TRUE@
+USE_MPLEX_FALSE = @USE_MPLEX_FALSE@
+USE_MPLEX_TRUE = @USE_MPLEX_TRUE@
 USE_MUSEPACK_FALSE = @USE_MUSEPACK_FALSE@
 USE_MUSEPACK_TRUE = @USE_MUSEPACK_TRUE@
 USE_MUSICBRAINZ_FALSE = @USE_MUSICBRAINZ_FALSE@
@@ -468,6 +484,74 @@ USE_NAS_TRUE = @USE_NAS_TRUE@
 USE_NEON_FALSE = @USE_NEON_FALSE@
 USE_NEON_TRUE = @USE_NEON_TRUE@
 USE_NLS = @USE_NLS@
+USE_OFA_FALSE = @USE_OFA_FALSE@
+USE_OFA_TRUE = @USE_OFA_TRUE@
+USE_OSS4_FALSE = @USE_OSS4_FALSE@
+USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
+USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
+USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
+USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
+USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
+USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
+USE_PLUGIN_DEINTERLACE_TRUE = @USE_PLUGIN_DEINTERLACE_TRUE@
+USE_PLUGIN_DVDSPU_FALSE = @USE_PLUGIN_DVDSPU_FALSE@
+USE_PLUGIN_DVDSPU_TRUE = @USE_PLUGIN_DVDSPU_TRUE@
+USE_PLUGIN_FESTIVAL_FALSE = @USE_PLUGIN_FESTIVAL_FALSE@
+USE_PLUGIN_FESTIVAL_TRUE = @USE_PLUGIN_FESTIVAL_TRUE@
+USE_PLUGIN_FILTER_FALSE = @USE_PLUGIN_FILTER_FALSE@
+USE_PLUGIN_FILTER_TRUE = @USE_PLUGIN_FILTER_TRUE@
+USE_PLUGIN_FLV_FALSE = @USE_PLUGIN_FLV_FALSE@
+USE_PLUGIN_FLV_TRUE = @USE_PLUGIN_FLV_TRUE@
+USE_PLUGIN_FREEZE_FALSE = @USE_PLUGIN_FREEZE_FALSE@
+USE_PLUGIN_FREEZE_TRUE = @USE_PLUGIN_FREEZE_TRUE@
+USE_PLUGIN_H264PARSE_FALSE = @USE_PLUGIN_H264PARSE_FALSE@
+USE_PLUGIN_H264PARSE_TRUE = @USE_PLUGIN_H264PARSE_TRUE@
+USE_PLUGIN_LIBRFB_FALSE = @USE_PLUGIN_LIBRFB_FALSE@
+USE_PLUGIN_LIBRFB_TRUE = @USE_PLUGIN_LIBRFB_TRUE@
+USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
+USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
+USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
+USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
+USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
+USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
+USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
+USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
+USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
+USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
+USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
+USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
+USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
+USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
+USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
+USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
+USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
+USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
+USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
+USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
+USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
+USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
+USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
+USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
+USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
+USE_PLUGIN_SUBENC_TRUE = @USE_PLUGIN_SUBENC_TRUE@
+USE_PLUGIN_TTA_FALSE = @USE_PLUGIN_TTA_FALSE@
+USE_PLUGIN_TTA_TRUE = @USE_PLUGIN_TTA_TRUE@
+USE_PLUGIN_VIDEOSIGNAL_FALSE = @USE_PLUGIN_VIDEOSIGNAL_FALSE@
+USE_PLUGIN_VIDEOSIGNAL_TRUE = @USE_PLUGIN_VIDEOSIGNAL_TRUE@
+USE_PLUGIN_VMNC_FALSE = @USE_PLUGIN_VMNC_FALSE@
+USE_PLUGIN_VMNC_TRUE = @USE_PLUGIN_VMNC_TRUE@
+USE_PLUGIN_Y4M_FALSE = @USE_PLUGIN_Y4M_FALSE@
+USE_PLUGIN_Y4M_TRUE = @USE_PLUGIN_Y4M_TRUE@
 USE_QUICKTIME_FALSE = @USE_QUICKTIME_FALSE@
 USE_QUICKTIME_TRUE = @USE_QUICKTIME_TRUE@
 USE_SDL_FALSE = @USE_SDL_FALSE@
@@ -476,8 +560,6 @@ USE_SNDFILE_FALSE = @USE_SNDFILE_FALSE@
 USE_SNDFILE_TRUE = @USE_SNDFILE_TRUE@
 USE_SOUNDTOUCH_FALSE = @USE_SOUNDTOUCH_FALSE@
 USE_SOUNDTOUCH_TRUE = @USE_SOUNDTOUCH_TRUE@
-USE_SOUP_FALSE = @USE_SOUP_FALSE@
-USE_SOUP_TRUE = @USE_SOUP_TRUE@
 USE_SPC_FALSE = @USE_SPC_FALSE@
 USE_SPC_TRUE = @USE_SPC_TRUE@
 USE_SWFDEC_FALSE = @USE_SWFDEC_FALSE@
@@ -490,6 +572,8 @@ USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
 USE_WILDMIDI_TRUE = @USE_WILDMIDI_TRUE@
+USE_WININET_FALSE = @USE_WININET_FALSE@
+USE_WININET_TRUE = @USE_WININET_TRUE@
 USE_X264_FALSE = @USE_X264_FALSE@
 USE_X264_TRUE = @USE_X264_TRUE@
 USE_XVID_FALSE = @USE_XVID_FALSE@
@@ -503,11 +587,16 @@ WILDMIDI_LIBS = @WILDMIDI_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
 XMP_CFLAGS = @XMP_CFLAGS@
 XMP_LIBS = @XMP_LIBS@
 XVID_LIBS = @XVID_LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -577,23 +666,25 @@ TESTS_ENVIRONMENT = \
         $(REGISTRY_ENVIRONMENT)                                 \
         GST_PLUGIN_SYSTEM_PATH=					\
         GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GSTPB_PLUGINS_DIR):$(GST_PLUGINS_DIR) \
-        STATE_IGNORE_ELEMENTS="cdaudio vcdsrc nassink glimagesink dvbsrc dvbbasebin"
+        STATE_IGNORE_ELEMENTS="cdaudio festival vcdsrc nassink glimagesink dvbsrc dvbbasebin sdlaudiosink sdlvideosink alsaspdifsink dfbvideosink dc1394src"
 
-EXTRA_DIST = test-cert.pem test-key.pem
 
 # the core dumps of some machines have PIDs appended
 CLEANFILES = core.* test-registry.*
 SUPPRESSIONS = $(top_srcdir)/common/gst.supp $(srcdir)/gst-plugins-bad.supp
 @USE_MPEG2ENC_FALSE@check_mpeg2enc = 
 @USE_MPEG2ENC_TRUE@check_mpeg2enc = elements/mpeg2enc
+@USE_MPLEX_FALSE@check_mplex = 
+@USE_MPLEX_TRUE@check_mplex = elements/mplex
 @USE_NEON_FALSE@check_neon = 
 @USE_NEON_TRUE@check_neon = elements/neonhttpsrc
-@USE_SOUP_FALSE@check_soup = 
-@USE_SOUP_TRUE@check_soup = elements/souphttpsrc
+@USE_OFA_FALSE@check_ofa = 
+@USE_OFA_TRUE@check_ofa = elements/ofa
 @USE_TIMIDITY_FALSE@check_timidity = 
 @USE_TIMIDITY_TRUE@check_timidity = elements/timidity
 VALGRIND_TO_FIX = \
-	elements/mpeg2enc
+	elements/mpeg2enc \
+	elements/mplex
 
 
 # valgrind testing
@@ -606,8 +697,6 @@ AM_CFLAGS = $(GST_OBJ_CFLAGS) $(GST_CHECK_CFLAGS) $(CHECK_CFLAGS)  $(GST_OPTION_
 LDADD = $(GST_OBJ_LIBS) $(GST_CHECK_LIBS) $(CHECK_LIBS)
 elements_timidity_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 elements_timidity_LDADD = $(GST_BASE_LIBS) $(LDADD)
-elements_souphttpsrc_CFLAGS = $(SOUP_CFLAGS) $(AM_CFLAGS)
-elements_souphttpsrc_LDADD = $(SOUP_LIBS) $(LDADD)
 all: all-am
 
 .SUFFIXES:
@@ -651,27 +740,21 @@ clean-checkPROGRAMS:
 elements/$(am__dirstamp):
 	@$(mkdir_p) elements
 	@: > elements/$(am__dirstamp)
-elements/interleave$(EXEEXT): $(elements_interleave_OBJECTS) $(elements_interleave_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/interleave$(EXEEXT)
-	$(LINK) $(elements_interleave_LDFLAGS) $(elements_interleave_OBJECTS) $(elements_interleave_LDADD) $(LIBS)
 elements/mpeg2enc$(EXEEXT): $(elements_mpeg2enc_OBJECTS) $(elements_mpeg2enc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/mpeg2enc$(EXEEXT)
 	$(LINK) $(elements_mpeg2enc_LDFLAGS) $(elements_mpeg2enc_OBJECTS) $(elements_mpeg2enc_LDADD) $(LIBS)
+elements/mplex$(EXEEXT): $(elements_mplex_OBJECTS) $(elements_mplex_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/mplex$(EXEEXT)
+	$(LINK) $(elements_mplex_LDFLAGS) $(elements_mplex_OBJECTS) $(elements_mplex_LDADD) $(LIBS)
 elements/neonhttpsrc$(EXEEXT): $(elements_neonhttpsrc_OBJECTS) $(elements_neonhttpsrc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/neonhttpsrc$(EXEEXT)
 	$(LINK) $(elements_neonhttpsrc_LDFLAGS) $(elements_neonhttpsrc_OBJECTS) $(elements_neonhttpsrc_LDADD) $(LIBS)
-elements/rganalysis$(EXEEXT): $(elements_rganalysis_OBJECTS) $(elements_rganalysis_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/rganalysis$(EXEEXT)
-	$(LINK) $(elements_rganalysis_LDFLAGS) $(elements_rganalysis_OBJECTS) $(elements_rganalysis_LDADD) $(LIBS)
-elements/rglimiter$(EXEEXT): $(elements_rglimiter_OBJECTS) $(elements_rglimiter_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/rglimiter$(EXEEXT)
-	$(LINK) $(elements_rglimiter_LDFLAGS) $(elements_rglimiter_OBJECTS) $(elements_rglimiter_LDADD) $(LIBS)
-elements/rgvolume$(EXEEXT): $(elements_rgvolume_OBJECTS) $(elements_rgvolume_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/rgvolume$(EXEEXT)
-	$(LINK) $(elements_rgvolume_LDFLAGS) $(elements_rgvolume_OBJECTS) $(elements_rgvolume_LDADD) $(LIBS)
-elements/souphttpsrc$(EXEEXT): $(elements_souphttpsrc_OBJECTS) $(elements_souphttpsrc_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/souphttpsrc$(EXEEXT)
-	$(LINK) $(elements_souphttpsrc_LDFLAGS) $(elements_souphttpsrc_OBJECTS) $(elements_souphttpsrc_LDADD) $(LIBS)
+elements/ofa$(EXEEXT): $(elements_ofa_OBJECTS) $(elements_ofa_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/ofa$(EXEEXT)
+	$(LINK) $(elements_ofa_LDFLAGS) $(elements_ofa_OBJECTS) $(elements_ofa_LDADD) $(LIBS)
+elements/selector$(EXEEXT): $(elements_selector_OBJECTS) $(elements_selector_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/selector$(EXEEXT)
+	$(LINK) $(elements_selector_LDFLAGS) $(elements_selector_OBJECTS) $(elements_selector_LDADD) $(LIBS)
 elements/timidity$(EXEEXT): $(elements_timidity_OBJECTS) $(elements_timidity_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/timidity$(EXEEXT)
 	$(LINK) $(elements_timidity_LDFLAGS) $(elements_timidity_OBJECTS) $(elements_timidity_LDADD) $(LIBS)
@@ -691,14 +774,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_timidity-timidity.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interleave.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpeg2enc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mplex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/neonhttpsrc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rganalysis.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rglimiter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgvolume.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ofa.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/selector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/states.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/y4menc.Po@am__quote@
 
@@ -723,20 +804,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-interleave.o: elements/interleave.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT interleave.o -MD -MP -MF "$(DEPDIR)/interleave.Tpo" -c -o interleave.o `test -f 'elements/interleave.c' || echo '$(srcdir)/'`elements/interleave.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/interleave.Tpo" "$(DEPDIR)/interleave.Po"; else rm -f "$(DEPDIR)/interleave.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/interleave.c' object='interleave.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o interleave.o `test -f 'elements/interleave.c' || echo '$(srcdir)/'`elements/interleave.c
-
-interleave.obj: elements/interleave.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT interleave.obj -MD -MP -MF "$(DEPDIR)/interleave.Tpo" -c -o interleave.obj `if test -f 'elements/interleave.c'; then $(CYGPATH_W) 'elements/interleave.c'; else $(CYGPATH_W) '$(srcdir)/elements/interleave.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/interleave.Tpo" "$(DEPDIR)/interleave.Po"; else rm -f "$(DEPDIR)/interleave.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/interleave.c' object='interleave.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o interleave.obj `if test -f 'elements/interleave.c'; then $(CYGPATH_W) 'elements/interleave.c'; else $(CYGPATH_W) '$(srcdir)/elements/interleave.c'; fi`
-
 mpeg2enc.o: elements/mpeg2enc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpeg2enc.o -MD -MP -MF "$(DEPDIR)/mpeg2enc.Tpo" -c -o mpeg2enc.o `test -f 'elements/mpeg2enc.c' || echo '$(srcdir)/'`elements/mpeg2enc.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mpeg2enc.Tpo" "$(DEPDIR)/mpeg2enc.Po"; else rm -f "$(DEPDIR)/mpeg2enc.Tpo"; exit 1; fi
@@ -750,6 +817,20 @@ mpeg2enc.obj: elements/mpeg2enc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/mpeg2enc.c' object='mpeg2enc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mpeg2enc.obj `if test -f 'elements/mpeg2enc.c'; then $(CYGPATH_W) 'elements/mpeg2enc.c'; else $(CYGPATH_W) '$(srcdir)/elements/mpeg2enc.c'; fi`
+
+mplex.o: elements/mplex.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mplex.o -MD -MP -MF "$(DEPDIR)/mplex.Tpo" -c -o mplex.o `test -f 'elements/mplex.c' || echo '$(srcdir)/'`elements/mplex.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mplex.Tpo" "$(DEPDIR)/mplex.Po"; else rm -f "$(DEPDIR)/mplex.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/mplex.c' object='mplex.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mplex.o `test -f 'elements/mplex.c' || echo '$(srcdir)/'`elements/mplex.c
+
+mplex.obj: elements/mplex.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mplex.obj -MD -MP -MF "$(DEPDIR)/mplex.Tpo" -c -o mplex.obj `if test -f 'elements/mplex.c'; then $(CYGPATH_W) 'elements/mplex.c'; else $(CYGPATH_W) '$(srcdir)/elements/mplex.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mplex.Tpo" "$(DEPDIR)/mplex.Po"; else rm -f "$(DEPDIR)/mplex.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/mplex.c' object='mplex.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mplex.obj `if test -f 'elements/mplex.c'; then $(CYGPATH_W) 'elements/mplex.c'; else $(CYGPATH_W) '$(srcdir)/elements/mplex.c'; fi`
 
 neonhttpsrc.o: elements/neonhttpsrc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT neonhttpsrc.o -MD -MP -MF "$(DEPDIR)/neonhttpsrc.Tpo" -c -o neonhttpsrc.o `test -f 'elements/neonhttpsrc.c' || echo '$(srcdir)/'`elements/neonhttpsrc.c; \
@@ -765,61 +846,33 @@ neonhttpsrc.obj: elements/neonhttpsrc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o neonhttpsrc.obj `if test -f 'elements/neonhttpsrc.c'; then $(CYGPATH_W) 'elements/neonhttpsrc.c'; else $(CYGPATH_W) '$(srcdir)/elements/neonhttpsrc.c'; fi`
 
-rganalysis.o: elements/rganalysis.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rganalysis.o -MD -MP -MF "$(DEPDIR)/rganalysis.Tpo" -c -o rganalysis.o `test -f 'elements/rganalysis.c' || echo '$(srcdir)/'`elements/rganalysis.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rganalysis.Tpo" "$(DEPDIR)/rganalysis.Po"; else rm -f "$(DEPDIR)/rganalysis.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rganalysis.c' object='rganalysis.o' libtool=no @AMDEPBACKSLASH@
+ofa.o: elements/ofa.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ofa.o -MD -MP -MF "$(DEPDIR)/ofa.Tpo" -c -o ofa.o `test -f 'elements/ofa.c' || echo '$(srcdir)/'`elements/ofa.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/ofa.Tpo" "$(DEPDIR)/ofa.Po"; else rm -f "$(DEPDIR)/ofa.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/ofa.c' object='ofa.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rganalysis.o `test -f 'elements/rganalysis.c' || echo '$(srcdir)/'`elements/rganalysis.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ofa.o `test -f 'elements/ofa.c' || echo '$(srcdir)/'`elements/ofa.c
 
-rganalysis.obj: elements/rganalysis.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rganalysis.obj -MD -MP -MF "$(DEPDIR)/rganalysis.Tpo" -c -o rganalysis.obj `if test -f 'elements/rganalysis.c'; then $(CYGPATH_W) 'elements/rganalysis.c'; else $(CYGPATH_W) '$(srcdir)/elements/rganalysis.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rganalysis.Tpo" "$(DEPDIR)/rganalysis.Po"; else rm -f "$(DEPDIR)/rganalysis.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rganalysis.c' object='rganalysis.obj' libtool=no @AMDEPBACKSLASH@
+ofa.obj: elements/ofa.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ofa.obj -MD -MP -MF "$(DEPDIR)/ofa.Tpo" -c -o ofa.obj `if test -f 'elements/ofa.c'; then $(CYGPATH_W) 'elements/ofa.c'; else $(CYGPATH_W) '$(srcdir)/elements/ofa.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/ofa.Tpo" "$(DEPDIR)/ofa.Po"; else rm -f "$(DEPDIR)/ofa.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/ofa.c' object='ofa.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rganalysis.obj `if test -f 'elements/rganalysis.c'; then $(CYGPATH_W) 'elements/rganalysis.c'; else $(CYGPATH_W) '$(srcdir)/elements/rganalysis.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ofa.obj `if test -f 'elements/ofa.c'; then $(CYGPATH_W) 'elements/ofa.c'; else $(CYGPATH_W) '$(srcdir)/elements/ofa.c'; fi`
 
-rglimiter.o: elements/rglimiter.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rglimiter.o -MD -MP -MF "$(DEPDIR)/rglimiter.Tpo" -c -o rglimiter.o `test -f 'elements/rglimiter.c' || echo '$(srcdir)/'`elements/rglimiter.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rglimiter.Tpo" "$(DEPDIR)/rglimiter.Po"; else rm -f "$(DEPDIR)/rglimiter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rglimiter.c' object='rglimiter.o' libtool=no @AMDEPBACKSLASH@
+selector.o: elements/selector.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT selector.o -MD -MP -MF "$(DEPDIR)/selector.Tpo" -c -o selector.o `test -f 'elements/selector.c' || echo '$(srcdir)/'`elements/selector.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/selector.Tpo" "$(DEPDIR)/selector.Po"; else rm -f "$(DEPDIR)/selector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/selector.c' object='selector.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rglimiter.o `test -f 'elements/rglimiter.c' || echo '$(srcdir)/'`elements/rglimiter.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o selector.o `test -f 'elements/selector.c' || echo '$(srcdir)/'`elements/selector.c
 
-rglimiter.obj: elements/rglimiter.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rglimiter.obj -MD -MP -MF "$(DEPDIR)/rglimiter.Tpo" -c -o rglimiter.obj `if test -f 'elements/rglimiter.c'; then $(CYGPATH_W) 'elements/rglimiter.c'; else $(CYGPATH_W) '$(srcdir)/elements/rglimiter.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rglimiter.Tpo" "$(DEPDIR)/rglimiter.Po"; else rm -f "$(DEPDIR)/rglimiter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rglimiter.c' object='rglimiter.obj' libtool=no @AMDEPBACKSLASH@
+selector.obj: elements/selector.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT selector.obj -MD -MP -MF "$(DEPDIR)/selector.Tpo" -c -o selector.obj `if test -f 'elements/selector.c'; then $(CYGPATH_W) 'elements/selector.c'; else $(CYGPATH_W) '$(srcdir)/elements/selector.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/selector.Tpo" "$(DEPDIR)/selector.Po"; else rm -f "$(DEPDIR)/selector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/selector.c' object='selector.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rglimiter.obj `if test -f 'elements/rglimiter.c'; then $(CYGPATH_W) 'elements/rglimiter.c'; else $(CYGPATH_W) '$(srcdir)/elements/rglimiter.c'; fi`
-
-rgvolume.o: elements/rgvolume.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rgvolume.o -MD -MP -MF "$(DEPDIR)/rgvolume.Tpo" -c -o rgvolume.o `test -f 'elements/rgvolume.c' || echo '$(srcdir)/'`elements/rgvolume.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rgvolume.Tpo" "$(DEPDIR)/rgvolume.Po"; else rm -f "$(DEPDIR)/rgvolume.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rgvolume.c' object='rgvolume.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rgvolume.o `test -f 'elements/rgvolume.c' || echo '$(srcdir)/'`elements/rgvolume.c
-
-rgvolume.obj: elements/rgvolume.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rgvolume.obj -MD -MP -MF "$(DEPDIR)/rgvolume.Tpo" -c -o rgvolume.obj `if test -f 'elements/rgvolume.c'; then $(CYGPATH_W) 'elements/rgvolume.c'; else $(CYGPATH_W) '$(srcdir)/elements/rgvolume.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/rgvolume.Tpo" "$(DEPDIR)/rgvolume.Po"; else rm -f "$(DEPDIR)/rgvolume.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/rgvolume.c' object='rgvolume.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rgvolume.obj `if test -f 'elements/rgvolume.c'; then $(CYGPATH_W) 'elements/rgvolume.c'; else $(CYGPATH_W) '$(srcdir)/elements/rgvolume.c'; fi`
-
-elements_souphttpsrc-souphttpsrc.o: elements/souphttpsrc.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_souphttpsrc_CFLAGS) $(CFLAGS) -MT elements_souphttpsrc-souphttpsrc.o -MD -MP -MF "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo" -c -o elements_souphttpsrc-souphttpsrc.o `test -f 'elements/souphttpsrc.c' || echo '$(srcdir)/'`elements/souphttpsrc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo" "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Po"; else rm -f "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/souphttpsrc.c' object='elements_souphttpsrc-souphttpsrc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_souphttpsrc_CFLAGS) $(CFLAGS) -c -o elements_souphttpsrc-souphttpsrc.o `test -f 'elements/souphttpsrc.c' || echo '$(srcdir)/'`elements/souphttpsrc.c
-
-elements_souphttpsrc-souphttpsrc.obj: elements/souphttpsrc.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_souphttpsrc_CFLAGS) $(CFLAGS) -MT elements_souphttpsrc-souphttpsrc.obj -MD -MP -MF "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo" -c -o elements_souphttpsrc-souphttpsrc.obj `if test -f 'elements/souphttpsrc.c'; then $(CYGPATH_W) 'elements/souphttpsrc.c'; else $(CYGPATH_W) '$(srcdir)/elements/souphttpsrc.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo" "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Po"; else rm -f "$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/souphttpsrc.c' object='elements_souphttpsrc-souphttpsrc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_souphttpsrc_CFLAGS) $(CFLAGS) -c -o elements_souphttpsrc-souphttpsrc.obj `if test -f 'elements/souphttpsrc.c'; then $(CYGPATH_W) 'elements/souphttpsrc.c'; else $(CYGPATH_W) '$(srcdir)/elements/souphttpsrc.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o selector.obj `if test -f 'elements/selector.c'; then $(CYGPATH_W) 'elements/selector.c'; else $(CYGPATH_W) '$(srcdir)/elements/selector.c'; fi`
 
 elements_timidity-timidity.o: elements/timidity.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_timidity_CFLAGS) $(CFLAGS) -MT elements_timidity-timidity.o -MD -MP -MF "$(DEPDIR)/elements_timidity-timidity.Tpo" -c -o elements_timidity-timidity.o `test -f 'elements/timidity.c' || echo '$(srcdir)/'`elements/timidity.c; \
@@ -1244,6 +1297,7 @@ inspect:
 	     $(GST_INSPECT) $$e > /dev/null 2>&1; done
 
 help:
+	@echo
 	@echo "make check                         -- run all checks"
 	@echo "make torture                       -- run all checks $(LOOPS) times"
 	@echo "make (dir)/(test).check            -- run the given check once"
@@ -1258,6 +1312,18 @@ help:
 	@echo "make (dir)/(test).valgrind.gen-suppressions -- generate suppressions"
 	@echo "                                               and save to suppressions.log"
 	@echo "make inspect                       -- inspect all plugin features"
+	@echo
+	@echo
+	@echo "Additionally, you can use the GST_CHECKS environment variable to"
+	@echo "specify which test(s) should be run. This is useful if you are"
+	@echo "debugging a failure in one particular test, or want to reproduce"
+	@echo "a race condition in a single test."
+	@echo
+	@echo "Examples:"
+	@echo
+	@echo "  GST_CHECKS=test_this,test_that  make element/foobar.check"
+	@echo "  GST_CHECKS=test_many_threads    make element/foobar.forever"
+	@echo
 
 # override to _not_ install the test plugins
 install-pluginLTLIBRARIES:

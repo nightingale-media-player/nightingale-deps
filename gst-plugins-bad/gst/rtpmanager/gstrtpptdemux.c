@@ -25,31 +25,26 @@
 
 /**
  * SECTION:element-gstrtpptdemux
- * @short_description: separate RTP payloads based on the payload type
  *
- * <refsect2>
- * <para>
- * gstrtpptdemux acts as a demuxer for RTP packets based on the payload type of the
- * packets. Its main purpose is to allow an application to easily receive and
- * decode an RTP stream with multiple payload types.
- * </para>
- * <para>
+ * gstrtpptdemux acts as a demuxer for RTP packets based on the payload type of
+ * the packets. Its main purpose is to allow an application to easily receive
+ * and decode an RTP stream with multiple payload types.
+ * 
  * For each payload type that is detected, a new pad will be created and the
- * ::new-payload-type signal will be emitted. When the payload for the RTP
- * stream changes, the ::payload-type-change signal will be emitted.
- * </para>
- * <para>
+ * #GstRtpPtDemux::new-payload-type signal will be emitted. When the payload for
+ * the RTP stream changes, the #GstRtpPtDemux::payload-type-change signal will be
+ * emitted.
+ * 
  * The element will try to set complete and unique application/x-rtp caps on the
- * outgoing buffers and pads based on the result of the ::request-pt-map signal.
- * </para>
+ * outgoing buffers and pads based on the result of the
+ * #GstRtpPtDemux::request-pt-map signal.
+ * 
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch udpsrc caps="application/x-rtp" ! gstrtpptdemux ! fakesink
- * </programlisting>
- * Takes an RTP stream and send the RTP packets with the first detected payload
- * type to fakesink, discarding the other payload types.
- * </para>
+ * ]| Takes an RTP stream and send the RTP packets with the first detected
+ * payload type to fakesink, discarding the other payload types.
  * </refsect2>
  *
  * Last reviewed on 2007-05-28 (0.10.5)
@@ -273,9 +268,15 @@ gst_rtp_pt_demux_get_caps (GstRtpPtDemux * rtpdemux, guint pt)
   g_signal_emitv (args, gst_rtp_pt_demux_signals[SIGNAL_REQUEST_PT_MAP], 0,
       &ret);
 
-  caps = g_value_get_boxed (&ret);
-  if (caps == NULL)
+  g_value_unset (&args[0]);
+  g_value_unset (&args[1]);
+  caps = g_value_dup_boxed (&ret);
+  g_value_unset (&ret);
+  if (caps == NULL) {
     caps = GST_PAD_CAPS (rtpdemux->sink);
+    if (caps)
+      gst_caps_ref (caps);
+  }
 
   GST_DEBUG ("pt %d, got caps %" GST_PTR_FORMAT, pt, caps);
 
@@ -338,6 +339,7 @@ gst_rtp_pt_demux_chain (GstPad * pad, GstBuffer * buf)
     caps = gst_caps_make_writable (caps);
     gst_caps_set_simple (caps, "payload", G_TYPE_INT, pt, NULL);
     gst_pad_set_caps (srcpad, caps);
+    gst_caps_unref (caps);
 
     GST_DEBUG ("Adding pt=%d to the list.", pt);
     rtpdemuxpad = g_new0 (GstRtpPtDemuxPad, 1);
@@ -377,6 +379,7 @@ gst_rtp_pt_demux_chain (GstPad * pad, GstBuffer * buf)
     caps = gst_caps_make_writable (caps);
     gst_caps_set_simple (caps, "payload", G_TYPE_INT, pt, NULL);
     gst_pad_set_caps (srcpad, caps);
+    gst_caps_unref (caps);
     rtpdemuxpad->newcaps = FALSE;
   }
 

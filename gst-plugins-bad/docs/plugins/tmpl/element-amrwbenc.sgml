@@ -23,6 +23,15 @@ Adaptive Multi-Rate Wideband audio encoder
 
 </para>
 
+@element: 
+@sinkpad: 
+@srcpad: 
+@ts: 
+@adapter: 
+@handle: 
+@bandmode: 
+@channels: 
+@rate: 
 
 <!-- ##### ARG GstAmrwbEnc:band-mode ##### -->
 <para>

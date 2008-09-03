@@ -1,0 +1,209 @@
+<!-- ##### SECTION Title ##### -->
+mpeg2enc
+
+<!-- ##### SECTION Short_Description ##### -->
+High-quality MPEG-1/2 video encoder
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-mpeg2enc-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstMpeg2enc ##### -->
+<para>
+
+</para>
+
+@parent: 
+@sinkpad: 
+@srcpad: 
+@options: 
+@encoder: 
+@tlock: 
+@cond: 
+@eos: 
+@srcresult: 
+@buffer: 
+@time: 
+
+<!-- ##### ARG GstMpeg2enc:altscan-mpeg2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:aspect ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:b-per-refframe ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:bufsize ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:closed-gop ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:constraints ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:correct-svcd-hds ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:dualprime ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:dummy-svcd-sof ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:force-b-b-p ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:format ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:framerate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:interlace-mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:intra-dc-prec ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:keep-hf ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:max-gop-size ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:min-gop-size ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:motion-search-radius ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:non-video-bitrate ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:norm ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:playback-field-order ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:pulldown-3-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:quant-matrix ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:quant-reduction-max-var ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:quantisation ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:quantisation-reduction ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:reduce-hf ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:reduction-2x2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:reduction-4x4 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:sequence-header-every-gop ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:sequence-length ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:unit-coeff-elim ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMpeg2enc:vcd-still-size ##### -->
+<para>
+
+</para>
+

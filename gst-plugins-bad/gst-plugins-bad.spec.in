@@ -36,7 +36,6 @@ BuildRequires:  gcc-c++
 @USE_GSM_TRUE@Provides:       gstreamer-gsm = %{version}-%{release}
 # @USE_LIBFAME_TRUE@Provides:       gstreamer-libfame = %{version}-%{release}
 @USE_LIBMMS_TRUE@Requires: libmms >= 0.1
-@USE_OPENGL_TRUE@Requires: mesa-libGL
 @USE_MYTHTV_TRUE@Requires: gmyth
 @USE_X264_TRUE@Requires: x264
 
@@ -85,21 +84,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstcdxaparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfreeze.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmodplug.so
-%{_libdir}/gstreamer-%{majorminor}/libgstxingheader.so
 %{_libdir}/gstreamer-%{majorminor}/libgsth264parse.so
-%{_libdir}/gstreamer-%{majorminor}/libgstspectrum.so
 %{_libdir}/gstreamer-%{majorminor}/libgstfilter.so
 %{_libdir}/gstreamer-%{majorminor}/libgstnsf.so
 %{_libdir}/gstreamer-%{majorminor}/libgstreplaygain.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdeinterlace.so
 %{_libdir}/gstreamer-%{majorminor}/libgstnuvdemux.so
-%{_libdir}/gstreamer-%{majorminor}/libgstmultifile.so
 %{_libdir}/gstreamer-%{majorminor}/libgsty4menc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrfbsrc.so
 %{_libdir}/gstreamer-%{majorminor}/libgstreal.so
 %{_libdir}/gstreamer-%{majorminor}/libgstinterleave.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmve.so
-%{_libdir}/gstreamer-%{majorminor}/libgstequalizer.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmpegvideoparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstrtpmanager.so
 %{_libdir}/gstreamer-%{majorminor}/libgstbayer.so
@@ -117,7 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstrawparse.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmetadata.so
 %{_libdir}/gstreamer-%{majorminor}/libgstselector.so
-%{_includedir}/gstreamer-%{majorminor}/metadata/metadatatags.h
+%{_libdir}/gstreamer-%{majorminor}/libgstsubenc.so
+%{_libdir}/gstreamer-%{majorminor}/libgstoss4audio.so
 %{_includedir}/gstreamer-%{majorminor}/gst/app/gstappbuffer.h
 %{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsink.h
 %{_includedir}/gstreamer-%{majorminor}/gst/app/gstappsrc.h
@@ -131,7 +127,6 @@ rm -rf $RPM_BUILD_ROOT
 # gstreamer-plugins with external dependencies but in the main package
 @USE_FAAD_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstfaad.so
 @USE_FAAC_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstfaac.so
-@USE_OPENGL_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstglimagesink.so
 @USE_MUSICBRAINZ_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgsttrm.so
 # @USE_POLYP_TRUE@%{_libdir}/gstreamer-%{majorminor}/libpolypaudio.so
 @USE_SDL_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstsdl.so
@@ -150,14 +145,28 @@ rm -rf $RPM_BUILD_ROOT
 @USE_X264_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstx264.so
 @USE_DC1394_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstdc1394.so
 @USE_TIMIDITY_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgsttimidity.so
-@USE_SOUP_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstsouphttpsrc.so
-
+@USE_WILDMIDI_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstwildmidi.so
 
 %changelog
-* Wed Jan 23 2008 Christian Schaller <christian at collabora dot co uk>
+* Fri May 2 2008 Christian Schaller <christian.schaller at collabora dot co uk>
+- Add Wildmidi plugin
+
+* Mon Apr 14 2008 Tim-Philipp Müller <tim.muller at collabora dot co uk>
+- Remove souphttpsrc plugin, which has moved to gst-plugins-good.
+
+* Thu Apr 3 2008 Christian Schaller <christian.schaller at collabora dot co uk>
+- Add new OSSv4 plugin to SPEC file
+
+* Tue Apr 1 2008 Tim-Philipp Müller <tim.muller at collabora dot co uk>
+- Update spec file for srtenc plugin rename to subenc
+
+* Tue Apr 1 2008 Christian Schaller <christian.schaller at collabora dot co uk>
+- Update spec with libgstsrtenc plugin
+
+* Wed Jan 23 2008 Christian Schaller <christian.schaller at collabora dot co uk>
 - Update spec with fbdev sink and rawparse, remove videoparse
 
-* Fri Dec 14 2007 Christian Schaller <christian at collabora dot co uk>
+* Fri Dec 14 2007 Christian Schaller <christian.schaller at collabora dot co uk>
 - Update spec file with timidity, libgstdvb, libgstsdpelem, libgstspeexresample, libgstmpeg4videoparse
 
 * Tue Jun 12 2007 Jan Schmidt <jan at fluendo dot com>

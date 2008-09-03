@@ -82,6 +82,11 @@ enum
   else 					\
    (avg) = ((val) + (15 * (avg))) >> 4;
 
+/* The number RTCP intervals after which to timeout entries in the
+ * collision table
+ */
+#define RTCP_INTERVAL_COLLISION_TIMEOUT 10
+
 /* GObject vmethods */
 static void rtp_session_finalize (GObject * object);
 static void rtp_session_set_property (GObject * object, guint prop_id,
@@ -95,6 +100,10 @@ G_DEFINE_TYPE (RTPSession, rtp_session, G_TYPE_OBJECT);
 
 static RTPSource *obtain_source (RTPSession * sess, guint32 ssrc,
     gboolean * created, RTPArrivalStats * arrival, gboolean rtp);
+static GstFlowReturn rtp_session_send_bye_locked (RTPSession * sess,
+    const gchar * reason, GstClockTime current_time);
+static GstClockTime calculate_rtcp_interval (RTPSession * sess,
+    gboolean deterministic, gboolean first);
 
 static void
 rtp_session_class_init (RTPSessionClass * klass)
@@ -803,7 +812,7 @@ source_push_rtp (RTPSource * source, GstBuffer * buffer, RTPSession * session)
   GstFlowReturn result = GST_FLOW_OK;
 
   if (source == session->source) {
-    GST_DEBUG ("source %08x pushed sender RTP packet", source->ssrc);
+    GST_LOG ("source %08x pushed sender RTP packet", source->ssrc);
 
     RTP_SESSION_UNLOCK (session);
 
@@ -815,7 +824,7 @@ source_push_rtp (RTPSource * source, GstBuffer * buffer, RTPSession * session)
       gst_buffer_unref (buffer);
 
   } else {
-    GST_DEBUG ("source %08x pushed receiver RTP packet", source->ssrc);
+    GST_LOG ("source %08x pushed receiver RTP packet", source->ssrc);
     RTP_SESSION_UNLOCK (session);
 
     if (session->callbacks.process_rtp)
@@ -835,12 +844,16 @@ source_clock_rate (RTPSource * source, guint8 pt, RTPSession * session)
 {
   gint result;
 
+  RTP_SESSION_UNLOCK (session);
+
   if (session->callbacks.clock_rate)
     result =
         session->callbacks.clock_rate (session, pt,
         session->clock_rate_user_data);
   else
     result = -1;
+
+  RTP_SESSION_LOCK (session);
 
   GST_DEBUG ("got clock-rate %d for pt %d", result, pt);
 
@@ -852,13 +865,109 @@ static RTPSourceCallbacks callbacks = {
   (RTPSourceClockRate) source_clock_rate,
 };
 
+/**
+ * find_add_conflicting_addresses:
+ * @sess: The session to check in
+ * @arrival: The arrival stats for the buffer
+ *
+ * Checks if an address which has a conflict is already known,
+ *  otherwise remembers it to prevent loops.
+ *
+ * Returns: TRUE if it was a known conflict, FALSE otherwise
+ */
+
 static gboolean
-check_collision (RTPSession * sess, RTPSource * source,
-    RTPArrivalStats * arrival)
+find_add_conflicting_addresses (RTPSession * sess, RTPArrivalStats * arrival)
 {
-  /* FIXME, do collision check */
+  GList *item;
+  RTPConflictingAddress *new_conflict;
+
+  for (item = g_list_first (sess->conflicting_addresses);
+      item; item = g_list_next (item)) {
+    RTPConflictingAddress *known_conflict = item->data;
+
+    if (gst_netaddress_equal (&arrival->address, &known_conflict->address)) {
+      known_conflict->time = arrival->time;
+      return TRUE;
+    }
+  }
+
+  new_conflict = g_new0 (RTPConflictingAddress, 1);
+
+  memcpy (&new_conflict->address, &arrival->address, sizeof (GstNetAddress));
+  new_conflict->time = arrival->time;
+
+  sess->conflicting_addresses = g_list_prepend (sess->conflicting_addresses,
+      new_conflict);
+
   return FALSE;
 }
+
+static gboolean
+check_collision (RTPSession * sess, RTPSource * source,
+    RTPArrivalStats * arrival, gboolean rtp)
+{
+  /* If we have not arrival address, we can't do collision checking */
+  if (!arrival->have_address) {
+    return FALSE;
+  }
+
+  if (sess->source != source) {
+    /* This is not our local source, but lets check if two remote
+     * source collide
+     */
+
+    if (rtp) {
+      if (source->have_rtp_from) {
+        if (gst_netaddress_equal (&source->rtp_from, &arrival->address))
+          /* Address is the same */
+          return FALSE;
+      } else {
+        /* We don't already have a from address for RTP, just set it */
+        rtp_source_set_rtp_from (source, &arrival->address);
+        return FALSE;
+      }
+    } else {
+      if (source->have_rtcp_from) {
+        if (gst_netaddress_equal (&source->rtcp_from, &arrival->address))
+          /* Address is the same */
+          return FALSE;
+      } else {
+        /* We don't already have a from address for RTCP, just set it */
+        rtp_source_set_rtcp_from (source, &arrival->address);
+        return FALSE;
+      }
+    }
+
+    /* In this case, we have third-party collision or loop */
+
+    /* FIXME: Log 3rd party collision somehow
+     * Maybe should be done in upper layer, only the SDES can tell us
+     * if its a collision or a loop
+     */
+  } else {
+    /* This is sending with our ssrc, is it an address we already know */
+
+    if (find_add_conflicting_addresses (sess, arrival)) {
+      /* Its a known conflict, its probably a loop, not a collision
+       * lets just drop the incoming packet
+       */
+      GST_DEBUG ("Our packets are being looped back to us, dropping");
+    } else {
+      /* Its a new collision, lets change our SSRC */
+
+      GST_DEBUG ("Collision for SSRC %x", rtp_source_get_ssrc (source));
+      on_ssrc_collision (sess, source);
+
+      rtp_session_send_bye_locked (sess, "SSRC Collision", arrival->time);
+
+      sess->change_ssrc = TRUE;
+    }
+  }
+
+  return TRUE;
+}
+
 
 /* must be called with the session lock */
 static RTPSource *
@@ -901,8 +1010,9 @@ obtain_source (RTPSession * sess, guint32 ssrc, gboolean * created,
   } else {
     *created = FALSE;
     /* check for collision, this updates the address when not previously set */
-    if (check_collision (sess, source, arrival))
-      on_ssrc_collision (sess, source);
+    if (check_collision (sess, source, arrival, rtp)) {
+      return NULL;
+    }
   }
   /* update last activity */
   source->last_activity = arrival->time;
@@ -1066,6 +1176,24 @@ rtp_session_get_source_by_cname (RTPSession * sess, const gchar * cname)
   return result;
 }
 
+static guint32
+rtp_session_create_new_ssrc (RTPSession * sess)
+{
+  guint32 ssrc;
+
+  while (TRUE) {
+    ssrc = g_random_int ();
+
+    /* see if it exists in the session, we're done if it doesn't */
+    if (g_hash_table_lookup (sess->ssrcs[sess->mask_idx],
+            GINT_TO_POINTER (ssrc)) == NULL)
+      break;
+  }
+
+  return ssrc;
+}
+
+
 /**
  * rtp_session_create_source:
  * @sess: an #RTPSession
@@ -1082,14 +1210,7 @@ rtp_session_create_source (RTPSession * sess)
   RTPSource *source;
 
   RTP_SESSION_LOCK (sess);
-  while (TRUE) {
-    ssrc = g_random_int ();
-
-    /* see if it exists in the session, we're done if it doesn't */
-    if (g_hash_table_lookup (sess->ssrcs[sess->mask_idx],
-            GINT_TO_POINTER (ssrc)) == NULL)
-      break;
-  }
+  ssrc = rtp_session_create_new_ssrc (sess);
   source = rtp_source_new (ssrc);
   g_object_ref (source);
   rtp_source_set_callbacks (source, &callbacks, sess);
@@ -1109,13 +1230,12 @@ rtp_session_create_source (RTPSession * sess)
  */
 static void
 update_arrival_stats (RTPSession * sess, RTPArrivalStats * arrival,
-    gboolean rtp, GstBuffer * buffer, guint64 ntpnstime)
+    gboolean rtp, GstBuffer * buffer, GstClockTime current_time,
+    guint64 ntpnstime)
 {
-  GTimeVal current;
-
   /* get time of arrival */
-  g_get_current_time (&current);
-  arrival->time = GST_TIMEVAL_TO_TIME (current);
+  arrival->time = current_time;
+  arrival->timestamp = GST_BUFFER_TIMESTAMP (buffer);
   arrival->ntpnstime = ntpnstime;
 
   /* get packet size including header overhead */
@@ -1140,6 +1260,7 @@ update_arrival_stats (RTPSession * sess, RTPArrivalStats * arrival,
  * rtp_session_process_rtp:
  * @sess: and #RTPSession
  * @buffer: an RTP buffer
+ * @current_time: the current system time
  * @ntpnstime: the NTP arrival time in nanoseconds
  *
  * Process an RTP buffer in the session manager. This function takes ownership
@@ -1149,7 +1270,7 @@ update_arrival_stats (RTPSession * sess, RTPArrivalStats * arrival,
  */
 GstFlowReturn
 rtp_session_process_rtp (RTPSession * sess, GstBuffer * buffer,
-    guint64 ntpnstime)
+    GstClockTime current_time, guint64 ntpnstime)
 {
   GstFlowReturn result;
   guint32 ssrc;
@@ -1166,7 +1287,7 @@ rtp_session_process_rtp (RTPSession * sess, GstBuffer * buffer,
 
   RTP_SESSION_LOCK (sess);
   /* update arrival stats */
-  update_arrival_stats (sess, &arrival, TRUE, buffer, ntpnstime);
+  update_arrival_stats (sess, &arrival, TRUE, buffer, current_time, ntpnstime);
 
   /* ignore more RTP packets when we left the session */
   if (sess->source->received_bye)
@@ -1175,6 +1296,9 @@ rtp_session_process_rtp (RTPSession * sess, GstBuffer * buffer,
   /* get SSRC and look up in session database */
   ssrc = gst_rtp_buffer_get_ssrc (buffer);
   source = obtain_source (sess, ssrc, &created, &arrival, TRUE);
+
+  if (!source)
+    goto collision;
 
   prevsender = RTP_SOURCE_IS_SENDER (source);
   prevactive = RTP_SOURCE_IS_ACTIVE (source);
@@ -1246,6 +1370,13 @@ ignore:
     GST_DEBUG ("ignoring RTP packet because we are leaving");
     return GST_FLOW_OK;
   }
+collision:
+  {
+    gst_buffer_unref (buffer);
+    RTP_SESSION_UNLOCK (sess);
+    GST_DEBUG ("ignoring packet because its collisioning");
+    return GST_FLOW_OK;
+  }
 }
 
 static void
@@ -1303,7 +1434,11 @@ rtp_session_process_sr (RTPSession * sess, GstRTCPPacket * packet,
 
   source = obtain_source (sess, senderssrc, &created, arrival, FALSE);
 
+  if (!source)
+    return;
+
   GST_BUFFER_OFFSET (packet->buffer) = source->clock_base;
+  GST_BUFFER_OFFSET_END (packet->buffer) = source->clock_base_time;
 
   prevsender = RTP_SOURCE_IS_SENDER (source);
 
@@ -1343,6 +1478,9 @@ rtp_session_process_rr (RTPSession * sess, GstRTCPPacket * packet,
 
   source = obtain_source (sess, senderssrc, &created, arrival, FALSE);
 
+  if (!source)
+    return;
+
   if (created)
     on_new_ssrc (sess, source);
 
@@ -1374,6 +1512,9 @@ rtp_session_process_sdes (RTPSession * sess, GstRTCPPacket * packet,
     /* find src, no probation when dealing with RTCP */
     source = obtain_source (sess, ssrc, &created, arrival, FALSE);
     changed = FALSE;
+
+    if (!source)
+      return;
 
     more_entries = gst_rtcp_packet_sdes_first_entry (packet);
     j = 0;
@@ -1428,6 +1569,9 @@ rtp_session_process_bye (RTPSession * sess, GstRTCPPacket * packet,
     /* find src and mark bye, no probation when dealing with RTCP */
     source = obtain_source (sess, ssrc, &created, arrival, FALSE);
 
+    if (!source)
+      return;
+
     /* store time for when we need to time out this source */
     source->bye_time = arrival->time;
 
@@ -1467,9 +1611,11 @@ rtp_session_process_bye (RTPSession * sess, GstRTCPPacket * packet,
 
         sess->next_rtcp_check_time += arrival->time;
 
+        RTP_SESSION_UNLOCK (sess);
         /* notify app of reconsideration */
         if (sess->callbacks.reconsider)
           sess->callbacks.reconsider (sess, sess->reconsider_user_data);
+        RTP_SESSION_LOCK (sess);
       }
     }
 
@@ -1492,6 +1638,7 @@ rtp_session_process_app (RTPSession * sess, GstRTCPPacket * packet,
  * rtp_session_process_rtcp:
  * @sess: and #RTPSession
  * @buffer: an RTCP buffer
+ * @current_time: the current system time
  *
  * Process an RTCP buffer in the session manager. This function takes ownership
  * of @buffer.
@@ -1499,7 +1646,8 @@ rtp_session_process_app (RTPSession * sess, GstRTCPPacket * packet,
  * Returns: a #GstFlowReturn.
  */
 GstFlowReturn
-rtp_session_process_rtcp (RTPSession * sess, GstBuffer * buffer)
+rtp_session_process_rtcp (RTPSession * sess, GstBuffer * buffer,
+    GstClockTime current_time)
 {
   GstRTCPPacket packet;
   gboolean more, is_bye = FALSE, is_sr = FALSE;
@@ -1516,7 +1664,7 @@ rtp_session_process_rtcp (RTPSession * sess, GstBuffer * buffer)
 
   RTP_SESSION_LOCK (sess);
   /* update arrival stats */
-  update_arrival_stats (sess, &arrival, FALSE, buffer, -1);
+  update_arrival_stats (sess, &arrival, FALSE, buffer, current_time, -1);
 
   if (sess->sent_bye)
     goto ignore;
@@ -1602,6 +1750,7 @@ ignore:
  * rtp_session_send_rtp:
  * @sess: an #RTPSession
  * @buffer: an RTP buffer
+ * @current_time: the current system time
  * @ntpnstime: the NTP time in nanoseconds of when this buffer was captured.
  *
  * Send the RTP buffer in the session manager. This function takes ownership of
@@ -1610,12 +1759,12 @@ ignore:
  * Returns: a #GstFlowReturn.
  */
 GstFlowReturn
-rtp_session_send_rtp (RTPSession * sess, GstBuffer * buffer, guint64 ntpnstime)
+rtp_session_send_rtp (RTPSession * sess, GstBuffer * buffer,
+    GstClockTime current_time, guint64 ntpnstime)
 {
   GstFlowReturn result;
   RTPSource *source;
   gboolean prevsender;
-  GTimeVal current;
 
   g_return_val_if_fail (RTP_IS_SESSION (sess), GST_FLOW_ERROR);
   g_return_val_if_fail (GST_IS_BUFFER (buffer), GST_FLOW_ERROR);
@@ -1623,14 +1772,13 @@ rtp_session_send_rtp (RTPSession * sess, GstBuffer * buffer, guint64 ntpnstime)
   if (!gst_rtp_buffer_validate (buffer))
     goto invalid_packet;
 
-  GST_DEBUG ("received RTP packet for sending");
+  GST_LOG ("received RTP packet for sending");
 
   RTP_SESSION_LOCK (sess);
   source = sess->source;
 
   /* update last activity */
-  g_get_current_time (&current);
-  source->last_rtp_activity = GST_TIMEVAL_TO_TIME (current);
+  source->last_rtp_activity = current_time;
 
   prevsender = RTP_SOURCE_IS_SENDER (source);
 
@@ -1677,25 +1825,26 @@ calculate_rtcp_interval (RTPSession * sess, gboolean deterministic,
 }
 
 /**
- * rtp_session_send_bye:
+ * rtp_session_send_bye_locked:
  * @sess: an #RTPSession
  * @reason: a reason or NULL
  *
  * Stop the current @sess and schedule a BYE message for the other members.
  *
+ * One must have the session lock to call this function
+ *
  * Returns: a #GstFlowReturn.
  */
-GstFlowReturn
-rtp_session_send_bye (RTPSession * sess, const gchar * reason)
+static GstFlowReturn
+rtp_session_send_bye_locked (RTPSession * sess, const gchar * reason,
+    GstClockTime current_time)
 {
   GstFlowReturn result = GST_FLOW_OK;
   RTPSource *source;
-  GstClockTime current, interval;
-  GTimeVal curtv;
+  GstClockTime interval;
 
   g_return_val_if_fail (RTP_IS_SESSION (sess), GST_FLOW_ERROR);
 
-  RTP_SESSION_LOCK (sess);
   source = sess->source;
 
   /* ignore more BYEs */
@@ -1712,22 +1861,46 @@ rtp_session_send_bye (RTPSession * sess, const gchar * reason)
   sess->first_rtcp = TRUE;
   sess->sent_bye = FALSE;
 
-  /* get current time */
-  g_get_current_time (&curtv);
-  current = GST_TIMEVAL_TO_TIME (curtv);
-
   /* reschedule transmission */
-  sess->last_rtcp_send_time = current;
+  sess->last_rtcp_send_time = current_time;
   interval = calculate_rtcp_interval (sess, FALSE, TRUE);
-  sess->next_rtcp_check_time = current + interval;
+  sess->next_rtcp_check_time = current_time + interval;
 
   GST_DEBUG ("Schedule BYE for %" GST_TIME_FORMAT ", %" GST_TIME_FORMAT,
       GST_TIME_ARGS (interval), GST_TIME_ARGS (sess->next_rtcp_check_time));
 
+  RTP_SESSION_UNLOCK (sess);
   /* notify app of reconsideration */
   if (sess->callbacks.reconsider)
     sess->callbacks.reconsider (sess, sess->reconsider_user_data);
+  RTP_SESSION_LOCK (sess);
 done:
+
+  return result;
+}
+
+/**
+ * rtp_session_send_bye:
+ * @sess: an #RTPSession
+ * @reason: a reason or NULL
+ * @current_time: the current system time
+ *
+ * Stop the current @sess and schedule a BYE message for the other members.
+ *
+ * One must have the session lock to call this function
+ *
+ * Returns: a #GstFlowReturn.
+ */
+GstFlowReturn
+rtp_session_send_bye (RTPSession * sess, const gchar * reason,
+    GstClockTime current_time)
+{
+  GstFlowReturn result = GST_FLOW_OK;
+
+  g_return_val_if_fail (RTP_IS_SESSION (sess), GST_FLOW_ERROR);
+
+  RTP_SESSION_LOCK (sess);
+  result = rtp_session_send_bye_locked (sess, reason, current_time);
   RTP_SESSION_UNLOCK (sess);
 
   return result;
@@ -1736,7 +1909,7 @@ done:
 /**
  * rtp_session_next_timeout:
  * @sess: an #RTPSession
- * @time: the current system time
+ * @current_time: the current system time
  *
  * Get the next time we should perform session maintenance tasks.
  *
@@ -1744,7 +1917,7 @@ done:
  * current system time.
  */
 GstClockTime
-rtp_session_next_timeout (RTPSession * sess, GstClockTime time)
+rtp_session_next_timeout (RTPSession * sess, GstClockTime current_time)
 {
   GstClockTime result;
 
@@ -1755,13 +1928,13 @@ rtp_session_next_timeout (RTPSession * sess, GstClockTime time)
   result = sess->next_rtcp_check_time;
 
   GST_DEBUG ("current time: %" GST_TIME_FORMAT ", next :%" GST_TIME_FORMAT,
-      GST_TIME_ARGS (time), GST_TIME_ARGS (result));
+      GST_TIME_ARGS (current_time), GST_TIME_ARGS (result));
 
-  if (result < time) {
+  if (result < current_time) {
     GST_DEBUG ("take current time as base");
     /* our previous check time expired, start counting from the current time
      * again. */
-    result = time;
+    result = current_time;
   }
 
   if (sess->source->received_bye) {
@@ -1778,7 +1951,7 @@ rtp_session_next_timeout (RTPSession * sess, GstClockTime time)
       GST_DEBUG ("first RTCP packet");
       /* we are called for the first time */
       result += calculate_rtcp_interval (sess, FALSE, TRUE);
-    } else if (sess->next_rtcp_check_time < time) {
+    } else if (sess->next_rtcp_check_time < current_time) {
       GST_DEBUG ("old check time expired, getting new timeout");
       /* get a new timeout when we need to */
       result += calculate_rtcp_interval (sess, FALSE, FALSE);
@@ -1796,7 +1969,7 @@ typedef struct
 {
   RTPSession *sess;
   GstBuffer *rtcp;
-  GstClockTime time;
+  GstClockTime current_time;
   guint64 ntpnstime;
   GstClockTime interval;
   GstRTCPPacket packet;
@@ -1859,8 +2032,8 @@ session_report_blocks (const gchar * key, RTPSource * source, ReportData * data)
       guint32 lsr, dlsr;
 
       /* get new stats */
-      rtp_source_get_new_rb (source, data->time, &fractionlost, &packetslost,
-          &exthighestseq, &jitter, &lsr, &dlsr);
+      rtp_source_get_new_rb (source, data->current_time, &fractionlost,
+          &packetslost, &exthighestseq, &jitter, &lsr, &dlsr);
 
       /* packet is not yet filled, add report block for this source. */
       gst_rtcp_packet_add_rb (packet, source->ssrc, fractionlost, packetslost,
@@ -1887,8 +2060,8 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
     if (source->received_bye) {
       /* if we received a BYE from the source, remove the source after some
        * time. */
-      if (data->time > source->bye_time &&
-          data->time - source->bye_time > sess->stats.bye_timeout) {
+      if (data->current_time > source->bye_time &&
+          data->current_time - source->bye_time > sess->stats.bye_timeout) {
         GST_DEBUG ("removing BYE source %08x", source->ssrc);
         remove = TRUE;
         byetimeout = TRUE;
@@ -1896,9 +2069,9 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
     }
     /* sources that were inactive for more than 5 times the deterministic reporting
      * interval get timed out. the min timeout is 5 seconds. */
-    if (data->time > source->last_activity) {
+    if (data->current_time > source->last_activity) {
       interval = MAX (data->interval * 5, 5 * GST_SECOND);
-      if (data->time - source->last_activity > interval) {
+      if (data->current_time - source->last_activity > interval) {
         GST_DEBUG ("removing timeout source %08x, last %" GST_TIME_FORMAT,
             source->ssrc, GST_TIME_ARGS (source->last_activity));
         remove = TRUE;
@@ -1909,9 +2082,9 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
   /* senders that did not send for a long time become a receiver, this also
    * holds for our own source. */
   if (is_sender) {
-    if (data->time > source->last_rtp_activity) {
+    if (data->current_time > source->last_rtp_activity) {
       interval = MAX (data->interval * 2, 5 * GST_SECOND);
-      if (data->time - source->last_rtp_activity > interval) {
+      if (data->current_time - source->last_rtp_activity > interval) {
         GST_DEBUG ("sender source %08x timed out and became receiver, last %"
             GST_TIME_FORMAT, source->ssrc,
             GST_TIME_ARGS (source->last_rtp_activity));
@@ -1988,21 +2161,21 @@ session_bye (RTPSession * sess, ReportData * data)
 }
 
 static gboolean
-is_rtcp_time (RTPSession * sess, GstClockTime time, ReportData * data)
+is_rtcp_time (RTPSession * sess, GstClockTime current_time, ReportData * data)
 {
   GstClockTime new_send_time, elapsed;
   gboolean result;
 
   /* no need to check yet */
-  if (sess->next_rtcp_check_time > time) {
+  if (sess->next_rtcp_check_time > current_time) {
     GST_DEBUG ("no check time yet, next %" GST_TIME_FORMAT " > now %"
         GST_TIME_FORMAT, GST_TIME_ARGS (sess->next_rtcp_check_time),
-        GST_TIME_ARGS (time));
+        GST_TIME_ARGS (current_time));
     return FALSE;
   }
 
   /* get elapsed time since we last reported */
-  elapsed = time - sess->last_rtcp_send_time;
+  elapsed = current_time - sess->last_rtcp_send_time;
 
   /* perform forward reconsideration */
   new_send_time = rtp_stats_add_rtcp_jitter (&sess->stats, data->interval);
@@ -2013,7 +2186,7 @@ is_rtcp_time (RTPSession * sess, GstClockTime time, ReportData * data)
   new_send_time += sess->last_rtcp_send_time;
 
   /* check if reconsideration */
-  if (time < new_send_time) {
+  if (current_time < new_send_time) {
     GST_DEBUG ("reconsider RTCP for %" GST_TIME_FORMAT,
         GST_TIME_ARGS (new_send_time));
     result = FALSE;
@@ -2025,7 +2198,7 @@ is_rtcp_time (RTPSession * sess, GstClockTime time, ReportData * data)
 
     GST_DEBUG ("can send RTCP now, next interval %" GST_TIME_FORMAT,
         GST_TIME_ARGS (new_send_time));
-    sess->next_rtcp_check_time = time + new_send_time;
+    sess->next_rtcp_check_time = current_time + new_send_time;
   }
   return result;
 }
@@ -2033,7 +2206,7 @@ is_rtcp_time (RTPSession * sess, GstClockTime time, ReportData * data)
 /**
  * rtp_session_on_timeout:
  * @sess: an #RTPSession
- * @time: the current system time
+ * @current_time: the current system time
  * @ntpnstime: the current NTP time in nanoseconds
  *
  * Perform maintenance actions after the timeout obtained with
@@ -2048,19 +2221,21 @@ is_rtcp_time (RTPSession * sess, GstClockTime time, ReportData * data)
  * Returns: a #GstFlowReturn.
  */
 GstFlowReturn
-rtp_session_on_timeout (RTPSession * sess, GstClockTime time, guint64 ntpnstime)
+rtp_session_on_timeout (RTPSession * sess, GstClockTime current_time,
+    guint64 ntpnstime)
 {
   GstFlowReturn result = GST_FLOW_OK;
+  GList *item;
   ReportData data;
 
   g_return_val_if_fail (RTP_IS_SESSION (sess), GST_FLOW_ERROR);
 
   GST_DEBUG ("reporting at %" GST_TIME_FORMAT ", NTP time %" GST_TIME_FORMAT,
-      GST_TIME_ARGS (time), GST_TIME_ARGS (ntpnstime));
+      GST_TIME_ARGS (current_time), GST_TIME_ARGS (ntpnstime));
 
   data.sess = sess;
   data.rtcp = NULL;
-  data.time = time;
+  data.current_time = current_time;
   data.ntpnstime = ntpnstime;
   data.is_bye = FALSE;
   data.has_sdes = FALSE;
@@ -2074,7 +2249,7 @@ rtp_session_on_timeout (RTPSession * sess, GstClockTime time, guint64 ntpnstime)
       (GHRFunc) session_cleanup, &data);
 
   /* see if we need to generate SR or RR packets */
-  if (is_rtcp_time (sess, time, &data)) {
+  if (is_rtcp_time (sess, current_time, &data)) {
     if (sess->source->received_bye) {
       /* generate BYE instead */
       session_bye (sess, &data);
@@ -2091,7 +2266,7 @@ rtp_session_on_timeout (RTPSession * sess, GstClockTime time, guint64 ntpnstime)
 
     /* we keep track of the last report time in order to timeout inactive
      * receivers or senders */
-    sess->last_rtcp_send_time = data.time;
+    sess->last_rtcp_send_time = data.current_time;
     sess->first_rtcp = FALSE;
 
     /* add SDES for this source when not already added */
@@ -2101,6 +2276,37 @@ rtp_session_on_timeout (RTPSession * sess, GstClockTime time, guint64 ntpnstime)
     /* update average RTCP size before sending */
     size = GST_BUFFER_SIZE (data.rtcp) + sess->header_len;
     UPDATE_AVG (sess->stats.avg_rtcp_packet_size, size);
+  }
+
+  /* check for outdated collisions */
+  item = g_list_first (sess->conflicting_addresses);
+  while (item) {
+    RTPConflictingAddress *known_conflict = item->data;
+    GList *next_item = g_list_next (item);
+
+    if (known_conflict->time < current_time - (data.interval *
+            RTCP_INTERVAL_COLLISION_TIMEOUT)) {
+      sess->conflicting_addresses =
+          g_list_delete_link (sess->conflicting_addresses, item);
+      g_free (known_conflict);
+    }
+    item = next_item;
+  }
+
+  if (sess->change_ssrc) {
+    g_hash_table_steal (sess->ssrcs[sess->mask_idx],
+        GINT_TO_POINTER (sess->source->ssrc));
+
+    sess->source->ssrc = rtp_session_create_new_ssrc (sess);
+    rtp_source_reset (sess->source);
+
+    g_hash_table_insert (sess->ssrcs[sess->mask_idx],
+        GINT_TO_POINTER (sess->source->ssrc), sess->source);
+
+    g_free (sess->bye_reason);
+    sess->bye_reason = NULL;
+    sess->sent_bye = FALSE;
+    sess->change_ssrc = FALSE;
   }
   RTP_SESSION_UNLOCK (sess);
 

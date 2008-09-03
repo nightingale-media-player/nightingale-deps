@@ -13,9 +13,7 @@ TESTS_ENVIRONMENT = \
         $(REGISTRY_ENVIRONMENT)                                 \
         GST_PLUGIN_SYSTEM_PATH=					\
         GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GSTPB_PLUGINS_DIR):$(GST_PLUGINS_DIR) \
-        STATE_IGNORE_ELEMENTS="cdaudio vcdsrc nassink glimagesink dvbsrc dvbbasebin"
-
-EXTRA_DIST = test-cert.pem test-key.pem
+        STATE_IGNORE_ELEMENTS="cdaudio festival vcdsrc nassink glimagesink dvbsrc dvbbasebin sdlaudiosink sdlvideosink alsaspdifsink dfbvideosink dc1394src"
 
 plugindir = $(libdir)/gstreamer-@GST_MAJORMINOR@
 
@@ -35,16 +33,22 @@ else
 check_mpeg2enc =
 endif
 
+if USE_MPLEX
+check_mplex = elements/mplex
+else
+check_mplex =
+endif
+
 if USE_NEON
 check_neon = elements/neonhttpsrc
 else
 check_neon = 
 endif
 
-if USE_SOUP
-check_soup = elements/souphttpsrc
+if USE_OFA
+check_ofa = elements/ofa
 else
-check_soup = 
+check_ofa = 
 endif
 
 if USE_TIMIDITY
@@ -55,7 +59,8 @@ endif
 
 
 VALGRIND_TO_FIX = \
-	elements/mpeg2enc
+	elements/mpeg2enc \
+	elements/mplex
 
 # valgrind testing
 VALGRIND_TESTS_DISABLE = \
@@ -64,13 +69,11 @@ VALGRIND_TESTS_DISABLE = \
 check_PROGRAMS = \
 	generic/states \
 	$(check_mpeg2enc)  \
+	$(check_mplex)     \
 	$(check_neon)      \
-	$(check_soup)      \
+	$(check_ofa)        \
 	$(check_timidity)  \
-	elements/interleave \
-	elements/rganalysis \
-	elements/rglimiter \
-	elements/rgvolume \
+	elements/selector \
 	elements/y4menc
 
 noinst_HEADERS = 
@@ -83,5 +86,3 @@ LDADD = $(GST_OBJ_LIBS) $(GST_CHECK_LIBS) $(CHECK_LIBS)
 elements_timidity_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 elements_timidity_LDADD = $(GST_BASE_LIBS) $(LDADD)
 
-elements_souphttpsrc_CFLAGS = $(SOUP_CFLAGS) $(AM_CFLAGS)
-elements_souphttpsrc_LDADD = $(SOUP_LIBS) $(LDADD)

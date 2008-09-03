@@ -21,43 +21,35 @@
 
 /**
  * SECTION:element-jackaudiosink
- * @short_description: JACK audio sink
  * @see_also: #GstBaseAudioSink, #GstRingBuffer
  *
- * <refsect2>
- * <para>
  * A Sink that outputs data to Jack ports.
- * </para>
- * <para>
- * It will create N Jack ports named out_&lt;num&gt; where &lt;num&gt; is starting from 1.
+ * 
+ * It will create N Jack ports named out_&lt;name&gt;_&lt;num&gt; where 
+ * &lt;name&gt; is the element name and &lt;num&gt; is starting from 1.
  * Each port corresponds to a gstreamer channel.
- * </para>
- * <para>
+ * 
  * The samplerate as exposed on the caps is always the same as the samplerate of
  * the jack server.
- * </para>
- * <para>
- * When the ::connect property is set to auto, this element will try to connect
- * each output port to a random physical jack input pin. In this mode, the sink
- * will expose the number of physical channels on its pad caps.
- * </para>
- * <para>
- * When the ::connect property is set to none, the element will accept any
- * number of input channels and will create (but not connect) an output port for
- * each channel.
- * </para>
- * <para>
+ * 
+ * When the #GstJackAudioSink:connect property is set to auto, this element
+ * will try to connect each output port to a random physical jack input pin. In
+ * this mode, the sink will expose the number of physical channels on its pad
+ * caps.
+ * 
+ * When the #GstJackAudioSink:connect property is set to none, the element will
+ * accept any number of input channels and will create (but not connect) an
+ * output port for each channel.
+ * 
  * The element will generate an error when the Jack server is shut down when it
  * was PAUSED or PLAYING. This element does not support dynamic rate and buffer
  * size changes at runtime.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch audiotestsrc ! jackaudiosink
- * </programlisting>
- * Play a sine wave to using jack.
- * </para>
+ * ]| Play a sine wave to using jack.
  * </refsect2>
  *
  * Last reviewed on 2006-11-30 (0.10.4)
@@ -142,11 +134,13 @@ gst_jack_audio_sink_allocate_channels (GstJackAudioSink * sink, gint channels)
   while (sink->port_count < channels) {
     gchar *name;
 
-    /* port names start from 1 */
-    name = g_strdup_printf ("out_%d", sink->port_count + 1);
+    /* port names start from 1 and are local to the element */
+    name =
+        g_strdup_printf ("out_%s_%d", GST_ELEMENT_NAME (sink),
+        sink->port_count + 1);
     sink->ports[sink->port_count] =
-        jack_port_register (client, name,
-        JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+        jack_port_register (client, name, JACK_DEFAULT_AUDIO_TYPE,
+        JackPortIsOutput, 0);
     if (sink->ports[sink->port_count] == NULL)
       return FALSE;
 
@@ -772,6 +766,10 @@ gst_jack_audio_sink_class_init (GstJackAudioSinkClass * klass)
 
   gstbaseaudiosink_class->create_ringbuffer =
       GST_DEBUG_FUNCPTR (gst_jack_audio_sink_create_ringbuffer);
+
+  /* ref class from a thread-safe context to work around missing bit of
+   * thread-safety in GObject */
+  g_type_class_ref (GST_TYPE_JACK_RING_BUFFER);
 
   gst_jack_audio_client_init ();
 }

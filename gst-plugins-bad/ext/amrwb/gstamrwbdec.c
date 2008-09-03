@@ -21,17 +21,14 @@
  * SECTION:element-amrwbdec
  * @see_also: #GstAmrwbEnc, #GstAmrwbParse
  *
- * <refsect2>
- * <para>
- * This is an AMR wideband decoder based on the 
+ * AMR wideband decoder based on the 
  * <ulink url="http://www.penguin.cz/~utx/amr">reference codec implementation</ulink>.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch filesrc location=abc.amr ! amrwbparse ! amrwbdec ! audioresample ! audioconvert ! alsasink
- * </programlisting>
- * </para>
+ * ]|
  * </refsect2>
  */
 
@@ -306,7 +303,7 @@ gst_amrwbdec_chain (GstPad * pad, GstBuffer * buffer)
     gst_buffer_set_caps (out, GST_PAD_CAPS (amrwbdec->srcpad));
 
     /* decode */
-    D_IF_decode (amrwbdec->handle, (Word8 *) data,
+    D_IF_decode (amrwbdec->handle, (UWord8 *) data,
         (Word16 *) GST_BUFFER_DATA (out), _good_frame);
 
     g_free ((gpointer) data);

@@ -20,7 +20,7 @@
 ** types.h
 **
 ** Data type definitions
-** $Id: types.h,v 1.3 2007-04-17 08:48:34 tpm Exp $
+** $Id: types.h,v 1.6 2008-03-26 07:40:55 slomo Exp $
 */
 
 #ifndef _NSF_TYPES_H_
@@ -30,9 +30,9 @@
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 /* Define this if running on little-endian (x86) systems */
-#define  HOST_LITTLE_ENDIAN
+#define HOST_LITTLE_ENDIAN
 #else
-#undef  HOST_LITTLE_ENDIAN
+#undef HOST_LITTLE_ENDIAN
 #endif
 
 #ifdef __GNUC__
@@ -43,15 +43,16 @@
 #define  INLINE      static
 #endif
 
+/* These should be changed depending on the platform */
+
 typedef  gint8     int8;
 typedef  gint16    int16;
-typedef  gint32    int32;
+typedef  gint32      int32;
 
-typedef  guint8    uint8;
-typedef  guint16   uint16;
-typedef  guint32   uint32;
-
-typedef  guint8    boolean;
+typedef  guint8  uint8;
+typedef  guint16 uint16;
+typedef  guint32 uint32;
+typedef  guint8  boolean;
 
 #ifndef  TRUE
 #define  TRUE     1
@@ -66,6 +67,7 @@ typedef  guint8    boolean;
 
 #ifdef NOFRENDO_DEBUG
 #include <stdlib.h>
+/* #include "memguard.h" */
 #include "log.h"
 #define  ASSERT(expr)      if (FALSE == (expr))\
                            {\
@@ -88,24 +90,27 @@ typedef  guint8    boolean;
 
 /*
 ** $Log: types.h,v $
-** Revision 1.3  2007-04-17 08:48:34  tpm
-** * gst/nsf/types.h:
-** Rename #ifndef header guard symbol to something less generic, so
-** types.h doesn't get skipped over when compiling on MingW. Include
-** GLib headers and use those to set the endianness and the basic
-** types so that this isn't entirely broken for non-x86 architectures.
-**
-** Revision 1.2  2006/07/14 09:11:11  wtay
+** Revision 1.6  2008-03-26 07:40:55  slomo
 ** * gst/nsf/Makefile.am:
+** * gst/nsf/fds_snd.c:
+** * gst/nsf/mmc5_snd.c:
+** * gst/nsf/nsf.c:
+** * gst/nsf/types.h:
+** * gst/nsf/vrc7_snd.c:
+** * gst/nsf/vrcvisnd.c:
 ** * gst/nsf/memguard.c:
 ** * gst/nsf/memguard.h:
-** * gst/nsf/types.h:
-** Remove crack malloc/free replacement.
+** Remove memguard again and apply hopefully all previously dropped
+** local patches. Should be really better than the old version now.
 **
-** Revision 1.1  2006/07/13 15:07:28  wtay
-** Based on patches by: Johan Dahlin <johan at gnome dot org>
-** Ronald Bultje <rbultje at ronald dot bitfreak dot net>
-** * configure.ac:
+** Revision 1.5  2008-03-25 16:58:53  wtay
+** * gst/nsf/memguard.c: (_my_free):
+** * gst/nsf/types.h:
+** Unbreak compilation by disabling memguard and doing some dirty hack
+** fixes to make it compile on 64bits.
+**
+** Revision 1.4  2008-03-25 15:56:12  slomo
+** Patch by: Andreas Henriksson <andreas at fatal dot set>
 ** * gst/nsf/Makefile.am:
 ** * gst/nsf/dis6502.h:
 ** * gst/nsf/fds_snd.c:
@@ -113,7 +118,6 @@ typedef  guint8    boolean;
 ** * gst/nsf/fmopl.c:
 ** * gst/nsf/fmopl.h:
 ** * gst/nsf/gstnsf.c:
-** * gst/nsf/gstnsf.h:
 ** * gst/nsf/log.c:
 ** * gst/nsf/log.h:
 ** * gst/nsf/memguard.c:
@@ -132,7 +136,13 @@ typedef  guint8    boolean;
 ** * gst/nsf/vrc7_snd.h:
 ** * gst/nsf/vrcvisnd.c:
 ** * gst/nsf/vrcvisnd.h:
-** Added NSF decoder plugin. Fixes 151192.
+** Update our internal nosefart to nosefart-2.7-mls to fix segfaults
+** on some files. Fixes bug #498237.
+** Remove some // comments, fix some compiler warnings and use pow()
+** instead of a slow, selfmade implementation.
+**
+** Revision 1.1  2003/04/08 20:46:46  ben
+** add new input for NES music file.
 **
 ** Revision 1.7  2000/07/04 04:46:44  matt
 ** moved INLINE define from osd.h

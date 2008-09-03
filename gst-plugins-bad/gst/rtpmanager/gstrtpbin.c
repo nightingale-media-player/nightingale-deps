@@ -19,64 +19,52 @@
 
 /**
  * SECTION:element-gstrtpbin
- * @short_description: handle media from one RTP bin
  * @see_also: gstrtpjitterbuffer, gstrtpsession, gstrtpptdemux, gstrtpssrcdemux
  *
- * <refsect2>
- * <para>
- * RTP bin combines the functions of gstrtpsession, gstrtpssrcdemux, gstrtpjitterbuffer
- * and gstrtpptdemux in one element. It allows for multiple RTP sessions that will
- * be synchronized together using RTCP SR packets.
- * </para>
- * <para>
- * gstrtpbin is configured with a number of request pads that define the
- * functionality that is activated, similar to the gstrtpsession element.
- * </para>
- * <para>
- * To use gstrtpbin as an RTP receiver, request a recv_rtp_sink_%%d pad. The session
+ * RTP bin combines the functions of #GstRtpSession, #GstRtpsSrcDemux,
+ * #GstRtpJitterBuffer and #GstRtpPtDemux in one element. It allows for multiple
+ * RTP sessions that will be synchronized together using RTCP SR packets.
+ * 
+ * #GstRtpBin is configured with a number of request pads that define the
+ * functionality that is activated, similar to the #GstRtpSession element.
+ * 
+ * To use #GstRtpBin as an RTP receiver, request a recv_rtp_sink_%%d pad. The session
  * number must be specified in the pad name. 
  * Data received on the recv_rtp_sink_%%d pad will be processed in the gstrtpsession
- * manager and after being validated forwarded on gstrtpssrcdemuxer element. Each
- * RTP stream is demuxed based on the SSRC and send to a gstrtpjitterbuffer. After
+ * manager and after being validated forwarded on #GstRtpsSrcDemux element. Each
+ * RTP stream is demuxed based on the SSRC and send to a #GstRtpJitterBuffer. After
  * the packets are released from the jitterbuffer, they will be forwarded to a
- * gstrtpptdemuxer element. The gstrtpptdemuxer element will demux the packets based
+ * #GstRtpsSrcDemux element. The #GstRtpsSrcDemux element will demux the packets based
  * on the payload type and will create a unique pad recv_rtp_src_%%d_%%d_%%d on
  * gstrtpbin with the session number, SSRC and payload type respectively as the pad
  * name.
- * </para>
- * <para>
- * To also use gstrtpbin as an RTCP receiver, request a recv_rtcp_sink_%%d pad. The
+ * 
+ * To also use #GstRtpBin as an RTCP receiver, request a recv_rtcp_sink_%%d pad. The
  * session number must be specified in the pad name.
- * </para>
- * <para>
+ * 
  * If you want the session manager to generate and send RTCP packets, request
  * the send_rtcp_src_%%d pad with the session number in the pad name. Packet pushed
  * on this pad contain SR/RR RTCP reports that should be sent to all participants
  * in the session.
- * </para>
- * <para>
- * To use gstrtpbin as a sender, request a send_rtp_sink_%%d pad, which will
+ * 
+ * To use #GstRtpBin as a sender, request a send_rtp_sink_%%d pad, which will
  * automatically create a send_rtp_src_%%d pad. If the session number is not provided,
  * the pad from the lowest available session will be returned. The session manager will modify the
  * SSRC in the RTP packets to its own SSRC and wil forward the packets on the
  * send_rtp_src_%%d pad after updating its internal state.
- * </para>
- * <para>
+ * 
  * The session manager needs the clock-rate of the payload types it is handling
- * and will signal the GstRtpSession::request-pt-map signal when it needs such a
- * mapping. One can clear the cached values with the GstRtpSession::clear-pt-map
+ * and will signal the #GstRtpSession::request-pt-map signal when it needs such a
+ * mapping. One can clear the cached values with the #GstRtpSession::clear-pt-map
  * signal.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch udpsrc port=5000 caps="application/x-rtp, ..." ! .recv_rtp_sink_0 \
  *     gstrtpbin ! rtptheoradepay ! theoradec ! xvimagesink
- * </programlisting>
- * Receive RTP data from port 5000 and send to the session 0 in gstrtpbin.
- * </para>
- * <para>
- * <programlisting>
+ * ]| Receive RTP data from port 5000 and send to the session 0 in gstrtpbin.
+ * |[
  * gst-launch gstrtpbin name=rtpbin \
  *         v4l2src ! ffmpegcolorspace ! ffenc_h263 ! rtph263ppay ! rtpbin.send_rtp_sink_0 \
  *                   rtpbin.send_rtp_src_0 ! udpsink port=5000                            \
@@ -86,8 +74,7 @@
  *                   rtpbin.send_rtp_src_1 ! udpsink port=5002                            \
  *                   rtpbin.send_rtcp_src_1 ! udpsink port=5003 sync=false async=false    \
  *                   udpsrc port=5007 ! rtpbin.recv_rtcp_sink_1
- * </programlisting>
- * Encode and payload H263 video captured from a v4l2src. Encode and payload AMR
+ * ]| Encode and payload H263 video captured from a v4l2src. Encode and payload AMR
  * audio generated from audiotestsrc. The video is sent to session 0 in rtpbin
  * and the audio is sent to session 1. Video packets are sent on UDP port 5000
  * and audio packets on port 5002. The video RTCP packets for session 0 are sent
@@ -96,10 +83,8 @@
  * is received on port 5007. Since RTCP packets from the sender should be sent
  * as soon as possible and do not participate in preroll, sync=false and 
  * async=false is configured on udpsink
- * </para>
- * <para>
- * <programlisting>
- *  gst-launch -v gstrtpbin name=rtpbin                                          \
+ * |[
+ * gst-launch -v gstrtpbin name=rtpbin                                          \
  *     udpsrc caps="application/x-rtp,media=(string)video,clock-rate=(int)90000,encoding-name=(string)H263-1998" \
  *             port=5000 ! rtpbin.recv_rtp_sink_0                                \
  *         rtpbin. ! rtph263pdepay ! ffdec_h263 ! xvimagesink                    \
@@ -110,8 +95,7 @@
  *         rtpbin. ! rtpamrdepay ! amrnbdec ! alsasink                           \
  *      udpsrc port=5003 ! rtpbin.recv_rtcp_sink_1                               \
  *      rtpbin.send_rtcp_src_1 ! udpsink port=5007 sync=false async=false
- * </programlisting>
- * Receive H263 on port 5000, send it through rtpbin in session 0, depayload,
+ * ]| Receive H263 on port 5000, send it through rtpbin in session 0, depayload,
  * decode and display the video.
  * Receive AMR on port 5002, send it through rtpbin in session 1, depayload,
  * decode and play the audio.
@@ -120,7 +104,6 @@
  * synchronisation.
  * Send RTCP reports for session 0 on port 5005 and RTCP reports for session 1
  * on port 5007.
- * </para>
  * </refsect2>
  *
  * Last reviewed on 2007-08-30 (0.10.6)
@@ -204,11 +187,38 @@ GST_STATIC_PAD_TEMPLATE ("sink_%d",
 #define GST_RTP_BIN_LOCK(bin)   g_mutex_lock ((bin)->priv->bin_lock)
 #define GST_RTP_BIN_UNLOCK(bin) g_mutex_unlock ((bin)->priv->bin_lock)
 
+/* lock to protect dynamic callbacks, like pad-added and new ssrc. */
+#define GST_RTP_BIN_DYN_LOCK(bin)    g_mutex_lock ((bin)->priv->dyn_lock)
+#define GST_RTP_BIN_DYN_UNLOCK(bin)  g_mutex_unlock ((bin)->priv->dyn_lock)
+
+/* lock for shutdown */
+#define GST_RTP_BIN_SHUTDOWN_LOCK(bin,label)     \
+G_STMT_START {                                   \
+  if (g_atomic_int_get (&bin->priv->shutdown))   \
+    goto label;                                  \
+  GST_RTP_BIN_DYN_LOCK (bin);                    \
+  if (g_atomic_int_get (&bin->priv->shutdown)) { \
+    GST_RTP_BIN_DYN_UNLOCK (bin);                \
+    goto label;                                  \
+  }                                              \
+} G_STMT_END
+
+/* unlock for shutdown */
+#define GST_RTP_BIN_SHUTDOWN_UNLOCK(bin)         \
+  GST_RTP_BIN_DYN_UNLOCK (bin);                  \
+
 struct _GstRtpBinPrivate
 {
   GMutex *bin_lock;
 
+  /* lock protecting dynamic adding/removing */
+  GMutex *dyn_lock;
+
+  /* the time when we went to playing */
   GstClockTime ntp_ns_base;
+
+  /* if we are shutting down or not */
+  gint shutdown;
 };
 
 /* signals and args */
@@ -228,7 +238,7 @@ enum
   LAST_SIGNAL
 };
 
-#define DEFAULT_LATENCY_MS	200
+#define DEFAULT_LATENCY_MS	     200
 #define DEFAULT_SDES_CNAME           NULL
 #define DEFAULT_SDES_NAME            NULL
 #define DEFAULT_SDES_EMAIL           NULL
@@ -236,6 +246,7 @@ enum
 #define DEFAULT_SDES_LOCATION        NULL
 #define DEFAULT_SDES_TOOL            NULL
 #define DEFAULT_SDES_NOTE            NULL
+#define DEFAULT_DO_LOST              FALSE
 
 enum
 {
@@ -248,6 +259,7 @@ enum
   PROP_SDES_LOCATION,
   PROP_SDES_TOOL,
   PROP_SDES_NOTE,
+  PROP_DO_LOST,
   PROP_LAST
 };
 
@@ -306,6 +318,7 @@ struct _GstRtpBinStream
 
   /* for lip-sync */
   guint64 clock_base;
+  guint64 clock_base_time;
   gint clock_rate;
   gint64 ts_offset;
   gint64 prev_ts_offset;
@@ -460,7 +473,8 @@ create_session (GstRtpBin * rtpbin, gint id)
   sess->bin = rtpbin;
   sess->session = session;
   sess->demux = demux;
-  sess->ptmap = g_hash_table_new (NULL, NULL);
+  sess->ptmap = g_hash_table_new_full (NULL, NULL, NULL,
+      (GDestroyNotify) gst_caps_unref);
   rtpbin->sessions = g_slist_prepend (rtpbin->sessions, sess);
 
   /* set NTP base or new session */
@@ -524,6 +538,21 @@ free_session (GstRtpBinSession * sess)
   gst_element_set_state (sess->session, GST_STATE_NULL);
   gst_element_set_state (sess->demux, GST_STATE_NULL);
 
+  if (sess->recv_rtp_sink != NULL)
+    gst_element_release_request_pad (sess->session, sess->recv_rtp_sink);
+  if (sess->recv_rtp_src != NULL)
+    gst_object_unref (sess->recv_rtp_src);
+  if (sess->recv_rtcp_sink != NULL)
+    gst_element_release_request_pad (sess->session, sess->recv_rtcp_sink);
+  if (sess->sync_src != NULL)
+    gst_object_unref (sess->sync_src);
+  if (sess->send_rtp_sink != NULL)
+    gst_element_release_request_pad (sess->session, sess->send_rtp_sink);
+  if (sess->send_rtp_src != NULL)
+    gst_object_unref (sess->send_rtp_src);
+  if (sess->send_rtcp_src != NULL)
+    gst_element_release_request_pad (sess->session, sess->send_rtcp_src);
+
   gst_bin_remove (GST_BIN_CAST (bin), sess->session);
   gst_bin_remove (GST_BIN_CAST (bin), sess->demux);
 
@@ -569,8 +598,10 @@ get_pt_map (GstRtpBinSession * session, guint pt)
 
   /* first look in the cache */
   caps = g_hash_table_lookup (session->ptmap, GINT_TO_POINTER (pt));
-  if (caps)
+  if (caps) {
+    gst_caps_ref (caps);
     goto done;
+  }
 
   bin = session->bin;
 
@@ -589,17 +620,21 @@ get_pt_map (GstRtpBinSession * session, guint pt)
 
   g_signal_emitv (args, gst_rtp_bin_signals[SIGNAL_REQUEST_PT_MAP], 0, &ret);
 
-  caps = (GstCaps *) g_value_get_boxed (&ret);
+  g_value_unset (&args[0]);
+  g_value_unset (&args[1]);
+  g_value_unset (&args[2]);
+  caps = (GstCaps *) g_value_dup_boxed (&ret);
+  g_value_unset (&ret);
   if (!caps)
     goto no_caps;
 
   GST_DEBUG ("caching pt %d as %" GST_PTR_FORMAT, pt, caps);
 
-  /* store in cache */
-  g_hash_table_insert (session->ptmap, GINT_TO_POINTER (pt), caps);
+  /* store in cache, take additional ref */
+  g_hash_table_insert (session->ptmap, GINT_TO_POINTER (pt),
+      gst_caps_ref (caps));
 
 done:
-  gst_caps_ref (caps);
   GST_RTP_SESSION_UNLOCK (session);
 
   return caps;
@@ -647,6 +682,28 @@ gst_rtp_bin_clear_pt_map (GstRtpBin * bin)
   GST_RTP_BIN_UNLOCK (bin);
 }
 
+static void
+gst_rtp_bin_propagate_property_to_jitterbuffer (GstRtpBin * bin,
+    const gchar * name, const GValue * value)
+{
+  GSList *sessions, *streams;
+
+  GST_RTP_BIN_LOCK (bin);
+  for (sessions = bin->sessions; sessions; sessions = g_slist_next (sessions)) {
+    GstRtpBinSession *session = (GstRtpBinSession *) sessions->data;
+
+    GST_RTP_SESSION_LOCK (session);
+    for (streams = session->streams; streams; streams = g_slist_next (streams)) {
+      GstRtpBinStream *stream = (GstRtpBinStream *) streams->data;
+
+      g_object_set_property (G_OBJECT (stream->buffer), name, value);
+    }
+    GST_RTP_SESSION_UNLOCK (session);
+  }
+  GST_RTP_BIN_UNLOCK (bin);
+}
+
+/* get a client with the given SDES name. Must be called with RTP_BIN_LOCK */
 static GstRtpBinClient *
 get_client (GstRtpBin * bin, guint8 len, guint8 * data, gboolean * created)
 {
@@ -683,6 +740,7 @@ get_client (GstRtpBin * bin, guint8 len, guint8 * data, gboolean * created)
 static void
 free_client (GstRtpBinClient * client)
 {
+  g_slist_free (client->streams);
   g_free (client->cname);
   g_free (client);
 }
@@ -698,6 +756,7 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
   GSList *walk;
 
   /* first find or create the CNAME */
+  GST_RTP_BIN_LOCK (bin);
   client = get_client (bin, len, data, &created);
 
   /* find stream in the client */
@@ -760,6 +819,7 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
   stream->local_unix =
       gst_util_uint64_scale_int (stream->local_rtp, GST_SECOND,
       stream->clock_rate);
+  stream->local_unix += stream->clock_base_time;
   /* calculate delta between server and receiver */
   stream->unix_delta = stream->last_unix - stream->local_unix;
 
@@ -815,16 +875,19 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
           ostream->ssrc, ostream->ts_offset);
     }
   }
+  GST_RTP_BIN_UNLOCK (bin);
   return;
 
 no_clock_base:
   {
     GST_WARNING_OBJECT (bin, "we have no clock-base");
+    GST_RTP_BIN_UNLOCK (bin);
     return;
   }
 no_clock_rate:
   {
     GST_WARNING_OBJECT (bin, "we have no clock-rate");
+    GST_RTP_BIN_UNLOCK (bin);
     return;
   }
 }
@@ -914,6 +977,7 @@ gst_rtp_bin_sync_chain (GstPad * pad, GstBuffer * buffer)
 
             if (type == GST_RTCP_SDES_CNAME) {
               stream->clock_base = GST_BUFFER_OFFSET (buffer);
+              stream->clock_base_time = GST_BUFFER_OFFSET_END (buffer);
               /* associate the stream to CNAME */
               gst_rtp_bin_associate (bin, stream, len, data);
             }
@@ -987,8 +1051,9 @@ create_stream (GstRtpBinSession * session, guint32 ssrc)
   g_signal_connect (buffer, "request-pt-map",
       (GCallback) pt_map_requested, session);
 
-  /* configure latency */
+  /* configure latency and packet lost */
   g_object_set (buffer, "latency", session->bin->latency, NULL);
+  g_object_set (buffer, "do-lost", session->bin->do_lost, NULL);
 
   gst_bin_add (GST_BIN_CAST (session->bin), buffer);
   gst_element_set_state (buffer, GST_STATE_PLAYING);
@@ -1119,7 +1184,7 @@ gst_rtp_bin_class_init (GstRtpBinClass * klass)
    * @rtpbin: the object which received the signal
    *
    * Clear all previously cached pt-mapping obtained with
-   * GstRtpBin::request-pt-map.
+   * #GstRtpBin::request-pt-map.
    */
   gst_rtp_bin_signals[SIGNAL_CLEAR_PT_MAP] =
       g_signal_new ("clear-pt-map", G_TYPE_FROM_CLASS (klass),
@@ -1268,6 +1333,11 @@ gst_rtp_bin_class_init (GstRtpBinClass * klass)
           "The NOTE to put in SDES messages of this session",
           DEFAULT_SDES_NOTE, G_PARAM_READWRITE));
 
+  g_object_class_install_property (gobject_class, PROP_DO_LOST,
+      g_param_spec_boolean ("do-lost", "Do Lost",
+          "Send an event downstream when a packet is lost", DEFAULT_DO_LOST,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   gstelement_class->provide_clock =
       GST_DEBUG_FUNCPTR (gst_rtp_bin_provide_clock);
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_rtp_bin_change_state);
@@ -1289,8 +1359,11 @@ gst_rtp_bin_init (GstRtpBin * rtpbin, GstRtpBinClass * klass)
 
   rtpbin->priv = GST_RTP_BIN_GET_PRIVATE (rtpbin);
   rtpbin->priv->bin_lock = g_mutex_new ();
+  rtpbin->priv->dyn_lock = g_mutex_new ();
   rtpbin->provided_clock = gst_system_clock_obtain ();
+
   rtpbin->latency = DEFAULT_LATENCY_MS;
+  rtpbin->do_lost = DEFAULT_DO_LOST;
 
   /* some default SDES entries */
   str = g_strdup_printf ("%s@%s", g_get_user_name (), g_get_host_name ());
@@ -1330,6 +1403,7 @@ gst_rtp_bin_finalize (GObject * object)
     g_free (rtpbin->sdes[i]);
 
   g_mutex_free (rtpbin->priv->bin_lock);
+  g_mutex_free (rtpbin->priv->dyn_lock);
   gst_object_unref (rtpbin->provided_clock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -1420,6 +1494,8 @@ gst_rtp_bin_set_property (GObject * object, guint prop_id,
       GST_RTP_BIN_LOCK (rtpbin);
       rtpbin->latency = g_value_get_uint (value);
       GST_RTP_BIN_UNLOCK (rtpbin);
+      /* propegate the property down to the jitterbuffer */
+      gst_rtp_bin_propagate_property_to_jitterbuffer (rtpbin, "latency", value);
       break;
     case PROP_SDES_CNAME:
       gst_rtp_bin_set_sdes_string (rtpbin, GST_RTCP_SDES_CNAME,
@@ -1448,6 +1524,12 @@ gst_rtp_bin_set_property (GObject * object, guint prop_id,
     case PROP_SDES_NOTE:
       gst_rtp_bin_set_sdes_string (rtpbin, GST_RTCP_SDES_NOTE,
           g_value_get_string (value));
+      break;
+    case PROP_DO_LOST:
+      GST_RTP_BIN_LOCK (rtpbin);
+      rtpbin->do_lost = g_value_get_boolean (value);
+      GST_RTP_BIN_UNLOCK (rtpbin);
+      gst_rtp_bin_propagate_property_to_jitterbuffer (rtpbin, "do-lost", value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1496,6 +1578,11 @@ gst_rtp_bin_get_property (GObject * object, guint prop_id,
     case PROP_SDES_NOTE:
       g_value_take_string (value, gst_rtp_bin_get_sdes_string (rtpbin,
               GST_RTCP_SDES_NOTE));
+      break;
+    case PROP_DO_LOST:
+      GST_RTP_BIN_LOCK (rtpbin);
+      g_value_set_boolean (value, rtpbin->do_lost);
+      GST_RTP_BIN_UNLOCK (rtpbin);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1586,16 +1673,29 @@ gst_rtp_bin_change_state (GstElement * element, GstStateChange transition)
 {
   GstStateChangeReturn res;
   GstRtpBin *rtpbin;
+  GstRtpBinPrivate *priv;
 
   rtpbin = GST_RTP_BIN (element);
+  priv = rtpbin->priv;
 
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
+      GST_LOG_OBJECT (rtpbin, "clearing shutdown flag");
+      g_atomic_int_set (&priv->shutdown, 0);
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
       calc_ntp_ns_base (rtpbin);
+      break;
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+      GST_LOG_OBJECT (rtpbin, "setting shutdown flag");
+      g_atomic_int_set (&priv->shutdown, 1);
+      /* wait for all callbacks to end by taking the lock. No new callbacks will
+       * be able to happen as we set the shutdown flag. */
+      GST_RTP_BIN_DYN_LOCK (rtpbin);
+      GST_LOG_OBJECT (rtpbin, "dynamic lock taken, we can continue shutdown");
+      GST_RTP_BIN_DYN_UNLOCK (rtpbin);
       break;
     default:
       break;
@@ -1616,7 +1716,8 @@ gst_rtp_bin_change_state (GstElement * element, GstStateChange transition)
   return res;
 }
 
-/* a new pad (SSRC) was created in @session */
+/* a new pad (SSRC) was created in @session. This signal is emited from the
+ * payload demuxer. */
 static void
 new_payload_found (GstElement * element, guint pt, GstPad * pad,
     GstRtpBinStream * stream)
@@ -1631,6 +1732,8 @@ new_payload_found (GstElement * element, guint pt, GstPad * pad,
 
   GST_DEBUG ("new payload pad %d", pt);
 
+  GST_RTP_BIN_SHUTDOWN_LOCK (rtpbin, shutdown);
+
   /* ghost the pad to the parent */
   klass = GST_ELEMENT_GET_CLASS (rtpbin);
   templ = gst_element_class_get_pad_template (klass, "recv_rtp_src_%d_%d_%d");
@@ -1642,6 +1745,16 @@ new_payload_found (GstElement * element, guint pt, GstPad * pad,
   gst_pad_set_caps (gpad, GST_PAD_CAPS (pad));
   gst_pad_set_active (gpad, TRUE);
   gst_element_add_pad (GST_ELEMENT_CAST (rtpbin), gpad);
+
+  GST_RTP_BIN_SHUTDOWN_UNLOCK (rtpbin);
+
+  return;
+
+shutdown:
+  {
+    GST_DEBUG ("ignoring, we are shutting down");
+    return;
+  }
 }
 
 static GstCaps *
@@ -1713,12 +1826,17 @@ static void
 new_ssrc_pad_found (GstElement * element, guint ssrc, GstPad * pad,
     GstRtpBinSession * session)
 {
+  GstRtpBin *rtpbin;
   GstRtpBinStream *stream;
   GstPad *sinkpad, *srcpad;
   gchar *padname;
   GstCaps *caps;
 
-  GST_DEBUG_OBJECT (session->bin, "new SSRC pad %08x", ssrc);
+  rtpbin = session->bin;
+
+  GST_DEBUG_OBJECT (rtpbin, "new SSRC pad %08x", ssrc);
+
+  GST_RTP_BIN_SHUTDOWN_LOCK (rtpbin, shutdown);
 
   GST_RTP_SESSION_LOCK (session);
 
@@ -1732,14 +1850,14 @@ new_ssrc_pad_found (GstElement * element, guint ssrc, GstPad * pad,
     const GstStructure *s;
     guint val;
 
-    GST_DEBUG_OBJECT (session->bin, "pad has caps %" GST_PTR_FORMAT, caps);
+    GST_DEBUG_OBJECT (rtpbin, "pad has caps %" GST_PTR_FORMAT, caps);
 
     s = gst_caps_get_structure (caps, 0);
 
     if (!gst_structure_get_int (s, "clock-rate", &stream->clock_rate)) {
       stream->clock_rate = -1;
 
-      GST_WARNING_OBJECT (session->bin,
+      GST_WARNING_OBJECT (rtpbin,
           "Caps have no clock rate %s from pad %s:%s",
           gst_caps_to_string (caps), GST_DEBUG_PAD_NAME (pad));
     }
@@ -1753,18 +1871,19 @@ new_ssrc_pad_found (GstElement * element, guint ssrc, GstPad * pad,
   }
 
   /* get pad and link */
-  GST_DEBUG_OBJECT (session->bin, "linking jitterbuffer");
+  GST_DEBUG_OBJECT (rtpbin, "linking jitterbuffer");
   padname = g_strdup_printf ("src_%d", ssrc);
-  srcpad = gst_element_get_pad (element, padname);
+  srcpad = gst_element_get_static_pad (element, padname);
   g_free (padname);
   sinkpad = gst_element_get_static_pad (stream->buffer, "sink");
   gst_pad_link (srcpad, sinkpad);
   gst_object_unref (sinkpad);
+  gst_object_unref (srcpad);
 
   /* get the RTCP sync pad */
-  GST_DEBUG_OBJECT (session->bin, "linking sync pad");
+  GST_DEBUG_OBJECT (rtpbin, "linking sync pad");
   padname = g_strdup_printf ("rtcp_src_%d", ssrc);
-  srcpad = gst_element_get_pad (element, padname);
+  srcpad = gst_element_get_static_pad (element, padname);
   g_free (padname);
   gst_pad_link (srcpad, stream->sync_pad);
   gst_object_unref (srcpad);
@@ -1785,14 +1904,21 @@ new_ssrc_pad_found (GstElement * element, guint ssrc, GstPad * pad,
       "payload-type-change", (GCallback) payload_type_change, stream);
 
   GST_RTP_SESSION_UNLOCK (session);
+  GST_RTP_BIN_SHUTDOWN_UNLOCK (rtpbin);
 
   return;
 
   /* ERRORS */
+shutdown:
+  {
+    GST_DEBUG_OBJECT (rtpbin, "we are shutting down");
+    return;
+  }
 no_stream:
   {
     GST_RTP_SESSION_UNLOCK (session);
-    GST_DEBUG_OBJECT (session->bin, "could not create stream");
+    GST_RTP_BIN_SHUTDOWN_UNLOCK (rtpbin);
+    GST_DEBUG_OBJECT (rtpbin, "could not create stream");
     return;
   }
 }
@@ -2150,8 +2276,12 @@ gst_rtp_bin_get_free_pad_name (GstElement * element, GstPadTemplate * templ)
     pad_it = gst_element_iterate_pads (GST_ELEMENT (element));
     name_found = TRUE;
     while (gst_iterator_next (pad_it, (gpointer) & pad) == GST_ITERATOR_OK) {
-      if (strcmp (gst_pad_get_name (pad), pad_name) == 0)
+      gchar *name;
+
+      name = gst_pad_get_name (pad);
+      if (strcmp (name, pad_name) == 0)
         name_found = FALSE;
+      g_free (name);
     }
     gst_iterator_free (pad_it);
   }

@@ -22,7 +22,6 @@ gstbasemetadata
 
 </para>
 
-@element: 
 
 <!-- ##### MACRO GST_BASE_METADATA_SINK_PAD ##### -->
 <para>

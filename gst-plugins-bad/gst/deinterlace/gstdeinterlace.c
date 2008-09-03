@@ -1,6 +1,6 @@
 /* GStreamer simple deinterlacing plugin
  * Copyright (C) 1999 Erik Walthinsen <omega@cse.ogi.edu>
- * Copyright (C) 2006 Tim-Philipp Müller <tim centricular net>
+ * Copyright (C) 2006-2008 Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,13 +28,24 @@
 #include "gstdeinterlace.h"
 #include <gst/video/video.h>
 
+/**
+ * SECTION:element-deinterlace
+ *
+ * Adaptively deinterlaces video frames by detecting interlacing artifacts.
+ * An edge detection matrix is used, with a threshold value. Pixels detected
+ * as 'interlaced' are replaced with pixels blended from the pixels above and
+ * below.
+ * 
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
+ * ]|
+ * </refsect2>
+ */
 
-/* elementfactory information */
-static const GstElementDetails deinterlace_details =
-GST_ELEMENT_DETAILS ("Deinterlace",
-    "Filter/Effect/Video",
-    "Deinterlace video",
-    "Wim Taymans <wim@fluendo.com>");
+GST_DEBUG_CATEGORY_STATIC (deinterlace_debug);
+#define GST_CAT_DEFAULT deinterlace_debug
 
 #define DEFAULT_DI_AREA_ONLY  FALSE
 #define DEFAULT_NI_AREA_ONLY  FALSE
@@ -91,7 +102,9 @@ gst_deinterlace_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
 
-  gst_element_class_set_details (element_class, &deinterlace_details);
+  gst_element_class_set_details_simple (element_class, "Deinterlace",
+      "Filter/Effect/Video", "Deinterlace video",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
@@ -106,26 +119,71 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
   gobject_class->set_property = gst_deinterlace_set_property;
   gobject_class->get_property = gst_deinterlace_get_property;
 
+  /**
+   * GstDeinterlace:deinterlace:
+   *
+   * Turn processing on/off. When false, no modification of the 
+   * video frames occurs and they pass through intact.
+   */
   g_object_class_install_property (gobject_class, ARG_DEINTERLACE,
       g_param_spec_boolean ("deinterlace", "deinterlace",
           "turn deinterlacing on/off", DEFAULT_DEINTERLACE, G_PARAM_READWRITE));
+  /**
+   * GstDeinterlace:di-area-only:
+   *
+   * When set to true, only areas affected by the deinterlacing are output,
+   * making it easy to see which regions are being modified.
+   *
+   * See Also: #GstDeinterlace:ni-area-only
+   */
   g_object_class_install_property (gobject_class, ARG_DI_ONLY,
       g_param_spec_boolean ("di-area-only", "di-area-only",
           "displays deinterlaced areas only", DEFAULT_DI_AREA_ONLY,
           G_PARAM_READWRITE));
+  /**
+   * GstDeinterlace:ni-area-only:
+   *
+   * When set to true, only areas unaffected by the deinterlacing are output,
+   * making it easy to see which regions are being preserved intact.
+   *
+   * See Also: #GstDeinterlace:di-area-only
+   */
   g_object_class_install_property (gobject_class, ARG_NI_ONLY,
       g_param_spec_boolean ("ni-area-only", "ni-area-only",
           "displays non-interlaced areas only", DEFAULT_DI_AREA_ONLY,
           G_PARAM_READWRITE));
+  /**
+   * GstDeinterlace:blend:
+   *
+   * Change the blending for pixels which are detected as
+   * 'interlacing artifacts'. When true, the output pixel is a weighted
+   * average (1,2,1) of the pixel and the pixels above and below it.
+   * When false, the odd field lines are preserved, and the even field lines
+   * are averaged from the surrounding pixels above and below (the odd field).
+   */
   g_object_class_install_property (gobject_class, ARG_BLEND,
       g_param_spec_boolean ("blend", "blend", "blend", DEFAULT_BLEND,
           G_PARAM_READWRITE));
+  /**
+   * GstDeinterlace:threshold:
+   *
+   * Affects the threshold of the edge-detection function used for detecting
+   * interlacing artifacts.
+   */
   g_object_class_install_property (gobject_class, ARG_THRESHOLD,
-      g_param_spec_int ("threshold", "threshold", "threshold", G_MININT,
-          G_MAXINT, 0, G_PARAM_READWRITE));
+      g_param_spec_int ("threshold", "Edge-detection threshold",
+          "Threshold value for the interlacing artifacts in the output "
+          "of the edge detection", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));
+  /**
+   * GstDeinterlace:edge-detect:
+   *
+   * Affects the weighting of the edge-detection function used for detecting
+   * interlacing artifacts.
+   */
   g_object_class_install_property (gobject_class, ARG_EDGE_DETECT,
-      g_param_spec_int ("edge-detect", "edge-detect", "edge-detect", G_MININT,
-          G_MAXINT, 0, G_PARAM_READWRITE));
+      g_param_spec_int ("edge-detect", "edge detection weighting",
+          "Weighting value used for calculating the edge detection matrix",
+          G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));
 
   basetransform_class->transform_ip =
       GST_DEBUG_FUNCPTR (gst_deinterlace_transform_ip);
@@ -203,34 +261,17 @@ gst_deinterlace_set_caps (GstBaseTransform * trans, GstCaps * incaps,
 
   fmt = gst_video_format_from_fourcc (fourcc);
 
-  if (fmt == GST_VIDEO_FORMAT_UNKNOWN) {
-    /* this is Y42B (4:2:2 planar) which -base <= 0.10.17 doesn't know about */
-    /* FIXME: remove this once we can depend on -base >= 0.10.17.1 */
-    g_assert (fourcc == GST_MAKE_FOURCC ('Y', '4', '2', 'B'));
+  filter->y_stride = gst_video_format_get_row_stride (fmt, 0, w);
+  filter->u_stride = gst_video_format_get_row_stride (fmt, 1, w);
+  filter->v_stride = gst_video_format_get_row_stride (fmt, 2, w);
 
-    filter->uv_height = filter->height;
-    filter->y_stride = GST_ROUND_UP_4 (filter->width);
-    filter->u_stride = GST_ROUND_UP_8 (filter->width) / 2;
-    filter->v_stride = GST_ROUND_UP_8 (filter->width) / 2;
+  filter->uv_height = gst_video_format_get_component_height (fmt, 1, h);
 
-    filter->y_off = 0;
-    filter->u_off = 0 + filter->y_stride * filter->height;
-    filter->v_off = filter->u_off + filter->u_stride * filter->height;
+  filter->y_off = gst_video_format_get_component_offset (fmt, 0, w, h);
+  filter->u_off = gst_video_format_get_component_offset (fmt, 1, w, h);
+  filter->v_off = gst_video_format_get_component_offset (fmt, 2, w, h);
 
-    picsize = filter->v_off + (filter->v_stride * filter->height);
-  } else {
-    filter->y_stride = gst_video_format_get_row_stride (fmt, 0, w);
-    filter->u_stride = gst_video_format_get_row_stride (fmt, 1, w);
-    filter->v_stride = gst_video_format_get_row_stride (fmt, 2, w);
-
-    filter->uv_height = gst_video_format_get_component_height (fmt, 1, h);
-
-    filter->y_off = gst_video_format_get_component_offset (fmt, 0, w, h);
-    filter->u_off = gst_video_format_get_component_offset (fmt, 1, w, h);
-    filter->v_off = gst_video_format_get_component_offset (fmt, 2, w, h);
-
-    picsize = gst_video_format_get_size (fmt, w, h);
-  }
+  picsize = gst_video_format_get_size (fmt, w, h);
 
   if (filter->picsize != picsize) {
     filter->picsize = picsize;
@@ -453,6 +494,9 @@ gst_deinterlace_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  GST_DEBUG_CATEGORY_INIT (deinterlace_debug, "deinterlace", 0,
+      "deinterlace element");
+
   if (!gst_element_register (plugin, "deinterlace", GST_RANK_NONE,
           gst_deinterlace_get_type ()))
     return FALSE;

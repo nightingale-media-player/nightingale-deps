@@ -69,6 +69,20 @@ gst_dc1394_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-deinterlace</FILE>
+<TITLE>deinterlace</TITLE>
+GstDeinterlace
+<SUBSECTION Standard>
+GstDeinterlaceClass
+GST_DEINTERLACE
+GST_DEINTERLACE_CLASS
+GST_IS_DEINTERLACE
+GST_IS_DEINTERLACE_CLASS
+GST_TYPE_DEINTERLACE
+gst_deinterlace_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-dfbvideosink</FILE>
 <TITLE>dfbvideosink</TITLE>
 GstDfbVideoSink
@@ -155,20 +169,6 @@ FESTIVAL_DEFAULT_TEXT_MODE
 </SECTION>
 
 <SECTION>
-<FILE>element-souphttpsrc</FILE>
-<TITLE>souphttpsrc</TITLE>
-GstSoupHTTPSrc
-<SUBSECTION Standard>
-GstSoupHTTPSrcClass
-GST_SOUP_HTTP_SRC
-GST_SOUP_HTTP_SRC_CLASS
-GST_IS_SOUP_HTTP_SRC
-GST_IS_SOUP_HTTP_SRC_CLASS
-GST_TYPE_SOUP_HTTP_SRC
-gst_soup_http_src_get_type
-</SECTION>
-
-<SECTION>
 <FILE>element-input-selector</FILE>
 <TITLE>input-selector</TITLE>
 GstInputSelector
@@ -180,6 +180,12 @@ GST_IS_INPUT_SELECTOR
 GST_IS_INPUT_SELECTOR_CLASS
 GST_TYPE_INPUT_SELECTOR
 gst_input_selector_get_type
+GST_INPUT_SELECTOR_BROADCAST
+GST_INPUT_SELECTOR_GET_COND
+GST_INPUT_SELECTOR_GET_LOCK
+GST_INPUT_SELECTOR_LOCK
+GST_INPUT_SELECTOR_UNLOCK
+GST_INPUT_SELECTOR_WAIT
 </SECTION>
 
 <SECTION>
@@ -214,7 +220,7 @@ gst_jack_audio_sink_get_type
 
 <SECTION>
 <FILE>gstbasemetadata</FILE>
-<TITLE>GstBaseMetadata/TITLE>
+<TITLE>GstBaseMetadata</TITLE>
 GstBaseMetadata
 GST_BASE_METADATA_SINK_PAD
 GST_BASE_METADATA_SRC_PAD
@@ -224,6 +230,7 @@ gst_base_metadata_unset_option_flag
 gst_base_metadata_update_inject_segment_with_new_data
 <SUBSECTION Standard>
 GstBaseMetadataClass
+MetadataState
 GST_BASE_METADATA
 GST_BASE_METADATA_CLASS
 GST_IS_BASE_METADATA
@@ -281,6 +288,24 @@ gst_modplug_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-mpeg2enc</FILE>
+<TITLE>mpeg2enc</TITLE>
+GstMpeg2enc
+<SUBSECTION Standard>
+GstMpeg2encClass
+GST_MPEG2ENC
+GST_MPEG2ENC_CLASS
+GST_IS_MPEG2ENC
+GST_IS_MPEG2ENC_CLASS
+GST_TYPE_MPEG2ENC
+GST_MPEG2ENC_MUTEX_LOCK
+GST_MPEG2ENC_MUTEX_UNLOCK
+GST_MPEG2ENC_SIGNAL
+GST_MPEG2ENC_WAIT
+gst_mpeg2enc_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-mythtvsrc</FILE>
 <TITLE>mythtvsrc</TITLE>
 GstMythtvSrc
@@ -322,48 +347,6 @@ GST_IS_OUTPUT_SELECTOR
 GST_IS_OUTPUT_SELECTOR_CLASS
 GST_TYPE_OUTPUT_SELECTOR
 gst_output_selector_get_type
-</SECTION>
-
-<SECTION>
-<FILE>element-rganalysis</FILE>
-<TITLE>rganalysis</TITLE>
-GstRgAnalysis
-<SUBSECTION Standard>
-GstRgAnalysisClass
-GST_RG_ANALYSIS
-GST_RG_ANALYSIS_CLASS
-GST_IS_RG_ANALYSIS
-GST_IS_RG_ANALYSIS_CLASS
-GST_TYPE_RG_ANALYSIS
-gst_rg_analysis_get_type
-</SECTION>
-
-<SECTION>
-<FILE>element-rglimiter</FILE>
-<TITLE>rglimiter</TITLE>
-GstRgLimiter
-<SUBSECTION Standard>
-GstRgLimiterClass
-GST_RG_LIMITER
-GST_RG_LIMITER_CLASS
-GST_IS_RG_LIMITER
-GST_IS_RG_LIMITER_CLASS
-GST_TYPE_RG_LIMITER
-gst_rg_limiter_get_type
-</SECTION>
-
-<SECTION>
-<FILE>element-rgvolume</FILE>
-<TITLE>rgvolume</TITLE>
-GstRgVolume
-<SUBSECTION Standard>
-GstRgVolumeClass
-GST_RG_VOLUME
-GST_RG_VOLUME_CLASS
-GST_IS_RG_VOLUME
-GST_TYPE_RG_VOLUME
-GST_IS_RG_VOLUME_CLASS
-gst_rg_volume_get_type
 </SECTION>
 
 <SECTION>
@@ -523,6 +506,20 @@ gst_speed_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-stereo</FILE>
+<TITLE>stereo</TITLE>
+GstStereo
+<SUBSECTION Standard>
+GstStereoClass
+GST_STEREO
+GST_STEREO_CLASS
+GST_IS_STEREO
+GST_IS_STEREO_CLASS
+GST_TYPE_STEREO
+gst_stereo_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-speexresample</FILE>
 <TITLE>speexresample</TITLE>
 GstSpeexResample
@@ -647,3 +644,15 @@ GST_IS_WILDMIDI_CLASS
 GST_TYPE_WILDMIDI
 </SECTION>
 
+<SECTION>
+<FILE>element-y4menc</FILE>
+<TITLE>y4menc</TITLE>
+GstY4mEncode
+<SUBSECTION Standard>
+GstY4mEncodeClass
+GST_Y4M_ENCODE
+GST_Y4M_ENCODE_CLASS
+GST_IS_Y4M_ENCODE
+GST_IS_Y4M_ENCODE_CLASS
+GST_TYPE_Y4M_ENCODE
+</SECTION>

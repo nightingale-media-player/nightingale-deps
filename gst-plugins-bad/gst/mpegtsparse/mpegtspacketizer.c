@@ -1,8 +1,9 @@
 /*
  * mpegtspacketizer.c - 
- * Copyright (C) 2007 Alessandro Decina
+ * Copyright (C) 2007, 2008 Alessandro Decina, Zaheer Merali
  * 
  * Authors:
+ *   Zaheer Merali <zaheerabbas at merali dot org>
  *   Alessandro Decina <alessandro@nnva.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -21,6 +22,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
+
 #include "mpegtspacketizer.h"
 #include "gstmpegdesc.h"
 
@@ -31,28 +34,16 @@ G_DEFINE_TYPE (MpegTSPacketizer, mpegts_packetizer, G_TYPE_OBJECT);
 
 static void mpegts_packetizer_dispose (GObject * object);
 static void mpegts_packetizer_finalize (GObject * object);
+static gchar *convert_to_utf8 (const gchar * text, gint length, guint start,
+    const gchar * encoding, gboolean is_multibyte, GError ** error);
+static gchar *get_encoding (const gchar * text, guint * start_text,
+    gboolean * is_multibyte);
+static gchar *get_encoding_and_convert (const gchar * text, guint length);
 
 #define CONTINUITY_UNSET 255
 #define MAX_CONTINUITY 15
-#define VERSION_NUMBER_NOTSET 255
-
-typedef struct
-{
-  guint8 table_id;
-  /* the spec says sub_table_extension is the fourth and fifth byte of a 
-   * section when the section_syntax_indicator is set to a value of "1". If 
-   * section_syntax_indicator is 0, sub_table_extension will be set to 0 */
-  guint16 subtable_extension;
-  guint8 version_number;
-} MpegTSPacketizerStreamSubtable;
-
-typedef struct
-{
-  guint continuity_counter;
-  GstAdapter *section_adapter;
-  guint section_length;
-  GSList *subtables;
-} MpegTSPacketizerStream;
+#define VERSION_NUMBER_UNSET 255
+#define TABLE_ID_UNSET 0xFF
 
 static gint
 mpegts_packetizer_stream_subtable_compare (gconstpointer a, gconstpointer b)
@@ -75,7 +66,7 @@ mpegts_packetizer_stream_subtable_new (guint8 table_id,
   MpegTSPacketizerStreamSubtable *subtable;
 
   subtable = g_new0 (MpegTSPacketizerStreamSubtable, 1);
-  subtable->version_number = VERSION_NUMBER_NOTSET;
+  subtable->version_number = VERSION_NUMBER_UNSET;
   subtable->table_id = table_id;
   subtable->subtable_extension = subtable_extension;
   return subtable;
@@ -90,6 +81,7 @@ mpegts_packetizer_stream_new ()
   stream->section_adapter = gst_adapter_new ();
   stream->continuity_counter = CONTINUITY_UNSET;
   stream->subtables = NULL;
+  stream->section_table_id = TABLE_ID_UNSET;
   return stream;
 }
 
@@ -110,6 +102,7 @@ mpegts_packetizer_clear_section (MpegTSPacketizer * packetizer,
   gst_adapter_clear (stream->section_adapter);
   stream->continuity_counter = CONTINUITY_UNSET;
   stream->section_length = 0;
+  stream->section_table_id = TABLE_ID_UNSET;
 }
 
 static void
@@ -282,6 +275,7 @@ mpegts_packetizer_parse_section_header (MpegTSPacketizer * packetizer,
   if (section->version_number == subtable->version_number)
     goto not_applicable;
   subtable->version_number = section->version_number;
+  stream->section_table_id = section->table_id;
 
   return TRUE;
 
@@ -600,15 +594,16 @@ mpegts_packetizer_parse_nit (MpegTSPacketizer * packetizer,
 
   /* see if the buffer is large enough */
   if (descriptors_loop_length) {
+    guint8 *networkname_descriptor;
+    GstMPEGDescriptor *mpegdescriptor;
+
     if (data + descriptors_loop_length > end - 4) {
       GST_WARNING ("PID %d invalid NIT descriptors loop length %d",
           section->pid, descriptors_loop_length);
       gst_structure_free (nit);
       goto error;
     }
-    guint8 *networkname_descriptor;
-    GstMPEGDescriptor *mpegdescriptor =
-        gst_mpeg_descriptor_parse (data, descriptors_loop_length);
+    mpegdescriptor = gst_mpeg_descriptor_parse (data, descriptors_loop_length);
     networkname_descriptor =
         gst_mpeg_descriptor_find (mpegdescriptor, DESC_DVB_NETWORK_NAME);
     if (networkname_descriptor != NULL) {
@@ -619,11 +614,9 @@ mpegts_packetizer_parse_nit (MpegTSPacketizer * packetizer,
           DESC_DVB_NETWORK_NAME_length (networkname_descriptor);
       gchar *networkname =
           (gchar *) DESC_DVB_NETWORK_NAME_text (networkname_descriptor);
-      if (networkname[0] < 0x20) {
-        networkname_length -= 1;
-        networkname += 1;
-      }
-      networkname_tmp = g_strndup (networkname, networkname_length);
+
+      networkname_tmp =
+          get_encoding_and_convert (networkname, networkname_length);
       gst_structure_set (nit, "network-name", G_TYPE_STRING, networkname_tmp,
           NULL);
       g_free (networkname_tmp);
@@ -676,15 +669,17 @@ mpegts_packetizer_parse_nit (MpegTSPacketizer * packetizer,
     g_free (transport_name);
 
     if (descriptors_loop_length) {
+      GstMPEGDescriptor *mpegdescriptor;
+      guint8 *delivery;
+
       if (data + descriptors_loop_length > end - 4) {
         GST_WARNING ("PID %d invalid NIT entry %d descriptors loop length %d",
             section->pid, transport_stream_id, descriptors_loop_length);
         gst_structure_free (transport);
         goto error;
       }
-      GstMPEGDescriptor *mpegdescriptor =
+      mpegdescriptor =
           gst_mpeg_descriptor_parse (data, descriptors_loop_length);
-      guint8 *delivery;
 
       if ((delivery =
               gst_mpeg_descriptor_find (mpegdescriptor,
@@ -932,6 +927,96 @@ mpegts_packetizer_parse_nit (MpegTSPacketizer * packetizer,
             "other-frequency", G_TYPE_BOOLEAN, other_frequency, NULL);
         gst_structure_set (transport, "delivery", GST_TYPE_STRUCTURE,
             delivery_structure, NULL);
+      } else if ((delivery =
+              gst_mpeg_descriptor_find (mpegdescriptor,
+                  DESC_DVB_CABLE_DELIVERY_SYSTEM))) {
+
+        guint8 *frequency_bcd =
+            DESC_DVB_CABLE_DELIVERY_SYSTEM_frequency (delivery);
+        /* see en 300 468 section 6.2.13.1 least significant bcd digit
+         * is measured in 100Hz units so multiplier needs to be 100 to get
+         * into Hz */
+        guint32 frequency = 100 *
+            ((frequency_bcd[3] & 0x0F) +
+            10 * ((frequency_bcd[3] & 0xF0) >> 4) +
+            100 * (frequency_bcd[2] & 0x0F) +
+            1000 * ((frequency_bcd[2] & 0xF0) >> 4) +
+            10000 * (frequency_bcd[1] & 0x0F) +
+            100000 * ((frequency_bcd[1] & 0xF0) >> 4) +
+            1000000 * (frequency_bcd[0] & 0x0F) +
+            10000000 * ((frequency_bcd[0] & 0xF0) >> 4));
+        guint8 modulation =
+            DESC_DVB_CABLE_DELIVERY_SYSTEM_modulation (delivery);
+        gchar *modulation_str;
+        guint8 *symbol_rate_bcd =
+            DESC_DVB_CABLE_DELIVERY_SYSTEM_symbol_rate (delivery);
+        guint32 symbol_rate =
+            (symbol_rate_bcd[2] & 0x0F) +
+            10 * ((symbol_rate_bcd[2] & 0xF0) >> 4) +
+            100 * (symbol_rate_bcd[1] & 0x0F) +
+            1000 * ((symbol_rate_bcd[1] & 0xF0) >> 4) +
+            10000 * (symbol_rate_bcd[0] & 0x0F) +
+            100000 * ((symbol_rate_bcd[0] & 0xF0) >> 4);
+        guint8 fec_inner = DESC_DVB_CABLE_DELIVERY_SYSTEM_fec_inner (delivery);
+        gchar *fec_inner_str;
+
+        switch (fec_inner) {
+          case 0:
+            fec_inner_str = "undefined";
+            break;
+          case 1:
+            fec_inner_str = "1/2";
+            break;
+          case 2:
+            fec_inner_str = "2/3";
+            break;
+          case 3:
+            fec_inner_str = "3/4";
+            break;
+          case 4:
+            fec_inner_str = "5/6";
+            break;
+          case 5:
+            fec_inner_str = "7/8";
+            break;
+          case 6:
+            fec_inner_str = "8/9";
+            break;
+          case 0xF:
+            fec_inner_str = "none";
+            break;
+          default:
+            fec_inner_str = "reserved";
+        }
+        switch (modulation) {
+          case 0x00:
+            modulation_str = "undefined";
+            break;
+          case 0x01:
+            modulation_str = "QAM16";
+            break;
+          case 0x02:
+            modulation_str = "QAM32";
+            break;
+          case 0x03:
+            modulation_str = "QAM64";
+            break;
+          case 0x04:
+            modulation_str = "QAM128";
+            break;
+          case 0x05:
+            modulation_str = "QAM256";
+            break;
+          default:
+            modulation_str = "reserved";
+        }
+        delivery_structure = gst_structure_new ("cable",
+            "modulation", G_TYPE_STRING, modulation_str,
+            "frequency", G_TYPE_UINT, frequency,
+            "symbol-rate", G_TYPE_UINT, symbol_rate,
+            "inner-fec", G_TYPE_STRING, fec_inner_str, NULL);
+        gst_structure_set (transport, "delivery", GST_TYPE_STRUCTURE,
+            delivery_structure, NULL);
       }
       if ((delivery =
               gst_mpeg_descriptor_find (mpegdescriptor,
@@ -944,10 +1029,10 @@ mpegts_packetizer_parse_nit (MpegTSPacketizer * packetizer,
           GstStructure *channel;
           GValue channel_value = { 0 };
           guint16 service_id = GST_READ_UINT16_BE (current_pos);
+          guint16 logical_channel_number;
 
           current_pos += 2;
-          guint16 logical_channel_number =
-              GST_READ_UINT16_BE (current_pos) & 0x03ff;
+          logical_channel_number = GST_READ_UINT16_BE (current_pos) & 0x03ff;
           channel =
               gst_structure_new ("channels", "service-id", G_TYPE_UINT,
               service_id, "logical-channel-number", G_TYPE_UINT,
@@ -1109,14 +1194,16 @@ mpegts_packetizer_parse_sdt (MpegTSPacketizer * packetizer,
     g_free (service_name);
 
     if (descriptors_loop_length) {
+      guint8 *service_descriptor;
+      GstMPEGDescriptor *mpegdescriptor;
+
       if (data + descriptors_loop_length > end - 4) {
         GST_WARNING ("PID %d invalid SDT entry %d descriptors loop length %d",
             section->pid, service_id, descriptors_loop_length);
         gst_structure_free (service);
         goto error;
       }
-      guint8 *service_descriptor;
-      GstMPEGDescriptor *mpegdescriptor =
+      mpegdescriptor =
           gst_mpeg_descriptor_parse (data, descriptors_loop_length);
       service_descriptor =
           gst_mpeg_descriptor_find (mpegdescriptor, DESC_DVB_SERVICE);
@@ -1132,17 +1219,13 @@ mpegts_packetizer_parse_sdt (MpegTSPacketizer * packetizer,
             (gchar *) DESC_DVB_SERVICE_name_text (service_descriptor);
         if (servicename_length + serviceprovider_name_length + 2 <=
             DESC_LENGTH (service_descriptor)) {
-          if (servicename[0] < 0x20) {
-            servicename_length -= 1;
-            servicename += 1;
-          }
-          if (serviceprovider_name[0] < 0x20) {
-            serviceprovider_name_length -= 1;
-            serviceprovider_name += 1;
-          }
-          servicename_tmp = g_strndup (servicename, servicename_length);
+
+          servicename_tmp =
+              get_encoding_and_convert (servicename, servicename_length);
           serviceprovider_name_tmp =
-              g_strndup (serviceprovider_name, serviceprovider_name_length);
+              get_encoding_and_convert (serviceprovider_name,
+              serviceprovider_name_length);
+
           gst_structure_set (service, "name", G_TYPE_STRING, servicename_tmp,
               NULL);
           gst_structure_set (service, "provider-name", G_TYPE_STRING,
@@ -1264,6 +1347,10 @@ mpegts_packetizer_parse_eit (MpegTSPacketizer * packetizer,
       "version-number", G_TYPE_UINT, section->version_number,
       "current-next-indicator", G_TYPE_UINT, section->current_next_indicator,
       "service-id", G_TYPE_UINT, service_id,
+      "actual-transport-stream", G_TYPE_BOOLEAN, (section->table_id == 0x4E ||
+          (section->table_id >= 0x50 && section->table_id <= 0x5F)),
+      "present-following", G_TYPE_BOOLEAN, (section->table_id == 0x4E ||
+          section->table_id == 0x4F),
       "transport-stream-id", G_TYPE_UINT, transport_stream_id,
       "original-network-id", G_TYPE_UINT, original_network_id,
       "segment-last-section-number", G_TYPE_UINT, segment_last_section_number,
@@ -1333,15 +1420,18 @@ mpegts_packetizer_parse_eit (MpegTSPacketizer * packetizer,
     g_free (event_name);
 
     if (descriptors_loop_length) {
+      guint8 *event_descriptor;
+      GArray *component_descriptors;
+      GArray *extended_event_descriptors;
+      GstMPEGDescriptor *mpegdescriptor;
+
       if (data + descriptors_loop_length > end - 4) {
         GST_WARNING ("PID %d invalid EIT descriptors loop length %d",
             section->pid, descriptors_loop_length);
         gst_structure_free (event);
         goto error;
       }
-      guint8 *event_descriptor;
-      GArray *component_descriptors;
-      GstMPEGDescriptor *mpegdescriptor =
+      mpegdescriptor =
           gst_mpeg_descriptor_parse (data, descriptors_loop_length);
       event_descriptor =
           gst_mpeg_descriptor_find (mpegdescriptor, DESC_DVB_SHORT_EVENT);
@@ -1357,17 +1447,12 @@ mpegts_packetizer_parse_eit (MpegTSPacketizer * packetizer,
             (gchar *) DESC_DVB_SHORT_EVENT_description_text (event_descriptor);
         if (eventname_length + eventdescription_length + 2 <=
             DESC_LENGTH (event_descriptor)) {
-          if (eventname[0] < 0x20) {
-            eventname_length -= 1;
-            eventname += 1;
-          }
-          if (eventdescription[0] < 0x20) {
-            eventdescription_length -= 1;
-            eventdescription += 1;
-          }
-          eventname_tmp = g_strndup (eventname, eventname_length),
+
+          eventname_tmp =
+              get_encoding_and_convert (eventname, eventname_length),
               eventdescription_tmp =
-              g_strndup (eventdescription, eventdescription_length);
+              get_encoding_and_convert (eventdescription,
+              eventdescription_length);
 
           gst_structure_set (event, "name", G_TYPE_STRING, eventname_tmp, NULL);
           gst_structure_set (event, "description", G_TYPE_STRING,
@@ -1376,6 +1461,48 @@ mpegts_packetizer_parse_eit (MpegTSPacketizer * packetizer,
           g_free (eventdescription_tmp);
         }
       }
+      extended_event_descriptors = gst_mpeg_descriptor_find_all (mpegdescriptor,
+          DESC_DVB_EXTENDED_EVENT);
+      if (extended_event_descriptors) {
+        int i;
+        guint8 *extended_descriptor;
+        /*GValue extended_items = { 0 }; */
+        gchar *extended_text = NULL;
+        gchar *extended_text_tmp;
+        /*g_value_init (&extended_items, GST_TYPE_LIST); */
+        for (i = 0; i < extended_event_descriptors->len; i++) {
+          extended_descriptor = g_array_index (extended_event_descriptors,
+              guint8 *, i);
+          if (DESC_DVB_EXTENDED_EVENT_descriptor_number (extended_descriptor) ==
+              i) {
+            if (extended_text) {
+              gchar *tmp;
+              gchar *old_extended_text = extended_text;
+              tmp = g_strndup ((gchar *)
+                  DESC_DVB_EXTENDED_EVENT_text (extended_descriptor),
+                  DESC_DVB_EXTENDED_EVENT_text_length (extended_descriptor));
+              extended_text = g_strdup_printf ("%s%s", extended_text, tmp);
+              g_free (old_extended_text);
+              g_free (tmp);
+            } else {
+              extended_text = g_strndup ((gchar *)
+                  DESC_DVB_EXTENDED_EVENT_text (extended_descriptor),
+                  DESC_DVB_EXTENDED_EVENT_text_length (extended_descriptor));
+            }
+          }
+        }
+        if (extended_text) {
+          extended_text_tmp = get_encoding_and_convert (extended_text,
+              strlen (extended_text));
+
+          gst_structure_set (event, "extended-text", G_TYPE_STRING,
+              extended_text_tmp, NULL);
+          g_free (extended_text_tmp);
+          g_free (extended_text);
+        }
+        g_array_free (extended_event_descriptors, TRUE);
+      }
+
       component_descriptors = gst_mpeg_descriptor_find_all (mpegdescriptor,
           DESC_DVB_COMPONENT);
       if (component_descriptors) {
@@ -1790,6 +1917,7 @@ mpegts_packetizer_push_section (MpegTSPacketizer * packetizer,
     }
     stream->continuity_counter = packet->continuity_counter;
     stream->section_length = section_length;
+    stream->section_table_id = table_id;
     gst_adapter_push (stream->section_adapter, sub_buf);
 
     res = TRUE;
@@ -1844,4 +1972,263 @@ mpegts_packetizer_init_debug ()
 {
   GST_DEBUG_CATEGORY_INIT (mpegts_packetizer_debug, "mpegtspacketizer", 0,
       "MPEG transport stream parser");
+}
+
+/**
+ * @text: The text you want to get the encoding from
+ * @start_text: Location where the beginning of the actual text is stored
+ * @is_multibyte: Location where information whether it's a multibyte encoding
+ * or not is stored
+ * @returns: Name of encoding or NULL of encoding could not be detected.
+ * 
+ * The returned string should be freed with g_free () when no longer needed.
+ */
+static gchar *
+get_encoding (const gchar * text, guint * start_text, gboolean * is_multibyte)
+{
+  gchar *encoding;
+  guint8 firstbyte;
+
+  g_return_val_if_fail (text != NULL, NULL);
+
+  firstbyte = (guint8) text[0];
+
+  if (firstbyte == 0x01) {
+    encoding = g_strdup ("iso8859-5");
+    *start_text = 1;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x02) {
+    encoding = g_strdup ("iso8859-6");
+    *start_text = 1;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x03) {
+    encoding = g_strdup ("iso8859-7");
+    *start_text = 1;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x04) {
+    encoding = g_strdup ("iso8859-8");
+    *start_text = 1;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x05) {
+    encoding = g_strdup ("iso8859-9");
+    *start_text = 1;
+    *is_multibyte = FALSE;
+  } else if (firstbyte >= 0x20) {
+    encoding = g_strdup ("iso6937");
+    *start_text = 0;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x10) {
+    guint16 table;
+    gchar table_str[6];
+
+    text++;
+    table = GST_READ_UINT16_BE (text);
+    g_snprintf (table_str, 6, "%d", table);
+
+    encoding = g_strconcat ("iso8859-", table_str, NULL);
+    *start_text = 3;
+    *is_multibyte = FALSE;
+  } else if (firstbyte == 0x11) {
+    encoding = g_strdup ("ISO-10646/UCS2");
+    *start_text = 1;
+    *is_multibyte = TRUE;
+  } else if (firstbyte == 0x12) {
+    // That's korean encoding.
+    // The spec says it's encoded in KSC 5601, but iconv only knows KSC 5636.
+    // Couldn't find any information about either of them.
+    encoding = NULL;
+    *start_text = 1;
+    *is_multibyte = TRUE;
+  } else {
+    // reserved
+    encoding = NULL;
+  }
+
+  return encoding;
+}
+
+/**
+ * @text: The text to convert. It may include pango markup (<b> and </b>)
+ * @length: The length of the string -1 if it's nul-terminated
+ * @start: Where to start converting in the text
+ * @encoding: The encoding of text
+ * @is_multibyte: Whether the encoding is a multibyte encoding
+ * @error: The location to store the error, or NULL to ignore errors
+ * @returns: UTF-8 encoded string
+ *
+ * Convert text to UTF-8.
+ */
+static gchar *
+convert_to_utf8 (const gchar * text, gint length, guint start,
+    const gchar * encoding, gboolean is_multibyte, GError ** error)
+{
+  gchar *new_text;
+  GByteArray *sb;
+  gint i;
+
+  g_return_val_if_fail (text != NULL, NULL);
+  g_return_val_if_fail (encoding != NULL, NULL);
+
+  text += start;
+
+  sb = g_byte_array_sized_new (length * 1.1);
+
+  if (is_multibyte) {
+    if (length == -1) {
+      while (*text != '\0') {
+        guint16 code = GST_READ_UINT16_BE (text);
+
+        switch (code) {
+          case 0xE086:{
+            guint8 emph_on[] = { 0x3C, 0x00,    // <
+              0x62, 0x00,       // b
+              0x3E, 0x00        // >
+            };
+            g_byte_array_append (sb, emph_on, 6);
+            break;
+          }
+          case 0xE087:{
+            guint8 emph_on[] = { 0x3C, 0x00,    // <
+              0x2F, 0x00,       // /
+              0x62, 0x00,       // b
+              0x3E, 0x00        // >
+            };
+            g_byte_array_append (sb, emph_on, 8);
+            break;
+          }
+          case 0xE08A:{
+            guint8 nl[] = { 0x0A, 0x00 };       // new line
+            g_byte_array_append (sb, nl, 2);
+            break;
+          }
+          default:
+            g_byte_array_append (sb, (guint8 *) text, 2);
+            break;
+        }
+
+        text += 2;
+      }
+    } else {
+      for (i = 0; i < length; i += 2) {
+        guint16 code = GST_READ_UINT16_BE (text);
+
+        switch (code) {
+          case 0xE086:{
+            guint8 emph_on[] = { 0x3C, 0x00,    // <
+              0x62, 0x00,       // b
+              0x3E, 0x00        // >
+            };
+            g_byte_array_append (sb, emph_on, 6);
+            break;
+          }
+          case 0xE087:{
+            guint8 emph_on[] = { 0x3C, 0x00,    // <
+              0x2F, 0x00,       // /
+              0x62, 0x00,       // b
+              0x3E, 0x00        // >
+            };
+            g_byte_array_append (sb, emph_on, 8);
+            break;
+          }
+          case 0xE08A:{
+            guint8 nl[] = { 0x0A, 0x00 };       // new line
+            g_byte_array_append (sb, nl, 2);
+            break;
+          }
+          default:
+            g_byte_array_append (sb, (guint8 *) text, 2);
+            break;
+        }
+
+        text += 2;
+      }
+    }
+  } else {
+    if (length == -1) {
+      while (*text != '\0') {
+        guint8 code = (guint8) (*text);
+
+        switch (code) {
+          case 0x86:
+            g_byte_array_append (sb, (guint8 *) "<b>", 3);
+            break;
+          case 0x87:
+            g_byte_array_append (sb, (guint8 *) "</b>", 4);
+            break;
+          case 0x8A:
+            g_byte_array_append (sb, (guint8 *) "\n", 1);
+            break;
+          default:
+            g_byte_array_append (sb, &code, 1);
+            break;
+        }
+
+        text++;
+      }
+    } else {
+      for (i = 0; i < length; i++) {
+        guint8 code = (guint8) (*text);
+
+        switch (code) {
+          case 0x86:
+            g_byte_array_append (sb, (guint8 *) "<b>", 3);
+            break;
+          case 0x87:
+            g_byte_array_append (sb, (guint8 *) "</b>", 4);
+            break;
+          case 0x8A:
+            g_byte_array_append (sb, (guint8 *) "\n", 1);
+            break;
+          default:
+            g_byte_array_append (sb, &code, 1);
+            break;
+        }
+
+        text++;
+      }
+    }
+  }
+
+  if (sb->len > 0) {
+    new_text =
+        g_convert ((gchar *) sb->data, sb->len, "utf-8", encoding, NULL, NULL,
+        error);
+  } else {
+    new_text = g_strdup ("");
+  }
+
+  g_byte_array_free (sb, TRUE);
+
+  return new_text;
+}
+
+static gchar *
+get_encoding_and_convert (const gchar * text, guint length)
+{
+  GError *error = NULL;
+  gchar *converted_str;
+  gchar *encoding;
+  guint start_text = 0;
+  gboolean is_multibyte;
+
+  g_return_val_if_fail (text != NULL, NULL);
+
+  encoding = get_encoding (text, &start_text, &is_multibyte);
+
+  if (encoding == NULL) {
+    converted_str = g_strndup (text, length);
+  } else {
+    converted_str = convert_to_utf8 (text, length - start_text, start_text,
+        encoding, is_multibyte, &error);
+    if (error != NULL) {
+      g_critical ("Could not convert string: %s", error->message);
+      g_error_free (error);
+      text += start_text;
+      converted_str = g_strndup (text, length - start_text);
+    }
+
+    g_free (encoding);
+  }
+
+  return converted_str;
 }

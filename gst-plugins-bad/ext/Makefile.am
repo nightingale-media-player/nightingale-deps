@@ -52,11 +52,11 @@ else
 DC1394_DIR=
 endif
 
-# if USE_DIRAC
-# DIRAC_DIR=dirac
-# else
+if USE_DIRAC
+DIRAC_DIR=dirac
+else
 DIRAC_DIR=
-# endif
+endif
 
 if USE_DIRECTFB
 DIRECTFB_DIR=directfb
@@ -74,6 +74,12 @@ if USE_DTS
 DTS_DIR=dts
 else
 DTS_DIR=
+endif
+
+if USE_DVDNAV
+ DVDNAV_DIR = resindvd
+else
+ DVDNAV_DIR =
 endif
 
 if USE_FAAC
@@ -154,11 +160,11 @@ else
 METADATA_DIR=
 endif
 
-# if USE_MPLEX
-# MPLEX_DIR=mplex
-# else
+if USE_MPLEX
+MPLEX_DIR=mplex
+else
 MPLEX_DIR=
-# endif
+endif
 
 if USE_MUSEPACK
 MUSEPACK_DIR=musepack
@@ -190,16 +196,24 @@ else
 NEON_DIR=
 endif
 
-if USE_SOUP
-SOUP_DIR=soup
+if USE_OFA
+OFA_DIR=ofa
 else
-SOUP_DIR=
+OFA_DIR=
 endif
 
 if USE_TIMIDITY
 TIMIDITY_DIR=timidity
-else
+endif
+
+if USE_WILDMIDI
+TIMIDITY_DIR=timidity
+endif
+
+if !USE_WILDMIDI
+if !USE_TIMIDITY
 TIMIDITY_DIR=
+endif
 endif
 
 # if USE_POLYP
@@ -294,6 +308,7 @@ SUBDIRS=\
 	$(DIRECTFB_DIR) \
 	$(DIVX_DIR) \
 	$(DTS_DIR) \
+	$(DVDNAV_DIR) \
 	$(FAAC_DIR) \
 	$(FAAD_DIR) \
 	$(GSM_DIR) \
@@ -313,7 +328,7 @@ SUBDIRS=\
 	$(MYTHTV_DIR) \
 	$(NAS_DIR) \
 	$(NEON_DIR) \
-	$(SOUP_DIR) \
+	$(OFA_DIR) \
 	$(POLYP_DIR) \
 	$(SDL_DIR) \
 	$(SHOUT_DIR) \
@@ -335,6 +350,7 @@ DIST_SUBDIRS = \
 	bz2 \
 	cdaudio \
 	dc1394 \
+	dirac \
 	directfb \
 	faac \
 	faad \
@@ -347,12 +363,14 @@ DIST_SUBDIRS = \
 	divx \
 	metadata \
 	mpeg2enc \
+	mplex \
 	musepack \
 	musicbrainz \
 	mythtv \
 	nas \
 	neon \
-	soup \
+	ofa \
+	resindvd \
 	sdl \
 	sndfile \
 	soundtouch \

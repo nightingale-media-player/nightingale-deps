@@ -79,6 +79,7 @@ rfb_decoder_new (void)
   decoder->offset_y = 0;
   decoder->rect_width = 0;
   decoder->rect_height = 0;
+  decoder->shared_flag = TRUE;
 
   return decoder;
 }
@@ -406,12 +407,13 @@ rfb_decoder_message_set_encodings (GSList * encodings_list)
 {
 
   guint8 *message = g_malloc0 (4 + 4 * g_slist_length (encodings_list));
+  guint32 *encoding_type;
 
   message[0] = 0x02;            /* message type */
   RFB_SET_UINT16 (message + 2, g_slist_length (encodings_list));        /* number of encodings */
 
   /* write all the encoding types */
-  guint32 *encoding_type = (guint32 *) (message + 4);
+  encoding_type = (guint32 *) (message + 4);
 
   while (encodings_list) {
     RFB_SET_UINT32 (encoding_type, GPOINTER_TO_UINT (encodings_list->data));
@@ -434,6 +436,7 @@ static gboolean
 rfb_decoder_state_set_encodings (RfbDecoder * decoder)
 {
   GSList *encoder_list = NULL;
+  guint8 *message;
 
   GST_DEBUG ("entered set encodings");
 
@@ -449,7 +452,7 @@ rfb_decoder_state_set_encodings (RfbDecoder * decoder)
   encoder_list =
       g_slist_append (encoder_list, GUINT_TO_POINTER (ENCODING_TYPE_RAW));
 
-  guint8 *message = rfb_decoder_message_set_encodings (encoder_list);
+  message = rfb_decoder_message_set_encodings (encoder_list);
 
   rfb_decoder_send (decoder, message, 4 + 4 * g_slist_length (encoder_list));
 
@@ -807,7 +810,18 @@ rfb_decoder_state_set_colour_map_entries (RfbDecoder * decoder)
 static gboolean
 rfb_decoder_state_server_cut_text (RfbDecoder * decoder)
 {
-  g_critical ("not implemented");
+  guint8 *buffer;
+  gint cut_text_length;
 
-  return FALSE;
+  /* 3 bytes padding, 4 bytes cut_text_length */
+  buffer = rfb_decoder_read (decoder, 7);
+  cut_text_length = RFB_GET_UINT32 (buffer + 3);
+  g_free (buffer);
+
+  buffer = rfb_decoder_read (decoder, cut_text_length);
+  GST_DEBUG ("rfb_decoder_state_server_cut_text: throw away '%s'", buffer);
+  g_free (buffer);
+
+  decoder->state = rfb_decoder_state_normal;
+  return TRUE;
 }

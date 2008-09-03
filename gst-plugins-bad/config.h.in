@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if an old libdvdnav is used */
+#undef DVDNAV_OLD
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -22,11 +25,8 @@
 /* GStreamer license */
 #undef GST_LICENSE
 
-/* mjpegtools >= 1.8.0 is used */
-#undef GST_MJPEGTOOLS_18x
-
-/* mjpegtools >= 1.9.0 is used */
-#undef GST_MJPEGTOOLS_19x
+/* mjpegtools API evolution */
+#undef GST_MJPEGTOOLS_API
 
 /* package name in plugins */
 #undef GST_PACKAGE_NAME
@@ -34,16 +34,16 @@
 /* package origin */
 #undef GST_PACKAGE_ORIGIN
 
-/* support for features: gstalsa */
+/* Define to enable alsa plug-ins (used by gstalsa). */
 #undef HAVE_ALSA
 
-/* support for features: amrwb */
+/* Define to enable amrwb library (used by amrwb). */
 #undef HAVE_AMRWB
 
-/* support for features: bz2 */
+/* Define to enable bz2 library (used by bz2). */
 #undef HAVE_BZ2
 
-/* support for features: cdaudio */
+/* Define to enable cdaudio (used by cdaudio). */
 #undef HAVE_CDAUDIO
 
 /* Define if the host CPU is an Alpha */
@@ -88,50 +88,65 @@
 /* Define if the host CPU is a x86_64 */
 #undef HAVE_CPU_X86_64
 
-/* support for features: dc1394 */
+/* Define to enable libdc1394 (used by dc1394). */
 #undef HAVE_DC1394
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 #undef HAVE_DCGETTEXT
 
-/* support for features: dfbvideosink */
+/* Define to enable dirac (used by dirac). */
+#undef HAVE_DIRAC
+
+/* Define to enable directfb (used by dfbvideosink ). */
 #undef HAVE_DIRECTFB
 
-/* support for features: dshowdecwrapper */
+/* Define to enable DirectShow plug-in (used by dshowdecwrapper). */
 #undef HAVE_DIRECTSHOW
 
-/* support for features: divx */
+/* Define to enable divx plugins (used by divx). */
 #undef HAVE_DIVX
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* support for features: dtsdec */
+/* define for working do while(0) macros */
+#undef HAVE_DOWHILE_MACROS
+
+/* Define to enable dts library (used by dtsdec). */
 #undef HAVE_DTS
 
-/* support for features: dvb */
+/* Define to enable DVB Source (used by dvb). */
 #undef HAVE_DVB
 
-/* support for features: */
+/* Define to enable dvdnav library (used by resindvd). */
+#undef HAVE_DVDNAV
+
+/* Define to enable building of experimental plug-ins. */
 #undef HAVE_EXPERIMENTAL
 
-/* support for features: */
+/* Define to enable building of plug-ins with external deps. */
 #undef HAVE_EXTERNAL
 
-/* support for features: faac */
+/* Define to enable AAC encoder plug-in (used by faac). */
 #undef HAVE_FAAC
 
-/* support for features: faad */
+/* Define to enable AAC decoder plug-in (used by faad). */
 #undef HAVE_FAAD
 
-/* support for features: fbdevsink */
+/* Define to enable linux framebuffer (used by fbdevsink). */
 #undef HAVE_FBDEV
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define if compiler supports gcc inline assembly */
+#undef HAVE_GCC_ASM
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* support for features: gsmenc gsmdec */
+/* Define to enable GSM library (used by gsmenc gsmdec). */
 #undef HAVE_GSM
 
 /* Define if you have the iconv() function. */
@@ -140,13 +155,13 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* support for features: ivorbisdec */
+/* Define to enable integer vorbis plug-in (used by ivorbisdec). */
 #undef HAVE_IVORBIS
 
-/* support for features: jack */
+/* Define to enable Jack (used by jack). */
 #undef HAVE_JACK
 
-/* support for features: ladspa */
+/* Define to enable ladspa (used by ladspa). */
 #undef HAVE_LADSPA
 
 /* Define to 1 if you have the `asound' library (-lasound). */
@@ -158,52 +173,58 @@
 /* Define to 1 if you have the `divxencore' library (-ldivxencore). */
 #undef HAVE_LIBDIVXENCORE
 
-/* support for features: libmms */
+/* Define to enable mms protocol library (used by libmms). */
 #undef HAVE_LIBMMS
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* support for features: metadata */
+/* Define to enable METADATA muxer and demuxer (used by metadata). */
 #undef HAVE_METADATA
 
-/* support for features: mpeg2enc */
+/* Define to enable mpeg2enc (used by mpeg2enc). */
 #undef HAVE_MPEG2ENC
 
-/* support for features: musepack */
+/* Define to enable mplex (used by mplex). */
+#undef HAVE_MPLEX
+
+/* Define to enable musepackdec (used by musepack). */
 #undef HAVE_MUSEPACK
 
-/* support for features: musicbrainz */
+/* Define to enable musicbrainz tag generation (used by musicbrainz). */
 #undef HAVE_MUSICBRAINZ
 
-/* support for features: mythtvsrc */
+/* Define to enable MythTV client plugins (used by mythtvsrc). */
 #undef HAVE_MYTHTV
 
-/* support for features: nassink */
+/* Define to enable nas plug-in (used by nassink). */
 #undef HAVE_NAS
 
-/* support for features: neonhttpsrc */
+/* Define to enable neon http client plugins (used by neonhttpsrc). */
 #undef HAVE_NEON
 
-/* support for features: qtwrapper */
+/* Define to enable ofa plugins (used by ofa). */
+#undef HAVE_OFA
+
+/* Define to enable Open Sound System 4 (used by oss4). */
+#undef HAVE_OSS4
+
+/* Define to enable QuickTime wrapper (used by qtwrapper). */
 #undef HAVE_QUICKTIME
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
 
-/* support for features: sdlvideosink sdlaudiosink */
+/* Define to enable SDL plug-in (used by sdlvideosink sdlaudiosink). */
 #undef HAVE_SDL
 
-/* support for features: sfsrc sfsink */
+/* Define to enable sndfile plug-in (used by sfsrc sfsink). */
 #undef HAVE_SNDFILE
 
-/* support for features: soundtouch */
+/* Define to enable soundtouch plug-in (used by soundtouch). */
 #undef HAVE_SOUNDTOUCH
 
-/* support for features: souphttpsrc */
-#undef HAVE_SOUP
-
-/* support for features: spc */
+/* Define to enable spc decoder (used by spc). */
 #undef HAVE_SPC
 
 /* Define to 1 if you have the <stdint.h> header file. */
@@ -218,8 +239,11 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* support for features: swfdec */
+/* Define to enable swfdec plug-in (used by swfdec). */
 #undef HAVE_SWFDEC
+
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
 
 /* Define to 1 if you have the <sys/socket.h> header file. */
 #undef HAVE_SYS_SOCKET_H
@@ -230,10 +254,10 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
-/* support for features: theoraexpdec */
+/* Define to enable ogg theora codec (used by theoraexpdec). */
 #undef HAVE_THEORADEC
 
-/* support for features: timidity */
+/* Define to enable timidity midi soft synth plugin (used by timidity). */
 #undef HAVE_TIMIDITY
 
 /* Define to 1 if you have the <unistd.h> header file. */
@@ -242,19 +266,28 @@
 /* Define if valgrind should be used */
 #undef HAVE_VALGRIND
 
-/* support for features: vcdsrc */
+/* Define to enable Video CD (used by vcdsrc). */
 #undef HAVE_VCD
 
-/* support for features: wildmidi */
+/* Define to enable wildmidi midi soft synth plugin (used by wildmidi). */
 #undef HAVE_WILDMIDI
+
+/* Define to 1 if you have the <windows.h> header file. */
+#undef HAVE_WINDOWS_H
+
+/* Define to enable Windows internet library (used by wininet). */
+#undef HAVE_WININET
+
+/* Define to 1 if you have the <wininet.h> header file. */
+#undef HAVE_WININET_H
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
 
-/* support for features: x264 */
+/* Define to enable x264 plug-in (used by x264). */
 #undef HAVE_X264
 
-/* support for features: xvid */
+/* Define to enable xvid plugins (used by xvid). */
 #undef HAVE_XVID
 
 /* the host CPU */
@@ -266,6 +299,9 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* Define if the old MusePack API is used */
+#undef MPC_IS_OLD_API
 
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 #undef NO_MINUS_C_MINUS_O
@@ -318,3 +354,6 @@
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING

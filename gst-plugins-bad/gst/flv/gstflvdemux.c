@@ -118,6 +118,16 @@ gst_flv_demux_cleanup (GstFLVDemux * demux)
 
   gst_adapter_clear (demux->adapter);
 
+  if (demux->audio_codec_data) {
+    gst_buffer_unref (demux->audio_codec_data);
+    demux->audio_codec_data = NULL;
+  }
+
+  if (demux->video_codec_data) {
+    gst_buffer_unref (demux->video_codec_data);
+    demux->video_codec_data = NULL;
+  }
+
   if (demux->audio_pad) {
     gst_element_remove_pad (GST_ELEMENT (demux), demux->audio_pad);
     gst_object_unref (demux->audio_pad);
@@ -979,6 +989,7 @@ gst_flv_demux_query (GstPad * pad, GstQuery * query)
       break;
     }
     case GST_QUERY_LATENCY:
+    default:
     {
       GstPad *peer;
 
@@ -992,9 +1003,6 @@ gst_flv_demux_query (GstPad * pad, GstQuery * query)
       }
       break;
     }
-    default:
-      res = FALSE;
-      break;
   }
 
 beach:
@@ -1098,6 +1106,16 @@ gst_flv_demux_dispose (GObject * object)
   if (demux->new_seg_event) {
     gst_event_unref (demux->new_seg_event);
     demux->new_seg_event = NULL;
+  }
+
+  if (demux->audio_codec_data) {
+    gst_buffer_unref (demux->audio_codec_data);
+    demux->audio_codec_data = NULL;
+  }
+
+  if (demux->video_codec_data) {
+    gst_buffer_unref (demux->video_codec_data);
+    demux->video_codec_data = NULL;
   }
 
   if (demux->audio_pad) {

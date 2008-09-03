@@ -23,6 +23,7 @@ A DirectFB based videosink
 
 </para>
 
+@videosink: 
 
 <!-- ##### ARG GstDfbVideoSink:brightness ##### -->
 <para>

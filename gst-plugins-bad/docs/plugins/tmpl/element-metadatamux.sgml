@@ -23,7 +23,6 @@ Write metadata (EXIF, IPTC and XMP) into a image stream
 
 </para>
 
-@metadata: 
 
 <!-- ##### ARG GstMetadataMux:exif ##### -->
 <para>

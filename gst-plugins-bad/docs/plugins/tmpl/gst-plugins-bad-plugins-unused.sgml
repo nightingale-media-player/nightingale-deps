@@ -98,3 +98,265 @@ Read from any GIO stream
 giostreamsrc
 
 
+<!-- ##### SECTION ./tmpl/element-rganalysis.sgml:Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rganalysis-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rganalysis.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rganalysis.sgml:Short_Description ##### -->
+Perform the ReplayGain analysis
+
+
+<!-- ##### SECTION ./tmpl/element-rganalysis.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/element-rganalysis.sgml:Title ##### -->
+rganalysis
+
+
+<!-- ##### SECTION ./tmpl/element-rglimiter.sgml:Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rglimiter-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rglimiter.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rglimiter.sgml:Short_Description ##### -->
+Apply signal compression to raw audio data
+
+
+<!-- ##### SECTION ./tmpl/element-rglimiter.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/element-rglimiter.sgml:Title ##### -->
+rglimiter
+
+
+<!-- ##### SECTION ./tmpl/element-rgvolume.sgml:Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-rgvolume-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rgvolume.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-rgvolume.sgml:Short_Description ##### -->
+Apply ReplayGain volume adjustment
+
+
+<!-- ##### SECTION ./tmpl/element-rgvolume.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/element-rgvolume.sgml:Title ##### -->
+rgvolume
+
+
+<!-- ##### SECTION ./tmpl/element-souphttpsrc.sgml:Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-souphttpsrc-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-souphttpsrc.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/element-souphttpsrc.sgml:Short_Description ##### -->
+Receive data as a client over the network via HTTP using SOUP
+
+
+<!-- ##### SECTION ./tmpl/element-souphttpsrc.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/element-souphttpsrc.sgml:Title ##### -->
+souphttpsrc
+
+
+<!-- ##### STRUCT GstRgAnalysis ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgAnalysis:forced ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgAnalysis:num-tracks ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgAnalysis:reference-level ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstRgLimiter ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgLimiter:enabled ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstRgVolume ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:album-mode ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:fallback-gain ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:headroom ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:pre-amp ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:result-gain ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstRgVolume:target-gain ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GstSoupHTTPSrc ##### -->
+<para>
+
+</para>
+
+@element: 
+@location: 
+@user_agent: 
+@automatic_redirect: 
+@proxy: 
+@context: 
+@loop: 
+@session: 
+@session_io_status: 
+@msg: 
+@ret: 
+@outbuf: 
+@interrupted: 
+@have_size: 
+@content_size: 
+@read_position: 
+@seekable: 
+@request_position: 
+@iradio_mode: 
+@icy_caps: 
+@iradio_name: 
+@iradio_genre: 
+@iradio_url: 
+@iradio_title: 
+
+<!-- ##### ARG GstSoupHTTPSrc:automatic-redirect ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:iradio-genre ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:iradio-mode ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:iradio-name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:iradio-title ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:iradio-url ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:location ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:proxy ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSoupHTTPSrc:user-agent ##### -->
+<para>
+
+</para>
+
+

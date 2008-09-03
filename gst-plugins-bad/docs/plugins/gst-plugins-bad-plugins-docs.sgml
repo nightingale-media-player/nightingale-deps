@@ -16,7 +16,7 @@
     <xi:include href="xml/element-amrwbenc.xml" />
     <xi:include href="xml/element-amrwbparse.xml" />
     <xi:include href="xml/element-audioparse.xml" />
-    <xi:include href="xml/element-dfb-example.xml" />
+    <xi:include href="xml/element-deinterlace.xml" />
     <xi:include href="xml/element-dfbvideosink.xml" />
     <xi:include href="xml/element-dvbsrc.xml" />
     <xi:include href="xml/element-dvdspu.xml" />
@@ -33,18 +33,16 @@
     <xi:include href="xml/element-metadatademux.xml" />
     <xi:include href="xml/element-metadatamux.xml" />
     <xi:include href="xml/element-modplug.xml" />
-    <!--xi:include href="xml/element-mythtvsrc.xml" /-->
+    <xi:include href="xml/element-mpeg2enc.xml" />
+    <xi:include href="xml/element-mythtvsrc.xml" />
     <xi:include href="xml/element-nuvdemux.xml" />
     <xi:include href="xml/element-output-selector.xml" />
-    <xi:include href="xml/element-rganalysis.xml" />
-    <xi:include href="xml/element-rglimiter.xml" />
-    <xi:include href="xml/element-rgvolume.xml" />
     <xi:include href="xml/element-sdlaudiosink.xml" />
     <xi:include href="xml/element-sdlvideosink.xml" />
     <xi:include href="xml/element-sdpdemux.xml" />
-    <xi:include href="xml/element-souphttpsrc.xml" />
     <xi:include href="xml/element-speed.xml" />
     <xi:include href="xml/element-speexresample.xml" />
+    <xi:include href="xml/element-stereo.xml" />
     <!--xi:include href="xml/element-theoradecexp.xml" /-->
     <xi:include href="xml/element-timidity.xml" />
     <xi:include href="xml/element-trm.xml" />
@@ -53,6 +51,7 @@
     <xi:include href="xml/element-videomark.xml" />
     <xi:include href="xml/element-videoparse.xml" />
     <xi:include href="xml/element-wildmidi.xml" />
+    <xi:include href="xml/element-y4menc.xml" />
   </chapter>
 
   <chapter>
@@ -76,12 +75,10 @@
     <xi:include href="xml/plugin-filter.xml" />
     <xi:include href="xml/plugin-flvdemux.xml" />
     <xi:include href="xml/plugin-freeze.xml" />
-    <xi:include href="xml/plugin-gdp.xml" />
     <xi:include href="xml/plugin-gsm.xml" />
     <xi:include href="xml/plugin-gstinterlace.xml" />
     <xi:include href="xml/plugin-gstrtpmanager.xml" />
     <xi:include href="xml/plugin-h264parse.xml" />
-    <xi:include href="xml/plugin-interleave.xml" />
     <xi:include href="xml/plugin-jack.xml" />
     <xi:include href="xml/plugin-ladspa.xml" />
     <xi:include href="xml/plugin-metadata.xml" />
@@ -100,14 +97,12 @@
     <xi:include href="xml/plugin-nuvdemux.xml" />
     <xi:include href="xml/plugin-rawparse.xml" />
     <xi:include href="xml/plugin-real.xml" />
-    <xi:include href="xml/plugin-replaygain.xml" />
     <xi:include href="xml/plugin-rfbsrc.xml" />
     <xi:include href="xml/plugin-sdl.xml" />
     <xi:include href="xml/plugin-sdp.xml" />
     <xi:include href="xml/plugin-selector.xml" />
     <xi:include href="xml/plugin-sndfile.xml" />
     <xi:include href="xml/plugin-soundtouch.xml" />
-    <xi:include href="xml/plugin-soup.xml" />
     <xi:include href="xml/plugin-spcdec.xml" />
     <xi:include href="xml/plugin-speed.xml" />
     <xi:include href="xml/plugin-speexresample.xml" />
@@ -117,7 +112,6 @@
     <xi:include href="xml/plugin-tremor.xml" />
     <xi:include href="xml/plugin-tta.xml" />
     <xi:include href="xml/plugin-vcdsrc.xml" />
-    <xi:include href="xml/plugin-videocrop.xml" />
     <xi:include href="xml/plugin-videosignal.xml" />
     <xi:include href="xml/plugin-vmnc.xml" />
     <xi:include href="xml/plugin-wildmidi.xml" />

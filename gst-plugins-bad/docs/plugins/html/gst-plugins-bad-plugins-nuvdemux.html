@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>nuvdemux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="prev" href="gst-plugins-bad-plugins-modplug.html" title="modplug">
+<link rel="prev" href="gst-plugins-bad-plugins-mythtvsrc.html" title="mythtvsrc">
 <link rel="next" href="gst-plugins-bad-plugins-output-selector.html" title="output-selector">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -17,43 +17,36 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-modplug.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-mythtvsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-output-selector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2604566" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2630839" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2630862" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-nuvdemux.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-nuvdemux.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-nuvdemux.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-nuvdemux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2604566"></a><span class="refentrytitle">nuvdemux</span>
-</h2>
-<p>nuvdemux &#8212; Demultiplex a mythtv .nuv file into audio and video</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-nuvdemux.top_of_page"></a>nuvdemux</span></h2>
+<p>nuvdemux — Demultiplex a mythtv .nuv file into audio and video</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-bad-plugins-nuvdemux.synopsis"></a><h2>Synopsis</h2>
 <a name="GstNuvDemux"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-bad-plugins-nuvdemux.html#GstNuvDemux-struct">GstNuvDemux</a>;
-
+                    <a class="link" href="gst-plugins-bad-plugins-nuvdemux.html#GstNuvDemux-struct" title="GstNuvDemux">GstNuvDemux</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2630862"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-bad-plugins-nuvdemux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -61,131 +54,138 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2630839"></a><h2>Description</h2>
+<a name="gst-plugins-bad-plugins-nuvdemux.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2630823"></a><p>
 Demuxes MythTVs NuppelVideo .nuv file into raw or compressed audio and/or
 video streams.
 </p>
 <p>
 This element currently only supports pull-based scheduling.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2624370"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch filesrc test.nuv ! nuvdemux name=demux  demux.audio_00 ! decodebin ! audioconvert ! audioresample ! autoaudiosink   demux.video_00 ! queue ! decodebin ! ffmpegcolorspace ! videoscale ! autovideosink
-</pre>
-<p>
-Play (parse and decode) an .nuv file and try to output it to
+</pre></div> Play (parse and decode) an .nuv file and try to output it to
 an automatically detected soundcard and videosink. If the NUV file contains
 compressed audio or video data, this will only work if you have the
 right decoder elements/plugins installed.
-</p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2630805"></a><h3>Element Information</h3>
+<a name="id2624353"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-bad-plugins-plugin-nuvdemux.html#plugin-nuvdemux">nuvdemux</a>
-        </td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-nuvdemux.html#plugin-nuvdemux">nuvdemux</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Renato Araujo Oliveira Filho &lt;renato.filho@indt.org.br&gt;,Rosfran Borges &lt;rosfran.borges@indt.org.br&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Codec/Demuxer</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2616205"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
+<td>audio_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>video/x-nuv</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>video_src</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>sometimes</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>audio_src</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>sometimes</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2604670"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-nuvdemux.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2604680"></a><h3>
-<a name="GstNuvDemux-struct"></a>GstNuvDemux</h3>
-<a class="indexterm" name="id2604693"></a><pre class="programlisting">typedef struct _GstNuvDemux GstNuvDemux;</pre>
+<a name="GstNuvDemux-struct"></a><h3>GstNuvDemux</h3>
+<pre class="programlisting">typedef struct _GstNuvDemux GstNuvDemux;</pre>
 <p>
 
 </p>
 </div>
 </div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-nuvdemux.see-also"></a><h2>See Also</h2>
+mythtvsrc
 </div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

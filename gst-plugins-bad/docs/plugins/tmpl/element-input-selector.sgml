@@ -23,15 +23,6 @@ N-to-1 input stream selectoring
 
 </para>
 
-@element: 
-@srcpad: 
-@active_sinkpad: 
-@nb_sinkpads: 
-@segment: 
-@blocked_cond: 
-@blocked: 
-@pending_stop: 
-@pending_stop_segment: 
 
 <!-- ##### SIGNAL GstInputSelector::block ##### -->
 <para>
@@ -52,6 +43,16 @@ N-to-1 input stream selectoring
 @arg3: 
 
 <!-- ##### ARG GstInputSelector:active-pad ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstInputSelector:n-pads ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstInputSelector:select-all ##### -->
 <para>
 
 </para>

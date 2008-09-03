@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>sdlvideosink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-sdlaudiosink.html" title="sdlaudiosink">
 <link rel="next" href="gst-plugins-bad-plugins-sdpdemux.html" title="sdpdemux">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
@@ -23,141 +23,148 @@
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-sdpdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2608543" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2608460" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2589784" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2579662" class="shortcut">Implemented Interfaces</a>
-                  &#160;|&#160;
-                  <a href="#id2608430" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-sdlvideosink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-sdlvideosink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-sdlvideosink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-sdlvideosink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-sdlvideosink.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-sdlvideosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2608543"></a><span class="refentrytitle">sdlvideosink</span>
-</h2>
-<p>sdlvideosink &#8212; An SDL-based videosink</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-sdlvideosink.top_of_page"></a>sdlvideosink</span></h2>
+<p>sdlvideosink — An SDL-based videosink</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.synopsis"></a><h2>Synopsis</h2>
 <a name="GstSDLVideoSink"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-bad-plugins-sdlvideosink.html#GstSDLVideoSink-struct">GstSDLVideoSink</a>;
-
+                    <a class="link" href="gst-plugins-bad-plugins-sdlvideosink.html#GstSDLVideoSink-struct" title="GstSDLVideoSink">GstSDLVideoSink</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2589784"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseSink
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
 >GstVideoSink</a>
                            +----GstSDLVideoSink
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2579662"></a><h2>Implemented Interfaces</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstSDLVideoSink implements
  GstImplementsInterface,  <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
->GstNavigation</a> and  <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
->GstXOverlay</a>.</p>
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
+>GstXOverlay</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
+>GstNavigation</a>.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608430"></a><h2>Properties</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-bad-plugins-sdlvideosink.html#GstSDLVideoSink--fullscreen">fullscreen</a>"               gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-sdlvideosink.html#GstSDLVideoSink--fullscreen" title='The "fullscreen" property'>fullscreen</a>"               gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608460"></a><h2>Description</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2608472"></a><h3>Element Information</h3>
+<a name="id2636955"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-bad-plugins-plugin-sdl.html#plugin-sdl">sdl</a>
-        </td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-sdl.html#plugin-sdl">sdl</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;
     Edgard Lima &lt;edgard.lima@indt.org.br&gt;
     Jan Schmidt &lt;thaytan@mad.scientist.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink/Video</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2637020"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]; video/x-raw-yuv, format=(fourcc)YV12, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]; video/x-raw-yuv, format=(fourcc)YUY2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]</td>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YV12, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw-yuv, format=(fourcc)YUY2, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 100/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2605203"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2605212"></a><h3>
-<a name="GstSDLVideoSink-struct"></a>GstSDLVideoSink</h3>
-<a class="indexterm" name="id2605224"></a><pre class="programlisting">typedef struct _GstSDLVideoSink GstSDLVideoSink;</pre>
+<a name="GstSDLVideoSink-struct"></a><h3>GstSDLVideoSink</h3>
+<pre class="programlisting">typedef struct _GstSDLVideoSink GstSDLVideoSink;</pre>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2605242"></a><h2>Property Details</h2>
+<a name="gst-plugins-bad-plugins-sdlvideosink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2605252"></a><h3>
-<a name="GstSDLVideoSink--fullscreen"></a>The "<code class="literal">fullscreen</code>" property</h3>
-<a class="indexterm" name="id2605266"></a><pre class="programlisting">  "fullscreen"               gboolean              : Read / Write</pre>
+<a name="GstSDLVideoSink--fullscreen"></a><h3>The <code class="literal">"fullscreen"</code> property</h3>
+<pre class="programlisting">  "fullscreen"               gboolean              : Read / Write</pre>
 <p>If true it will be Full screen.</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>
