@@ -72,6 +72,7 @@ typedef GstFlowReturn (*RTPSessionSendRTP) (RTPSession *sess, RTPSource *src, Gs
  * @sess: an #RTPSession
  * @src: the #RTPSource
  * @buffer: the RTCP buffer ready for sending
+ * @eos: if an EOS event should be pushed
  * @user_data: user data specified when registering
  *
  * This callback will be called when @sess has @buffer ready for sending to
@@ -79,7 +80,8 @@ typedef GstFlowReturn (*RTPSessionSendRTP) (RTPSession *sess, RTPSource *src, Gs
  *
  * Returns: a #GstFlowReturn.
  */
-typedef GstFlowReturn (*RTPSessionSendRTCP) (RTPSession *sess, RTPSource *src, GstBuffer *buffer, gpointer user_data);
+typedef GstFlowReturn (*RTPSessionSendRTCP) (RTPSession *sess, RTPSource *src, GstBuffer *buffer, 
+    gboolean eos, gpointer user_data);
 
 /**
  * RTPSessionSyncRTCP:
@@ -264,6 +266,10 @@ gchar*          rtp_session_get_sdes_string        (RTPSession *sess, GstRTCPSDE
 
 /* handling sources */
 RTPSource*      rtp_session_get_internal_source    (RTPSession *sess);
+
+void            rtp_session_set_internal_ssrc      (RTPSession *sess, guint32 ssrc);
+guint32         rtp_session_get_internal_ssrc      (RTPSession *sess);
+
 gboolean        rtp_session_add_source             (RTPSession *sess, RTPSource *src);
 guint           rtp_session_get_num_sources        (RTPSession *sess);
 guint           rtp_session_get_num_active_sources (RTPSession *sess);

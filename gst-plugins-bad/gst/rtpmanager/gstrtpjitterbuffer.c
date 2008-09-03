@@ -918,13 +918,18 @@ gst_rtp_jitter_buffer_chain (GstPad * pad, GstBuffer * buffer)
     if (rtp_jitter_buffer_get_ts_diff (priv->jbuf) >= latency_ts) {
       GstBuffer *old_buf;
 
-      GST_DEBUG_OBJECT (jitterbuffer, "Queue full, dropping old packet #%d",
-          seqnum);
-
       old_buf = rtp_jitter_buffer_pop (priv->jbuf);
+
+      GST_DEBUG_OBJECT (jitterbuffer, "Queue full, dropping old packet #%d",
+          gst_rtp_buffer_get_seq (old_buf));
+
       gst_buffer_unref (old_buf);
     }
   }
+
+  /* we need to make the metadata writable before pushing it in the jitterbuffer
+   * because the jitterbuffer will update the timestamp */
+  buffer = gst_buffer_make_metadata_writable (buffer);
 
   /* now insert the packet into the queue in sorted order. This function returns
    * FALSE if a packet with the same seqnum was already in the queue, meaning we
@@ -1235,8 +1240,8 @@ push_buffer:
   outbuf = rtp_jitter_buffer_pop (priv->jbuf);
 
   if (discont || priv->discont) {
-    /* set DISCONT flag when we missed a packet. */
-    outbuf = gst_buffer_make_metadata_writable (outbuf);
+    /* set DISCONT flag when we missed a packet. We pushed the buffer writable
+     * into the jitterbuffer so we can modify now. */
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
     priv->discont = FALSE;
   }

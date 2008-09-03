@@ -237,6 +237,7 @@ struct _GstRtpSessionPrivate
 {
   GMutex *lock;
   GstClock *sysclock;
+
   RTPSession *session;
 
   /* thread for sending out RTCP */
@@ -258,7 +259,7 @@ static GstFlowReturn gst_rtp_session_process_rtp (RTPSession * sess,
 static GstFlowReturn gst_rtp_session_send_rtp (RTPSession * sess,
     RTPSource * src, GstBuffer * buffer, gpointer user_data);
 static GstFlowReturn gst_rtp_session_send_rtcp (RTPSession * sess,
-    RTPSource * src, GstBuffer * buffer, gpointer user_data);
+    RTPSource * src, GstBuffer * buffer, gboolean eos, gpointer user_data);
 static GstFlowReturn gst_rtp_session_sync_rtcp (RTPSession * sess,
     RTPSource * src, GstBuffer * buffer, gpointer user_data);
 static gint gst_rtp_session_clock_rate (RTPSession * sess, guint8 payload,
@@ -1097,10 +1098,11 @@ gst_rtp_session_send_rtp (RTPSession * sess, RTPSource * src,
 }
 
 /* called when the session manager has an RTCP packet ready for further
- * sending */
+ * sending. The eos flag is set when an EOS event should be sent downstream as
+ * well. */
 static GstFlowReturn
 gst_rtp_session_send_rtcp (RTPSession * sess, RTPSource * src,
-    GstBuffer * buffer, gpointer user_data)
+    GstBuffer * buffer, gboolean eos, gpointer user_data)
 {
   GstFlowReturn result;
   GstRtpSession *rtpsession;
@@ -1121,6 +1123,12 @@ gst_rtp_session_send_rtcp (RTPSession * sess, RTPSource * src,
     gst_buffer_set_caps (buffer, caps);
     GST_LOG_OBJECT (rtpsession, "sending RTCP");
     result = gst_pad_push (rtpsession->send_rtcp_src, buffer);
+
+    /* we have to send EOS after this packet */
+    if (eos) {
+      GST_LOG_OBJECT (rtpsession, "sending EOS");
+      gst_pad_push_event (rtpsession->send_rtcp_src, gst_event_new_eos ());
+    }
   } else {
     GST_DEBUG_OBJECT (rtpsession, "not sending RTCP, no output pad");
     gst_buffer_unref (buffer);
@@ -1556,8 +1564,11 @@ gst_rtp_session_event_send_rtp_sink (GstPad * pad, GstEvent * event)
     case GST_EVENT_EOS:{
       GstClockTime current_time;
 
+      /* push downstream FIXME, we are not supposed to leave the session just
+       * because we stop sending. */
       ret = gst_pad_push_event (rtpsession->send_rtp_src, event);
       current_time = gst_clock_get_time (rtpsession->priv->sysclock);
+      GST_DEBUG_OBJECT (rtpsession, "scheduling BYE message");
       rtp_session_send_bye (rtpsession->priv->session, "End of stream",
           current_time);
       break;
@@ -1845,4 +1856,10 @@ exists:
 static void
 gst_rtp_session_release_pad (GstElement * element, GstPad * pad)
 {
+}
+
+void
+gst_rtp_session_set_ssrc (GstRtpSession * sess, guint32 ssrc)
+{
+  rtp_session_set_internal_ssrc (sess->priv->session, ssrc);
 }
