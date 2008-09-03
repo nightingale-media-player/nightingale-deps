@@ -1022,6 +1022,8 @@ plugindir
 ERROR_CFLAGS
 ERROR_CXXFLAGS
 GST_LEVEL_DEFAULT
+USE_PLUGIN_AIFFPARSE_TRUE
+USE_PLUGIN_AIFFPARSE_FALSE
 USE_PLUGIN_APP_TRUE
 USE_PLUGIN_APP_FALSE
 USE_PLUGIN_BAYER_TRUE
@@ -1106,6 +1108,8 @@ AMRWB_LIBS
 HAVE_AMRWB
 USE_AMRWB_TRUE
 USE_AMRWB_FALSE
+USE_APEXSINK_TRUE
+USE_APEXSINK_FALSE
 HAVE_BZ2
 BZ2_LIBS
 USE_BZ2_TRUE
@@ -1268,6 +1272,8 @@ USE_OSS4_TRUE
 USE_OSS4_FALSE
 USE_WININET_TRUE
 USE_WININET_FALSE
+USE_ACM_TRUE
+USE_ACM_FALSE
 PROFILE_CFLAGS
 DEPRECATED_CFLAGS
 GST_OPTION_CFLAGS
@@ -1962,6 +1968,7 @@ Optional Features:
   --disable-external           disable building of plug-ins with external deps
   --enable-experimental        enable building of experimental plug-ins
   --enable-gtk-doc        use gtk-doc to build documentation default=no
+  --disable-aiffparse     disable dependency-less aiffparse plugin
   --disable-app           disable dependency-less app plugin
   --disable-bayer         disable dependency-less bayer plugin
   --disable-cdxaparse     disable dependency-less cdxaparse plugin
@@ -2001,6 +2008,7 @@ Optional Features:
   --disable-vcd                disable Video CD: vcdsrc
   --disable-alsa               disable alsa plug-ins: gstalsa
   --disable-amrwb              disable amrwb library: amrwb
+  --disable-apexsink           disable AirPort Express Wireless sink: apexsink
   --disable-bz2                disable bz2 library: bz2
   --disable-cdaudio            disable cdaudio: cdaudio
   --disable-dc1394             disable libdc1394: dc1394
@@ -2040,6 +2048,7 @@ Optional Features:
   --disable-dvb                disable DVB Source: dvb
   --disable-oss4               disable Open Sound System 4: oss4
   --disable-wininet            disable Windows internet library: wininet
+  --disable-acm                disable Windows ACM library: acm
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -2069,6 +2078,7 @@ Optional Packages:
   --with-alsa-prefix=PFX  prefix where Alsa library is installed(optional)
   --with-alsa-inc-prefix=PFX
                           prefix where include libraries are (optional)
+  --with-ssl-dir=PATH     Specify path to OpenSSL installation
   --with-x                use the X Window System
   --with-sdl-prefix=PFX   prefix where SDL is installed (optional)
   --with-sdl-exec-prefix=PFX
@@ -5331,13 +5341,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5334: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5344: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5337: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5347: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5340: output\"" >&5)
+  (eval echo "\"\$as_me:5350: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -5935,7 +5945,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5938: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5948: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6553,7 +6563,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6556 "configure"' > conftest.$ac_ext
+  echo '#line 6566 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8093,11 +8103,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8096: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8106: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8100: \$? = $ac_status" >&5
+   echo "$as_me:8110: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8417,11 +8427,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8420: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8430: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8424: \$? = $ac_status" >&5
+   echo "$as_me:8434: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8522,11 +8532,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8525: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8535: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8529: \$? = $ac_status" >&5
+   echo "$as_me:8539: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8577,11 +8587,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8580: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8590: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8584: \$? = $ac_status" >&5
+   echo "$as_me:8594: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11414,7 +11424,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11417 "configure"
+#line 11427 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11514,7 +11524,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11517 "configure"
+#line 11527 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18720,11 +18730,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18723: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18733: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18727: \$? = $ac_status" >&5
+   echo "$as_me:18737: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18819,11 +18829,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18822: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18832: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18826: \$? = $ac_status" >&5
+   echo "$as_me:18836: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18871,11 +18881,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18874: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18884: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18878: \$? = $ac_status" >&5
+   echo "$as_me:18888: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -25841,6 +25851,50 @@ _ACEOF
 
 
 
+  GST_PLUGINS_ALL="$GST_PLUGINS_ALL aiffparse"
+
+
+
+  # Check whether --enable-aiffparse was given.
+if test "${enable_aiffparse+set}" = set; then
+  enableval=$enable_aiffparse;
+      case "${enableval}" in
+        yes) gst_use_aiffparse=yes ;;
+        no) gst_use_aiffparse=no ;;
+        *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-aiffparse" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-aiffparse" >&2;}
+   { (exit 1); exit 1; }; } ;;
+       esac
+
+else
+  gst_use_aiffparse=yes
+fi
+
+  if test x$gst_use_aiffparse = xno; then
+    { echo "$as_me:$LINENO: disabling dependency-less plugin aiffparse" >&5
+echo "$as_me: disabling dependency-less plugin aiffparse" >&6;}
+    WITHOUT_PLUGINS="$WITHOUT_PLUGINS aiffparse"
+  fi
+
+
+  if [ -z "$WITH_PLUGINS" ] || echo " $WITH_PLUGINS " | tr , ' ' | grep -i " aiffparse " > /dev/null; then
+    GST_PLUGINS_SELECTED="$GST_PLUGINS_SELECTED aiffparse"
+  fi
+  if echo " $WITHOUT_PLUGINS " | tr , ' ' | grep -i " aiffparse " > /dev/null; then
+    GST_PLUGINS_SELECTED=`echo " $GST_PLUGINS_SELECTED " | $SED -e 's/ aiffparse / /'`
+  fi
+
+
+if echo " $GST_PLUGINS_SELECTED " | grep -i " aiffparse " > /dev/null; then
+  USE_PLUGIN_AIFFPARSE_TRUE=
+  USE_PLUGIN_AIFFPARSE_FALSE='#'
+else
+  USE_PLUGIN_AIFFPARSE_TRUE='#'
+  USE_PLUGIN_AIFFPARSE_FALSE=
+fi
+
+
+
   GST_PLUGINS_ALL="$GST_PLUGINS_ALL app"
 
 
@@ -29190,6 +29244,431 @@ if test x$USE_AMRWB = xyes; then
 else
   USE_AMRWB_TRUE='#'
   USE_AMRWB_FALSE=
+fi
+
+
+
+echo
+{ echo "$as_me:$LINENO: *** checking feature: AirPort Express Wireless sink ***" >&5
+echo "$as_me: *** checking feature: AirPort Express Wireless sink ***" >&6;}
+if test "xapexsink" != "x"
+then
+  { echo "$as_me:$LINENO: *** for plug-ins: apexsink ***" >&5
+echo "$as_me: *** for plug-ins: apexsink ***" >&6;}
+fi
+NOUSE=
+if test "x$USE_APEXSINK" = "xno"; then
+  NOUSE="yes"
+fi
+# Check whether --enable-apexsink was given.
+if test "${enable_apexsink+set}" = set; then
+  enableval=$enable_apexsink;  case "${enableval}" in
+      yes) USE_APEXSINK=yes;;
+      no) USE_APEXSINK=no;;
+      *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-apexsink" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-apexsink" >&2;}
+   { (exit 1); exit 1; }; } ;;
+    esac
+else
+   USE_APEXSINK=yes
+fi
+
+if test "x$NOUSE" = "xyes"; then
+  USE_APEXSINK="no"
+  { echo "$as_me:$LINENO: WARNING: *** apexsink pre-configured not to be built" >&5
+echo "$as_me: WARNING: *** apexsink pre-configured not to be built" >&2;}
+fi
+NOUSE=
+
+
+if test x$USE_APEXSINK = xyes; then
+
+  gst_check_save_LIBS=$LIBS
+  gst_check_save_LDFLAGS=$LDFLAGS
+  gst_check_save_CFLAGS=$CFLAGS
+  gst_check_save_CPPFLAGS=$CPPFLAGS
+  gst_check_save_CXXFLAGS=$CXXFLAGS
+
+  HAVE_APEXSINK=no
+
+
+  HAVE_APEXSINK="yes"
+  # The big search for OpenSSL
+  # copied from openssh's configure.ac
+
+# Check whether --with-ssl-dir was given.
+if test "${with_ssl_dir+set}" = set; then
+  withval=$with_ssl_dir;
+                  if test "x$withval" != "xno" ; then
+                          tryssldir=$withval
+                  fi
+
+
+fi
+
+
+  { echo "$as_me:$LINENO: checking for library containing socket" >&5
+echo $ECHO_N "checking for library containing socket... $ECHO_C" >&6; }
+if test "${ac_cv_search_socket+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char socket ();
+int
+main ()
+{
+return socket ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' socket; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_search_socket=$ac_res
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext
+  if test "${ac_cv_search_socket+set}" = set; then
+  break
+fi
+done
+if test "${ac_cv_search_socket+set}" = set; then
+  :
+else
+  ac_cv_search_socket=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_search_socket" >&5
+echo "${ECHO_T}$ac_cv_search_socket" >&6; }
+ac_res=$ac_cv_search_socket
+if test "$ac_res" != no; then
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+  { echo "$as_me:$LINENO: checking for library containing gethostbyname" >&5
+echo $ECHO_N "checking for library containing gethostbyname... $ECHO_C" >&6; }
+if test "${ac_cv_search_gethostbyname+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char gethostbyname ();
+int
+main ()
+{
+return gethostbyname ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' nsl; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_search_gethostbyname=$ac_res
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext
+  if test "${ac_cv_search_gethostbyname+set}" = set; then
+  break
+fi
+done
+if test "${ac_cv_search_gethostbyname+set}" = set; then
+  :
+else
+  ac_cv_search_gethostbyname=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_search_gethostbyname" >&5
+echo "${ECHO_T}$ac_cv_search_gethostbyname" >&6; }
+ac_res=$ac_cv_search_gethostbyname
+if test "$ac_res" != no; then
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+
+  saved_LIBS="$LIBS"
+  saved_LDFLAGS="$LDFLAGS"
+  saved_CPPFLAGS="$CPPFLAGS"
+  if test "x$prefix" != "xNONE" ; then
+          tryssldir="$tryssldir $prefix"
+  fi
+  { echo "$as_me:$LINENO: checking for OpenSSL directory" >&5
+echo $ECHO_N "checking for OpenSSL directory... $ECHO_C" >&6; }
+if test "${ac_cv_openssldir+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+          for ssldir in $tryssldir "" /usr/local/openssl /usr/lib/openssl /usr/local/ssl /usr/lib/ssl /usr/local /usr/athena /usr/pkg /opt /opt/openssl ; do
+                  CPPFLAGS="$saved_CPPFLAGS"
+                  LDFLAGS="$saved_LDFLAGS"
+                  LIBS="$saved_LIBS -lssl -lcrypto"
+
+                  # Skip directories if they don't exist
+                  if test ! -z "$ssldir" -a ! -d "$ssldir" ; then
+                          continue;
+                  fi
+                  if test ! -z "$ssldir" -a "x$ssldir" != "x/usr"; then
+                          # Try to use $ssldir/lib if it exists, otherwise
+                          # $ssldir
+                          if test -d "$ssldir/lib" ; then
+                                  LDFLAGS="-L$ssldir/lib $saved_LDFLAGS"
+                                  if test ! -z "$need_dash_r" ; then
+                                          LDFLAGS="-R$ssldir/lib $LDFLAGS"
+                                  fi
+                          else
+                                  LDFLAGS="-L$ssldir $saved_LDFLAGS"
+                                  if test ! -z "$need_dash_r" ; then
+                                          LDFLAGS="-R$ssldir $LDFLAGS"
+                                  fi
+                          fi
+                          # Try to use $ssldir/include if it exists, otherwise
+                          # $ssldir
+                          if test -d "$ssldir/include" ; then
+                                  CPPFLAGS="-I$ssldir/include $saved_CPPFLAGS"
+                          else
+                                  CPPFLAGS="-I$ssldir $saved_CPPFLAGS"
+                          fi
+                  fi
+
+                  # Basic test to check for compatible version and correct linking
+                  # *does not* test for RSA - that comes later.
+                  if test "$cross_compiling" = yes; then
+  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&5
+echo "$as_me: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <string.h>
+#include <openssl/rand.h>
+int main(void)
+{
+        char a[2048];
+        memset(a, 0, sizeof(a));
+        RAND_add(a, sizeof(a), sizeof(a));
+        return(RAND_status() <= 0);
+}
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+
+                                  found_crypto=1
+                                  break;
+
+else
+  echo "$as_me: program exited with status $ac_status" >&5
+echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+
+
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+
+
+                  if test ! -z "$found_crypto" ; then
+                          break;
+                  fi
+          done
+
+          if test -z "$found_crypto" ; then
+                  HAVE_APEXSINK="no"
+          fi
+          if test -z "$ssldir" ; then
+                  ssldir="(system)"
+          fi
+
+          ac_cv_openssldir=$ssldir
+
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_openssldir" >&5
+echo "${ECHO_T}$ac_cv_openssldir" >&6; }
+  if (test ! -z "$ac_cv_openssldir" && test "x$ac_cv_openssldir" != "x(system)") ;
+   then
+                    ssldir=$ac_cv_openssldir
+          if test ! -z "$ssldir" -a "x$ssldir" != "x/usr"; then
+                  # Try to use $ssldir/lib if it exists, otherwise
+                  # $ssldir
+                  if test -d "$ssldir/lib" ; then
+                          APEXSINK_LIBS="-L$ssldir/lib $saved_LDFLAGS"
+                          if test ! -z "$need_dash_r" ; then
+                                  APEXSINK_LIBS="-R$ssldir/lib $LDFLAGS"
+                          fi
+                  else
+                          APEXSINK_LDFLAGS="-L$ssldir $saved_LDFLAGS"
+                          if test ! -z "$need_dash_r" ; then
+                                  APEXSINK_LIBS="-R$ssldir $LDFLAGS"
+                          fi
+                  fi
+                  # Try to use $ssldir/include if it exists, otherwise
+                  # $ssldir
+                  if test -d "$ssldir/include" ; then
+                          APEXSINK_CFLAGS="-I$ssldir/include $saved_CPPFLAGS"
+                  else
+                          APEXSINK_CFLAGS="-I$ssldir $saved_CPPFLAGS"
+                  fi
+          fi
+  fi
+  APEXSINK_LIBS="$APEXSINK_LIBS $LIBS"
+  LIBS="$saved_LIBS"
+
+
+  LIBS=$gst_check_save_LIBS
+  LDFLAGS=$gst_check_save_LDFLAGS
+  CFLAGS=$gst_check_save_CFLAGS
+  CPPFLAGS=$gst_check_save_CPPFLAGS
+  CXXFLAGS=$gst_check_save_CXXFLAGS
+
+    if test x$HAVE_APEXSINK = xno; then
+    USE_APEXSINK=no
+  else
+    { echo "$as_me:$LINENO: *** These plugins will be built: apexsink" >&5
+echo "$as_me: *** These plugins will be built: apexsink" >&6;}
+  fi
+fi
+if test x$USE_APEXSINK = xyes; then
+  :
+  if test "xapexsink" != "x"; then
+    GST_PLUGINS_YES="\tapexsink\n$GST_PLUGINS_YES"
+  fi
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_APEXSINK
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: *** These plugins will not be built: apexsink" >&5
+echo "$as_me: *** These plugins will not be built: apexsink" >&6;}
+  if test "xapexsink" != "x"; then
+    GST_PLUGINS_NO="\tapexsink\n$GST_PLUGINS_NO"
+  fi
+  :
+fi
+
+
+if test x$USE_APEXSINK = xyes; then
+  USE_APEXSINK_TRUE=
+  USE_APEXSINK_FALSE='#'
+else
+  USE_APEXSINK_TRUE='#'
+  USE_APEXSINK_FALSE=
 fi
 
 
@@ -41497,6 +41976,244 @@ fi
 
 
 
+echo
+{ echo "$as_me:$LINENO: *** checking feature: Windows ACM library ***" >&5
+echo "$as_me: *** checking feature: Windows ACM library ***" >&6;}
+if test "xacm" != "x"
+then
+  { echo "$as_me:$LINENO: *** for plug-ins: acm ***" >&5
+echo "$as_me: *** for plug-ins: acm ***" >&6;}
+fi
+NOUSE=
+if test "x$USE_ACM" = "xno"; then
+  NOUSE="yes"
+fi
+# Check whether --enable-acm was given.
+if test "${enable_acm+set}" = set; then
+  enableval=$enable_acm;  case "${enableval}" in
+      yes) USE_ACM=yes;;
+      no) USE_ACM=no;;
+      *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-acm" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-acm" >&2;}
+   { (exit 1); exit 1; }; } ;;
+    esac
+else
+   USE_ACM=yes
+fi
+
+if test "x$NOUSE" = "xyes"; then
+  USE_ACM="no"
+  { echo "$as_me:$LINENO: WARNING: *** acm pre-configured not to be built" >&5
+echo "$as_me: WARNING: *** acm pre-configured not to be built" >&2;}
+fi
+NOUSE=
+
+
+if test x$USE_ACM = xyes; then
+
+  gst_check_save_LIBS=$LIBS
+  gst_check_save_LDFLAGS=$LDFLAGS
+  gst_check_save_CFLAGS=$CFLAGS
+  gst_check_save_CPPFLAGS=$CPPFLAGS
+  gst_check_save_CXXFLAGS=$CXXFLAGS
+
+  HAVE_ACM=no
+
+  { echo "$as_me:$LINENO: checking Checking for ACM support" >&5
+echo $ECHO_N "checking Checking for ACM support... $ECHO_C" >&6; }
+
+
+for ac_header in windows.h msacm.h
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
+echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
+echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ------------------------------------------------------------------------ ##
+## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
+## ------------------------------------------------------------------------ ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+
+fi
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ HAVE_ACM="yes"
+else
+  HAVE_ACM="no"
+fi
+
+done
+
+
+
+  LIBS=$gst_check_save_LIBS
+  LDFLAGS=$gst_check_save_LDFLAGS
+  CFLAGS=$gst_check_save_CFLAGS
+  CPPFLAGS=$gst_check_save_CPPFLAGS
+  CXXFLAGS=$gst_check_save_CXXFLAGS
+
+    if test x$HAVE_ACM = xno; then
+    USE_ACM=no
+  else
+    { echo "$as_me:$LINENO: *** These plugins will be built: acm" >&5
+echo "$as_me: *** These plugins will be built: acm" >&6;}
+  fi
+fi
+if test x$USE_ACM = xyes; then
+  :
+  if test "xacm" != "x"; then
+    GST_PLUGINS_YES="\tacm\n$GST_PLUGINS_YES"
+  fi
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_ACM
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: *** These plugins will not be built: acm" >&5
+echo "$as_me: *** These plugins will not be built: acm" >&6;}
+  if test "xacm" != "x"; then
+    GST_PLUGINS_NO="\tacm\n$GST_PLUGINS_NO"
+  fi
+  :
+fi
+
+
+if test x$USE_ACM = xyes; then
+  USE_ACM_TRUE=
+  USE_ACM_FALSE='#'
+else
+  USE_ACM_TRUE='#'
+  USE_ACM_FALSE=
+fi
+
+
+
 else
 
 
@@ -41538,6 +42255,16 @@ if false; then
 else
   USE_AMRWB_TRUE='#'
   USE_AMRWB_FALSE=
+fi
+
+
+
+if false; then
+  USE_APEXSINK_TRUE=
+  USE_APEXSINK_FALSE='#'
+else
+  USE_APEXSINK_TRUE='#'
+  USE_APEXSINK_FALSE=
 fi
 
 
@@ -41946,7 +42673,7 @@ GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^_*gst_plugin_
 
 
 
-ac_config_files="$ac_config_files Makefile gst-plugins-bad.spec gst/Makefile gst/app/Makefile gst/bayer/Makefile gst/cdxaparse/Makefile gst/deinterlace/Makefile gst/deinterlace2/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/filter/Makefile gst/flv/Makefile gst/freeze/Makefile gst/h264parse/Makefile gst/librfb/Makefile gst/modplug/Makefile gst/modplug/libmodplug/Makefile gst/mpegtsparse/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/rawparse/Makefile gst/rtpmanager/Makefile gst/sdp/Makefile gst/selector/Makefile gst/speed/Makefile gst/speexresample/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst/real/Makefile gst/y4m/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/app/Makefile gst-libs/gst/dshow/Makefile sys/Makefile sys/dshowdecwrapper/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/wininet/Makefile examples/Makefile examples/app/Makefile examples/directfb/Makefile examples/switch/Makefile ext/amrwb/Makefile ext/alsaspdif/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/metadata/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/ladspa/Makefile ext/libmms/Makefile ext/Makefile ext/nas/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/neon/Makefile ext/ofa/Makefile ext/resindvd/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/x264/Makefile ext/xvid/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/version.entities common/Makefile common/m4/Makefile m4/Makefile tests/Makefile tests/check/Makefile tests/icles/Makefile win32/common/config.h"
+ac_config_files="$ac_config_files Makefile gst-plugins-bad.spec gst/Makefile gst/aiffparse/Makefile gst/app/Makefile gst/bayer/Makefile gst/cdxaparse/Makefile gst/deinterlace/Makefile gst/deinterlace2/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/filter/Makefile gst/flv/Makefile gst/freeze/Makefile gst/h264parse/Makefile gst/librfb/Makefile gst/modplug/Makefile gst/modplug/libmodplug/Makefile gst/mpegtsparse/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/rawparse/Makefile gst/rtpmanager/Makefile gst/sdp/Makefile gst/selector/Makefile gst/speed/Makefile gst/speexresample/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst/real/Makefile gst/y4m/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/app/Makefile gst-libs/gst/dshow/Makefile sys/Makefile sys/acmenc/Makefile sys/dshowdecwrapper/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/wininet/Makefile examples/Makefile examples/app/Makefile examples/directfb/Makefile examples/switch/Makefile ext/amrwb/Makefile ext/alsaspdif/Makefile ext/apexsink/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/metadata/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/ladspa/Makefile ext/libmms/Makefile ext/Makefile ext/nas/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/neon/Makefile ext/ofa/Makefile ext/resindvd/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/x264/Makefile ext/xvid/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/version.entities common/Makefile common/m4/Makefile m4/Makefile tests/Makefile tests/check/Makefile tests/icles/Makefile win32/common/config.h"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -42289,6 +43016,13 @@ echo "$as_me: error: conditional \"HAVE_GLADE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${USE_PLUGIN_AIFFPARSE_TRUE}" && test -z "${USE_PLUGIN_AIFFPARSE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_PLUGIN_AIFFPARSE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_PLUGIN_AIFFPARSE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${USE_PLUGIN_APP_TRUE}" && test -z "${USE_PLUGIN_APP_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_PLUGIN_APP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -42583,6 +43317,13 @@ echo "$as_me: error: conditional \"USE_AMRWB\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${USE_APEXSINK_TRUE}" && test -z "${USE_APEXSINK_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_APEXSINK\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_APEXSINK\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${USE_BZ2_TRUE}" && test -z "${USE_BZ2_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_BZ2\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -42849,6 +43590,13 @@ echo "$as_me: error: conditional \"USE_WININET\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${USE_ACM_TRUE}" && test -z "${USE_ACM_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_ACM\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_ACM\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${USE_QUICKTIME_TRUE}" && test -z "${USE_QUICKTIME_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_QUICKTIME\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -42874,6 +43622,13 @@ if test -z "${USE_AMRWB_TRUE}" && test -z "${USE_AMRWB_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_AMRWB\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"USE_AMRWB\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${USE_APEXSINK_TRUE}" && test -z "${USE_APEXSINK_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_APEXSINK\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_APEXSINK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -44011,6 +44766,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "gst-plugins-bad.spec") CONFIG_FILES="$CONFIG_FILES gst-plugins-bad.spec" ;;
     "gst/Makefile") CONFIG_FILES="$CONFIG_FILES gst/Makefile" ;;
+    "gst/aiffparse/Makefile") CONFIG_FILES="$CONFIG_FILES gst/aiffparse/Makefile" ;;
     "gst/app/Makefile") CONFIG_FILES="$CONFIG_FILES gst/app/Makefile" ;;
     "gst/bayer/Makefile") CONFIG_FILES="$CONFIG_FILES gst/bayer/Makefile" ;;
     "gst/cdxaparse/Makefile") CONFIG_FILES="$CONFIG_FILES gst/cdxaparse/Makefile" ;;
@@ -44049,6 +44805,7 @@ do
     "gst-libs/gst/app/Makefile") CONFIG_FILES="$CONFIG_FILES gst-libs/gst/app/Makefile" ;;
     "gst-libs/gst/dshow/Makefile") CONFIG_FILES="$CONFIG_FILES gst-libs/gst/dshow/Makefile" ;;
     "sys/Makefile") CONFIG_FILES="$CONFIG_FILES sys/Makefile" ;;
+    "sys/acmenc/Makefile") CONFIG_FILES="$CONFIG_FILES sys/acmenc/Makefile" ;;
     "sys/dshowdecwrapper/Makefile") CONFIG_FILES="$CONFIG_FILES sys/dshowdecwrapper/Makefile" ;;
     "sys/dshowsrcwrapper/Makefile") CONFIG_FILES="$CONFIG_FILES sys/dshowsrcwrapper/Makefile" ;;
     "sys/dshowvideosink/Makefile") CONFIG_FILES="$CONFIG_FILES sys/dshowvideosink/Makefile" ;;
@@ -44064,6 +44821,7 @@ do
     "examples/switch/Makefile") CONFIG_FILES="$CONFIG_FILES examples/switch/Makefile" ;;
     "ext/amrwb/Makefile") CONFIG_FILES="$CONFIG_FILES ext/amrwb/Makefile" ;;
     "ext/alsaspdif/Makefile") CONFIG_FILES="$CONFIG_FILES ext/alsaspdif/Makefile" ;;
+    "ext/apexsink/Makefile") CONFIG_FILES="$CONFIG_FILES ext/apexsink/Makefile" ;;
     "ext/bz2/Makefile") CONFIG_FILES="$CONFIG_FILES ext/bz2/Makefile" ;;
     "ext/cdaudio/Makefile") CONFIG_FILES="$CONFIG_FILES ext/cdaudio/Makefile" ;;
     "ext/dc1394/Makefile") CONFIG_FILES="$CONFIG_FILES ext/dc1394/Makefile" ;;
@@ -44511,6 +45269,8 @@ plugindir!$plugindir$ac_delim
 ERROR_CFLAGS!$ERROR_CFLAGS$ac_delim
 ERROR_CXXFLAGS!$ERROR_CXXFLAGS$ac_delim
 GST_LEVEL_DEFAULT!$GST_LEVEL_DEFAULT$ac_delim
+USE_PLUGIN_AIFFPARSE_TRUE!$USE_PLUGIN_AIFFPARSE_TRUE$ac_delim
+USE_PLUGIN_AIFFPARSE_FALSE!$USE_PLUGIN_AIFFPARSE_FALSE$ac_delim
 USE_PLUGIN_APP_TRUE!$USE_PLUGIN_APP_TRUE$ac_delim
 USE_PLUGIN_APP_FALSE!$USE_PLUGIN_APP_FALSE$ac_delim
 USE_PLUGIN_BAYER_TRUE!$USE_PLUGIN_BAYER_TRUE$ac_delim
@@ -44542,8 +45302,6 @@ USE_PLUGIN_MPEGTSPARSE_FALSE!$USE_PLUGIN_MPEGTSPARSE_FALSE$ac_delim
 USE_PLUGIN_MPEG4VIDEOPARSE_TRUE!$USE_PLUGIN_MPEG4VIDEOPARSE_TRUE$ac_delim
 USE_PLUGIN_MPEG4VIDEOPARSE_FALSE!$USE_PLUGIN_MPEG4VIDEOPARSE_FALSE$ac_delim
 USE_PLUGIN_MPEGVIDEOPARSE_TRUE!$USE_PLUGIN_MPEGVIDEOPARSE_TRUE$ac_delim
-USE_PLUGIN_MPEGVIDEOPARSE_FALSE!$USE_PLUGIN_MPEGVIDEOPARSE_FALSE$ac_delim
-USE_PLUGIN_MVE_TRUE!$USE_PLUGIN_MVE_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -44585,6 +45343,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+USE_PLUGIN_MPEGVIDEOPARSE_FALSE!$USE_PLUGIN_MPEGVIDEOPARSE_FALSE$ac_delim
+USE_PLUGIN_MVE_TRUE!$USE_PLUGIN_MVE_TRUE$ac_delim
 USE_PLUGIN_MVE_FALSE!$USE_PLUGIN_MVE_FALSE$ac_delim
 USE_PLUGIN_NSF_TRUE!$USE_PLUGIN_NSF_TRUE$ac_delim
 USE_PLUGIN_NSF_FALSE!$USE_PLUGIN_NSF_FALSE$ac_delim
@@ -44636,6 +45396,8 @@ AMRWB_LIBS!$AMRWB_LIBS$ac_delim
 HAVE_AMRWB!$HAVE_AMRWB$ac_delim
 USE_AMRWB_TRUE!$USE_AMRWB_TRUE$ac_delim
 USE_AMRWB_FALSE!$USE_AMRWB_FALSE$ac_delim
+USE_APEXSINK_TRUE!$USE_APEXSINK_TRUE$ac_delim
+USE_APEXSINK_FALSE!$USE_APEXSINK_FALSE$ac_delim
 HAVE_BZ2!$HAVE_BZ2$ac_delim
 BZ2_LIBS!$BZ2_LIBS$ac_delim
 USE_BZ2_TRUE!$USE_BZ2_TRUE$ac_delim
@@ -44678,10 +45440,6 @@ XMP_CFLAGS!$XMP_CFLAGS$ac_delim
 XMP_LIBS!$XMP_LIBS$ac_delim
 XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 XMP_1_99_5_LIBS!$XMP_1_99_5_LIBS$ac_delim
-METADATA_CFLAGS!$METADATA_CFLAGS$ac_delim
-METADATA_LIBS!$METADATA_LIBS$ac_delim
-USE_METADATA_TRUE!$USE_METADATA_TRUE$ac_delim
-USE_METADATA_FALSE!$USE_METADATA_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -44723,6 +45481,10 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+METADATA_CFLAGS!$METADATA_CFLAGS$ac_delim
+METADATA_LIBS!$METADATA_LIBS$ac_delim
+USE_METADATA_TRUE!$USE_METADATA_TRUE$ac_delim
+USE_METADATA_FALSE!$USE_METADATA_FALSE$ac_delim
 HAVE_FAAC!$HAVE_FAAC$ac_delim
 FAAC_LIBS!$FAAC_LIBS$ac_delim
 USE_FAAC_TRUE!$USE_FAAC_TRUE$ac_delim
@@ -44816,10 +45578,6 @@ USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
 USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
 SPC_LIBS!$SPC_LIBS$ac_delim
 USE_SPC_TRUE!$USE_SPC_TRUE$ac_delim
-USE_SPC_FALSE!$USE_SPC_FALSE$ac_delim
-SWFDEC_CFLAGS!$SWFDEC_CFLAGS$ac_delim
-SWFDEC_LIBS!$SWFDEC_LIBS$ac_delim
-USE_SWFDEC_TRUE!$USE_SWFDEC_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -44861,6 +45619,10 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+USE_SPC_FALSE!$USE_SPC_FALSE$ac_delim
+SWFDEC_CFLAGS!$SWFDEC_CFLAGS$ac_delim
+SWFDEC_LIBS!$SWFDEC_LIBS$ac_delim
+USE_SWFDEC_TRUE!$USE_SWFDEC_TRUE$ac_delim
 USE_SWFDEC_FALSE!$USE_SWFDEC_FALSE$ac_delim
 THEORADEC_CFLAGS!$THEORADEC_CFLAGS$ac_delim
 THEORADEC_LIBS!$THEORADEC_LIBS$ac_delim
@@ -44880,6 +45642,8 @@ USE_OSS4_TRUE!$USE_OSS4_TRUE$ac_delim
 USE_OSS4_FALSE!$USE_OSS4_FALSE$ac_delim
 USE_WININET_TRUE!$USE_WININET_TRUE$ac_delim
 USE_WININET_FALSE!$USE_WININET_FALSE$ac_delim
+USE_ACM_TRUE!$USE_ACM_TRUE$ac_delim
+USE_ACM_FALSE!$USE_ACM_FALSE$ac_delim
 PROFILE_CFLAGS!$PROFILE_CFLAGS$ac_delim
 DEPRECATED_CFLAGS!$DEPRECATED_CFLAGS$ac_delim
 GST_OPTION_CFLAGS!$GST_OPTION_CFLAGS$ac_delim
@@ -44891,7 +45655,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 28; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 34; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

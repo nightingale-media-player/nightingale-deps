@@ -34,11 +34,17 @@
 /* package origin */
 #undef GST_PACKAGE_ORIGIN
 
+/* Define to enable Windows ACM library (used by acm). */
+#undef HAVE_ACM
+
 /* Define to enable alsa plug-ins (used by gstalsa). */
 #undef HAVE_ALSA
 
 /* Define to enable amrwb library (used by amrwb). */
 #undef HAVE_AMRWB
+
+/* Define to enable AirPort Express Wireless sink (used by apexsink). */
+#undef HAVE_APEXSINK
 
 /* Define to enable bz2 library (used by bz2). */
 #undef HAVE_BZ2
@@ -187,6 +193,9 @@
 
 /* Define to enable mplex (used by mplex). */
 #undef HAVE_MPLEX
+
+/* Define to 1 if you have the <msacm.h> header file. */
+#undef HAVE_MSACM_H
 
 /* Define to enable musepackdec (used by musepack). */
 #undef HAVE_MUSEPACK
