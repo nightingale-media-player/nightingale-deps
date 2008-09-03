@@ -75,34 +75,37 @@ IGNORE_CFILES =
 # the registry won't have the element
 
 EXTRA_HFILES = \
+	$(top_srcdir)/ext/aalib/gstaasink.h \
 	$(top_srcdir)/ext/annodex/gstcmmldec.h \
 	$(top_srcdir)/ext/annodex/gstcmmlenc.h \
 	$(top_srcdir)/ext/cairo/gsttimeoverlay.h \
-	$(top_srcdir)/ext/cdio/gstcdiocddasrc.h \
 	$(top_srcdir)/ext/dv/gstdvdec.h \
 	$(top_srcdir)/ext/dv/gstdvdemux.h \
-	$(top_srcdir)/gst/equalizer/gstiirequalizer.h \
-	$(top_srcdir)/gst/equalizer/gstiirequalizer3bands.h \
-	$(top_srcdir)/gst/equalizer/gstiirequalizer10bands.h \
-	$(top_srcdir)/gst/equalizer/gstiirequalizernbands.h \
 	$(top_srcdir)/ext/esd/esdsink.h \
 	$(top_srcdir)/ext/flac/gstflacdec.h \
+	$(top_srcdir)/ext/gdk_pixbuf/gstgdkpixbufsink.h \
 	$(top_srcdir)/ext/hal/gsthalaudiosink.h \
 	$(top_srcdir)/ext/hal/gsthalaudiosrc.h \
 	$(top_srcdir)/ext/jpeg/gstjpegdec.h \
 	$(top_srcdir)/ext/jpeg/gstjpegenc.h \
 	$(top_srcdir)/ext/jpeg/gstsmokedec.h \
 	$(top_srcdir)/ext/jpeg/gstsmokeenc.h \
+	$(top_srcdir)/ext/libcaca/gstcacasink.h \
 	$(top_srcdir)/ext/libpng/gstpngdec.h \
 	$(top_srcdir)/ext/libpng/gstpngenc.h \
+	$(top_srcdir)/ext/raw1394/gstdv1394src.h \
+	$(top_srcdir)/ext/soup/gstsouphttpsrc.h \
 	$(top_srcdir)/ext/taglib/gstapev2mux.h \
 	$(top_srcdir)/ext/taglib/gstid3v2mux.h \
-	$(top_srcdir)/ext/taglib/gsttaglibmux.h \
+	$(top_srcdir)/ext/pulse/pulsesink.h \
+	$(top_srcdir)/ext/pulse/pulsesrc.h \
+	$(top_srcdir)/ext/pulse/pulsemixer.h \
 	$(top_srcdir)/gst/alpha/gstalphacolor.h \
 	$(top_srcdir)/gst/apetag/gstapedemux.h \
 	$(top_srcdir)/gst/audiofx/audioamplify.h \
 	$(top_srcdir)/gst/audiofx/audiodynamic.h \
 	$(top_srcdir)/gst/audiofx/audioinvert.h \
+	$(top_srcdir)/gst/audiofx/audiokaraoke.h \
 	$(top_srcdir)/gst/audiofx/audiopanorama.h \
 	$(top_srcdir)/gst/audiofx/audiocheblimit.h \
 	$(top_srcdir)/gst/audiofx/audiochebband.h \
@@ -113,10 +116,17 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/avi/gstavidemux.h \
 	$(top_srcdir)/gst/avi/gstavimux.h \
 	$(top_srcdir)/gst/avi/gstavisubtitle.h \
+	$(top_srcdir)/gst/debug/gsttaginject.h \
 	$(top_srcdir)/gst/debug/progressreport.h \
+	$(top_srcdir)/gst/equalizer/gstiirequalizer.h \
+	$(top_srcdir)/gst/equalizer/gstiirequalizer3bands.h \
+	$(top_srcdir)/gst/equalizer/gstiirequalizer10bands.h \
+	$(top_srcdir)/gst/equalizer/gstiirequalizernbands.h \
 	$(top_srcdir)/gst/goom/gstgoom.h \
 	$(top_srcdir)/gst/icydemux/gsticydemux.h \
 	$(top_srcdir)/gst/id3demux/gstid3demux.h \
+	$(top_srcdir)/gst/interleave/deinterleave.h \
+	$(top_srcdir)/gst/interleave/interleave.h \
 	$(top_srcdir)/gst/level/gstlevel.h \
 	$(top_srcdir)/gst/monoscope/gstmonoscope.h \
 	$(top_srcdir)/gst/multifile/gstmultifilesink.h \
@@ -124,8 +134,13 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/multipart/multipartdemux.h \
 	$(top_srcdir)/gst/multipart/multipartmux.h \
 	$(top_srcdir)/gst/qtdemux/qtdemux.h \
+	$(top_srcdir)/gst/replaygain/gstrganalysis.h \
+	$(top_srcdir)/gst/replaygain/gstrglimiter.h \
+	$(top_srcdir)/gst/replaygain/gstrgvolume.h \
 	$(top_srcdir)/gst/rtsp/gstrtpdec.h \
 	$(top_srcdir)/gst/rtsp/gstrtspsrc.h \
+	$(top_srcdir)/gst/smpte/gstsmpte.h \
+	$(top_srcdir)/gst/smpte/gstsmptealpha.h \
 	$(top_srcdir)/gst/spectrum/gstspectrum.h \
 	$(top_srcdir)/gst/udp/gstmultiudpsink.h \
 	$(top_srcdir)/gst/udp/gstudpsrc.h \

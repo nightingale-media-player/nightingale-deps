@@ -5,6 +5,8 @@ libgstrtp_la_SOURCES = \
 	gstrtp.c \
 	gstrtpdepay.c \
 	gstrtpac3depay.c \
+	gstrtpdvdepay.c \
+	gstrtpdvpay.c \
 	gstrtpilbcdepay.c \
 	gstrtpilbcpay.c \
 	gstrtpmpadepay.c \
@@ -15,6 +17,10 @@ libgstrtp_la_SOURCES = \
 	gstrtppcmudepay.c \
 	gstrtppcmupay.c \
 	gstrtppcmapay.c \
+	gstrtpg726pay.c \
+	gstrtpg726depay.c \
+	gstrtpg729pay.c \
+	gstrtpg729depay.c \
 	gstrtpgsmdepay.c \
 	gstrtpgsmpay.c \
 	gstrtpamrdepay.c \
@@ -41,7 +47,9 @@ libgstrtp_la_SOURCES = \
 	gstrtptheoradepay.c \
 	gstrtptheorapay.c \
 	gstrtpvorbisdepay.c \
-	gstrtpvorbispay.c 
+	gstrtpvorbispay.c  \
+	gstrtpvrawdepay.c  \
+	gstrtpvrawpay.c 
 	
 
 if HAVE_WINSOCK2_H
@@ -61,6 +69,8 @@ noinst_HEADERS =			\
 		 gstrtpL16depay.h 	\
 		 gstrtpL16pay.h 	\
 		 gstrtpac3depay.h 	\
+		 gstrtpdvdepay.h 	\
+		 gstrtpdvpay.h 	        \
 		 gstrtpamrdepay.h 	\
 		 gstrtpamrpay.h 	\
 		 gstrtpilbcdepay.h      \
@@ -69,6 +79,10 @@ noinst_HEADERS =			\
 		 gstrtppcmudepay.h	\
 		 gstrtppcmupay.h 	\
 		 gstrtppcmapay.h 	\
+	         gstrtpg726depay.h      \
+	         gstrtpg726pay.h        \
+	         gstrtpg729depay.h      \
+	         gstrtpg729pay.h        \
 		 gstrtpgsmdepay.h 	\
 		 gstrtpgsmpay.h 	\
 		 gstrtpmpadepay.h 	\
@@ -96,4 +110,6 @@ noinst_HEADERS =			\
 	 	 gstrtptheoradepay.h    \
 	 	 gstrtptheorapay.h      \
 	 	 gstrtpvorbisdepay.h    \
-	 	 gstrtpvorbispay.h
+	 	 gstrtpvorbispay.h      \
+	 	 gstrtpvrawdepay.h      \
+	 	 gstrtpvrawpay.h

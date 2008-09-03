@@ -18,21 +18,6 @@ Send data over the network via UDP
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT GstUDPClient ##### -->
-<para>
-
-</para>
-
-@sock: 
-@theiraddr: 
-@multi_addr: 
-@host: 
-@port: 
-@bytes_sent: 
-@packets_sent: 
-@connect_time: 
-@disconnect_time: 
-
 <!-- ##### STRUCT GstMultiUDPSink ##### -->
 <para>
 
@@ -123,6 +108,21 @@ Send data over the network via UDP
 </para>
 
 <!-- ##### ARG GstMultiUDPSink:auto-multicast ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMultiUDPSink:loop ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMultiUDPSink:qos-dscp ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstMultiUDPSink:ttl ##### -->
 <para>
 
 </para>

@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+pulsesink
+
+<!-- ##### SECTION Short_Description ##### -->
+Plays audio to a PulseAudio server
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-pulsesink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPulseSink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstPulseSink:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPulseSink:server ##### -->
+<para>
+
+</para>
+

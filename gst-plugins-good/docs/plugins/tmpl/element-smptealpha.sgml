@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+smptealpha
+
+<!-- ##### SECTION Short_Description ##### -->
+Apply the standard SMPTE transitions as alpha on video images
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-smptealpha-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstSMPTEAlpha ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSMPTEAlpha:border ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTEAlpha:depth ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTEAlpha:position ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTEAlpha:type ##### -->
+<para>
+
+</para>
+

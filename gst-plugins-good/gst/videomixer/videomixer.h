@@ -75,6 +75,8 @@ struct _GstVideoMixer
 
   gint numpads;
 
+  GstClockTime last_ts;
+
   /* the master pad */
   GstVideoMixerPad *master;
 
@@ -87,6 +89,14 @@ struct _GstVideoMixer
 
   gint fps_n;
   gint fps_d;
+  
+  /* Next available sinkpad index */
+  gint next_sinkpad;
+
+  /* sink event handling */
+  GstPadEventFunction collect_event;
+  guint64	segment_position;
+  gdouble	segment_rate;
 };
 
 struct _GstVideoMixerClass

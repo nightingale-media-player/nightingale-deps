@@ -12,6 +12,7 @@
 
   <chapter>
     <title>gst-plugins-good Elements</title>
+    <xi:include href="xml/element-aasink.xml" />
     <xi:include href="xml/element-alphacolor.xml" />
     <xi:include href="xml/element-apedemux.xml" />
     <xi:include href="xml/element-apev2mux.xml" />
@@ -23,17 +24,20 @@
     <xi:include href="xml/element-audiodynamic.xml" />
     <xi:include href="xml/element-audioinvert.xml" />
     <xi:include href="xml/element-audiopanorama.xml" />
+    <xi:include href="xml/element-audiokaraoke.xml" />
     <xi:include href="xml/element-autoaudiosink.xml" />
     <xi:include href="xml/element-autovideosink.xml" />
     <xi:include href="xml/element-avidemux.xml" />
     <xi:include href="xml/element-avimux.xml" />
     <xi:include href="xml/element-avisubtitle.xml" />
+    <xi:include href="xml/element-cacasink.xml" />
     <xi:include href="xml/element-cairotimeoverlay.xml" />
-    <xi:include href="xml/element-cdiocddasrc.xml" />
     <xi:include href="xml/element-cmmldec.xml" />
     <xi:include href="xml/element-cmmlenc.xml" />
+    <xi:include href="xml/element-deinterleave.xml" />
     <xi:include href="xml/element-directdrawsink.xml" />
     <xi:include href="xml/element-directsoundsink.xml" />
+    <xi:include href="xml/element-dv1394src.xml" />
     <xi:include href="xml/element-dvdec.xml" />
     <xi:include href="xml/element-dvdemux.xml" />
     <xi:include href="xml/element-equalizer-10bands.xml" />
@@ -42,12 +46,15 @@
     <xi:include href="xml/element-esdsink.xml" />
     <xi:include href="xml/element-flacdec.xml" />
     <xi:include href="xml/element-gamma.xml" />
+    <xi:include href="xml/element-gdkpixbufsink.xml" />
     <xi:include href="xml/element-goom.xml" />
+    <xi:include href="xml/element-goom2k1.xml" />
     <xi:include href="xml/element-halaudiosink.xml" />
     <xi:include href="xml/element-halaudiosrc.xml" />
     <xi:include href="xml/element-icydemux.xml" />
     <xi:include href="xml/element-id3demux.xml" />
     <xi:include href="xml/element-id3v2mux.xml" />
+    <xi:include href="xml/element-interleave.xml" />
     <xi:include href="xml/element-jpegdec.xml" />
     <xi:include href="xml/element-jpegenc.xml" />
     <xi:include href="xml/element-level.xml" />
@@ -66,12 +73,22 @@
     <xi:include href="xml/element-pngdec.xml" />
     <xi:include href="xml/element-pngenc.xml" />
     <xi:include href="xml/element-progressreport.xml" />
+    <xi:include href="xml/element-pulsesink.xml" />
+    <xi:include href="xml/element-pulsesrc.xml" />
+    <xi:include href="xml/element-pulsemixer.xml" />
     <xi:include href="xml/element-qtdemux.xml" />
+    <xi:include href="xml/element-rganalysis.xml" />
+    <xi:include href="xml/element-rglimiter.xml" />
+    <xi:include href="xml/element-rgvolume.xml" />
     <xi:include href="xml/element-rtpdec.xml" />
     <xi:include href="xml/element-rtspsrc.xml" />
     <xi:include href="xml/element-smokedec.xml" />
     <xi:include href="xml/element-smokeenc.xml" />
+    <xi:include href="xml/element-smpte.xml" />
+    <xi:include href="xml/element-smptealpha.xml" />
+    <xi:include href="xml/element-souphttpsrc.xml" />
     <xi:include href="xml/element-spectrum.xml" />
+    <xi:include href="xml/element-taginject.xml" />
     <xi:include href="xml/element-udpsrc.xml" />
     <xi:include href="xml/element-v4l2src.xml" />
     <xi:include href="xml/element-videobalance.xml" />
@@ -101,7 +118,6 @@
     <xi:include href="xml/plugin-avi.xml" />
     <xi:include href="xml/plugin-cacasink.xml" />
     <xi:include href="xml/plugin-cairo.xml" />
-    <xi:include href="xml/plugin-cdio.xml" />
     <xi:include href="xml/plugin-cutter.xml" />
     <xi:include href="xml/plugin-debug.xml" />
     <xi:include href="xml/plugin-directdraw.xml" />
@@ -117,11 +133,12 @@
     <xi:include href="xml/plugin-gconfelements.xml" />
     <xi:include href="xml/plugin-gdkpixbuf.xml" />
     <xi:include href="xml/plugin-goom.xml" />
+    <xi:include href="xml/plugin-goom2k1.xml" />
     <xi:include href="xml/plugin-halelements.xml" />
     <xi:include href="xml/plugin-icydemux.xml" />
     <xi:include href="xml/plugin-id3demux.xml" />
+    <xi:include href="xml/plugin-interleave.xml" />
     <xi:include href="xml/plugin-jpeg.xml" />
-    <xi:include href="xml/plugin-ladspa.xml" />
     <xi:include href="xml/plugin-level.xml" />
     <xi:include href="xml/plugin-matroska.xml" />
     <xi:include href="xml/plugin-monoscope.xml" />
@@ -133,11 +150,14 @@
     <xi:include href="xml/plugin-osxaudio.xml" />
     <xi:include href="xml/plugin-osxvideo.xml" />
     <xi:include href="xml/plugin-png.xml" />
+    <xi:include href="xml/plugin-pulseaudio.xml" />
     <xi:include href="xml/plugin-quicktime.xml" />
+    <xi:include href="xml/plugin-replaygain.xml" />
     <xi:include href="xml/plugin-rtp.xml" />
     <xi:include href="xml/plugin-rtsp.xml" />
     <xi:include href="xml/plugin-shout2send.xml" />
     <xi:include href="xml/plugin-smpte.xml" />
+    <xi:include href="xml/plugin-soup.xml" />
     <xi:include href="xml/plugin-spectrum.xml" />
     <xi:include href="xml/plugin-speex.xml" />
     <xi:include href="xml/plugin-taglib.xml" />
@@ -153,5 +173,11 @@
     <xi:include href="xml/plugin-wavpack.xml" />
     <xi:include href="xml/plugin-wavparse.xml" />
     <xi:include href="xml/plugin-ximagesrc.xml" />
+  </chapter>
+  
+  <chapter>
+    <title>gst-plugins-good Base Classes</title>
+    <xi:include href="xml/gstiirequalizer.xml" />
+    <xi:include href="xml/gstvideomixerpad.xml" />
   </chapter>
 </book>

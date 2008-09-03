@@ -16,12 +16,6 @@ else
 CAIRO_DIR =
 endif
 
-if USE_CDIO
-CDIO_DIR = cdio
-else
-CDIO_DIR =
-endif
-
 if USE_ESD
 ESD_DIR = esd
 else
@@ -57,12 +51,6 @@ JPEG_DIR = jpeg
 else
 JPEG_DIR =
 endif
-
-#if USE_LADSPA
-#LADSPA_DIR = ladspa
-#else
-LADSPA_DIR =
-#endif
 
 if USE_LIBCACA
 LIBCACA_DIR = libcaca
@@ -100,10 +88,23 @@ else
 DV1394_DIR =
 endif
 
+if USE_PULSE
+PULSE_DIR = pulse
+else
+PULSE_DIR =
+endif
+
+
 if USE_SHOUT2
 SHOUT2_DIR = shout2
 else
 SHOUT2_DIR =
+endif
+
+if USE_SOUP
+SOUP_DIR=soup
+else
+SOUP_DIR=
 endif
 
 if USE_SPEEX
@@ -128,7 +129,6 @@ SUBDIRS = \
 	$(AALIB_DIR) \
 	$(ANNODEX_DIR) \
 	$(CAIRO_DIR) \
-	$(CDIO_DIR) \
 	$(DV1394_DIR) \
 	$(ESD_DIR) \
 	$(FLAC_DIR) \
@@ -136,13 +136,14 @@ SUBDIRS = \
 	$(GDK_PIXBUF_DIR) \
 	$(HAL_DIR) \
 	$(JPEG_DIR) \
-	$(LADSPA_DIR) \
 	$(LIBCACA_DIR) \
 	$(LIBDV_DIR) \
 	$(LIBMNG_DIR) \
 	$(LIBPNG_DIR) \
 	$(MIKMOD_DIR) \
+	$(PULSE_DIR) \
 	$(SHOUT2_DIR) \
+	$(SOUP_DIR) \
 	$(SPEEX_DIR) \
 	$(TAGLIB_DIR) \
 	$(WAVPACK_DIR)
@@ -151,7 +152,6 @@ DIST_SUBDIRS = \
 	aalib \
 	annodex \
 	cairo \
-	cdio \
 	dv \
 	esd \
 	flac \
@@ -162,8 +162,10 @@ DIST_SUBDIRS = \
 	ladspa \
 	libcaca \
 	libpng \
+	pulse \
 	raw1394 \
 	shout2 \
+	soup \
 	speex \
 	taglib \
 	wavpack

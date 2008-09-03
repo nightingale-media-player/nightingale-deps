@@ -36,6 +36,13 @@ G_BEGIN_DECLS
 #define GST_IS_RTP_H264_PAY_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_RTP_H264_PAY))
 
+typedef enum
+{
+  GST_H264_SCAN_MODE_BYTESTREAM,
+  GST_H264_SCAN_MODE_MULTI_NAL,
+  GST_H264_SCAN_MODE_SINGLE_NAL
+} GstH264ScanMode;
+
 typedef struct _GstRtpH264Pay GstRtpH264Pay;
 typedef struct _GstRtpH264PayClass GstRtpH264PayClass;
 
@@ -46,6 +53,14 @@ struct _GstRtpH264Pay
   guint profile;
   guint8 *sps, *pps;
   guint sps_len, pps_len;
+
+  gboolean packetized;
+  guint nal_length_size;
+
+  gchar *profile_level_id;
+  gchar *sprop_parameter_sets;
+  gboolean update_caps;
+  GstH264ScanMode scan_mode;
 };
 
 struct _GstRtpH264PayClass

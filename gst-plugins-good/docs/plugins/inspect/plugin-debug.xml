@@ -3,7 +3,7 @@
   <description>elements for testing and debugging</description>
   <filename>../../gst/debug/.libs/libgstdebug.so</filename>
   <basename>libgstdebug.so</basename>
-  <version>0.10.7</version>
+  <version>0.10.10</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -77,7 +77,7 @@
       <longname>Random buffer size</longname>
       <class>Testing</class>
       <description>pull random sized buffers</description>
-      <author>Nokia Corporation (contact &lt;stefan.kost@nokia.com&gt;)</author>
+      <author>Stefan Kost &lt;stefan.kost@nokia.com&gt;)</author>
       <pads>
         <caps>
           <name>sink</name>
@@ -88,6 +88,27 @@
         <caps>
           <name>src</name>
           <direction>source</direction>
+          <presence>always</presence>
+          <details>ANY</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>taginject</name>
+      <longname>TagInject</longname>
+      <class>Generic</class>
+      <description>inject metadata tags</description>
+      <author>Stefan Kost &lt;ensonic@users.sf.net&gt;</author>
+      <pads>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>ANY</details>
+        </caps>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
           <presence>always</presence>
           <details>ANY</details>
         </caps>

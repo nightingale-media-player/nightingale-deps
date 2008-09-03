@@ -55,7 +55,9 @@
 
 #include "gstv4l2colorbalance.h"
 #include "gstv4l2tuner.h"
+#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
 #include "gstv4l2xoverlay.h"
+#endif
 #include "gstv4l2vidorient.h"
 
 static const GstElementDetails gst_v4l2src_details =
@@ -233,17 +235,25 @@ GST_BOILERPLATE_FULL (GstV4l2Src, gst_v4l2src, GstPushSrc, GST_TYPE_PUSH_SRC,
     gst_v4l2src_init_interfaces);
 
 static void gst_v4l2src_dispose (GObject * object);
+
 static void gst_v4l2src_finalize (GstV4l2Src * v4l2src);
 
 /* basesrc methods */
 static gboolean gst_v4l2src_start (GstBaseSrc * src);
+
 static gboolean gst_v4l2src_stop (GstBaseSrc * src);
+
 static gboolean gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps);
+
 static GstCaps *gst_v4l2src_get_caps (GstBaseSrc * src);
+
 static gboolean gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query);
+
 static GstFlowReturn gst_v4l2src_create (GstPushSrc * src, GstBuffer ** out);
 
 static void gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
+
+static gboolean gst_v4l2src_negotiate (GstBaseSrc * basesrc);
 
 static void gst_v4l2src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -256,6 +266,7 @@ static void
 gst_v4l2src_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+
   GstV4l2SrcClass *gstv4l2src_class = GST_V4L2SRC_CLASS (g_class);
 
   gstv4l2src_class->v4l2_class_devices = NULL;
@@ -274,7 +285,9 @@ static void
 gst_v4l2src_class_init (GstV4l2SrcClass * klass)
 {
   GObjectClass *gobject_class;
+
   GstBaseSrcClass *basesrc_class;
+
   GstPushSrcClass *pushsrc_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
@@ -303,6 +316,7 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
   basesrc_class->stop = GST_DEBUG_FUNCPTR (gst_v4l2src_stop);
   basesrc_class->query = GST_DEBUG_FUNCPTR (gst_v4l2src_query);
   basesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_v4l2src_fixate);
+  basesrc_class->negotiate = GST_DEBUG_FUNCPTR (gst_v4l2src_negotiate);
 
   pushsrc_class->create = GST_DEBUG_FUNCPTR (gst_v4l2src_create);
 }
@@ -404,23 +418,26 @@ static void
 gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
 {
   GstStructure *structure;
+
   gint i;
 
   GST_DEBUG_OBJECT (basesrc, "fixating caps %" GST_PTR_FORMAT, caps);
 
   for (i = 0; i < gst_caps_get_size (caps); ++i) {
-    structure = gst_caps_get_structure (caps, i);
     const GValue *v;
+
+    structure = gst_caps_get_structure (caps, i);
 
     /* FIXME such sizes? we usually fixate to something in the 320x200
      * range... */
     /* We are fixating to greater possble size (limited to GST_V4L2_MAX_SIZE)
-       and framerate closer to 15/2 that is common in web-cams */
+       and the maximum framerate resolution for that size */
     gst_structure_fixate_field_nearest_int (structure, "width",
         GST_V4L2_MAX_SIZE);
     gst_structure_fixate_field_nearest_int (structure, "height",
         GST_V4L2_MAX_SIZE);
-    gst_structure_fixate_field_nearest_fraction (structure, "framerate", 15, 2);
+    gst_structure_fixate_field_nearest_fraction (structure, "framerate",
+        G_MAXINT, 1);
 
     v = gst_structure_get_value (structure, "format");
     if (v && G_VALUE_TYPE (v) != GST_TYPE_FOURCC) {
@@ -432,7 +449,132 @@ gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
       gst_structure_set (structure, "format", GST_TYPE_FOURCC, fourcc, NULL);
     }
   }
+
+  GST_DEBUG_OBJECT (basesrc, "fixated caps %" GST_PTR_FORMAT, caps);
 }
+
+
+static gboolean
+gst_v4l2src_negotiate (GstBaseSrc * basesrc)
+{
+  GstCaps *thiscaps;
+
+  GstCaps *caps = NULL;
+
+  GstCaps *peercaps = NULL;
+
+  gboolean result = FALSE;
+
+  /* first see what is possible on our source pad */
+  thiscaps = gst_pad_get_caps (GST_BASE_SRC_PAD (basesrc));
+  GST_DEBUG_OBJECT (basesrc, "caps of src: %" GST_PTR_FORMAT, thiscaps);
+  /* nothing or anything is allowed, we're done */
+  if (thiscaps == NULL || gst_caps_is_any (thiscaps))
+    goto no_nego_needed;
+
+  /* get the peer caps */
+  peercaps = gst_pad_peer_get_caps (GST_BASE_SRC_PAD (basesrc));
+  GST_DEBUG_OBJECT (basesrc, "caps of peer: %" GST_PTR_FORMAT, peercaps);
+  if (peercaps && !gst_caps_is_any (peercaps)) {
+    GstCaps *icaps = NULL;
+    int i;
+
+    /* Prefer the first caps we are compatible with that the peer proposed */
+    for (i = 0; i < gst_caps_get_size (peercaps); i++) {
+      /* get intersection */
+      GstCaps *ipcaps = gst_caps_copy_nth (peercaps, i);
+
+      GST_DEBUG_OBJECT (basesrc, "peer: %" GST_PTR_FORMAT, ipcaps);
+
+      icaps = gst_caps_intersect (thiscaps, ipcaps);
+      gst_caps_unref (ipcaps);
+
+      if (!gst_caps_is_empty (icaps))
+        break;
+
+      gst_caps_unref (icaps);
+      icaps = NULL;
+    }
+
+    GST_DEBUG_OBJECT (basesrc, "intersect: %" GST_PTR_FORMAT, icaps);
+    if (icaps) {
+      /* If there are multiple intersections pick the one with the smallest
+       * resolution strictly bigger then the first peer caps */
+      if (gst_caps_get_size (icaps) > 1) {
+        GstStructure *s = gst_caps_get_structure (peercaps, 0);
+
+        int best = 0;
+
+        int twidth, theight;
+
+        int width = G_MAXINT, height = G_MAXINT;
+
+        if (gst_structure_get_int (s, "width", &twidth)
+            && gst_structure_get_int (s, "height", &theight)) {
+
+          /* Walk the structure backwards to get the first entry of the
+           * smallest resolution bigger (or equal to) the preferred resolution)
+           */
+          for (i = gst_caps_get_size (icaps) - 1; i >= 0; i--) {
+            GstStructure *is = gst_caps_get_structure (icaps, i);
+
+            int w, h;
+
+            if (gst_structure_get_int (is, "width", &w)
+                && gst_structure_get_int (is, "height", &h)) {
+              if (w >= twidth && w <= width && h >= theight && h <= height) {
+                width = w;
+                height = h;
+                best = i;
+              }
+            }
+          }
+        }
+
+        caps = gst_caps_copy_nth (icaps, best);
+        gst_caps_unref (icaps);
+      } else {
+        caps = icaps;
+      }
+    }
+    gst_caps_unref (thiscaps);
+    gst_caps_unref (peercaps);
+  } else {
+    /* no peer or peer have ANY caps, work with our own caps then */
+    caps = thiscaps;
+  }
+  if (caps) {
+    caps = gst_caps_make_writable (caps);
+    gst_caps_truncate (caps);
+
+    /* now fixate */
+    if (!gst_caps_is_empty (caps)) {
+      gst_pad_fixate_caps (GST_BASE_SRC_PAD (basesrc), caps);
+      GST_DEBUG_OBJECT (basesrc, "fixated to: %" GST_PTR_FORMAT, caps);
+
+      if (gst_caps_is_any (caps)) {
+        /* hmm, still anything, so element can do anything and
+         * nego is not needed */
+        result = TRUE;
+      } else if (gst_caps_is_fixed (caps)) {
+        /* yay, fixed caps, use those then */
+        gst_pad_set_caps (GST_BASE_SRC_PAD (basesrc), caps);
+        result = TRUE;
+      }
+    }
+    gst_caps_unref (caps);
+  }
+  return result;
+
+no_nego_needed:
+  {
+    GST_DEBUG_OBJECT (basesrc, "no negotiation needed");
+    if (thiscaps)
+      gst_caps_unref (thiscaps);
+    return TRUE;
+  }
+}
+
 
 static GstStructure *
 gst_v4l2src_v4l2fourcc_to_structure (guint32 fourcc)
@@ -463,7 +605,9 @@ gst_v4l2src_v4l2fourcc_to_structure (guint32 fourcc)
     case V4L2_PIX_FMT_RGB32:
     case V4L2_PIX_FMT_BGR32:{
       guint depth = 0, bpp = 0;
+
       gint endianness = 0;
+
       guint32 r_mask = 0, b_mask = 0, g_mask = 0;
 
       switch (fourcc) {
@@ -535,12 +679,12 @@ gst_v4l2src_v4l2fourcc_to_structure (guint32 fourcc)
       break;
     }
     case V4L2_PIX_FMT_GREY:    /*  8  Greyscale     */
-    case V4L2_PIX_FMT_NV12:    /* 12  Y/CbCr 4:2:0  */
-    case V4L2_PIX_FMT_NV21:    /* 12  Y/CrCb 4:2:0  */
     case V4L2_PIX_FMT_YYUV:    /* 16  YUV 4:2:2     */
     case V4L2_PIX_FMT_HI240:   /*  8  8-bit color   */
       /* FIXME: get correct fourccs here */
       break;
+    case V4L2_PIX_FMT_NV12:    /* 12  Y/CbCr 4:2:0  */
+    case V4L2_PIX_FMT_NV21:    /* 12  Y/CrCb 4:2:0  */
     case V4L2_PIX_FMT_YVU410:
     case V4L2_PIX_FMT_YUV410:
     case V4L2_PIX_FMT_YUV420:  /* I420/IYUV */
@@ -553,6 +697,12 @@ gst_v4l2src_v4l2fourcc_to_structure (guint32 fourcc)
       guint32 fcc = 0;
 
       switch (fourcc) {
+        case V4L2_PIX_FMT_NV12:
+          fcc = GST_MAKE_FOURCC ('N', 'V', '1', '2');
+          break;
+        case V4L2_PIX_FMT_NV21:
+          fcc = GST_MAKE_FOURCC ('N', 'V', '2', '1');
+          break;
         case V4L2_PIX_FMT_YVU410:
           fcc = GST_MAKE_FOURCC ('Y', 'V', 'U', '9');
           break;
@@ -614,6 +764,7 @@ static struct v4l2_fmtdesc *
 gst_v4l2src_get_format_from_fourcc (GstV4l2Src * v4l2src, guint32 fourcc)
 {
   struct v4l2_fmtdesc *fmt;
+
   GSList *walk;
 
   if (fourcc == 0)
@@ -643,6 +794,7 @@ gst_v4l2src_get_all_caps (void)
 
   if (caps == NULL) {
     GstStructure *structure;
+
     guint i;
 
     caps = gst_caps_new_empty ();
@@ -665,7 +817,9 @@ static GstCaps *
 gst_v4l2src_get_caps (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+
   GstCaps *ret;
+
   GSList *walk;
 
   if (!GST_V4L2_IS_OPEN (v4l2src->v4l2object)) {
@@ -685,6 +839,7 @@ gst_v4l2src_get_caps (GstBaseSrc * src)
 
   for (walk = v4l2src->formats; walk; walk = walk->next) {
     struct v4l2_fmtdesc *format;
+
     GstStructure *template;
 
     format = (struct v4l2_fmtdesc *) walk->data;
@@ -725,9 +880,13 @@ gst_v4l2_get_caps_info (GstV4l2Src * v4l2src, GstCaps * caps,
     guint * fps_d, guint * size)
 {
   GstStructure *structure;
+
   const GValue *framerate;
+
   guint32 fourcc;
+
   const gchar *mimetype;
+
   guint outsize;
 
   /* default unknown values */
@@ -788,6 +947,16 @@ gst_v4l2_get_caps_info (GstV4l2Src * v4l2src, GstCaps * caps,
         outsize = GST_ROUND_UP_4 (*w) * *h;
         outsize += 2 * ((GST_ROUND_UP_8 (*w) / 2) * *h);
         break;
+      case GST_MAKE_FOURCC ('N', 'V', '1', '2'):
+        fourcc = V4L2_PIX_FMT_NV12;
+        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
+        outsize += (GST_ROUND_UP_4 (*w) * *h) / 2;
+        break;
+      case GST_MAKE_FOURCC ('N', 'V', '2', '1'):
+        fourcc = V4L2_PIX_FMT_NV21;
+        outsize = GST_ROUND_UP_4 (*w) * GST_ROUND_UP_2 (*h);
+        outsize += (GST_ROUND_UP_4 (*w) * *h) / 2;
+        break;
     }
   } else if (!strcmp (mimetype, "video/x-raw-rgb")) {
     gint depth, endianness, r_mask;
@@ -819,6 +988,8 @@ gst_v4l2_get_caps_info (GstV4l2Src * v4l2src, GstCaps * caps,
     fourcc = V4L2_PIX_FMT_DV;
   } else if (strcmp (mimetype, "image/jpeg") == 0) {
     fourcc = V4L2_PIX_FMT_JPEG;
+  } else if (strcmp (mimetype, "video/x-raw-bayer") == 0) {
+    fourcc = V4L2_PIX_FMT_SBGGR8;
   }
 
   if (fourcc == 0)
@@ -834,9 +1005,13 @@ static gboolean
 gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps)
 {
   GstV4l2Src *v4l2src;
+
   gint w = 0, h = 0;
+
   struct v4l2_fmtdesc *format;
+
   guint fps_n, fps_d;
+
   guint size;
 
   v4l2src = GST_V4L2SRC (src);
@@ -886,6 +1061,7 @@ static gboolean
 gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query)
 {
   GstV4l2Src *src;
+
   gboolean res = FALSE;
 
   src = GST_V4L2SRC (bsrc);
@@ -977,6 +1153,7 @@ static GstFlowReturn
 gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
 {
   gint amount;
+
   gint buffersize;
 
   buffersize = v4l2src->frame_byte_size;
@@ -1005,6 +1182,7 @@ gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
   /* timestamps, LOCK to get clock and base time. */
   {
     GstClock *clock;
+
     GstClockTime timestamp;
 
     GST_OBJECT_LOCK (v4l2src);
@@ -1056,8 +1234,11 @@ static GstFlowReturn
 gst_v4l2src_get_mmap (GstV4l2Src * v4l2src, GstBuffer ** buf)
 {
   GstBuffer *temp;
+
   GstFlowReturn ret;
+
   guint size;
+
   guint count;
 
   count = 0;
@@ -1101,6 +1282,7 @@ static GstFlowReturn
 gst_v4l2src_create (GstPushSrc * src, GstBuffer ** buf)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+
   GstFlowReturn ret;
 
   if (v4l2src->use_mmap) {

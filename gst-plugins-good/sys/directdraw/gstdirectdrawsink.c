@@ -510,6 +510,12 @@ gst_directdraw_sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
         (GetSystemMetrics (SM_CYSIZEFRAME) * 2), SWP_SHOWWINDOW | SWP_NOMOVE);
   }
 
+  /* release the surface, we have to recreate it! */
+  if (ddrawsink->offscreen_surface) {
+    IDirectDrawSurface7_Release (ddrawsink->offscreen_surface);
+    ddrawsink->offscreen_surface = NULL;
+  }
+
   /* create an offscreen surface with the caps */
   ret = gst_directdraw_sink_check_offscreen_surface (ddrawsink);
   if (!ret) {
@@ -572,6 +578,8 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
     guint size, GstCaps * caps, GstBuffer ** buf)
 {
   GstDirectDrawSink *ddrawsink = GST_DIRECTDRAW_SINK (bsink);
+  GstStructure *structure;
+  gint width, height;
   GstDDrawSurface *surface = NULL;
   GstFlowReturn ret = GST_FLOW_OK;
   GstCaps *buffer_caps = caps;
@@ -579,6 +587,14 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
 
   GST_CAT_INFO_OBJECT (directdrawsink_debug, ddrawsink,
       "a buffer of %u bytes was requested", size);
+
+  structure = gst_caps_get_structure (caps, 0);
+  if (!gst_structure_get_int (structure, "width", &width) ||
+      !gst_structure_get_int (structure, "height", &height)) {
+    GST_WARNING_OBJECT (ddrawsink, "invalid caps for buffer allocation %"
+        GST_PTR_FORMAT, caps);
+    return GST_FLOW_UNEXPECTED;
+  }
 
   g_mutex_lock (ddrawsink->pool_lock);
 
@@ -591,8 +607,8 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
           ddrawsink->buffer_pool);
 
       /* If the surface is invalid for our need, destroy */
-      if ((surface->width != ddrawsink->video_width) ||
-          (surface->height != ddrawsink->video_height) ||
+      if ((surface->width != width) ||
+          (surface->height != height) ||
           (memcmp (&surface->dd_pixel_format, &ddrawsink->dd_pixel_format,
                   sizeof (DDPIXELFORMAT)) ||
               !gst_directdraw_sink_surface_check (ddrawsink, surface))
@@ -615,9 +631,7 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
     HRESULT hres;
     DDSURFACEDESC2 surface_desc;
     DDSURFACEDESC2 *sd;
-    GstStructure *structure = NULL;
 
-    structure = gst_caps_get_structure (caps, 0);
     if (!gst_structure_get_int (structure, "depth", &depth)) {
       GST_CAT_DEBUG_OBJECT (directdrawsink_debug, ddrawsink,
           "Can't get depth from buffer_alloc caps");
@@ -673,7 +687,7 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
             buffer_caps = copy_caps;
             buffercaps_unref = TRUE;
             /* update buffer size needed to store video frames according to new caps */
-            size = ddrawsink->video_width * ddrawsink->video_height * (bpp / 8);
+            size = width * height * (bpp / 8);
 
             /* update our member pixel format */
             gst_ddrawvideosink_get_format_from_caps (ddrawsink, buffer_caps,
@@ -705,6 +719,7 @@ gst_directdraw_sink_buffer_alloc (GstBaseSink * bsink, guint64 offset,
 
   /* Now we should have a surface, set appropriate caps on it */
   if (surface) {
+    GST_BUFFER_FLAGS (GST_BUFFER (surface)) = 0;
     gst_buffer_set_caps (GST_BUFFER (surface), buffer_caps);
   }
 
@@ -795,8 +810,14 @@ gst_directdraw_sink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
     /* use last buffer */
     buf = ddrawsink->last_buffer;
   }
-  if (buf == NULL)
+
+  if (buf == NULL) {
+    GST_ERROR_OBJECT (ddrawsink, "No buffer to render.");
     return GST_FLOW_ERROR;
+  } else if (!ddrawsink->video_window) {
+    GST_WARNING_OBJECT (ddrawsink, "No video window to render to.");
+    return GST_FLOW_ERROR;
+  }
 
   /* get the video window position */
   GST_OBJECT_LOCK (ddrawsink);
@@ -859,7 +880,11 @@ gst_directdraw_sink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
       GST_CAT_WARNING_OBJECT (directdrawsink_debug, ddrawsink,
           "gst_directdraw_sink_show_frame failed locking surface %s",
           DDErrorString (hRes));
-      return GST_FLOW_ERROR;
+
+      if (IDirectDrawSurface7_IsLost (ddrawsink->offscreen_surface) == DD_OK)
+        return GST_FLOW_OK;
+      else
+        return GST_FLOW_ERROR;
     }
 
     /* Write each line respecting the destination surface pitch */
@@ -1283,6 +1308,9 @@ gst_directdraw_sink_setup_ddraw (GstDirectDrawSink * ddrawsink)
   hRes = IDirectDraw7_CreateClipper (ddrawsink->ddraw_object, 0,
       &ddrawsink->clipper, NULL);
 
+  if (hRes == DD_OK && ddrawsink->video_window)
+    IDirectDrawClipper_SetHWnd (ddrawsink->clipper, 0, ddrawsink->video_window);
+
   /* create our primary surface */
   if (!gst_directdraw_sink_check_primary_surface (ddrawsink))
     return FALSE;
@@ -1299,13 +1327,13 @@ WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message) {
     case WM_ERASEBKGND:
       return TRUE;
-    case WM_DESTROY:
-      PostQuitMessage (0);
-      break;
     case WM_CLOSE:
       DestroyWindow (hWnd);
+    case WM_DESTROY:
+      PostQuitMessage (0);
       return 0;
   }
+
   return DefWindowProc (hWnd, message, wParam, lParam);
 }
 
@@ -1313,6 +1341,7 @@ static gpointer
 gst_directdraw_sink_window_thread (GstDirectDrawSink * ddrawsink)
 {
   WNDCLASS WndClass;
+  MSG msg;
 
   memset (&WndClass, 0, sizeof (WNDCLASS));
   WndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -1342,22 +1371,19 @@ gst_directdraw_sink_window_thread (GstDirectDrawSink * ddrawsink)
   ReleaseSemaphore (ddrawsink->window_created_signal, 1, NULL);
 
   /* start message loop processing our default window messages */
-  while (1) {
-    MSG msg;
-
-    if (GetMessage (&msg, ddrawsink->video_window, 0, 0) <= 0) {
-      GST_CAT_LOG_OBJECT (directdrawsink_debug, ddrawsink,
-          "our window received WM_QUIT or error.");
-      /* The window could have changed, if it is not ours anymore we don't 
-       * overwrite the current video window with NULL */
-      if (ddrawsink->our_video_window) {
-        GST_OBJECT_LOCK (ddrawsink);
-        ddrawsink->video_window = NULL;
-        GST_OBJECT_UNLOCK (ddrawsink);
-      }
-      break;
-    }
+  while (GetMessage (&msg, NULL, 0, 0) != FALSE) {
+    TranslateMessage (&msg);
     DispatchMessage (&msg);
+  }
+
+  GST_CAT_LOG_OBJECT (directdrawsink_debug, ddrawsink,
+      "our window received WM_QUIT or error.");
+  /* The window could have changed, if it is not ours anymore we don't
+   * overwrite the current video window with NULL */
+  if (ddrawsink->our_video_window) {
+    GST_OBJECT_LOCK (ddrawsink);
+    ddrawsink->video_window = NULL;
+    GST_OBJECT_UNLOCK (ddrawsink);
   }
 
   return NULL;

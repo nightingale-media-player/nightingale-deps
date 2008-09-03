@@ -2,33 +2,19 @@
 # Copyright (C) 2004, Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-plugins-0.8.3 package.
 # Gora Mohanty <gora_mohanty@yahoo.co.in>, 2004.
-# $Id: or.po,v 1.13 2005/11/11 18:33:21 thomasvs Exp $
+# $Id: or.po,v 1.30 2008-04-23 23:18:43 thaytan Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 00:20+0000\n"
+"POT-Creation-Date: 2008-08-11 23:36+0100\n"
 "PO-Revision-Date: 2004-09-27 13:32+0530\n"
 "Last-Translator: Gora Mohanty <gora_mohanty@yahoo.co.in>\n"
 "Language-Team: Oriya <gora_mohanty@yahoo.co.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ext/cdio/gstcdiocddasrc.c:205
-#, fuzzy
-msgid "Could not read from CD."
-msgstr "\"%s\" ଫାଇଲ ଲେଖିହେଲା ନାହିଁ."
-
-#: ext/cdio/gstcdiocddasrc.c:283
-msgid "Could not open CD device for reading."
-msgstr "ସି.ଡି. ଯନ୍ତ୍ର ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
-
-#: ext/cdio/gstcdiocddasrc.c:290
-#, fuzzy
-msgid "Disc is not an Audio CD."
-msgstr "ଯନ୍ତ୍ର ଖୋଲାଯାଇ ନାହିଁ."
 
 #: ext/esd/esdsink.c:262 ext/esd/esdsink.c:367
 msgid "Could not establish connection to sound server"
@@ -38,13 +24,13 @@ msgstr ""
 msgid "Failed to query sound server capabilities"
 msgstr ""
 
-#: ext/flac/gstflacdec.c:1262 ext/libpng/gstpngdec.c:330
-#: ext/libpng/gstpngdec.c:518 ext/wavpack/gstwavpackparse.c:1111
-#: gst/avi/gstavidemux.c:3778 gst/avi/gstavidemux.c:3786
+#: ext/flac/gstflacdec.c:1254 ext/libpng/gstpngdec.c:329
+#: ext/libpng/gstpngdec.c:517 ext/wavpack/gstwavpackparse.c:1167
+#: gst/avi/gstavidemux.c:4114 gst/avi/gstavidemux.c:4122
 msgid "Internal data stream error."
 msgstr ""
 
-#: ext/jpeg/gstjpegdec.c:1042
+#: ext/jpeg/gstjpegdec.c:1041
 msgid "Failed to decode JPEG image"
 msgstr ""
 
@@ -53,40 +39,36 @@ msgstr ""
 msgid "Could not connect to server"
 msgstr "\"%s\" ନିୟନ୍ତ୍ରଣ ଯନ୍ତ୍ର ବନ୍ଦ କରିହେଲା ନାହିଁ."
 
-#: gst/avi/gstavimux.c:1474
+#: gst/avi/gstavimux.c:1605
 msgid "No or invalid input audio, AVI stream will be corrupt."
 msgstr "ନିବେଶ ଧ୍ବନି ନାହିଁ ବା ଅବୈଧ ଅଛି. ଏ.ଭି.ଆଇ. ଧାରା ଭ୍ରଷ୍ଟ ହୋଇଯିବ."
 
-#: gst/qtdemux/qtdemux.c:1029
+#: gst/qtdemux/qtdemux.c:1113
 msgid "This file is incomplete and cannot be played."
 msgstr ""
 
-#: gst/qtdemux/qtdemux.c:1810
+#: gst/qtdemux/qtdemux.c:1935
 msgid "This file contains no playable streams."
 msgstr ""
 
-#: gst/qtdemux/qtdemux.c:2647
+#: gst/qtdemux/qtdemux.c:2780
 msgid "The video in this file might not play correctly."
 msgstr ""
 
-#: gst/qtdemux/qtdemux.c:2722
+#: gst/qtdemux/qtdemux.c:2855
 #, c-format
 msgid "This file contains too many streams. Only playing first %d"
 msgstr ""
 
-#: gst/qtdemux/qtdemux.c:2984 gst/qtdemux/qtdemux.c:3581
+#: gst/qtdemux/qtdemux.c:3117 gst/qtdemux/qtdemux.c:3714
 msgid "This file is corrupt and cannot be played."
-msgstr ""
-
-#: gst/qtdemux/qtdemux.c:3588
-msgid "This file is encrypted and cannot be played."
 msgstr ""
 
 #: gst/wavparse/gstwavparse.c:1777
 msgid "Internal data flow error."
 msgstr ""
 
-#: sys/oss/gstossmixertrack.c:98 sys/sunaudio/gstsunaudiomixertrack.c:64
+#: sys/oss/gstossmixertrack.c:98 sys/sunaudio/gstsunaudiomixertrack.c:65
 msgid "Volume"
 msgstr "ପ୍ରବଳତା"
 
@@ -182,133 +164,133 @@ msgstr "ଭିଡିଓ"
 msgid "Radio"
 msgstr "ରେଡିଓ"
 
-#: sys/oss/gstossmixertrack.c:122 sys/sunaudio/gstsunaudiomixertrack.c:64
+#: sys/oss/gstossmixertrack.c:122 sys/sunaudio/gstsunaudiomixertrack.c:65
 msgid "Monitor"
 msgstr "ପ୍ରଦର୍ଶିକା"
 
-#: sys/sunaudio/gstsunaudiomixertrack.c:64
+#: sys/sunaudio/gstsunaudiomixertrack.c:65
 msgid "Gain"
 msgstr ""
 
-#: sys/v4l2/gstv4l2src.c:1048 sys/v4l2/gstv4l2src.c:1094
+#: sys/v4l2/gstv4l2src.c:1226 sys/v4l2/gstv4l2src.c:1275
 #, c-format
 msgid "Error read()ing %d bytes on device '%s'."
 msgstr ""
 
-#: sys/v4l2/gstv4l2src.c:1076
+#: sys/v4l2/gstv4l2src.c:1257
 #, c-format
 msgid "Got unexpected frame size of %u instead of %u."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:83
+#: sys/v4l2/v4l2_calls.c:93
 #, c-format
 msgid ""
 "Error getting capabilities for device '%s': It isn't a v4l2 driver. Check if "
 "it is a v4l1 driver."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:120
+#: sys/v4l2/v4l2_calls.c:132
 #, c-format
 msgid "Failed to query attributes of input %d in device %s"
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:150
+#: sys/v4l2/v4l2_calls.c:162
 #, fuzzy, c-format
 msgid "Failed to get setting of tuner %d on device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ପର୍ଯ୍ଯାପ୍ତ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:192
+#: sys/v4l2/v4l2_calls.c:205
 #, c-format
 msgid "Failed to query norm on device '%s'."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:240
+#: sys/v4l2/v4l2_calls.c:254
 #, c-format
 msgid "Failed getting controls attributes on device '%s.'"
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:310
+#: sys/v4l2/v4l2_calls.c:331
 #, c-format
 msgid "Failed getting controls attributes on device '%s'."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:428
+#: sys/v4l2/v4l2_calls.c:449
 #, fuzzy, c-format
 msgid "Cannot identify device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରେ ଲେଖିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:435
+#: sys/v4l2/v4l2_calls.c:456
 #, c-format
 msgid "This isn't a device '%s'."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:442
+#: sys/v4l2/v4l2_calls.c:463
 #, fuzzy, c-format
 msgid "Could not open device '%s' for reading and writing."
 msgstr "\"%s\" ଯନ୍ତ୍ର ପଢ଼ିବା ଓ ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:449
+#: sys/v4l2/v4l2_calls.c:470
 #, fuzzy, c-format
 msgid "Device '%s' is not a capture device."
 msgstr "\"%s\" ଯନ୍ତ୍ର ଗୋଟିଏ ଅନୁଲିପିକାର ନୁହେଁ."
 
-#: sys/v4l2/v4l2_calls.c:544
+#: sys/v4l2/v4l2_calls.c:565
 #, fuzzy, c-format
 msgid "Failed to set norm for device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:581
+#: sys/v4l2/v4l2_calls.c:603
 #, fuzzy, c-format
 msgid "Failed to get current tuner frequency for device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ପର୍ଯ୍ଯାପ୍ତ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:622
+#: sys/v4l2/v4l2_calls.c:645
 #, c-format
 msgid "Failed to set current tuner frequency for device '%s' to %lu Hz."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:656
+#: sys/v4l2/v4l2_calls.c:679
 #, c-format
 msgid "Failed to get signal strength for device '%s'."
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:692
+#: sys/v4l2/v4l2_calls.c:715
 #, fuzzy, c-format
 msgid "Failed to get value for control %d on device '%s'."
 msgstr "\"%s\" ନିୟନ୍ତ୍ରଣ ଯନ୍ତ୍ର ବନ୍ଦ କରିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:727
+#: sys/v4l2/v4l2_calls.c:750
 #, fuzzy, c-format
 msgid "Failed to set value %d for control %d on device '%s'."
 msgstr "\"%s\" ନିୟନ୍ତ୍ରଣ ଯନ୍ତ୍ର ବନ୍ଦ କରିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2_calls.c:756
+#: sys/v4l2/v4l2_calls.c:779
 #, c-format
 msgid "Failed to get current input on device '%s'. May be it is a radio device"
 msgstr ""
 
-#: sys/v4l2/v4l2_calls.c:778
+#: sys/v4l2/v4l2_calls.c:801
 #, fuzzy, c-format
 msgid "Failed to set input %d on device %s."
 msgstr "\"%s\" ଧ୍ବନି ଯନ୍ତ୍ର ବନ୍ଦ କରିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:369
+#: sys/v4l2/v4l2src_calls.c:364
 #, fuzzy, c-format
 msgid "Could not enqueue buffers in device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:548
+#: sys/v4l2/v4l2src_calls.c:543
 #, c-format
 msgid "Failed to enumerate possible video formats device '%s' can work with"
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1064 sys/v4l2/v4l2src_calls.c:1081
-#: sys/v4l2/v4l2src_calls.c:1090
+#: sys/v4l2/v4l2src_calls.c:1089 sys/v4l2/v4l2src_calls.c:1106
+#: sys/v4l2/v4l2src_calls.c:1115
 #, fuzzy, c-format
 msgid "Failed trying to get video frames from device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ପର୍ଯ୍ଯାପ୍ତ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1066
+#: sys/v4l2/v4l2src_calls.c:1091
 #, c-format
 msgid ""
 "The buffer type is not supported, or the index is out of bounds, or no "
@@ -316,82 +298,76 @@ msgid ""
 "device %s"
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1075
+#: sys/v4l2/v4l2src_calls.c:1100
 #, c-format
 msgid "Failed trying to get video frames from device '%s'. Not enough memory."
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1075
+#: sys/v4l2/v4l2src_calls.c:1100
 #, c-format
 msgid "insufficient memory to enqueue a user pointer buffer. device %s."
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1083
+#: sys/v4l2/v4l2src_calls.c:1108
 #, c-format
 msgid "Failed after %d tries. device %s. system error: %s"
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1092
+#: sys/v4l2/v4l2src_calls.c:1117
 #, c-format
 msgid "No free buffers found in the pool at index %d."
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1155
+#: sys/v4l2/v4l2src_calls.c:1208
 #, fuzzy, c-format
 msgid "Could not get parameters on device '%s'"
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1164
-#, fuzzy, c-format
-msgid "Could not set parameters on device '%s'"
-msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
+#: sys/v4l2/v4l2src_calls.c:1236
+msgid "Video input device did not accept new frame rate setting."
+msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1183
+#: sys/v4l2/v4l2src_calls.c:1253
 #, fuzzy, c-format
 msgid "Device '%s' does not support video capture"
 msgstr "\"%s\" ଯନ୍ତ୍ର ଗୋଟିଏ ଅନୁଲିପିକାର ନୁହେଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1191 sys/v4l2/v4l2src_calls.c:1200
+#: sys/v4l2/v4l2src_calls.c:1261 sys/v4l2/v4l2src_calls.c:1270
 #, fuzzy, c-format
 msgid "Device '%s' cannot capture at %dx%d"
 msgstr "\"%s\" ଯନ୍ତ୍ର ଗୋଟିଏ ଅନୁଲିପିକାର ନୁହେଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1209
+#: sys/v4l2/v4l2src_calls.c:1279
 #, c-format
 msgid "Device '%s' cannot capture in the specified format"
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1220
-#, c-format
-msgid "Device '%s' cannot capture at %d/%d frames per second"
-msgstr ""
-
-#: sys/v4l2/v4l2src_calls.c:1297
+#: sys/v4l2/v4l2src_calls.c:1357
 #, fuzzy, c-format
 msgid "Could not get buffers from device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1306
+#: sys/v4l2/v4l2src_calls.c:1366
 #, fuzzy, c-format
 msgid "Could not get enough buffers from device '%s'."
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ପର୍ଯ୍ଯାପ୍ତ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1315
+#: sys/v4l2/v4l2src_calls.c:1375
 #, fuzzy, c-format
 msgid "Could not map buffers from device '%s'"
 msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
-#: sys/v4l2/v4l2src_calls.c:1323
+#: sys/v4l2/v4l2src_calls.c:1383
 #, c-format
 msgid "The driver of device '%s' does not support any known capture method."
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1368
+#: sys/v4l2/v4l2src_calls.c:1428
 #, c-format
 msgid "Error starting streaming capture from device '%s'."
 msgstr ""
 
-#: sys/v4l2/v4l2src_calls.c:1412
+#: sys/v4l2/v4l2src_calls.c:1472
 #, c-format
 msgid "Error stopping streaming capture from device '%s'."
 msgstr ""
@@ -403,6 +379,21 @@ msgstr ""
 #: sys/ximage/gstximagesrc.c:725
 msgid "Cannot operate without a clock"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Could not read from CD."
+#~ msgstr "\"%s\" ଫାଇଲ ଲେଖିହେଲା ନାହିଁ."
+
+#~ msgid "Could not open CD device for reading."
+#~ msgstr "ସି.ଡି. ଯନ୍ତ୍ର ପଢ଼ିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Disc is not an Audio CD."
+#~ msgstr "ଯନ୍ତ୍ର ଖୋଲାଯାଇ ନାହିଁ."
+
+#, fuzzy
+#~ msgid "Could not set parameters on device '%s'"
+#~ msgstr "\"%s\" ଯନ୍ତ୍ରରୁ ଅସ୍ଥାୟୀ ସଞ୍ଚୟ ସ୍ଥାନ ଆଣିହେଲା ନାହିଁ."
 
 #~ msgid "Could not open file \"%s\" for writing."
 #~ msgstr "\"%s\" ଫାଇଲ ଲେଖିବା ପାଇଁ ଖୋଲିହେଲା ନାହିଁ."

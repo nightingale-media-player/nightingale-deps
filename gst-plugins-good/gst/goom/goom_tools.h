@@ -1,24 +1,35 @@
 #ifndef _GOOMTOOLS_H
 #define _GOOMTOOLS_H
 
-#define NB_RAND 0x10000
+#include "goom_config.h"
 
-#define RAND_INIT(gd,i) \
-        srand (i); \
-        if (gd->rand_tab == NULL) \
-                gd->rand_tab = g_malloc (NB_RAND * sizeof(gint)) ;\
-        gd->rand_pos = 0; \
-        while (gd->rand_pos < NB_RAND) \
-                gd->rand_tab [gd->rand_pos++] = rand ();
+/**
+ * Random number generator wrapper for faster random number.
+ */
 
-#define RAND(gd) \
-        (gd->rand_tab[gd->rand_pos = ((gd->rand_pos + 1) % NB_RAND)])
+#define GOOM_NB_RAND 0x10000
 
-#define RAND_CLOSE(gd) \
-        g_free (gd->rand_tab); \
-        gd->rand_tab = NULL;
+typedef struct _GOOM_RANDOM {
+	int array[GOOM_NB_RAND];
+	unsigned short pos;
+} GoomRandom;
 
-/*#define iRAND(i) ((guint32)((float)i * RAND()/RAND_MAX)) */
-#define iRAND(gd,i) (RAND(gd) % i)
-        
+GoomRandom *goom_random_init(int i);
+void goom_random_free(GoomRandom *grandom);
+
+inline static int goom_random(GoomRandom *grandom) {
+	
+	grandom->pos++; /* works because pos is an unsigned short */
+	return grandom->array[grandom->pos];
+}
+
+inline static int goom_irand(GoomRandom *grandom, int i) {
+
+	grandom->pos++;
+	return grandom->array[grandom->pos] % i;
+}
+
+/* called to change the specified number of value in the array, so that the array does not remain the same*/
+void goom_random_update_array(GoomRandom *grandom, int numberOfValuesToChange);
+
 #endif

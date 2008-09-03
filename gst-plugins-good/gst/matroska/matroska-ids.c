@@ -53,7 +53,6 @@ gst_matroska_track_init_video_context (GstMatroskaTrackContext ** p_context)
   video_context->display_height = 0;
   video_context->pixel_width = 0;
   video_context->pixel_height = 0;
-  video_context->eye_mode = 0;
   video_context->asr_mode = 0;
   video_context->fourcc = 0;
   video_context->default_fps = 0.0;
@@ -110,24 +109,12 @@ gst_matroska_track_init_subtitle_context (GstMatroskaTrackContext ** p_context)
   return TRUE;
 }
 
-gboolean
-gst_matroska_track_init_complex_context (GstMatroskaTrackContext ** p_context)
+void
+gst_matroska_register_tags (void)
 {
-  GstMatroskaTrackComplexContext *complex_context;
-
-  g_assert (p_context != NULL && *p_context != NULL);
-
-  /* already set up? (track info might come before track type) */
-  if ((*p_context)->type == GST_MATROSKA_TRACK_TYPE_COMPLEX)
-    return TRUE;
-
-  /* it better not have been set up as some other track type ... */
-  if ((*p_context)->type != 0) {
-    g_return_val_if_reached (FALSE);
-  }
-
-  complex_context = g_renew (GstMatroskaTrackComplexContext, *p_context, 1);
-  *p_context = (GstMatroskaTrackContext *) complex_context;
-  (*p_context)->type = GST_MATROSKA_TRACK_TYPE_COMPLEX;
-  return TRUE;
+  /* FIXME: Remove this when we depend on core 0.10.21 */
+  if (!gst_tag_exists (GST_TAG_ATTACHMENT))
+    gst_tag_register (GST_TAG_ATTACHMENT, GST_TAG_FLAG_META, GST_TYPE_BUFFER,
+        "attachment", "file attached to this stream", gst_tag_merge_use_first);
+  /* TODO: register other custom tags */
 }

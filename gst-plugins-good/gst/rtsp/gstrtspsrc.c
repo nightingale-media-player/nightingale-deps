@@ -104,6 +104,10 @@
 
 #include "gstrtspsrc.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#endif
+
 GST_DEBUG_CATEGORY_STATIC (rtspsrc_debug);
 #define GST_CAT_DEFAULT (rtspsrc_debug)
 
@@ -321,6 +325,14 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
 static void
 gst_rtspsrc_init (GstRTSPSrc * src, GstRTSPSrcClass * g_class)
 {
+#ifdef G_OS_WIN32
+  WSADATA wsa_data;
+
+  if (WSAStartup (MAKEWORD (2, 2), &wsa_data) != 0) {
+    GST_ERROR_OBJECT (src, "WSAStartup failed: 0x%08x", WSAGetLastError ());
+  }
+#endif
+
   src->location = g_strdup (DEFAULT_LOCATION);
   src->url = NULL;
 
@@ -367,6 +379,10 @@ gst_rtspsrc_finalize (GObject * object)
   g_free (rtspsrc->state_rec_lock);
   g_static_rec_mutex_free (rtspsrc->conn_rec_lock);
   g_free (rtspsrc->conn_rec_lock);
+
+#ifdef G_OS_WIN32
+  WSACleanup ();
+#endif
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -693,7 +709,7 @@ gst_rtspsrc_stream_free (GstRTSPSrc * src, GstRTSPStream * stream)
       GstPad *pad;
 
       /* unlink the pad */
-      pad = gst_element_get_pad (udpsrc, "src");
+      pad = gst_element_get_static_pad (udpsrc, "src");
       if (stream->channelpad[i]) {
         gst_pad_unlink (pad, stream->channelpad[i]);
       }
@@ -1634,6 +1650,8 @@ request_pt_map (GstElement * sess, guint session, guint pt, GstRTSPSrc * src)
     goto unknown_stream;
 
   caps = stream->caps;
+  if (caps)
+    gst_caps_ref (caps);
   GST_RTSP_STATE_UNLOCK (src);
 
   return caps;
@@ -1917,7 +1935,7 @@ gst_rtspsrc_stream_configure_mcast (GstRTSPSrc * src, GstRTSPStream * stream,
     gst_object_sink (stream->udpsrc[0]);
 
     /* change state */
-    gst_element_set_state (stream->udpsrc[0], GST_STATE_READY);
+    gst_element_set_state (stream->udpsrc[0], GST_STATE_PAUSED);
   }
 
   /* creating another UDP source */
@@ -1933,7 +1951,7 @@ gst_rtspsrc_stream_configure_mcast (GstRTSPSrc * src, GstRTSPStream * stream,
     gst_object_ref (stream->udpsrc[1]);
     gst_object_sink (stream->udpsrc[1]);
 
-    gst_element_set_state (stream->udpsrc[1], GST_STATE_READY);
+    gst_element_set_state (stream->udpsrc[1], GST_STATE_PAUSED);
   }
   return TRUE;
 
@@ -1964,7 +1982,7 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
         NULL);
 
     /* get output pad of the UDP source. */
-    *outpad = gst_element_get_pad (stream->udpsrc[0], "src");
+    *outpad = gst_element_get_static_pad (stream->udpsrc[0], "src");
 
     /* save it so we can unblock */
     stream->blockedpad = *outpad;
@@ -1997,7 +2015,7 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
 
       GST_DEBUG_OBJECT (src, "connecting UDP source 1 to manager");
 
-      pad = gst_element_get_pad (stream->udpsrc[1], "src");
+      pad = gst_element_get_static_pad (stream->udpsrc[1], "src");
       gst_pad_link (pad, stream->channelpad[1]);
       gst_object_unref (pad);
     } else {
@@ -2014,7 +2032,8 @@ gst_rtspsrc_stream_configure_udp_sink (GstRTSPSrc * src, GstRTSPStream * stream,
 {
   GstPad *pad;
   gint port, sockfd = -1;
-  gchar *destination, *uri, *name;
+  const gchar *destination;
+  gchar *uri, *name;
 
   /* no session, we're done */
   if (src->session == NULL)
@@ -2030,7 +2049,7 @@ gst_rtspsrc_stream_configure_udp_sink (GstRTSPSrc * src, GstRTSPStream * stream,
    * the RTCP. */
   destination = transport->source;
   if (destination == NULL)
-    destination = src->connection->ip;
+    destination = gst_rtsp_connection_get_ip (src->connection);
 
   GST_DEBUG_OBJECT (src, "configure UDP sink for %s:%d", destination, port);
 
@@ -2064,7 +2083,7 @@ gst_rtspsrc_stream_configure_udp_sink (GstRTSPSrc * src, GstRTSPStream * stream,
   gst_object_ref (stream->udpsink);
   gst_bin_add (GST_BIN_CAST (src), stream->udpsink);
 
-  stream->rtcppad = gst_element_get_pad (stream->udpsink, "sink");
+  stream->rtcppad = gst_element_get_static_pad (stream->udpsink, "sink");
 
   /* get session RTCP pad */
   name = g_strdup_printf ("send_rtcp_src_%d", stream->id);
@@ -2271,10 +2290,7 @@ gst_rtspsrc_configure_caps (GstRTSPSrc * src, GstSegment * segment)
       gst_caps_set_simple (caps, "play-speed", G_TYPE_DOUBLE, play_speed, NULL);
       gst_caps_set_simple (caps, "play-scale", G_TYPE_DOUBLE, play_scale, NULL);
 
-      if (stream->caps != caps) {
-        gst_caps_unref (stream->caps);
-        stream->caps = caps;
-      }
+      stream->caps = caps;
     }
     GST_DEBUG_OBJECT (src, "stream %p, caps %" GST_PTR_FORMAT, stream, caps);
   }
@@ -2796,7 +2812,7 @@ gst_rtspsrc_loop_udp (GstRTSPSrc * src)
   GST_ELEMENT_WARNING (src, RESOURCE, READ, (NULL),
       ("Could not receive any UDP packets for %.4f seconds, maybe your "
           "firewall is blocking it. Retrying using a TCP connection.",
-          gst_guint64_to_gdouble (src->udp_timeout / 1000000)));
+          gst_guint64_to_gdouble (src->udp_timeout / 1000000.0)));
   /* we can try only TCP now */
   src->cur_protocols = GST_RTSP_LOWER_TRANS_TCP;
 
@@ -2958,19 +2974,136 @@ gst_rtsp_auth_method_to_string (GstRTSPAuthMethod method)
 }
 #endif
 
+static const gchar *
+gst_rtspsrc_skip_lws (const gchar * s)
+{
+  while (g_ascii_isspace (*s))
+    s++;
+  return s;
+}
+
+static const gchar *
+gst_rtspsrc_unskip_lws (const gchar * s, const gchar * start)
+{
+  while (s > start && g_ascii_isspace (*(s - 1)))
+    s--;
+  return s;
+}
+
+static const gchar *
+gst_rtspsrc_skip_commas (const gchar * s)
+{
+  /* The grammar allows for multiple commas */
+  while (g_ascii_isspace (*s) || *s == ',')
+    s++;
+  return s;
+}
+
+static const gchar *
+gst_rtspsrc_skip_item (const gchar * s)
+{
+  gboolean quoted = FALSE;
+  const gchar *start = s;
+
+  /* A list item ends at the last non-whitespace character
+   * before a comma which is not inside a quoted-string. Or at
+   * the end of the string.
+   */
+  while (*s) {
+    if (*s == '"')
+      quoted = !quoted;
+    else if (quoted) {
+      if (*s == '\\' && *(s + 1))
+        s++;
+    } else {
+      if (*s == ',')
+        break;
+    }
+    s++;
+  }
+
+  return gst_rtspsrc_unskip_lws (s, start);
+}
+
+static void
+gst_rtsp_decode_quoted_string (gchar * quoted_string)
+{
+  gchar *src, *dst;
+
+  src = quoted_string + 1;
+  dst = quoted_string;
+  while (*src && *src != '"') {
+    if (*src == '\\' && *(src + 1))
+      src++;
+    *dst++ = *src++;
+  }
+  *dst = '\0';
+}
+
+/* Extract the authentication tokens that the server provided for each method
+ * into an array of structures and give those to the connection object.
+ */
+static void
+gst_rtspsrc_parse_digest_challenge (GstRTSPConnection * conn,
+    const gchar * header)
+{
+  GSList *list = NULL, *iter;
+  const gchar *end;
+  gchar *item, *eq, *name_end, *value;
+
+  gst_rtsp_connection_clear_auth_params (conn);
+
+  /* Parse a header whose content is described by RFC2616 as
+   * "#something", where "something" does not itself contain commas,
+   * except as part of quoted-strings, into a list of allocated strings.
+   */
+  header = gst_rtspsrc_skip_commas (header);
+  while (*header) {
+    end = gst_rtspsrc_skip_item (header);
+    list = g_slist_prepend (list, g_strndup (header, end - header));
+    header = gst_rtspsrc_skip_commas (end);
+  }
+  if (!list)
+    return;
+
+  list = g_slist_reverse (list);
+  for (iter = list; iter; iter = iter->next) {
+    item = iter->data;
+
+    eq = strchr (item, '=');
+    if (eq) {
+      name_end = (gchar *) gst_rtspsrc_unskip_lws (eq, item);
+      if (name_end == item) {
+        /* That's no good... */
+        g_free (item);
+        continue;
+      }
+
+      *name_end = '\0';
+
+      value = (gchar *) gst_rtspsrc_skip_lws (eq + 1);
+      if (*value == '"')
+        gst_rtsp_decode_quoted_string (value);
+    } else
+      value = NULL;
+
+    gst_rtsp_connection_set_auth_param (conn, item, value);
+  }
+
+  g_slist_free (list);
+}
+
 /* Parse a WWW-Authenticate Response header and determine the 
  * available authentication methods
- * FIXME: To implement digest or other auth types, we should extract
- * the authentication tokens that the server provided for each method
- * into an array of structures and give those to the connection object.
  *
  * This code should also cope with the fact that each WWW-Authenticate
  * header can contain multiple challenge methods + tokens 
  *
- * At the moment, we just do a minimal check for Basic auth and don't
+ * At the moment, for Basic auth, we just do a minimal check and don't
  * even parse out the realm */
 static void
-gst_rtspsrc_parse_auth_hdr (gchar * hdr, GstRTSPAuthMethod * methods)
+gst_rtspsrc_parse_auth_hdr (gchar * hdr, GstRTSPAuthMethod * methods,
+    GstRTSPConnection * conn)
 {
   gchar *start;
 
@@ -2982,6 +3115,10 @@ gst_rtspsrc_parse_auth_hdr (gchar * hdr, GstRTSPAuthMethod * methods)
 
   if (g_ascii_strncasecmp (start, "basic", 5) == 0)
     *methods |= GST_RTSP_AUTH_BASIC;
+  else if (g_ascii_strncasecmp (start, "digest ", 7) == 0) {
+    *methods |= GST_RTSP_AUTH_DIGEST;
+    gst_rtspsrc_parse_digest_challenge (conn, &start[7]);
+  }
 }
 
 /**
@@ -3011,7 +3148,7 @@ gst_rtspsrc_setup_auth (GstRTSPSrc * src, GstRTSPMessage * response)
   /* Identify the available auth methods and see if any are supported */
   if (gst_rtsp_message_get_header (response, GST_RTSP_HDR_WWW_AUTHENTICATE,
           &hdr, 0) == GST_RTSP_OK) {
-    gst_rtspsrc_parse_auth_hdr (hdr, &avail_methods);
+    gst_rtspsrc_parse_auth_hdr (hdr, &avail_methods, src->connection);
   }
 
   if (avail_methods == GST_RTSP_AUTH_NONE)
@@ -3571,6 +3708,7 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src)
   GstRTSPMessage response = { 0 };
   GstRTSPStream *stream = NULL;
   GstRTSPLowerTrans protocols;
+  GstRTSPStatusCode code;
 
   /* we initially allow all configured lower transports. based on the URL
    * transports and the replies from the server we narrow them down. */
@@ -3586,7 +3724,6 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src)
 
   for (walk = src->streams; walk; walk = g_list_next (walk)) {
     gchar *transports;
-    GstRTSPStatusCode code;
 
     stream = (GstRTSPStream *) walk->data;
 
@@ -3663,7 +3800,7 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src)
         gst_rtspsrc_stream_free_udp (stream);
         continue;
       default:
-        goto send_error;
+        goto response_error;
     }
 
     /* parse response transport */
@@ -3762,6 +3899,14 @@ setup_transport_failed:
   {
     GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
         ("Could not setup transport."));
+    goto cleanup_error;
+  }
+response_error:
+  {
+    const gchar *str = gst_rtsp_status_as_text (code);
+
+    GST_ELEMENT_ERROR (src, RESOURCE, WRITE, (NULL),
+        ("Error (%d): %s", code, GST_STR_NULL (str)));
     goto cleanup_error;
   }
 send_error:
@@ -4041,6 +4186,10 @@ setup_failed:
   }
 cleanup_error:
   {
+    if (src->connection) {
+      gst_rtsp_connection_free (src->connection);
+      src->connection = NULL;
+    }
     GST_RTSP_STATE_UNLOCK (src);
     gst_rtsp_message_unset (&request);
     gst_rtsp_message_unset (&response);

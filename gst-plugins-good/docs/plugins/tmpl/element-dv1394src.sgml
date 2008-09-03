@@ -1,0 +1,73 @@
+<!-- ##### SECTION Title ##### -->
+dv1394src
+
+<!-- ##### SECTION Short_Description ##### -->
+Source for DV video data from firewire port
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-dv1394src-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstDV1394Src ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstDV1394Src::frame-dropped ##### -->
+<para>
+
+</para>
+
+@gstdv1394src: the object which received the signal.
+
+<!-- ##### ARG GstDV1394Src:channel ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:consecutive ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:drop-incomplete ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:guid ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:port ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:skip ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:use-avc ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstDV1394Src:device-name ##### -->
+<para>
+
+</para>
+

@@ -1,62 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>udpsrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-spectrum.html" title="spectrum">
+<link rel="prev" href="gst-plugins-good-plugins-taginject.html" title="taginject">
 <link rel="next" href="gst-plugins-good-plugins-v4l2src.html" title="v4l2src">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-spectrum.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-taginject.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-v4l2src.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2631745" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2632670" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2608032" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2588304" class="shortcut">Implemented Interfaces</a>
-                  &#160;|&#160;
-                  <a href="#id2587156" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-udpsrc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-udpsrc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-udpsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-udpsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-udpsrc.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-udpsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2631745"></a><span class="refentrytitle">udpsrc</span>
-</h2>
-<p>udpsrc &#8212; Receive data over the network via UDP</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-udpsrc.top_of_page"></a>udpsrc</span></h2>
+<p>udpsrc — Receive data over the network via UDP</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-udpsrc.synopsis"></a><h2>Synopsis</h2>
 <a name="GstUDPSrc"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc-struct">GstUDPSrc</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc-struct" title="GstUDPSrc">GstUDPSrc</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2608032"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-udpsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -66,37 +60,37 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2588304"></a><h2>Implemented Interfaces</h2>
+<a name="gst-plugins-good-plugins-udpsrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstUDPSrc implements
  GstURIHandler.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2587156"></a><h2>Properties</h2>
+<a name="gst-plugins-good-plugins-udpsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--caps">caps</a>"                     GstCaps*              : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--multicast-group">multicast-group</a>"          gchar*                : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--port">port</a>"                     gint                  : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--uri">uri</a>"                      gchar*                : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sockfd">sockfd</a>"                   gint                  : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--buffer-size">buffer-size</a>"              gint                  : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--timeout">timeout</a>"                  guint64               : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--closefd">closefd</a>"                  gboolean              : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--skip-first-bytes">skip-first-bytes</a>"         gint                  : Read / Write
-  "<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sock">sock</a>"                     gint                  : Read
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--multicast-group" title='The "multicast-group" property'>multicast-group</a>"          gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--port" title='The "port" property'>port</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--uri" title='The "uri" property'>uri</a>"                      gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sockfd" title='The "sockfd" property'>sockfd</a>"                   gint                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              gint                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--timeout" title='The "timeout" property'>timeout</a>"                  guint64               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--closefd" title='The "closefd" property'>closefd</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--skip-first-bytes" title='The "skip-first-bytes" property'>skip-first-bytes</a>"         gint                  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sock" title='The "sock" property'>sock</a>"                     gint                  : Read
+  "<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--auto-multicast" title='The "auto-multicast" property'>auto-multicast</a>"           gboolean              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2632670"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-udpsrc.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2632683"></a><p>
+<a name="id2638668"></a><h3>Examples</h3>
+<p>
 udpsrc is a network source that reads UDP packets from the network.
 It can be combined with RTP depayloaders to implement RTP streaming.
 </p>
-<h3>Examples</h3>
 <p>
 Here is a simple pipeline to read from the default port and dump the udp packets.
 </p>
@@ -161,7 +155,7 @@ udpsrc implements a GstURIHandler interface that handles udp://host:port type
 URIs.
 </p>
 <p>
-If the <a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--timeout">timeout property</a> is set to a
+If the <a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--timeout" title='The "timeout" property'>timeout property</a> is set to a
 value bigger than 0, udpsrc will generate an element message named
 <code class="classname">"GstUDPSrcTimeout"</code>
 if no data was recieved in the given timeout.
@@ -178,165 +172,170 @@ because it is blocked by a firewall.
 </p>
 <p>
 A custom file descriptor can be configured with the 
-<a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sockfd">sockfd property</a>. The socket will be
+<a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--sockfd" title='The "sockfd" property'>sockfd property</a>. The socket will be
 closed when setting the element to READY by default. This behaviour can be
-overriden with the <a href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--closefd">closefd property</a>,
+overriden with the <a class="link" href="gst-plugins-good-plugins-udpsrc.html#GstUDPSrc--closefd" title='The "closefd" property'>closefd property</a>,
 in which case the application is responsible for closing the file descriptor.
 </p>
 <p>
 Last reviewed on 2007-09-20 (0.10.7)
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2630209"></a><h3>Element Information</h3>
+<a name="id2638836"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-udp.html#plugin-udp">udp</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-udp.html#plugin-udp">udp</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Wim Taymans &lt;wim@fluendo.com&gt;
     Thijs Vermeir &lt;thijs.vermeir@barco.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Source/Network</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2639889"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2630346"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-udpsrc.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2630357"></a><h3>
-<a name="GstUDPSrc-struct"></a>GstUDPSrc</h3>
-<a class="indexterm" name="id2630369"></a><pre class="programlisting">typedef struct _GstUDPSrc GstUDPSrc;</pre>
+<a name="GstUDPSrc-struct"></a><h3>GstUDPSrc</h3>
+<pre class="programlisting">typedef struct _GstUDPSrc GstUDPSrc;</pre>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2630386"></a><h2>Property Details</h2>
+<a name="gst-plugins-good-plugins-udpsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2630397"></a><h3>
-<a name="GstUDPSrc--caps"></a>The "<code class="literal">caps</code>" property</h3>
-<a class="indexterm" name="id2630412"></a><pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<a name="GstUDPSrc--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
+<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
 <p>The caps of the source pad.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2630433"></a><h3>
-<a name="GstUDPSrc--multicast-group"></a>The "<code class="literal">multicast-group</code>" property</h3>
-<a class="indexterm" name="id2630447"></a><pre class="programlisting">  "multicast-group"          gchar*                : Read / Write</pre>
+<a name="GstUDPSrc--multicast-group"></a><h3>The <code class="literal">"multicast-group"</code> property</h3>
+<pre class="programlisting">  "multicast-group"          gchar*                : Read / Write</pre>
 <p>The Address of multicast group to join.</p>
 <p>Default value: "0.0.0.0"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633132"></a><h3>
-<a name="GstUDPSrc--port"></a>The "<code class="literal">port</code>" property</h3>
-<a class="indexterm" name="id2633147"></a><pre class="programlisting">  "port"                     gint                  : Read / Write</pre>
+<a name="GstUDPSrc--port"></a><h3>The <code class="literal">"port"</code> property</h3>
+<pre class="programlisting">  "port"                     gint                  : Read / Write</pre>
 <p>The port to receive the packets from, 0=allocate.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 4951</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633176"></a><h3>
-<a name="GstUDPSrc--uri"></a>The "<code class="literal">uri</code>" property</h3>
-<a class="indexterm" name="id2633191"></a><pre class="programlisting">  "uri"                      gchar*                : Read / Write</pre>
+<a name="GstUDPSrc--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
+<pre class="programlisting">  "uri"                      gchar*                : Read / Write</pre>
 <p>URI in the form of udp://multicast_group:port.</p>
 <p>Default value: "udp://0.0.0.0:4951"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633218"></a><h3>
-<a name="GstUDPSrc--sockfd"></a>The "<code class="literal">sockfd</code>" property</h3>
-<a class="indexterm" name="id2633233"></a><pre class="programlisting">  "sockfd"                   gint                  : Read / Write</pre>
+<a name="GstUDPSrc--sockfd"></a><h3>The <code class="literal">"sockfd"</code> property</h3>
+<pre class="programlisting">  "sockfd"                   gint                  : Read / Write</pre>
 <p>Socket to use for UDP reception. (-1 == allocate).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633263"></a><h3>
-<a name="GstUDPSrc--buffer-size"></a>The "<code class="literal">buffer-size</code>" property</h3>
-<a class="indexterm" name="id2633277"></a><pre class="programlisting">  "buffer-size"              gint                  : Read / Write</pre>
+<a name="GstUDPSrc--buffer-size"></a><h3>The <code class="literal">"buffer-size"</code> property</h3>
+<pre class="programlisting">  "buffer-size"              gint                  : Read / Write</pre>
 <p>Size of the kernel receive buffer in bytes, 0=default.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633307"></a><h3>
-<a name="GstUDPSrc--timeout"></a>The "<code class="literal">timeout</code>" property</h3>
-<a class="indexterm" name="id2633322"></a><pre class="programlisting">  "timeout"                  guint64               : Read / Write</pre>
+<a name="GstUDPSrc--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
+<pre class="programlisting">  "timeout"                  guint64               : Read / Write</pre>
 <p>Post a message after timeout microseconds (0 = disabled).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633349"></a><h3>
-<a name="GstUDPSrc--closefd"></a>The "<code class="literal">closefd</code>" property</h3>
-<a class="indexterm" name="id2633364"></a><pre class="programlisting">  "closefd"                  gboolean              : Read / Write</pre>
+<a name="GstUDPSrc--closefd"></a><h3>The <code class="literal">"closefd"</code> property</h3>
+<pre class="programlisting">  "closefd"                  gboolean              : Read / Write</pre>
 <p>Close sockfd if passed as property on state change.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2633390"></a><h3>
-<a name="GstUDPSrc--skip-first-bytes"></a>The "<code class="literal">skip-first-bytes</code>" property</h3>
-<a class="indexterm" name="id2633404"></a><pre class="programlisting">  "skip-first-bytes"         gint                  : Read / Write</pre>
+<a name="GstUDPSrc--skip-first-bytes"></a><h3>The <code class="literal">"skip-first-bytes"</code> property</h3>
+<pre class="programlisting">  "skip-first-bytes"         gint                  : Read / Write</pre>
 <p>number of bytes to skip for each udp packet.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2628020"></a><h3>
-<a name="GstUDPSrc--sock"></a>The "<code class="literal">sock</code>" property</h3>
-<a class="indexterm" name="id2628035"></a><pre class="programlisting">  "sock"                     gint                  : Read</pre>
+<a name="GstUDPSrc--sock"></a><h3>The <code class="literal">"sock"</code> property</h3>
+<pre class="programlisting">  "sock"                     gint                  : Read</pre>
 <p>Socket currently in use for UDP reception. (-1 = no socket).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstUDPSrc--auto-multicast"></a><h3>The <code class="literal">"auto-multicast"</code> property</h3>
+<pre class="programlisting">  "auto-multicast"           gboolean              : Read / Write</pre>
+<p>Automatically join/leave multicast groups.</p>
+<p>Default value: TRUE</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2628065"></a><h2>See Also</h2>
+<a name="gst-plugins-good-plugins-udpsrc.see-also"></a><h2>See Also</h2>
 udpsink, multifdsink
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -1,0 +1,51 @@
+<!-- ##### SECTION Title ##### -->
+smpte
+
+<!-- ##### SECTION Short_Description ##### -->
+Apply the standard SMPTE transitions on video images
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-smpte-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstSMPTE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstSMPTE:border ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTE:depth ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTE:fps ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTE:type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstSMPTE:duration ##### -->
+<para>
+
+</para>
+

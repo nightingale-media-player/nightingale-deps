@@ -5,7 +5,7 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, cvs and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for cvs/pre
-AC_INIT(GStreamer Good Plug-ins, 0.10.7,
+AC_INIT(GStreamer Good Plug-ins, 0.10.10,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-good)
 
@@ -43,11 +43,12 @@ dnl the generated libtool script has no support for the listed tags.
 dnl So this needs to be fixed first if we want to use this
 dnl AS_LIBTOOL_TAGS
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.17
-GSTPB_REQ=0.10.17
+GST_REQ=0.10.20
+GSTPB_REQ=0.10.20
 
 dnl *** autotools stuff ****
 
@@ -76,72 +77,11 @@ AG_GST_ARG_WITH_PKG_CONFIG_PATH
 AG_GST_ARG_WITH_PACKAGE_NAME
 AG_GST_ARG_WITH_PACKAGE_ORIGIN
 
-dnl these are all the gst plug-ins, compilable without additional libs
-dnl videofilter is at the top because others depend on it
-GST_PLUGINS_ALL="\
-		videofilter \
-		alpha \
-		apetag \
-		audiofx \
-		auparse \
-		autodetect \
-		avi \
-		cutter \
-		debug \
-		effectv \
-		equalizer \
-		id3demux \
-		icydemux \
-		flx \
-		goom \
-		law \
-		level \
-		matroska \
-		monoscope \
-		multifile \
-		multipart \
-                qtdemux \
-		rtp	\
-		rtsp	\
-		smpte	\
-		spectrum \
-		udp     \
-		videobox \
-		videocrop \
-		videomixer \
-		wavenc \
-		wavparse \
-                "
-AC_SUBST(GST_PLUGINS_ALL)
-
-GST_PLUGINS_SELECTED=""
 AG_GST_ARG_WITH_PLUGINS
-
-dnl disable gst plugins we might not be able to build on this
-dnl platform: udp and rtsp (ugly but minimally invasive)
-dnl FIXME: maybe move to sys
-AC_CHECK_HEADERS([sys/socket.h], HAVE_SYS_SOCKET_H=yes)
-AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
-
-if test "x$HAVE_SYS_SOCKET_H" != "xyes" -a "x$HAVE_WINSOCK2_H" != "xyes"; then
-  GST_PLUGINS_SELECTED=`echo $GST_PLUGINS_SELECTED | $SED -e s/udp//`
-  GST_PLUGINS_SELECTED=`echo $GST_PLUGINS_SELECTED | $SED -e s/rtsp//`
-fi
-
-if test "x$HAVE_WINSOCK2_H" = "xyes"; then
-  WIN32_LIBS="-lws2_32"
-  AC_SUBST(WIN32_LIBS)
-fi
 
 AG_GST_ARG_ENABLE_EXTERNAL
 
 AG_GST_ARG_ENABLE_EXPERIMENTAL
-USE_GST_V4L2=$BUILD_EXPERIMENTAL
-if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
-	GST_PLUGINS_SELECTED=`echo $GST_PLUGINS_SELECTED | $SED -e s/monoscope//`
-fi
-
-AC_SUBST(GST_PLUGINS_SELECTED)
 
 dnl *** checks for platform ***
 
@@ -173,6 +113,9 @@ AS_PROG_OBJC
 dnl check if the compiler supports '-c' and '-o' options
 AM_PROG_CC_C_O
 
+dnl find an assembler
+AM_PROG_AS
+
 AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
 
@@ -201,7 +144,7 @@ AX_CREATE_STDINT_H
 
 dnl used in gst/rtp/gstasteriskh263.c
 AC_CHECK_HEADERS([netinet/in.h])
-AC_CHECK_HEADERS([winsock2.h])
+AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
 AM_CONDITIONAL(HAVE_WINSOCK2_H, test "x$HAVE_WINSOCK2_H" = "xyes")
 
 dnl used in gst/udp
@@ -217,16 +160,19 @@ dnl *** checks for structures ***
 
 dnl *** checks for compiler characteristics ***
 
-dnl FIXME: check if this is used; was used for floatcast.h in base
-dnl Check for fast float to int casting as defined in C99
-AC_C99_FUNC_LRINT
-AC_C99_FUNC_LRINTF
+dnl check if we have GCC inline-asm
+AS_GCC_INLINE_ASSEMBLY([HAVE_GCC_ASM=yes], [HAVE_GCC_ASM=no])
+if test x$HAVE_GCC_ASM = xyes ; then
+  AC_DEFINE(HAVE_GCC_ASM, 1,
+    [Define if compiler supports gcc inline assembly])
+fi
+AM_CONDITIONAL(HAVE_GCC_ASM, test "x$HAVE_GCC_ASM" = "xyes")
 
 dnl *** checks for library functions ***
 
 LIBS_SAVE=$LIBS
 LIBS="$LIBS $LIBM"
-AC_CHECK_FUNCS(rint asinh sinh cosh)
+AC_CHECK_FUNCS(rint sinh cosh asinh)
 LIBS=$LIBS_SAVE
 
 dnl Check for mmap (needed by electricfence plugin)
@@ -236,22 +182,22 @@ AM_CONDITIONAL(GST_HAVE_MMAP, test "x$ac_cv_func_mmap_fixed_mapped" == "xyes")
 dnl *** checks for dependency libraries ***
 
 dnl GLib is required
-AG_GST_GLIB_CHECK([2.6])
+AG_GST_GLIB_CHECK([2.12])
 
 dnl liboil is required
 PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.8, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-if test "x${HAVE_LIBOIL}" != xyes ; then
+if test "x$HAVE_LIBOIL" != "xyes"; then
   AC_ERROR([liboil-0.3.8 or later is required])
 fi
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
-AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_GDP($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_CONTROLLER($GST_MAJORMINOR, [$GST_REQ])
+AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_GDP($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_CONTROLLER($GST_MAJORMINOR, [$GST_REQ], yes)
 AG_GST_CHECK_GST_CHECK($GST_MAJORMINOR, [$GST_REQ], no)
-AG_GST_CHECK_GST_PLUGINS_BASE($GST_MAJORMINOR, [$GSTPB_REQ])
+AG_GST_CHECK_GST_PLUGINS_BASE($GST_MAJORMINOR, [$GSTPB_REQ], yes)
 
 GST_TOOLS_DIR=`pkg-config --variable=toolsdir gstreamer-$GST_MAJORMINOR`
 if test -z $GST_TOOLS_DIR; then
@@ -323,11 +269,75 @@ AG_GST_SET_PLUGINDIR
 dnl define an ERROR_CFLAGS Makefile variable
 AG_GST_SET_ERROR_CFLAGS($GST_CVS)
 
+dnl define an ERROR_CXXFLAGS Makefile variable
+AG_GST_SET_ERROR_CXXFLAGS($GST_CVS)
+
 dnl define correct level for debugging messages
 AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
 
 dnl used in examples
 AG_GST_DEFAULT_ELEMENTS
+
+dnl *** plug-ins to include ***
+
+dnl these are all the gst plug-ins, compilable without additional libs
+dnl videofilter is at the top because others depend on it
+AG_GST_CHECK_PLUGIN(videofilter)
+AG_GST_CHECK_PLUGIN(alpha)
+AG_GST_CHECK_PLUGIN(apetag)
+AG_GST_CHECK_PLUGIN(audiofx)
+AG_GST_CHECK_PLUGIN(auparse)
+AG_GST_CHECK_PLUGIN(autodetect)
+AG_GST_CHECK_PLUGIN(avi)
+AG_GST_CHECK_PLUGIN(cutter)
+AG_GST_CHECK_PLUGIN(debug)
+AG_GST_CHECK_PLUGIN(effectv)
+AG_GST_CHECK_PLUGIN(equalizer)
+AG_GST_CHECK_PLUGIN(id3demux)
+AG_GST_CHECK_PLUGIN(icydemux)
+AG_GST_CHECK_PLUGIN(interleave)
+AG_GST_CHECK_PLUGIN(flx)
+AG_GST_CHECK_PLUGIN(goom)
+AG_GST_CHECK_PLUGIN(goom2k1)
+AG_GST_CHECK_PLUGIN(law)
+AG_GST_CHECK_PLUGIN(level)
+AG_GST_CHECK_PLUGIN(matroska)
+AG_GST_CHECK_PLUGIN(monoscope)
+AG_GST_CHECK_PLUGIN(multifile)
+AG_GST_CHECK_PLUGIN(multipart)
+AG_GST_CHECK_PLUGIN(qtdemux)
+AG_GST_CHECK_PLUGIN(replaygain)
+AG_GST_CHECK_PLUGIN(rtp)
+AG_GST_CHECK_PLUGIN(rtsp)
+AG_GST_CHECK_PLUGIN(smpte)
+AG_GST_CHECK_PLUGIN(spectrum)
+AG_GST_CHECK_PLUGIN(udp)
+AG_GST_CHECK_PLUGIN(videobox)
+AG_GST_CHECK_PLUGIN(videocrop)
+AG_GST_CHECK_PLUGIN(videomixer)
+AG_GST_CHECK_PLUGIN(wavenc)
+AG_GST_CHECK_PLUGIN(wavparse)
+
+dnl disable gst plugins we might not be able to build on this
+dnl platform: udp and rtsp (ugly but minimally invasive)
+dnl FIXME: maybe move to sys
+AC_CHECK_HEADERS([sys/socket.h], HAVE_SYS_SOCKET_H=yes)
+AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
+
+if test "x$HAVE_SYS_SOCKET_H" != "xyes" -a "x$HAVE_WINSOCK2_H" != "xyes"; then
+  AG_GST_DISABLE_PLUGIN(udp)
+  AG_GST_DISABLE_PLUGIN(rtsp)
+fi
+
+if test "x$HAVE_WINSOCK2_H" = "xyes"; then
+  WIN32_LIBS="-lws2_32"
+  AC_SUBST(WIN32_LIBS)
+fi
+
+dnl disable experimental plug-ins
+if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
+  AG_GST_DISABLE_PLUGIN(monoscope)
+fi
 
 dnl *** sys plug-ins ***
 
@@ -650,12 +660,6 @@ AG_GST_CHECK_FEATURE(CAIRO, [Cairo graphics rendering], cairo, [
   AG_GST_PKG_CHECK_MODULES(CAIRO, cairo >= 1.0.0)
 ])
 
-dnl *** cdio ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_CDIO, true)
-AG_GST_CHECK_FEATURE(CDIO, [cdio library], cdio, [
-  AG_GST_PKG_CHECK_MODULES(CDIO, libcdio >= 0.71)
-])
-
 dnl **** ESound ****
 translit(dnm, m, l) AM_CONDITIONAL(USE_ESD, true)
 AG_GST_CHECK_FEATURE(ESD, [ESounD sound daemon], esdsink, [
@@ -711,12 +715,6 @@ AG_GST_CHECK_FEATURE(JPEG, [jpeg library], jpeg, [
   AC_SUBST(JPEG_LIBS)
 ])
 
-dnl *** ladspa ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_LADSPA, true)
-AG_GST_CHECK_FEATURE(LADSPA, [ladspa], ladspa, [
-  AC_CHECK_HEADER(ladspa.h, HAVE_LADSPA="yes", HAVE_LADSPA="no")
-], disabled)
-
 dnl *** libcaca ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBCACA, true)
 AG_GST_CHECK_FEATURE(LIBCACA, [libcaca coloured ASCII art], cacasink, [
@@ -742,6 +740,12 @@ dnl *** libpng ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBPNG, true)
 AG_GST_CHECK_FEATURE(LIBPNG, [Portable Network Graphics library], png, [
   AG_GST_PKG_CHECK_MODULES(LIBPNG, libpng12)
+])
+
+dnl *** pulseaudio ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_PULSE, true)
+AG_GST_CHECK_FEATURE(PULSE, [pulseaudio plug-in], pulseaudio, [
+  AG_GST_PKG_CHECK_MODULES(PULSE, libpulse >= 0.9.8)
 ])
 
 dnl *** dv1394 ***
@@ -806,6 +810,17 @@ AG_GST_CHECK_FEATURE(SHOUT2, [Shoutcast/Icecast client library], shout2, [
   fi
 ])
 
+dnl *** soup ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_SOUP, true)
+AG_GST_CHECK_FEATURE(SOUP, [soup http client plugin (2.4)], souphttpsrc, [
+  PKG_CHECK_MODULES(SOUP, libsoup-2.4 >= 2.3.2, HAVE_SOUP="yes", [
+    HAVE_SOUP="no"
+    AC_MSG_RESULT(no)
+  ])
+  AC_SUBST(SOUP_CFLAGS)
+  AC_SUBST(SOUP_LIBS)
+])
+
 dnl *** speex >= 1.0.4 or >= 1.1.5 ***
 dnl   1.1.4 and earlier were not API/ABI compatible with 1.0
 dnl   1.1.6 is the first to use a .pc/pkg-config file ***
@@ -856,6 +871,14 @@ AG_GST_CHECK_FEATURE(TAGLIB, [taglib tagging library], taglib, [
   if test "x$HAVE_CXX" != "xyes"; then
     USE_TAGLIB=false
     AC_MSG_NOTICE([Not building taglib plugin: no C++ compiler found])
+  else
+    dnl work around bug in taglib 1.5 headers, remove once there is a 1.6
+    AS_CXX_COMPILER_FLAG([-Wno-attributes], [
+        TAGLIB_CXXFLAGS="$TAGLIB_CFLAGS -Wno-attributes"
+      ], [
+        TAGLIB_CXXFLAGS="$TAGLIB_CFLAGS"
+    ])
+    AC_SUBST(TAGLIB_CXXFLAGS)
   fi
 ])
 
@@ -902,19 +925,18 @@ AM_CONDITIONAL(USE_XSHM, false)
 AM_CONDITIONAL(USE_AALIB, false)
 AM_CONDITIONAL(USE_ANNODEX, false)
 AM_CONDITIONAL(USE_CAIRO, false)
-AM_CONDITIONAL(USE_CDIO, false)
 AM_CONDITIONAL(USE_ESD, false)
 AM_CONDITIONAL(USE_FLAC, false)
 AM_CONDITIONAL(USE_GCONF, false)
 AM_CONDITIONAL(USE_GDK_PIXBUF, false)
 AM_CONDITIONAL(USE_HAL, false)
 AM_CONDITIONAL(USE_JPEG, false)
-AM_CONDITIONAL(USE_LADSPA, false)
 AM_CONDITIONAL(USE_LIBCACA, false)
 AM_CONDITIONAL(USE_LIBDV, false)
 AM_CONDITIONAL(USE_LIBPNG, false)
 AM_CONDITIONAL(USE_DV1394, false)
 AM_CONDITIONAL(USE_SHOUT2, false)
+AM_CONDITIONAL(USE_SOUP, false)
 AM_CONDITIONAL(USE_SPEEX, false)
 AM_CONDITIONAL(USE_TAGLIB, false)
 AM_CONDITIONAL(USE_WAVPACK, false)
@@ -946,9 +968,12 @@ else
 fi
 AC_SUBST(DEPRECATED_CFLAGS)
 
-dnl every flag in GST_OPTION_CFLAGS can be overridden at make time
+dnl every flag in GST_OPTION_CFLAGS and GST_OPTION_CXXFLAGS can be overridden
+dnl at make time with e.g. make ERROR_CFLAGS=""
 GST_OPTION_CFLAGS="\$(ERROR_CFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
+GST_OPTION_CXXFLAGS="\$(ERROR_CXXFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
 AC_SUBST(GST_OPTION_CFLAGS)
+AC_SUBST(GST_OPTION_CXXFLAGS)
 
 dnl our libraries need to be versioned correctly
 AC_SUBST(GST_LT_LDFLAGS)
@@ -958,7 +983,9 @@ dnl prefer internal headers to already installed ones
 dnl also add builddir include for enumtypes and marshal
 dnl add ERROR_CFLAGS, but overridable
 GST_CFLAGS="-I\$(top_srcdir)/gst-libs -I\$(top_builddir)/gst-libs $GST_CFLAGS \$(GST_OPTION_CFLAGS)"
+GST_CXXFLAGS="-I\$(top_srcdir)/gst-libs -I\$(top_builddir)/gst-libs $GST_CXXFLAGS \$(GST_OPTION_CXXFLAGS)"
 AC_SUBST(GST_CFLAGS)
+AC_SUBST(GST_CXXFLAGS)
 AC_SUBST(GST_LIBS)
 
 dnl LDFLAGS really should only contain flags, not libs - they get added before
@@ -989,7 +1016,9 @@ gst/effectv/Makefile
 gst/equalizer/Makefile
 gst/id3demux/Makefile
 gst/icydemux/Makefile
+gst/interleave/Makefile
 gst/goom/Makefile
+gst/goom2k1/Makefile
 gst/law/Makefile
 gst/level/Makefile
 gst/matroska/Makefile
@@ -997,6 +1026,7 @@ gst/monoscope/Makefile
 gst/multifile/Makefile
 gst/multipart/Makefile
 gst/qtdemux/Makefile
+gst/replaygain/Makefile
 gst/rtp/Makefile
 gst/rtsp/Makefile
 gst/smpte/Makefile
@@ -1014,7 +1044,6 @@ ext/Makefile
 ext/aalib/Makefile
 ext/annodex/Makefile
 ext/cairo/Makefile
-ext/cdio/Makefile
 ext/dv/Makefile
 ext/esd/Makefile
 ext/flac/Makefile
@@ -1024,8 +1053,10 @@ ext/hal/Makefile
 ext/ladspa/Makefile
 ext/libcaca/Makefile
 ext/libpng/Makefile
+ext/pulse/Makefile
 ext/raw1394/Makefile
 ext/shout2/Makefile
+ext/soup/Makefile
 ext/speex/Makefile
 ext/taglib/Makefile
 ext/wavpack/Makefile

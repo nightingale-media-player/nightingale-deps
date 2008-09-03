@@ -64,8 +64,9 @@ scan-build.stamp: $(HFILE_GLOB) $(SCANOBJ_DEPS) $(basefiles)
 	    fi ;							\
 	    GST_PLUGIN_SYSTEM_PATH=`cd $(top_builddir) && pwd`		\
 	    GST_PLUGIN_PATH=						\
-	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" 			\
-	    CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)"		\
+	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)"				\
+	    CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)"				\
+	    LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)"				\
 	    gtkdoc-scangobj --type-init-func="gst_init(NULL,NULL)"	\
 	        --module=$(DOC_MODULE) ;				\
 	else								\
@@ -141,13 +142,20 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@echo '-- Fixing Crossreferences' 
 	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
+
+clean-local-gtkdoc:
+	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+	if test x"$(srcdir)" != x. ; then \
+	        rm -rf $(DOC_MODULE).types; \
+	fi
 else
 all-local:
+clean-local-gtkdoc:
 endif
 
-clean-local:
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
-	rm -rf xml html
 	rm -rf .libs
 
 maintainer-clean-local: clean
@@ -263,5 +271,10 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	for i in "" $$images ; do		      \
 	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
 	done
+	images="$(srcdir)/html/*.png" ;		      \
+	for i in "" $$images ; do		      \
+	  fname=`basename $$i` ; 		      \
+	  if test ! -f "$(distdir)/html/$$fname"; then cp $$i $(distdir)/html ; fi; \
+	done 
 
 .PHONY : dist-hook-local

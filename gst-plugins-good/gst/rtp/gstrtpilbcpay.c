@@ -18,11 +18,12 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
-#include "gstrtpilbcpay.h"
+#include <stdlib.h>
 #include <gst/rtp/gstrtpbuffer.h>
+#include "gstrtpilbcpay.h"
 
 /* elementfactory information */
 static GstElementDetails gst_rtpilbcpay_details = {
@@ -54,7 +55,10 @@ GST_STATIC_PAD_TEMPLATE ("src",
         "mode = (string) { \"20\", \"30\" }")
     );
 
-static gboolean gst_rtpilbcpay_setcaps (GstBaseRTPPayload * payload,
+
+static GstCaps *gst_rtpilbcpay_sink_getcaps (GstBaseRTPPayload * payload,
+    GstPad * pad);
+static gboolean gst_rtpilbcpay_sink_setcaps (GstBaseRTPPayload * payload,
     GstCaps * caps);
 
 GST_BOILERPLATE (GstRTPILBCPay, gst_rtpilbcpay, GstBaseRTPAudioPayload,
@@ -85,7 +89,8 @@ gst_rtpilbcpay_class_init (GstRTPILBCPayClass * klass)
 
   parent_class = g_type_class_ref (GST_TYPE_BASE_RTP_PAYLOAD);
 
-  gstbasertppayload_class->set_caps = gst_rtpilbcpay_setcaps;
+  gstbasertppayload_class->set_caps = gst_rtpilbcpay_sink_setcaps;
+  gstbasertppayload_class->get_caps = gst_rtpilbcpay_sink_getcaps;
 
   GST_DEBUG_CATEGORY_INIT (rtpilbcpay_debug, "rtpilbcpay", 0,
       "iLBC audio RTP payloader");
@@ -111,7 +116,7 @@ gst_rtpilbcpay_init (GstRTPILBCPay * rtpilbcpay, GstRTPILBCPayClass * klass)
 }
 
 static gboolean
-gst_rtpilbcpay_setcaps (GstBaseRTPPayload * basertppayload, GstCaps * caps)
+gst_rtpilbcpay_sink_setcaps (GstBaseRTPPayload * basertppayload, GstCaps * caps)
 {
   GstRTPILBCPay *rtpilbcpay;
   GstBaseRTPAudioPayload *basertpaudiopayload;
@@ -131,7 +136,7 @@ gst_rtpilbcpay_setcaps (GstBaseRTPPayload * basertppayload, GstCaps * caps)
     goto wrong_mode;
 
   payload_name = gst_structure_get_name (structure);
-  if (g_strcasecmp ("audio/x-iLBC", payload_name))
+  if (g_ascii_strcasecmp ("audio/x-iLBC", payload_name))
     goto wrong_caps;
 
   gst_basertppayload_set_options (basertppayload, "audio", TRUE, "ILBC", 8000);
@@ -171,6 +176,40 @@ mode_changed:
         "Mode cannot change while streaming", rtpilbcpay->mode, mode);
     return FALSE;
   }
+}
+
+/* we return the padtemplate caps with the mode field fixated to a value if we
+ * can */
+static GstCaps *
+gst_rtpilbcpay_sink_getcaps (GstBaseRTPPayload * rtppayload, GstPad * pad)
+{
+  GstCaps *otherpadcaps;
+  GstCaps *caps;
+
+  otherpadcaps = gst_pad_get_allowed_caps (rtppayload->srcpad);
+  caps = gst_caps_copy (gst_pad_get_pad_template_caps (pad));
+
+  if (otherpadcaps) {
+    if (!gst_caps_is_empty (otherpadcaps)) {
+      GstStructure *structure;
+      const gchar *mode_str;
+      gint mode;
+
+      structure = gst_caps_get_structure (otherpadcaps, 0);
+
+      /* parse mode, if we can */
+      mode_str = gst_structure_get_string (structure, "mode");
+      if (mode_str) {
+        mode = strtol (mode_str, NULL, 10);
+        if (mode == 20 || mode == 30) {
+          structure = gst_caps_get_structure (caps, 0);
+          gst_structure_set (structure, "mode", G_TYPE_INT, mode, NULL);
+        }
+      }
+    }
+    gst_caps_unref (otherpadcaps);
+  }
+  return caps;
 }
 
 gboolean

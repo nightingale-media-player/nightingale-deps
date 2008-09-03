@@ -23,12 +23,18 @@
 
 #include "gstrtpdepay.h"
 #include "gstrtpac3depay.h"
+#include "gstrtpdvdepay.h"
+#include "gstrtpdvpay.h"
 #include "gstrtpilbcdepay.h"
 #include "gstrtpilbcpay.h"
 #include "gstrtppcmupay.h"
 #include "gstrtppcmapay.h"
 #include "gstrtppcmadepay.h"
 #include "gstrtppcmudepay.h"
+#include "gstrtpg726depay.h"
+#include "gstrtpg726pay.h"
+#include "gstrtpg729depay.h"
+#include "gstrtpg729pay.h"
 #include "gstrtpgsmpay.h"
 #include "gstrtpgsmdepay.h"
 #include "gstrtpamrpay.h"
@@ -60,6 +66,8 @@
 #include "gstrtptheorapay.h"
 #include "gstrtpvorbisdepay.h"
 #include "gstrtpvorbispay.h"
+#include "gstrtpvrawdepay.h"
+#include "gstrtpvrawpay.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -70,10 +78,28 @@ plugin_init (GstPlugin * plugin)
   if (!gst_rtp_ac3_depay_plugin_init (plugin))
     return FALSE;
 
+  if (!gst_rtp_dv_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_dv_pay_plugin_init (plugin))
+    return FALSE;
+
   if (!gst_rtp_ilbc_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_ilbc_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_g726_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_g726_pay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_g729_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_g729_pay_plugin_init (plugin))
     return FALSE;
 
   if (!gst_rtp_gsm_depay_plugin_init (plugin))
@@ -179,6 +205,12 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
 
   if (!gst_rtp_vorbis_pay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_vraw_depay_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_vraw_pay_plugin_init (plugin))
     return FALSE;
 
   return TRUE;

@@ -55,8 +55,50 @@
 #include <gst/gst-i18n-plugin.h>
 #include <gst/gsttagsetter.h>
 #include <gst/base/gsttypefindhelper.h>
-
+#include <gst/audio/multichannel.h>
 #include <gst/tag/tag.h>
+
+/* Taken from http://flac.sourceforge.net/format.html#frame_header */
+static const GstAudioChannelPosition channel_positions[8][8] = {
+  {GST_AUDIO_CHANNEL_POSITION_FRONT_MONO},
+  {GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT}, {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+      GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER}, {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT}, {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT}, {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT},
+  /* FIXME: 7/8 channel layouts are not defined in the FLAC specs */
+  {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_LFE,
+      GST_AUDIO_CHANNEL_POSITION_REAR_CENTER}, {
+        GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+        GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+        GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+        GST_AUDIO_CHANNEL_POSITION_LFE,
+        GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT,
+      GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT}
+};
 
 GST_DEBUG_CATEGORY_STATIC (flacdec_debug);
 #define GST_CAT_DEFAULT flacdec_debug
@@ -73,24 +115,35 @@ GST_ELEMENT_DETAILS ("FLAC audio decoder",
 static void gst_flac_dec_finalize (GObject * object);
 
 static void gst_flac_dec_loop (GstPad * pad);
+
 static GstStateChangeReturn gst_flac_dec_change_state (GstElement * element,
     GstStateChange transition);
 static const GstQueryType *gst_flac_dec_get_src_query_types (GstPad * pad);
+
 static const GstQueryType *gst_flac_dec_get_sink_query_types (GstPad * pad);
+
 static gboolean gst_flac_dec_sink_query (GstPad * pad, GstQuery * query);
+
 static gboolean gst_flac_dec_src_query (GstPad * pad, GstQuery * query);
+
 static gboolean gst_flac_dec_convert_src (GstPad * pad, GstFormat src_format,
     gint64 src_value, GstFormat * dest_format, gint64 * dest_value);
 static gboolean gst_flac_dec_src_event (GstPad * pad, GstEvent * event);
+
 static gboolean gst_flac_dec_sink_activate (GstPad * sinkpad);
+
 static gboolean gst_flac_dec_sink_activate_pull (GstPad * sinkpad,
     gboolean active);
 static gboolean gst_flac_dec_sink_activate_push (GstPad * sinkpad,
     gboolean active);
 static gboolean gst_flac_dec_sink_event (GstPad * pad, GstEvent * event);
+
 static GstFlowReturn gst_flac_dec_chain (GstPad * pad, GstBuffer * buf);
+
 static void gst_flac_dec_reset_decoders (GstFlacDec * flacdec);
+
 static void gst_flac_dec_setup_seekable_decoder (GstFlacDec * flacdec);
+
 static void gst_flac_dec_setup_stream_decoder (GstFlacDec * flacdec);
 
 #ifdef LEGACY_FLAC
@@ -172,6 +225,7 @@ static void
 gst_flac_dec_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
   GstCaps *raw_caps, *flac_caps;
 
   raw_caps = gst_caps_from_string (GST_FLAC_DEC_SRC_CAPS);
@@ -192,6 +246,7 @@ static void
 gst_flac_dec_class_init (GstFlacDecClass * klass)
 {
   GstElementClass *gstelement_class;
+
   GObjectClass *gobject_class;
 
   gstelement_class = (GstElementClass *) klass;
@@ -363,6 +418,7 @@ gst_flac_dec_update_metadata (GstFlacDec * flacdec,
     const FLAC__StreamMetadata * metadata)
 {
   GstTagList *list;
+
   guint num, i;
 
   list = gst_tag_list_new ();
@@ -451,9 +507,13 @@ gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, guint8 * data, guint size,
     gint64 * last_sample_num)
 {
   guint headerlen;
+
   guint sr_from_end = 0;        /* can be 0, 8 or 16 */
+
   guint bs_from_end = 0;        /* can be 0, 8 or 16 */
+
   guint32 val = 0;
+
   guint8 bs, sr, ca, ss, pb;
 
   if (size < 10)
@@ -522,6 +582,7 @@ static void
 gst_flac_dec_scan_for_last_block (GstFlacDec * flacdec, gint64 * samples)
 {
   GstFormat format = GST_FORMAT_BYTES;
+
   gint64 file_size, offset;
 
   GST_INFO_OBJECT (flacdec, "total number of samples unknown, scanning file");
@@ -536,8 +597,11 @@ gst_flac_dec_scan_for_last_block (GstFlacDec * flacdec, gint64 * samples)
   offset = file_size - 1;
   while (offset >= MAX (SCANBLOCK_SIZE / 2, file_size / 2)) {
     GstFlowReturn flow;
+
     GstBuffer *buf = NULL;
+
     guint8 *data;
+
     guint size;
 
     /* divide by 2 = not very sophisticated way to deal with overlapping */
@@ -571,126 +635,31 @@ gst_flac_dec_scan_for_last_block (GstFlacDec * flacdec, gint64 * samples)
 
 /* FIXME: remove ifndef once we depend on flac >= 1.2.x */
 #ifndef LEGACY_FLAC
-static gchar *
-gst_flac_normalize_picture_mime_type (const gchar * old_mime_type,
-    gboolean * is_pic_uri)
-{
-  gchar *mime_str;
-
-  g_return_val_if_fail (old_mime_type != NULL, NULL);
-
-  /* Make lower-case */
-  mime_str = g_ascii_strdown (old_mime_type, -1);
-
-  /* Fix up 'jpg' => 'jpeg' in mime/media type */
-  if (g_ascii_strcasecmp (mime_str, "jpg") == 0 ||
-      g_ascii_strcasecmp (mime_str, "image/jpg") == 0) {
-    g_free (mime_str);
-    mime_str = g_strdup ("image/jpeg");
-  }
-
-  /* Check if the picture is a URI reference */
-  *is_pic_uri = (strcmp (mime_str, "-->") == 0);
-
-  if (!(*is_pic_uri) && *mime_str && strchr (mime_str, '/') == NULL) {
-    gchar *tmp = g_strdup_printf ("image/%s", mime_str);
-
-    g_free (mime_str);
-    mime_str = tmp;
-  }
-
-  return mime_str;
-}
-
 static void
-gst_flac_extract_picture_buffer (GstFlacDec * flacdec,
+gst_flac_extract_picture_buffer (GstFlacDec * dec,
     const FLAC__StreamMetadata * metadata)
 {
-  /* Most of this is copied from gst/id3demux/id3v2frames.c */
-  gchar *mime_type;
-  GstBuffer *image;
-  GstCaps *image_caps;
   FLAC__StreamMetadata_Picture picture;
-  gboolean is_pic_uri;
+  GstTagList *tags;
 
   g_return_if_fail (metadata->type == FLAC__METADATA_TYPE_PICTURE);
 
   GST_LOG ("Got PICTURE block");
   picture = metadata->data.picture;
 
-  is_pic_uri = FALSE;
-  mime_type = gst_flac_normalize_picture_mime_type (picture.mime_type,
-      &is_pic_uri);
-
-  GST_DEBUG ("PICTURE MIME-type is: \"%s\"", mime_type);
+  GST_DEBUG ("declared MIME type is: '%s'", GST_STR_NULL (picture.mime_type));
   GST_DEBUG ("image data is %u bytes", picture.data_length);
 
-  if (is_pic_uri) {
-    gchar *uri;
+  tags = gst_tag_list_new ();
 
-    uri = g_strndup ((gchar *) picture.data, picture.data_length);
-    GST_DEBUG ("image URI: %s", uri);
+  gst_tag_list_add_id3_image (tags, (guint8 *) picture.data,
+      picture.data_length, picture.type);
 
-    image = gst_buffer_new ();
-    GST_BUFFER_MALLOCDATA (image) = (guint8 *) uri;     /* take ownership */
-    GST_BUFFER_DATA (image) = (guint8 *) uri;
-    GST_BUFFER_SIZE (image) = picture.data_length;
-
-    image_caps = gst_caps_new_simple ("text/uri-list", NULL);
-  }
-
-  else {
-    image = gst_buffer_new_and_alloc (picture.data_length);
-    memcpy (GST_BUFFER_DATA (image), picture.data, picture.data_length);
-
-    /* if possible use GStreamer media type rather than declared type */
-    image_caps = gst_type_find_helper_for_buffer (NULL, image, NULL);
-    if (image_caps) {
-      GST_DEBUG ("Found GStreamer media type: %" GST_PTR_FORMAT, image_caps);
-    } else if (mime_type && *mime_type) {
-      GST_DEBUG ("No GStreamer media type found, using declared type: \"%s\"",
-          mime_type);
-      image_caps = gst_caps_new_simple (mime_type, NULL);
-    } else {
-      GST_DEBUG ("Empty declared mime type, ignoring image frame");
-      image = NULL;
-      image_caps = NULL;
-    }
-  }
-
-  g_free (mime_type);
-
-  if (image && image_caps) {
-    GstTagList *tags = gst_tag_list_new ();
-
-    if (picture.type == 1 || picture.type == 2) {
-      /* file icon for preview. Don't add image-type to caps, since it only 
-       * makes sense for there to be one of these. */
-      gst_buffer_set_caps (image, image_caps);
-      gst_tag_list_add (tags, GST_TAG_MERGE_APPEND,
-          GST_TAG_PREVIEW_IMAGE, image, NULL);
-    } else {
-      GstTagImageType gst_tag_pic_type = GST_TAG_IMAGE_TYPE_UNDEFINED;
-
-      if (picture.type >= 0x03 && picture.type <= 0x14)
-        gst_tag_pic_type = (GstTagImageType) ((gint) (picture.type) - 2);
-
-      gst_structure_set (gst_caps_get_structure (image_caps, 0),
-          "image-type", GST_TYPE_TAG_IMAGE_TYPE, gst_tag_pic_type, NULL);
-
-      gst_buffer_set_caps (image, image_caps);
-      gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_IMAGE, image, NULL);
-    }
-    gst_caps_unref (image_caps);
-    gst_buffer_unref (image);
-
-    /* Announce discovered tags */
-    gst_element_found_tags_for_pad (GST_ELEMENT (flacdec), flacdec->srcpad,
-        tags);
+  if (!gst_tag_list_is_empty (tags)) {
+    gst_element_found_tags_for_pad (GST_ELEMENT (dec), dec->srcpad, tags);
   } else {
-    if (image)
-      gst_buffer_unref (image);
     GST_DEBUG ("problem parsing PICTURE block, skipping");
+    gst_tag_list_free (tags);
   }
 }
 #endif /* LEGACY_FLAC */
@@ -877,8 +846,11 @@ gst_flac_dec_length (const FLAC__StreamDecoder * decoder,
 #endif
 {
   GstFlacDec *flacdec;
+
   GstFormat fmt = GST_FORMAT_BYTES;
+
   gint64 len;
+
   GstPad *peer;
 
   flacdec = GST_FLAC_DEC (client_data);
@@ -919,9 +891,13 @@ gst_flac_dec_eof (const FLAC__StreamDecoder * decoder, void *client_data)
 #endif
 {
   GstFlacDec *flacdec;
+
   GstFormat fmt;
+
   GstPad *peer;
+
   gboolean ret = FALSE;
+
   gint64 len;
 
   flacdec = GST_FLAC_DEC (client_data);
@@ -955,6 +931,7 @@ gst_flac_dec_read_seekable (const FLAC__StreamDecoder * decoder,
 #endif
 {
   GstFlacDec *flacdec;
+
   GstBuffer *buf;
 
   flacdec = GST_FLAC_DEC (client_data);
@@ -992,6 +969,7 @@ gst_flac_dec_read_stream (const FLAC__StreamDecoder * decoder,
 #endif
 {
   GstFlacDec *dec = GST_FLAC_DEC (client_data);
+
   guint len;
 
   len = MIN (gst_adapter_available (dec->adapter), *bytes);
@@ -1016,12 +994,19 @@ gst_flac_dec_write (GstFlacDec * flacdec, const FLAC__Frame * frame,
     const FLAC__int32 * const buffer[])
 {
   GstFlowReturn ret = GST_FLOW_OK;
+
   GstBuffer *outbuf;
+
   guint depth = frame->header.bits_per_sample;
+
   guint width;
+
   guint channels = frame->header.channels;
+
   guint samples = frame->header.blocksize;
+
   guint j, i;
+
   GstClockTime next;
 
   switch (depth) {
@@ -1056,6 +1041,12 @@ gst_flac_dec_write (GstFlacDec * flacdec, const FLAC__Frame * frame,
         "depth", G_TYPE_INT, depth,
         "rate", G_TYPE_INT, frame->header.sample_rate,
         "channels", G_TYPE_INT, channels, NULL);
+
+    if (channels > 2) {
+      GstStructure *s = gst_caps_get_structure (caps, 0);
+
+      gst_audio_set_channel_positions (s, channel_positions[channels - 1]);
+    }
 
     flacdec->depth = depth;
     flacdec->width = width;
@@ -1199,6 +1190,7 @@ gst_flac_dec_loop (GstPad * sinkpad)
   FLAC__SeekableStreamDecoderState s;
 #else
   FLAC__StreamDecoderState s;
+
   FLAC__StreamDecoderInitStatus is;
 #endif
 
@@ -1375,6 +1367,7 @@ static gboolean
 gst_flac_dec_sink_event (GstPad * pad, GstEvent * event)
 {
   GstFlacDec *dec;
+
   gboolean res;
 
   dec = GST_FLAC_DEC (gst_pad_get_parent (pad));
@@ -1390,8 +1383,11 @@ gst_flac_dec_sink_event (GstPad * pad, GstEvent * event)
     }
     case GST_EVENT_NEWSEGMENT:{
       GstFormat fmt;
+
       gboolean update;
+
       gdouble rate, applied_rate;
+
       gint64 cur, stop, time;
 
       gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
@@ -1454,6 +1450,7 @@ gst_flac_dec_chain (GstPad * pad, GstBuffer * buf)
   FLAC__StreamDecoderInitStatus s;
 #endif
   GstFlacDec *dec;
+
   gboolean got_audio_frame;
 
   dec = GST_FLAC_DEC (GST_PAD_PARENT (pad));
@@ -1611,6 +1608,7 @@ static gboolean
 gst_flac_dec_sink_query (GstPad * pad, GstQuery * query)
 {
   GstFlacDec *dec;
+
   gboolean res = FALSE;
 
   dec = GST_FLAC_DEC (gst_pad_get_parent (pad));
@@ -1620,6 +1618,7 @@ gst_flac_dec_sink_query (GstPad * pad, GstQuery * query)
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_CONVERT:{
       GstFormat src_fmt, dest_fmt;
+
       gint64 src_val, dest_val;
 
       gst_query_parse_convert (query, &src_fmt, &src_val, &dest_fmt, NULL);
@@ -1649,8 +1648,11 @@ gst_flac_dec_convert_src (GstPad * pad, GstFormat src_format, gint64 src_value,
     GstFormat * dest_format, gint64 * dest_value)
 {
   GstFlacDec *flacdec = GST_FLAC_DEC (GST_PAD_PARENT (pad));
+
   gboolean res = TRUE;
+
   guint bytes_per_sample;
+
   guint scale = 1;
 
   if (flacdec->width == 0 || flacdec->channels == 0 ||
@@ -1730,7 +1732,9 @@ static gboolean
 gst_flac_dec_src_query (GstPad * pad, GstQuery * query)
 {
   GstFlacDec *flacdec;
+
   gboolean res = TRUE;
+
   GstPad *peer;
 
   flacdec = GST_FLAC_DEC (gst_pad_get_parent (pad));
@@ -1739,6 +1743,7 @@ gst_flac_dec_src_query (GstPad * pad, GstQuery * query)
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:{
       GstFormat fmt;
+
       gint64 pos;
 
       gst_query_parse_position (query, &fmt, NULL);
@@ -1770,6 +1775,7 @@ gst_flac_dec_src_query (GstPad * pad, GstQuery * query)
 
     case GST_QUERY_DURATION:{
       GstFormat fmt;
+
       gint64 len;
 
       gst_query_parse_duration (query, &fmt, NULL);
@@ -1813,6 +1819,7 @@ gst_flac_dec_src_query (GstPad * pad, GstQuery * query)
 
     case GST_QUERY_CONVERT:{
       GstFormat src_fmt, dest_fmt;
+
       gint64 src_val, dest_val;
 
       gst_query_parse_convert (query, &src_fmt, &src_val, &dest_fmt, NULL);
@@ -1847,15 +1854,25 @@ static gboolean
 gst_flac_dec_handle_seek_event (GstFlacDec * flacdec, GstEvent * event)
 {
   FLAC__bool seek_ok;
+
   GstSeekFlags seek_flags;
+
   GstSeekType start_type;
+
   GstSeekType stop_type;
+
   GstSegment segment;
+
   GstFormat seek_format;
+
   gboolean only_update = FALSE;
+
   gboolean flush;
+
   gdouble rate;
+
   gint64 start, last_stop;
+
   gint64 stop;
 
   if (flacdec->seekable_decoder == NULL) {
@@ -2043,6 +2060,7 @@ static gboolean
 gst_flac_dec_src_event (GstPad * pad, GstEvent * event)
 {
   gboolean res = TRUE;
+
   GstFlacDec *flacdec = GST_FLAC_DEC (gst_pad_get_parent (pad));
 
   switch (GST_EVENT_TYPE (event)) {
@@ -2112,6 +2130,7 @@ static GstStateChangeReturn
 gst_flac_dec_change_state (GstElement * element, GstStateChange transition)
 {
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+
   GstFlacDec *flacdec = GST_FLAC_DEC (element);
 
   switch (transition) {

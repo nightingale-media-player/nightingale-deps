@@ -130,6 +130,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstequalizer.so
 %{_libdir}/gstreamer-%{majorminor}/libgstmultifile.so
 %{_libdir}/gstreamer-%{majorminor}/libgstspectrum.so
+%{_libdir}/gstreamer-%{majorminor}/libgstgoom2k1.so
 
 # sys plugins
 @USE_GST_V4L2_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstvideo4linux2.so
@@ -152,6 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 @USE_LIBDV_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstdv.so
 @USE_DV1394_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgst1394.so
 @USE_WAVPACK_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstwavpack.so
+@USE_SOUP_TRUE@%{_libdir}/gstreamer-%{majorminor}/libgstsouphttpsrc.so
 
 
 # schema files

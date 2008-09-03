@@ -210,12 +210,6 @@ GST_BOILERPLATE (GstWavpackEnc, gst_wavpack_enc, GstElement, GST_TYPE_ELEMENT);
 static void
 gst_wavpack_enc_base_init (gpointer klass)
 {
-  static const GstElementDetails element_details = {
-    "Wavpack audio encoder",
-    "Codec/Encoder/Audio",
-    "Encodes audio with the Wavpack lossless/lossy audio codec",
-    "Sebastian Dröge <slomo@circular-chaos.org>"
-  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   /* add pad templates */
@@ -227,7 +221,10 @@ gst_wavpack_enc_base_init (gpointer klass)
       gst_static_pad_template_get (&wvcsrc_factory));
 
   /* set element details */
-  gst_element_class_set_details (element_class, &element_details);
+  gst_element_class_set_details_simple (element_class, "Wavpack audio encoder",
+      "Codec/Encoder/Audio",
+      "Encodes audio with the Wavpack lossless/lossy audio codec",
+      "Sebastian Dröge <slomo@circular-chaos.org>");
 }
 
 
@@ -478,13 +475,13 @@ gst_wavpack_enc_set_wp_config (GstWavpackEnc * enc)
   /* Correction Mode, only in lossy mode */
   if (enc->wp_config->flags & CONFIG_HYBRID_FLAG) {
     if (enc->correction_mode > GST_WAVPACK_CORRECTION_MODE_OFF) {
+      GstCaps *caps = gst_caps_new_simple ("audio/x-wavpack-correction",
+          "framed", G_TYPE_BOOLEAN, TRUE, NULL);
+
       enc->wvcsrcpad =
           gst_pad_new_from_static_template (&wvcsrc_factory, "wvcsrc");
 
       /* try to add correction src pad, don't set correction mode on failure */
-      GstCaps *caps = gst_caps_new_simple ("audio/x-wavpack-correction",
-          "framed", G_TYPE_BOOLEAN, TRUE, NULL);
-
       GST_DEBUG_OBJECT (enc, "Adding correction pad with caps %"
           GST_PTR_FORMAT, caps);
       if (!gst_pad_set_caps (enc->wvcsrcpad, caps)) {
@@ -549,8 +546,8 @@ gst_wavpack_enc_push_block (void *id, void *data, int32_t count)
 
   pad = (wid->correction) ? enc->wvcsrcpad : enc->srcpad;
   flow =
-      (wid->correction) ? &enc->wvcsrcpad_last_return : &enc->
-      srcpad_last_return;
+      (wid->correction) ? &enc->
+      wvcsrcpad_last_return : &enc->srcpad_last_return;
 
   *flow = gst_pad_alloc_buffer_and_set_caps (pad, GST_BUFFER_OFFSET_NONE,
       count, GST_PAD_CAPS (pad), &buffer);

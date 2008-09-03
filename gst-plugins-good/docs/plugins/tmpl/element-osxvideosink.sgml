@@ -27,10 +27,22 @@ OSX native videosink
 @osxwindow: 
 @fps_n: 
 @fps_d: 
+@event_task: 
+@event_task_lock: 
 @pixel_width: 
 @pixel_height: 
 @time: 
 @embed: 
 @fullscreen: 
 @sw_scaling_failed: 
+
+<!-- ##### ARG GstOSXVideoSink:embed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstOSXVideoSink:fullscreen ##### -->
+<para>
+
+</para>
 

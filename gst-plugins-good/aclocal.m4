@@ -6682,6 +6682,27 @@ AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version="1.9"])
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
 	 [AM_AUTOMAKE_VERSION([1.9.6])])
 
+# Figure out how to run the assembler.                      -*- Autoconf -*-
+
+# Copyright (C) 2001, 2003, 2004, 2005  Free Software Foundation, Inc.
+#
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# serial 4
+
+# AM_PROG_AS
+# ----------
+AC_DEFUN([AM_PROG_AS],
+[# By default we simply use the C compiler to build assembly code.
+AC_REQUIRE([AC_PROG_CC])
+test "${CCAS+set}" = set || CCAS=$CC
+test "${CCASFLAGS+set}" = set || CCASFLAGS=$CFLAGS
+AC_ARG_VAR([CCAS],      [assembler compiler command (defaults to CC)])
+AC_ARG_VAR([CCASFLAGS], [assembler compiler flags (defaults to CFLAGS)])
+])
+
 # AM_AUX_DIR_EXPAND                                         -*- Autoconf -*-
 
 # Copyright (C) 2001, 2003, 2005  Free Software Foundation, Inc.
@@ -7572,6 +7593,7 @@ AC_SUBST([am__untar])
 m4_include([common/m4/as-ac-expand.m4])
 m4_include([common/m4/as-auto-alt.m4])
 m4_include([common/m4/as-compiler-flag.m4])
+m4_include([common/m4/as-gcc-inline-assembly.m4])
 m4_include([common/m4/as-objc.m4])
 m4_include([common/m4/as-python.m4])
 m4_include([common/m4/as-scrub-include.m4])
@@ -7602,8 +7624,6 @@ m4_include([m4/lib-ld.m4])
 m4_include([m4/lib-link.m4])
 m4_include([m4/lib-prefix.m4])
 m4_include([m4/libtool.m4])
-m4_include([m4/lrint.m4])
-m4_include([m4/lrintf.m4])
 m4_include([m4/ltoptions.m4])
 m4_include([m4/ltsugar.m4])
 m4_include([m4/ltversion.m4])

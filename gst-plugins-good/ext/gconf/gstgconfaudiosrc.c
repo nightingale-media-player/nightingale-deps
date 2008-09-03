@@ -71,7 +71,7 @@ gst_gconf_audio_src_class_init (GstGConfAudioSrcClass * klass)
  * Hack to make negotiation work.
  */
 
-static void
+static gboolean
 gst_gconf_audio_src_reset (GstGConfAudioSrc * src)
 {
   GstPad *targetpad;
@@ -82,14 +82,19 @@ gst_gconf_audio_src_reset (GstGConfAudioSrc * src)
     gst_bin_remove (GST_BIN (src), src->kid);
   }
   src->kid = gst_element_factory_make ("fakesrc", "testsrc");
+  if (!src->kid) {
+    GST_ERROR_OBJECT (src, "Failed to create fakesrc");
+    return FALSE;
+  }
   gst_bin_add (GST_BIN (src), src->kid);
 
-  targetpad = gst_element_get_pad (src->kid, "src");
+  targetpad = gst_element_get_static_pad (src->kid, "src");
   gst_ghost_pad_set_target (GST_GHOST_PAD (src->pad), targetpad);
   gst_object_unref (targetpad);
 
   g_free (src->gconf_str);
   src->gconf_str = NULL;
+  return TRUE;
 }
 
 static void
@@ -189,7 +194,7 @@ do_toggle_element (GstGConfAudioSrc * src)
 
   /* re-attach ghostpad */
   GST_DEBUG_OBJECT (src, "Creating new ghostpad");
-  targetpad = gst_element_get_pad (src->kid, "src");
+  targetpad = gst_element_get_static_pad (src->kid, "src");
   gst_ghost_pad_set_target (GST_GHOST_PAD (src->pad), targetpad);
   gst_object_unref (targetpad);
   GST_DEBUG_OBJECT (src, "done changing gconf audio source");
@@ -225,7 +230,8 @@ gst_gconf_audio_src_change_state (GstElement * element,
 
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_NULL:
-      gst_gconf_audio_src_reset (src);
+      if (!gst_gconf_audio_src_reset (src))
+        ret = GST_STATE_CHANGE_FAILURE;
       break;
     default:
       break;

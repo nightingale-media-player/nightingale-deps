@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>audioamplify</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-apev2mux.html" title="apev2mux">
 <link rel="next" href="gst-plugins-good-plugins-audiochebband.html" title="audiochebband">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -22,66 +23,57 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-audiochebband.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2577041" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2597351" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2576998" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2576959" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-audioamplify.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audioamplify.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audioamplify.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audioamplify.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-audioamplify"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2577041"></a><span class="refentrytitle">audioamplify</span>
-</h2>
-<p>audioamplify &#8212; Amplifies an audio stream with selectable clipping mode</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-audioamplify.top_of_page"></a>audioamplify</span></h2>
+<p>audioamplify — Amplifies an audio stream with selectable clipping mode</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-audioamplify.synopsis"></a><h2>Synopsis</h2>
 <a name="GstAudioAmplify"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify-struct">GstAudioAmplify</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify-struct" title="GstAudioAmplify">GstAudioAmplify</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2576998"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-audioamplify.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseTransform
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
 >GstAudioFilter</a>
                            +----GstAudioAmplify
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2576959"></a><h2>Properties</h2>
+<a name="gst-plugins-good-plugins-audioamplify.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify--amplification">amplification</a>"            gfloat                : Read / Write
-  "<a href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify--clipping-method">clipping-method</a>"          GstAudioPanoramaClippingMethod  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify--amplification" title='The "amplification" property'>amplification</a>"            gfloat                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audioamplify.html#GstAudioAmplify--clipping-method" title='The "clipping-method" property'>clipping-method</a>"          GstAudioPanoramaClippingMethod  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2597351"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-audioamplify.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2591383"></a>
+<a name="id2565782"></a><h3>Example launch line</h3>
 Amplifies an audio stream by a given factor and allows the selection of different clipping modes.
 The difference between the clipping modes is best evaluated by testing.
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -92,46 +84,55 @@ gst-launch audiotestsrc wave=saw ! audioconvert ! audioamplify amplification=1.5
 <p>
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2565877"></a><h3>Element Information</h3>
+<a name="id2582084"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-audiofx.html#plugin-audiofx">audiofx</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-audiofx.html#plugin-audiofx">audiofx</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
-<td>Sebastian Dr&#246;ge &lt;slomo@circular-chaos.org&gt;</td>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Effect/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2555215"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
@@ -139,54 +140,56 @@ gst-launch audiotestsrc wave=saw ! audioconvert ! audioamplify amplification=1.5
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2567950"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-audioamplify.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2567960"></a><h3>
-<a name="GstAudioAmplify-struct"></a>GstAudioAmplify</h3>
-<a class="indexterm" name="id2567972"></a><pre class="programlisting">typedef struct _GstAudioAmplify GstAudioAmplify;</pre>
+<a name="GstAudioAmplify-struct"></a><h3>GstAudioAmplify</h3>
+<pre class="programlisting">typedef struct _GstAudioAmplify GstAudioAmplify;</pre>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2567990"></a><h2>Property Details</h2>
+<a name="gst-plugins-good-plugins-audioamplify.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2568000"></a><h3>
-<a name="GstAudioAmplify--amplification"></a>The "<code class="literal">amplification</code>" property</h3>
-<a class="indexterm" name="id2578668"></a><pre class="programlisting">  "amplification"            gfloat                : Read / Write</pre>
+<a name="GstAudioAmplify--amplification"></a><h3>The <code class="literal">"amplification"</code> property</h3>
+<pre class="programlisting">  "amplification"            gfloat                : Read / Write</pre>
 <p>Factor of amplification.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2578696"></a><h3>
-<a name="GstAudioAmplify--clipping-method"></a>The "<code class="literal">clipping-method</code>" property</h3>
-<a class="indexterm" name="id2578711"></a><pre class="programlisting">  "clipping-method"          GstAudioPanoramaClippingMethod  : Read / Write</pre>
+<a name="GstAudioAmplify--clipping-method"></a><h3>The <code class="literal">"clipping-method"</code> property</h3>
+<pre class="programlisting">  "clipping-method"          GstAudioPanoramaClippingMethod  : Read / Write</pre>
 <p>
 Clipping method: clip mode set values higher than the maximum to the
 maximum. The wrap-negative mode pushes those values back from the
@@ -198,5 +201,8 @@ opposite side, wrap-positive pushes them back from the same side.</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

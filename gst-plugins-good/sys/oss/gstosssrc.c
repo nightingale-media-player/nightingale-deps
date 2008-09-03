@@ -243,6 +243,7 @@ gst_oss_src_init (GstOssSrc * osssrc, GstOssSrcClass * g_class)
   osssrc->fd = -1;
   osssrc->device = g_strdup (device);
   osssrc->device_name = g_strdup (DEFAULT_DEVICE_NAME);
+  osssrc->probed_caps = NULL;
 }
 
 static void
@@ -263,11 +264,22 @@ gst_oss_src_getcaps (GstBaseSrc * bsrc)
   osssrc = GST_OSS_SRC (bsrc);
 
   if (osssrc->fd == -1) {
-    caps = gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD
-            (bsrc)));
-  } else {
-    caps = gst_oss_helper_probe_caps (osssrc->fd);
+    GST_DEBUG_OBJECT (osssrc, "device not open, using template caps");
+    return NULL;                /* base class will get template caps for us */
   }
+
+  if (osssrc->probed_caps) {
+    GST_LOG_OBJECT (osssrc, "Returning cached caps");
+    return gst_caps_ref (osssrc->probed_caps);
+  }
+
+  caps = gst_oss_helper_probe_caps (osssrc->fd);
+
+  if (caps) {
+    osssrc->probed_caps = gst_caps_ref (caps);
+  }
+
+  GST_INFO_OBJECT (osssrc, "returning caps %" GST_PTR_FORMAT, caps);
 
   return caps;
 }
@@ -394,6 +406,8 @@ gst_oss_src_close (GstAudioSrc * asrc)
     gst_ossmixer_free (oss->mixer);
     oss->mixer = NULL;
   }
+
+  gst_caps_replace (&oss->probed_caps, NULL);
 
   return TRUE;
 }
@@ -528,12 +542,7 @@ gst_oss_src_delay (GstAudioSrc * asrc)
 static void
 gst_oss_src_reset (GstAudioSrc * asrc)
 {
-  GstOssSrc *oss;
-
-  //gint ret;
-
-  oss = GST_OSS_SRC (asrc);
-
-  /* deadlocks on my machine... */
-  //ret = ioctl (oss->fd, SNDCTL_DSP_RESET, 0);
+  /* There's nothing we can do here really: OSS can't handle access to the
+   * same device/fd from multiple threads and might deadlock or blow up in
+   * other ways if we try an ioctl SNDCTL_DSP_RESET or similar */
 }

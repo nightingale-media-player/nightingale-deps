@@ -74,3 +74,8 @@ Receive data over the network via UDP
 
 </para>
 
+<!-- ##### ARG GstUDPSrc:auto-multicast ##### -->
+<para>
+
+</para>
+

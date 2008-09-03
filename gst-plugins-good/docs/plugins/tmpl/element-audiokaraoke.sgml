@@ -1,0 +1,46 @@
+<!-- ##### SECTION Title ##### -->
+audiokaraoke
+
+<!-- ##### SECTION Short_Description ##### -->
+Removes voice from sound
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-audiokaraoke-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAudioKaraoke ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstAudioKaraoke:filter-band ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioKaraoke:filter-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioKaraoke:level ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAudioKaraoke:mono-level ##### -->
+<para>
+
+</para>
+

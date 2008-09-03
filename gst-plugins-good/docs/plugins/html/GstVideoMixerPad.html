@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstVideoMixerPad</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch03.html" title="gst-plugins-good Base Classes">
+<link rel="prev" href="GstIirEqualizer.html" title="GstIirEqualize">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstIirEqualizer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
+<td> </td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstVideoMixerPad.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstVideoMixerPad.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstVideoMixerPad.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstVideoMixerPad.properties" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GstVideoMixerPad"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstVideoMixerPad.top_of_page"></a>GstVideoMixerPad</span></h2>
+<p>GstVideoMixerPad</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="GstVideoMixerPad.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+                    <a class="link" href="GstVideoMixerPad.html#GstVideoMixerPad-struct" title="GstVideoMixerPad">GstVideoMixerPad</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstVideoMixerPad.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstObject
+         +----GstPad
+               +----GstVideoMixerPad
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstVideoMixerPad.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="GstVideoMixerPad.html#GstVideoMixerPad--alpha" title='The "alpha" property'>alpha</a>"                    gdouble               : Read / Write
+  "<a class="link" href="GstVideoMixerPad.html#GstVideoMixerPad--xpos" title='The "xpos" property'>xpos</a>"                     gint                  : Read / Write
+  "<a class="link" href="GstVideoMixerPad.html#GstVideoMixerPad--ypos" title='The "ypos" property'>ypos</a>"                     gint                  : Read / Write
+  "<a class="link" href="GstVideoMixerPad.html#GstVideoMixerPad--zorder" title='The "zorder" property'>zorder</a>"                   guint                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstVideoMixerPad.description"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstVideoMixerPad.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstVideoMixerPad-struct"></a><h3>GstVideoMixerPad</h3>
+<pre class="programlisting">typedef struct _GstVideoMixerPad GstVideoMixerPad;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstVideoMixerPad.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstVideoMixerPad--alpha"></a><h3>The <code class="literal">"alpha"</code> property</h3>
+<pre class="programlisting">  "alpha"                    gdouble               : Read / Write</pre>
+<p>Alpha of the picture.</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoMixerPad--xpos"></a><h3>The <code class="literal">"xpos"</code> property</h3>
+<pre class="programlisting">  "xpos"                     gint                  : Read / Write</pre>
+<p>X Position of the picture.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoMixerPad--ypos"></a><h3>The <code class="literal">"ypos"</code> property</h3>
+<pre class="programlisting">  "ypos"                     gint                  : Read / Write</pre>
+<p>Y Position of the picture.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoMixerPad--zorder"></a><h3>The <code class="literal">"zorder"</code> property</h3>
+<pre class="programlisting">  "zorder"                   guint                 : Read / Write</pre>
+<p>Z Order of the picture.</p>
+<p>Allowed values: &lt;= 10000</p>
+<p>Default value: 0</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

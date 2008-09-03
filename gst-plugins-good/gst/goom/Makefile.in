@@ -14,7 +14,6 @@
 
 @SET_MAKE@
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -38,12 +37,12 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = gst/goom
-DIST_COMMON = README $(noinst_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
+	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-objc.m4 \
 	$(top_srcdir)/common/m4/as-python.m4 \
 	$(top_srcdir)/common/m4/as-scrub-include.m4 \
@@ -68,7 +67,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/gst-shout2.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
 	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
@@ -88,11 +86,30 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstgoom_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__objects_1 = libgstgoom_la-filters.lo
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am__libgstgoom_la_SOURCES_DIST = gstgoom.c gstgoom.h drawmethods.c \
+	drawmethods.h sound_tester.c sound_tester.h mathtools.c \
+	mathtools.h lines.c lines.h ifs.c ifs.h surf3d.c surf3d.h \
+	tentacle3d.c tentacle3d.h v3d.c v3d.h convolve_fx.c \
+	flying_stars_fx.c goom_fx.h goom_visual_fx.h motif_goom1.h \
+	motif_goom2.h plugin_info.c goom_plugin_info.h goom_tools.c \
+	config_param.c filters.c goom_core.c graphic.c goom.h \
+	goom_typedefs.h goom_graphic.h goom_config_param.h \
+	goom_filters.h goom_tools.h goom_config.h mmx.c xmmx.c mmx.h \
+	xmmx.h
+am__objects_1 = libgstgoom_la-mmx.lo libgstgoom_la-xmmx.lo
+@HAVE_CPU_I386_TRUE@am__objects_2 = $(am__objects_1)
 am_libgstgoom_la_OBJECTS = libgstgoom_la-gstgoom.lo \
-	libgstgoom_la-goom_core.lo $(am__objects_1) \
-	libgstgoom_la-graphic.lo libgstgoom_la-lines.lo
+	libgstgoom_la-drawmethods.lo libgstgoom_la-sound_tester.lo \
+	libgstgoom_la-mathtools.lo libgstgoom_la-lines.lo \
+	libgstgoom_la-ifs.lo libgstgoom_la-surf3d.lo \
+	libgstgoom_la-tentacle3d.lo libgstgoom_la-v3d.lo \
+	libgstgoom_la-convolve_fx.lo libgstgoom_la-flying_stars_fx.lo \
+	libgstgoom_la-plugin_info.lo libgstgoom_la-goom_tools.lo \
+	libgstgoom_la-config_param.lo libgstgoom_la-filters.lo \
+	libgstgoom_la-goom_core.lo libgstgoom_la-graphic.lo \
+	$(am__objects_2)
 libgstgoom_la_OBJECTS = $(am_libgstgoom_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -106,8 +123,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libgstgoom_la_SOURCES)
-DIST_SOURCES = $(libgstgoom_la_SOURCES)
-HEADERS = $(noinst_HEADERS)
+DIST_SOURCES = $(am__libgstgoom_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -125,6 +141,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -138,10 +155,9 @@ BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CC = @CC@
+CCAS = @CCAS@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CDIO_CFLAGS = @CDIO_CFLAGS@
-CDIO_LIBS = @CDIO_LIBS@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -164,6 +180,7 @@ DIRECTDRAW_LIBS = @DIRECTDRAW_LIBS@
 DIRECTSOUND_CFLAGS = @DIRECTSOUND_CFLAGS@
 DIRECTSOUND_LDFLAGS = @DIRECTSOUND_LDFLAGS@
 DIRECTSOUND_LIBS = @DIRECTSOUND_LIBS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DV1394_CFLAGS = @DV1394_CFLAGS@
@@ -177,6 +194,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
@@ -212,6 +230,7 @@ GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -224,6 +243,7 @@ GST_LICENSE = @GST_LICENSE@
 GST_LT_LDFLAGS = @GST_LT_LDFLAGS@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -236,7 +256,6 @@ GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
@@ -277,6 +296,8 @@ HAVE_CPU_X86_64_TRUE = @HAVE_CPU_X86_64_TRUE@
 HAVE_CXX = @HAVE_CXX@
 HAVE_DIRECTDRAW = @HAVE_DIRECTDRAW@
 HAVE_DIRECTSOUND = @HAVE_DIRECTSOUND@
+HAVE_GCC_ASM_FALSE = @HAVE_GCC_ASM_FALSE@
+HAVE_GCC_ASM_TRUE = @HAVE_GCC_ASM_TRUE@
 HAVE_GCONFTOOL = @HAVE_GCONFTOOL@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
@@ -335,6 +356,7 @@ NMEDIT = @NMEDIT@
 OBJC = @OBJC@
 OBJCDEPMODE = @OBJCDEPMODE@
 OBJC_LDFLAGS = @OBJC_LDFLAGS@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -352,6 +374,8 @@ PKG_CONFIG = @PKG_CONFIG@
 PLUGINDIR = @PLUGINDIR@
 POSUB = @POSUB@
 PROFILE_CFLAGS = @PROFILE_CFLAGS@
+PULSE_CFLAGS = @PULSE_CFLAGS@
+PULSE_LIBS = @PULSE_LIBS@
 PYTHON = @PYTHON@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
@@ -365,10 +389,13 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT2_CFLAGS = @SHOUT2_CFLAGS@
 SHOUT2_LIBS = @SHOUT2_LIBS@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 SPEEX_CFLAGS = @SPEEX_CFLAGS@
 SPEEX_LIBS = @SPEEX_LIBS@
 STRIP = @STRIP@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
+TAGLIB_CXXFLAGS = @TAGLIB_CXXFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
 USE_AALIB_FALSE = @USE_AALIB_FALSE@
 USE_AALIB_TRUE = @USE_AALIB_TRUE@
@@ -376,8 +403,6 @@ USE_ANNODEX_FALSE = @USE_ANNODEX_FALSE@
 USE_ANNODEX_TRUE = @USE_ANNODEX_TRUE@
 USE_CAIRO_FALSE = @USE_CAIRO_FALSE@
 USE_CAIRO_TRUE = @USE_CAIRO_TRUE@
-USE_CDIO_FALSE = @USE_CDIO_FALSE@
-USE_CDIO_TRUE = @USE_CDIO_TRUE@
 USE_DIRECTDRAW_FALSE = @USE_DIRECTDRAW_FALSE@
 USE_DIRECTDRAW_TRUE = @USE_DIRECTDRAW_TRUE@
 USE_DIRECTSOUND_FALSE = @USE_DIRECTSOUND_FALSE@
@@ -404,8 +429,6 @@ USE_HAL_FALSE = @USE_HAL_FALSE@
 USE_HAL_TRUE = @USE_HAL_TRUE@
 USE_JPEG_FALSE = @USE_JPEG_FALSE@
 USE_JPEG_TRUE = @USE_JPEG_TRUE@
-USE_LADSPA_FALSE = @USE_LADSPA_FALSE@
-USE_LADSPA_TRUE = @USE_LADSPA_TRUE@
 USE_LIBCACA_FALSE = @USE_LIBCACA_FALSE@
 USE_LIBCACA_TRUE = @USE_LIBCACA_TRUE@
 USE_LIBDV_FALSE = @USE_LIBDV_FALSE@
@@ -419,8 +442,82 @@ USE_OSX_AUDIO_FALSE = @USE_OSX_AUDIO_FALSE@
 USE_OSX_AUDIO_TRUE = @USE_OSX_AUDIO_TRUE@
 USE_OSX_VIDEO_FALSE = @USE_OSX_VIDEO_FALSE@
 USE_OSX_VIDEO_TRUE = @USE_OSX_VIDEO_TRUE@
+USE_PLUGIN_ALPHA_FALSE = @USE_PLUGIN_ALPHA_FALSE@
+USE_PLUGIN_ALPHA_TRUE = @USE_PLUGIN_ALPHA_TRUE@
+USE_PLUGIN_APETAG_FALSE = @USE_PLUGIN_APETAG_FALSE@
+USE_PLUGIN_APETAG_TRUE = @USE_PLUGIN_APETAG_TRUE@
+USE_PLUGIN_AUDIOFX_FALSE = @USE_PLUGIN_AUDIOFX_FALSE@
+USE_PLUGIN_AUDIOFX_TRUE = @USE_PLUGIN_AUDIOFX_TRUE@
+USE_PLUGIN_AUPARSE_FALSE = @USE_PLUGIN_AUPARSE_FALSE@
+USE_PLUGIN_AUPARSE_TRUE = @USE_PLUGIN_AUPARSE_TRUE@
+USE_PLUGIN_AUTODETECT_FALSE = @USE_PLUGIN_AUTODETECT_FALSE@
+USE_PLUGIN_AUTODETECT_TRUE = @USE_PLUGIN_AUTODETECT_TRUE@
+USE_PLUGIN_AVI_FALSE = @USE_PLUGIN_AVI_FALSE@
+USE_PLUGIN_AVI_TRUE = @USE_PLUGIN_AVI_TRUE@
+USE_PLUGIN_CUTTER_FALSE = @USE_PLUGIN_CUTTER_FALSE@
+USE_PLUGIN_CUTTER_TRUE = @USE_PLUGIN_CUTTER_TRUE@
+USE_PLUGIN_DEBUG_FALSE = @USE_PLUGIN_DEBUG_FALSE@
+USE_PLUGIN_DEBUG_TRUE = @USE_PLUGIN_DEBUG_TRUE@
+USE_PLUGIN_EFFECTV_FALSE = @USE_PLUGIN_EFFECTV_FALSE@
+USE_PLUGIN_EFFECTV_TRUE = @USE_PLUGIN_EFFECTV_TRUE@
+USE_PLUGIN_EQUALIZER_FALSE = @USE_PLUGIN_EQUALIZER_FALSE@
+USE_PLUGIN_EQUALIZER_TRUE = @USE_PLUGIN_EQUALIZER_TRUE@
+USE_PLUGIN_FLX_FALSE = @USE_PLUGIN_FLX_FALSE@
+USE_PLUGIN_FLX_TRUE = @USE_PLUGIN_FLX_TRUE@
+USE_PLUGIN_GOOM2K1_FALSE = @USE_PLUGIN_GOOM2K1_FALSE@
+USE_PLUGIN_GOOM2K1_TRUE = @USE_PLUGIN_GOOM2K1_TRUE@
+USE_PLUGIN_GOOM_FALSE = @USE_PLUGIN_GOOM_FALSE@
+USE_PLUGIN_GOOM_TRUE = @USE_PLUGIN_GOOM_TRUE@
+USE_PLUGIN_ICYDEMUX_FALSE = @USE_PLUGIN_ICYDEMUX_FALSE@
+USE_PLUGIN_ICYDEMUX_TRUE = @USE_PLUGIN_ICYDEMUX_TRUE@
+USE_PLUGIN_ID3DEMUX_FALSE = @USE_PLUGIN_ID3DEMUX_FALSE@
+USE_PLUGIN_ID3DEMUX_TRUE = @USE_PLUGIN_ID3DEMUX_TRUE@
+USE_PLUGIN_INTERLEAVE_FALSE = @USE_PLUGIN_INTERLEAVE_FALSE@
+USE_PLUGIN_INTERLEAVE_TRUE = @USE_PLUGIN_INTERLEAVE_TRUE@
+USE_PLUGIN_LAW_FALSE = @USE_PLUGIN_LAW_FALSE@
+USE_PLUGIN_LAW_TRUE = @USE_PLUGIN_LAW_TRUE@
+USE_PLUGIN_LEVEL_FALSE = @USE_PLUGIN_LEVEL_FALSE@
+USE_PLUGIN_LEVEL_TRUE = @USE_PLUGIN_LEVEL_TRUE@
+USE_PLUGIN_MATROSKA_FALSE = @USE_PLUGIN_MATROSKA_FALSE@
+USE_PLUGIN_MATROSKA_TRUE = @USE_PLUGIN_MATROSKA_TRUE@
+USE_PLUGIN_MONOSCOPE_FALSE = @USE_PLUGIN_MONOSCOPE_FALSE@
+USE_PLUGIN_MONOSCOPE_TRUE = @USE_PLUGIN_MONOSCOPE_TRUE@
+USE_PLUGIN_MULTIFILE_FALSE = @USE_PLUGIN_MULTIFILE_FALSE@
+USE_PLUGIN_MULTIFILE_TRUE = @USE_PLUGIN_MULTIFILE_TRUE@
+USE_PLUGIN_MULTIPART_FALSE = @USE_PLUGIN_MULTIPART_FALSE@
+USE_PLUGIN_MULTIPART_TRUE = @USE_PLUGIN_MULTIPART_TRUE@
+USE_PLUGIN_QTDEMUX_FALSE = @USE_PLUGIN_QTDEMUX_FALSE@
+USE_PLUGIN_QTDEMUX_TRUE = @USE_PLUGIN_QTDEMUX_TRUE@
+USE_PLUGIN_REPLAYGAIN_FALSE = @USE_PLUGIN_REPLAYGAIN_FALSE@
+USE_PLUGIN_REPLAYGAIN_TRUE = @USE_PLUGIN_REPLAYGAIN_TRUE@
+USE_PLUGIN_RTP_FALSE = @USE_PLUGIN_RTP_FALSE@
+USE_PLUGIN_RTP_TRUE = @USE_PLUGIN_RTP_TRUE@
+USE_PLUGIN_RTSP_FALSE = @USE_PLUGIN_RTSP_FALSE@
+USE_PLUGIN_RTSP_TRUE = @USE_PLUGIN_RTSP_TRUE@
+USE_PLUGIN_SMPTE_FALSE = @USE_PLUGIN_SMPTE_FALSE@
+USE_PLUGIN_SMPTE_TRUE = @USE_PLUGIN_SMPTE_TRUE@
+USE_PLUGIN_SPECTRUM_FALSE = @USE_PLUGIN_SPECTRUM_FALSE@
+USE_PLUGIN_SPECTRUM_TRUE = @USE_PLUGIN_SPECTRUM_TRUE@
+USE_PLUGIN_UDP_FALSE = @USE_PLUGIN_UDP_FALSE@
+USE_PLUGIN_UDP_TRUE = @USE_PLUGIN_UDP_TRUE@
+USE_PLUGIN_VIDEOBOX_FALSE = @USE_PLUGIN_VIDEOBOX_FALSE@
+USE_PLUGIN_VIDEOBOX_TRUE = @USE_PLUGIN_VIDEOBOX_TRUE@
+USE_PLUGIN_VIDEOCROP_FALSE = @USE_PLUGIN_VIDEOCROP_FALSE@
+USE_PLUGIN_VIDEOCROP_TRUE = @USE_PLUGIN_VIDEOCROP_TRUE@
+USE_PLUGIN_VIDEOFILTER_FALSE = @USE_PLUGIN_VIDEOFILTER_FALSE@
+USE_PLUGIN_VIDEOFILTER_TRUE = @USE_PLUGIN_VIDEOFILTER_TRUE@
+USE_PLUGIN_VIDEOMIXER_FALSE = @USE_PLUGIN_VIDEOMIXER_FALSE@
+USE_PLUGIN_VIDEOMIXER_TRUE = @USE_PLUGIN_VIDEOMIXER_TRUE@
+USE_PLUGIN_WAVENC_FALSE = @USE_PLUGIN_WAVENC_FALSE@
+USE_PLUGIN_WAVENC_TRUE = @USE_PLUGIN_WAVENC_TRUE@
+USE_PLUGIN_WAVPARSE_FALSE = @USE_PLUGIN_WAVPARSE_FALSE@
+USE_PLUGIN_WAVPARSE_TRUE = @USE_PLUGIN_WAVPARSE_TRUE@
+USE_PULSE_FALSE = @USE_PULSE_FALSE@
+USE_PULSE_TRUE = @USE_PULSE_TRUE@
 USE_SHOUT2_FALSE = @USE_SHOUT2_FALSE@
 USE_SHOUT2_TRUE = @USE_SHOUT2_TRUE@
+USE_SOUP_FALSE = @USE_SOUP_FALSE@
+USE_SOUP_TRUE = @USE_SOUP_TRUE@
 USE_SPEEX_FALSE = @USE_SPEEX_FALSE@
 USE_SPEEX_TRUE = @USE_SPEEX_TRUE@
 USE_SUNAUDIO_FALSE = @USE_SUNAUDIO_FALSE@
@@ -515,14 +612,39 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 plugin_LTLIBRARIES = libgstgoom.la
-GOOM_FILTER_FILES = filters.c
-GOOM_FILTER_CFLAGS = -UMMX -UUSE_ASM
-noinst_HEADERS = gstgoom.h filters.h goom_core.h goom_tools.h graphic.h lines.h 
-libgstgoom_la_SOURCES = gstgoom.c goom_core.c $(GOOM_FILTER_FILES) graphic.c lines.c
-libgstgoom_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GOOM_FILTER_CFLAGS)
-libgstgoom_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBM)
+PPC_FILES = ppc_zoom_ultimate.s ppc_drawings.s ppc_drawings.h ppc_zoom_ultimate.h
+MMX_FILES = mmx.c xmmx.c mmx.h xmmx.h
+@HAVE_CPU_I386_TRUE@ARCH_FILES = $(MMX_FILES)
+# disable until someone figures out how to build these correctly on ppc
+#ARCH_FILES = $(PPC_FILES)
+@HAVE_CPU_PPC64_TRUE@ARCH_FILES = 
+
+# disable until someone figures out how to build these correctly on ppc
+#ARCH_FILES = $(PPC_FILES)
+@HAVE_CPU_PPC_TRUE@ARCH_FILES = 
+@HAVE_CPU_I386_TRUE@ARCH_CFLAGS = -DBUILD_MMX
+libgstgoom_la_SOURCES = \
+	gstgoom.c gstgoom.h					\
+	drawmethods.c drawmethods.h				\
+	sound_tester.c sound_tester.h				\
+	mathtools.c mathtools.h					\
+	lines.c lines.h ifs.c ifs.h surf3d.c surf3d.h		\
+	tentacle3d.c tentacle3d.h v3d.c v3d.h			\
+	convolve_fx.c flying_stars_fx.c				\
+	goom_fx.h goom_visual_fx.h				\
+	motif_goom1.h motif_goom2.h				\
+	plugin_info.c goom_plugin_info.h			\
+	goom_tools.c						\
+	config_param.c filters.c goom_core.c graphic.c		\
+	goom.h goom_typedefs.h goom_graphic.h			\
+	goom_config_param.h goom_visual_fx.h goom_filters.h	\
+	goom_tools.h goom_tools.h goom_config.h			\
+	$(ARCH_FILES)
+
+libgstgoom_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GOOM_FILTER_CFLAGS) $(LIBOIL_CFLAGS) $(ARCH_CFLAGS)
+libgstgoom_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBM) $(LIBOIL_LIBS)
 libgstgoom_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-EXTRA_DIST = filters.c
+EXTRA_DIST = filters.c $(PPC_FILES) $(MMX_FILES)
 all: all-am
 
 .SUFFIXES:
@@ -592,11 +714,25 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-config_param.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-convolve_fx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-drawmethods.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-filters.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-flying_stars_fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-goom_core.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-goom_tools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-graphic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-gstgoom.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-ifs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-lines.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-mathtools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-mmx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-plugin_info.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-sound_tester.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-surf3d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-tentacle3d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-v3d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstgoom_la-xmmx.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -626,12 +762,96 @@ libgstgoom_la-gstgoom.lo: gstgoom.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-gstgoom.lo `test -f 'gstgoom.c' || echo '$(srcdir)/'`gstgoom.c
 
-libgstgoom_la-goom_core.lo: goom_core.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-goom_core.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-goom_core.Tpo" -c -o libgstgoom_la-goom_core.lo `test -f 'goom_core.c' || echo '$(srcdir)/'`goom_core.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-goom_core.Tpo" "$(DEPDIR)/libgstgoom_la-goom_core.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-goom_core.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='goom_core.c' object='libgstgoom_la-goom_core.lo' libtool=yes @AMDEPBACKSLASH@
+libgstgoom_la-drawmethods.lo: drawmethods.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-drawmethods.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-drawmethods.Tpo" -c -o libgstgoom_la-drawmethods.lo `test -f 'drawmethods.c' || echo '$(srcdir)/'`drawmethods.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-drawmethods.Tpo" "$(DEPDIR)/libgstgoom_la-drawmethods.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-drawmethods.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='drawmethods.c' object='libgstgoom_la-drawmethods.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-goom_core.lo `test -f 'goom_core.c' || echo '$(srcdir)/'`goom_core.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-drawmethods.lo `test -f 'drawmethods.c' || echo '$(srcdir)/'`drawmethods.c
+
+libgstgoom_la-sound_tester.lo: sound_tester.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-sound_tester.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-sound_tester.Tpo" -c -o libgstgoom_la-sound_tester.lo `test -f 'sound_tester.c' || echo '$(srcdir)/'`sound_tester.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-sound_tester.Tpo" "$(DEPDIR)/libgstgoom_la-sound_tester.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-sound_tester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sound_tester.c' object='libgstgoom_la-sound_tester.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-sound_tester.lo `test -f 'sound_tester.c' || echo '$(srcdir)/'`sound_tester.c
+
+libgstgoom_la-mathtools.lo: mathtools.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-mathtools.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-mathtools.Tpo" -c -o libgstgoom_la-mathtools.lo `test -f 'mathtools.c' || echo '$(srcdir)/'`mathtools.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-mathtools.Tpo" "$(DEPDIR)/libgstgoom_la-mathtools.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-mathtools.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mathtools.c' object='libgstgoom_la-mathtools.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-mathtools.lo `test -f 'mathtools.c' || echo '$(srcdir)/'`mathtools.c
+
+libgstgoom_la-lines.lo: lines.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-lines.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-lines.Tpo" -c -o libgstgoom_la-lines.lo `test -f 'lines.c' || echo '$(srcdir)/'`lines.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-lines.Tpo" "$(DEPDIR)/libgstgoom_la-lines.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-lines.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lines.c' object='libgstgoom_la-lines.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-lines.lo `test -f 'lines.c' || echo '$(srcdir)/'`lines.c
+
+libgstgoom_la-ifs.lo: ifs.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-ifs.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-ifs.Tpo" -c -o libgstgoom_la-ifs.lo `test -f 'ifs.c' || echo '$(srcdir)/'`ifs.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-ifs.Tpo" "$(DEPDIR)/libgstgoom_la-ifs.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-ifs.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ifs.c' object='libgstgoom_la-ifs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-ifs.lo `test -f 'ifs.c' || echo '$(srcdir)/'`ifs.c
+
+libgstgoom_la-surf3d.lo: surf3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-surf3d.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-surf3d.Tpo" -c -o libgstgoom_la-surf3d.lo `test -f 'surf3d.c' || echo '$(srcdir)/'`surf3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-surf3d.Tpo" "$(DEPDIR)/libgstgoom_la-surf3d.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-surf3d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='surf3d.c' object='libgstgoom_la-surf3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-surf3d.lo `test -f 'surf3d.c' || echo '$(srcdir)/'`surf3d.c
+
+libgstgoom_la-tentacle3d.lo: tentacle3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-tentacle3d.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-tentacle3d.Tpo" -c -o libgstgoom_la-tentacle3d.lo `test -f 'tentacle3d.c' || echo '$(srcdir)/'`tentacle3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-tentacle3d.Tpo" "$(DEPDIR)/libgstgoom_la-tentacle3d.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-tentacle3d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tentacle3d.c' object='libgstgoom_la-tentacle3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-tentacle3d.lo `test -f 'tentacle3d.c' || echo '$(srcdir)/'`tentacle3d.c
+
+libgstgoom_la-v3d.lo: v3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-v3d.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-v3d.Tpo" -c -o libgstgoom_la-v3d.lo `test -f 'v3d.c' || echo '$(srcdir)/'`v3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-v3d.Tpo" "$(DEPDIR)/libgstgoom_la-v3d.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-v3d.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='v3d.c' object='libgstgoom_la-v3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-v3d.lo `test -f 'v3d.c' || echo '$(srcdir)/'`v3d.c
+
+libgstgoom_la-convolve_fx.lo: convolve_fx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-convolve_fx.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-convolve_fx.Tpo" -c -o libgstgoom_la-convolve_fx.lo `test -f 'convolve_fx.c' || echo '$(srcdir)/'`convolve_fx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-convolve_fx.Tpo" "$(DEPDIR)/libgstgoom_la-convolve_fx.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-convolve_fx.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='convolve_fx.c' object='libgstgoom_la-convolve_fx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-convolve_fx.lo `test -f 'convolve_fx.c' || echo '$(srcdir)/'`convolve_fx.c
+
+libgstgoom_la-flying_stars_fx.lo: flying_stars_fx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-flying_stars_fx.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-flying_stars_fx.Tpo" -c -o libgstgoom_la-flying_stars_fx.lo `test -f 'flying_stars_fx.c' || echo '$(srcdir)/'`flying_stars_fx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-flying_stars_fx.Tpo" "$(DEPDIR)/libgstgoom_la-flying_stars_fx.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-flying_stars_fx.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flying_stars_fx.c' object='libgstgoom_la-flying_stars_fx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-flying_stars_fx.lo `test -f 'flying_stars_fx.c' || echo '$(srcdir)/'`flying_stars_fx.c
+
+libgstgoom_la-plugin_info.lo: plugin_info.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-plugin_info.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-plugin_info.Tpo" -c -o libgstgoom_la-plugin_info.lo `test -f 'plugin_info.c' || echo '$(srcdir)/'`plugin_info.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-plugin_info.Tpo" "$(DEPDIR)/libgstgoom_la-plugin_info.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-plugin_info.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='plugin_info.c' object='libgstgoom_la-plugin_info.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-plugin_info.lo `test -f 'plugin_info.c' || echo '$(srcdir)/'`plugin_info.c
+
+libgstgoom_la-goom_tools.lo: goom_tools.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-goom_tools.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-goom_tools.Tpo" -c -o libgstgoom_la-goom_tools.lo `test -f 'goom_tools.c' || echo '$(srcdir)/'`goom_tools.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-goom_tools.Tpo" "$(DEPDIR)/libgstgoom_la-goom_tools.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-goom_tools.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='goom_tools.c' object='libgstgoom_la-goom_tools.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-goom_tools.lo `test -f 'goom_tools.c' || echo '$(srcdir)/'`goom_tools.c
+
+libgstgoom_la-config_param.lo: config_param.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-config_param.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-config_param.Tpo" -c -o libgstgoom_la-config_param.lo `test -f 'config_param.c' || echo '$(srcdir)/'`config_param.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-config_param.Tpo" "$(DEPDIR)/libgstgoom_la-config_param.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-config_param.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config_param.c' object='libgstgoom_la-config_param.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-config_param.lo `test -f 'config_param.c' || echo '$(srcdir)/'`config_param.c
 
 libgstgoom_la-filters.lo: filters.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-filters.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-filters.Tpo" -c -o libgstgoom_la-filters.lo `test -f 'filters.c' || echo '$(srcdir)/'`filters.c; \
@@ -640,6 +860,13 @@ libgstgoom_la-filters.lo: filters.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-filters.lo `test -f 'filters.c' || echo '$(srcdir)/'`filters.c
 
+libgstgoom_la-goom_core.lo: goom_core.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-goom_core.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-goom_core.Tpo" -c -o libgstgoom_la-goom_core.lo `test -f 'goom_core.c' || echo '$(srcdir)/'`goom_core.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-goom_core.Tpo" "$(DEPDIR)/libgstgoom_la-goom_core.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-goom_core.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='goom_core.c' object='libgstgoom_la-goom_core.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-goom_core.lo `test -f 'goom_core.c' || echo '$(srcdir)/'`goom_core.c
+
 libgstgoom_la-graphic.lo: graphic.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-graphic.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-graphic.Tpo" -c -o libgstgoom_la-graphic.lo `test -f 'graphic.c' || echo '$(srcdir)/'`graphic.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-graphic.Tpo" "$(DEPDIR)/libgstgoom_la-graphic.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-graphic.Tpo"; exit 1; fi
@@ -647,12 +874,19 @@ libgstgoom_la-graphic.lo: graphic.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-graphic.lo `test -f 'graphic.c' || echo '$(srcdir)/'`graphic.c
 
-libgstgoom_la-lines.lo: lines.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-lines.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-lines.Tpo" -c -o libgstgoom_la-lines.lo `test -f 'lines.c' || echo '$(srcdir)/'`lines.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-lines.Tpo" "$(DEPDIR)/libgstgoom_la-lines.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-lines.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lines.c' object='libgstgoom_la-lines.lo' libtool=yes @AMDEPBACKSLASH@
+libgstgoom_la-mmx.lo: mmx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-mmx.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-mmx.Tpo" -c -o libgstgoom_la-mmx.lo `test -f 'mmx.c' || echo '$(srcdir)/'`mmx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-mmx.Tpo" "$(DEPDIR)/libgstgoom_la-mmx.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-mmx.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mmx.c' object='libgstgoom_la-mmx.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-lines.lo `test -f 'lines.c' || echo '$(srcdir)/'`lines.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-mmx.lo `test -f 'mmx.c' || echo '$(srcdir)/'`mmx.c
+
+libgstgoom_la-xmmx.lo: xmmx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -MT libgstgoom_la-xmmx.lo -MD -MP -MF "$(DEPDIR)/libgstgoom_la-xmmx.Tpo" -c -o libgstgoom_la-xmmx.lo `test -f 'xmmx.c' || echo '$(srcdir)/'`xmmx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstgoom_la-xmmx.Tpo" "$(DEPDIR)/libgstgoom_la-xmmx.Plo"; else rm -f "$(DEPDIR)/libgstgoom_la-xmmx.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xmmx.c' object='libgstgoom_la-xmmx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstgoom_la_CFLAGS) $(CFLAGS) -c -o libgstgoom_la-xmmx.lo `test -f 'xmmx.c' || echo '$(srcdir)/'`xmmx.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -741,7 +975,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
 	for dir in "$(DESTDIR)$(plugindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
@@ -834,6 +1068,8 @@ uninstall-am: uninstall-info-am uninstall-pluginLTLIBRARIES
 	tags uninstall uninstall-am uninstall-info-am \
 	uninstall-pluginLTLIBRARIES
 
+
+.NOTPARALLEL:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

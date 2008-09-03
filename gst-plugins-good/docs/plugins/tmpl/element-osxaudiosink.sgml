@@ -26,3 +26,8 @@ Output to a sound card in OS X
 @sink: 
 @ringbuffer: 
 
+<!-- ##### ARG GstOsxAudioSink:device ##### -->
+<para>
+
+</para>
+

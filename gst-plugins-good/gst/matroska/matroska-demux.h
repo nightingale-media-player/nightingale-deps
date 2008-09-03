@@ -40,7 +40,9 @@ G_BEGIN_DECLS
 #define GST_IS_MATROSKA_DEMUX_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_MATROSKA_DEMUX))
 
-#define GST_MATROSKA_DEMUX_MAX_STREAMS 64       
+/* The spec says that more than 127 stream is discouraged so
+ * take this as a limit for now */
+#define GST_MATROSKA_DEMUX_MAX_STREAMS 127       
 
 typedef enum {
   GST_MATROSKA_DEMUX_STATE_START,
@@ -75,31 +77,26 @@ typedef struct _GstMatroskaDemux {
   GstMatroskaDemuxState    state;
   guint                    level_up;
 
-  /* did we parse metadata/cues already? */
-  gboolean                 metadata_parsed;
+  /* did we parse cues/tracks/segmentinfo already? */
   gboolean                 index_parsed;
+  gboolean                 tracks_parsed;
+  gboolean                 segmentinfo_parsed;
+  gboolean                 attachments_parsed;
+  GList                   *tags_parsed;
 
   /* start-of-segment */
   guint64                  ebml_segment_start;
 
   /* a cue (index) table */
-  GstMatroskaIndex        *index;
-  guint                    num_indexes;
+  GArray                  *index;
 
   /* timescale in the file */
   guint64                  time_scale;
 
-  /* length, position (time, ns) */
-  guint64                  pos;
-  guint64                  duration;
-
-  /* a possible pending seek */
-  gboolean                 seek_pending;
-
-  gdouble                  segment_rate;
-  gint64                   segment_start;
-  gint64                   segment_stop;
-  gboolean                 segment_play;
+  /* keeping track of playback position */
+  GstSegment               segment;
+  gboolean                 segment_running;
+  gint64                   duration;
 } GstMatroskaDemux;
 
 typedef struct _GstMatroskaDemuxClass {

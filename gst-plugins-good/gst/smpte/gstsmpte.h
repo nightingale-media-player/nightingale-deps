@@ -75,5 +75,7 @@ struct _GstSMPTEClass {
   GstElementClass parent_class;
 };
 
+gboolean gst_smpte_plugin_init (GstPlugin * plugin);
+
 G_END_DECLS
 #endif /* __GST_SMPTE_H__ */

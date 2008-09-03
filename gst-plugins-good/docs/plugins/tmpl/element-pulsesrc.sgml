@@ -1,0 +1,36 @@
+<!-- ##### SECTION Title ##### -->
+pulsesrc
+
+<!-- ##### SECTION Short_Description ##### -->
+Captures audio from a PulseAudio server
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-pulsesrc-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPulseSrc ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstPulseSrc:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPulseSrc:server ##### -->
+<para>
+
+</para>
+

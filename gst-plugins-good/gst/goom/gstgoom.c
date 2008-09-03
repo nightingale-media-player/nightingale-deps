@@ -25,7 +25,7 @@
  * <refsect2>
  * <para>
  * Goom is an audio visualisation element. It creates warping structures
- * based on the incomming audio signal.
+ * based on the incoming audio signal.
  * </para>
  * <title>Example launch line</title>
  * <para>
@@ -44,9 +44,11 @@
 #include <gst/gst.h>
 #include "gstgoom.h"
 #include <gst/video/video.h>
-#include "goom_core.h"
+#include "goom.h"
 
-GST_DEBUG_CATEGORY_STATIC (goom_debug);
+#include <liboil/liboil.h>
+
+GST_DEBUG_CATEGORY (goom_debug);
 #define GST_CAT_DEFAULT goom_debug
 
 /* elementfactory information */
@@ -153,8 +155,6 @@ gst_goom_class_init (GstGoomClass * klass)
   gobject_class->finalize = gst_goom_finalize;
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_goom_change_state);
-
-  GST_DEBUG_CATEGORY_INIT (goom_debug, "goom", 0, "goom visualisation element");
 }
 
 static void
@@ -187,7 +187,7 @@ gst_goom_init (GstGoom * goom)
   goom->rate = 0;
   goom->duration = 0;
 
-  goom_init (&(goom->goomdata), goom->width, goom->height);
+  goom->plugin = goom_init (goom->width, goom->height);
 }
 
 static void
@@ -195,7 +195,8 @@ gst_goom_finalize (GObject * object)
 {
   GstGoom *goom = GST_GOOM (object);
 
-  goom_close (&(goom->goomdata));
+  goom_close (goom->plugin);
+  goom->plugin = NULL;
 
   g_object_unref (goom->adapter);
 
@@ -250,7 +251,7 @@ gst_goom_src_setcaps (GstPad * pad, GstCaps * caps)
           &goom->fps_d))
     return FALSE;
 
-  goom_set_resolution (&(goom->goomdata), goom->width, goom->height);
+  goom_set_resolution (goom->plugin, goom->width, goom->height);
 
   /* size of the output buffer in bytes, depth is always 4 bytes */
   goom->outsize = goom->width * goom->height * 4;
@@ -523,7 +524,7 @@ gst_goom_chain (GstPad * pad, GstBuffer * buffer)
     GST_BUFFER_DURATION (outbuf) = goom->duration;
     GST_BUFFER_SIZE (outbuf) = goom->outsize;
 
-    out_frame = (guchar *) goom_update (&(goom->goomdata), goom->datain);
+    out_frame = (guchar *) goom_update (goom->plugin, goom->datain, 0, 0);
     memcpy (GST_BUFFER_DATA (outbuf), out_frame, goom->outsize);
 
     GST_DEBUG ("Pushing frame with time=%" GST_TIME_FORMAT ", duration=%"
@@ -592,6 +593,10 @@ gst_goom_change_state (GstElement * element, GstStateChange transition)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  GST_DEBUG_CATEGORY_INIT (goom_debug, "goom", 0, "goom visualisation element");
+
+  oil_init ();
+
   return gst_element_register (plugin, "goom", GST_RANK_NONE, GST_TYPE_GOOM);
 }
 

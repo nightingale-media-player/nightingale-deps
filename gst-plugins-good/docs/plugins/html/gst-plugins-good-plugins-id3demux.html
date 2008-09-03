@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>id3demux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-icydemux.html" title="icydemux">
 <link rel="next" href="gst-plugins-good-plugins-id3v2mux.html" title="id3v2mux">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -22,67 +23,59 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-id3v2mux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2615502" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2571204" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2615461" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2556916" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-id3demux.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-id3demux.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-id3demux.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-id3demux.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-id3demux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2615502"></a><span class="refentrytitle">id3demux</span>
-</h2>
-<p>id3demux &#8212; reads tag information from ID3v1 and ID3v2 (&lt;= 2.4.0) data blocks and outputs them as GStreamer tag messages and events.</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-id3demux.top_of_page"></a>id3demux</span></h2>
+<p>id3demux — reads tag information from ID3v1 and ID3v2 (&lt;= 2.4.0) data blocks and outputs them as GStreamer tag messages and events.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-id3demux.synopsis"></a><h2>Synopsis</h2>
 <a name="GstID3Demux"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-id3demux.html#GstID3Demux-struct">GstID3Demux</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-id3demux.html#GstID3Demux-struct" title="GstID3Demux">GstID3Demux</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2615461"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-id3demux.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gsttagdemux.html#GstTagDemux"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gsttagdemux.html#GstTagDemux"
 >GstTagDemux</a>
                      +----GstID3Demux
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2556916"></a><h2>Properties</h2>
+<a name="gst-plugins-good-plugins-id3demux.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-good-plugins-id3demux.html#GstID3Demux--prefer-v1">prefer-v1</a>"                gboolean              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-good-plugins-id3demux.html#GstID3Demux--prefer-v1" title='The "prefer-v1" property'>prefer-v1</a>"                gboolean              : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2571204"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-id3demux.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2597397"></a><p>
+<a name="id2564209"></a><h3>Example launch line</h3>
+<p>
 id3demux accepts data streams with either (or both) ID3v2 regions at the start, or ID3v1 at the end. The mime type of the data between the tag blocks is detected using typefind functions, and the appropriate output mime type set on outgoing buffers. 
 </p>
 <p>
 The element is only able to read ID3v1 tags from a seekable stream, because they are at the end of the stream. That is, when get_range mode is supported by the upstream elements. If get_range operation is available, id3demux makes it available downstream. This means that elements which require get_range mode, such as wavparse, can operate on files containing ID3 tag information.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -95,45 +88,50 @@ This pipeline should read any available ID3 tag information and output it. The c
 This id3demux element replaced an older element with the same name which relied on libid3tag from the MAD project.
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2556839"></a><h3>Element Information</h3>
+<a name="id2568219"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-id3demux.html#plugin-id3demux">id3demux</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-id3demux.html#plugin-id3demux">id3demux</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Jan Schmidt &lt;thaytan@mad.scientist.com&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Codec/Demuxer/Metadata</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2611680"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>sometimes</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>ANY</td>
 </tr>
 </tbody>
@@ -142,49 +140,51 @@ This id3demux element replaced an older element with the same name which relied 
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>application/x-id3</td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2614888"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-id3demux.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2614897"></a><h3>
-<a name="GstID3Demux-struct"></a>GstID3Demux</h3>
-<a class="indexterm" name="id2614908"></a><pre class="programlisting">typedef struct _GstID3Demux GstID3Demux;</pre>
+<a name="GstID3Demux-struct"></a><h3>GstID3Demux</h3>
+<pre class="programlisting">typedef struct _GstID3Demux GstID3Demux;</pre>
 <p>
 
 </p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2614925"></a><h2>Property Details</h2>
+<a name="gst-plugins-good-plugins-id3demux.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2614935"></a><h3>
-<a name="GstID3Demux--prefer-v1"></a>The "<code class="literal">prefer-v1</code>" property</h3>
-<a class="indexterm" name="id2614949"></a><pre class="programlisting">  "prefer-v1"                gboolean              : Read / Write / Construct</pre>
+<a name="GstID3Demux--prefer-v1"></a><h3>The <code class="literal">"prefer-v1"</code> property</h3>
+<pre class="programlisting">  "prefer-v1"                gboolean              : Read / Write / Construct</pre>
 <p>Prefer tags from ID3v1 tag at end of file when both ID3v1 and ID3v2 tags are present.</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

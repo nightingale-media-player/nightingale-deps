@@ -18,14 +18,3 @@ Read audio from CD using libcdio
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT GstCdioCddaSrc ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ARG GstCdioCddaSrc:read-speed ##### -->
-<para>
-
-</para>
-

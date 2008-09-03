@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>level</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-jpegenc.html" title="jpegenc">
 <link rel="next" href="gst-plugins-good-plugins-monoscope.html" title="monoscope">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -22,39 +23,32 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-monoscope.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2610832" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2556597" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2619019" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2563370" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-level.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-level.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-level.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-level.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-level"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2610832"></a><span class="refentrytitle">level</span>
-</h2>
-<p>level &#8212; RMS/Peak/Decaying Peak Level messager for audio/raw</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-level.top_of_page"></a>level</span></h2>
+<p>level — audio level analyzer</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-level.synopsis"></a><h2>Synopsis</h2>
 <a name="GstLevel"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-level.html#GstLevel-struct">GstLevel</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel-struct" title="GstLevel">GstLevel</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2619019"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-level.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -63,27 +57,25 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2563370"></a><h2>Properties</h2>
+<a name="gst-plugins-good-plugins-level.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-good-plugins-level.html#GstLevel--interval">interval</a>"                 guint64               : Read / Write
-  "<a href="gst-plugins-good-plugins-level.html#GstLevel--message">message</a>"                  gboolean              : Read / Write
-  "<a href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff">peak-falloff</a>"             gdouble               : Read / Write
-  "<a href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl">peak-ttl</a>"                 guint64               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title='The "interval" property'>interval</a>"                 guint64               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title='The "message" property'>message</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title='The "peak-falloff" property'>peak-falloff</a>"             gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title='The "peak-ttl" property'>peak-ttl</a>"                 guint64               : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2556597"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-level.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2579327"></a><p>
-Level analyses incoming audio buffers and, if the
-<a href="gst-plugins-good-plugins-level.html#GstLevel--message">message property</a> is <span class="type">TRUE</span>,
-generates an element message named
+<a name="id2567358"></a><h3>Example application</h3>
+<p>
+Level analyses incoming audio buffers and, if the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title='The "message" property'><span class="type">"message"</span></a> property
+is <span class="type">TRUE</span>, generates an element message named
 <code class="classname">"level"</code>:
-after each interval of time given by the
-<a href="gst-plugins-good-plugins-level.html#GstLevel--interval">interval property</a>.
+after each interval of time given by the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title='The "interval" property'><span class="type">"interval"</span></a> property.
 The message's structure contains four fields:
 </p>
 <div class="itemizedlist"><ul type="disc">
@@ -103,10 +95,10 @@ The message's structure contains four fields:
   the decaying peak power level in dB for each channel
   the decaying peak level follows the peak level, but starts dropping
   if no new peak is reached after the time given by
-  the <a href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl">the time to live</a>.
+  the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title='The "peak-ttl" property'>the time to live</a>.
   When the decaying peak level drops, it does so at the decay rate
   as specified by the
-  <a href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff">the peak falloff rate</a>.
+  <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title='The "peak-falloff" property'>the peak falloff rate</a>.
   </p></li>
 <li><p>
   <span class="type">GstValueList</span> of <span class="type">gdouble</span>
@@ -116,7 +108,6 @@ The message's structure contains four fields:
 </ul></div>
 <p>
 </p>
-<h3>Example application</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -247,46 +238,55 @@ main (int argc, char *argv[])
 <p>
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2615930"></a><h3>Element Information</h3>
+<a name="id2614518"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-level.html#plugin-level">level</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-level.html#plugin-level">level</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Analyzer/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2614581"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16 }, depth=(int){ 8, 16 }, signed=(boolean)true; audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int){ 8, 16, 32 }, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
 </tr>
 </tbody>
 </table></div>
@@ -294,34 +294,38 @@ main (int argc, char *argv[])
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16 }, depth=(int){ 8, 16 }, signed=(boolean)true; audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int){ 8, 16, 32 }, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2616319"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-level.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2616330"></a><h3>
-<a name="GstLevel-struct"></a>GstLevel</h3>
-<a class="indexterm" name="id2616342"></a><pre class="programlisting">typedef struct _GstLevel GstLevel;</pre>
+<a name="GstLevel-struct"></a><h3>GstLevel</h3>
+<pre class="programlisting">typedef struct _GstLevel GstLevel;</pre>
 <p>
 Opaque data structure.</p>
 <p>
@@ -330,41 +334,40 @@ Opaque data structure.</p>
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2616817"></a><h2>Property Details</h2>
+<a name="gst-plugins-good-plugins-level.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2616827"></a><h3>
-<a name="GstLevel--interval"></a>The "<code class="literal">interval</code>" property</h3>
-<a class="indexterm" name="id2616842"></a><pre class="programlisting">  "interval"                 guint64               : Read / Write</pre>
+<a name="GstLevel--interval"></a><h3>The <code class="literal">"interval"</code> property</h3>
+<pre class="programlisting">  "interval"                 guint64               : Read / Write</pre>
 <p>Interval of time between message posts (in nanoseconds).</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 100000000</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616871"></a><h3>
-<a name="GstLevel--message"></a>The "<code class="literal">message</code>" property</h3>
-<a class="indexterm" name="id2616886"></a><pre class="programlisting">  "message"                  gboolean              : Read / Write</pre>
+<a name="GstLevel--message"></a><h3>The <code class="literal">"message"</code> property</h3>
+<pre class="programlisting">  "message"                  gboolean              : Read / Write</pre>
 <p>Post a level message for each passed interval.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616911"></a><h3>
-<a name="GstLevel--peak-falloff"></a>The "<code class="literal">peak-falloff</code>" property</h3>
-<a class="indexterm" name="id2616925"></a><pre class="programlisting">  "peak-falloff"             gdouble               : Read / Write</pre>
+<a name="GstLevel--peak-falloff"></a><h3>The <code class="literal">"peak-falloff"</code> property</h3>
+<pre class="programlisting">  "peak-falloff"             gdouble               : Read / Write</pre>
 <p>Decay rate of decay peak after TTL (in dB/sec).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 10</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2616954"></a><h3>
-<a name="GstLevel--peak-ttl"></a>The "<code class="literal">peak-ttl</code>" property</h3>
-<a class="indexterm" name="id2616969"></a><pre class="programlisting">  "peak-ttl"                 guint64               : Read / Write</pre>
+<a name="GstLevel--peak-ttl"></a><h3>The <code class="literal">"peak-ttl"</code> property</h3>
+<pre class="programlisting">  "peak-ttl"                 guint64               : Read / Write</pre>
 <p>Time To Live of decay peak before it falls back (in nanoseconds).</p>
 <p>Default value: 300000000</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

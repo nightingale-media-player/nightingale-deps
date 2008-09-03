@@ -1,0 +1,97 @@
+<!-- ##### SECTION Title ##### -->
+aasink
+
+<!-- ##### SECTION Short_Description ##### -->
+An ASCII art videosink
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-aasink-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstAASink ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstAASink::frame-displayed ##### -->
+<para>
+
+</para>
+
+@gstaasink: the object which received the signal.
+
+<!-- ##### SIGNAL GstAASink::have-size ##### -->
+<para>
+
+</para>
+
+@gstaasink: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG GstAASink:brightness ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:contrast ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:dither ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:driver ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:frame-time ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:frames-displayed ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:gamma ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:inversion ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:randomval ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstAASink:width ##### -->
+<para>
+
+</para>
+

@@ -1,252 +1,310 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>gst-plugins-good Elements</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="prev" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
-<link rel="next" href="gst-plugins-good-plugins-alphacolor.html" title="alphacolor">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-aasink.html" title="aasink">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
 <td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td>&#160;</td>
+<td> </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-alphacolor.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-aasink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="chapter" lang="en">
 <div class="titlepage"><div><div><h2 class="title">
-<a name="id2547100"></a>gst-plugins-good Elements</h2></div></div></div>
+<a name="id2509442"></a>gst-plugins-good Elements</h2></div></div></div>
 <div class="toc"><dl>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-alphacolor.html">alphacolor</a></span><span class="refpurpose"> &#8212; RGBA to AYUV colorspace conversion preserving the alpha channel</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-aasink.html">aasink</a></span><span class="refpurpose"> — An ASCII art videosink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-apedemux.html">apedemux</a></span><span class="refpurpose"> &#8212; reads tag information from APE tag data blocks and
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-alphacolor.html">alphacolor</a></span><span class="refpurpose"> — RGBA to AYUV colorspace conversion preserving the alpha channel</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-apedemux.html">apedemux</a></span><span class="refpurpose"> — reads tag information from APE tag data blocks and
 outputs them as GStreamer tag messages and events.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-apev2mux.html">apev2mux</a></span><span class="refpurpose"> &#8212; Adds an APEv2 header to the beginning of files using taglib</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-apev2mux.html">apev2mux</a></span><span class="refpurpose"> — Adds an APEv2 header to the beginning of files using taglib</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audioamplify.html">audioamplify</a></span><span class="refpurpose"> &#8212; Amplifies an audio stream with selectable clipping mode</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audioamplify.html">audioamplify</a></span><span class="refpurpose"> — Amplifies an audio stream with selectable clipping mode</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiochebband.html">audiochebband</a></span><span class="refpurpose"> &#8212; Chebyshev band pass and band reject filter</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiochebband.html">audiochebband</a></span><span class="refpurpose"> — Chebyshev band pass and band reject filter</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiocheblimit.html">audiocheblimit</a></span><span class="refpurpose"> &#8212; Chebyshev low pass and high pass filter</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiocheblimit.html">audiocheblimit</a></span><span class="refpurpose"> — Chebyshev low pass and high pass filter</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiowsincband.html">audiowsincband</a></span><span class="refpurpose"> &#8212; Windowed Sinc band pass and band reject filter</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiowsincband.html">audiowsincband</a></span><span class="refpurpose"> — Windowed Sinc band pass and band reject filter</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiowsinclimit.html">audiowsinclimit</a></span><span class="refpurpose"> &#8212; Windowed Sinc low pass and high pass filter</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiowsinclimit.html">audiowsinclimit</a></span><span class="refpurpose"> — Windowed Sinc low pass and high pass filter</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiodynamic.html">audiodynamic</a></span><span class="refpurpose"> &#8212; Compressor and Expander</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiodynamic.html">audiodynamic</a></span><span class="refpurpose"> — Compressor and Expander</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audioinvert.html">audioinvert</a></span><span class="refpurpose"> &#8212; Swaps upper and lower half of audio samples</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audioinvert.html">audioinvert</a></span><span class="refpurpose"> — Swaps upper and lower half of audio samples</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiopanorama.html">audiopanorama</a></span><span class="refpurpose"> &#8212; audio stereo pan effect</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiopanorama.html">audiopanorama</a></span><span class="refpurpose"> — audio stereo pan effect</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-autoaudiosink.html">autoaudiosink</a></span><span class="refpurpose"> &#8212; Wrapper audio sink for automatically detected audio sink</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-audiokaraoke.html">audiokaraoke</a></span><span class="refpurpose"> — Voice removal element</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-autovideosink.html">autovideosink</a></span><span class="refpurpose"> &#8212; Wrapper video sink for automatically detected video sink</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-autoaudiosink.html">autoaudiosink</a></span><span class="refpurpose"> — Wrapper audio sink for automatically detected audio sink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-avidemux.html">avidemux</a></span><span class="refpurpose"> &#8212; Demultiplex an avi file into audio and video</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-autovideosink.html">autovideosink</a></span><span class="refpurpose"> — Wrapper video sink for automatically detected video sink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-avimux.html">avimux</a></span><span class="refpurpose"> &#8212; Muxes audio and video into an avi stream</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-avidemux.html">avidemux</a></span><span class="refpurpose"> — Demultiplex an avi file into audio and video</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-avisubtitle.html">avisubtitle</a></span><span class="refpurpose"> &#8212; Parse avi subtitle stream</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-avimux.html">avimux</a></span><span class="refpurpose"> — Muxes audio and video into an avi stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-cairotimeoverlay.html">cairotimeoverlay</a></span><span class="refpurpose"> &#8212; Overlays the time on a video stream</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-avisubtitle.html">avisubtitle</a></span><span class="refpurpose"> — Parse avi subtitle stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-cdiocddasrc.html">cdiocddasrc</a></span><span class="refpurpose"> &#8212; Reads raw audio from an Audio CD</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-cacasink.html">cacasink</a></span><span class="refpurpose"> — A colored ASCII art videosink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-cmmldec.html">cmmldec</a></span><span class="refpurpose"> &#8212; Decodes CMML streams</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-cairotimeoverlay.html">cairotimeoverlay</a></span><span class="refpurpose"> — Overlays the time on a video stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-cmmlenc.html">cmmlenc</a></span><span class="refpurpose"> &#8212; Encodes CMML streams</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-cmmldec.html">cmmldec</a></span><span class="refpurpose"> — Decodes CMML streams</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-directdrawsink.html">directdrawsink</a></span><span class="refpurpose"> &#8212; Direct Draw video sink</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-cmmlenc.html">cmmlenc</a></span><span class="refpurpose"> — Encodes CMML streams</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-directsoundsink.html">directsoundsink</a></span><span class="refpurpose"> &#8212; output sound using Directsound API</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-deinterleave.html">deinterleave</a></span><span class="refpurpose"> — Splits one interleaved multichannel audio stream into many mono audio streams</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-dvdec.html">dvdec</a></span><span class="refpurpose"> &#8212; Uses libdv to decode DV video (smpte314) (libdv.sourceforge.net)</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-directdrawsink.html">directdrawsink</a></span><span class="refpurpose"> — Direct Draw video sink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-dvdemux.html">dvdemux</a></span><span class="refpurpose"> &#8212; Uses libdv to separate DV audio from DV video (libdv.sourceforge.net)</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-directsoundsink.html">directsoundsink</a></span><span class="refpurpose"> — output sound using Directsound API</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-10bands.html">equalizer-10bands</a></span><span class="refpurpose"> &#8212; 10-band equalizer</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-dv1394src.html">dv1394src</a></span><span class="refpurpose"> — Source for DV video data from firewire port</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-3bands.html">equalizer-3bands</a></span><span class="refpurpose"> &#8212; 3-band equalizer</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-dvdec.html">dvdec</a></span><span class="refpurpose"> — Uses libdv to decode DV video (smpte314) (libdv.sourceforge.net)</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-nbands.html">equalizer-nbands</a></span><span class="refpurpose"> &#8212; Fully parametric N-band equalizer</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-dvdemux.html">dvdemux</a></span><span class="refpurpose"> — Uses libdv to separate DV audio from DV video (libdv.sourceforge.net)</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-esdsink.html">esdsink</a></span><span class="refpurpose"> &#8212; Plays audio to an esound server</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-10bands.html">equalizer-10bands</a></span><span class="refpurpose"> — 10-band equalizer</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-flacdec.html">flacdec</a></span><span class="refpurpose"> &#8212; Decodes FLAC lossless audio streams</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-3bands.html">equalizer-3bands</a></span><span class="refpurpose"> — 3-band equalizer</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-gamma.html">gamma</a></span><span class="refpurpose"> &#8212; Adjusts gamma on a video stream</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-equalizer-nbands.html">equalizer-nbands</a></span><span class="refpurpose"> — Fully parametric N-band equalizer</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-goom.html">goom</a></span><span class="refpurpose"> &#8212; Takes frames of data and outputs video frames using the GOOM filter</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-esdsink.html">esdsink</a></span><span class="refpurpose"> — Plays audio to an esound server</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-halaudiosink.html">halaudiosink</a></span><span class="refpurpose"> &#8212; Audio sink for sound device access via HAL</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-flacdec.html">flacdec</a></span><span class="refpurpose"> — Decodes FLAC lossless audio streams</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-halaudiosrc.html">halaudiosrc</a></span><span class="refpurpose"> &#8212; Audio source for sound device access via HAL</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-gamma.html">gamma</a></span><span class="refpurpose"> — Adjusts gamma on a video stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-icydemux.html">icydemux</a></span><span class="refpurpose"> &#8212; reads tag information from an Icy (Icecast/Shoutcast) 
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-gdkpixbufsink.html">gdkpixbufsink</a></span><span class="refpurpose"> — video sink that converts RGB images to GdkPixbufs.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-goom.html">goom</a></span><span class="refpurpose"> — Takes frames of data and outputs video frames using the GOOM filter</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-goom2k1.html">goom2k1</a></span><span class="refpurpose"> — Takes frames of data and outputs video frames using the GOOM 2k1 filter</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-halaudiosink.html">halaudiosink</a></span><span class="refpurpose"> — Audio sink for sound device access via HAL</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-halaudiosrc.html">halaudiosrc</a></span><span class="refpurpose"> — Audio source for sound device access via HAL</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-icydemux.html">icydemux</a></span><span class="refpurpose"> — reads tag information from an Icy (Icecast/Shoutcast) 
 stream, outputting them as tag messages, and forwarding the enclosed data.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-id3demux.html">id3demux</a></span><span class="refpurpose"> &#8212; reads tag information from ID3v1 and ID3v2 (&lt;= 2.4.0) data blocks and outputs them as GStreamer tag messages and events.</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-id3demux.html">id3demux</a></span><span class="refpurpose"> — reads tag information from ID3v1 and ID3v2 (&lt;= 2.4.0) data blocks and outputs them as GStreamer tag messages and events.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-id3v2mux.html">id3v2mux</a></span><span class="refpurpose"> &#8212; Adds an ID3v2 header to the beginning of MP3 files using taglib</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-id3v2mux.html">id3v2mux</a></span><span class="refpurpose"> — Adds an ID3v2 header to the beginning of MP3 files using taglib</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-jpegdec.html">jpegdec</a></span><span class="refpurpose"> &#8212; Decode images from JPEG format</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-interleave.html">interleave</a></span><span class="refpurpose"> — Folds many mono channels into one interleaved audio stream</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-jpegenc.html">jpegenc</a></span><span class="refpurpose"> &#8212; Encode images in JPEG format</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-jpegdec.html">jpegdec</a></span><span class="refpurpose"> — Decode images from JPEG format</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-level.html">level</a></span><span class="refpurpose"> &#8212; RMS/Peak/Decaying Peak Level messager for audio/raw</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-jpegenc.html">jpegenc</a></span><span class="refpurpose"> — Encode images in JPEG format</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-monoscope.html">monoscope</a></span><span class="refpurpose"> &#8212; Displays a highly stabilised waveform of audio input</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-level.html">level</a></span><span class="refpurpose"> — audio level analyzer</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-multifilesink.html">multifilesink</a></span><span class="refpurpose"> &#8212; Writes buffers to sequentially-named files</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-monoscope.html">monoscope</a></span><span class="refpurpose"> — Displays a highly stabilised waveform of audio input</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-multifilesrc.html">multifilesrc</a></span><span class="refpurpose"> &#8212; Read buffers from sequentially-named files</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-multifilesink.html">multifilesink</a></span><span class="refpurpose"> — Writes buffers to sequentially-named files</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-multipartdemux.html">multipartdemux</a></span><span class="refpurpose"> &#8212; Demuxer that takes a multipart digital stream as input
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-multifilesrc.html">multifilesrc</a></span><span class="refpurpose"> — Read buffers from sequentially-named files</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-multipartdemux.html">multipartdemux</a></span><span class="refpurpose"> — Demuxer that takes a multipart digital stream as input
 and demuxes one or many digital streams from it.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-multipartmux.html">multipartmux</a></span><span class="refpurpose"> &#8212; Muxer that takes one or several digital streams
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-multipartmux.html">multipartmux</a></span><span class="refpurpose"> — Muxer that takes one or several digital streams
 and muxes them to a single multipart stream.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-multiudpsink.html">multiudpsink</a></span><span class="refpurpose"> &#8212; Send data over the network via UDP</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-multiudpsink.html">multiudpsink</a></span><span class="refpurpose"> — Send data over the network via UDP</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-ossmixer.html">ossmixer</a></span><span class="refpurpose"> &#8212; element to control sound input and output levels with OSS</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-ossmixer.html">ossmixer</a></span><span class="refpurpose"> — element to control sound input and output levels with OSS</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-osssink.html">osssink</a></span><span class="refpurpose"> &#8212; output sound using OSS</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-osssink.html">osssink</a></span><span class="refpurpose"> — output sound using OSS</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-osssrc.html">osssrc</a></span><span class="refpurpose"> &#8212; record sound from your sound card using OSS</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-osssrc.html">osssrc</a></span><span class="refpurpose"> — record sound from your sound card using OSS</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxaudiosink.html">osxaudiosink</a></span><span class="refpurpose"> &#8212; play audio to an CoreAudio device</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxaudiosink.html">osxaudiosink</a></span><span class="refpurpose"> — play audio to an CoreAudio device</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxaudiosrc.html">osxaudiosrc</a></span><span class="refpurpose"> &#8212; Input from a sound card in OS X</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxaudiosrc.html">osxaudiosrc</a></span><span class="refpurpose"> — Input from a sound card in OS X</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxvideosink.html">osxvideosink</a></span><span class="refpurpose"> &#8212; OSX native videosink</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-osxvideosink.html">osxvideosink</a></span><span class="refpurpose"> — OSX native videosink</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-pngdec.html">pngdec</a></span><span class="refpurpose"> &#8212; Decode a png video frame to a raw image</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-pngdec.html">pngdec</a></span><span class="refpurpose"> — Decode a png video frame to a raw image</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-pngenc.html">pngenc</a></span><span class="refpurpose"> &#8212; Encode a video frame to a .png image</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-pngenc.html">pngenc</a></span><span class="refpurpose"> — Encode a video frame to a .png image</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-progressreport.html">progressreport</a></span><span class="refpurpose"> &#8212; Reports progress</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-progressreport.html">progressreport</a></span><span class="refpurpose"> — Reports progress</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-qtdemux.html">qtdemux</a></span><span class="refpurpose"> &#8212; Demultiplex a QuickTime file into audio and video streams</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-pulsesink.html">pulsesink</a></span><span class="refpurpose"> — Output audio to a PulseAudio sound server</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-rtpdec.html">rtpdec</a></span><span class="refpurpose"> &#8212; Accepts raw RTP and RTCP packets and sends them forward</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-pulsesrc.html">pulsesrc</a></span><span class="refpurpose"> — Capture audio from a PulseAudio sound server</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-rtspsrc.html">rtspsrc</a></span><span class="refpurpose"> &#8212; Receive data over the network via RTSP (RFC 2326)</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-pulsemixer.html">pulsemixer</a></span><span class="refpurpose"> — Element to control sound input and output levels for the PulseAudio sound server</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-smokedec.html">smokedec</a></span><span class="refpurpose"> &#8212; Decode video from Smoke format</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-qtdemux.html">qtdemux</a></span><span class="refpurpose"> — Demultiplex a QuickTime file into audio and video streams</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-smokeenc.html">smokeenc</a></span><span class="refpurpose"> &#8212; Encode images into the Smoke format</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-rganalysis.html">rganalysis</a></span><span class="refpurpose"> — Perform the ReplayGain analysis</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-spectrum.html">spectrum</a></span><span class="refpurpose"> &#8212; audio spectrum analyzer</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-rglimiter.html">rglimiter</a></span><span class="refpurpose"> — Apply signal compression to raw audio data</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-udpsrc.html">udpsrc</a></span><span class="refpurpose"> &#8212; Receive data over the network via UDP</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-rgvolume.html">rgvolume</a></span><span class="refpurpose"> — Apply ReplayGain volume adjustment</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-v4l2src.html">v4l2src</a></span><span class="refpurpose"> &#8212; Reads raw frames from a video4linux2 (BT8x8) device</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-rtpdec.html">rtpdec</a></span><span class="refpurpose"> — Accepts raw RTP and RTCP packets and sends them forward</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-videobalance.html">videobalance</a></span><span class="refpurpose"> &#8212; Adjusts brightness, contrast, hue, saturation on a video stream</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-rtspsrc.html">rtspsrc</a></span><span class="refpurpose"> — Receive data over the network via RTSP (RFC 2326)</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-videocrop.html">videocrop</a></span><span class="refpurpose"> &#8212; Crops video into a user-defined region</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-smokedec.html">smokedec</a></span><span class="refpurpose"> — Decode video from Smoke format</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-videoflip.html">videoflip</a></span><span class="refpurpose"> &#8212; Flips and rotates video</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-smokeenc.html">smokeenc</a></span><span class="refpurpose"> — Encode images into the Smoke format</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-videomixer.html">videomixer</a></span><span class="refpurpose"> &#8212; Takes several AYUV video streams as input and mixes them
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-smpte.html">smpte</a></span><span class="refpurpose"> — Takes to video frames and applies an SMPTE transition 
+effect on them.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-smptealpha.html">smptealpha</a></span><span class="refpurpose"> — Takes a video frames and applies an SMPTE transition 
+effect on it in the alpha channel.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-souphttpsrc.html">souphttpsrc</a></span><span class="refpurpose"> — Read from an HTTP/HTTPS/WebDAV/Icecast/Shoutcast
+location.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-spectrum.html">spectrum</a></span><span class="refpurpose"> — audio spectrum analyzer</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-taginject.html">taginject</a></span><span class="refpurpose"> — inject metadata tags</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-udpsrc.html">udpsrc</a></span><span class="refpurpose"> — Receive data over the network via UDP</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-v4l2src.html">v4l2src</a></span><span class="refpurpose"> — Reads raw frames from a video4linux2 (BT8x8) device</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-videobalance.html">videobalance</a></span><span class="refpurpose"> — Adjusts brightness, contrast, hue, saturation on a video stream</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-videocrop.html">videocrop</a></span><span class="refpurpose"> — Crops video into a user-defined region</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-videoflip.html">videoflip</a></span><span class="refpurpose"> — Flips and rotates video</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-videomixer.html">videomixer</a></span><span class="refpurpose"> — Takes several AYUV video streams as input and mixes them
 together.</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-waveformsink.html">waveformsink</a></span><span class="refpurpose"> &#8212; output sound using WaveForm API</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-waveformsink.html">waveformsink</a></span><span class="refpurpose"> — output sound using WaveForm API</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackdec.html">wavpackdec</a></span><span class="refpurpose"> &#8212; Decodes Wavpack audio data</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackdec.html">wavpackdec</a></span><span class="refpurpose"> — Decodes Wavpack audio data</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackenc.html">wavpackenc</a></span><span class="refpurpose"> &#8212; Encodes audio with the Wavpack lossless/lossy audio codec</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackenc.html">wavpackenc</a></span><span class="refpurpose"> — Encodes audio with the Wavpack lossless/lossy audio codec</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackparse.html">wavpackparse</a></span><span class="refpurpose"> &#8212; Parses Wavpack files</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavpackparse.html">wavpackparse</a></span><span class="refpurpose"> — Parses Wavpack files</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavparse.html">wavparse</a></span><span class="refpurpose"> &#8212; Parse a .wav file into raw audio</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-wavparse.html">wavparse</a></span><span class="refpurpose"> — Parse a .wav file into raw audio</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-good-plugins-ximagesrc.html">ximagesrc</a></span><span class="refpurpose"> &#8212; a source that captures your X Display</span>
+<span class="refentrytitle"><a href="gst-plugins-good-plugins-ximagesrc.html">ximagesrc</a></span><span class="refpurpose"> — a source that captures your X Display</span>
 </dt>
 </dl></div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>waveformsink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-videomixer.html" title="videomixer">
 <link rel="next" href="gst-plugins-good-plugins-wavpackdec.html" title="wavpackdec">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -22,37 +23,32 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-wavpackdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2570541" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2562545" class="shortcut">Description</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-waveformsink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-waveformsink.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-waveformsink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2570541"></a><span class="refentrytitle">waveformsink</span>
-</h2>
-<p>waveformsink &#8212; output sound using WaveForm API</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-waveformsink.top_of_page"></a>waveformsink</span></h2>
+<p>waveformsink — output sound using WaveForm API</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-waveformsink.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-waveformsink.html#GstWaveFormSink">GstWaveFormSink</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-waveformsink.html#GstWaveFormSink" title="GstWaveFormSink">GstWaveFormSink</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2562545"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-waveformsink.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2627276"></a><p>
+<a name="id2642548"></a><h3>Example pipelines</h3>
+<p>
 This element lets you output sound using the WaveForm API.
 </p>
 <p>
@@ -61,7 +57,6 @@ like audioconvert and audioresample in front of an audiosink to make sure
 your pipeline works under all circumstances (those conversion elements will
 act in passthrough-mode if no conversion is necessary).
 </p>
-<h3>Example pipelines</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -80,39 +75,44 @@ gst-launch-0.10 -v filesrc location=music.ogg ! decodebin ! audioconvert ! audio
 will play an Ogg/Vorbis audio file and output it.
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2627320"></a><h3>Element Information</h3>
+<a name="id2585457"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-waveform.html#plugin-waveform">waveform</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-waveform.html#plugin-waveform">waveform</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>Sebastien Moutte &lt;sebastien@moutte.net&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Sink/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2585519"></a><h3>Element Pads</h3>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2632036"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-waveformsink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2632046"></a><h3>
-<a name="GstWaveFormSink"></a>GstWaveFormSink</h3>
-<a class="indexterm" name="id2632057"></a><pre class="programlisting">typedef struct {
+<a name="GstWaveFormSink"></a><h3>GstWaveFormSink</h3>
+<pre class="programlisting">typedef struct {
   /* parent object */
   GstAudioSink sink;
 
@@ -156,5 +156,8 @@ will play an Ogg/Vorbis audio file and output it.
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

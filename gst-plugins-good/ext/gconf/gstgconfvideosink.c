@@ -70,7 +70,7 @@ gst_gconf_video_sink_class_init (GstGConfVideoSinkClass * klass)
  * Hack to make negotiation work.
  */
 
-static void
+static gboolean
 gst_gconf_video_sink_reset (GstGConfVideoSink * sink)
 {
   GstPad *targetpad;
@@ -81,14 +81,20 @@ gst_gconf_video_sink_reset (GstGConfVideoSink * sink)
     gst_bin_remove (GST_BIN (sink), sink->kid);
   }
   sink->kid = gst_element_factory_make ("fakesink", "testsink");
+  if (!sink->kid) {
+    GST_ERROR_OBJECT (sink, "Failed to create fakesink");
+    return FALSE;
+  }
   gst_bin_add (GST_BIN (sink), sink->kid);
 
-  targetpad = gst_element_get_pad (sink->kid, "sink");
+  targetpad = gst_element_get_static_pad (sink->kid, "sink");
   gst_ghost_pad_set_target (GST_GHOST_PAD (sink->pad), targetpad);
   gst_object_unref (targetpad);
 
   g_free (sink->gconf_str);
   sink->gconf_str = NULL;
+
+  return TRUE;
 }
 
 static void
@@ -187,7 +193,7 @@ do_toggle_element (GstGConfVideoSink * sink)
 
   /* re-attach ghostpad */
   GST_DEBUG_OBJECT (sink, "Creating new ghostpad");
-  targetpad = gst_element_get_pad (sink->kid, "sink");
+  targetpad = gst_element_get_static_pad (sink->kid, "sink");
   gst_ghost_pad_set_target (GST_GHOST_PAD (sink->pad), targetpad);
   gst_object_unref (targetpad);
   GST_DEBUG_OBJECT (sink, "done changing gconf video sink");
@@ -223,7 +229,8 @@ gst_gconf_video_sink_change_state (GstElement * element,
 
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_NULL:
-      gst_gconf_video_sink_reset (sink);
+      if (!gst_gconf_video_sink_reset (sink))
+        ret = GST_STATE_CHANGE_FAILURE;
       break;
     default:
       break;

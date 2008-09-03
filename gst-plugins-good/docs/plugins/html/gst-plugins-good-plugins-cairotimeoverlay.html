@@ -1,58 +1,52 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cairotimeoverlay</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-avisubtitle.html" title="avisubtitle">
-<link rel="next" href="gst-plugins-good-plugins-cdiocddasrc.html" title="cdiocddasrc">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<link rel="prev" href="gst-plugins-good-plugins-cacasink.html" title="cacasink">
+<link rel="next" href="gst-plugins-good-plugins-cmmldec.html" title="cmmldec">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-avisubtitle.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-cacasink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-cdiocddasrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-cmmldec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2604568" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2590188" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2604527" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-cairotimeoverlay.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-cairotimeoverlay.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-cairotimeoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-cairotimeoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2604568"></a><span class="refentrytitle">cairotimeoverlay</span>
-</h2>
-<p>cairotimeoverlay &#8212; Overlays the time on a video stream</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-cairotimeoverlay.top_of_page"></a>cairotimeoverlay</span></h2>
+<p>cairotimeoverlay — Overlays the time on a video stream</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-cairotimeoverlay.synopsis"></a><h2>Synopsis</h2>
 <a name="GstCairoTimeOverlay"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-cairotimeoverlay.html#GstCairoTimeOverlay-struct">GstCairoTimeOverlay</a>;
-
+                    <a class="link" href="gst-plugins-good-plugins-cairotimeoverlay.html#GstCairoTimeOverlay-struct" title="GstCairoTimeOverlay">GstCairoTimeOverlay</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2604527"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-cairotimeoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
@@ -61,15 +55,15 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2590188"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-cairotimeoverlay.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2582418"></a><p>
+<a name="id2561458"></a><h3>Example launch line</h3>
+<p>
 cairotimeoverlay renders the buffer timestamp for each frame on top of
 the frame.
 </p>
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -78,45 +72,50 @@ gst-launch -v -m videotestsrc ! cairotimeoverlay ! autovideosink
 <p>
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2557090"></a><h3>Element Information</h3>
+<a name="id2572182"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-cairo.html#plugin-cairo">cairo</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-cairo.html#plugin-cairo">cairo</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
+<td><p><span class="term">author</span></p></td>
 <td>David Schleef &lt;ds@schleef.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Editor/Video</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2599173"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>sink</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
@@ -125,39 +124,42 @@ gst-launch -v -m videotestsrc ! cairotimeoverlay ! autovideosink
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">name</span></td>
+<td><p><span class="term">name</span></p></td>
 <td>src</td>
 </tr>
 <tr>
-<td><span class="term">direction</span></td>
+<td><p><span class="term">direction</span></p></td>
 <td>source</td>
 </tr>
 <tr>
-<td><span class="term">presence</span></td>
+<td><p><span class="term">presence</span></p></td>
 <td>always</td>
 </tr>
 <tr>
-<td><span class="term">details</span></td>
+<td><p><span class="term">details</span></p></td>
 <td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2604068"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-cairotimeoverlay.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2604078"></a><h3>
-<a name="GstCairoTimeOverlay-struct"></a>GstCairoTimeOverlay</h3>
-<a class="indexterm" name="id2604090"></a><pre class="programlisting">typedef struct _GstCairoTimeOverlay GstCairoTimeOverlay;</pre>
+<a name="GstCairoTimeOverlay-struct"></a><h3>GstCairoTimeOverlay</h3>
+<pre class="programlisting">typedef struct _GstCairoTimeOverlay GstCairoTimeOverlay;</pre>
 <p>
 
 </p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

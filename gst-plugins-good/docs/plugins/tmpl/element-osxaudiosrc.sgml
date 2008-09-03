@@ -26,3 +26,8 @@ Input from a sound card in OS X
 @src: 
 @ringbuffer: 
 
+<!-- ##### ARG GstOsxAudioSrc:device ##### -->
+<para>
+
+</para>
+

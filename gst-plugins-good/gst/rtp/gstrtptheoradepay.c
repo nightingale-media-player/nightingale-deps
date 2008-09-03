@@ -44,7 +44,9 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS ("application/x-rtp, "
         "media = (string) \"video\", "
         "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
-        "clock-rate = (int) 90000, " "encoding-name = (string) \"THEORA\""
+        "clock-rate = (int) 90000, " "encoding-name = (string) \"THEORA\","
+        /* only support inline delivery */
+        "delivery-method = (string) \"inline\""
         /* All required parameters 
          *
          * "sampling = (string) { "YCbCr-4:2:0", "YCbCr-4:2:2", "YCbCr-4:4:4" } "
@@ -339,10 +341,11 @@ gst_rtp_theora_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   if (delivery_method == NULL)
     goto no_delivery_method;
 
-  if (g_strcasecmp (delivery_method, "inline")) {
+  if (!g_ascii_strcasecmp (delivery_method, "inline")) {
     /* configure string is in the caps */
-  } else if (g_strcasecmp (delivery_method, "in_band")) {
+  } else if (!g_ascii_strcasecmp (delivery_method, "in_band")) {
     /* headers will (also) be transmitted in the RTP packets */
+    goto unsupported_delivery_method;
   } else if (g_str_has_prefix (delivery_method, "out_band/")) {
     /* some other method of header delivery. */
     goto unsupported_delivery_method;
@@ -475,6 +478,9 @@ gst_rtp_theora_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   F = (header & 0xc0) >> 6;
   packets = (header & 0xf);
 
+  GST_DEBUG_OBJECT (depayload, "ident: 0x%08x, F: %d, TDT: %d, packets: %d",
+      ident, F, TDT, packets);
+
   if (TDT == 0) {
     gboolean do_switch = FALSE;
 
@@ -496,9 +502,6 @@ gst_rtp_theora_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
   /* skip header */
   payload += 4;
   payload_len -= 4;
-
-  GST_DEBUG_OBJECT (depayload, "ident: %u, F: %d, TDT: %d, packets: %d", ident,
-      F, TDT, packets);
 
   /* fragmented packets, assemble */
   if (F != 0) {

@@ -40,20 +40,17 @@
 /* struct v4l2_buffer missing */
 #undef GST_V4L2_MISSING_BUFDECL
 
-/* support for features: aasink */
+/* Define to enable aalib ASCII Art library (used by aasink). */
 #undef HAVE_AALIB
 
-/* support for features: annodex */
+/* Define to enable XML library (used by annodex). */
 #undef HAVE_ANNODEX
 
 /* Define to 1 if you have the `asinh' function. */
 #undef HAVE_ASINH
 
-/* support for features: cairo */
+/* Define to enable Cairo graphics rendering (used by cairo). */
 #undef HAVE_CAIRO
-
-/* support for features: cdio */
-#undef HAVE_CDIO
 
 /* Define to 1 if you have the `cosh' function. */
 #undef HAVE_COSH
@@ -104,25 +101,25 @@
    */
 #undef HAVE_DCGETTEXT
 
-/* support for features: directdrawsink */
+/* Define to enable DirectDraw plug-in (used by directdrawsink). */
 #undef HAVE_DIRECTDRAW
 
-/* support for features: directsoundsink */
+/* Define to enable DirectSound plug-in (used by directsoundsink). */
 #undef HAVE_DIRECTSOUND
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* support for features: 1394 */
+/* Define to enable raw1394 and avc1394 library (used by 1394). */
 #undef HAVE_DV1394
 
-/* support for features: esdsink */
+/* Define to enable ESounD sound daemon (used by esdsink). */
 #undef HAVE_ESD
 
-/* support for features: */
+/* Define to enable building of experimental plug-ins. */
 #undef HAVE_EXPERIMENTAL
 
-/* support for features: */
+/* Define to enable building of plug-ins with external deps. */
 #undef HAVE_EXTERNAL
 
 /* FIONREAD ioctl found in sys/filio.h */
@@ -131,16 +128,19 @@
 /* FIONREAD ioctl found in sys/ioclt.h */
 #undef HAVE_FIONREAD_IN_SYS_IOCTL
 
-/* support for features: flac */
+/* Define to enable FLAC plug-in (used by flac). */
 #undef HAVE_FLAC
 
-/* support for features: gconfelements */
+/* Define if compiler supports gcc inline assembly */
+#undef HAVE_GCC_ASM
+
+/* Define to enable GConf libraries (used by gconfelements). */
 #undef HAVE_GCONF
 
-/* support for features: */
+/* Define to enable GConf schemas. */
 #undef HAVE_GCONFTOOL
 
-/* support for features: gdkpixbuf */
+/* Define to enable GDK pixbuf (used by gdkpixbuf). */
 #undef HAVE_GDK_PIXBUF
 
 /* Define to 1 if you have the `getpagesize' function. */
@@ -149,10 +149,10 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* support for features: v4l2src */
+/* Define to enable Video 4 Linux 2 (used by v4l2src). */
 #undef HAVE_GST_V4L2
 
-/* support for features: halelements */
+/* Define to enable HAL libraries (used by halelements). */
 #undef HAVE_HAL
 
 /* Define if you have the iconv() function. */
@@ -161,26 +161,17 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* support for features: jpeg */
+/* Define to enable jpeg library (used by jpeg). */
 #undef HAVE_JPEG
 
-/* support for features: ladspa */
-#undef HAVE_LADSPA
-
-/* support for features: cacasink */
+/* Define to enable libcaca coloured ASCII art (used by cacasink). */
 #undef HAVE_LIBCACA
 
-/* support for features: dv */
+/* Define to enable libdv DV demuxer/decoder (used by dv). */
 #undef HAVE_LIBDV
 
-/* support for features: png */
+/* Define to enable Portable Network Graphics library (used by png). */
 #undef HAVE_LIBPNG
-
-/* Define if you have C99's lrint function. */
-#undef HAVE_LRINT
-
-/* Define if you have C99's lrintf function. */
-#undef HAVE_LRINTF
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -191,7 +182,7 @@
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
 
-/* support for features: ossaudio */
+/* Define to enable OSS audio (used by ossaudio). */
 #undef HAVE_OSS
 
 /* Define if OSS includes are in /machine/ */
@@ -203,11 +194,14 @@
 /* Define if OSS includes are in /sys/ */
 #undef HAVE_OSS_INCLUDE_IN_SYS
 
-/* support for features: osxaudio */
+/* Define to enable OSX audio (used by osxaudio). */
 #undef HAVE_OSX_AUDIO
 
-/* support for features: osxvideosink */
+/* Define to enable OSX video (used by osxvideosink). */
 #undef HAVE_OSX_VIDEO
+
+/* Define to enable pulseaudio plug-in (used by pulseaudio). */
+#undef HAVE_PULSE
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
@@ -215,13 +209,16 @@
 /* Define to 1 if you have the `rint' function. */
 #undef HAVE_RINT
 
-/* support for features: shout2 */
+/* Define to enable Shoutcast/Icecast client library (used by shout2). */
 #undef HAVE_SHOUT2
 
 /* Define to 1 if you have the `sinh' function. */
 #undef HAVE_SINH
 
-/* support for features: speex */
+/* Define to enable soup http client plugin (2.4) (used by souphttpsrc). */
+#undef HAVE_SOUP
+
+/* Define to enable speex speech codec (used by speex). */
 #undef HAVE_SPEEX
 
 /* Define to 1 if you have the <stdint.h> header file. */
@@ -236,7 +233,7 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* support for features: sunaudio */
+/* Define to enable Sun Audio (used by sunaudio). */
 #undef HAVE_SUNAUDIO
 
 /* Define to 1 if you have the <sys/socket.h> header file. */
@@ -251,7 +248,7 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
-/* support for features: taglib */
+/* Define to enable taglib tagging library (used by taglib). */
 #undef HAVE_TAGLIB
 
 /* Define to 1 if you have the <unistd.h> header file. */
@@ -260,22 +257,22 @@
 /* Define if valgrind should be used */
 #undef HAVE_VALGRIND
 
-/* support for features: wavpack */
+/* Define to enable wavpack plug-in (used by wavpack). */
 #undef HAVE_WAVPACK
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
 
-/* support for features: ximagesrc */
+/* Define to enable X libraries and plugins (used by ximagesrc). */
 #undef HAVE_X
 
-/* support for features: */
+/* Define to enable X Shared Memory extension. */
 #undef HAVE_XSHM
 
-/* support for features: */
+/* Define to enable X11 XVideo extensions. */
 #undef HAVE_XVIDEO
 
-/* support for features: */
+/* Define to enable zlib support for id3demux/qtdemux. */
 #undef HAVE_ZLIB
 
 /* the host CPU */

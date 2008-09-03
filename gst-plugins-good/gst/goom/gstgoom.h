@@ -24,7 +24,7 @@ G_BEGIN_DECLS
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include "goom_core.h"
+#include "goom.h"
 
 #define GOOM_SAMPLES 512
 
@@ -65,7 +65,7 @@ struct _GstGoom
 
   /* goom stuff */
   gint16 datain[2][GOOM_SAMPLES];
-  GoomData goomdata;
+  PluginInfo *plugin;
 
   /* segment state */
   GstSegment segment;

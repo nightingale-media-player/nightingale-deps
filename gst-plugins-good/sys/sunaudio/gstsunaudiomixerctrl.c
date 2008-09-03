@@ -1,6 +1,9 @@
 /*
  * GStreamer - SunAudio mixer interface element
- * Copyright (C) 2005,2006 Brian Cameron <brian.cameron@sun.com>
+ * Copyright (C) 2005,2006,2008 Sun Microsystems, Inc.,
+ *               Brian Cameron <brian.cameron@sun.com>
+ * Copyright (C) 2008 Sun Microsystems, Inc.,
+ *               Jan Schmidt <jan.schmidt@sun.com> 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,8 +42,6 @@
 GST_DEBUG_CATEGORY_EXTERN (sunaudio_debug);
 #define GST_CAT_DEFAULT sunaudio_debug
 
-#define SCALE_FACTOR 2.55       /* 255/100 */
-
 static gboolean
 gst_sunaudiomixer_ctrl_open (GstSunAudioMixerCtrl * mixer)
 {
@@ -72,6 +73,7 @@ void
 gst_sunaudiomixer_ctrl_build_list (GstSunAudioMixerCtrl * mixer)
 {
   GstMixerTrack *track;
+
   struct audio_info audioinfo;
 
   /*
@@ -174,8 +176,11 @@ gst_sunaudiomixer_ctrl_get_volume (GstSunAudioMixerCtrl * mixer,
     GstMixerTrack * track, gint * volumes)
 {
   gint gain, balance;
+
   float ratio;
+
   struct audio_info audioinfo;
+
   GstSunAudioMixerTrack *sunaudiotrack = GST_SUNAUDIO_MIXER_TRACK (track);
 
   g_return_if_fail (mixer->mixer_fd != -1);
@@ -187,16 +192,15 @@ gst_sunaudiomixer_ctrl_get_volume (GstSunAudioMixerCtrl * mixer,
 
   switch (sunaudiotrack->track_num) {
     case GST_SUNAUDIO_TRACK_OUTPUT:
-      gain = (int) ((float) audioinfo.play.gain / (float) SCALE_FACTOR + 0.5);
+      gain = (int) audioinfo.play.gain;
       balance = audioinfo.play.balance;
       break;
     case GST_SUNAUDIO_TRACK_LINE_IN:
-      gain = (int) ((float) audioinfo.record.gain / (float) SCALE_FACTOR + 0.5);
+      gain = (int) audioinfo.record.gain;
       balance = audioinfo.record.balance;
       break;
     case GST_SUNAUDIO_TRACK_MONITOR:
-      gain =
-          (int) ((float) audioinfo.monitor_gain / (float) SCALE_FACTOR + 0.5);
+      gain = (int) audioinfo.monitor_gain;
       balance = audioinfo.record.balance;
       break;
   }
@@ -242,12 +246,12 @@ gst_sunaudiomixer_ctrl_get_volume (GstSunAudioMixerCtrl * mixer,
   if ((sunaudiotrack->track_num == GST_SUNAUDIO_TRACK_OUTPUT &&
           audioinfo.output_muted == 1) ||
       (sunaudiotrack->track_num != GST_SUNAUDIO_TRACK_OUTPUT && gain == 0)) {
-    track->flags |= GST_MIXER_TRACK_MUTE;
-  } else {
     /*
      * If MUTE is set, then gain is always 0, so don't bother
      * resetting our internal value.
      */
+    track->flags |= GST_MIXER_TRACK_MUTE;
+  } else {
     sunaudiotrack->gain = gain;
     sunaudiotrack->balance = balance;
     track->flags &= ~GST_MIXER_TRACK_MUTE;
@@ -259,28 +263,36 @@ gst_sunaudiomixer_ctrl_set_volume (GstSunAudioMixerCtrl * mixer,
     GstMixerTrack * track, gint * volumes)
 {
   gint gain;
+
   gint balance;
+
   gint l_real_gain;
+
   gint r_real_gain;
+
   float ratio;
+
   gchar buf[100];
+
   struct audio_info audioinfo;
+
   GstSunAudioMixerTrack *sunaudiotrack = GST_SUNAUDIO_MIXER_TRACK (track);
+
   gint temp[2];
 
   l_real_gain = volumes[0];
   r_real_gain = volumes[1];
 
   if (l_real_gain == r_real_gain) {
-    gain = (int) ((float) l_real_gain * (float) SCALE_FACTOR + 0.5);
+    gain = l_real_gain;
     balance = AUDIO_MID_BALANCE;
   } else if (l_real_gain < r_real_gain) {
-    gain = (int) ((float) r_real_gain * (float) SCALE_FACTOR + 0.5);
+    gain = r_real_gain;
     ratio = (float) l_real_gain / (float) r_real_gain;
     balance =
         AUDIO_RIGHT_BALANCE - (int) (ratio * (float) AUDIO_MID_BALANCE + 0.5);
   } else {
-    gain = (int) ((float) l_real_gain * (float) SCALE_FACTOR + 0.5);
+    gain = l_real_gain;
     ratio = (float) r_real_gain / (float) l_real_gain;
     balance =
         AUDIO_LEFT_BALANCE + (int) (ratio * (float) AUDIO_MID_BALANCE + 0.5);
@@ -289,8 +301,19 @@ gst_sunaudiomixer_ctrl_set_volume (GstSunAudioMixerCtrl * mixer,
   sunaudiotrack->gain = gain;
   sunaudiotrack->balance = balance;
 
-  if (GST_MIXER_TRACK_HAS_FLAG (track, GST_MIXER_TRACK_MUTE))
-    return;
+  if (GST_MIXER_TRACK_HAS_FLAG (track, GST_MIXER_TRACK_MUTE)) {
+    if (sunaudiotrack->track_num == GST_SUNAUDIO_TRACK_OUTPUT) {
+      return;
+    } else if (gain == 0) {
+      return;
+    } else {
+      /*
+       * If the volume is set to a non-zero value for LINE_IN
+       * or MONITOR, then unset MUTE.
+       */
+      track->flags &= ~GST_MIXER_TRACK_MUTE;
+    }
+  }
 
   /* Set the volume */
   AUDIO_INITINFO (&audioinfo);
@@ -323,7 +346,9 @@ gst_sunaudiomixer_ctrl_set_mute (GstSunAudioMixerCtrl * mixer,
     GstMixerTrack * track, gboolean mute)
 {
   struct audio_info audioinfo;
+
   GstSunAudioMixerTrack *sunaudiotrack = GST_SUNAUDIO_MIXER_TRACK (track);
+
   gint volume, balance;
 
   AUDIO_INITINFO (&audioinfo);
@@ -372,7 +397,9 @@ gst_sunaudiomixer_ctrl_set_record (GstSunAudioMixerCtrl * mixer,
     GstMixerTrack * track, gboolean record)
 {
   GstSunAudioMixerTrack *sunaudiotrack = GST_SUNAUDIO_MIXER_TRACK (track);
+
   struct audio_info audioinfo;
+
   GList *trk;
 
   /* Don't change the setting */

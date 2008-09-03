@@ -40,8 +40,7 @@ typedef struct _GstMultiUDPSinkClass GstMultiUDPSinkClass;
 typedef struct {
   int *sock;
 
-  struct sockaddr_in theiraddr;
-  struct ip_mreq multi_addr;
+  struct sockaddr_storage theiraddr;
 
   gchar *host;
   gint port;
@@ -72,6 +71,9 @@ struct _GstMultiUDPSink {
   gboolean       externalfd;
 
   gboolean       auto_multicast;
+  gint           ttl;
+  gboolean       loop;
+  gint           qos_dscp;
 };
 
 struct _GstMultiUDPSinkClass {

@@ -53,11 +53,11 @@ GST_STATIC_PAD_TEMPLATE ("src",
         /* All required parameters
          *
          * "encoding-params = (string) <num channels>"
-         * "delivery-method = (string) { inline, in_band, out_band/<specific_name> } "
          * "configuration = (string) ANY"
          */
         /* All optional parameters
          *
+         * "delivery-method = (string) { inline, in_band, out_band/<specific_name> } "
          * "configuration-uri ="
          */
     )
@@ -75,8 +75,8 @@ GST_BOILERPLATE (GstRtpVorbisPay, gst_rtp_vorbis_pay, GstBaseRTPPayload,
 
 static gboolean gst_rtp_vorbis_pay_setcaps (GstBaseRTPPayload * basepayload,
     GstCaps * caps);
-static GstStateChangeReturn gst_rtp_vorbis_pay_change_state (GstElement * element,
-    GstStateChange transition);
+static GstStateChangeReturn gst_rtp_vorbis_pay_change_state (GstElement *
+    element, GstStateChange transition);
 static GstFlowReturn gst_rtp_vorbis_pay_handle_buffer (GstBaseRTPPayload * pad,
     GstBuffer * buffer);
 
@@ -123,7 +123,7 @@ gst_rtp_vorbis_pay_init (GstRtpVorbisPay * rtpvorbispay,
 }
 
 static void
-gst_rtp_vorbis_pay_cleanup (GstRtpVorbisPay *rtpvorbispay)
+gst_rtp_vorbis_pay_cleanup (GstRtpVorbisPay * rtpvorbispay)
 {
   g_list_foreach (rtpvorbispay->headers, (GFunc) gst_mini_object_unref, NULL);
   g_list_free (rtpvorbispay->headers);
@@ -674,7 +674,8 @@ header_error:
 }
 
 static GstStateChangeReturn
-gst_rtp_vorbis_pay_change_state (GstElement * element, GstStateChange transition)
+gst_rtp_vorbis_pay_change_state (GstElement * element,
+    GstStateChange transition)
 {
   GstRtpVorbisPay *rtpvorbispay;
   GstStateChangeReturn ret;

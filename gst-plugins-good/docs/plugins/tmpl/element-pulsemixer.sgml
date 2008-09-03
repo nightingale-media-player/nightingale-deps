@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+pulsemixer
+
+<!-- ##### SECTION Short_Description ##### -->
+Control sound input and output levels for PulseAudio
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-pulsemixer-details.xml" />
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstPulseMixer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstPulseMixer:device ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPulseMixer:device-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstPulseMixer:server ##### -->
+<para>
+
+</para>
+

@@ -1,4 +1,18 @@
 <SECTION>
+<FILE>element-aasink</FILE>
+<TITLE>aasink</TITLE>
+GstAASink
+<SUBSECTION Standard>
+GstAASinkClass
+GST_AASINK
+GST_IS_AASINK
+GST_TYPE_AASINK
+GST_AASINK_CLASS
+GST_IS_AASINK_CLASS
+gst_aasink_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-alphacolor</FILE>
 <TITLE>alphacolor</TITLE>
 GstAlphaColor
@@ -38,7 +52,6 @@ GST_TYPE_APEV2_MUX
 gst_apev2_mux_get_type
 GST_APEV2_MUX_CLASS
 GST_IS_APEV2_MUX_CLASS
-gst_apev2_mux_plugin_init
 </SECTION>
 
 <SECTION>
@@ -93,9 +106,9 @@ gst_audio_cheb_limit_get_type
 <FILE>element-audiodynamic</FILE>
 <TITLE>audiodynamic</TITLE>
 GstAudioDynamic
-GstAudioDynamicProcessFunc
 <SUBSECTION Standard>
 GstAudioDynamicClass
+GstAudioDynamicProcessFunc
 GST_AUDIO_DYNAMIC
 GST_AUDIO_DYNAMIC_CLASS
 GST_AUDIO_DYNAMIC_GET_CLASS
@@ -119,6 +132,22 @@ GST_IS_AUDIO_INVERT
 GST_IS_AUDIO_INVERT_CLASS
 GST_TYPE_AUDIO_INVERT
 gst_audio_invert_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-audiokaraoke</FILE>
+<TITLE>audiokaraoke</TITLE>
+GstAudioKaraoke
+<SUBSECTION Standard>
+GstAudioKaraokeClass
+GstAudioKaraokeProcessFunc
+GST_AUDIO_KARAOKE
+GST_AUDIO_KARAOKE_CLASS
+GST_AUDIO_KARAOKE_GET_CLASS
+GST_IS_AUDIO_KARAOKE
+GST_IS_AUDIO_KARAOKE_CLASS
+GST_TYPE_AUDIO_KARAOKE
+gst_audio_karaoke_get_type
 </SECTION>
 
 <SECTION>
@@ -214,7 +243,6 @@ GST_IS_AVI_DEMUX
 GST_IS_AVI_DEMUX_CLASS
 GST_AVI_DEMUX_MAX_STREAMS
 gst_avi_demux_get_type
-GST_AVI_DISABLE_INDEX_ARRAY
 GST_AVI_INDEX_ENTRY_FLAG_KEYFRAME
 GST_AVI_INDEX_OF_CHUNKS
 GST_AVI_INDEX_OF_INDEXES
@@ -251,6 +279,20 @@ GST_AVI_SUBTITLE_CLASS
 GST_IS_AVI_SUBTITLE
 GST_IS_AVI_SUBTITLE_CLASS
 gst_avi_subtitle_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-cacasink</FILE>
+<TITLE>cacasink</TITLE>
+GstCACASink
+<SUBSECTION Standard>
+GstCACASinkClass
+GST_CACASINK
+GST_IS_CACASINK
+GST_TYPE_CACASINK
+GST_CACASINK_CLASS
+GST_IS_CACASINK_CLASS
+gst_cacasink_get_type
 </SECTION>
 
 <SECTION>
@@ -298,17 +340,19 @@ gst_cmml_enc_plugin_init
 </SECTION>
 
 <SECTION>
-<FILE>element-cdiocddasrc</FILE>
-<TITLE>cdiocddasrc</TITLE>
-GstCdioCddaSrc
+<FILE>element-deinterleave</FILE>
+<TITLE>deinterleave</TITLE>
+GstDeinterleave
 <SUBSECTION Standard>
-GstCdioCddaSrcClass
-GST_TYPE_CDIO_CDDA_SRC
-GST_CDIO_CDDA_SRC
-GST_CDIO_CDDA_SRC_CLASS
-GST_IS_CDIO_CDDA_SRC
-GST_IS_CDIO_CDDA_SRC_CLASS
-gst_cdio_cdda_src_get_type
+GST_DEINTERLEAVE
+GST_DEINTERLEAVE_CLASS
+GST_DEINTERLEAVE_GET_CLASS
+GST_IS_DEINTERLEAVE
+GST_IS_DEINTERLEAVE_CLASS
+GST_TYPE_DEINTERLEAVE
+GstDeinterleaveClass
+GstDeinterleaveFunc
+gst_deinterleave_get_type
 </SECTION>
 
 <SECTION>
@@ -347,6 +391,20 @@ GST_DSOUND_UNLOCK
 </SECTION>
 
 <SECTION>
+<FILE>element-dv1394src</FILE>
+<TITLE>dv1394src</TITLE>
+GstDV1394Src
+<SUBSECTION Standard>
+GstDV1394SrcClass
+GST_TYPE_DV1394SRC
+GST_DV1394SRC
+GST_DV1394SRC_CLASS
+GST_IS_DV1394SRC
+GST_IS_DV1394SRC_CLASS
+gst_dv1394src_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-dvdec</FILE>
 <TITLE>dvdec</TITLE>
 GstDVDec
@@ -377,7 +435,7 @@ gst_dvdemux_get_type
 
 <SECTION>
 <FILE>gstiirequalizer</FILE>
-<TITLE>GstIirEqualize</TITLE>
+<TITLE>GstIirEqualizer</TITLE>
 GstIirEqualizer
 <SUBSECTION Standard>
 GstIirEqualizerBand
@@ -481,6 +539,20 @@ gst_gamma_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-gdkpixbufsink</FILE>
+<TITLE>gdkpixbufsink</TITLE>
+GstGdkPixbufSink
+<SUBSECTION Standard>
+GstGdkPixbufSinkClass
+GST_TYPE_GDK_PIXBUF_SINK
+GST_GDK_PIXBUF_SINK
+GST_GDK_PIXBUF_SINK_CLASS
+GST_IS_GDK_PIXBUF_SINK
+GST_IS_GDK_PIXBUF_SINK_CLASS
+gst_gdk_pixbuf_sink_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-goom</FILE>
 <TITLE>goom</TITLE>
 GstGoom
@@ -493,6 +565,20 @@ GST_TYPE_GOOM
 GST_GOOM_CLASS
 GST_IS_GOOM_CLASS
 gst_goom_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-goom2k1</FILE>
+<TITLE>goom2k1</TITLE>
+GstGoom
+<SUBSECTION Standard>
+GstGoomClass
+GOOM_SAMPLES
+GST_GOOM
+GST_IS_GOOM
+GST_TYPE_GOOM
+GST_GOOM_CLASS
+GST_IS_GOOM_CLASS
 </SECTION>
 
 <SECTION>
@@ -563,7 +649,22 @@ GST_ID3V2_MUX_CLASS
 GST_IS_ID3V2_MUX
 GST_IS_ID3V2_MUX_CLASS
 gst_id3v2_mux_get_type
-gst_id3v2_mux_plugin_init
+</SECTION>
+
+<SECTION>
+<FILE>element-interleave</FILE>
+<TITLE>interleave</TITLE>
+GstInterleave
+<SUBSECTION Standard>
+GST_INTERLEAVE
+GST_INTERLEAVE_CLASS
+GST_INTERLEAVE_GET_CLASS
+GST_IS_INTERLEAVE
+GST_IS_INTERLEAVE_CLASS
+GST_TYPE_INTERLEAVE
+GstInterleaveClass
+GstInterleaveFunc
+gst_interleave_get_type
 </SECTION>
 
 <SECTION>
@@ -683,10 +784,10 @@ MULTIPART_NEED_MORE_DATA
 <SECTION>
 <FILE>element-multiudpsink</FILE>
 <TITLE>multiudpsink</TITLE>
-GstUDPClient
 GstMultiUDPSink
 <SUBSECTION Standard>
 GstMultiUDPSinkClass
+GstUDPClient
 gst_multiudpsink_add
 gst_multiudpsink_remove
 gst_multiudpsink_clear
@@ -811,6 +912,48 @@ gst_pngenc_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-pulsesink</FILE>
+<TITLE>pulsesink</TITLE>
+GstPulseSink
+<SUBSECTION Standard>
+GstPulseSinkClass
+GST_PULSESINK
+GST_IS_PULSESINK
+GST_TYPE_PULSESINK
+GST_PULSESINK_CLASS
+GST_IS_PULSESINK_CLASS
+gst_pulsesink_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-pulsesrc</FILE>
+<TITLE>pulsesrc</TITLE>
+GstPulseSrc
+<SUBSECTION Standard>
+GstPulseSrcClass
+GST_PULSESRC
+GST_IS_PULSESRC
+GST_TYPE_PULSESRC
+GST_PULSESRC_CLASS
+GST_IS_PULSESRC_CLASS
+gst_pulsesrc_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-pulsemixer</FILE>
+<TITLE>pulsemixer</TITLE>
+GstPulseMixer
+<SUBSECTION Standard>
+GstPulseMixerClass
+GST_PULSEMIXER
+GST_IS_PULSEMIXER
+GST_TYPE_PULSEMIXER
+GST_PULSEMIXER_CLASS
+GST_IS_PULSEMIXER_CLASS
+gst_pulsemixer_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-progressreport</FILE>
 <TITLE>progressreport</TITLE>
 GstProgressReport
@@ -838,6 +981,48 @@ GST_QTDEMUX_CLASS
 GST_QTDEMUX_MAX_STREAMS
 GST_TYPE_QTDEMUX
 gst_qtdemux_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-rganalysis</FILE>
+<TITLE>rganalysis</TITLE>
+GstRgAnalysis
+<SUBSECTION Standard>
+GstRgAnalysisClass
+GST_RG_ANALYSIS
+GST_RG_ANALYSIS_CLASS
+GST_IS_RG_ANALYSIS
+GST_IS_RG_ANALYSIS_CLASS
+GST_TYPE_RG_ANALYSIS
+gst_rg_analysis_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-rglimiter</FILE>
+<TITLE>rglimiter</TITLE>
+GstRgLimiter
+<SUBSECTION Standard>
+GstRgLimiterClass
+GST_RG_LIMITER
+GST_RG_LIMITER_CLASS
+GST_IS_RG_LIMITER
+GST_IS_RG_LIMITER_CLASS
+GST_TYPE_RG_LIMITER
+gst_rg_limiter_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-rgvolume</FILE>
+<TITLE>rgvolume</TITLE>
+GstRgVolume
+<SUBSECTION Standard>
+GstRgVolumeClass
+GST_RG_VOLUME
+GST_RG_VOLUME_CLASS
+GST_IS_RG_VOLUME
+GST_TYPE_RG_VOLUME
+GST_IS_RG_VOLUME_CLASS
+gst_rg_volume_get_type
 </SECTION>
 
 <SECTION>
@@ -878,6 +1063,46 @@ GST_TYPE_RTP_DEC
 gst_rtp_dec_get_type
 GST_RTP_DEC_CLASS
 GST_IS_RTP_DEC_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>element-smpte</FILE>
+<TITLE>smpte</TITLE>
+GstSMPTE
+<SUBSECTION Standard>
+GstSMPTEClass
+GST_SMPTE
+GST_IS_SMPTE
+GST_TYPE_SMPTE
+GST_SMPTE_CLASS
+GST_IS_SMPTE_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>element-smptealpha</FILE>
+<TITLE>smptealpha</TITLE>
+GstSMPTEAlpha
+<SUBSECTION Standard>
+GstSMPTEAlphaClass
+GST_SMPTE_ALPHA
+GST_IS_SMPTE_ALPHA
+GST_TYPE_SMPTE_ALPHA
+GST_SMPTE_ALPHA_CLASS
+GST_IS_SMPTE_ALPHA_CLASS
+</SECTION>
+
+<SECTION>
+<FILE>element-souphttpsrc</FILE>
+<TITLE>souphttpsrc</TITLE>
+GstSoupHTTPSrc
+<SUBSECTION Standard>
+GstSoupHTTPSrcClass
+GST_SOUP_HTTP_SRC
+GST_SOUP_HTTP_SRC_CLASS
+GST_IS_SOUP_HTTP_SRC
+GST_IS_SOUP_HTTP_SRC_CLASS
+GST_TYPE_SOUP_HTTP_SRC
+gst_soup_http_src_get_type
 </SECTION>
 
 <SECTION>
@@ -922,6 +1147,20 @@ GST_IS_SPECTRUM
 GST_IS_SPECTRUM_CLASS
 GST_TYPE_SPECTRUM
 gst_spectrum_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-taginject</FILE>
+<TITLE>taginject</TITLE>
+GstTagInject
+<SUBSECTION Standard>
+GstTagInjectClass
+GST_TAG_INJECT
+GST_IS_TAG_INJECT
+GST_TYPE_TAG_INJECT
+GST_TAG_INJECT_CLASS
+GST_IS_TAG_INJECT_CLASS
+gst_tag_inject_get_type
 </SECTION>
 
 <SECTION>
@@ -997,6 +1236,20 @@ GST_IS_VIDEO_BALANCE_CLASS
 </SECTION>
 
 <SECTION>
+<FILE>gstvideomixerpad</FILE>
+<TITLE>GstVideoMixerPad</TITLE>
+GstVideoMixerPad
+<SUBSECTION Standard>
+GstVideoMixerPadClass
+GstVideoMixerCollect
+GST_VIDEO_MIXER_PAD
+GST_VIDEO_MIXER_PAD_CLASS
+GST_IS_VIDEO_MIXER_PAD
+GST_IS_VIDEO_MIXER_PAD_CLASS
+GST_TYPE_VIDEO_MIXER_PAD
+</SECTION>
+
+<SECTION>
 <FILE>element-videomixer</FILE>
 <TITLE>videomixer</TITLE>
 GstVideoMixer
@@ -1008,14 +1261,6 @@ GST_IS_VIDEO_MIXER
 GST_TYPE_VIDEO_MIXER
 GST_VIDEO_MIXER_CLASS
 GST_IS_VIDEO_MIXER_CLASS
-GST_VIDEO_MIXER_PAD
-GST_VIDEO_MIXER_PAD_CLASS
-GST_IS_VIDEO_MIXER_PAD
-GST_IS_VIDEO_MIXER_PAD_CLASS
-GST_TYPE_VIDEO_MIXER_PAD
-GstVideoMixerCollect
-GstVideoMixerPad
-GstVideoMixerPadClass
 </SECTION>
 
 <SECTION>

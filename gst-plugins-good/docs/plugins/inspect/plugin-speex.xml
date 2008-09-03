@@ -3,7 +3,7 @@
   <description>Speex plugin library</description>
   <filename>../../ext/speex/.libs/libgstspeex.so</filename>
   <basename>libgstspeex.so</basename>
-  <version>0.10.7</version>
+  <version>0.10.10</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -41,7 +41,7 @@
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-speex</details>
+          <details>audio/x-speex, rate=(int)[ 6000, 48000 ], channels=(int)[ 1, 2 ]</details>
         </caps>
         <caps>
           <name>sink</name>

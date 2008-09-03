@@ -19,6 +19,23 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-dv1394src
+ *
+ * <refsect2>
+ * <para>
+ * Read DV (digital video) data from firewire port.
+ * </para>
+ * <title>Example launch line</title>
+ * <para>
+ * <programlisting>
+ * gst-launch dv1394src ! dvdemux name=d ! queue ! dvdec ! xvimagesink d. ! queue ! alsasink
+ * </programlisting>
+ * This pipeline captures from the firewire port and displays it (might need
+ * format converters for audio/video).
+ * </para>
+ * </refsect2>
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -1129,6 +1146,7 @@ gst_dv1394src_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
+
 static gchar **
 gst_dv1394src_uri_get_protocols (void)
 {
@@ -1136,6 +1154,7 @@ gst_dv1394src_uri_get_protocols (void)
 
   return protocols;
 }
+
 static const gchar *
 gst_dv1394src_uri_get_uri (GstURIHandler * handler)
 {
@@ -1148,10 +1167,7 @@ static gboolean
 gst_dv1394src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
   gchar *protocol, *location;
-  gboolean ret;
-
-  ret = TRUE;
-
+  gboolean ret = TRUE;
   GstDV1394Src *gst_dv1394src = GST_DV1394SRC (handler);
 
   protocol = gst_uri_get_protocol (uri);

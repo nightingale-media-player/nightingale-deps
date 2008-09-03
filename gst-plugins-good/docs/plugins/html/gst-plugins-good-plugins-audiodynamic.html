@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>audiodynamic</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-audiowsinclimit.html" title="audiowsinclimit">
 <link rel="next" href="gst-plugins-good-plugins-audioinvert.html" title="audioinvert">
-<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -22,73 +23,61 @@
 <th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-good-plugins-audioinvert.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2563225" class="shortcut">Top</a>
-                  &#160;|&#160;
-                  <a href="#id2561797" class="shortcut">Description</a>
-                  &#160;|&#160;
-                  <a href="#id2575980" class="shortcut">Object Hierarchy</a>
-                  &#160;|&#160;
-                  <a href="#id2588008" class="shortcut">Properties</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-good-plugins-audiodynamic.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audiodynamic.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audiodynamic.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-good-plugins-audiodynamic.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-good-plugins-audiodynamic"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
-<h2>
-<a name="id2563225"></a><span class="refentrytitle">audiodynamic</span>
-</h2>
-<p>audiodynamic &#8212; Compressor and Expander</p>
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-audiodynamic.top_of_page"></a>audiodynamic</span></h2>
+<p>audiodynamic — Compressor and Expander</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
-<h2>Synopsis</h2>
+<a name="gst-plugins-good-plugins-audiodynamic.synopsis"></a><h2>Synopsis</h2>
 <a name="GstAudioDynamic"></a><pre class="synopsis">
-
-
-
-                    <a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic-struct">GstAudioDynamic</a>;
-void                (<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamicProcessFunc">*GstAudioDynamicProcessFunc</a>)       (<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic">GstAudioDynamic</a> *,
-                                                         guint8 *,
-                                                         guint );
-
+                    <a class="link" href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic-struct" title="GstAudioDynamic">GstAudioDynamic</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2575980"></a><h2>Object Hierarchy</h2>
+<a name="gst-plugins-good-plugins-audiodynamic.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-
   GObject
    +----GstObject
          +----GstElement
                +----GstBaseTransform
                      +----<a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter"
 >GstAudioFilter</a>
                            +----GstAudioDynamic
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2588008"></a><h2>Properties</h2>
+<a name="gst-plugins-good-plugins-audiodynamic.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-
-  "<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--characteristics">characteristics</a>"          GstAudioDynamicCharacteristics  : Read / Write
-  "<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--mode">mode</a>"                     GstAudioDynamicMode   : Read / Write
-  "<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--ratio">ratio</a>"                    gfloat                : Read / Write
-  "<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--threshold">threshold</a>"                gfloat                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--characteristics" title='The "characteristics" property'>characteristics</a>"          GstAudioDynamicCharacteristics  : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--mode" title='The "mode" property'>mode</a>"                     GstAudioDynamicMode   : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--ratio" title='The "ratio" property'>ratio</a>"                    gfloat                : Read / Write
+  "<a class="link" href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic--threshold" title='The "threshold" property'>threshold</a>"                gfloat                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2561797"></a><h2>Description</h2>
+<a name="gst-plugins-good-plugins-audiodynamic.description"></a><h2>Description</h2>
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2585556"></a>
+<a name="id2568538"></a><h3>Example launch line</h3>
 This element can act as a compressor or expander. A compressor changes the
 amplitude of all samples above a specific threshold with a specific ratio,
 a expander does the same for all samples below a specific threshold. If
 soft-knee mode is selected the ratio is applied smoothly.
-<h3>Example launch line</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -99,155 +88,134 @@ gst-launch audiotestsrc wave=saw ! audioconvert ! audiodynamic ! audioconvert ! 
 <p>
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2563089"></a><h3>Element Information</h3>
+<a name="id2588521"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term">plugin</span></td>
+<td><p><span class="term">plugin</span></p></td>
 <td>
-          <a href="gst-plugins-good-plugins-plugin-audiofx.html#plugin-audiofx">audiofx</a>
-        </td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-audiofx.html#plugin-audiofx">audiofx</a>
+          </td>
 </tr>
 <tr>
-<td><span class="term">author</span></td>
-<td>Sebastian Dr&#246;ge &lt;slomo@circular-chaos.org&gt;</td>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;slomo@circular-chaos.org&gt;</td>
 </tr>
 <tr>
-<td><span class="term">class</span></td>
+<td><p><span class="term">class</span></p></td>
 <td>Filter/Effect/Audio</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>src</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>source</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><span class="term">name</span></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><span class="term">direction</span></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><span class="term">presence</span></td>
-<td>always</td>
-</tr>
-<tr>
-<td><span class="term">details</span></td>
-<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]; audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<p>
-
-</p>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2574507"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="id2602254"></a><h3>
-<a name="GstAudioDynamic-struct"></a>GstAudioDynamic</h3>
-<a class="indexterm" name="id2602264"></a><pre class="programlisting">typedef struct _GstAudioDynamic GstAudioDynamic;</pre>
-<p>
-
-</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602281"></a><h3>
-<a name="GstAudioDynamicProcessFunc"></a>GstAudioDynamicProcessFunc ()</h3>
-<a class="indexterm" name="id2602292"></a><pre class="programlisting">void                (*GstAudioDynamicProcessFunc)       (<a href="gst-plugins-good-plugins-audiodynamic.html#GstAudioDynamic">GstAudioDynamic</a> *,
-                                                         guint8 *,
-                                                         guint );</pre>
-<p>
-
-</p>
+<a name="id2561750"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><span class="term"><em class="parameter"><code>Param1</code></em>&#160;:</span></td>
-<td>
-</td>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>Param2</code></em>&#160;:</span></td>
-<td>
-</td>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
 </tr>
 <tr>
-<td><span class="term"><em class="parameter"><code>Param3</code></em>&#160;:</span></td>
-<td>
-
-
-</td>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, depth=(int)16, width=(int)16, endianness=(int)1234, signed=(boolean)true, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-float, width=(int)32, endianness=(int)1234, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
+<p>
+
+</p>
+</div>
 <div class="refsect1" lang="en">
-<a name="id2602382"></a><h2>Property Details</h2>
+<a name="gst-plugins-good-plugins-audiodynamic.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2602392"></a><h3>
-<a name="GstAudioDynamic--characteristics"></a>The "<code class="literal">characteristics</code>" property</h3>
-<a class="indexterm" name="id2602406"></a><pre class="programlisting">  "characteristics"          GstAudioDynamicCharacteristics  : Read / Write</pre>
+<a name="GstAudioDynamic-struct"></a><h3>GstAudioDynamic</h3>
+<pre class="programlisting">typedef struct _GstAudioDynamic GstAudioDynamic;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-good-plugins-audiodynamic.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAudioDynamic--characteristics"></a><h3>The <code class="literal">"characteristics"</code> property</h3>
+<pre class="programlisting">  "characteristics"          GstAudioDynamicCharacteristics  : Read / Write</pre>
 <p>Selects whether the ratio should be applied smooth (soft-knee) or hard (hard-knee).</p>
 <p>Default value: Hard Knee (default)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602432"></a><h3>
-<a name="GstAudioDynamic--mode"></a>The "<code class="literal">mode</code>" property</h3>
-<a class="indexterm" name="id2602446"></a><pre class="programlisting">  "mode"                     GstAudioDynamicMode   : Read / Write</pre>
+<a name="GstAudioDynamic--mode"></a><h3>The <code class="literal">"mode"</code> property</h3>
+<pre class="programlisting">  "mode"                     GstAudioDynamicMode   : Read / Write</pre>
 <p>Selects whether the filter should work on loud samples (compressor) orquiet samples (expander).</p>
 <p>Default value: Compressor (default)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2602474"></a><h3>
-<a name="GstAudioDynamic--ratio"></a>The "<code class="literal">ratio</code>" property</h3>
-<a class="indexterm" name="id2602488"></a><pre class="programlisting">  "ratio"                    gfloat                : Read / Write</pre>
+<a name="GstAudioDynamic--ratio"></a><h3>The <code class="literal">"ratio"</code> property</h3>
+<pre class="programlisting">  "ratio"                    gfloat                : Read / Write</pre>
 <p>Ratio that should be applied.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2600753"></a><h3>
-<a name="GstAudioDynamic--threshold"></a>The "<code class="literal">threshold</code>" property</h3>
-<a class="indexterm" name="id2600767"></a><pre class="programlisting">  "threshold"                gfloat                : Read / Write</pre>
+<a name="GstAudioDynamic--threshold"></a><h3>The <code class="literal">"threshold"</code> property</h3>
+<pre class="programlisting">  "threshold"                gfloat                : Read / Write</pre>
 <p>Threshold until the filter is activated.</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 0</p>
 </div>
 </div>
 </div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
 </body>
 </html>

@@ -106,6 +106,9 @@ static void gst_speex_dec_get_property (GObject * object, guint prop_id,
 static void gst_speex_dec_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 
+static GstFlowReturn speex_dec_chain_parse_data (GstSpeexDec * dec,
+    GstBuffer * buf, GstClockTime timestamp, GstClockTime duration);
+
 static void
 gst_speex_dec_base_init (gpointer g_class)
 {
@@ -457,6 +460,18 @@ speex_dec_sink_event (GstPad * pad, GstEvent * event)
       if (rate <= 0.0)
         goto newseg_wrong_rate;
 
+      if (update) {
+        /* time progressed without data, see if we can fill the gap with
+         * some concealment data */
+        if (dec->segment.last_stop < start) {
+          GstClockTime duration;
+
+          duration = start - dec->segment.last_stop;
+          speex_dec_chain_parse_data (dec, NULL, dec->segment.last_stop,
+              duration);
+        }
+      }
+
       /* now configure the values */
       gst_segment_set_newsegment_full (&dec->segment, update,
           rate, arate, GST_FORMAT_TIME, start, stop, time);
@@ -507,7 +522,7 @@ speex_dec_chain_parse_header (GstSpeexDec * dec, GstBuffer * buf)
   if (!dec->header)
     goto no_header;
 
-  if (dec->header->mode >= SPEEX_NB_MODES)
+  if (dec->header->mode >= SPEEX_NB_MODES || dec->header->mode < 0)
     goto mode_too_old;
 
   dec->mode = (SpeexMode *) speex_mode_list[dec->header->mode];
@@ -623,33 +638,50 @@ speex_dec_chain_parse_comments (GstSpeexDec * dec, GstBuffer * buf)
 }
 
 static GstFlowReturn
-speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf)
+speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf,
+    GstClockTime timestamp, GstClockTime duration)
 {
   GstFlowReturn res = GST_FLOW_OK;
   gint i, fpp;
   guint size;
   guint8 *data;
+  SpeexBits *bits;
 
-  data = GST_BUFFER_DATA (buf);
-  size = GST_BUFFER_SIZE (buf);
+  if (timestamp != -1) {
+    dec->segment.last_stop = timestamp;
+    dec->granulepos = -1;
+  }
 
-  /* send data to the bitstream */
-  speex_bits_read_from (&dec->bits, (char *) data, size);
+  if (buf) {
+    data = GST_BUFFER_DATA (buf);
+    size = GST_BUFFER_SIZE (buf);
 
-  fpp = dec->header->frames_per_packet;
+    /* send data to the bitstream */
+    speex_bits_read_from (&dec->bits, (char *) data, size);
 
-  GST_DEBUG_OBJECT (dec, "received buffer of size %u, fpp %d", size, fpp);
+    fpp = dec->header->frames_per_packet;
+    bits = &dec->bits;
+
+    GST_DEBUG_OBJECT (dec, "received buffer of size %u, fpp %d", size, fpp);
+
+    /* copy timestamp */
+  } else {
+    /* concealment data, pass NULL as the bits parameters */
+    GST_DEBUG_OBJECT (dec, "creating concealment data");
+    fpp = dec->header->frames_per_packet;
+    bits = NULL;
+  }
+
 
   /* now decode each frame */
   for (i = 0; i < fpp; i++) {
     GstBuffer *outbuf;
-    gint64 timestamp;
     gint16 *out_data;
     gint ret, j;
 
     GST_LOG_OBJECT (dec, "decoding frame %d/%d", i, fpp);
 
-    ret = speex_decode (dec->state, &dec->bits, dec->output);
+    ret = speex_decode (dec->state, bits, dec->output);
     if (ret == -1) {
       /* uh? end of stream */
       GST_WARNING_OBJECT (dec, "Unexpected end of stream found");
@@ -659,7 +691,7 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf)
       break;
     }
 
-    if (speex_bits_remaining (&dec->bits) < 0) {
+    if (bits && speex_bits_remaining (bits) < 0) {
       GST_WARNING_OBJECT (dec, "Decoding overflow: corrupted stream?");
       break;
     }
@@ -698,8 +730,10 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf)
       GST_DEBUG_OBJECT (dec, "granulepos=%" G_GINT64_FORMAT, dec->granulepos);
     }
 
-    timestamp = gst_util_uint64_scale_int (dec->granulepos,
-        GST_SECOND, dec->header->rate);
+    if (timestamp == -1) {
+      timestamp = gst_util_uint64_scale_int (dec->granulepos,
+          GST_SECOND, dec->header->rate);
+    }
 
     GST_BUFFER_OFFSET (outbuf) = dec->granulepos;
     GST_BUFFER_OFFSET_END (outbuf) = dec->granulepos + dec->frame_size;
@@ -719,6 +753,7 @@ speex_dec_chain_parse_data (GstSpeexDec * dec, GstBuffer * buf)
       GST_DEBUG_OBJECT (dec, "flow: %s", gst_flow_get_name (res));
       break;
     }
+    timestamp = -1;
   }
 
   return res;
@@ -740,7 +775,9 @@ speex_dec_chain (GstPad * pad, GstBuffer * buf)
       res = speex_dec_chain_parse_comments (dec, buf);
       break;
     default:
-      res = speex_dec_chain_parse_data (dec, buf);
+      res =
+          speex_dec_chain_parse_data (dec, buf, GST_BUFFER_TIMESTAMP (buf),
+          GST_BUFFER_DURATION (buf));
       break;
   }
 

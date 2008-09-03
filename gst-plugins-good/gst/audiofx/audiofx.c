@@ -27,6 +27,7 @@
 
 #include "audiopanorama.h"
 #include "audioinvert.h"
+#include "audiokaraoke.h"
 #include "audioamplify.h"
 #include "audiodynamic.h"
 #include "audiocheblimit.h"
@@ -49,6 +50,8 @@ plugin_init (GstPlugin * plugin)
           GST_TYPE_AUDIO_PANORAMA) &&
       gst_element_register (plugin, "audioinvert", GST_RANK_NONE,
           GST_TYPE_AUDIO_INVERT) &&
+      gst_element_register (plugin, "audiokaraoke", GST_RANK_NONE,
+          GST_TYPE_AUDIO_KARAOKE) &&
       gst_element_register (plugin, "audioamplify", GST_RANK_NONE,
           GST_TYPE_AUDIO_AMPLIFY) &&
       gst_element_register (plugin, "audiodynamic", GST_RANK_NONE,
@@ -67,4 +70,4 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "audiofx",
     "Audio effects plugin",
-    plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -11,7 +11,9 @@ TESTS_ENVIRONMENT = \
 	GST_PLUGIN_SYSTEM_PATH=					\
 	GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/ext:$(top_builddir)/sys:$(GSTPB_PLUGINS_DIR):$(GST_PLUGINS_DIR)			\
 	GST_TEST_FILES_PATH=$(TEST_FILES_DIRECTORY) \
-	STATE_IGNORE_ELEMENTS="aasink autovideosink cacasink cairotextoverlay gconfvideosrc v4l2src"
+	STATE_IGNORE_ELEMENTS="aasink autovideosink cacasink cairotextoverlay gconfaudiosrc gconfvideosrc gconfaudiosink gconfvideosink halaudiosrc halaudiosink v4l2src osssrc osssink"
+
+EXTRA_DIST = test-cert.pem test-key.pem
 
 # ths core dumps of some machines have PIDs appended
 CLEANFILES = core.* test-registry.*
@@ -24,6 +26,18 @@ check_annodex = \
 	elements/cmmlenc
 else
 check_annodex = 
+endif
+
+if USE_GDK_PIXBUF
+check_gdkpixbuf = elements/gdkpixbufsink
+else
+check_gdkpixbuf = 
+endif
+
+if USE_SOUP
+check_soup = elements/souphttpsrc
+else
+check_soup =
 endif
 
 if USE_SUNAUDIO
@@ -44,7 +58,8 @@ if USE_WAVPACK
 check_wavpack = \
        elements/wavpackparse \
        elements/wavpackdec \
-       elements/wavpackenc
+       elements/wavpackenc \
+       pipelines/wavpack
 else
 check_wavpack =
 endif
@@ -63,17 +78,24 @@ check_PROGRAMS = \
 	elements/audiowsinclimit \
 	elements/avimux \
 	elements/avisubtitle \
+	elements/deinterleave \
 	elements/equalizer \
 	elements/icydemux \
 	elements/id3demux \
+	elements/interleave \
 	elements/level \
 	elements/matroskamux \
 	elements/multifile \
+	elements/rganalysis \
+	elements/rglimiter \
+	elements/rgvolume \
 	elements/rtp-payloading \
 	elements/spectrum \
 	elements/videocrop \
 	elements/videofilter \
 	pipelines/simple-launch-lines \
+	$(check_gdkpixbuf) \
+	$(check_soup) \
 	$(check_sunaudio) \
 	$(check_taglib) \
 	$(check_wavpack)
@@ -112,6 +134,14 @@ elements_cmmlenc_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 
 elements_alphacolor_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 
+elements_deinterleave_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_deinterleave_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_MAJORMINOR) $(LDADD)
+elements_interleave_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_interleave_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_MAJORMINOR) $(LDADD)
+
+elements_souphttpsrc_CFLAGS = -DCHECKDATA_DIR="$(srcdir)" $(SOUP_CFLAGS) $(AM_CFLAGS)
+elements_souphttpsrc_LDADD = $(SOUP_LIBS) $(LDADD)
+
 elements_sunaudio_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) \
 	$(AM_CFLAGS)
@@ -121,4 +151,16 @@ elements_sunaudio_LDADD = \
 
 elements_videocrop_LDADD = $(LDADD) $(GST_BASE_LIBS)
 elements_videocrop_CFLAGS = $(GST_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+
+# FIXME: configure should check for gdk-pixbuf not gtk
+# only need video.h header, not the lib
+elements_gdkpixbufsink_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS) $(GTK_CFLAGS)
+elements_gdkpixbufsink_LDADD = \
+	$(LDADD) $(GTK_LIBS)
+
+
+pipelines_wavpack_LDADD = $(LDADD) $(GST_BASE_LIBS)
+pipelines_wavpack_CFLAGS = $(GST_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+
 

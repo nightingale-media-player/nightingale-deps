@@ -141,29 +141,12 @@ typedef int socklen_t;
 GST_DEBUG_CATEGORY_STATIC (udpsrc_debug);
 #define GST_CAT_DEFAULT (udpsrc_debug)
 
-/* the select call is also performed on the control sockets, that way
- * we can send special commands to unblock or restart the select call */
-#define CONTROL_RESTART        'R'      /* restart the select call */
-#define CONTROL_STOP           'S'      /* stop the select call */
-#define CONTROL_SOCKETS(src)   src->control_sock
-#define WRITE_SOCKET(src)      src->control_sock[1]
-#define READ_SOCKET(src)       src->control_sock[0]
-
-#define SEND_COMMAND(src, command, res)          \
-G_STMT_START {                                   \
-  unsigned char c; c = command;                  \
-  res = write (WRITE_SOCKET(src), &c, 1);        \
-} G_STMT_END
-
-#define READ_COMMAND(src, command, res)         \
-G_STMT_START {                                  \
-  res = read(READ_SOCKET(src), &command, 1);    \
-} G_STMT_END
-
 #define CLOSE_IF_REQUESTED(udpctx)                                        \
+G_STMT_START {                                                            \
   if ((!udpctx->externalfd) || (udpctx->externalfd && udpctx->closefd))   \
-    CLOSE_SOCKET(udpctx->sock);                                           \
-  udpctx->sock = -1;
+    CLOSE_SOCKET(udpctx->sock.fd);                                        \
+  udpctx->sock.fd = -1;                                                   \
+} G_STMT_END
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -187,10 +170,12 @@ GST_ELEMENT_DETAILS ("UDP packet receiver",
 #define UDP_DEFAULT_SKIP_FIRST_BYTES	0
 #define UDP_DEFAULT_CLOSEFD            TRUE
 #define UDP_DEFAULT_SOCK                -1
+#define UDP_DEFAULT_AUTO_MULTICAST     TRUE
 
 enum
 {
   PROP_0,
+
   PROP_PORT,
   PROP_MULTICAST_GROUP,
   PROP_URI,
@@ -200,17 +185,26 @@ enum
   PROP_TIMEOUT,
   PROP_SKIP_FIRST_BYTES,
   PROP_CLOSEFD,
-  PROP_SOCK
+  PROP_SOCK,
+  PROP_AUTO_MULTICAST,
+
+  PROP_LAST
 };
 
 static void gst_udpsrc_uri_handler_init (gpointer g_iface, gpointer iface_data);
 
 static GstCaps *gst_udpsrc_getcaps (GstBaseSrc * src);
+
 static GstFlowReturn gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf);
+
 static gboolean gst_udpsrc_start (GstBaseSrc * bsrc);
+
 static gboolean gst_udpsrc_stop (GstBaseSrc * bsrc);
+
 static gboolean gst_udpsrc_unlock (GstBaseSrc * bsrc);
+
 static gboolean gst_udpsrc_unlock_stop (GstBaseSrc * bsrc);
+
 static void gst_udpsrc_finalize (GObject * object);
 
 static void gst_udpsrc_set_property (GObject * object, guint prop_id,
@@ -250,7 +244,9 @@ static void
 gst_udpsrc_class_init (GstUDPSrcClass * klass)
 {
   GObjectClass *gobject_class;
+
   GstBaseSrcClass *gstbasesrc_class;
+
   GstPushSrcClass *gstpushsrc_class;
 
   gobject_class = (GObjectClass *) klass;
@@ -300,6 +296,10 @@ gst_udpsrc_class_init (GstUDPSrcClass * klass)
       g_param_spec_int ("sock", "Socket Handle",
           "Socket currently in use for UDP reception. (-1 = no socket)",
           -1, G_MAXINT, UDP_DEFAULT_SOCK, G_PARAM_READABLE));
+  g_object_class_install_property (gobject_class, PROP_AUTO_MULTICAST,
+      g_param_spec_boolean ("auto-multicast", "Auto Multicast",
+          "Automatically join/leave multicast groups",
+          UDP_DEFAULT_AUTO_MULTICAST, G_PARAM_READWRITE));
 
   gstbasesrc_class->start = gst_udpsrc_start;
   gstbasesrc_class->stop = gst_udpsrc_stop;
@@ -315,7 +315,6 @@ gst_udpsrc_init (GstUDPSrc * udpsrc, GstUDPSrcClass * g_class)
 {
   WSA_STARTUP (udpsrc);
 
-  gst_base_src_set_live (GST_BASE_SRC (udpsrc), TRUE);
   udpsrc->port = UDP_DEFAULT_PORT;
   udpsrc->sockfd = UDP_DEFAULT_SOCKFD;
   udpsrc->multi_group = g_strdup (UDP_DEFAULT_MULTICAST_GROUP);
@@ -325,11 +324,15 @@ gst_udpsrc_init (GstUDPSrc * udpsrc, GstUDPSrcClass * g_class)
   udpsrc->skip_first_bytes = UDP_DEFAULT_SKIP_FIRST_BYTES;
   udpsrc->closefd = UDP_DEFAULT_CLOSEFD;
   udpsrc->externalfd = (udpsrc->sockfd != -1);
+  udpsrc->auto_multicast = UDP_DEFAULT_AUTO_MULTICAST;
+  udpsrc->sock.fd = UDP_DEFAULT_SOCK;
 
-  udpsrc->sock = UDP_DEFAULT_SOCK;
-  udpsrc->control_sock[0] = -1;
-  udpsrc->control_sock[1] = -1;
+  /* configure basesrc to be a live source */
+  gst_base_src_set_live (GST_BASE_SRC (udpsrc), TRUE);
+  /* make basesrc output a segment in time */
   gst_base_src_set_format (GST_BASE_SRC (udpsrc), GST_FORMAT_TIME);
+  /* make basesrc set timestamps on outgoing buffers based on the running_time
+   * when they were captured */
   gst_base_src_set_do_timestamp (GST_BASE_SRC (udpsrc), TRUE);
 }
 
@@ -344,6 +347,8 @@ gst_udpsrc_finalize (GObject * object)
     gst_caps_unref (udpsrc->caps);
   g_free (udpsrc->multi_group);
   g_free (udpsrc->uri);
+
+  WSA_CLEANUP (src);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -365,12 +370,15 @@ static GstFlowReturn
 gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
   GstUDPSrc *udpsrc;
+
   GstNetBuffer *outbuf;
-  struct sockaddr_in tmpaddr;
+
+  struct sockaddr_storage tmpaddr;
+
   socklen_t len;
-  fd_set read_fds;
-  guint max_sock;
+
   guint8 *pktdata;
+
   gint pktsize;
 
 #ifdef G_OS_UNIX
@@ -378,57 +386,41 @@ gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf)
 #elif defined G_OS_WIN32
   gulong readsize;
 #endif
+  GstClockTime timeout;
+
   gint ret;
+
   gboolean try_again;
 
-  udpsrc = GST_UDPSRC (psrc);
+  udpsrc = GST_UDPSRC_CAST (psrc);
 
 retry:
   /* quick check, avoid going in select when we already have data */
   readsize = 0;
-  if ((ret = IOCTL_SOCKET (udpsrc->sock, FIONREAD, &readsize)) < 0)
+  if (G_UNLIKELY ((ret =
+              IOCTL_SOCKET (udpsrc->sock.fd, FIONREAD, &readsize)) < 0))
     goto ioctl_failed;
 
   if (readsize > 0)
     goto no_select;
 
+  if (udpsrc->timeout > 0) {
+    timeout = udpsrc->timeout * GST_USECOND;
+  } else {
+    timeout = GST_CLOCK_TIME_NONE;
+  }
+
   do {
-    gboolean stop;
-    struct timeval timeval, *timeout;
-
-    FD_ZERO (&read_fds);
-    FD_SET (udpsrc->sock, &read_fds);
-#ifndef G_OS_WIN32
-    FD_SET (READ_SOCKET (udpsrc), &read_fds);
-#endif
-    max_sock = MAX (udpsrc->sock, READ_SOCKET (udpsrc));
-
     try_again = FALSE;
-    stop = FALSE;
 
     GST_LOG_OBJECT (udpsrc, "doing select, timeout %" G_GUINT64_FORMAT,
         udpsrc->timeout);
 
-    if (udpsrc->timeout > 0) {
-      timeval.tv_sec = udpsrc->timeout / 1000000;
-      timeval.tv_usec = udpsrc->timeout % 1000000;
-      timeout = &timeval;
-    } else {
-      timeout = NULL;
-    }
-
-#ifdef G_OS_WIN32
-    if (((max_sock + 1) != READ_SOCKET (udpsrc)) ||
-        ((max_sock + 1) != WRITE_SOCKET (udpsrc))) {
-      ret = select (max_sock + 1, &read_fds, NULL, NULL, timeout);
-    } else {
-      ret = 1;
-    }
-#else
-    ret = select (max_sock + 1, &read_fds, NULL, NULL, timeout);
-#endif
+    ret = gst_poll_wait (udpsrc->fdset, timeout);
     GST_LOG_OBJECT (udpsrc, "select returned %d", ret);
-    if (ret < 0) {
+    if (G_UNLIKELY (ret < 0)) {
+      if (errno == EBUSY)
+        goto stopped;
 #ifdef G_OS_WIN32
       if (WSAGetLastError () != WSAEINTR)
         goto select_error;
@@ -437,31 +429,29 @@ retry:
         goto select_error;
 #endif
       try_again = TRUE;
-    } else if (ret == 0) {
+    } else if (G_UNLIKELY (ret == 0)) {
       /* timeout, post element message */
       gst_element_post_message (GST_ELEMENT_CAST (udpsrc),
           gst_message_new_element (GST_OBJECT_CAST (udpsrc),
               gst_structure_new ("GstUDPSrcTimeout",
                   "timeout", G_TYPE_UINT64, udpsrc->timeout, NULL)));
       try_again = TRUE;
-    } else {
-      if (FD_ISSET (READ_SOCKET (udpsrc), &read_fds))
-        goto stopped;
     }
-  } while (try_again);
+  } while (G_UNLIKELY (try_again));
 
   /* ask how much is available for reading on the socket, this should be exactly
    * one UDP packet. We will check the return value, though, because in some
    * case it can return 0 and we don't want a 0 sized buffer. */
   readsize = 0;
-  if ((ret = IOCTL_SOCKET (udpsrc->sock, FIONREAD, &readsize)) < 0)
+  if (G_UNLIKELY ((ret =
+              IOCTL_SOCKET (udpsrc->sock.fd, FIONREAD, &readsize)) < 0))
     goto ioctl_failed;
 
   /* if we get here and there is nothing to read from the socket, the select got
-   * woken up by activity on the socket but it was not a read. We how someone
+   * woken up by activity on the socket but it was not a read. We know someone
    * will also do something with the socket so that we don't go into an infinite
    * loop in the select(). */
-  if (!readsize)
+  if (G_UNLIKELY (!readsize))
     goto retry;
 
 no_select:
@@ -472,11 +462,24 @@ no_select:
 
   while (TRUE) {
     len = sizeof (struct sockaddr);
-    ret = recvfrom (udpsrc->sock, pktdata, pktsize,
+    ret = recvfrom (udpsrc->sock.fd, pktdata, pktsize,
         0, (struct sockaddr *) &tmpaddr, &len);
-    if (ret < 0) {
+    if (G_UNLIKELY (ret < 0)) {
+#ifdef G_OS_WIN32
+      /* WSAECONNRESET for a UDP socket means that a packet sent with udpsink
+       * generated a "port unreachable" ICMP response. We ignore that and try
+       * again. */
+      if (WSAGetLastError () == WSAECONNRESET) {
+        g_free (pktdata);
+        pktdata = NULL;
+        goto retry;
+      }
+      if (WSAGetLastError () != WSAEINTR)
+        goto receive_error;
+#else
       if (errno != EAGAIN && errno != EINTR)
         goto receive_error;
+#endif
     } else
       break;
   }
@@ -486,7 +489,7 @@ no_select:
   GST_BUFFER_MALLOCDATA (outbuf) = pktdata;
 
   /* patch pktdata and len when stripping off the headers */
-  if (udpsrc->skip_first_bytes != 0) {
+  if (G_UNLIKELY (udpsrc->skip_first_bytes != 0)) {
     if (G_UNLIKELY (readsize <= udpsrc->skip_first_bytes))
       goto skip_error;
 
@@ -496,11 +499,32 @@ no_select:
   GST_BUFFER_DATA (outbuf) = pktdata;
   GST_BUFFER_SIZE (outbuf) = ret;
 
-  gst_netaddress_set_ip4_address (&outbuf->from, tmpaddr.sin_addr.s_addr,
-      tmpaddr.sin_port);
+  switch (tmpaddr.ss_family) {
+    case AF_INET:
+    {
+      gst_netaddress_set_ip4_address (&outbuf->from,
+          ((struct sockaddr_in *) &tmpaddr)->sin_addr.s_addr,
+          ((struct sockaddr_in *) &tmpaddr)->sin_port);
+    }
+      break;
+    case AF_INET6:
+    {
+      guint8 ip6[16];
 
-  gst_buffer_set_caps (GST_BUFFER_CAST (outbuf), udpsrc->caps);
-
+      memcpy (ip6, &((struct sockaddr_in6 *) &tmpaddr)->sin6_addr,
+          sizeof (ip6));
+      gst_netaddress_set_ip6_address (&outbuf->from, ip6,
+          ((struct sockaddr_in *) &tmpaddr)->sin_port);
+    }
+      break;
+    default:
+#ifdef G_OS_WIN32
+      WSASetLastError (WSAEAFNOSUPPORT);
+#else
+      errno = EAFNOSUPPORT;
+#endif
+      goto receive_error;
+  }
   GST_LOG_OBJECT (udpsrc, "read %d bytes", (int) readsize);
 
   *buf = GST_BUFFER_CAST (outbuf);
@@ -528,8 +552,13 @@ ioctl_failed:
 receive_error:
   {
     g_free (pktdata);
+#ifdef G_OS_WIN32
+    GST_ELEMENT_ERROR (udpsrc, RESOURCE, READ, (NULL),
+        ("receive error %d (WSA error: %d)", ret, WSAGetLastError ()));
+#else
     GST_ELEMENT_ERROR (udpsrc, RESOURCE, READ, (NULL),
         ("receive error %d: %s (%d)", ret, g_strerror (errno), errno));
+#endif
     return GST_FLOW_ERROR;
   }
 skip_error:
@@ -555,7 +584,9 @@ static gboolean
 gst_udpsrc_set_uri (GstUDPSrc * src, const gchar * uri)
 {
   gchar *protocol;
+
   gchar *location;
+
   gchar *colptr;
 
   protocol = gst_uri_get_protocol (uri);
@@ -566,7 +597,7 @@ gst_udpsrc_set_uri (GstUDPSrc * src, const gchar * uri)
   location = gst_uri_get_location (uri);
   if (!location)
     return FALSE;
-  colptr = strstr (location, ":");
+  colptr = strrchr (location, ':');
   if (colptr != NULL) {
     g_free (src->multi_group);
     src->multi_group = g_strndup (location, colptr - location);
@@ -621,7 +652,9 @@ gst_udpsrc_set_property (GObject * object, guint prop_id, const GValue * value,
     case PROP_CAPS:
     {
       const GstCaps *new_caps_val = gst_value_get_caps (value);
+
       GstCaps *new_caps;
+
       GstCaps *old_caps;
 
       if (new_caps_val == NULL) {
@@ -649,6 +682,9 @@ gst_udpsrc_set_property (GObject * object, guint prop_id, const GValue * value,
       break;
     case PROP_CLOSEFD:
       udpsrc->closefd = g_value_get_boolean (value);
+      break;
+    case PROP_AUTO_MULTICAST:
+      udpsrc->auto_multicast = g_value_get_boolean (value);
       break;
     default:
       break;
@@ -690,7 +726,10 @@ gst_udpsrc_get_property (GObject * object, guint prop_id, GValue * value,
       g_value_set_boolean (value, udpsrc->closefd);
       break;
     case PROP_SOCK:
-      g_value_set_int (value, udpsrc->sock);
+      g_value_set_int (value, udpsrc->sock.fd);
+      break;
+    case PROP_AUTO_MULTICAST:
+      g_value_set_boolean (value, udpsrc->auto_multicast);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -703,79 +742,62 @@ static gboolean
 gst_udpsrc_start (GstBaseSrc * bsrc)
 {
   guint bc_val;
+
   gint reuse;
-  struct sockaddr_in my_addr;
-  guint len;
+
   int port;
+
   GstUDPSrc *src;
+
   gint ret;
+
   int rcvsize;
+
+  guint len;
 
   src = GST_UDPSRC (bsrc);
 
-#ifdef G_OS_WIN32
-  GST_DEBUG_OBJECT (src, "creating pipe");
-
-  /* This should work on UNIX too. PF_UNIX sockets replaced with pipe */
-  /* pipe( CONTROL_SOCKETS(src), 4096, _O_BINARY ) */
-  if ((ret = _pipe (CONTROL_SOCKETS (src), 4096, _O_BINARY)) < 0)
-    goto no_socket_pair;
-#else
-  GST_DEBUG_OBJECT (src, "creating socket pair");
-  if ((ret = socketpair (PF_UNIX, SOCK_STREAM, 0, CONTROL_SOCKETS (src))) < 0)
-    goto no_socket_pair;
-
-  fcntl (READ_SOCKET (src), F_SETFL, O_NONBLOCK);
-  fcntl (WRITE_SOCKET (src), F_SETFL, O_NONBLOCK);
-#endif
-
-  if (!inet_aton (src->multi_group, &(src->multi_addr.imr_multiaddr)))
-    src->multi_addr.imr_multiaddr.s_addr = 0;
-
   if (src->sockfd == -1) {
     /* need to allocate a socket */
-    if ((ret = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+    GST_DEBUG_OBJECT (src, "allocating socket for %s:%d", src->multi_group,
+        src->port);
+    if ((ret =
+            gst_udp_get_addr (src->multi_group, src->port, &src->myaddr)) < 0)
+      goto getaddrinfo_error;
+
+    if ((ret = socket (src->myaddr.ss_family, SOCK_DGRAM, IPPROTO_UDP)) < 0)
       goto no_socket;
 
-    src->sock = ret;
+    src->sock.fd = ret;
     src->externalfd = FALSE;
 
     reuse = 1;
     if ((ret =
-            setsockopt (src->sock, SOL_SOCKET, SO_REUSEADDR, &reuse,
+            setsockopt (src->sock.fd, SOL_SOCKET, SO_REUSEADDR, &reuse,
                 sizeof (reuse))) < 0)
       goto setsockopt_error;
 
-    memset (&src->myaddr, 0, sizeof (src->myaddr));
-    src->myaddr.sin_family = AF_INET;   /* host byte order */
-    src->myaddr.sin_port = htons (src->port);   /* short, network byte order */
-
-    if (src->multi_addr.imr_multiaddr.s_addr)
-      src->myaddr.sin_addr.s_addr = src->multi_addr.imr_multiaddr.s_addr;
-    else
-      src->myaddr.sin_addr.s_addr = INADDR_ANY;
-
     GST_DEBUG_OBJECT (src, "binding on port %d", src->port);
-    if ((ret = bind (src->sock, (struct sockaddr *) &src->myaddr,
+    if ((ret = bind (src->sock.fd, (struct sockaddr *) &src->myaddr,
                 sizeof (src->myaddr))) < 0)
       goto bind_error;
+
+    len = sizeof (src->myaddr);
+    if ((ret = getsockname (src->sock.fd, (struct sockaddr *) &src->myaddr,
+                &len)) < 0)
+      goto getsockname_error;
   } else {
-    /* we use the configured socket */
-    src->sock = src->sockfd;
+    GST_DEBUG_OBJECT (src, "using provided socket %d", src->sockfd);
+    /* we use the configured socket, try to get some info about it */
+    len = sizeof (src->myaddr);
+    if ((ret =
+            getsockname (src->sockfd, (struct sockaddr *) &src->myaddr,
+                &len)) < 0)
+      goto getsockname_error;
+
+    src->sock.fd = src->sockfd;
     src->externalfd = TRUE;
   }
-
-  if (src->multi_addr.imr_multiaddr.s_addr) {
-    src->multi_addr.imr_interface.s_addr = INADDR_ANY;
-    if ((ret =
-            setsockopt (src->sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                &src->multi_addr, sizeof (src->multi_addr))) < 0)
-      goto membership;
-  }
-
-  len = sizeof (my_addr);
-  if ((ret = getsockname (src->sock, (struct sockaddr *) &my_addr, &len)) < 0)
-    goto getsockname_error;
 
   len = sizeof (rcvsize);
   if (src->buffer_size != 0) {
@@ -785,42 +807,64 @@ gst_udpsrc_start (GstBaseSrc * bsrc)
     /* set buffer size, Note that on Linux this is typically limited to a
      * maximum of around 100K. Also a minimum of 128 bytes is required on
      * Linux. */
-    ret = setsockopt (src->sock, SOL_SOCKET, SO_RCVBUF, (void *) &rcvsize, len);
-    if (ret != 0)
-      goto udpbuffer_error;
+    ret =
+        setsockopt (src->sock.fd, SOL_SOCKET, SO_RCVBUF, (void *) &rcvsize,
+        len);
+    if (ret != 0) {
+      GST_ELEMENT_WARNING (src, RESOURCE, SETTINGS, (NULL),
+          ("Could not create a buffer of requested %d bytes, %d: %s (%d)",
+              rcvsize, ret, g_strerror (errno), errno));
+    }
   }
 
   /* read the value of the receive buffer. Note that on linux this returns 2x the
    * value we set because the kernel allocates extra memory for metadata.
    * The default on Linux is about 100K (which is about 50K without metadata) */
-  ret = getsockopt (src->sock, SOL_SOCKET, SO_RCVBUF, (void *) &rcvsize, &len);
+  ret =
+      getsockopt (src->sock.fd, SOL_SOCKET, SO_RCVBUF, (void *) &rcvsize, &len);
   if (ret == 0)
     GST_DEBUG_OBJECT (src, "have udp buffer of %d bytes", rcvsize);
   else
     GST_DEBUG_OBJECT (src, "could not get udp buffer size");
 
   bc_val = 1;
-  if ((ret = setsockopt (src->sock, SOL_SOCKET, SO_BROADCAST, &bc_val,
-              sizeof (bc_val))) < 0)
-    goto no_broadcast;
+  if ((ret = setsockopt (src->sock.fd, SOL_SOCKET, SO_BROADCAST, &bc_val,
+              sizeof (bc_val))) < 0) {
+    GST_ELEMENT_WARNING (src, RESOURCE, SETTINGS, (NULL),
+        ("could not configure socket for broadcast %d: %s (%d)", ret,
+            g_strerror (errno), errno));
+  }
 
-  port = ntohs (my_addr.sin_port);
+  if (src->auto_multicast && gst_udp_is_multicast (&src->myaddr)) {
+    GST_DEBUG_OBJECT (src, "joining multicast group %s", src->multi_group);
+    ret = gst_udp_join_group (src->sock.fd, &src->myaddr);
+    if (ret < 0)
+      goto membership;
+  }
+
+  /* NOTE: sockaddr_in.sin_port works for ipv4 and ipv6 because sin_port
+   * follows ss_family on both */
+  port = g_ntohs (((struct sockaddr_in *) &src->myaddr)->sin_port);
   GST_DEBUG_OBJECT (src, "bound, on port %d", port);
   if (port != src->port) {
     src->port = port;
-    GST_DEBUG_OBJECT (src, "notifying %d", port);
+    GST_DEBUG_OBJECT (src, "notifying port %d", port);
     g_object_notify (G_OBJECT (src), "port");
   }
 
-  src->myaddr.sin_port = htons (src->port + 1);
+  if ((src->fdset = gst_poll_new (TRUE)) == NULL)
+    goto no_fdset;
+
+  gst_poll_add_fd (src->fdset, &src->sock);
+  gst_poll_fd_ctl_read (src->fdset, &src->sock, TRUE);
 
   return TRUE;
 
   /* ERRORS */
-no_socket_pair:
+getaddrinfo_error:
   {
-    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ_WRITE, (NULL),
-        ("no socket pair %d: %s (%d)", ret, g_strerror (errno), errno));
+    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
+        ("getaddrinfo failed %d: %s (%d)", ret, g_strerror (errno), errno));
     return FALSE;
   }
 no_socket:
@@ -857,20 +901,12 @@ getsockname_error:
         ("getsockname failed %d: %s (%d)", ret, g_strerror (errno), errno));
     return FALSE;
   }
-udpbuffer_error:
+no_fdset:
   {
     CLOSE_IF_REQUESTED (src);
-    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
-        ("Could not create a buffer of the size requested, %d: %s (%d)", ret,
-            g_strerror (errno), errno));
-    return FALSE;
-  }
-no_broadcast:
-  {
-    CLOSE_IF_REQUESTED (src);
-    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
-        ("could not configure socket for broadcast %d: %s (%d)", ret,
-            g_strerror (errno), errno));
+    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ_WRITE, (NULL),
+        ("could not create an fdset %d: %s (%d)", ret, g_strerror (errno),
+            errno));
     return FALSE;
   }
 }
@@ -879,13 +915,11 @@ static gboolean
 gst_udpsrc_unlock (GstBaseSrc * bsrc)
 {
   GstUDPSrc *src;
-  gint res;
 
   src = GST_UDPSRC (bsrc);
 
-  GST_LOG_OBJECT (src, "sending stop command");
-  SEND_COMMAND (src, CONTROL_STOP, res);
-  GST_LOG_OBJECT (src, "sent stop command %d", res);
+  GST_LOG_OBJECT (src, "Flushing");
+  gst_poll_set_flushing (src->fdset, TRUE);
 
   return TRUE;
 }
@@ -897,21 +931,8 @@ gst_udpsrc_unlock_stop (GstBaseSrc * bsrc)
 
   src = GST_UDPSRC (bsrc);
 
-  GST_LOG_OBJECT (src, "clearing unlock command queue");
-
-  while (TRUE) {
-    gchar command;
-    int res;
-
-    GST_LOG_OBJECT (src, "reading command");
-
-    READ_COMMAND (src, command, res);
-    if (res <= 0) {
-      GST_LOG_OBJECT (src, "no more commands");
-      /* no more commands */
-      break;
-    }
-  }
+  GST_LOG_OBJECT (src, "No longer flushing");
+  gst_poll_set_flushing (src->fdset, FALSE);
 
   return TRUE;
 }
@@ -925,21 +946,18 @@ gst_udpsrc_stop (GstBaseSrc * bsrc)
 
   GST_DEBUG ("stopping, closing sockets");
 
-  if (src->sock != -1) {
+  if (src->sock.fd >= 0) {
+    if (src->auto_multicast && gst_udp_is_multicast (&src->myaddr)) {
+      GST_DEBUG_OBJECT (src, "leaving multicast group %s", src->multi_group);
+      gst_udp_leave_group (src->sock.fd, &src->myaddr);
+    }
     CLOSE_IF_REQUESTED (src);
   }
 
-  /* pipes on WIN32 else sockets */
-  if (src->control_sock[0] != -1) {
-    close (src->control_sock[0]);
-    src->control_sock[0] = -1;
+  if (src->fdset) {
+    gst_poll_free (src->fdset);
+    src->fdset = NULL;
   }
-  if (src->control_sock[1] != -1) {
-    close (src->control_sock[1]);
-    src->control_sock[1] = -1;
-  }
-
-  WSA_CLEANUP (src);
 
   return TRUE;
 }
@@ -951,6 +969,7 @@ gst_udpsrc_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
+
 static gchar **
 gst_udpsrc_uri_get_protocols (void)
 {
@@ -971,6 +990,7 @@ static gboolean
 gst_udpsrc_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
   gboolean ret;
+
   GstUDPSrc *src = GST_UDPSRC (handler);
 
   ret = gst_udpsrc_set_uri (src, uri);
