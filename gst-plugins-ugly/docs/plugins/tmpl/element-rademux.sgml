@@ -25,29 +25,4 @@ Demultiplex a RealAudio file
 
 </para>
 
-@element: 
-@sinkpad: 
-@srcpad: 
-@adapter: 
-@state: 
-@ra_version: 
-@data_offset: 
-@packet_size: 
-@leaf_size: 
-@height: 
-@flavour: 
-@sample_rate: 
-@sample_width: 
-@channels: 
-@fourcc: 
-@segment_running: 
-@need_newsegment: 
-@pending_tags: 
-@byterate_num: 
-@byterate_denom: 
-@duration: 
-@upstream_size: 
-@offset: 
-@segment: 
-@seekable: 
 

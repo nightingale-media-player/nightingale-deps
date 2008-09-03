@@ -1,0 +1,118 @@
+#!/bin/sh
+# Shell script to download the latest translations for a given GStreamer
+# package from translationproject.org
+
+
+# DOMAINS based on http://translationproject.org/extra/matrix.html
+# We need to check all domains, not only po/LINGUAS, since there might be
+# new translations
+DOMAINS=\
+"af am ar az be bg pt_BR bs ca zh_CN cs cy da de el eo es et eu fa fi fr "\
+"ga en_GB gl gu he hi zh_HK hr hu id is it ja ko ku ky lg lt lv mk mn ms "\
+"mt nb ne nl nn or pa pl pt rm ro ru rw sk sl sq sr sv ta tq th tk "\
+"tr zh_TW uk ven vi wa xh zu"
+
+# for testing/debugging:
+#DOMAINS="es fr hu sv pl xx"
+
+# check for 'diff' program
+diff --version 2>/dev/null >/dev/null
+if [ ! $? ]; then
+  echo "==== You must have the 'diff' program installed for this script ===="
+  exit 1
+fi
+
+# check for 'wget' program
+wget --version 2>/dev/null >/dev/null
+if [ ! $? ]; then
+  echo "==== You must have the 'wget' program installed for this script ===="
+  exit 1
+fi
+
+# make sure we're in the top-level directory
+if [ ! -d ./po ]; then
+  echo "==== No ./po directory in the current working directory ===="
+  exit 1
+fi
+
+# make sure a package argument was passed to us
+if [ -z "$1" ]; then
+  echo "Usage: $0 PACKAGE, e.g. $0 gst-plugins-good"
+  exit 1
+fi
+
+if test "$1" != "gstreamer" -a \
+        "$1" != "gst-plugins-base" -a \
+        "$1" != "gst-plugins-good" -a \
+        "$1" != "gst-plugins-ugly" -a \
+        "$1" != "gst-plugins-bad"; then
+  echo "Unexpected package '$1' ?!"
+  exit 1
+fi
+
+PACKAGE="$1"
+
+DOMAINS_TO_ADD=""
+DOMAINS_UPDATED=""
+
+echo "Downloading latest translation files for package $PACKAGE ..."
+echo
+
+for d in $DOMAINS
+do
+  PACKAGE_PO_URL_BASE="http://translationproject.org/latest/$PACKAGE"
+  PO_URL="$PACKAGE_PO_URL_BASE/$d.po"
+  PO_FILENAME="$PACKAGE.$d.po"
+  if wget -q -nc -O $PO_FILENAME $PO_URL; then
+    if [ -f "po/$d.po" ]; then
+      # ./po/foo.po exists, so let's check if ours matches the latest from the
+      # translation project website 
+      if diff $PO_FILENAME "po/$d.po" >/dev/null; then
+        echo "$d.po: up-to-date"
+        rm -f $PO_FILENAME
+      else
+        mv $PO_FILENAME "po/$d.po"
+        echo "$d.po: updated"
+        DOMAINS_UPDATED="$DOMAINS_UPDATED $d"
+      fi
+    else
+      # ./po/foo.po doesn't exist, but foo.po exists on the translation project
+      # website, so it's probably a new translation
+      echo "$d.po: new language"
+      mv $PO_FILENAME "po/$d.po"
+      DOMAINS_UPDATED="$DOMAINS_UPDATED $d"
+      DOMAINS_TO_ADD="$DOMAINS_TO_ADD $d"
+    fi
+  else
+    rm -f $PO_FILENAME
+    echo "$d.po: failure (does probably not exist)"
+  fi
+done
+
+if [ -n "$DOMAINS_UPDATED" ]; then
+  echo "===================================================================="
+  echo
+  echo "Language domains updated    :$DOMAINS_UPDATED"
+  echo "Language domains to cvs add :$DOMAINS_TO_ADD"
+  echo
+  echo "Source: http://translationproject.org/latest/$PACKAGE/"
+  echo
+  if [ -n "$DOMAINS_TO_ADD" ]; then
+    CMD_STRING="cvs add"
+    for d in $DOMAINS_TO_ADD; do
+      CMD_STRING="$CMD_STRING po/$d.po"
+    done
+    echo "Please run"
+    echo
+    echo "  $CMD_STRING"
+    echo
+    echo "now and add the following domains to the po/LINGUAS file:"
+    echo
+    echo "  $DOMAINS_TO_ADD"
+    echo
+    echo
+  fi
+  echo "===================================================================="
+fi
+
+

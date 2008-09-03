@@ -21,11 +21,7 @@
 /**
  * SECTION:element-rtspwms
  *
- * <refsect2>
- * <para>
  * A WMS RTSP extension
- * </para>
- * </refsect2>
  *
  * Last reviewed on 2007-07-25 (0.10.14)
  */
@@ -141,10 +137,11 @@ no_config:
 static gboolean
 gst_rtsp_wms_configure_stream (GstRTSPExtension * ext, GstCaps * caps)
 {
-  GstRTSPWMS *ctx = (GstRTSPWMS *) ext;
+  GstRTSPWMS *ctx;
   GstStructure *s;
   const gchar *encoding;
 
+  ctx = (GstRTSPWMS *) ext;
   s = gst_caps_get_structure (caps, 0);
   encoding = gst_structure_get_string (s, "encoding-name");
 

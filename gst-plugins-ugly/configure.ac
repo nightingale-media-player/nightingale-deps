@@ -5,7 +5,7 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, cvs and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for cvs/prerelease
-AC_INIT(GStreamer Ugly Plug-ins, 0.10.7,
+AC_INIT(GStreamer Ugly Plug-ins, 0.10.9,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-ugly)
 
@@ -43,10 +43,11 @@ dnl the generated libtool script has no support for the listed tags.
 dnl So this needs to be fixed first if we want to use this
 dnl AS_LIBTOOL_TAGS([CXX])
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.14
+GST_REQ=0.10.20
 GSTPB_REQ=0.10.14
 
 dnl *** autotools stuff ****
@@ -76,32 +77,11 @@ AG_GST_ARG_WITH_PKG_CONFIG_PATH
 AG_GST_ARG_WITH_PACKAGE_NAME
 AG_GST_ARG_WITH_PACKAGE_ORIGIN
 
-dnl these are all the gst plug-ins, compilable without additional libs
-GST_PLUGINS_ALL="\
-	asfdemux \
-	dvdlpcmdec \
-	dvdsub \
-	iec958 \
-	mpegaudioparse \
-	mpegstream \
-	realmedia \
-	synaesthesia \
-	"
-
-AC_SUBST(GST_PLUGINS_ALL)
-
-GST_PLUGINS_SELECTED=""
 AG_GST_ARG_WITH_PLUGINS
 
 AG_GST_ARG_ENABLE_EXTERNAL
 
 AG_GST_ARG_ENABLE_EXPERIMENTAL
-
-if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
-  GST_PLUGINS_SELECTED=`echo $GST_PLUGINS_SELECTED | $SED -e s/synaesthesia//`
-fi
-
-AC_SUBST(GST_PLUGINS_SELECTED)
 
 dnl *** checks for platform ***
 
@@ -129,6 +109,9 @@ AM_PROG_CC_C_O
 
 AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
+
+dnl check if the compiler supports do while(0) macros
+AG_GST_CHECK_DOWHILE_MACROS
 
 dnl check for documentation tools
 GTK_DOC_CHECK([1.3])
@@ -163,21 +146,20 @@ AG_GST_CHECK_FUNCTION
 dnl *** checks for dependency libraries ***
 
 dnl GLib is required
-AG_GST_GLIB_CHECK([2.6])
+AG_GST_GLIB_CHECK([2.12])
 
 dnl liboil is required
 PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.8, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-if test "x$HAVE_LIBOIL" != "xyes"
-then
+if test "x$HAVE_LIBOIL" != "xyes"; then
   AC_ERROR([liboil-0.3.8 or later is required])
 fi
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)
-AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ])
-AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ])
+AG_GST_CHECK_GST($GST_MAJORMINOR, [$GST_REQ], yes)
+AG_GST_CHECK_GST_BASE($GST_MAJORMINOR, [$GST_REQ], yes)
 AG_GST_CHECK_GST_CHECK($GST_MAJORMINOR, [$GST_REQ], no)
-AG_GST_CHECK_GST_PLUGINS_BASE($GST_MAJORMINOR, [$GSTPB_REQ])
+AG_GST_CHECK_GST_PLUGINS_BASE($GST_MAJORMINOR, [$GSTPB_REQ], yes)
 AM_CONDITIONAL(HAVE_GST_CHECK, test "x$HAVE_GST_CHECK" = "xyes")
 
 dnl Check for documentation xrefs
@@ -201,11 +183,31 @@ AG_GST_SET_PLUGINDIR
 dnl define an ERROR_CFLAGS Makefile variable
 AG_GST_SET_ERROR_CFLAGS($GST_CVS)
 
+dnl define an ERROR_CXXFLAGS Makefile variable
+AG_GST_SET_ERROR_CXXFLAGS($GST_CVS)
+
 dnl define correct level for debugging messages
 AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
 
 dnl used in examples
 AG_GST_DEFAULT_ELEMENTS
+
+dnl *** plug-ins to include ***
+
+dnl these are all the gst plug-ins, compilable without additional libs
+AG_GST_CHECK_PLUGIN(asfdemux)
+AG_GST_CHECK_PLUGIN(dvdlpcmdec)
+AG_GST_CHECK_PLUGIN(dvdsub)
+AG_GST_CHECK_PLUGIN(iec958)
+AG_GST_CHECK_PLUGIN(mpegaudioparse)
+AG_GST_CHECK_PLUGIN(mpegstream)
+AG_GST_CHECK_PLUGIN(realmedia)
+AG_GST_CHECK_PLUGIN(synaesthesia)
+
+dnl disable experimental plug-ins
+if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
+  AG_GST_DISABLE_PLUGIN(synaesthesia)
+fi
 
 dnl *** ext plug-ins ***
 dnl keep this list sorted alphabetically !
@@ -230,6 +232,12 @@ AG_GST_CHECK_FEATURE(AMRNB, [AMR-NB], amrnb, [
 		      amrnb/interf_dec.h,
 		      AMRNB_LIBS="-lamrnb -lm"
 		      AC_SUBST(AMRNB_LIBS))
+])
+
+dnl *** cdio ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_CDIO, true)
+AG_GST_CHECK_FEATURE(CDIO, [cdio library], cdio, [
+  AG_GST_PKG_CHECK_MODULES(CDIO, libcdio >= 0.76)
 ])
 
 dnl *** dvdread ***
@@ -351,6 +359,7 @@ dnl but we still need to set the conditionals
 
 AM_CONDITIONAL(USE_A52DEC, false)
 AM_CONDITIONAL(USE_AMRNB, false)
+AM_CONDITIONAL(USE_CDIO, false)
 AM_CONDITIONAL(USE_DVDREAD, false)
 AM_CONDITIONAL(USE_DVDNAV, false)
 AM_CONDITIONAL(USE_LAME, false)
@@ -385,16 +394,21 @@ else
 fi
 AC_SUBST(DEPRECATED_CFLAGS)
 
-dnl every flag in GST_OPTION_CFLAGS can be overridden at make time
+dnl every flag in GST_OPTION_CFLAGS and GST_OPTION_CXXFLAGS can be overridden
+dnl at make time with e.g. make ERROR_CFLAGS=""
 GST_OPTION_CFLAGS="\$(ERROR_CFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
+GST_OPTION_CXXFLAGS="\$(ERROR_CXXFLAGS) \$(DEBUG_CFLAGS) \$(PROFILE_CFLAGS) \$(GCOV_CFLAGS) \$(OPT_CFLAGS) \$(DEPRECATED_CFLAGS)"
 AC_SUBST(GST_OPTION_CFLAGS)
+AC_SUBST(GST_OPTION_CXXFLAGS)
 
 dnl FIXME: do we want to rename to GST_ALL_* ?
 dnl prefer internal headers to already installed ones
 dnl also add builddir include for enumtypes and marshal
 dnl add GST_OPTION_CFLAGS, but overridable
 GST_CFLAGS="-I\$(top_srcdir)/gst-libs -I\$(top_builddir)/gst-libs $GST_CFLAGS \$(GST_OPTION_CFLAGS)"
+GST_CXXFLAGS="-I\$(top_srcdir)/gst-libs -I\$(top_builddir)/gst-libs $GST_CXXFLAGS \$(GST_OPTION_CXXFLAGS)"
 AC_SUBST(GST_CFLAGS)
+AC_SUBST(GST_CXXFLAGS)
 AC_SUBST(GST_LIBS)
 
 dnl LDFLAGS really should only contain flags, not libs - they get added before
@@ -425,6 +439,7 @@ gst/synaesthesia/Makefile
 ext/Makefile
 ext/a52dec/Makefile
 ext/amrnb/Makefile
+ext/cdio/Makefile
 ext/dvdnav/Makefile
 ext/dvdread/Makefile
 ext/lame/Makefile

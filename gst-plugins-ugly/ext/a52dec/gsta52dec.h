@@ -45,9 +45,11 @@ struct _GstA52Dec {
   /* pads */
   GstPad        *sinkpad,
                 *srcpad;
+  GstSegment     segment;
 
   gboolean       dvdmode;
   gboolean       sent_segment;
+  gboolean       discont;
 
   int            bit_rate;
   int            sample_rate;
@@ -63,6 +65,9 @@ struct _GstA52Dec {
 
   GstBuffer     *cache;
   GstClockTime   time;
+
+  /* reverse */
+  GList         *queued;
 };
 
 struct _GstA52DecClass {

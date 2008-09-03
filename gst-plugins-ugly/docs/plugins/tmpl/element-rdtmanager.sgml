@@ -25,8 +25,53 @@ Accepts raw RTP and RTCP packets and sends them forward
 
 </para>
 
-@element: 
-@latency: 
-@sessions: 
-@provided_clock: 
+
+<!-- ##### SIGNAL GstRDTManager::clear-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrdtmanager: the object which received the signal.
+
+<!-- ##### SIGNAL GstRDTManager::on-bye-ssrc ##### -->
+<para>
+
+</para>
+
+@gstrdtmanager: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstRDTManager::on-bye-timeout ##### -->
+<para>
+
+</para>
+
+@gstrdtmanager: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstRDTManager::on-timeout ##### -->
+<para>
+
+</para>
+
+@gstrdtmanager: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GstRDTManager::request-pt-map ##### -->
+<para>
+
+</para>
+
+@gstrdtmanager: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### ARG GstRDTManager:latency ##### -->
+<para>
+
+</para>
 

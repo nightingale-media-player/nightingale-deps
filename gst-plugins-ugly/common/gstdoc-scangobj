@@ -81,8 +81,7 @@ if ($PRINT_HELP) {
 
 $OUTPUT_DIR = $OUTPUT_DIR ? $OUTPUT_DIR : ".";
 
-# THOMAS: dynamic types; only use types file for headers
- $TYPES_FILE = $TYPES_FILE ? $TYPES_FILE : "$OUTPUT_DIR/$MODULE.types";
+$TYPES_FILE = $TYPES_FILE ? $TYPES_FILE : "$OUTPUT_DIR/$MODULE.types";
 
 open (TYPES, $TYPES_FILE) || die "Cannot open $TYPES_FILE: $!\n";
 open (OUTPUT, ">$MODULE-scan.c") || die "Cannot open $MODULE-scan.c: $!\n";
@@ -101,22 +100,27 @@ my $new_args_filename = "$OUTPUT_DIR/$MODULE.args.new";
 # write a C program to scan the types
 
 $includes = "";
-#@types = ();
+@types = ();
+@impl_types = ();
 
 for (<TYPES>) {
     if (/^#include/) {
 	$includes .= $_;
-#    } elsif (/^%/) {
-#	next;
-#    } elsif (/^\s*$/) {
-#	next;
-#    } else {
-#	chomp;
-#	push @types, $_;
+    } elsif (/^%/) {
+	next;
+    } elsif (/^\s*$/) {
+	next;
+    } elsif (/^type:(.*)$/) {
+	$t = $1;
+        chomp $t;
+	push @impl_types, $t;
+    } else {
+	chomp;
+	push @types, $_;
     }
 }
 
-#$ntypes = @types + 1;
+$ntypes = @types + @impl_types;
 
 print OUTPUT <<EOT;
 #include <string.h>
@@ -125,6 +129,7 @@ print OUTPUT <<EOT;
 #include <errno.h>
 
 $includes
+
 #ifdef GTK_IS_WIDGET_CLASS
 #include <gtk/gtkversion.h>
 #endif
@@ -137,6 +142,7 @@ get_object_types (void)
     GList *factories = NULL;
     GList *l;
     GstElementFactory *factory = NULL;
+    GType type;
 
     gint i = 0;
 
@@ -180,25 +186,56 @@ get_object_types (void)
     g_message ("number of element factories: %d", g_list_length (factories));
 
     /* allocate the object_types array to hold them */
-    object_types = g_new0 (GType, g_list_length (factories)+1);
+    object_types = g_new0 (GType, g_list_length (factories)+$ntypes+1);
 
     l = factories;
     i = 0;
 
     /* fill it */
     while (l) {
-      GType type;
       factory = GST_ELEMENT_FACTORY (l->data);
       type = gst_element_factory_get_element_type (factory);
-      g_message ("adding type %p for factory %s", (void *) type, gst_element_factory_get_longname (factory));
-      object_types[i] = type;
-      i++;
+      if (type != 0) {
+        g_message ("adding type %p for factory %s", (void *) type, gst_element_factory_get_longname (factory));
+        object_types[i++] = type;
+      } else {
+        g_message ("type info for factory %s not found",
+            gst_element_factory_get_longname (factory));
+      }
       l = g_list_next (l);
     }
-    object_types[i] = 0;
+
 EOT
 
+# get_type functions:
+for (@types) {
 print OUTPUT <<EOT;
+    type = $_ ();
+    if (type == 0) {
+      g_message ("$_ () didn't return a valid type");
+    }
+    else {
+      object_types[i++] = type;
+    }
+EOT
+}
+
+# Implicit types retrieved from GLib:
+for (@impl_types) {
+print OUTPUT <<EOT;
+    type = g_type_from_name ("$_");
+    if (type == 0) {
+      g_message ("Implicit type $_ not found");
+    }
+    else {
+      object_types[i++] = type;
+    }
+EOT
+}
+
+print OUTPUT <<EOT;
+
+    object_types[i] = 0;
 
     /* Need to make sure all the types are loaded in and initialize
      * their signals and properties.
@@ -890,7 +927,7 @@ output_hierarchy (FILE  *fp,
 
   for (i = 0; i < level; i++)
     fprintf (fp, "  ");
-  fprintf (fp, g_type_name (type));
+  fprintf (fp, "%s", g_type_name (type));
   fprintf (fp, "\\n");
 
   children = g_type_children (type, &n_children);
@@ -942,7 +979,7 @@ output_interfaces (FILE  *fp,
 
   if (n_interfaces > 0)
     {
-      fprintf (fp, g_type_name (type));
+      fprintf (fp, "%s", g_type_name (type));
       for (i=0; i < n_interfaces; i++)
           fprintf (fp, " %s", g_type_name (interfaces[i]));
       fprintf (fp, "\\n");
@@ -987,7 +1024,7 @@ output_prerequisites (FILE  *fp,
 
   if (n_prerequisites > 0)
     {
-      fprintf (fp, g_type_name (type));
+      fprintf (fp, "%s", g_type_name (type));
       for (i=0; i < n_prerequisites; i++)
           fprintf (fp, " %s", g_type_name (prerequisites[i]));
       fprintf (fp, "\\n");

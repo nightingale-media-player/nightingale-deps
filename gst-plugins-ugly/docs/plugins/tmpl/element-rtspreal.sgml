@@ -25,15 +25,4 @@ Extends RTSP so that it can handle RealMedia setup
 
 </para>
 
-@element: 
-@checksum: 
-@challenge2: 
-@isreal: 
-@n_streams: 
-@streams: 
-@max_bit_rate: 
-@avg_bit_rate: 
-@max_packet_size: 
-@avg_packet_size: 
-@duration: 
 

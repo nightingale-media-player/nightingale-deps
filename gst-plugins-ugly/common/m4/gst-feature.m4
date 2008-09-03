@@ -2,6 +2,7 @@ dnl Perform a check for a feature for GStreamer
 dnl Richard Boulton <richard-alsa@tartarus.org>
 dnl Thomas Vander Stichele <thomas@apestaart.org> added useful stuff
 dnl Last modification: 25/06/2001
+dnl
 dnl AG_GST_CHECK_FEATURE(FEATURE-NAME, FEATURE-DESCRIPTION,
 dnl                   DEPENDENT-PLUGINS, TEST-FOR-FEATURE,
 dnl                   DISABLE-BY-DEFAULT, ACTION-IF-USE, ACTION-IF-NOTUSE)
@@ -18,7 +19,7 @@ dnl whether the feature is to be used.
 dnl Thomas changed this, so that when USE_<FEATURE-NAME> was already set
 dnl to no, then it stays that way.
 dnl
-dnl The macro will call AM_CONDITIONAL(USE_<<FEATURE-NAME>, ...) to allow
+dnl The macro will call AM_CONDITIONAL(USE_<FEATURE-NAME>, ...) to allow
 dnl the feature to control what is built in Makefile.ams.  If you want
 dnl additional actions resulting from the test, you can add them with the
 dnl ACTION-IF-USE and ACTION-IF-NOTUSE parameters.
@@ -109,7 +110,7 @@ if test x$USE_[$1] = xyes; then
   if test "x$3" != "x"; then
     GST_PLUGINS_YES="\t[$3]\n$GST_PLUGINS_YES"
   fi
-  AC_DEFINE(HAVE_[$1], , [support for features: $3])
+  AC_DEFINE(HAVE_[$1], , [Define to enable $2]ifelse($3,,, [ (used by $3)]).)
 else
   ifelse([$3], , :, [AC_MSG_NOTICE(*** These plugins will not be built: [$3])])
   if test "x$3" != "x"; then
@@ -242,10 +243,7 @@ AC_DEFUN([AG_GST_PARSE_SUBSYSTEM_DISABLES],
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,TRACE)
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,ALLOC_TRACE)
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,REGISTRY)
-  AG_GST_PARSE_SUBSYSTEM_DISABLE($1,ENUMTYPES)
-  AG_GST_PARSE_SUBSYSTEM_DISABLE($1,INDEX)
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,PLUGIN)
-  AG_GST_PARSE_SUBSYSTEM_DISABLE($1,URI)
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,XML)
 ])
 
@@ -261,8 +259,8 @@ printf "\n"
 
 printf "configure: *** Plug-ins without external dependencies that will NOT be built:\n"
 ( for i in $GST_PLUGINS_ALL; do
-    case $GST_PLUGINS_SELECTED in
-      *$i*)
+    case " $GST_PLUGINS_SELECTED " in
+      *\ $i\ *)
 	;;
       *)
 	printf '\t'$i'\n'

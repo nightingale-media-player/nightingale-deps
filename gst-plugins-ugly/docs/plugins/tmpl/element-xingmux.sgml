@@ -25,7 +25,4 @@ Adds a Xing header to the beginning of a VBR MP3 file
 
 </para>
 
-@element: 
-@sinkpad: 
-@srcpad: 
 

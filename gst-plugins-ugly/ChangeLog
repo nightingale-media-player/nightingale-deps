@@ -1,3 +1,616 @@
+=== release 0.10.9 ===
+
+2008-08-26  Jan Schmidt <jan.schmidt@sun.com>
+
+	* configure.ac:
+	  releasing 0.10.9, "Back The Way It Was"
+
+2008-08-26  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/a52dec/gsta52dec.c:
+	Set up a default time segment for output when receiving
+	an incoming byte segment (as for raw AC3 files).
+	Fixes: #548194
+
+2008-08-12  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-ugly-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-ugly-plugins-sections.txt:
+	* docs/plugins/gst-plugins-ugly-plugins.args:
+	* docs/plugins/gst-plugins-ugly-plugins.hierarchy:
+	* docs/plugins/gst-plugins-ugly-plugins.interfaces:
+	* docs/plugins/inspect/plugin-a52dec.xml:
+	* docs/plugins/inspect/plugin-asf.xml:
+	* docs/plugins/inspect/plugin-cdio.xml:
+	* docs/plugins/inspect/plugin-dvdlpcmdec.xml:
+	* docs/plugins/inspect/plugin-dvdread.xml:
+	* docs/plugins/inspect/plugin-dvdsub.xml:
+	* docs/plugins/inspect/plugin-iec958.xml:
+	* docs/plugins/inspect/plugin-lame.xml:
+	* docs/plugins/inspect/plugin-mad.xml:
+	* docs/plugins/inspect/plugin-mpeg2dec.xml:
+	* docs/plugins/inspect/plugin-mpegaudioparse.xml:
+	* docs/plugins/inspect/plugin-mpegstream.xml:
+	* docs/plugins/inspect/plugin-realmedia.xml:
+	* docs/plugins/inspect/plugin-siddec.xml:
+	* ext/Makefile.am:
+
+	0.10.8.2 pre-release.
+
+	* po/LINGUAS:
+	* po/POTFILES.in:
+	* po/id.po:
+	Add new translation.
+
+2008-08-11  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/asfdemux/gstasfdemux.c:
+	  Properly aggregate flow returns for both push and pull mode, so we shut 
+	  down if all pads are unlinked. 
+	  Fixes #546859.
+
+2008-08-07  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	Patch by: Frederic Crozat <fcrozat@mandriva.org>
+
+	* ext/dvdread/dvdreadsrc.c: (plugin_init):
+	* ext/lame/gstlame.c: (plugin_init):
+	* gst/asfdemux/gstasf.c: (plugin_init):
+	Make sure gettext returns translations in UTF-8 encoding rather
+	than in the current locale encoding (#546822).
+
+2008-07-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event), (gst_mp3parse_emit_frame),
+	(mp3parse_total_time), (mp3parse_bytepos_to_time):
+	Don't recurse from mp3parse_bytepos_to_time() to mp3parse_total_time()
+	if we're called from there already. Otherwise we end up in a endless
+	recursion and crash with a stack overflow.
+
+	This can happen when a Xing or VBRI header with TOC exists but it
+	doesn't contain the total time. Fixes bug #545370.
+
+2008-07-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/lame/gstlame.c: (gst_lame_class_init),
+	(gst_lame_get_default_settings):
+	Use the default for the strict-iso property too.
+
+	Allow a bitrate setting of 0, which lets lame choose the default value
+	and which makes it possible to set the compression-ratio property.
+
+2008-07-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/lame/gstlame.c: (gst_lame_class_init), (gst_lame_init),
+	(gst_lame_chain), (gst_lame_get_default_settings), (plugin_init):
+	* ext/lame/gstlame.h:
+	Get the defaults settings of LAME in the plugin initialization
+	function and return FALSE here if something goes wrong. This removes
+	the hacky failing instance init function.
+
+	Use LAMEs default value for all settings instead of overwriting some
+	of them. Overwriting some of them gives unexpected results if one only
+	sets a preset. Fixes bug #498004.
+
+2008-07-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/lame/gstlame.c: (gst_lame_init):
+	Use LAME's default for the min/max/mean VBR bitrate. Setting our own
+	defaults will restrict the bitrate when using the presets in a bad way.
+	Fixes bug #498004.
+
+2008-07-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/lame/gstlame.c: (gst_lame_sink_setcaps):
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(mp3_type_frame_length_from_header), (mp3_caps_create),
+	(gst_mp3parse_chain):
+	Put the MPEG audio version into the caps as "mpegaudioversion".
+	This is different from "mpegversion".
+
+2008-07-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/lame/gstlame.c: (gst_lame_class_init), (gst_lame_init),
+	(gst_lame_set_property), (gst_lame_get_property), (gst_lame_setup):
+	* ext/lame/gstlame.h:
+	Fix build with lame >= 3.97. The padding type and cwlimit settings
+	are deprecated now and the function declarations are hidden in the
+	headers so deprecate the GObject properties for them and remove them
+	in 0.11. Fixes bug #544039.
+
+2008-07-13  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/mpeg2dec/gstmpeg2dec.c: (handle_sequence):
+	Don't allow width/height outside the spec (i.e. smaller than 16
+	and higher than 4096). Such files are corrupted ones and setting
+	caps that are not a subset of the template caps confuses playbin.
+	Fixes bug #542646.
+
+2008-07-11  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/sidplay/Makefile.am:
+	Fix the build.
+
+2008-07-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Don't include ERROR_CFLAGS in GST_CXXFLAGS as it might include
+	flags that are invalid for C++.
+
+2008-07-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Tal Shalif <tshalif at nargila dot org>
+
+	* ext/dvdnav/dvdnavsrc.c: (gst_dvd_nav_src_stop):
+	Prevent double free. Fixes bug #541697.
+
+2008-07-05  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/mpegstream/gstdvddemux.c: (gst_dvd_demux_base_init),
+	(gst_dvd_demux_get_audio_stream),
+	(gst_dvd_demux_get_subpicture_stream),
+	(gst_dvd_demux_parse_packhead), (gst_dvd_demux_reset):
+	* gst/mpegstream/gstmpegdemux.c: (gst_mpeg_demux_init),
+	(gst_mpeg_demux_process_event), (gst_mpeg_demux_init_stream),
+	(gst_mpeg_demux_parse_packhead), (gst_mpeg_demux_reset):
+	* gst/mpegstream/gstmpegdemux.h:
+	Resend tags event after a FLUSH (seek) to support prerolling
+	a partial pipeline.
+
+2008-07-03  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* configure.ac:
+	* gst/asfdemux/gstasfdemux.c: (gst_asf_demux_process_object):
+	  Use correct error code for encrypted streams.
+
+2008-07-02  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/mpegstream/gstmpegdemux.c: (gst_mpeg_demux_send_subbuffer),
+	(gst_mpeg_demux_sync_stream_to_time):
+	Bridge gaps in stream by NEWSEGMENT sending.  Fixes #540194.
+
+2008-06-27  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/dvdread/dvdreadsrc.c: (gst_dvd_read_src_read),
+	(gst_dvd_read_src_create), (gst_dvd_read_src_handle_seek_event):
+	Allow and implement non-flushing and/or segment seek
+	(mainly in TIME and chapter format).
+	* gst/mpegstream/gstdvddemux.c: (gst_dvd_demux_process_event),
+	(gst_dvd_demux_get_subpicture_stream),
+	(gst_dvd_demux_synchronise_pads),
+	(gst_dvd_demux_sync_stream_to_time):
+	* gst/mpegstream/gstmpegdemux.c: (gst_mpeg_demux_process_event),
+	(gst_mpeg_demux_send_subbuffer),
+	(gst_mpeg_demux_sync_stream_to_time),
+	(gst_mpeg_streams_reset_cur_ts):
+	* gst/mpegstream/gstmpegdemux.h:
+	* gst/mpegstream/gstmpegparse.c: (gst_mpeg_parse_process_event),
+	(gst_mpeg_parse_pad_added), (gst_mpeg_parse_handle_src_query):
+	Delegate a query to upstream if it can't be handled.
+	Make segment stop aware.
+	Fix (subtitle) stream synchronization.
+	Add some debug statements.
+
+2008-06-26  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c: (head_check):
+	Fix build on macosx.
+
+2008-06-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/plugins/gst-plugins-ugly-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-ugly-plugins-sections.txt:
+	* ext/a52dec/gsta52dec.c:
+	* ext/amrnb/amrnbdec.c:
+	* ext/amrnb/amrnbenc.c:
+	* ext/amrnb/amrnbparse.c:
+	* ext/lame/gstlame.c:
+	* ext/mad/gstmad.c:
+	* ext/sidplay/gstsiddec.cc:
+	* gst/asfdemux/gstrtspwms.c:
+	* gst/mpegaudioparse/gstxingmux.c:
+	* gst/realmedia/rademux.c:
+	* gst/realmedia/rdtmanager.c:
+	* gst/realmedia/rtspreal.c:
+	* gst/synaesthesia/gstsynaesthesia.c:
+	  Add missing elements to docs. Restore alphabetical order in section
+	  file. Document mad (it was included in docs already).
+	  Fix doc-markup: use convinience syntax for examples
+	  (produces valid docbook), add several refsec2 when we have several
+	  titles. Fix some types.
+
+2008-06-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/lame/gstlame.c:
+	* ext/sidplay/gstsiddec.cc:
+	* gst/mpegaudioparse/gstxingmux.c:
+	  Do not use short_description in section docs for elements. We extract
+	  them from element details and there will be warnings if they differ.
+
+2008-06-09  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c: (head_check):
+	Don't mark MPEG headers with emphasis == 0x2 as invalid. This
+	emphasis value is reserved but unfortunately files with that
+	value exist and the information is not important for the decoder
+	anyway. Fixes bug #537235.
+
+2008-06-02  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/a52dec/gsta52dec.c: (gst_a52dec_sink_event):
+	Drain queued buffers before forwarding the segment event.
+
+2008-06-02  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/a52dec/gsta52dec.c: (clear_queued), (flush_queued),
+	(gst_a52dec_drain), (gst_a52dec_push), (gst_a52dec_sink_event),
+	(gst_a52dec_chain), (gst_a52dec_change_state):
+	* ext/a52dec/gsta52dec.h:
+	Add segment handling, buffer clipping and basic reverse playback.
+
+2008-05-28  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-ugly-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-ugly-plugins-sections.txt:
+	* docs/plugins/gst-plugins-ugly-plugins.args:
+	* docs/plugins/gst-plugins-ugly-plugins.hierarchy:
+	* docs/plugins/gst-plugins-ugly-plugins.interfaces:
+	* docs/plugins/inspect/plugin-a52dec.xml:
+	* docs/plugins/inspect/plugin-amrnb.xml:
+	* docs/plugins/inspect/plugin-asf.xml:
+	* docs/plugins/inspect/plugin-dvdlpcmdec.xml:
+	* docs/plugins/inspect/plugin-dvdread.xml:
+	* docs/plugins/inspect/plugin-dvdsub.xml:
+	* docs/plugins/inspect/plugin-iec958.xml:
+	* docs/plugins/inspect/plugin-lame.xml:
+	* docs/plugins/inspect/plugin-mad.xml:
+	* docs/plugins/inspect/plugin-mpeg2dec.xml:
+	* docs/plugins/inspect/plugin-mpegaudioparse.xml:
+	* docs/plugins/inspect/plugin-mpegstream.xml:
+	* docs/plugins/inspect/plugin-realmedia.xml:
+	* docs/plugins/inspect/plugin-siddec.xml:
+	* docs/plugins/inspect/plugin-synaesthesia.xml:
+	* ext/a52dec/gsta52dec.c:
+	  Random doc of the day. Also print human readable format of newsegment
+	  in log message if we complain about it.
+
+2008-05-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/a52dec/gsta52dec.c: (gst_a52dec_init), (gst_a52dec_push),
+	(gst_a52dec_sink_event), (gst_a52dec_handle_frame),
+	(gst_a52dec_chain), (gst_a52dec_change_state):
+	* ext/a52dec/gsta52dec.h:
+	Mark discont on outgoing buffers after receiving a DISCONT buffer or
+	when we have a decoding error.
+	We don't need to clear the cache when we receive a NEWSEGMENT event.
+	Clear buffer cache in DISCONT.
+	Add beginnings of GstSegment handling.
+
+2008-05-26  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstxingmux.c: (generate_xing_header):
+	Fix alignment issues that caused SIGBUS on some architectures.
+
+2008-05-25  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* gst/ac3parse/gstac3parse.c: (gst_ac3parse_chain):
+	  Fix alignment issue which isn't really an issue at all because
+	  the plugin hasn't been ported to 0.10 yet.
+
+2008-05-25  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Back to devel -> 0.10.8.1
+
+=== release 0.10.8 ===
+
+2008-05-21  Jan Schmidt <jan.schmidt@sun.com>
+
+	* configure.ac:
+	  releasing 0.10.8, "And yet"
+
+2008-05-19  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.7.4 pre-release
+
+2008-05-19  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* ext/mad/gstmad.c: (gst_mad_convert_src), (gst_mad_chain):
+	Fix inconsistent use of rate and channels.
+	Fixes #533581
+
+2008-05-19  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_send_event):
+	Flush timestamp correction variables on a flush. Fixes #533832.
+
+2008-05-14  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.7.3 pre-release
+
+2008-05-13  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_parse_video_packet):
+	Properly aggregate GstFlowReturn from downstream in order to properly
+	stop, and doing that as early as possible.
+	Fixes #532807
+
+2008-05-10  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.7.2 pre-release
+
+2008-05-10  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* ext/mad/gstmad.c: (gst_mad_sink_event):
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event):
+	Always let FLUSH_START events flow downstream.
+
+2008-05-07  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* configure.ac:
+	  Error out if we don't have the required core/base versions.
+
+2008-05-06  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_parse_mdpr),
+	(gst_rmdemux_fix_timestamp), (gst_rmdemux_parse_video_packet),
+	(gst_rmdemux_parse_audio_packet), (gst_rmdemux_parse_packet):
+	Fix video timestamps by adjusting it with the first timestamp found.
+	Don't assume we have a complete fragment when flushing the adapter,
+	packets might have been lost or the stream might just be broken.
+
+2008-05-06  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rdtmanager.c: (gst_rdt_manager_plugin_init):
+	Set Rank to NONE so that we don't accidentally try to autoplug the
+	rdtmanager.
+
+2008-05-05  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_emit_frame):
+	Send a new duration message if the average bitrate changed and
+	we don't know the duration from the Xing or VBRI header.
+	Fixes bug #321857.
+
+2008-04-30  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rtspreal.c: (rtsp_ext_real_before_send),
+	(rtsp_ext_real_parse_sdp), (rtsp_ext_real_stream_select):
+	* gst/realmedia/rtspreal.h:
+	Move assembly rule parsing to the place where we parse the SDP as it's
+	also there that we create the MDPR and we need the currently selected
+	asmrule in order to select the right MTLI.
+	Fixes #529359.
+
+2008-04-29  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/realmedia/realhash.c:
+	* gst/realmedia/rtspreal.c:
+	  Include generated "_stdint.h" instead of <stdint.h> which might not
+	  exist on some systems.
+
+2008-04-26  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* ext/sidplay/gstsiddec.cc:
+	Cast NULL sentinels to void * as NULL is defined as an integer
+	constant in most environments when using C++ and it's size might
+	be different from a pointer. Fixes #529488.
+
+2008-04-22  Edgard Lima  <edgard.lima@indt.org.br>
+
+	* gst/asfdemux/gstasfdemux.c:
+	* gst/asfdemux/gstrtspwms.c:
+	  Fix "unused var" compiler error when --disable-gst-debug is used.
+
+2008-04-17  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* ext/amrnb/amrnbparse.c: (gst_amrnbparse_loop):
+	  We should also stop the streaming task when we get a NOT_LINKED
+	  flow return, which is not covered by FLOW_IS_FATAL.
+
+2008-04-11  Julien Moutte  <julien@fluendo.com>
+
+	* gst/mpegaudioparse/gstxingmux.c: (generate_xing_header): Fix
+	argument formats.
+
+2008-04-06  Sebastian Dröge  <slomo@circular-chaos.org>
+
+        Patch by: Damien Lespiau <damien dot lespiau at gmail dot com>
+
+        * configure.ac:
+        Actually build dlls when cross-compiling with mingw32.
+        Fixes bug #526247.
+
+2008-04-04  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* configure.ac:
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(mpeg_audio_seek_entry_free):
+	* gst/mpegaudioparse/gstxingmux.c: (gst_xing_seek_entry_free):
+	Depend on GLib 2.12 and use it unconditionally as we do in other
+	modules too already.
+
+2008-04-03  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(mpeg_audio_seek_entry_new), (mpeg_audio_seek_entry_free),
+	(gst_mp3parse_reset), (gst_mp3parse_emit_frame):
+	* gst/mpegaudioparse/gstxingmux.c: (gst_xing_seek_entry_new),
+	(gst_xing_seek_entry_free), (gst_xing_mux_finalize), (xing_reset),
+	(gst_xing_mux_chain):
+	Use GSlice for allocating the seek table entries if we compile with
+	GLib 2.10 or newer.
+
+2008-04-01  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/asfdemux/gstasfdemux.c:
+	(gst_asf_demux_process_ext_stream_props):
+	Remove some debug code.
+
+2008-04-01  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/asfdemux/gstasfdemux.c:
+	(gst_asf_demux_process_ext_stream_props):
+	Guard against division by 0 and fall back to 25/1 framerate.
+
+2008-04-01  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/asfdemux/gstasfdemux.c: (gst_asf_demux_add_video_stream),
+	(gst_asf_demux_process_ext_stream_props):
+	Instead of adding a fixes 25/1 framerate to the video caps, use the
+	average frame duration in the extended properties of the video stream as
+	the framerate. Fixes #524346.
+
+2008-03-21  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* configure.ac:
+	Check if the compiler supports do { } while (0) macros. This fixes
+	a warning when compiling with g++ 4.3, resulting in a build failure
+	because of -Werror.
+
+2008-03-19  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/asmrules.c: (gst_asm_scan_string), (main):
+	make ) also a delimiter for rules.
+	Skip \\ when scanning strings.
+	Add new testcase for these problems.
+
+2008-03-12  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event):
+	Don't take the stream lock when caching events. This is not necessary
+	and results in a deadlock when seeking with rhythmbox (but not with
+	totem or banshee for some reason).
+
+2008-03-10  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Pizpot Gargravarr <pgargravarr at siriuscybernetics dot org>
+
+	* gst/realmedia/rtspreal.c: (rtsp_ext_real_parse_sdp):
+	Add the version field when creating the CONT chunk resulting in 
+	the Author, Comment and Copyright tags not being parsed correctly.
+	Fixes #521459.
+
+2008-03-10  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event), (gst_mp3parse_chain):
+	Remove trailing newlines from debug statements.
+
+2008-03-04  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/dvdnav/dvdnavsrc.c:
+	* ext/dvdnav/dvdnavsrc.h:
+	Apply patch that adds some seeking support to dvdnav, and fixes it
+	in various other ways. This doesn't make dvdnavsrc fully functional,
+	but moves it forward.
+
+	Fixes: #476149
+	Patch By: Simone Gotti <simone.gotti@email.it>
+
+	* ext/dvdnav/gst-dvd:
+	Update the simple dvdnavsrc gst-launch example to work for 0.10
+
+2008-03-03  Peter Kjellerstedt  <pkj@axis.com>
+
+	* configure.ac:
+	Use AG_GST_CHECK_PLUGIN and AG_GST_DISABLE_PLUGIN to simplify which
+	plug-ins are included/excluded. (#498222)
+
+2008-02-27  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* ext/mad/gstmad.c: (gst_mad_sink_event):
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event):
+	Push EOS, FLUSH_STOP and NEWSEGMENT immediately instead
+	of dropping and leaking them.
+
+2008-02-27  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* ext/mad/gstmad.c: (gst_mad_dispose), (gst_mad_sink_event),
+	(gst_mad_chain):
+	* ext/mad/gstmad.h:
+	* gst/mpegaudioparse/gstmpegaudioparse.c: (gst_mp3parse_dispose),
+	(gst_mp3parse_sink_event), (gst_mp3parse_emit_frame):
+	* gst/mpegaudioparse/gstmpegaudioparse.h:
+	Cache all events except EOS if we still have to send a NEWSEGMENT
+	event. This will let TAG events be forwarded until after decodebin
+	to an encoder for example as decodebin only links the pads
+	after NEWSEGMENT. Fixes bug #518933.
+
+2008-02-27  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstxingmux.c: (get_xing_offset):
+	Write Xing header at the correct position in the MP3 frame for
+	stereo files. Fixes bug #518676.
+
+2008-02-23  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* configure.ac:
+	* ext/sidplay/Makefile.am:
+          Check for and define ERROR_CXXFLAGS and GST_CXXFLAGS and use them
+          when building C++ code (#516509).
+
+2008-02-22  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* ext/lame/gstlame.c: (gst_lame_sink_setcaps):
+	  Fix broken GST_ELEMENT_ERROR macro, fixes compile with the Sun
+	  Workshop 12 compiler, but probably also crashes (#517985).
+
+2008-02-22  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	Patch by: Thiago Sousa Santos <thiagoss at lcc dot ufcg dot edu dot br>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3_channel_mode_get_type),
+	(mp3_type_frame_length_from_header), (gst_mp3parse_class_init),
+	(gst_mp3parse_reset), (gst_mp3parse_emit_frame),
+	(gst_mp3parse_chain):
+	* gst/mpegaudioparse/gstmpegaudioparse.h:
+	Post channel mode and CRC as tags. Fixes bug #504493.
+
+2008-02-22  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* ext/dvdnav/dvdnavsrc.c: (gst_dvd_nav_src_finalize):
+	Correctly chain up to the parent's finalize function.
+
+2008-02-22  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_emit_frame), (gst_mp3parse_chain):
+	Try a bit harder to get valid timestamps, especially if upstream
+	gives us one and we are at the first frame or resyncing.
+	Return UNEXPECTED if we get a valid timestamp that is outside of
+	our configured segment. After all changes done so far this doesn't
+	seem to cause any regression, please test.
+
+2008-02-22  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	Patch by:
+	  Hans de Goede <j dot w dot r dot degoede at hhs dot nl>
+
+	* gst/asfdemux/gstasfdemux.c: (gst_asf_demux_handle_seek_event):
+	If we don't have the position to seek to in our index first try
+	to convert from TIME to BYTES upstream and only if that fails
+	too use the old hack to simply seek to an earlier position
+	and let the sink drop everything before segment start.
+	Partially fixes bug #469930.
+
+2008-02-21  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Back to development...
+
 === release 0.10.7 ===
 
 2008-02-20  Jan Schmidt <jan.schmidt@sun.com>

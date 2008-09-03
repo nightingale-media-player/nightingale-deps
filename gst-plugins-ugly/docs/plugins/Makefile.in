@@ -68,6 +68,7 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-args.m4 \
 	$(top_srcdir)/common/m4/gst-check.m4 \
 	$(top_srcdir)/common/m4/gst-default.m4 \
+	$(top_srcdir)/common/m4/gst-dowhile.m4 \
 	$(top_srcdir)/common/m4/gst-error.m4 \
 	$(top_srcdir)/common/m4/gst-feature.m4 \
 	$(top_srcdir)/common/m4/gst-function.m4 \
@@ -105,6 +106,7 @@ AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
 AR_TFLAGS = @AR_TFLAGS@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -118,6 +120,8 @@ BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
 CC = @CC@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
+CDIO_CFLAGS = @CDIO_CFLAGS@
+CDIO_LIBS = @CDIO_LIBS@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -134,6 +138,7 @@ DEFAULT_VISUALIZER = @DEFAULT_VISUALIZER@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DEPRECATED_CFLAGS = @DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CFLAGS = @DVDNAV_CFLAGS@
@@ -149,6 +154,7 @@ ENABLE_GTK_DOC_TRUE = @ENABLE_GTK_DOC_TRUE@
 ENABLE_PLUGIN_DOCS_FALSE = @ENABLE_PLUGIN_DOCS_FALSE@
 ENABLE_PLUGIN_DOCS_TRUE = @ENABLE_PLUGIN_DOCS_TRUE@
 ERROR_CFLAGS = @ERROR_CFLAGS@
+ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 EXEEXT = @EXEEXT@
 FFLAGS = @FFLAGS@
 FGREP = @FGREP@
@@ -170,6 +176,7 @@ GST_BASE_LIBS = @GST_BASE_LIBS@
 GST_CFLAGS = @GST_CFLAGS@
 GST_CHECK_CFLAGS = @GST_CHECK_CFLAGS@
 GST_CHECK_LIBS = @GST_CHECK_LIBS@
+GST_CXXFLAGS = @GST_CXXFLAGS@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_LEVEL_DEFAULT = @GST_LEVEL_DEFAULT@
@@ -177,6 +184,7 @@ GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
 GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_OPTION_CFLAGS = @GST_OPTION_CFLAGS@
+GST_OPTION_CXXFLAGS = @GST_OPTION_CXXFLAGS@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
 GST_PLUGINS_ALL = @GST_PLUGINS_ALL@
@@ -187,7 +195,6 @@ GST_PLUGINS_SELECTED = @GST_PLUGINS_SELECTED@
 GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_AMRNB = @HAVE_AMRNB@
@@ -264,6 +271,7 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -297,6 +305,8 @@ USE_A52DEC_FALSE = @USE_A52DEC_FALSE@
 USE_A52DEC_TRUE = @USE_A52DEC_TRUE@
 USE_AMRNB_FALSE = @USE_AMRNB_FALSE@
 USE_AMRNB_TRUE = @USE_AMRNB_TRUE@
+USE_CDIO_FALSE = @USE_CDIO_FALSE@
+USE_CDIO_TRUE = @USE_CDIO_TRUE@
 USE_DVDNAV_FALSE = @USE_DVDNAV_FALSE@
 USE_DVDNAV_TRUE = @USE_DVDNAV_TRUE@
 USE_DVDREAD_FALSE = @USE_DVDREAD_FALSE@
@@ -314,6 +324,22 @@ USE_MAD_TRUE = @USE_MAD_TRUE@
 USE_MPEG2DEC_FALSE = @USE_MPEG2DEC_FALSE@
 USE_MPEG2DEC_TRUE = @USE_MPEG2DEC_TRUE@
 USE_NLS = @USE_NLS@
+USE_PLUGIN_ASFDEMUX_FALSE = @USE_PLUGIN_ASFDEMUX_FALSE@
+USE_PLUGIN_ASFDEMUX_TRUE = @USE_PLUGIN_ASFDEMUX_TRUE@
+USE_PLUGIN_DVDLPCMDEC_FALSE = @USE_PLUGIN_DVDLPCMDEC_FALSE@
+USE_PLUGIN_DVDLPCMDEC_TRUE = @USE_PLUGIN_DVDLPCMDEC_TRUE@
+USE_PLUGIN_DVDSUB_FALSE = @USE_PLUGIN_DVDSUB_FALSE@
+USE_PLUGIN_DVDSUB_TRUE = @USE_PLUGIN_DVDSUB_TRUE@
+USE_PLUGIN_IEC958_FALSE = @USE_PLUGIN_IEC958_FALSE@
+USE_PLUGIN_IEC958_TRUE = @USE_PLUGIN_IEC958_TRUE@
+USE_PLUGIN_MPEGAUDIOPARSE_FALSE = @USE_PLUGIN_MPEGAUDIOPARSE_FALSE@
+USE_PLUGIN_MPEGAUDIOPARSE_TRUE = @USE_PLUGIN_MPEGAUDIOPARSE_TRUE@
+USE_PLUGIN_MPEGSTREAM_FALSE = @USE_PLUGIN_MPEGSTREAM_FALSE@
+USE_PLUGIN_MPEGSTREAM_TRUE = @USE_PLUGIN_MPEGSTREAM_TRUE@
+USE_PLUGIN_REALMEDIA_FALSE = @USE_PLUGIN_REALMEDIA_FALSE@
+USE_PLUGIN_REALMEDIA_TRUE = @USE_PLUGIN_REALMEDIA_TRUE@
+USE_PLUGIN_SYNAESTHESIA_FALSE = @USE_PLUGIN_SYNAESTHESIA_FALSE@
+USE_PLUGIN_SYNAESTHESIA_TRUE = @USE_PLUGIN_SYNAESTHESIA_TRUE@
 USE_SIDPLAY_FALSE = @USE_SIDPLAY_FALSE@
 USE_SIDPLAY_TRUE = @USE_SIDPLAY_TRUE@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
@@ -458,9 +484,11 @@ IGNORE_CFILES =
 # FIXME: not ported yet
 #	$(top_srcdir)/ext/gnomevfs/gstgnomevfssink.c 
 EXTRA_HFILES = \
+	$(top_srcdir)/ext/a52dec/gsta52dec.h \
 	$(top_srcdir)/ext/amrnb/amrnbdec.h \
 	$(top_srcdir)/ext/amrnb/amrnbenc.h \
 	$(top_srcdir)/ext/amrnb/amrnbparse.h \
+	$(top_srcdir)/ext/cdio/gstcdiocddasrc.h \
 	$(top_srcdir)/ext/lame/gstlame.h \
 	$(top_srcdir)/ext/mad/gstmad.h \
 	$(top_srcdir)/ext/sidplay/gstsiddec.h \
@@ -577,9 +605,13 @@ CLEANFILES = \
 @ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
-@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src \
+@ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
 @ENABLE_GTK_DOC_TRUE@        GST_REGISTRY=$(INSPECT_REGISTRY)
 
+MAINTAINERCLEANFILES = $(MAINTAINER_DOC_STAMPS)
+
+# wildcard is apparently not portable to other makes, hence the use of find
+inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
 all: all-am
 
 .SUFFIXES:
@@ -689,6 +721,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -764,8 +797,15 @@ upload: $(FORMATS)
 	--extra-dir=$(GSTPB_PREFIX)/share/gtk-doc/html
 
 help:
+	@echo
 	@echo "If you are a doc maintainer, run 'make update' to update"
 	@echo "the documentation files maintained in CVS"
+	@echo
+	@echo Other useful make targets:
+	@echo
+	@echo  check-inspected-versions: make sure the inspected plugin info
+	@echo                            is up to date before a release
+	@echo
 
 # update the stuff maintained by doc maintainers
 update:
@@ -795,8 +835,9 @@ update:
 @ENABLE_GTK_DOC_TRUE@	    done;							\
 @ENABLE_GTK_DOC_TRUE@	else								\
 @ENABLE_GTK_DOC_TRUE@	    $(INSPECT_ENVIRONMENT) 					\
-@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" 			\
-@ENABLE_GTK_DOC_TRUE@	    CFLAGS="-g $(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)"		\
+@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)"				\
+@ENABLE_GTK_DOC_TRUE@	    CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)"				\
+@ENABLE_GTK_DOC_TRUE@	    LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)"				\
 @ENABLE_GTK_DOC_TRUE@	    $(GST_DOC_SCANOBJ) --type-init-func="gst_init(NULL,NULL)"	\
 @ENABLE_GTK_DOC_TRUE@	        --module=$(DOC_MODULE) --source=$(PACKAGE) &&		\
 @ENABLE_GTK_DOC_TRUE@		$(PYTHON)						\
@@ -812,8 +853,7 @@ update:
 @ENABLE_GTK_DOC_TRUE@	mkdir inspect
 
 @ENABLE_GTK_DOC_TRUE@inspect-update: inspect
-@ENABLE_GTK_DOC_TRUE@	-rm $(INSPECT_REGISTRY)
-@ENABLE_GTK_DOC_TRUE@	-rm inspect-build.stamp
+@ENABLE_GTK_DOC_TRUE@	-rm -f $(INSPECT_REGISTRY) inspect-build.stamp
 @ENABLE_GTK_DOC_TRUE@	$(MAKE) inspect-build.stamp
 
 # FIXME: inspect.stamp should be written to by gst-xmlinspect.py
@@ -920,26 +960,22 @@ update:
 @ENABLE_GTK_DOC_TRUE@	@echo '-- Fixing Crossreferences' 
 @ENABLE_GTK_DOC_TRUE@	gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 @ENABLE_GTK_DOC_TRUE@	touch html-build.stamp
-@ENABLE_GTK_DOC_FALSE@all-local:
 
-# FIXME: these rules need a little cleaning up
-clean-local:
+@ENABLE_GTK_DOC_TRUE@clean-local-gtkdoc:
+@ENABLE_GTK_DOC_TRUE@	rm -rf xml tmpl html
+# clean files copied for nonsrcdir templates build
+@ENABLE_GTK_DOC_TRUE@	if test x"$(srcdir)" != x. ; then \
+@ENABLE_GTK_DOC_TRUE@	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES); \
+@ENABLE_GTK_DOC_TRUE@	fi
+@ENABLE_GTK_DOC_FALSE@all-local:
+@ENABLE_GTK_DOC_FALSE@clean-local-gtkdoc:
+
+clean-local: clean-local-gtkdoc
 	rm -f *~ *.bak
 	rm -rf .libs
-# clean files generated for tmpl build
-	-rm -rf tmpl
-# clean files copied/generated for nonsrcdir tmpl build
-	if test x"$(srcdir)" != x. ; then \
-	    rm -rf $(SCANOBJ_FILES) $(SCAN_FILES);			\
-	fi
-# clean files generated for xml build
-	-rm -rf xml
-# clean files generate for html build
-	-rm -rf html
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
-	rm -f *.stamp || true
 	rm -rf *.o
 
 # thomas: make docs parallel installable; devhelp requires majorminor too
@@ -1017,6 +1053,19 @@ check-hierarchy: $(DOC_MODULE).hierarchy
 
 check: check-hierarchy
 
+check-inspected-versions:
+	@echo Checking plugin versions of inspected plugin data ...; \
+	fail=0 ; \
+	for each in $(inspect_files) ; do \
+	  if (grep -H '<version>' $$each | grep -v '<version>$(VERSION)'); then \
+	    echo $$each should be fixed to say version $(VERSION) or be removed ; \
+	    echo "sed -i -e 's/<version.*version>/<version>$(VERSION)<\/version>/'" $$each; \
+	    echo ; \
+	    fail=1; \
+	  fi ; \
+	done ; \
+	exit $$fail
+
 #
 # Require gtk-doc when making dist
 #
@@ -1033,7 +1082,7 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
 	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
+	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
 	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
 
 	images=$(HTML_IMAGES) ;    	      \

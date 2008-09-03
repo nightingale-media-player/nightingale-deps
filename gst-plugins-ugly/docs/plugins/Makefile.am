@@ -83,9 +83,11 @@ IGNORE_CFILES =
 #	$(top_srcdir)/ext/gnomevfs/gstgnomevfssink.c 
 
 EXTRA_HFILES = \
+	$(top_srcdir)/ext/a52dec/gsta52dec.h \
 	$(top_srcdir)/ext/amrnb/amrnbdec.h \
 	$(top_srcdir)/ext/amrnb/amrnbenc.h \
 	$(top_srcdir)/ext/amrnb/amrnbparse.h \
+	$(top_srcdir)/ext/cdio/gstcdiocddasrc.h \
 	$(top_srcdir)/ext/lame/gstlame.h \
 	$(top_srcdir)/ext/mad/gstmad.h \
 	$(top_srcdir)/ext/sidplay/gstsiddec.h \

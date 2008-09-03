@@ -23,25 +23,20 @@
 
 /**
  * SECTION:element-xingmux
- * @short_description: Adds a Xing header to MP3 files
  *
- * <refsect2>
- * <para>
  * xingmux adds a Xing header to MP3 files. This contains information about the duration and size
  * of the file and a seek table and is very useful for getting an almost correct duration and better
  * seeking on VBR MP3 files.
- * </para>
- * <para>
+ * 
  * This element will remove any existing Xing, LAME or VBRI headers from the beginning of the file.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch audiotestsrc num-buffers=1000 ! audioconvert ! lame ! xingmux ! filesink location=test.mp3
  * gst-launch filesrc location=test.mp3 ! xingmux ! filesink location=test2.mp3
  * gst-launch filesrc location=test.mp3 ! mp3parse ! xingmux ! filesink location=test2.mp3
- * </programlisting>
- * </para>
+ * ]|
  * </refsect2>
  */
 
@@ -68,6 +63,18 @@ typedef struct _GstXingSeekEntry
   gint64 timestamp;
   gint byte;
 } GstXingSeekEntry;
+
+static inline GstXingSeekEntry *
+gst_xing_seek_entry_new ()
+{
+  return g_slice_new (GstXingSeekEntry);
+}
+
+static inline void
+gst_xing_seek_entry_free (GstXingSeekEntry * entry)
+{
+  g_slice_free (GstXingSeekEntry, entry);
+}
 
 static void gst_xing_mux_finalize (GObject * obj);
 static GstStateChangeReturn
@@ -209,17 +216,17 @@ parse_header (guint32 header, guint * ret_size, guint * ret_spf,
 static guint
 get_xing_offset (guint32 header)
 {
-  guint mpeg_version = (header >> 19) & 3;
+  guint mpeg_version = (header >> 19) & 0x3;
   guint channel_mode = (header >> 6) & 0x3;
 
-  if (mpeg_version == 0x11) {
-    if (channel_mode == 0x11) {
+  if (mpeg_version == 0x3) {
+    if (channel_mode == 0x3) {
       return 0x11;
     } else {
       return 0x20;
     }
   } else {
-    if (channel_mode == 0x11) {
+    if (channel_mode == 0x3) {
       return 0x09;
     } else {
       return 0x11;
@@ -244,6 +251,7 @@ static GstBuffer *
 generate_xing_header (GstXingMux * xing)
 {
   guint32 *xing_flags;
+  guint32 xing_flags_tmp = 0;
   GstBuffer *xing_header;
   guchar *data;
 
@@ -314,7 +322,7 @@ generate_xing_header (GstXingMux * xing)
     GST_DEBUG ("Setting number of frames to %u", number_of_frames);
     number_of_frames = GUINT32_TO_BE (number_of_frames);
     memcpy (data, &number_of_frames, 4);
-    *xing_flags |= GST_XING_FRAME_FIELD;
+    xing_flags_tmp |= GST_XING_FRAME_FIELD;
     data += 4;
   }
 
@@ -333,14 +341,14 @@ generate_xing_header (GstXingMux * xing)
     guint32 nbytes;
 
     if (byte_count > G_MAXUINT32) {
-      GST_DEBUG ("Too large stream: %" G_GINT64_FORMAT " > %" G_GINT64_FORMAT
-          " bytes", byte_count, G_MAXUINT32);
+      GST_DEBUG ("Too large stream: %" G_GINT64_FORMAT " > %u bytes",
+          byte_count, G_MAXUINT32);
     } else {
       nbytes = byte_count;
       GST_DEBUG ("Setting number of bytes to %u", nbytes);
       nbytes = GUINT32_TO_BE (nbytes);
       memcpy (data, &nbytes, 4);
-      *xing_flags |= GST_XING_BYTES_FIELD;
+      xing_flags_tmp |= GST_XING_BYTES_FIELD;
       data += 4;
     }
   }
@@ -350,36 +358,41 @@ generate_xing_header (GstXingMux * xing)
     GList *it;
     gint percent = 0;
 
-    *xing_flags |= GST_XING_TOC_FIELD;
+    xing_flags_tmp |= GST_XING_TOC_FIELD;
 
     GST_DEBUG ("Writing seek table");
     for (it = xing->seek_table; it != NULL && percent < 100; it = it->next) {
       GstXingSeekEntry *entry = (GstXingSeekEntry *) it->data;
-      gint64 byte;
+      gint64 pos;
+      guchar byte;
 
       while ((entry->timestamp * 100) / duration >= percent) {
-        byte = (entry->byte * 256) / byte_count;
-        GST_DEBUG ("  %d %% -- %d 1/256", percent, byte);
-        *data = byte;
+        pos = (entry->byte * 256) / byte_count;
+        GST_DEBUG ("  %d %% -- %" G_GINT64_FORMAT " 1/256", percent, pos);
+        byte = (guchar) pos;
+        memcpy (data, &byte, 1);
         data++;
         percent++;
       }
     }
 
     if (percent < 100) {
-      guchar b = *(data - 1);
+      guchar b;
       gint i;
+
+      memcpy (&b, data - 1, 1);
 
       for (i = percent; i < 100; i++) {
         GST_DEBUG ("  %d %% -- %d 1/256", i, b);
-        *data = b;
+        memcpy (data, &b, 1);
         data++;
       }
     }
   }
 
   GST_DEBUG ("Setting Xing flags to 0x%x\n", *xing_flags);
-  *xing_flags = GUINT32_TO_BE (*xing_flags);
+  xing_flags_tmp = GUINT32_TO_BE (xing_flags_tmp);
+  memcpy (xing_flags, &xing_flags_tmp, 4);
   return xing_header;
 }
 
@@ -429,7 +442,7 @@ gst_xing_mux_finalize (GObject * obj)
   }
 
   if (xing->seek_table) {
-    g_list_foreach (xing->seek_table, (GFunc) g_free, NULL);
+    g_list_foreach (xing->seek_table, (GFunc) gst_xing_seek_entry_free, NULL);
     g_list_free (xing->seek_table);
     xing->seek_table = NULL;
   }
@@ -446,7 +459,7 @@ xing_reset (GstXingMux * xing)
   gst_adapter_clear (xing->adapter);
 
   if (xing->seek_table) {
-    g_list_foreach (xing->seek_table, (GFunc) g_free, NULL);
+    g_list_foreach (xing->seek_table, (GFunc) gst_xing_seek_entry_free, NULL);
     g_list_free (xing->seek_table);
     xing->seek_table = NULL;
   }
@@ -548,7 +561,7 @@ gst_xing_mux_chain (GstPad * pad, GstBuffer * buffer)
       }
     }
 
-    seek_entry = g_new (GstXingSeekEntry, 1);
+    seek_entry = gst_xing_seek_entry_new ();
     seek_entry->timestamp =
         (xing->duration == GST_CLOCK_TIME_NONE) ? 0 : xing->duration;
     /* Workaround for parsers checking that the first seek table entry is 0 */

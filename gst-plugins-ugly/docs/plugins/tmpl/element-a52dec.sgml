@@ -1,0 +1,43 @@
+<!-- ##### SECTION Title ##### -->
+a52dec
+
+<!-- ##### SECTION Short_Description ##### -->
+Decodes ATSC A/52 encoded audio streams
+
+<!-- ##### SECTION Long_Description ##### -->
+<include xmlns="http://www.w3.org/2003/XInclude" href="element-a52dec-details.xml" />
+<para>
+
+</para>
+
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GstA52Dec ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstA52Dec:drc ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstA52Dec:lfe ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstA52Dec:mode ##### -->
+<para>
+
+</para>
+

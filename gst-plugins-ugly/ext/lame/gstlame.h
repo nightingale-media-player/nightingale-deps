@@ -53,8 +53,6 @@ struct _GstLame {
   /*< private >*/
   GstPad *srcpad, *sinkpad;
 
-  gboolean init_error; /* an error occured in the instance init function */
-
   gint samplerate;
   gint num_channels;
   gboolean setup;
@@ -69,7 +67,6 @@ struct _GstLame {
   gboolean copyright;
   gboolean original;
   gboolean error_protection;
-  gint padding_type;
   gboolean extension;
   gboolean strict_iso;
   gboolean disable_reservoir;
@@ -88,7 +85,6 @@ struct _GstLame {
   gboolean no_ath;
   gint ath_type;
   gint ath_lower;
-  gint cwlimit;
   gboolean allow_diff_short;
   gboolean no_short_blocks;
   gboolean emphasis;

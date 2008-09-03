@@ -25,6 +25,4 @@ Extends RTSP so that it can handle WMS setup
 
 </para>
 
-@element: 
-@active: 
 

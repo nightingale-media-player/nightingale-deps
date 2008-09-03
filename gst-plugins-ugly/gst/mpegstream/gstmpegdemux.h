@@ -98,6 +98,7 @@ struct _GstMPEGStream {
   GstClockTimeDiff  scr_offs;
   GstFlowReturn     last_flow;
   guint             buffers_sent;
+  GstTagList       *tags;
 };
 
 /* Extended structure to hold additional information for video
@@ -126,6 +127,7 @@ struct _GstMPEGDemux {
   gint64         total_size_bound;
 
   gint64         last_pts;
+  gboolean       pending_tags;
   GstIndex      *index;
 
   /* stream output */
@@ -206,6 +208,9 @@ struct _GstMPEGDemuxClass {
 
 void            gst_mpeg_streams_reset_last_flow (GstMPEGStream *streams[],
                                                   guint          num);
+void            gst_mpeg_streams_reset_cur_ts    (GstMPEGStream *streams[],
+                                                  guint          num,
+                                                  GstClockTime   cur_ts);
 
 GType           gst_mpeg_demux_get_type          (void);
 

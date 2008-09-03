@@ -26,9 +26,6 @@
  * - _chain(): fix newsegment events for live streams where timestamps don't
  *   start at zero (need sample files/streams for this)
  *
- * - _push_buffer():
- *   aggregate flow return values correctly
- *
  * - fix packet parsing:
  *   there's something wrong with timestamps for packets with keyframes,
  *   and durations too.
@@ -498,19 +495,35 @@ gst_asf_demux_handle_seek_event (GstASFDemux * demux, GstEvent * event)
   /* FIXME: should check the KEY_UNIT flag; need to adjust last_stop to
    * real start of data and segment_start to indexed time for key unit seek*/
   if (!gst_asf_demux_seek_index_lookup (demux, &packet, seek_time, &idx_time)) {
-    /* Hackety hack, this sucks. We just seek to an earlier position
-     *  and let the sinks throw away the stuff before the segment start */
-    if (flush && (accurate || keyunit_sync)) {
-      seek_time -= 5 * GST_SECOND;
-      if (seek_time < 0)
-        seek_time = 0;
+    /* First try to query our source to see if it can convert for us. This is
+       the case when our source is an mms stream, notice that in this case
+       gstmms will do a time based seek to get the byte offset, this is not a
+       problem as the seek to this offset needs to happen anway. */
+    gint64 offset;
+    GstFormat dest_format = GST_FORMAT_BYTES;
+
+    if (gst_pad_query_peer_convert (demux->sinkpad, GST_FORMAT_TIME, seek_time,
+            &dest_format, &offset) && dest_format == GST_FORMAT_BYTES) {
+      packet = (offset - demux->data_offset) / demux->packet_size;
+      GST_LOG_OBJECT (demux, "convert %" GST_TIME_FORMAT
+          " to bytes query result: %lld, data_ofset: %llu, packet_size: %u,"
+          " resulting packet: %u\n", GST_TIME_ARGS (seek_time), offset,
+          demux->data_offset, demux->packet_size, packet);
+    } else {
+      /* Hackety hack, this sucks. We just seek to an earlier position
+       *  and let the sinks throw away the stuff before the segment start */
+      if (flush && (accurate || keyunit_sync)) {
+        seek_time -= 5 * GST_SECOND;
+        if (seek_time < 0)
+          seek_time = 0;
+      }
+
+      packet = (guint) gst_util_uint64_scale (demux->num_packets,
+          seek_time, demux->play_time);
+
+      if (packet > demux->num_packets)
+        packet = demux->num_packets;
     }
-
-    packet = (guint) gst_util_uint64_scale (demux->num_packets,
-        seek_time, demux->play_time);
-
-    if (packet > demux->num_packets)
-      packet = demux->num_packets;
   } else {
     if (keyunit_sync) {
       GST_DEBUG_OBJECT (demux, "key unit seek, adjust seek_time = %"
@@ -689,6 +702,26 @@ parse_failed:
     g_free (data);
     return GST_FLOW_ERROR;
   }
+}
+
+static GstFlowReturn
+gst_asf_demux_aggregate_flow_return (GstASFDemux * demux)
+{
+  int i;
+  GST_DEBUG_OBJECT (demux, "Aggregating");
+
+  for (i = 0; i < demux->num_streams; i++) {
+    if (demux->stream[i].active) {
+      GstFlowReturn flowret = demux->stream[i].last_flow;
+      GST_DEBUG_OBJECT (demux, "Aggregating: flow %i return %s", i,
+          gst_flow_get_name (flowret));
+      if (flowret != GST_FLOW_NOT_LINKED)
+        return flowret;
+    }
+  }
+
+  /* If we got here, then all our active streams are not linked */
+  return GST_FLOW_NOT_LINKED;
 }
 
 static GstFlowReturn
@@ -1146,14 +1179,14 @@ gst_asf_demux_find_stream_with_complete_payload (GstASFDemux * demux)
   return best_stream;
 }
 
-static void
+static GstFlowReturn
 gst_asf_demux_push_complete_payloads (GstASFDemux * demux, gboolean force)
 {
   AsfStream *stream;
 
   if (G_UNLIKELY (!demux->activated_streams)) {
     if (!gst_asf_demux_check_activate_streams (demux, force))
-      return;
+      return GST_FLOW_OK;
     /* streams are now activated */
   }
 
@@ -1225,6 +1258,8 @@ gst_asf_demux_push_complete_payloads (GstASFDemux * demux, gboolean force)
     payload->buf = NULL;
     g_array_remove_index (stream->payloads, 0);
   }
+
+  return gst_asf_demux_aggregate_flow_return (demux);
 }
 
 static void
@@ -1235,8 +1270,10 @@ gst_asf_demux_loop (GstASFDemux * demux)
   guint64 off;
 
   if (demux->state == GST_ASF_DEMUX_STATE_HEADER) {
-    if (!gst_asf_demux_pull_headers (demux))
+    if (!gst_asf_demux_pull_headers (demux)) {
+      flow = GST_FLOW_ERROR;
       goto pause;
+    }
 
     gst_asf_demux_pull_indices (demux);
   }
@@ -1255,9 +1292,10 @@ gst_asf_demux_loop (GstASFDemux * demux)
     GST_DEBUG_OBJECT (demux, "got flow %s", gst_flow_get_name (flow));
     if (flow == GST_FLOW_UNEXPECTED)
       goto eos;
-    else if (!GST_FLOW_IS_FATAL (flow))
+    else if (!GST_FLOW_IS_FATAL (flow)) {
+      GST_DEBUG_OBJECT (demux, "Not fatal");
       goto pause;
-    else
+    } else
       goto read_failed;
   }
 
@@ -1268,7 +1306,7 @@ gst_asf_demux_loop (GstASFDemux * demux)
 
   gst_buffer_unref (buf);
 
-  gst_asf_demux_push_complete_payloads (demux, FALSE);
+  flow = gst_asf_demux_push_complete_payloads (demux, FALSE);
 
   ++demux->packet;
 
@@ -1277,10 +1315,10 @@ gst_asf_demux_loop (GstASFDemux * demux)
     goto eos;
   }
 
-  /* FIXME: aggregate flow returns from the various streams */
-
-  if (flow != GST_FLOW_OK)
+  if (flow != GST_FLOW_OK) {
+    GST_DEBUG_OBJECT (demux, "pushing complete payloads failed");
     goto pause;
+  }
 
   /* check if we're at the end of the configured segment */
   /* FIXME: check if segment end reached etc. */
@@ -1289,11 +1327,16 @@ gst_asf_demux_loop (GstASFDemux * demux)
 
 eos:
   {
-    /* if we haven't actived our streams yet, this might be because we have
+    /* if we haven't activated our streams yet, this might be because we have
      * less data queued than required for preroll; force stream activation and
      * send any pending payloads before sending EOS */
     if (!demux->activated_streams)
-      gst_asf_demux_push_complete_payloads (demux, TRUE);
+      flow = gst_asf_demux_push_complete_payloads (demux, TRUE);
+
+    if (flow != GST_FLOW_OK && flow != GST_FLOW_UNEXPECTED) {
+      GST_DEBUG_OBJECT (demux, "pushing complete payloads failed");
+      goto pause;
+    }
 
     if (demux->segment.flags & GST_SEEK_FLAG_SEGMENT) {
       gint64 stop;
@@ -1313,21 +1356,30 @@ eos:
       gst_asf_demux_send_event_unlocked (demux, gst_event_new_eos ());
     }
     /* ... and fall through to pause */
+    GST_DEBUG_OBJECT (demux, "EOSing");
   }
 pause:
   {
     GST_DEBUG_OBJECT (demux, "pausing task");
     demux->segment_running = FALSE;
     gst_pad_pause_task (demux->sinkpad);
+
+    /* For the error cases (not EOS) */
+    if (flow != GST_FLOW_OK && flow != GST_FLOW_UNEXPECTED) {
+      /* Post an error. Hopefully something else already has, but if not... */
+      GST_ELEMENT_ERROR (demux, STREAM, FAILED,
+          (_("Internal data stream error.")),
+          ("streaming stopped, reason %s", gst_flow_get_name (flow)));
+    }
     return;
   }
 
 /* ERRORS */
 read_failed:
   {
-    /* upstream should already have posted an error */
-    GST_ELEMENT_ERROR (demux, STREAM, DEMUX, (NULL), ("pull_range failed"));
+    GST_DEBUG_OBJECT (demux, "Read failed, doh");
     gst_asf_demux_send_event_unlocked (demux, gst_event_new_eos ());
+    flow = GST_FLOW_UNEXPECTED;
     goto pause;
   }
 parse_error:
@@ -1336,6 +1388,7 @@ parse_error:
     GST_ELEMENT_ERROR (demux, STREAM, DEMUX, (NULL),
         ("Error parsing ASF packet %u", (guint) demux->packet));
     gst_asf_demux_send_event_unlocked (demux, gst_event_new_eos ());
+    flow = GST_FLOW_ERROR;
     goto pause;
   }
 }
@@ -1732,6 +1785,9 @@ gst_asf_demux_add_video_stream (GstASFDemux * demux,
       gst_caps_set_simple (caps, "pixel-aspect-ratio", GST_TYPE_FRACTION,
           ax, ay, NULL);
     }
+    /* remove the framerate we will guess and add it later */
+    s = gst_caps_get_structure (caps, 0);
+    gst_structure_remove_field (s, "framerate");
   }
 
   /* add fourcc format to caps, some proprietary decoders seem to need it */
@@ -1749,8 +1805,6 @@ gst_asf_demux_add_video_stream (GstASFDemux * demux,
 
   GST_INFO ("Adding video stream %u codec %" GST_FOURCC_FORMAT " (0x%08x)",
       demux->num_video_streams, GST_FOURCC_ARGS (video->tag), video->tag);
-
-  gst_caps_set_simple (caps, "framerate", GST_TYPE_FRACTION, 25, 1, NULL);
 
   ++demux->num_video_streams;
 
@@ -2679,9 +2733,12 @@ gst_asf_demux_process_ext_stream_props (GstASFDemux * demux, guint8 * data,
   guint16 num_payload_ext;
   guint64 len;
   guint8 *stream_obj_data = NULL;
-  guint8 *data_start = data;
-  guint obj_size = (guint) size;
+  guint8 *data_start;
+  guint obj_size;
   guint i, stream_num;
+
+  data_start = data;
+  obj_size = (guint) size;
 
   if (size < 64)
     goto not_enough_data;
@@ -2699,7 +2756,7 @@ gst_asf_demux_process_ext_stream_props (GstASFDemux * demux, guint8 * data,
   esp.flags = gst_asf_demux_get_uint32 (&data, &size);
   stream_num = gst_asf_demux_get_uint16 (&data, &size);
   esp.lang_idx = gst_asf_demux_get_uint16 (&data, &size);
-  esp.avg_time_per_frame = gst_asf_demux_get_uint64 (&data, &size) * 100;
+  esp.avg_time_per_frame = gst_asf_demux_get_uint64 (&data, &size);
   stream_name_count = gst_asf_demux_get_uint16 (&data, &size);
   num_payload_ext = gst_asf_demux_get_uint16 (&data, &size);
 
@@ -2709,7 +2766,7 @@ gst_asf_demux_process_ext_stream_props (GstASFDemux * demux, guint8 * data,
       GST_TIME_ARGS (esp.end_time));
   GST_INFO ("flags                  = %08x", esp.flags);
   GST_INFO ("average time per frame = %" GST_TIME_FORMAT,
-      GST_TIME_ARGS (esp.avg_time_per_frame));
+      GST_TIME_ARGS (esp.avg_time_per_frame * 100));
   GST_INFO ("stream number          = %u", stream_num);
   GST_INFO ("stream language ID idx = %u (%s)", esp.lang_idx,
       (esp.lang_idx < demux->num_languages) ?
@@ -2795,6 +2852,31 @@ done:
 
   if (stream) {
     stream->ext_props = esp;
+
+    /* try to set the framerate */
+    if (stream->is_video && stream->caps) {
+      GValue framerate = { 0 };
+      GstStructure *s;
+      gint num, denom;
+
+      g_value_init (&framerate, GST_TYPE_FRACTION);
+
+      num = GST_SECOND / 100;
+      denom = esp.avg_time_per_frame;
+      if (denom == 0) {
+        /* avoid division by 0, assume 25/1 framerate */
+        denom = GST_SECOND / 2500;
+      }
+
+      gst_value_set_fraction (&framerate, num, denom);
+
+      stream->caps = gst_caps_make_writable (stream->caps);
+      s = gst_caps_get_structure (stream->caps, 0);
+      gst_structure_set_value (s, "framerate", &framerate);
+      g_value_unset (&framerate);
+      GST_DEBUG_OBJECT (demux, "setting framerate of %d/%d = %f",
+          num, denom, ((gdouble) num) / denom);
+    }
 
     /* add language info now if we have it */
     if (stream->ext_props.lang_idx < demux->num_languages) {
@@ -3062,8 +3144,7 @@ gst_asf_demux_process_object (GstASFDemux * demux, guint8 ** p_data,
 /* ERRORS */
 error_encrypted:
   {
-    GST_ELEMENT_ERROR (demux, STREAM, DEMUX,
-        (_("This file is encrypted and cannot be played.")), (NULL));
+    GST_ELEMENT_ERROR (demux, STREAM, DECRYPT, (NULL), (NULL));
     return GST_FLOW_ERROR;
   }
 }
@@ -3161,8 +3242,6 @@ static GstFlowReturn
 gst_asf_demux_push_buffer (GstASFDemux * demux, AsfStream * stream,
     GstBuffer * buf)
 {
-  GstFlowReturn ret;
-
   buf = gst_buffer_make_metadata_writable (buf);
 
   /* need to send tags? */
@@ -3202,13 +3281,9 @@ gst_asf_demux_push_buffer (GstASFDemux * demux, AsfStream * stream,
     stream->discont = FALSE;
   }
 
-  ret = gst_pad_push (stream->pad, buf);
+  stream->last_flow = gst_pad_push (stream->pad, buf);
 
-  /* FIXME: aggreate flow values properly */
-  if (ret == GST_FLOW_NOT_LINKED)
-    ret = GST_FLOW_OK;
-
-  return ret;
+  return stream->last_flow;
 }
 
 static GstFlowReturn
@@ -3729,7 +3804,6 @@ gst_asf_demux_handle_data (GstASFDemux * demux, guint8 ** p_data,
     if (ret != GST_FLOW_OK) {
       GST_DEBUG ("process_segment %u returned %s", segment,
           gst_asf_get_flow_name (ret));
-      return ret;
     }
   }
 
@@ -3760,7 +3834,7 @@ gst_asf_demux_handle_data (GstASFDemux * demux, guint8 ** p_data,
     }
   }
 
-  return GST_FLOW_OK;
+  return gst_asf_demux_aggregate_flow_return (demux);
 }
 
 static const GstQueryType *

@@ -51,8 +51,6 @@ ifelse([$1],[],,
     fi
   fi
 
-  AC_PATH_PROGS(GTKDOC_CHECK,gtkdoc-check,)
-  
   AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
   AM_CONDITIONAL(GTK_DOC_USE_LIBTOOL, test -n "$LIBTOOL")
 ])

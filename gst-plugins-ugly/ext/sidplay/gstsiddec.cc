@@ -20,28 +20,21 @@
 
 /**
  * SECTION:element-siddec
- * @short_description: a decoder for sid files
  *
- * <refsect2>
- * <para>
  * This element decodes .sid files to raw audio. .sid files are in fact 
  * small Commodore 64 programs that are executed on an emulated 6502 CPU and a 
- * MOS 6581 sound chip. 
- * </para>
- * <para>
+ * MOS 6581 sound chip.
+ * 
  * This plugin will first load the complete program into memory before starting
  * the emulator and producing output.
- * </para>
- * <para>
+ * 
  * Seeking is not (and cannot be) implemented.
- * </para>
+ * 
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=Hawkeye.sid ! siddec ! audioconvert ! alsasink
- * </programlisting>
- * Decode a sid file and play back the audio using alsasink.
- * </para>
+ * ]| Decode a sid file and play back the audio using alsasink.
  * </refsect2>
  *
  * Last reviewed on 2006-12-30 (0.10.5)
@@ -299,15 +292,15 @@ update_tags (GstSidDec * siddec)
 
     if (info.nameString) {
       gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
-          GST_TAG_TITLE, info.nameString, NULL);
+          GST_TAG_TITLE, info.nameString, (void *) NULL);
     }
     if (info.authorString) {
       gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
-          GST_TAG_ARTIST, info.authorString, NULL);
+          GST_TAG_ARTIST, info.authorString, (void *) NULL);
     }
     if (info.copyrightString) {
       gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
-          GST_TAG_COPYRIGHT, info.copyrightString, NULL);
+          GST_TAG_COPYRIGHT, info.copyrightString, (void *) NULL);
     }
     gst_element_found_tags_for_pad (GST_ELEMENT_CAST (siddec),
         siddec->srcpad, list);

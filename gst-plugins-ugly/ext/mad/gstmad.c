@@ -17,6 +17,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-mad
+ * @see_also: lame
+ *
+ * MP3 audio decoder.
+ *
+ * <refsect2>
+ * <title>Example pipelines</title>
+ * |[
+ * gst-launch filesrc location=music.mp3 ! mad ! audioconvert ! audioresample ! autoaudiosink
+ * ]| Decode the mp3 file and play
+ * </refsect2>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -284,6 +298,10 @@ gst_mad_dispose (GObject * object)
   g_free (mad->tempbuffer);
   mad->tempbuffer = NULL;
 
+  g_list_foreach (mad->pending_events, (GFunc) gst_mini_object_unref, NULL);
+  g_list_free (mad->pending_events);
+  mad->pending_events = NULL;
+
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -380,7 +398,7 @@ gst_mad_convert_src (GstPad * pad, GstFormat src_format, gint64 src_value,
 
   mad = GST_MAD (GST_PAD_PARENT (pad));
 
-  bytes_per_sample = MAD_NCHANNELS (&mad->frame.header) * 4;
+  bytes_per_sample = mad->channels * 4;
 
   switch (src_format) {
     case GST_FORMAT_BYTES:
@@ -392,7 +410,7 @@ gst_mad_convert_src (GstPad * pad, GstFormat src_format, gint64 src_value,
           break;
         case GST_FORMAT_TIME:
         {
-          gint byterate = bytes_per_sample * mad->frame.header.samplerate;
+          gint byterate = bytes_per_sample * mad->rate;
 
           if (byterate == 0)
             return FALSE;
@@ -410,10 +428,10 @@ gst_mad_convert_src (GstPad * pad, GstFormat src_format, gint64 src_value,
           *dest_value = src_value * bytes_per_sample;
           break;
         case GST_FORMAT_TIME:
-          if (mad->frame.header.samplerate == 0)
+          if (mad->rate == 0)
             return FALSE;
           *dest_value = gst_util_uint64_scale_int (src_value, GST_SECOND,
-              mad->frame.header.samplerate);
+              mad->rate);
           break;
         default:
           res = FALSE;
@@ -426,7 +444,7 @@ gst_mad_convert_src (GstPad * pad, GstFormat src_format, gint64 src_value,
           /* fallthrough */
         case GST_FORMAT_DEFAULT:
           *dest_value = gst_util_uint64_scale_int (src_value,
-              scale * mad->frame.header.samplerate, GST_SECOND);
+              scale * mad->rate, GST_SECOND);
           break;
         default:
           res = FALSE;
@@ -984,11 +1002,18 @@ gst_mad_sink_event (GstPad * pad, GstEvent * event)
       mad->tempsize = 0;
       mad_frame_mute (&mad->frame);
       mad_synth_mute (&mad->synth);
+    case GST_EVENT_FLUSH_START:
       result = gst_pad_event_default (pad, event);
 
       break;
     default:
-      result = gst_pad_event_default (pad, event);
+      if (mad->restart) {
+        /* Cache all other events if we still have to send a NEWSEGMENT */
+        mad->pending_events = g_list_append (mad->pending_events, event);
+        result = TRUE;
+      } else {
+        result = gst_pad_event_default (pad, event);
+      }
       break;
   }
   return result;
@@ -1409,7 +1434,12 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
               } else {
                 mad->tags = gst_tag_list_copy (list);
               }
-              gst_pad_push_event (mad->srcpad, gst_event_new_tag (list));
+              if (mad->need_newsegment)
+                mad->pending_events =
+                    g_list_append (mad->pending_events,
+                    gst_event_new_tag (list));
+              else
+                gst_pad_push_event (mad->srcpad, gst_event_new_tag (list));
             }
           }
         }
@@ -1449,7 +1479,12 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
               GST_TAG_BITRATE, bitrate, NULL);
           gst_element_post_message (GST_ELEMENT (mad),
               gst_message_new_tag (GST_OBJECT (mad), gst_tag_list_copy (list)));
-          gst_pad_push_event (mad->srcpad, gst_event_new_tag (list));
+
+          if (mad->need_newsegment)
+            mad->pending_events =
+                g_list_append (mad->pending_events, gst_event_new_tag (list));
+          else
+            gst_pad_push_event (mad->srcpad, gst_event_new_tag (list));
 
           goto next_no_samples;
         }
@@ -1461,9 +1496,8 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
       nsamples = MAD_NSBSAMPLES (&mad->frame.header) *
           (mad->stream.options & MAD_OPTION_HALFSAMPLERATE ? 16 : 32);
 
-      if (mad->frame.header.samplerate == 0) {
-        g_warning
-            ("mad->frame.header.samplerate is 0; timestamps cannot be calculated");
+      if (mad->rate == 0) {
+        g_warning ("mad->rate is 0; timestamps cannot be calculated");
       } else {
         /* if we have a pending timestamp, we can use it now to calculate the sample offset */
         if (GST_CLOCK_TIME_IS_VALID (mad->last_ts)) {
@@ -1540,6 +1574,16 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
               gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME,
                   start, GST_CLOCK_TIME_NONE, start));
           mad->need_newsegment = FALSE;
+        }
+
+        if (mad->pending_events) {
+          GList *l;
+
+          for (l = mad->pending_events; l != NULL; l = l->next) {
+            gst_pad_push_event (mad->srcpad, GST_EVENT (l->data));
+          }
+          g_list_free (mad->pending_events);
+          mad->pending_events = NULL;
         }
 
         /* will attach the caps to the buffer */

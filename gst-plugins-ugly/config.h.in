@@ -40,11 +40,14 @@
 /* package origin */
 #undef GST_PACKAGE_ORIGIN
 
-/* support for features: a52dec */
+/* Define to enable a52dec (used by a52dec). */
 #undef HAVE_A52DEC
 
-/* support for features: amrnb */
+/* Define to enable AMR-NB (used by amrnb). */
 #undef HAVE_AMRNB
+
+/* Define to enable cdio library (used by cdio). */
+#undef HAVE_CDIO
 
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -95,16 +98,19 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* support for features: dvdnav */
+/* define for working do while(0) macros */
+#undef HAVE_DOWHILE_MACROS
+
+/* Define to enable dvdnav library (used by dvdnav). */
 #undef HAVE_DVDNAV
 
-/* support for features: dvdreadsrc */
+/* Define to enable dvdread library (used by dvdreadsrc). */
 #undef HAVE_DVDREAD
 
-/* support for features: */
+/* Define to enable building of experimental plug-ins. */
 #undef HAVE_EXPERIMENTAL
 
-/* support for features: */
+/* Define to enable building of plug-ins with external deps. */
 #undef HAVE_EXTERNAL
 
 /* defined if the compiler implements __func__ */
@@ -119,16 +125,17 @@
 /* Define if you have the iconv() function. */
 #undef HAVE_ICONV
 
-/* support for features: id3tag */
+/* Define to enable id3tag reading and writing from the MAD project (used by
+   id3tag). */
 #undef HAVE_ID3TAG
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* support for features: lame */
+/* Define to enable lame mp3 encoder library (used by lame). */
 #undef HAVE_LAME
 
-/* support for features: mad */
+/* Define to enable mad mp3 decoder (used by mad). */
 #undef HAVE_MAD
 
 /* Define to 1 if you have the <malloc.h> header file. */
@@ -137,7 +144,7 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* support for features: mpeg2dec */
+/* Define to enable mpeg2dec (used by mpeg2dec). */
 #undef HAVE_MPEG2DEC
 
 /* defined if the compiler implements __PRETTY_FUNCTION__ */
@@ -146,7 +153,7 @@
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
 
-/* support for features: sid */
+/* Define to enable libsidplay (used by sid). */
 #undef HAVE_SIDPLAY
 
 /* Define to 1 if you have the <stdint.h> header file. */

@@ -14,10 +14,12 @@ GObject
       GstMad
       GstID3TagBase
         GstID3Tag
-      GstSidDec
       GstBaseSrc
         GstPushSrc
+          GstCddaBaseSrc
+            GstCdioCddaSrc
           GstDvdReadSrc
+      GstSidDec
       GstLame
       GstRMDemux
       GstRealAudioDemux
@@ -35,10 +37,14 @@ GObject
       GstMPEGAudioParse
       GstASFDemux
       GstRTSPWMS
+    GstBus
+    GstTask
+    GstClock
     GstPlugin
     GstRegistry
   GstSignalObject
 GInterface
+  GTypePlugin
   GstChildProxy
   GstURIHandler
   GstTagSetter

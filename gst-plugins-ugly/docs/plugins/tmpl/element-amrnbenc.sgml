@@ -31,7 +31,13 @@ Adaptive Multi-Rate Narrow-Band audio encoder
 @ts: 
 @adapter: 
 @handle: 
+@bandmode: 
 @channels: 
 @rate: 
 @duration: 
+
+<!-- ##### ARG GstAmrnbEnc:band-mode ##### -->
+<para>
+
+</para>
 

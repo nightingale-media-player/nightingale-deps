@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-10 15:06+0000\n"
+"POT-Creation-Date: 2008-08-11 23:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,25 +15,38 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ext/dvdnav/dvdnavsrc.c:1428
+#: ext/cdio/gstcdiocddasrc.c:205
+msgid "Could not read from CD."
+msgstr ""
+
+#: ext/cdio/gstcdiocddasrc.c:280
+msgid "Could not open CD device for reading."
+msgstr ""
+
+#: ext/cdio/gstcdiocddasrc.c:287
+msgid "Disc is not an Audio CD."
+msgstr ""
+
+#: ext/dvdnav/dvdnavsrc.c:585 ext/dvdnav/dvdnavsrc.c:1981
+#: ext/dvdread/dvdreadsrc.c:228 ext/dvdread/dvdreadsrc.c:235
+msgid "Could not open DVD"
+msgstr ""
+
+#: ext/dvdnav/dvdnavsrc.c:1822
 msgid "Invalid title information on DVD."
 msgstr ""
 
-#: ext/dvdnav/dvdnavsrc.c:1598
+#: ext/dvdnav/dvdnavsrc.c:1968
 msgid "Could not read title information for DVD."
 msgstr ""
 
-#: ext/dvdnav/dvdnavsrc.c:1604
+#: ext/dvdnav/dvdnavsrc.c:1990
 #, c-format
 msgid "Failed to open DVD device '%s'."
 msgstr ""
 
-#: ext/dvdnav/dvdnavsrc.c:1610
+#: ext/dvdnav/dvdnavsrc.c:1996
 msgid "Failed to set PGC based seeking."
-msgstr ""
-
-#: ext/dvdread/dvdreadsrc.c:228 ext/dvdread/dvdreadsrc.c:235
-msgid "Could not open DVD"
 msgstr ""
 
 #: ext/dvdread/dvdreadsrc.c:242 ext/dvdread/dvdreadsrc.c:594
@@ -54,21 +67,21 @@ msgid ""
 "element"
 msgstr ""
 
-#: ext/lame/gstlame.c:581
+#: ext/lame/gstlame.c:624
 msgid "Failed to configure LAME encoder. Check your encoding parameters."
 msgstr ""
 
-#: ext/lame/gstlame.c:715
+#: ext/lame/gstlame.c:718
 #, c-format
 msgid ""
 "The requested bitrate %d kbit/s for property '%s' is not allowed. The "
 "bitrate was changed to %d kbit/s."
 msgstr ""
 
-#: gst/asfdemux/gstasfdemux.c:328
+#: gst/asfdemux/gstasfdemux.c:325
 msgid "This stream contains no data."
 msgstr ""
 
-#: gst/asfdemux/gstasfdemux.c:3066
-msgid "This file is encrypted and cannot be played."
+#: gst/asfdemux/gstasfdemux.c:1371
+msgid "Internal data stream error."
 msgstr ""

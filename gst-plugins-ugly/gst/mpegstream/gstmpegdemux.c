@@ -231,6 +231,7 @@ gst_mpeg_demux_init (GstMPEGDemux * mpeg_demux, GstMPEGDemuxClass * klass)
   mpeg_demux->max_gap_tolerance = GST_CLOCK_TIME_NONE;
 
   mpeg_demux->last_pts = -1;
+  mpeg_demux->pending_tags = FALSE;
 }
 
 
@@ -245,6 +246,8 @@ gst_mpeg_demux_process_event (GstMPEGParse * mpeg_parse, GstEvent * event)
       ret = GST_MPEG_PARSE_CLASS (parent_class)->process_event (mpeg_parse,
           event);
 
+      demux->pending_tags = TRUE;
+
       gst_mpeg_streams_reset_last_flow (demux->video_stream,
           GST_MPEG_DEMUX_NUM_VIDEO_STREAMS);
       gst_mpeg_streams_reset_last_flow (demux->audio_stream,
@@ -252,6 +255,15 @@ gst_mpeg_demux_process_event (GstMPEGParse * mpeg_parse, GstEvent * event)
       gst_mpeg_streams_reset_last_flow (demux->private_stream,
           GST_MPEG_DEMUX_NUM_PRIVATE_STREAMS);
       break;
+    case GST_EVENT_NEWSEGMENT:
+      /* reset stream synchronization */
+      gst_mpeg_streams_reset_cur_ts (demux->video_stream,
+          GST_MPEG_DEMUX_NUM_VIDEO_STREAMS, 0);
+      gst_mpeg_streams_reset_cur_ts (demux->audio_stream,
+          GST_MPEG_DEMUX_NUM_AUDIO_STREAMS, 0);
+      gst_mpeg_streams_reset_cur_ts (demux->private_stream,
+          GST_MPEG_DEMUX_NUM_PRIVATE_STREAMS, 0);
+      /* fallthrough */
     default:
       ret = GST_MPEG_PARSE_CLASS (parent_class)->process_event (mpeg_parse,
           event);
@@ -318,6 +330,7 @@ gst_mpeg_demux_init_stream (GstMPEGDemux * mpeg_demux,
 
   str->last_flow = GST_FLOW_OK;
   str->buffers_sent = 0;
+  str->tags = NULL;
 }
 
 static GstMPEGStream *
@@ -484,12 +497,27 @@ gst_mpeg_demux_get_private_stream (GstMPEGDemux * mpeg_demux,
 static gboolean
 gst_mpeg_demux_parse_packhead (GstMPEGParse * mpeg_parse, GstBuffer * buffer)
 {
+  GstMPEGDemux *demux = GST_MPEG_DEMUX (mpeg_parse);
   guint8 *buf;
 
   parent_class->parse_packhead (mpeg_parse, buffer);
 
   buf = GST_BUFFER_DATA (buffer);
   /* do something useful here */
+
+  if (demux->pending_tags) {
+    GstMPEGStream **streams;
+    guint i, num;
+
+    streams = demux->audio_stream;
+    num = GST_MPEG_DEMUX_NUM_AUDIO_STREAMS;
+    for (i = 0; i < num; ++i) {
+      if (streams[i] != NULL && streams[i]->tags != NULL)
+        gst_pad_push_event (streams[i]->pad,
+            gst_event_new_tag (gst_tag_list_copy (streams[i]->tags)));
+    }
+    demux->pending_tags = FALSE;
+  }
 
   return TRUE;
 }
@@ -1011,7 +1039,7 @@ gst_mpeg_demux_send_subbuffer (GstMPEGDemux * mpeg_demux,
           GST_FORMAT_BYTES,
           GST_BUFFER_OFFSET (buffer), GST_FORMAT_TIME, timestamp, 0);
     }
-  } else
+  } else if (mpeg_parse->current_ts != GST_CLOCK_TIME_NONE)
     outstream->cur_ts = mpeg_parse->current_ts + outstream->scr_offs;
 
   if (size == 0)
@@ -1032,10 +1060,46 @@ gst_mpeg_demux_send_subbuffer (GstMPEGDemux * mpeg_demux,
 
   GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
   GST_BUFFER_OFFSET (outbuf) = GST_BUFFER_OFFSET (buffer) + offset;
+
+  if (GST_CLOCK_TIME_IS_VALID (timestamp) &&
+      GST_CLOCK_TIME_IS_VALID (mpeg_parse->current_segment.last_stop)) {
+    GstClockTimeDiff diff;
+    guint64 update_time;
+
+    update_time = MIN (timestamp, mpeg_parse->current_segment.stop);
+    update_time = MAX (timestamp, mpeg_parse->current_segment.start);
+    diff = GST_CLOCK_DIFF (mpeg_parse->current_segment.last_stop, update_time);
+    if (diff > GST_SECOND * 2) {
+      GST_DEBUG_OBJECT (mpeg_demux, "Gap of %" GST_TIME_FORMAT " detected in "
+          "stream %d. Sending updated NEWSEGMENT events", GST_TIME_ARGS (diff),
+          outstream->number);
+      PARSE_CLASS (mpeg_parse)->send_event (mpeg_parse,
+          gst_event_new_new_segment (TRUE, mpeg_parse->current_segment.rate,
+              GST_FORMAT_TIME, mpeg_parse->current_segment.last_stop,
+              mpeg_parse->current_segment.last_stop,
+              mpeg_parse->current_segment.last_stop));
+      gst_segment_set_newsegment (&mpeg_parse->current_segment,
+          FALSE, mpeg_parse->current_segment.rate, GST_FORMAT_TIME,
+          update_time, mpeg_parse->current_segment.stop, update_time);
+      PARSE_CLASS (mpeg_parse)->send_event (mpeg_parse,
+          gst_event_new_new_segment (FALSE, mpeg_parse->current_segment.rate,
+              GST_FORMAT_TIME, update_time,
+              mpeg_parse->current_segment.stop, update_time));
+      GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+    }
+    gst_segment_set_last_stop (&mpeg_parse->current_segment,
+        GST_FORMAT_TIME, update_time);
+  }
+
   ret = gst_pad_push (outstream->pad, outbuf);
   GST_LOG_OBJECT (outstream->pad, "flow: %s", gst_flow_get_name (ret));
   ++outstream->buffers_sent;
 
+  GST_LOG_OBJECT (mpeg_demux, "current: %" GST_TIME_FORMAT
+      ", gap %" GST_TIME_FORMAT ", tol: %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (mpeg_parse->current_ts),
+      GST_TIME_ARGS (mpeg_demux->max_gap),
+      GST_TIME_ARGS (mpeg_demux->max_gap_tolerance));
   if (GST_CLOCK_TIME_IS_VALID (mpeg_demux->max_gap) &&
       GST_CLOCK_TIME_IS_VALID (mpeg_parse->current_ts) &&
       (mpeg_parse->current_ts > mpeg_demux->max_gap)) {
@@ -1114,12 +1178,13 @@ gst_mpeg_demux_sync_stream_to_time (GstMPEGDemux * mpeg_demux,
     GstMPEGStream * stream, GstClockTime last_ts)
 {
   GstMPEGParse *mpeg_parse = GST_MPEG_PARSE (mpeg_demux);
+  guint64 update_time;
 
+  update_time =
+      MIN ((guint64) last_ts, (guint64) mpeg_parse->current_segment.stop);
   gst_pad_push_event (stream->pad, gst_event_new_new_segment (TRUE,
           mpeg_parse->current_segment.rate, GST_FORMAT_TIME,
-          last_ts, -1, last_ts));
-
-  mpeg_parse->current_segment.start = last_ts;
+          update_time, mpeg_parse->current_segment.stop, update_time));
 }
 
 #if 0
@@ -1277,6 +1342,8 @@ gst_mpeg_demux_reset (GstMPEGDemux * mpeg_demux)
           gst_event_new_eos ());
       gst_element_remove_pad (GST_ELEMENT (mpeg_demux),
           mpeg_demux->audio_stream[i]->pad);
+      if (mpeg_demux->audio_stream[i]->tags)
+        gst_tag_list_free (mpeg_demux->audio_stream[i]->tags);
       g_free (mpeg_demux->audio_stream[i]);
       mpeg_demux->audio_stream[i] = NULL;
     }
@@ -1305,6 +1372,7 @@ gst_mpeg_demux_reset (GstMPEGDemux * mpeg_demux)
 
   mpeg_demux->index = NULL;
   mpeg_demux->last_pts = -1;
+  mpeg_demux->pending_tags = FALSE;
 
   /*
    * Don't adjust things that are only for subclass use
@@ -1364,6 +1432,18 @@ gst_mpeg_streams_reset_last_flow (GstMPEGStream * streams[], guint num)
   for (i = 0; i < num; ++i) {
     if (streams[i] != NULL)
       streams[i]->last_flow = GST_FLOW_OK;
+  }
+}
+
+void
+gst_mpeg_streams_reset_cur_ts (GstMPEGStream * streams[], guint num,
+    GstClockTime cur_ts)
+{
+  guint i;
+
+  for (i = 0; i < num; ++i) {
+    if (streams[i] != NULL)
+      streams[i]->cur_ts = cur_ts;
   }
 }
 

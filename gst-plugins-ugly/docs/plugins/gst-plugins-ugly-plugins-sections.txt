@@ -1,4 +1,18 @@
 <SECTION>
+<FILE>element-a52dec</FILE>
+<TITLE>a52dec</TITLE>
+GstA52Dec
+<SUBSECTION Standard>
+GstA52DecClass
+GST_A52DEC
+GST_A52DEC_CLASS
+GST_IS_A52DEC
+GST_IS_A52DEC_CLASS
+GST_TYPE_A52DEC
+gst_a52dec_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-amrnbdec</FILE>
 <TITLE>amrnbdec</TITLE>
 GstAmrnbDec
@@ -41,20 +55,17 @@ gst_amrnbparse_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-mad</FILE>
-<TITLE>mad</TITLE>
-GstMad
+<FILE>element-cdiocddasrc</FILE>
+<TITLE>cdiocddasrc</TITLE>
+GstCdioCddaSrc
 <SUBSECTION Standard>
-GstMadClass
-GST_MAD
-GST_MAD_CLASS
-GST_IS_MAD
-GST_IS_MAD_CLASS
-GST_TYPE_MAD
-gst_mad_get_type
-gst_id3_tag_get_type
-gst_mad_id3_to_tag_list
-gst_mad_tag_list_to_id3_tag
+GstCdioCddaSrcClass
+GST_TYPE_CDIO_CDDA_SRC
+GST_CDIO_CDDA_SRC
+GST_CDIO_CDDA_SRC_CLASS
+GST_IS_CDIO_CDDA_SRC
+GST_IS_CDIO_CDDA_SRC_CLASS
+gst_cdio_cdda_src_get_type
 </SECTION>
 
 <SECTION>
@@ -72,19 +83,20 @@ gst_lame_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-rdtmanager</FILE>
-<TITLE>rdtmanager</TITLE>
-GstRDTManager
+<FILE>element-mad</FILE>
+<TITLE>mad</TITLE>
+GstMad
 <SUBSECTION Standard>
-GstRDTManagerClass
-GstRDTManagerSession
-GST_RDT_MANAGER
-GST_RDT_MANAGER_CLASS
-GST_IS_RDT_MANAGER
-GST_IS_RDT_MANAGER_CLASS
-GST_TYPE_RDT_MANAGER
-gst_rdt_manager_get_type
-gst_rdt_manager_plugin_init
+GstMadClass
+GST_MAD
+GST_MAD_CLASS
+GST_IS_MAD
+GST_IS_MAD_CLASS
+GST_TYPE_MAD
+gst_mad_get_type
+gst_id3_tag_get_type
+gst_mad_id3_to_tag_list
+gst_mad_tag_list_to_id3_tag
 </SECTION>
 
 <SECTION>
@@ -100,6 +112,22 @@ GST_IS_REAL_AUDIO_DEMUX
 GST_IS_REAL_AUDIO_DEMUX_CLASS
 GST_TYPE_REAL_AUDIO_DEMUX
 gst_real_audio_demux_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-rdtmanager</FILE>
+<TITLE>rdtmanager</TITLE>
+GstRDTManager
+<SUBSECTION Standard>
+GstRDTManagerClass
+GstRDTManagerSession
+GST_RDT_MANAGER
+GST_RDT_MANAGER_CLASS
+GST_IS_RDT_MANAGER
+GST_IS_RDT_MANAGER_CLASS
+GST_TYPE_RDT_MANAGER
+gst_rdt_manager_get_type
+gst_rdt_manager_plugin_init
 </SECTION>
 
 <SECTION>

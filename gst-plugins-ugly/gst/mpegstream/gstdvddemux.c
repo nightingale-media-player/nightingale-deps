@@ -141,6 +141,8 @@ static void gst_dvd_demux_init (GstDVDDemux * dvd_demux,
 
 static gboolean gst_dvd_demux_process_event (GstMPEGParse * mpeg_parse,
     GstEvent * event);
+static gboolean gst_dvd_demux_parse_packhead (GstMPEGParse * mpeg_parse,
+    GstBuffer * buffer);
 
 static gboolean gst_dvd_demux_handle_dvd_event
     (GstDVDDemux * dvd_demux, GstEvent * event);
@@ -195,6 +197,7 @@ gst_dvd_demux_base_init (gpointer klass)
 
   mpeg_parse_class->send_buffer = NULL;
   mpeg_parse_class->process_event = gst_dvd_demux_process_event;
+  mpeg_parse_class->parse_packhead = gst_dvd_demux_parse_packhead;
 
   /* sink pad */
   gst_element_class_add_pad_template (element_class,
@@ -309,6 +312,10 @@ gst_dvd_demux_process_event (GstMPEGParse * mpeg_parse, GstEvent * event)
            may mean that we find some audio blocks lying outside the
            segment. Filter them. */
         dvd_demux->segment_filter = TRUE;
+
+        /* reset stream synchronization; parent handles other streams */
+        gst_mpeg_streams_reset_cur_ts (dvd_demux->subpicture_stream,
+            GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS, 0);
       }
 
       ret = GST_MPEG_PARSE_CLASS (parent_class)->process_event (mpeg_parse,
@@ -665,6 +672,7 @@ gst_dvd_demux_get_audio_stream (GstMPEGDemux * mpeg_demux,
           gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
               GST_TAG_LANGUAGE_CODE, lang_code, NULL);
         }
+        str->tags = gst_tag_list_copy (list);
         gst_element_found_tags_for_pad (GST_ELEMENT (mpeg_demux),
             str->pad, list);
       }
@@ -733,9 +741,6 @@ gst_dvd_demux_get_subpicture_stream (GstMPEGDemux * mpeg_demux,
     }
 
     if (add_pad) {
-      gst_pad_set_active (str->pad, TRUE);
-      gst_element_add_pad (GST_ELEMENT (mpeg_demux), str->pad);
-
       if (dvd_demux->langcodes) {
         gchar *t;
 
@@ -744,21 +749,53 @@ gst_dvd_demux_get_subpicture_stream (GstMPEGDemux * mpeg_demux,
             gst_structure_get_string (gst_event_get_structure (dvd_demux->
                 langcodes), t);
         g_free (t);
+      }
 
-        if (lang_code) {
-          GstTagList *list = gst_tag_list_new ();
+      GST_DEBUG_OBJECT (mpeg_demux, "adding pad %s with language = %s",
+          GST_PAD_NAME (str->pad), (lang_code) ? lang_code : "(unknown)");
 
-          gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
-              GST_TAG_LANGUAGE_CODE, lang_code, NULL);
-          gst_element_found_tags_for_pad (GST_ELEMENT (mpeg_demux),
-              str->pad, list);
-        }
+      gst_pad_set_active (str->pad, TRUE);
+      gst_element_add_pad (GST_ELEMENT (mpeg_demux), str->pad);
+
+      if (lang_code) {
+        GstTagList *list = gst_tag_list_new ();
+
+        gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
+            GST_TAG_LANGUAGE_CODE, lang_code, NULL);
+        str->tags = gst_tag_list_copy (list);
+        gst_element_found_tags_for_pad (GST_ELEMENT (mpeg_demux),
+            str->pad, list);
       }
     }
     str->type = GST_DVD_DEMUX_SUBP_DVD;
   }
 
   return str;
+}
+
+static gboolean
+gst_dvd_demux_parse_packhead (GstMPEGParse * mpeg_parse, GstBuffer * buffer)
+{
+  GstMPEGDemux *mpeg_demux = GST_MPEG_DEMUX (mpeg_parse);
+  GstDVDDemux *dvd_demux = GST_DVD_DEMUX (mpeg_parse);
+  gboolean pending_tags = mpeg_demux->pending_tags;
+
+  GST_MPEG_PARSE_CLASS (parent_class)->parse_packhead (mpeg_parse, buffer);
+
+  if (pending_tags) {
+    GstMPEGStream **streams;
+    guint i, num;
+
+    streams = dvd_demux->subpicture_stream;
+    num = GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS;
+    for (i = 0; i < num; ++i) {
+      if (streams[i] != NULL && streams[i]->tags != NULL)
+        gst_pad_push_event (streams[i]->pad,
+            gst_event_new_tag (gst_tag_list_copy (streams[i]->tags)));
+    }
+  }
+
+  return TRUE;
 }
 
 static GstFlowReturn
@@ -1127,6 +1164,8 @@ gst_dvd_demux_reset (GstDVDDemux * dvd_demux)
 
       gst_element_remove_pad (GST_ELEMENT (dvd_demux),
           dvd_demux->subpicture_stream[i]->pad);
+      if (dvd_demux->subpicture_stream[i]->tags)
+        gst_tag_list_free (dvd_demux->subpicture_stream[i]->tags);
       g_free (dvd_demux->subpicture_stream[i]);
       dvd_demux->subpicture_stream[i] = NULL;
     }
@@ -1155,6 +1194,14 @@ gst_dvd_demux_synchronise_pads (GstMPEGDemux * mpeg_demux,
   parent_class->synchronise_pads (mpeg_demux, threshold, new_ts);
 
   for (i = 0; i < GST_DVD_DEMUX_NUM_SUBPICTURE_STREAMS; i++) {
+#ifndef GST_DISABLE_DEBUG
+    if (dvd_demux->subpicture_stream[i]) {
+      GST_LOG_OBJECT (mpeg_demux, "stream: %d, current: %" GST_TIME_FORMAT
+          ", threshold %" GST_TIME_FORMAT, i,
+          GST_TIME_ARGS (dvd_demux->subpicture_stream[i]->cur_ts),
+          GST_TIME_ARGS (threshold));
+    }
+#endif
     if (dvd_demux->subpicture_stream[i]
         && (dvd_demux->subpicture_stream[i]->cur_ts < threshold)) {
       DEMUX_CLASS (mpeg_demux)->sync_stream_to_time (mpeg_demux,
@@ -1193,9 +1240,13 @@ gst_dvd_demux_sync_stream_to_time (GstMPEGDemux * mpeg_demux,
   }
 
   if (outpad && (cur_nr == stream->number)) {
+    guint64 update_time;
+
+    update_time =
+        MIN ((guint64) last_ts, (guint64) mpeg_parse->current_segment.stop);
     gst_pad_push_event (outpad, gst_event_new_new_segment (TRUE,
             mpeg_parse->current_segment.rate, GST_FORMAT_TIME,
-            last_ts, -1, last_ts));
+            update_time, mpeg_parse->current_segment.stop, update_time));
   }
 }
 

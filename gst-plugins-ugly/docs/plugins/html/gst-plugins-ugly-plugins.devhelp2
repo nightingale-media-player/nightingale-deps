@@ -3,11 +3,17 @@
 <book xmlns="http://www.devhelp.net/book" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual" link="index.html" author="" name="gst-plugins-ugly-plugins" version="2">
   <chapters>
     <sub name="gst-plugins-ugly Elements" link="ch01.html">
+      <sub name="a52dec" link="gst-plugins-ugly-plugins-a52dec.html"/>
       <sub name="amrnbdec" link="gst-plugins-ugly-plugins-amrnbdec.html"/>
       <sub name="amrnbenc" link="gst-plugins-ugly-plugins-amrnbenc.html"/>
       <sub name="amrnbparse" link="gst-plugins-ugly-plugins-amrnbparse.html"/>
+      <sub name="cdiocddasrc" link="gst-plugins-ugly-plugins-cdiocddasrc.html"/>
       <sub name="lame" link="gst-plugins-ugly-plugins-lame.html"/>
       <sub name="mad" link="gst-plugins-ugly-plugins-mad.html"/>
+      <sub name="rademux" link="gst-plugins-ugly-plugins-rademux.html"/>
+      <sub name="rdtmanager" link="gst-plugins-ugly-plugins-rdtmanager.html"/>
+      <sub name="rtspreal" link="gst-plugins-ugly-plugins-rtspreal.html"/>
+      <sub name="rtspwms" link="gst-plugins-ugly-plugins-rtspwms.html"/>
       <sub name="siddec" link="gst-plugins-ugly-plugins-siddec.html"/>
       <sub name="synaesthesia" link="gst-plugins-ugly-plugins-synaesthesia.html"/>
       <sub name="xingmux" link="gst-plugins-ugly-plugins-xingmux.html"/>
@@ -16,6 +22,7 @@
       <sub name="a52dec" link="gst-plugins-ugly-plugins-plugin-a52dec.html"/>
       <sub name="amrnb" link="gst-plugins-ugly-plugins-plugin-amrnb.html"/>
       <sub name="asf" link="gst-plugins-ugly-plugins-plugin-asf.html"/>
+      <sub name="cdio" link="gst-plugins-ugly-plugins-plugin-cdio.html"/>
       <sub name="dvdlpcmdec" link="gst-plugins-ugly-plugins-plugin-dvdlpcmdec.html"/>
       <sub name="dvdnav" link="gst-plugins-ugly-plugins-plugin-dvdnav.html"/>
       <sub name="dvdread" link="gst-plugins-ugly-plugins-plugin-dvdread.html"/>
@@ -33,17 +40,36 @@
     </sub>
   </chapters>
   <functions>
-    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbdec.html#id2588319"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id2589193"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-a52dec.html#id2575940"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-a52dec.html#id2563077"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-a52dec.html#id2499561"/>
+    <keyword type="struct" name="GstA52Dec" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec-struct"/>
+    <keyword type="" name="The &quot;drc&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--drc"/>
+    <keyword type="" name="The &quot;lfe&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--lfe"/>
+    <keyword type="" name="The &quot;mode&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--mode"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbdec.html#id2560410"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id2551750"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrnbdec.html#id2560040"/>
     <keyword type="struct" name="GstAmrnbDec" link="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec"/>
-    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbenc.html#id2567010"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id2559705"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbenc.html#id2581192"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id2551200"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrnbenc.html#id2578354"/>
     <keyword type="struct" name="GstAmrnbEnc" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc"/>
-    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbparse.html#id2580045"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbparse.html#id2587001"/>
+    <keyword type="" name="The &quot;band-mode&quot; property" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc--band-mode"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-amrnbparse.html#id2562911"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbparse.html#id2556133"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrnbparse.html#id2585196"/>
     <keyword type="struct" name="GstAmrnbParse" link="gst-plugins-ugly-plugins-amrnbparse.html#GstAmrnbParse"/>
-    <keyword type="" name="Output sample rate" link="gst-plugins-ugly-plugins-lame.html#id2563056"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-lame.html#id2563176"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2578085"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2578160"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2581397"/>
+    <keyword type="struct" name="GstCdioCddaSrc" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc-struct"/>
+    <keyword type="" name="The &quot;read-speed&quot; property" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed"/>
+    <keyword type="" name="Output sample rate" link="gst-plugins-ugly-plugins-lame.html#id2563887"/>
+    <keyword type="" name="Writing metadata (tags)" link="gst-plugins-ugly-plugins-lame.html#id2563899"/>
+    <keyword type="" name="Example pipelines" link="gst-plugins-ugly-plugins-lame.html#id2563912"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-lame.html#id2563976"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-lame.html#id2564039"/>
     <keyword type="struct" name="GstLame" link="gst-plugins-ugly-plugins-lame.html#GstLame-struct"/>
     <keyword type="" name="The &quot;allow-diff-short&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--allow-diff-short"/>
     <keyword type="" name="The &quot;ath-lower&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--ath-lower"/>
@@ -78,12 +104,34 @@
     <keyword type="" name="The &quot;vbr-min-bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-min-bitrate"/>
     <keyword type="" name="The &quot;vbr-quality&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-quality"/>
     <keyword type="" name="The &quot;xingheader&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--xingheader"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id2591512"/>
+    <keyword type="" name="Example pipelines" link="gst-plugins-ugly-plugins-mad.html#id2586729"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id2523010"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-mad.html#id2577701"/>
     <keyword type="struct" name="GstMad" link="gst-plugins-ugly-plugins-mad.html#GstMad-struct"/>
     <keyword type="" name="The &quot;half&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--half"/>
     <keyword type="" name="The &quot;ignore-crc&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc"/>
-    <keyword type="" name="Example pipelines" link="gst-plugins-ugly-plugins-siddec.html#id2597026"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id2597067"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-rademux.html#id2565880"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rademux.html#id2583400"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rademux.html#id2583436"/>
+    <keyword type="struct" name="GstRealAudioDemux" link="gst-plugins-ugly-plugins-rademux.html#GstRealAudioDemux-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rdtmanager.html#id2553056"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rdtmanager.html#id2589830"/>
+    <keyword type="struct" name="GstRDTManager" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-struct"/>
+    <keyword type="" name="The &quot;latency&quot; property" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager--latency"/>
+    <keyword type="" name="The &quot;clear-pt-map&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-clear-pt-map"/>
+    <keyword type="" name="The &quot;on-bye-ssrc&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-bye-ssrc"/>
+    <keyword type="" name="The &quot;on-bye-timeout&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-bye-timeout"/>
+    <keyword type="" name="The &quot;on-timeout&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-timeout"/>
+    <keyword type="" name="The &quot;request-pt-map&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-request-pt-map"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rtspreal.html#id2592538"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rtspreal.html#id2591799"/>
+    <keyword type="struct" name="GstRTSPReal" link="gst-plugins-ugly-plugins-rtspreal.html#GstRTSPReal-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rtspwms.html#id2562192"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rtspwms.html#id2591179"/>
+    <keyword type="struct" name="GstRTSPWMS" link="gst-plugins-ugly-plugins-rtspwms.html#GstRTSPWMS-struct"/>
+    <keyword type="" name="Example pipelines" link="gst-plugins-ugly-plugins-siddec.html#id2557962"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id2557987"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-siddec.html#id2555367"/>
     <keyword type="struct" name="GstSidDec" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct"/>
     <keyword type="" name="The &quot;blocksize&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize"/>
     <keyword type="" name="The &quot;clock&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock"/>
@@ -94,11 +142,13 @@
     <keyword type="" name="The &quot;metadata&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata"/>
     <keyword type="" name="The &quot;mos8580&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580"/>
     <keyword type="" name="The &quot;tune&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune"/>
-    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-synaesthesia.html#id2559572"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-synaesthesia.html#id2586427"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-synaesthesia.html#id2591431"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-synaesthesia.html#id2591423"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-synaesthesia.html#id2579161"/>
     <keyword type="struct" name="GstSynaesthesia" link="gst-plugins-ugly-plugins-synaesthesia.html#GstSynaesthesia"/>
-    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id2557484"/>
-    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id2593802"/>
-    <keyword type="struct" name="GstXingMux" link="gst-plugins-ugly-plugins-xingmux.html#GstXingMux"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id2550681"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id2569288"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-xingmux.html#id2560044"/>
+    <keyword type="struct" name="GstXingMux" link="gst-plugins-ugly-plugins-xingmux.html#GstXingMux-struct"/>
   </functions>
 </book>
