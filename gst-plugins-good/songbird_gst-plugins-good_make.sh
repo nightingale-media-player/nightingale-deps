@@ -444,7 +444,7 @@ build()
 
     # add win32 specific flags
     if [ "$sys_name" = "Cygwin" ]; then
-	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055"
+	export CFLAGS="${CFLAGS} -D_MSC_VER=${_MSC_VER} -DWIN32 -D__NO_CTYPE -D_CRT_SECURE_NO_WARNINGS  -DHAVE_WIN32 -D_WINDOWS -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -D_USE_MATH_DEFINES"
 	if [ "$build_type" = "debug" ]; then
 	    export CFLAGS="${CFLAGS} -MTd -Zi"
 	else
