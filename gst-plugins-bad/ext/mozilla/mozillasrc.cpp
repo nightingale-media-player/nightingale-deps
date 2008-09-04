@@ -17,6 +17,9 @@
 #include "config.h"
 #endif
 
+/* Must be before any other mozilla headers */
+#include "mozilla-config.h"
+
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 #include <gst/base/gstadapter.h>
