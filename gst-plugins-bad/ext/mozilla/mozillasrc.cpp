@@ -221,6 +221,11 @@ StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
       }
     }
 
+    if (!src->is_seekable) {
+      /* There's no API for this, unfortunately */
+      ((GstBaseSrc *)src)->seekable = FALSE;
+    }
+
     // Handle the metadata interval for non-shoutcast servers that support
     // this (like icecast).
     rv = httpChannel->GetResponseHeader(NS_LITERAL_CSTRING("icy-metaint"),
@@ -532,6 +537,8 @@ static void unref_buffer (gpointer data, gpointer user_data)
 static void
 gst_mozilla_src_flush (GstMozillaSrc * src)
 {
+  GST_DEBUG_OBJECT (src, "Flushing input queue");
+
   g_mutex_lock (src->queue_lock);
   g_queue_foreach (src->queue, unref_buffer, NULL);
   /* g_queue_clear (src->queue); // glib 2.14 required */
