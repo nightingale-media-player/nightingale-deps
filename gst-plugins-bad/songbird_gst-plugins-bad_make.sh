@@ -445,6 +445,8 @@ build()
 	# add the directshow specific flags
     fi
 
+    MOZILLA_DIR="${dep_arch_dir}/mozilla/${build_type}/"
+
     # Apply command line options pre-processing.
     if test -n "${cl_process}"; then
         export CFLAGS=`${cl_process} echo ${CFLAGS}`
@@ -475,12 +477,12 @@ build()
     fi
 
     # Generate, configure, build, and install.
-    echo cfg_opts
     export NOCONFIGURE="yes"
     ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
 	--disable-examples \
 	--disable-tests \
+    --with-mozilla=${MOZILLA_DIR} \
 	-C
     make && make install
 

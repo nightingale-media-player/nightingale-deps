@@ -1366,6 +1366,25 @@ dnl whatevertarget_LIBS and -L flags here affect the rest of the linking
 GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_desc\$\$' $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
+dnl Songbird-specific stuff to set up things to link mozillasrc properly
+AM_CONDITIONAL(USE_MOZILLA, true)
+
+AC_ARG_WITH(mozilla,
+        [  --with-mozilla=PATH     Specify path to Mozilla installation ],
+        [
+          MOZILLA_CFLAGS="-I$withval/include/necko -I$withval/include/xpcom -I$withval/include/string -I$withval/include/nspr"
+          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl"
+        ],
+        [
+          MOZILLA_CFLAGS=""
+          MOZILLA_LIBS=""
+        ]
+)
+
+AC_SUBST(MOZILLA_CFLAGS)
+AC_SUBST(MOZILLA_LIBS)
+dnl End Songbird-specific bits
+
 dnl *** output files ***
 
 dnl po/Makefile.in
@@ -1439,6 +1458,7 @@ ext/directfb/Makefile
 ext/divx/Makefile
 ext/dts/Makefile
 ext/metadata/Makefile
+ext/mozilla/Makefile
 ext/faac/Makefile
 ext/faad/Makefile
 ext/gsm/Makefile

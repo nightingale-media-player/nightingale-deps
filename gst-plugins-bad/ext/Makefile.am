@@ -160,6 +160,12 @@ else
 METADATA_DIR=
 endif
 
+if USE_MOZILLA
+MOZILLA_DIR=mozilla
+else
+MOZILLA_DIR=
+endif
+
 if USE_MPLEX
 MPLEX_DIR=mplex
 else
@@ -322,6 +328,7 @@ SUBDIRS=\
 	$(LIBMMS_DIR) \
 	$(MPEG2ENC_DIR) \
 	$(METADATA_DIR) \
+	$(MOZILLA_DIR) \
 	$(MPLEX_DIR) \
 	$(MUSEPACK_DIR) \
 	$(MUSICBRAINZ_DIR) \
@@ -362,6 +369,7 @@ DIST_SUBDIRS = \
 	dts \
 	divx \
 	metadata \
+	mozilla \
 	mpeg2enc \
 	mplex \
 	musepack \

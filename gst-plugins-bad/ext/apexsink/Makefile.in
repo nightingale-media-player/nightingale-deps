@@ -37,7 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = ext/xvid
+subdir = ext/apexsink
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -85,11 +85,12 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstxvid_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libgstapexsink_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_libgstxvid_la_OBJECTS = libgstxvid_la-gstxvidenc.lo \
-	libgstxvid_la-gstxviddec.lo libgstxvid_la-gstxvid.lo
-libgstxvid_la_OBJECTS = $(am_libgstxvid_la_OBJECTS)
+am_libgstapexsink_la_OBJECTS = libgstapexsink_la-gstapexplugin.lo \
+	libgstapexsink_la-gstapexraop.lo \
+	libgstapexsink_la-gstapexsink.lo
+libgstapexsink_la_OBJECTS = $(am_libgstapexsink_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -101,8 +102,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstxvid_la_SOURCES)
-DIST_SOURCES = $(libgstxvid_la_SOURCES)
+SOURCES = $(libgstapexsink_la_SOURCES)
+DIST_SOURCES = $(libgstapexsink_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -629,12 +630,12 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-plugin_LTLIBRARIES = libgstxvid.la
-libgstxvid_la_SOURCES = gstxvidenc.c gstxviddec.c gstxvid.c
-libgstxvid_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) $(XVID_CFLAGS)
-libgstxvid_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(XVID_LIBS)
-libgstxvid_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-noinst_HEADERS = gstxvidenc.h gstxviddec.h gstxvid.h
+plugin_LTLIBRARIES = libgstapexsink.la
+libgstapexsink_la_SOURCES = gstapexplugin.c gstapexraop.c gstapexsink.c
+libgstapexsink_la_CFLAGS = $(APEXSINK_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+libgstapexsink_la_LIBADD = $(APEXSINK_LIBS) $(GST_PLUGINS_BASE_LIBS) $(GST_LIBS) -lgstaudio-$(GST_MAJORMINOR) -lgstinterfaces-$(GST_MAJORMINOR)
+libgstapexsink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+noinst_HEADERS = gstapexraop.h gstapexsink.h
 all: all-am
 
 .SUFFIXES:
@@ -648,9 +649,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  ext/xvid/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  ext/apexsink/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  ext/xvid/Makefile
+	  $(AUTOMAKE) --gnu  ext/apexsink/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -695,8 +696,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstxvid.la: $(libgstxvid_la_OBJECTS) $(libgstxvid_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstxvid_la_LDFLAGS) $(libgstxvid_la_OBJECTS) $(libgstxvid_la_LIBADD) $(LIBS)
+libgstapexsink.la: $(libgstapexsink_la_OBJECTS) $(libgstapexsink_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstapexsink_la_LDFLAGS) $(libgstapexsink_la_OBJECTS) $(libgstapexsink_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -704,9 +705,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxvid.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxviddec.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxvidenc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapexsink_la-gstapexplugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapexsink_la-gstapexraop.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapexsink_la-gstapexsink.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -729,26 +730,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libgstxvid_la-gstxvidenc.lo: gstxvidenc.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxvidenc.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo" -c -o libgstxvid_la-gstxvidenc.lo `test -f 'gstxvidenc.c' || echo '$(srcdir)/'`gstxvidenc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo" "$(DEPDIR)/libgstxvid_la-gstxvidenc.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxvidenc.c' object='libgstxvid_la-gstxvidenc.lo' libtool=yes @AMDEPBACKSLASH@
+libgstapexsink_la-gstapexplugin.lo: gstapexplugin.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -MT libgstapexsink_la-gstapexplugin.lo -MD -MP -MF "$(DEPDIR)/libgstapexsink_la-gstapexplugin.Tpo" -c -o libgstapexsink_la-gstapexplugin.lo `test -f 'gstapexplugin.c' || echo '$(srcdir)/'`gstapexplugin.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstapexsink_la-gstapexplugin.Tpo" "$(DEPDIR)/libgstapexsink_la-gstapexplugin.Plo"; else rm -f "$(DEPDIR)/libgstapexsink_la-gstapexplugin.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstapexplugin.c' object='libgstapexsink_la-gstapexplugin.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxvidenc.lo `test -f 'gstxvidenc.c' || echo '$(srcdir)/'`gstxvidenc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -c -o libgstapexsink_la-gstapexplugin.lo `test -f 'gstapexplugin.c' || echo '$(srcdir)/'`gstapexplugin.c
 
-libgstxvid_la-gstxviddec.lo: gstxviddec.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxviddec.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo" -c -o libgstxvid_la-gstxviddec.lo `test -f 'gstxviddec.c' || echo '$(srcdir)/'`gstxviddec.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo" "$(DEPDIR)/libgstxvid_la-gstxviddec.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxviddec.c' object='libgstxvid_la-gstxviddec.lo' libtool=yes @AMDEPBACKSLASH@
+libgstapexsink_la-gstapexraop.lo: gstapexraop.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -MT libgstapexsink_la-gstapexraop.lo -MD -MP -MF "$(DEPDIR)/libgstapexsink_la-gstapexraop.Tpo" -c -o libgstapexsink_la-gstapexraop.lo `test -f 'gstapexraop.c' || echo '$(srcdir)/'`gstapexraop.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstapexsink_la-gstapexraop.Tpo" "$(DEPDIR)/libgstapexsink_la-gstapexraop.Plo"; else rm -f "$(DEPDIR)/libgstapexsink_la-gstapexraop.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstapexraop.c' object='libgstapexsink_la-gstapexraop.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxviddec.lo `test -f 'gstxviddec.c' || echo '$(srcdir)/'`gstxviddec.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -c -o libgstapexsink_la-gstapexraop.lo `test -f 'gstapexraop.c' || echo '$(srcdir)/'`gstapexraop.c
 
-libgstxvid_la-gstxvid.lo: gstxvid.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxvid.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo" -c -o libgstxvid_la-gstxvid.lo `test -f 'gstxvid.c' || echo '$(srcdir)/'`gstxvid.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo" "$(DEPDIR)/libgstxvid_la-gstxvid.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxvid.c' object='libgstxvid_la-gstxvid.lo' libtool=yes @AMDEPBACKSLASH@
+libgstapexsink_la-gstapexsink.lo: gstapexsink.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -MT libgstapexsink_la-gstapexsink.lo -MD -MP -MF "$(DEPDIR)/libgstapexsink_la-gstapexsink.Tpo" -c -o libgstapexsink_la-gstapexsink.lo `test -f 'gstapexsink.c' || echo '$(srcdir)/'`gstapexsink.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstapexsink_la-gstapexsink.Tpo" "$(DEPDIR)/libgstapexsink_la-gstapexsink.Plo"; else rm -f "$(DEPDIR)/libgstapexsink_la-gstapexsink.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstapexsink.c' object='libgstapexsink_la-gstapexsink.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxvid.lo `test -f 'gstxvid.c' || echo '$(srcdir)/'`gstxvid.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstapexsink_la_CFLAGS) $(CFLAGS) -c -o libgstapexsink_la-gstapexsink.lo `test -f 'gstapexsink.c' || echo '$(srcdir)/'`gstapexsink.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

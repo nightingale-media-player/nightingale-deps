@@ -37,7 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = ext/xvid
+subdir = gst/aiffparse
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -85,11 +85,10 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstxvid_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
-am_libgstxvid_la_OBJECTS = libgstxvid_la-gstxvidenc.lo \
-	libgstxvid_la-gstxviddec.lo libgstxvid_la-gstxvid.lo
-libgstxvid_la_OBJECTS = $(am_libgstxvid_la_OBJECTS)
+libgstaiffparse_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_libgstaiffparse_la_OBJECTS = libgstaiffparse_la-aiffparse.lo
+libgstaiffparse_la_OBJECTS = $(am_libgstaiffparse_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -101,8 +100,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstxvid_la_SOURCES)
-DIST_SOURCES = $(libgstxvid_la_SOURCES)
+SOURCES = $(libgstaiffparse_la_SOURCES)
+DIST_SOURCES = $(libgstaiffparse_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -629,12 +628,20 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-plugin_LTLIBRARIES = libgstxvid.la
-libgstxvid_la_SOURCES = gstxvidenc.c gstxviddec.c gstxvid.c
-libgstxvid_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) $(XVID_CFLAGS)
-libgstxvid_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(XVID_LIBS)
-libgstxvid_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-noinst_HEADERS = gstxvidenc.h gstxviddec.h gstxvid.h
+plugin_LTLIBRARIES = libgstaiffparse.la
+libgstaiffparse_la_SOURCES = aiffparse.c
+libgstaiffparse_la_CFLAGS = \
+	$(GST_BASE_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_CFLAGS)
+
+libgstaiffparse_la_LIBADD = \
+	$(GST_PLUGINS_BASE_LIBS) \
+	$(GST_BASE_LIBS) \
+	$(LIBM)
+
+libgstaiffparse_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+noinst_HEADERS = aiffparse.h
 all: all-am
 
 .SUFFIXES:
@@ -648,9 +655,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  ext/xvid/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  gst/aiffparse/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  ext/xvid/Makefile
+	  $(AUTOMAKE) --gnu  gst/aiffparse/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -695,8 +702,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstxvid.la: $(libgstxvid_la_OBJECTS) $(libgstxvid_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstxvid_la_LDFLAGS) $(libgstxvid_la_OBJECTS) $(libgstxvid_la_LIBADD) $(LIBS)
+libgstaiffparse.la: $(libgstaiffparse_la_OBJECTS) $(libgstaiffparse_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstaiffparse_la_LDFLAGS) $(libgstaiffparse_la_OBJECTS) $(libgstaiffparse_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -704,9 +711,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxvid.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxviddec.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstxvid_la-gstxvidenc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaiffparse_la-aiffparse.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -729,26 +734,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libgstxvid_la-gstxvidenc.lo: gstxvidenc.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxvidenc.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo" -c -o libgstxvid_la-gstxvidenc.lo `test -f 'gstxvidenc.c' || echo '$(srcdir)/'`gstxvidenc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo" "$(DEPDIR)/libgstxvid_la-gstxvidenc.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxvidenc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxvidenc.c' object='libgstxvid_la-gstxvidenc.lo' libtool=yes @AMDEPBACKSLASH@
+libgstaiffparse_la-aiffparse.lo: aiffparse.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaiffparse_la_CFLAGS) $(CFLAGS) -MT libgstaiffparse_la-aiffparse.lo -MD -MP -MF "$(DEPDIR)/libgstaiffparse_la-aiffparse.Tpo" -c -o libgstaiffparse_la-aiffparse.lo `test -f 'aiffparse.c' || echo '$(srcdir)/'`aiffparse.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstaiffparse_la-aiffparse.Tpo" "$(DEPDIR)/libgstaiffparse_la-aiffparse.Plo"; else rm -f "$(DEPDIR)/libgstaiffparse_la-aiffparse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='aiffparse.c' object='libgstaiffparse_la-aiffparse.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxvidenc.lo `test -f 'gstxvidenc.c' || echo '$(srcdir)/'`gstxvidenc.c
-
-libgstxvid_la-gstxviddec.lo: gstxviddec.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxviddec.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo" -c -o libgstxvid_la-gstxviddec.lo `test -f 'gstxviddec.c' || echo '$(srcdir)/'`gstxviddec.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo" "$(DEPDIR)/libgstxvid_la-gstxviddec.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxviddec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxviddec.c' object='libgstxvid_la-gstxviddec.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxviddec.lo `test -f 'gstxviddec.c' || echo '$(srcdir)/'`gstxviddec.c
-
-libgstxvid_la-gstxvid.lo: gstxvid.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -MT libgstxvid_la-gstxvid.lo -MD -MP -MF "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo" -c -o libgstxvid_la-gstxvid.lo `test -f 'gstxvid.c' || echo '$(srcdir)/'`gstxvid.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo" "$(DEPDIR)/libgstxvid_la-gstxvid.Plo"; else rm -f "$(DEPDIR)/libgstxvid_la-gstxvid.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstxvid.c' object='libgstxvid_la-gstxvid.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstxvid_la_CFLAGS) $(CFLAGS) -c -o libgstxvid_la-gstxvid.lo `test -f 'gstxvid.c' || echo '$(srcdir)/'`gstxvid.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaiffparse_la_CFLAGS) $(CFLAGS) -c -o libgstaiffparse_la-aiffparse.lo `test -f 'aiffparse.c' || echo '$(srcdir)/'`aiffparse.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
