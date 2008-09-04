@@ -1373,7 +1373,7 @@ AC_ARG_WITH(mozilla,
         [  --with-mozilla=PATH     Specify path to Mozilla installation ],
         [
           MOZILLA_CFLAGS="-I$withval/include/necko -I$withval/include/xpcom -I$withval/include/string -I$withval/include/nspr"
-          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4 -lpthread -ldl"
+          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4"
         ],
         [
           MOZILLA_CFLAGS=""

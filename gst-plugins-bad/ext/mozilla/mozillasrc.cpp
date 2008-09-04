@@ -529,8 +529,12 @@ static void unref_buffer (gpointer data, gpointer user_data)
 static void
 gst_mozilla_src_flush (GstMozillaSrc * src)
 {
+  g_mutex_lock (src->queue_lock);
   g_queue_foreach (src->queue, unref_buffer, NULL);
-  g_queue_clear (src->queue);
+  /* g_queue_clear (src->queue); // glib 2.14 required */
+  g_queue_free (src->queue);
+  src->queue = g_queue_new ();
+  g_mutex_unlock (src->queue_lock);
 }
 
 static void
