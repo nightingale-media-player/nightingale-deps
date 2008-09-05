@@ -32,7 +32,9 @@
 #include <nsCOMPtr.h>
 #include <nsISupportsPrimitives.h>
 #include <nsIResumableChannel.h>
+#include <nsIRunnable.h>
 #include <nsIHttpHeaderVisitor.h>
+#include <nsThreadUtils.h>
 
 #define GST_TYPE_MOZILLA_SRC \
   (gst_mozilla_src_get_type())
@@ -77,7 +79,8 @@ struct _GstMozillaSrc {
   /* Our input channel */
   nsCOMPtr<nsIChannel> channel;
   gboolean suspended; /* Is reading from the channel currently suspended? */
-  guint resume_id;
+
+  nsCOMPtr<nsIRunnable> resume_event;
 
   /* Simple async queue to decouple mozilla (which is reading
    * from the main thread) and the streaming thread run by basesrc.
@@ -136,6 +139,44 @@ static gboolean gst_mozilla_src_do_seek (GstBaseSrc * bsrc,
     GstSegment * segment);
 static gboolean gst_mozilla_src_unlock(GstBaseSrc * psrc);
 static gboolean gst_mozilla_src_unlock_stop(GstBaseSrc * psrc);
+
+class ResumeEvent : public nsIRunnable
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIRUNNABLE
+
+  explicit ResumeEvent (GstMozillaSrc *src) :
+      mSrc(src)
+  {
+  }
+
+  ~ResumeEvent() 
+  {
+  }
+private:
+  GstMozillaSrc *mSrc;
+};
+
+NS_IMPL_ISUPPORTS1(ResumeEvent,
+                   nsIRunnable)
+
+NS_IMETHODIMP
+ResumeEvent::Run()
+{
+  if (mSrc->suspended) {
+    nsCOMPtr<nsIRequest> request(do_QueryInterface(mSrc->channel));
+    if (request) {
+      GST_DEBUG_OBJECT (mSrc, "Resuming request...");
+      request->Resume();
+      mSrc->suspended = FALSE;
+    }
+  }
+
+  mSrc->resume_event = 0;
+
+  return NS_OK;
+}
 
 class StreamListener : public nsIStreamListener,
                        public nsIHttpHeaderVisitor
@@ -673,22 +714,6 @@ gst_mozilla_src_unlock_stop(GstBaseSrc * psrc)
   return TRUE;
 }
 
-static gboolean resume_reading (GstMozillaSrc *src)
-{
-  if (src->suspended) {
-    nsCOMPtr<nsIRequest> request(do_QueryInterface(src->channel));
-    if (request) {
-      GST_DEBUG_OBJECT (src, "Resuming request...");
-      request->Resume();
-      src->suspended = FALSE;
-    }
-  }
-
-  src->resume_id = 0;
-
-  return FALSE; /* Don't call again */
-}
-
 static GstFlowReturn
 gst_mozilla_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
 {
@@ -720,7 +745,8 @@ gst_mozilla_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
     GST_DEBUG_OBJECT (src, "Queue is empty; waiting");
 
     /* Ask mozilla to resume reading the stream */
-    src->resume_id = g_idle_add ((GSourceFunc)resume_reading, src);
+    src->resume_event = new ResumeEvent (src);
+    NS_DispatchToMainThread (src->resume_event);
 
     GST_DEBUG_OBJECT (src, "Starting wait");
     g_cond_wait (src->queue_cond, src->queue_lock);
@@ -757,12 +783,6 @@ gst_mozilla_src_cancel_request (GstMozillaSrc *src)
 {
   nsCOMPtr<nsIRequest> request(do_QueryInterface(src->channel));
   if (request) {
-    if (src->resume_id) {
-      GST_DEBUG_OBJECT (src, "Removing resume idle call");
-      g_source_remove (src->resume_id);
-      src->resume_id = 0;
-    }
-
     if (src->suspended) {
       /* Cancel doesn't work while suspended */
       GST_DEBUG_OBJECT (src, "Resuming request for cancel");
@@ -1080,9 +1100,11 @@ plugin_init (GstPlugin * plugin)
       GST_TYPE_MOZILLA_SRC);
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
-    GST_VERSION_MINOR,
-    "mozilla",
-    "Mozilla source",
-    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+extern "C" {
+  GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+      GST_VERSION_MINOR,
+      "mozilla",
+      "Mozilla source",
+      plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+}
 

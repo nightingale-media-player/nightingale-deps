@@ -52,6 +52,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+target_triplet = @target@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/common/gtk-doc-plugins.mak \
 	$(top_srcdir)/common/upload-doc.mak
@@ -615,7 +616,11 @@ pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 GST_DOC_SCANOBJ = $(top_srcdir)/common/gstdoc-scangobj
 
 # The name of the module, e.g. 'glib'.

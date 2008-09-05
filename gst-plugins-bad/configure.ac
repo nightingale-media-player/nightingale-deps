@@ -7,6 +7,9 @@ AC_INIT(GStreamer Bad Plug-ins, 0.10.8,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-bad)
 
+dnl sets target_* variables
+AC_CANONICAL_TARGET
+
 AG_GST_INIT
 
 dnl initialize automake
@@ -1373,13 +1376,19 @@ AC_ARG_WITH(mozilla,
         [  --with-mozilla=PATH     Specify path to Mozilla installation ],
         [
           MOZILLA_CFLAGS="-I$withval/include/necko -I$withval/include/xpcom -I$withval/include/string -I$withval/include/nspr -I$withval/include"
-          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxul -lxpcom -lplds4 -lplc4 -lnspr4"
+          MOZILLA_LIBS="-L$withval/lib -lxpcomglue_s -lxpcom -lplds4 -lplc4 -lnspr4"
         ],
         [
           MOZILLA_CFLAGS=""
           MOZILLA_LIBS=""
         ]
 )
+
+case "$target_os" in
+  macos*|darwin*)
+    MOZILLA_LIBS="-Wl,-executable_path,\$(top_srcdir)/../../../../../compiled/dist/Songbird.app/Contents/Frameworks/XUL.framework $MOZILLA_LIBS"
+    ;;
+esac
 
 AC_SUBST(MOZILLA_CFLAGS)
 AC_SUBST(MOZILLA_LIBS)

@@ -36,6 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+target_triplet = @target@
 noinst_PROGRAMS = appsrc_ex$(EXEEXT) appsrc-stream$(EXEEXT) \
 	appsrc-stream2$(EXEEXT) appsrc-ra$(EXEEXT) \
 	appsrc-seekable$(EXEEXT) appsink-src$(EXEEXT)
@@ -637,7 +638,11 @@ pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 appsrc_ex_SOURCES = appsrc_ex.c
 appsrc_ex_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
 appsrc_ex_LDFLAGS = \

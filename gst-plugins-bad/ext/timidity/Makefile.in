@@ -37,6 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+target_triplet = @target@
 @USE_TIMIDITY_TRUE@am__append_1 = libgsttimidity.la
 @USE_WILDMIDI_TRUE@am__append_2 = libgstwildmidi.la
 subdir = ext/timidity
@@ -642,7 +643,11 @@ pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 
 # plugindir is set in configure
 plugin_LTLIBRARIES = $(am__append_1) $(am__append_2)

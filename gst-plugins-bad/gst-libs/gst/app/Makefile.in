@@ -44,6 +44,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+target_triplet = @target@
 DIST_COMMON = $(libgstapp_@GST_MAJORMINOR@include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/common/glib-gen.mak
@@ -644,7 +645,11 @@ pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 lib_LTLIBRARIES = libgstapp-@GST_MAJORMINOR@.la
 glib_enum_define = GST_APP
 glib_enum_prefix = gst_app
