@@ -58,8 +58,15 @@ else
 WININET_DIR=
 endif
 
-SUBDIRS = $(DSHOW_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+if USE_ACM
+ACM_DIR=acmenc
+else
+ACM_DIR=
+endif
 
-DIST_SUBDIRS = dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
+
+SUBDIRS = $(ACM_DIR) $(DSHOW_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+
+DIST_SUBDIRS = acmenc dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
 			   oss4 qtwrapper vcd wininet
 
