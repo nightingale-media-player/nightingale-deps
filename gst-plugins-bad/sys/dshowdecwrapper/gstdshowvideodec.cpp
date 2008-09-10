@@ -47,6 +47,8 @@
 #include "config.h"
 #endif
 
+#include <atlbase.h>
+
 #include "gstdshowvideodec.h"
 
 GST_DEBUG_CATEGORY_STATIC (dshowvideodec_debug);
@@ -54,7 +56,7 @@ GST_DEBUG_CATEGORY_STATIC (dshowvideodec_debug);
 
 GST_BOILERPLATE (GstDshowVideoDec, gst_dshowvideodec, GstElement,
     GST_TYPE_ELEMENT);
-static const CodecEntry *tmp;
+static const VideoCodecEntry *tmp;
 
 static void gst_dshowvideodec_dispose (GObject * object);
 static GstStateChangeReturn gst_dshowvideodec_change_state
@@ -69,10 +71,6 @@ static GstFlowReturn gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer);
 static GstCaps *gst_dshowvideodec_src_getcaps (GstPad * pad);
 static gboolean gst_dshowvideodec_src_setcaps (GstPad * pad, GstCaps * caps);
 
-/* callback called by our directshow fake sink when it receives a buffer */
-static gboolean gst_dshowvideodec_push_buffer (byte * buffer, long size,
-    byte * src_object, UINT64 start, UINT64 stop);
-
 /* utils */
 static gboolean gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec *
     vdec);
@@ -80,7 +78,7 @@ static gboolean gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec *
     vdec);
 static gboolean gst_dshowvideodec_flush (GstDshowVideoDec * adec);
 static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
-    vdec, GUID * subtype, VIDEOINFOHEADER ** format, guint * size);
+    vdec, const GUID subtype, VIDEOINFOHEADER ** format, guint * size);
 
 
 #define GUID_MEDIATYPE_VIDEO    {0x73646976, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
@@ -110,7 +108,7 @@ static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
 #define GUID_MEDIASUBTYPE_RGB565  {0xe436eb7b, 0x524f, 0x11ce, { 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70 }}
 
 /* video codecs array */
-static const CodecEntry video_dec_codecs[] = {
+static const VideoCodecEntry video_dec_codecs[] = {
   {"dshowvdec_wmv1",
         "Windows Media Video 7",
         "DMO",
@@ -245,15 +243,105 @@ static const CodecEntry video_dec_codecs[] = {
      } */
 };
 
-static void
-gst_dshowvideodec_base_init (GstDshowVideoDecClass * klass)
+HRESULT VideoFakeSink::DoRenderSample(IMediaSample *pMediaSample)
 {
+  gboolean in_seg = FALSE;
+  gint64 clip_start = 0, clip_stop = 0;
+  GstDshowVideoDecClass *klass =
+      (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (mDec);
+  GstBuffer *buf = NULL;
+  GstClockTime start, stop;
+
+  if(pMediaSample)
+  {
+    BYTE *pBuffer = NULL;
+    LONGLONG lStart = 0, lStop = 0;
+    long size = pMediaSample->GetActualDataLength();
+
+    pMediaSample->GetPointer(&pBuffer);
+    pMediaSample->GetTime(&lStart, &lStop);
+
+    start = lStart * 100;
+    stop = lStop * 100;
+    /* check if this buffer is in our current segment */
+    in_seg = gst_segment_clip (mDec->segment, GST_FORMAT_TIME,
+        start, stop, &clip_start, &clip_stop);
+
+    /* if the buffer is out of segment do not push it downstream */
+    if (!in_seg) {
+      GST_DEBUG_OBJECT (mDec,
+        "buffer is out of segment, start %" GST_TIME_FORMAT " stop %"
+        GST_TIME_FORMAT, GST_TIME_ARGS (start), GST_TIME_ARGS (stop));
+      goto done;
+    }
+
+    /* buffer is in our segment, allocate a new out buffer and clip its
+     * timestamps */
+    mDec->last_ret = gst_pad_alloc_buffer (mDec->srcpad, 
+        GST_BUFFER_OFFSET_NONE,
+        size, 
+        GST_PAD_CAPS (mDec->srcpad), &buf);
+    if (!buf) {
+      GST_WARNING_OBJECT (mDec,
+          "cannot allocate a new GstBuffer");
+      goto done;
+    }
+
+    /* set buffer properties */
+    GST_BUFFER_TIMESTAMP (buf) = clip_start;
+    GST_BUFFER_DURATION (buf) = clip_stop - clip_start;
+
+    if (strstr (klass->entry->srccaps, "rgb")) {
+      /* FOR RGB directshow decoder will return bottom-up BITMAP 
+       * There is probably a way to get top-bottom video frames from
+       * the decoder...
+       */
+      gint line = 0;
+      guint stride = mDec->width * 4;
+
+      for (; line < mDec->height; line++) {
+        memcpy (GST_BUFFER_DATA (buf) + (line * stride),
+            pBuffer + (size - ((line + 1) * (stride))), stride);
+      }
+    } else {
+      memcpy (GST_BUFFER_DATA (buf), pBuffer, MIN ((unsigned int)size, GST_BUFFER_SIZE (buf)));
+    }
+
+    GST_LOG_OBJECT (mDec,
+        "push_buffer (size %d)=> pts %" GST_TIME_FORMAT " stop %" GST_TIME_FORMAT
+        " duration %" GST_TIME_FORMAT, size,
+        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
+        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf) + GST_BUFFER_DURATION (buf)),
+        GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
+
+    /* push the buffer downstream */
+    mDec->last_ret = gst_pad_push (mDec->srcpad, buf);
+  }
+done:
+
+  return S_OK;
+}
+
+HRESULT VideoFakeSink::CheckMediaType(const CMediaType *pmt)
+{
+  if (pmt != NULL) {
+    if (*pmt == m_MediaType)
+      return S_OK;
+  }
+
+  return S_FALSE;
+}
+
+static void
+gst_dshowvideodec_base_init (gpointer klass)
+{
+  GstDshowVideoDecClass *videodec_class = (GstDshowVideoDecClass *)klass;
   GstPadTemplate *src, *sink;
   GstCaps *srccaps, *sinkcaps;
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GstElementDetails details;
 
-  klass->entry = tmp;
+  videodec_class->entry = tmp;
 
   details.longname = g_strdup_printf ("DirectShow %s Decoder Wrapper",
       tmp->element_longname);
@@ -293,7 +381,7 @@ gst_dshowvideodec_class_init (GstDshowVideoDecClass * klass)
       GST_DEBUG_FUNCPTR (gst_dshowvideodec_change_state);
 
   if (!parent_class)
-    parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+    parent_class = (GstElementClass *)g_type_class_ref (GST_TYPE_ELEMENT);
 
   if (!dshowvideodec_debug) {
     GST_DEBUG_CATEGORY_INIT (dshowvideodec_debug, "dshowvideodec", 0,
@@ -326,17 +414,18 @@ gst_dshowvideodec_init (GstDshowVideoDec * vdec,
   gst_pad_set_setcaps_function (vdec->srcpad, gst_dshowvideodec_src_setcaps);*/
   gst_element_add_pad (GST_ELEMENT (vdec), vdec->srcpad);
 
-  vdec->srcfilter = NULL;
+  vdec->fakesrc = NULL;
+  vdec->fakesink = NULL;
   vdec->decfilter = NULL;
-  vdec->sinkfilter = NULL;
 
   vdec->last_ret = GST_FLOW_OK;
 
   vdec->filtergraph = NULL;
   vdec->mediafilter = NULL;
-  vdec->gstdshowsrcfilter = NULL;
   vdec->srccaps = NULL;
   vdec->segment = gst_segment_new ();
+
+  vdec->setup = FALSE;
 
   hr = CoInitialize (0);
   if (SUCCEEDED(hr)) {
@@ -402,12 +491,14 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
       (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
   GstBuffer *extradata = NULL;
   const GValue *v = NULL;
-  gint size = 0;
+  guint size = 0;
   GstCaps *caps_out;
   AM_MEDIA_TYPE output_mediatype, input_mediatype;
   VIDEOINFOHEADER *input_vheader = NULL, *output_vheader = NULL;
-  IPin *output_pin = NULL, *input_pin = NULL;
-  IGstDshowInterface *gstdshowinterface = NULL;
+  CComPtr<IPin> output_pin;
+  CComPtr<IPin> input_pin;
+  IBaseFilter *srcfilter = NULL;
+  IBaseFilter *sinkfilter = NULL;
   const GValue *fps;
 
   /* read data */
@@ -440,7 +531,7 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
     size =
         sizeof (MPEG1VIDEOINFO) + (extradata ? GST_BUFFER_SIZE (extradata) -
         1 : 0);
-    input_vheader = g_malloc0 (size);
+    input_vheader = (VIDEOINFOHEADER *)g_malloc0 (size);
 
     input_vheader->bmiHeader.biSize = sizeof (BITMAPINFOHEADER);
     if (extradata) {
@@ -455,7 +546,7 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
     size =
         sizeof (VIDEOINFOHEADER) +
         (extradata ? GST_BUFFER_SIZE (extradata) : 0);
-    input_vheader = g_malloc0 (size);
+    input_vheader = (VIDEOINFOHEADER *)g_malloc0 (size);
 
     input_vheader->bmiHeader.biSize = sizeof (BITMAPINFOHEADER);
     if (extradata) {            /* Codec data is appended after our header */
@@ -481,60 +572,43 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
   input_mediatype.pbFormat = (BYTE *) input_vheader;
   input_mediatype.lSampleSize = input_vheader->bmiHeader.biSizeImage;
 
-  hres = IBaseFilter_QueryInterface (vdec->srcfilter, &IID_IGstDshowInterface,
-      (void **) &gstdshowinterface);
-  if (hres != S_OK || !gstdshowinterface) {
+  vdec->fakesrc->GetOutputPin()->SetMediaType(&input_mediatype);
+
+  /* set the sample size for fakesrc filter to the output buffer size */
+  vdec->fakesrc->GetOutputPin()->SetSampleSize(input_mediatype.lSampleSize);
+
+  /* connect our fake src to decoder */
+  hres = vdec->fakesrc->QueryInterface(IID_IBaseFilter,
+      (void **) &srcfilter);
+  if (FAILED (hres)) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
-        ("Can't get IGstDshowInterface interface from dshow fakesrc filter (error=%d)",
-            hres), (NULL));
+      ("Can't QT fakesrc to IBaseFilter: %x", hres), (NULL));
     goto end;
   }
 
-  /* save a reference to IGstDshowInterface to use it processing functions */
-  if (!vdec->gstdshowsrcfilter) {
-    vdec->gstdshowsrcfilter = gstdshowinterface;
-    IBaseFilter_AddRef (vdec->gstdshowsrcfilter);
-  }
-
-  IGstDshowInterface_gst_set_media_type (gstdshowinterface, &input_mediatype);
-  IGstDshowInterface_Release (gstdshowinterface);
-  gstdshowinterface = NULL;
-
-  /* set the sample size for fakesrc filter to the output buffer size */
-  IGstDshowInterface_gst_set_sample_size (vdec->gstdshowsrcfilter,
-      input_mediatype.lSampleSize);
-
-  /* connect our fake src to decoder */
-  gst_dshow_get_pin_from_filter (vdec->srcfilter, PINDIR_OUTPUT, &output_pin);
+  output_pin = gst_dshow_get_pin_from_filter (srcfilter, PINDIR_OUTPUT);
   if (!output_pin) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't get output pin from our directshow fakesrc filter"), (NULL));
     goto end;
   }
-  gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_INPUT, &input_pin);
+  input_pin = gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_INPUT);
   if (!input_pin) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't get input pin from decoder filter"), (NULL));
     goto end;
   }
 
-  hres =
-      IFilterGraph_ConnectDirect (vdec->filtergraph, output_pin, input_pin,
-      NULL);
+  hres = vdec->filtergraph->ConnectDirect (output_pin, input_pin, NULL);
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
-        ("Can't connect fakesrc with decoder (error=%d)", hres), (NULL));
+        ("Can't connect fakesrc with decoder (error=%x)", hres), (NULL));
     goto end;
   }
 
-  IPin_Release (input_pin);
-  IPin_Release (output_pin);
-  input_pin = NULL;
-  output_pin = NULL;
-
   /* get decoder output video format */
   if (!gst_dshowvideodec_get_filter_output_format (vdec,
-          &klass->entry->output_subtype, &output_vheader, &size)) {
+          klass->entry->output_subtype, &output_vheader, &size)) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't get decoder output video format"), (NULL));
     goto end;
@@ -548,44 +622,38 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
   output_mediatype.lSampleSize = output_vheader->bmiHeader.biSizeImage;
   output_mediatype.formattype = FORMAT_VideoInfo;
   output_mediatype.cbFormat = size;
-  output_mediatype.pbFormat = (char *) output_vheader;
+  output_mediatype.pbFormat = (BYTE *) output_vheader;
 
-  hres = IBaseFilter_QueryInterface (vdec->sinkfilter, &IID_IGstDshowInterface,
-      (void **) &gstdshowinterface);
-  if (hres != S_OK || !gstdshowinterface) {
-    GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
-        ("Can't get IGstDshowInterface interface from dshow fakesink filter (error=%d)",
-            hres), (NULL));
-    goto end;
-  }
-
-  IGstDshowInterface_gst_set_media_type (gstdshowinterface, &output_mediatype);
-  IGstDshowInterface_gst_set_buffer_callback (gstdshowinterface,
-      gst_dshowvideodec_push_buffer, (byte *) vdec);
-  IGstDshowInterface_Release (gstdshowinterface);
-  gstdshowinterface = NULL;
+  vdec->fakesink->SetMediaType (&output_mediatype);
 
   /* connect decoder to our fake sink */
-  gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT, &output_pin);
+  output_pin = gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT);
   if (!output_pin) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't get output pin from our decoder filter"), (NULL));
     goto end;
   }
 
-  gst_dshow_get_pin_from_filter (vdec->sinkfilter, PINDIR_INPUT, &input_pin);
+  hres = vdec->fakesink->QueryInterface(IID_IBaseFilter,
+      (void **) &sinkfilter);
+  if (FAILED (hres)) {
+    GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
+      ("Can't QT fakesink to IBaseFilter: %x", hres), (NULL));
+    goto end;
+  }
+
+  input_pin = gst_dshow_get_pin_from_filter (sinkfilter, PINDIR_INPUT);
   if (!input_pin) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't get input pin from our directshow fakesink filter"), (NULL));
     goto end;
   }
 
-  hres =
-      IFilterGraph_ConnectDirect (vdec->filtergraph, output_pin, input_pin,
+  hres = vdec->filtergraph->ConnectDirect(output_pin, input_pin,
       &output_mediatype);
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
-        ("Can't connect decoder with fakesink (error=%d)", hres), (NULL));
+        ("Can't connect decoder with fakesink (error=%x)", hres), (NULL));
     goto end;
   }
 
@@ -603,7 +671,7 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
   }
   gst_caps_unref (caps_out);
 
-  hres = IMediaFilter_Run (vdec->mediafilter, -1);
+  hres = vdec->mediafilter->Run (-1);
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("Can't run the directshow graph (error=%d)", hres), (NULL));
@@ -615,13 +683,10 @@ end:
   gst_object_unref (vdec);
   if (input_vheader)
     g_free (input_vheader);
-  if (gstdshowinterface)
-    IGstDshowInterface_Release (gstdshowinterface);
-  if (input_pin)
-    IPin_Release (input_pin);
-  if (output_pin)
-    IPin_Release (output_pin);
-
+  if (srcfilter)
+    srcfilter->Release();
+  if (sinkfilter)
+    sinkfilter->Release();
   return ret;
 }
 
@@ -678,11 +743,12 @@ static GstFlowReturn
 gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
 {
   GstDshowVideoDec *vdec = (GstDshowVideoDec *) gst_pad_get_parent (pad);
-  gboolean discount = FALSE;
+  bool discont = FALSE;
   GstClockTime stop;
 
-  if (!vdec->gstdshowsrcfilter) {
+  if (!vdec->setup) {
     /* we are not setup */
+    GST_WARNING_OBJECT (vdec, "Decoder not set up, failing");
     vdec->last_ret = GST_FLOW_WRONG_STATE;
     goto beach;
   }
@@ -712,13 +778,13 @@ gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
         "this buffer has a DISCONT flag (%" GST_TIME_FORMAT "), flushing",
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
     gst_dshowvideodec_flush (vdec);
-    discount = TRUE;
+    discont = TRUE;
   }
 
   /* push the buffer to the directshow decoder */
-  IGstDshowInterface_gst_push_buffer (vdec->gstdshowsrcfilter,
+  vdec->fakesrc->GetOutputPin()->PushBuffer(
       GST_BUFFER_DATA (buffer), GST_BUFFER_TIMESTAMP (buffer), stop,
-      GST_BUFFER_SIZE (buffer), discount);
+      GST_BUFFER_SIZE (buffer), discont);
 
 beach:
   gst_buffer_unref (buffer);
@@ -726,73 +792,6 @@ beach:
 
   return vdec->last_ret;
 }
-
-static gboolean
-gst_dshowvideodec_push_buffer (byte * buffer, long size, byte * src_object,
-    UINT64 start, UINT64 stop)
-{
-  GstDshowVideoDec *vdec = (GstDshowVideoDec *) src_object;
-  GstDshowVideoDecClass *klass =
-      (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
-  GstBuffer *buf = NULL;
-  gboolean in_seg = FALSE;
-  gint64 clip_start = 0, clip_stop = 0;
-
-  /* check if this buffer is in our current segment */
-  in_seg = gst_segment_clip (vdec->segment, GST_FORMAT_TIME,
-      start, stop, &clip_start, &clip_stop);
-
-  /* if the buffer is out of segment do not push it downstream */
-  if (!in_seg) {
-    GST_CAT_DEBUG_OBJECT (dshowvideodec_debug, vdec,
-        "buffer is out of segment, start %" GST_TIME_FORMAT " stop %"
-        GST_TIME_FORMAT, GST_TIME_ARGS (start), GST_TIME_ARGS (stop));
-    return FALSE;
-  }
-
-  /* buffer is in our segment allocate a new out buffer and clip its
-   * timestamps */
-  vdec->last_ret = gst_pad_alloc_buffer (vdec->srcpad, GST_BUFFER_OFFSET_NONE,
-      size, GST_PAD_CAPS (vdec->srcpad), &buf);
-  if (!buf) {
-    GST_CAT_WARNING_OBJECT (dshowvideodec_debug, vdec,
-        "can't not allocate a new GstBuffer");
-    return FALSE;
-  }
-
-  /* set buffer properties */
-  GST_BUFFER_TIMESTAMP (buf) = clip_start;
-  GST_BUFFER_DURATION (buf) = clip_stop - clip_start;
-
-  if (strstr (klass->entry->srccaps, "rgb")) {
-    /* FOR RGB directshow decoder will return bottom-up BITMAP 
-     * There is probably a way to get top-bottom video frames from
-     * the decoder...
-     */
-    gint line = 0;
-    guint stride = vdec->width * 4;
-
-    for (; line < vdec->height; line++) {
-      memcpy (GST_BUFFER_DATA (buf) + (line * stride),
-          buffer + (size - ((line + 1) * (stride))), stride);
-    }
-  } else {
-    memcpy (GST_BUFFER_DATA (buf), buffer, MIN (size, GST_BUFFER_SIZE (buf)));
-  }
-
-  GST_CAT_LOG_OBJECT (dshowvideodec_debug, vdec,
-      "push_buffer (size %d)=> pts %" GST_TIME_FORMAT " stop %" GST_TIME_FORMAT
-      " duration %" GST_TIME_FORMAT, size,
-      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf) + GST_BUFFER_DURATION (buf)),
-      GST_TIME_ARGS (GST_BUFFER_DURATION (buf)));
-
-  /* push the buffer downstream */
-  vdec->last_ret = gst_pad_push (vdec->srcpad, buf);
-
-  return TRUE;
-}
-
 
 static GstCaps *
 gst_dshowvideodec_src_getcaps (GstPad * pad)
@@ -804,33 +803,33 @@ gst_dshowvideodec_src_getcaps (GstPad * pad)
     vdec->srccaps = gst_caps_new_empty ();
 
   if (vdec->decfilter) {
-    IPin *output_pin = NULL;
-    IEnumMediaTypes *enum_mediatypes = NULL;
+    CComPtr<IPin> output_pin;
+    CComPtr<IEnumMediaTypes> enum_mediatypes;
     HRESULT hres;
     ULONG fetched;
 
-    if (!gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT,
-            &output_pin)) {
+    output_pin = gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT);
+    if (!output_pin) {
       GST_ELEMENT_ERROR (vdec, STREAM, FAILED,
           ("failed getting ouput pin from the decoder"), (NULL));
       goto beach;
     }
 
-    hres = IPin_EnumMediaTypes (output_pin, &enum_mediatypes);
+    hres = output_pin->EnumMediaTypes (&enum_mediatypes);
     if (hres == S_OK && enum_mediatypes) {
       AM_MEDIA_TYPE *mediatype = NULL;
 
-      IEnumMediaTypes_Reset (enum_mediatypes);
+      enum_mediatypes->Reset();
       while (hres =
-          IEnumMoniker_Next (enum_mediatypes, 1, &mediatype, &fetched),
+          enum_mediatypes->Next(1, &mediatype, &fetched),
           hres == S_OK) 
       {
         VIDEOINFOHEADER *video_info;
         GstCaps *mediacaps = NULL;
 
         /* RGB24 */
-        if (IsEqualGUID (&mediatype->subtype, &MEDIASUBTYPE_RGB24) &&
-            IsEqualGUID (&mediatype->formattype, &FORMAT_VideoInfo))
+        if (IsEqualGUID (mediatype->subtype, MEDIASUBTYPE_RGB24) &&
+            IsEqualGUID (mediatype->formattype, FORMAT_VideoInfo))
         {
           video_info = (VIDEOINFOHEADER *) mediatype->pbFormat;
 
@@ -850,17 +849,13 @@ gst_dshowvideodec_src_getcaps (GstPad * pad)
             vdec->mediatypes = g_list_append (vdec->mediatypes, mediatype);
             gst_caps_append (vdec->srccaps, mediacaps);
           } else {
-            gst_dshow_free_mediatype (mediatype);
+            DeleteMediaType (mediatype);
           }
         } else {
-          gst_dshow_free_mediatype (mediatype);
+          DeleteMediaType (mediatype);
         }
 
       }
-      IEnumMediaTypes_Release (enum_mediatypes);
-    }
-    if (output_pin) {
-      IPin_Release (output_pin);
     }
   }
 
@@ -884,21 +879,21 @@ gst_dshowvideodec_src_setcaps (GstPad * pad, GstCaps * caps)
 static gboolean
 gst_dshowvideodec_flush (GstDshowVideoDec * vdec)
 {
-  if (!vdec->gstdshowsrcfilter)
+  if (!vdec->fakesrc)
     return FALSE;
 
   /* flush dshow decoder and reset timestamp */
-  IGstDshowInterface_gst_flush (vdec->gstdshowsrcfilter);
+  vdec->fakesrc->GetOutputPin()->Flush();
 
   return TRUE;
 }
 
 static gboolean
 gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec * vdec,
-    GUID * subtype, VIDEOINFOHEADER ** format, guint * size)
+    const GUID subtype, VIDEOINFOHEADER ** format, guint * size)
 {
-  IPin *output_pin = NULL;
-  IEnumMediaTypes *enum_mediatypes = NULL;
+  CComPtr<IPin> output_pin;
+  CComPtr<IEnumMediaTypes> enum_mediatypes;
   HRESULT hres;
   ULONG fetched;
   BOOL ret = FALSE;
@@ -906,38 +901,34 @@ gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec * vdec,
   if (!vdec->decfilter)
     return FALSE;
 
-  if (!gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT,
-          &output_pin)) {
+  output_pin = gst_dshow_get_pin_from_filter (vdec->decfilter, PINDIR_OUTPUT);
+  if (!output_pin) {
     GST_ELEMENT_ERROR (vdec, CORE, NEGOTIATION,
         ("failed getting ouput pin from the decoder"), (NULL));
     return FALSE;
   }
 
-  hres = IPin_EnumMediaTypes (output_pin, &enum_mediatypes);
+  hres = output_pin->EnumMediaTypes (&enum_mediatypes);
   if (hres == S_OK && enum_mediatypes) {
     AM_MEDIA_TYPE *mediatype = NULL;
 
-    IEnumMediaTypes_Reset (enum_mediatypes);
+    enum_mediatypes->Reset();
     while (hres =
-        IEnumMoniker_Next (enum_mediatypes, 1, &mediatype, &fetched),
+        enum_mediatypes->Next(1, &mediatype, &fetched),
         hres == S_OK) 
     {
-      if (IsEqualGUID (&mediatype->subtype, subtype) &&
-          IsEqualGUID (&mediatype->formattype, &FORMAT_VideoInfo))
+      if (IsEqualGUID (mediatype->subtype, subtype) &&
+          IsEqualGUID (mediatype->formattype, FORMAT_VideoInfo))
       {
         *size = mediatype->cbFormat;
-        *format = g_malloc0 (*size);
+        *format = (VIDEOINFOHEADER *)g_malloc0 (*size);
         memcpy (*format, mediatype->pbFormat, *size);
         ret = TRUE;
       }
-      gst_dshow_free_mediatype (mediatype);
+      DeleteMediaType (mediatype);
       if (ret)
         break;
     }
-    IEnumMediaTypes_Release (enum_mediatypes);
-  }
-  if (output_pin) {
-    IPin_Release (output_pin);
   }
 
   return ret;
@@ -949,17 +940,20 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
   HRESULT hres = S_FALSE;
   GstDshowVideoDecClass *klass =
       (GstDshowVideoDecClass *) G_OBJECT_GET_CLASS (vdec);
+  IBaseFilter *srcfilter = NULL;
+  IBaseFilter *sinkfilter = NULL;
+  gboolean ret = FALSE;
 
   /* create the filter graph manager object */
-  hres = CoCreateInstance (&CLSID_FilterGraph, NULL, CLSCTX_INPROC,
-      &IID_IFilterGraph, (LPVOID *) & vdec->filtergraph);
+  hres = CoCreateInstance (CLSID_FilterGraph, NULL, CLSCTX_INPROC,
+      IID_IFilterGraph, (LPVOID *) & vdec->filtergraph);
   if (hres != S_OK || !vdec->filtergraph) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't create an instance "
             "of the directshow graph manager (error=%d)", hres), (NULL));
     goto error;
   }
 
-  hres = IFilterGraph_QueryInterface (vdec->filtergraph, &IID_IMediaFilter,
+  hres = vdec->filtergraph->QueryInterface(IID_IMediaFilter,
       (void **) &vdec->mediafilter);
   if (hres != S_OK || !vdec->mediafilter) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED,
@@ -969,7 +963,16 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
   }
 
   /* create fake src filter */
-  vdec->srcfilter = gst_dshow_create_fakesrc();
+  vdec->fakesrc = new FakeSrc();
+  /* Created with a refcount of zero, so increment that */
+  vdec->fakesrc->AddRef();
+
+  hres = vdec->fakesrc->QueryInterface(IID_IBaseFilter,
+      (void **) &srcfilter);
+  if (FAILED (hres)) {
+    GST_WARNING_OBJECT (vdec, "Failed to QI fakesrc to IBaseFilter");
+    goto error;
+  }
 
   /* search a decoder filter and create it */
   if (!gst_dshow_find_filter (klass->entry->input_majortype,
@@ -983,95 +986,128 @@ gst_dshowvideodec_create_graph_and_filters (GstDshowVideoDec * vdec)
   }
 
   /* create fake sink filter */
-  vdec->sinkfilter = gst_dshow_create_fakesink();
+  vdec->fakesink = new VideoFakeSink(vdec);
+  /* Created with a refcount of zero, so increment that */
+  vdec->fakesink->AddRef();
+
+  hres = vdec->fakesink->QueryInterface(IID_IBaseFilter,
+      (void **) &sinkfilter);
+  if (FAILED (hres)) {
+    GST_WARNING_OBJECT (vdec, "Failed to QI fakesink to IBaseFilter");
+    goto error;
+  }
 
   /* add filters to the graph */
-  hres = IFilterGraph_AddFilter (vdec->filtergraph, vdec->srcfilter, L"src");
+  hres = vdec->filtergraph->AddFilter (srcfilter, L"src");
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't add fakesrc filter "
             "to the graph (error=%d)", hres), (NULL));
     goto error;
   }
 
-  hres =
-      IFilterGraph_AddFilter (vdec->filtergraph, vdec->decfilter, L"decoder");
+  hres = vdec->filtergraph->AddFilter(vdec->decfilter, L"decoder");
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't add decoder filter "
             "to the graph (error=%d)", hres), (NULL));
     goto error;
   }
 
-  hres = IFilterGraph_AddFilter (vdec->filtergraph, vdec->sinkfilter, L"sink");
+  hres = vdec->filtergraph->AddFilter(sinkfilter, L"sink");
   if (hres != S_OK) {
     GST_ELEMENT_ERROR (vdec, STREAM, FAILED, ("Can't add fakesink filter "
             "to the graph (error=%d)", hres), (NULL));
     goto error;
   }
 
-  return TRUE;
+  vdec->setup = TRUE;
+
+  ret = TRUE;
+
+done:
+  if (srcfilter)
+    srcfilter->Release();
+  if (sinkfilter)
+    sinkfilter->Release();
+  return ret;
 
 error:
-  if (vdec->srcfilter) {
-    IBaseFilter_Release (vdec->srcfilter);
-    vdec->srcfilter = NULL;
+  if (vdec->fakesrc) {
+    vdec->fakesrc->Release();
+    vdec->fakesrc = NULL;
   }
   if (vdec->decfilter) {
-    IBaseFilter_Release (vdec->decfilter);
+    vdec->decfilter->Release();
     vdec->decfilter = NULL;
   }
-  if (vdec->sinkfilter) {
-    IBaseFilter_Release (vdec->sinkfilter);
-    vdec->sinkfilter = NULL;
+  if (vdec->fakesink) {
+    vdec->fakesink->Release();
+    vdec->fakesink = NULL;
   }
   if (vdec->mediafilter) {
-    IMediaFilter_Release (vdec->mediafilter);
+    vdec->mediafilter->Release();
     vdec->mediafilter = NULL;
   }
   if (vdec->filtergraph) {
-    IFilterGraph_Release (vdec->filtergraph);
+    vdec->filtergraph->Release();
     vdec->filtergraph = NULL;
   }
 
-  return FALSE;
+  goto done;
 }
 
 static gboolean
 gst_dshowvideodec_destroy_graph_and_filters (GstDshowVideoDec * vdec)
 {
+  HRESULT hres;
+
   if (vdec->mediafilter) {
-    IMediaFilter_Stop (vdec->mediafilter);
+    vdec->mediafilter->Stop();
   }
 
-  if (vdec->gstdshowsrcfilter) {
-    IGstDshowInterface_Release (vdec->gstdshowsrcfilter);
-    vdec->gstdshowsrcfilter = NULL;
-  }
-  if (vdec->srcfilter) {
-    if (vdec->filtergraph)
-      IFilterGraph_RemoveFilter (vdec->filtergraph, vdec->srcfilter);
-    IBaseFilter_Release (vdec->srcfilter);
-    vdec->srcfilter = NULL;
+  if (vdec->fakesrc) {
+    if (vdec->filtergraph) {
+      IBaseFilter *filter;
+      hres = vdec->fakesrc->QueryInterface(IID_IBaseFilter,
+          (void **) &filter);
+      if (SUCCEEDED (hres)) {
+        vdec->filtergraph->RemoveFilter(filter);
+        filter->Release();
+      }
+    }
+
+    vdec->fakesrc->Release();
+    vdec->fakesrc = NULL;
   }
   if (vdec->decfilter) {
     if (vdec->filtergraph)
-      IFilterGraph_RemoveFilter (vdec->filtergraph, vdec->decfilter);
-    IBaseFilter_Release (vdec->decfilter);
+      vdec->filtergraph->RemoveFilter(vdec->decfilter);
+    vdec->decfilter->Release();
     vdec->decfilter = NULL;
   }
-  if (vdec->sinkfilter) {
-    if (vdec->filtergraph)
-      IFilterGraph_RemoveFilter (vdec->filtergraph, vdec->sinkfilter);
-    IBaseFilter_Release (vdec->sinkfilter);
-    vdec->sinkfilter = NULL;
+  if (vdec->fakesink) {
+    if (vdec->filtergraph) {
+      IBaseFilter *filter;
+      hres = vdec->fakesink->QueryInterface(IID_IBaseFilter,
+          (void **) &filter);
+      if (SUCCEEDED (hres)) {
+        vdec->filtergraph->RemoveFilter(filter);
+        filter->Release();
+      }
+    }
+
+    vdec->fakesink->Release();
+    vdec->fakesink = NULL;
   }
   if (vdec->mediafilter) {
-    IMediaFilter_Release (vdec->mediafilter);
+    vdec->mediafilter->Release();
     vdec->mediafilter = NULL;
   }
   if (vdec->filtergraph) {
-    IFilterGraph_Release (vdec->filtergraph);
+    vdec->filtergraph->Release();
     vdec->filtergraph = NULL;
   }
+
+  vdec->setup = FALSE;
 
   return TRUE;
 }
@@ -1098,7 +1134,7 @@ dshow_vdec_register (GstPlugin * plugin)
 
   hr = CoInitialize (0);
 
-  for (i = 0; i < sizeof (video_dec_codecs) / sizeof (CodecEntry); i++) {
+  for (i = 0; i < sizeof (video_dec_codecs) / sizeof (VideoCodecEntry); i++) {
     GType type;
 
     if (gst_dshow_find_filter (video_dec_codecs[i].input_majortype,
@@ -1113,7 +1149,7 @@ dshow_vdec_register (GstPlugin * plugin)
       tmp = &video_dec_codecs[i];
       type =
           g_type_register_static (GST_TYPE_ELEMENT,
-          video_dec_codecs[i].element_name, &info, 0);
+          video_dec_codecs[i].element_name, &info, (GTypeFlags)0);
       if (!gst_element_register (plugin, video_dec_codecs[i].element_name,
               GST_RANK_PRIMARY, type)) {
         return FALSE;
