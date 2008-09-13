@@ -1,0 +1,870 @@
+This is buildbot.info, produced by makeinfo version 4.11 from
+buildbot.texinfo.
+
+This is the BuildBot manual.
+
+   Copyright (C) 2005,2006 Brian Warner
+
+   Copying and distribution of this file, with or without
+modification, are permitted in any medium without royalty provided
+the copyright notice and this notice are preserved.
+
+
+File: buildbot.info,  Node: try,  Prev: statusgui,  Up: Developer Tools
+
+8.2.3 try
+---------
+
+This lets a developer to ask the question "What would happen if I
+committed this patch right now?". It runs the unit test suite (across
+multiple build platforms) on the developer's current code, allowing
+them to make sure they will not break the tree when they finally
+commit their changes.
+
+   The `buildbot try' command is meant to be run from within a
+developer's local tree, and starts by figuring out the base revision
+of that tree (what revision was current the last time the tree was
+updated), and a patch that can be applied to that revision of the tree
+to make it match the developer's copy. This (revision, patch) pair is
+then sent to the buildmaster, which runs a build with that
+SourceStamp. If you want, the tool will emit status messages as the
+builds run, and will not terminate until the first failure has been
+detected (or the last success).
+
+   There is an alternate form which accepts a pre-made patch file
+(typically the output of a command like 'svn diff'). This "-diff"
+form does not require a local tree to run from. See *Note try
+--diff::.
+
+   For this command to work, several pieces must be in place:
+
+TryScheduler
+============
+
+The buildmaster must have a `scheduler.Try' instance in the config
+file's `c['schedulers']' list. This lets the administrator control
+who may initiate these "trial" builds, which branches are eligible
+for trial builds, and which Builders should be used for them.
+
+   The `TryScheduler' has various means to accept build requests: all
+of them enforce more security than the usual buildmaster ports do.
+Any source code being built can be used to compromise the buildslave
+accounts, but in general that code must be checked out from the VC
+repository first, so only people with commit privileges can get
+control of the buildslaves. The usual force-build control channels can
+waste buildslave time but do not allow arbitrary commands to be
+executed by people who don't have those commit privileges. However,
+the source code patch that is provided with the trial build does not
+have to go through the VC system first, so it is important to make
+sure these builds cannot be abused by a non-committer to acquire as
+much control over the buildslaves as a committer has. Ideally, only
+developers who have commit access to the VC repository would be able
+to start trial builds, but unfortunately the buildmaster does not, in
+general, have access to VC system's user list.
+
+   As a result, the `TryScheduler' requires a bit more configuration.
+There are currently two ways to set this up:
+
+*jobdir (ssh)*
+     This approach creates a command queue directory, called the
+     "jobdir", in the buildmaster's working directory. The buildmaster
+     admin sets the ownership and permissions of this directory to
+     only grant write access to the desired set of developers, all of
+     whom must have accounts on the machine. The `buildbot try'
+     command creates a special file containing the source stamp
+     information and drops it in the jobdir, just like a standard
+     maildir. When the buildmaster notices the new file, it unpacks
+     the information inside and starts the builds.
+
+     The config file entries used by 'buildbot try' either specify a
+     local queuedir (for which write and mv are used) or a remote one
+     (using scp and ssh).
+
+     The advantage of this scheme is that it is quite secure, the
+     disadvantage is that it requires fiddling outside the buildmaster
+     config (to set the permissions on the jobdir correctly). If the
+     buildmaster machine happens to also house the VC repository,
+     then it can be fairly easy to keep the VC userlist in sync with
+     the trial-build userlist. If they are on different machines,
+     this will be much more of a hassle. It may also involve granting
+     developer accounts on a machine that would not otherwise require
+     them.
+
+     To implement this, the buildslave invokes 'ssh -l username host
+     buildbot tryserver ARGS', passing the patch contents over stdin.
+     The arguments must include the inlet directory and the revision
+     information.
+
+*user+password (PB)*
+     In this approach, each developer gets a username/password pair,
+     which are all listed in the buildmaster's configuration file.
+     When the developer runs `buildbot try', their machine connects
+     to the buildmaster via PB and authenticates themselves using
+     that username and password, then sends a PB command to start the
+     trial build.
+
+     The advantage of this scheme is that the entire configuration is
+     performed inside the buildmaster's config file. The
+     disadvantages are that it is less secure (while the "cred"
+     authentication system does not expose the password in plaintext
+     over the wire, it does not offer most of the other security
+     properties that SSH does). In addition, the buildmaster admin is
+     responsible for maintaining the username/password list, adding
+     and deleting entries as developers come and go.
+
+
+   For example, to set up the "jobdir" style of trial build, using a
+command queue directory of `MASTERDIR/jobdir' (and assuming that all
+your project developers were members of the `developers' unix group),
+you would first create that directory (with `mkdir MASTERDIR/jobdir
+MASTERDIR/jobdir/new MASTERDIR/jobdir/cur MASTERDIR/jobdir/tmp; chgrp
+developers MASTERDIR/jobdir MASTERDIR/jobdir/*; chmod g+rwx,o-rwx
+MASTERDIR/jobdir MASTERDIR/jobdir/*'), and then use the following
+scheduler in the buildmaster's config file:
+
+     from buildbot.scheduler import Try_Jobdir
+     s = Try_Jobdir("try1", ["full-linux", "full-netbsd", "full-OSX"],
+                    jobdir="jobdir")
+     c['schedulers'] = [s]
+
+   Note that you must create the jobdir before telling the
+buildmaster to use this configuration, otherwise you will get an
+error. Also remember that the buildmaster must be able to read and
+write to the jobdir as well. Be sure to watch the `twistd.log' file
+(*note Logfiles::) as you start using the jobdir, to make sure the
+buildmaster is happy with it.
+
+   To use the username/password form of authentication, create a
+`Try_Userpass' instance instead. It takes the same `builderNames'
+argument as the `Try_Jobdir' form, but accepts an addtional `port'
+argument (to specify the TCP port to listen on) and a `userpass' list
+of username/password pairs to accept. Remember to use good passwords
+for this: the security of the buildslave accounts depends upon it:
+
+     from buildbot.scheduler import Try_Userpass
+     s = Try_Userpass("try2", ["full-linux", "full-netbsd", "full-OSX"],
+                      port=8031, userpass=[("alice","pw1"), ("bob", "pw2")] )
+     c['schedulers'] = [s]
+
+   Like most places in the buildbot, the `port' argument takes a
+strports specification. See `twisted.application.strports' for
+details.
+
+locating the master
+===================
+
+The `try' command needs to be told how to connect to the
+`TryScheduler', and must know which of the authentication approaches
+described above is in use by the buildmaster. You specify the
+approach by using `--connect=ssh' or `--connect=pb' (or `try_connect
+= 'ssh'' or `try_connect = 'pb'' in `.buildbot/options').
+
+   For the PB approach, the command must be given a `--master'
+argument (in the form HOST:PORT) that points to TCP port that you
+picked in the `Try_Userpass' scheduler. It also takes a `--username'
+and `--passwd' pair of arguments that match one of the entries in the
+buildmaster's `userpass' list. These arguments can also be provided
+as `try_master', `try_username', and `try_password' entries in the
+`.buildbot/options' file.
+
+   For the SSH approach, the command must be given `--tryhost',
+`--username', and optionally `--password' (TODO: really?) to get to
+the buildmaster host. It must also be given `--trydir', which points
+to the inlet directory configured above. The trydir can be relative
+to the user's home directory, but most of the time you will use an
+explicit path like `~buildbot/project/trydir'. These arguments can be
+provided in `.buildbot/options' as `try_host', `try_username',
+`try_password', and `try_dir'.
+
+   In addition, the SSH approach needs to connect to a PBListener
+status port, so it can retrieve and report the results of the build
+(the PB approach uses the existing connection to retrieve status
+information, so this step is not necessary). This requires a
+`--master' argument, or a `masterstatus' entry in `.buildbot/options',
+in the form of a HOSTNAME:PORT string.
+
+choosing the Builders
+=====================
+
+A trial build is performed on multiple Builders at the same time, and
+the developer gets to choose which Builders are used (limited to a set
+selected by the buildmaster admin with the TryScheduler's
+`builderNames=' argument). The set you choose will depend upon what
+your goals are: if you are concerned about cross-platform
+compatibility, you should use multiple Builders, one from each
+platform of interest. You might use just one builder if that platform
+has libraries or other facilities that allow better test coverage than
+what you can accomplish on your own machine, or faster test runs.
+
+   The set of Builders to use can be specified with multiple
+`--builder' arguments on the command line. It can also be specified
+with a single `try_builders' option in `.buildbot/options' that uses
+a list of strings to specify all the Builder names:
+
+     try_builders = ["full-OSX", "full-win32", "full-linux"]
+
+specifying the VC system
+========================
+
+The `try' command also needs to know how to take the developer's
+current tree and extract the (revision, patch) source-stamp pair.
+Each VC system uses a different process, so you start by telling the
+`try' command which VC system you are using, with an argument like
+`--vc=cvs' or `--vc=tla'.  This can also be provided as `try_vc' in
+`.buildbot/options'.
+
+   The following names are recognized: `cvs' `svn' `baz' `tla' `hg'
+`darcs'
+
+finding the top of the tree
+===========================
+
+Some VC systems (notably CVS and SVN) track each directory
+more-or-less independently, which means the `try' command needs to
+move up to the top of the project tree before it will be able to
+construct a proper full-tree patch. To accomplish this, the `try'
+command will crawl up through the parent directories until it finds a
+marker file. The default name for this marker file is
+`.buildbot-top', so when you are using CVS or SVN you should `touch
+.buildbot-top' from the top of your tree before running `buildbot
+try'. Alternatively, you can use a filename like `ChangeLog' or
+`README', since many projects put one of these files in their
+top-most directory (and nowhere else). To set this filename, use
+`--try-topfile=ChangeLog', or set it in the options file with
+`try_topfile = 'ChangeLog''.
+
+   You can also manually set the top of the tree with
+`--try-topdir=~/trees/mytree', or `try_topdir = '~/trees/mytree''. If
+you use `try_topdir', in a `.buildbot/options' file, you will need a
+separate options file for each tree you use, so it may be more
+convenient to use the `try_topfile' approach instead.
+
+   Other VC systems which work on full projects instead of individual
+directories (tla, baz, darcs, monotone, mercurial, git) do not require
+`try' to know the top directory, so the `--try-topfile' and
+`--try-topdir' arguments will be ignored.
+
+   If the `try' command cannot find the top directory, it will abort
+with an error message.
+
+determining the branch name
+===========================
+
+Some VC systems record the branch information in a way that "try" can
+locate it, in particular Arch (both `tla' and `baz'). For the others,
+if you are using something other than the default branch, you will
+have to tell the buildbot which branch your tree is using. You can do
+this with either the `--branch' argument, or a `try_branch' entry in
+the `.buildbot/options' file.
+
+determining the revision and patch
+==================================
+
+Each VC system has a separate approach for determining the tree's base
+revision and computing a patch.
+
+`CVS'
+     `try' pretends that the tree is up to date. It converts the
+     current time into a `-D' time specification, uses it as the base
+     revision, and computes the diff between the upstream tree as of
+     that point in time versus the current contents. This works, more
+     or less, but requires that the local clock be in reasonably good
+     sync with the repository.
+
+`SVN'
+     `try' does a `svn status -u' to find the latest repository
+     revision number (emitted on the last line in the "Status against
+     revision: NN" message). It then performs an `svn diff -rNN' to
+     find out how your tree differs from the repository version, and
+     sends the resulting patch to the buildmaster. If your tree is not
+     up to date, this will result in the "try" tree being created with
+     the latest revision, then _backwards_ patches applied to bring it
+     "back" to the version you actually checked out (plus your actual
+     code changes), but this will still result in the correct tree
+     being used for the build.
+
+`baz'
+     `try' does a `baz tree-id' to determine the fully-qualified
+     version and patch identifier for the tree
+     (ARCHIVE/VERSION-patch-NN), and uses the VERSION-patch-NN
+     component as the base revision. It then does a `baz diff' to
+     obtain the patch.
+
+`tla'
+     `try' does a `tla tree-version' to get the fully-qualified
+     version identifier (ARCHIVE/VERSION), then takes the first line
+     of `tla logs --reverse' to figure out the base revision. Then it
+     does `tla changes --diffs' to obtain the patch.
+
+`Darcs'
+     `darcs changes --context' emits a text file that contains a list
+     of all patches back to and including the last tag was made. This
+     text file (plus the location of a repository that contains all
+     these patches) is sufficient to re-create the tree. Therefore
+     the contents of this "context" file _are_ the revision stamp for
+     a Darcs-controlled source tree.
+
+     So `try' does a `darcs changes --context' to determine what your
+     tree's base revision is, and then does a `darcs diff -u' to
+     compute the patch relative to that revision.
+
+`Mercurial'
+     `hg identify' emits a short revision ID (basically a truncated
+     SHA1 hash of the current revision's contents), which is used as
+     the base revision. `hg diff' then provides the patch relative to
+     that revision. For `try' to work, your working directory must
+     only have patches that are available from the same
+     remotely-available repository that the build process'
+     `step.Mercurial' will use.
+
+`Git'
+     `git branch -v' lists all the branches available in the local
+     repository along with the revision ID it points to and a short
+     summary of the last commit. The line containing the currently
+     checked out branch begins with '* ' (star and space) while all
+     the others start with '  ' (two spaces). `try' scans for this
+     line and extracts the branch name and revision from it. Then it
+     generates a diff against the base revision.
+
+
+waiting for results
+===================
+
+If you provide the `--wait' option (or `try_wait = True' in
+`.buildbot/options'), the `buildbot try' command will wait until your
+changes have either been proven good or bad before exiting. Unless
+you use the `--quiet' option (or `try_quiet=True'), it will emit a
+progress message every 60 seconds until the builds have completed.
+
+* Menu:
+
+* try --diff::
+
+
+File: buildbot.info,  Node: try --diff,  Prev: try,  Up: try
+
+8.2.3.1 try -diff
+.................
+
+Sometimes you might have a patch from someone else that you want to
+submit to the buildbot. For example, a user may have created a patch
+to fix some specific bug and sent it to you by email. You've inspected
+the patch and suspect that it might do the job (and have at least
+confirmed that it doesn't do anything evil). Now you want to test it
+out.
+
+   One approach would be to check out a new local tree, apply the
+patch, run your local tests, then use "buildbot try" to run the tests
+on other platforms. An alternate approach is to use the `buildbot try
+--diff' form to have the buildbot test the patch without using a
+local tree.
+
+   This form takes a `--diff' argument which points to a file that
+contains the patch you want to apply. By default this patch will be
+applied to the TRUNK revision, but if you give the optional
+`--baserev' argument, a tree of the given revision will be used as a
+starting point instead of TRUNK.
+
+   You can also use `buildbot try --diff=-' to read the patch from
+stdin.
+
+   Each patch has a "patchlevel" associated with it. This indicates
+the number of slashes (and preceding pathnames) that should be
+stripped before applying the diff. This exactly corresponds to the
+`-p' or `--strip' argument to the `patch' utility. By default
+`buildbot try --diff' uses a patchlevel of 0, but you can override
+this with the `-p' argument.
+
+   When you use `--diff', you do not need to use any of the other
+options that relate to a local tree, specifically `--vc',
+`--try-topfile', or `--try-topdir'. These options will be ignored. Of
+course you must still specify how to get to the buildmaster (with
+`--connect', `--tryhost', etc).
+
+
+File: buildbot.info,  Node: Other Tools,  Next: .buildbot config directory,  Prev: Developer Tools,  Up: Command-line tool
+
+8.3 Other Tools
+===============
+
+These tools are generally used by buildmaster administrators.
+
+* Menu:
+
+* sendchange::
+* debugclient::
+
+
+File: buildbot.info,  Node: sendchange,  Next: debugclient,  Prev: Other Tools,  Up: Other Tools
+
+8.3.1 sendchange
+----------------
+
+This command is used to tell the buildmaster about source changes. It
+is intended to be used from within a commit script, installed on the
+VC server. It requires that you have a PBChangeSource (*note
+PBChangeSource::) running in the buildmaster (by being set in
+`c['change_source']').
+
+     buildbot sendchange --master MASTERHOST:PORT --username USER FILENAMES..
+
+   There are other (optional) arguments which can influence the
+`Change' that gets submitted:
+
+`--branch'
+     This provides the (string) branch specifier. If omitted, it
+     defaults to None, indicating the "default branch". All files
+     included in this Change must be on the same branch.
+
+`--revision_number'
+     This provides a (numeric) revision number for the change, used
+     for VC systems that use numeric transaction numbers (like
+     Subversion).
+
+`--revision'
+     This provides a (string) revision specifier, for VC systems that
+     use strings (Arch would use something like patch-42 etc).
+
+`--revision_file'
+     This provides a filename which will be opened and the contents
+     used as the revision specifier. This is specifically for Darcs,
+     which uses the output of `darcs changes --context' as a revision
+     specifier.  This context file can be a couple of kilobytes long,
+     spanning a couple lines per patch, and would be a hassle to pass
+     as a command-line argument.
+
+`--comments'
+     This provides the change comments as a single argument. You may
+     want to use `--logfile' instead.
+
+`--logfile'
+     This instructs the tool to read the change comments from the
+     given file. If you use `-' as the filename, the tool will read
+     the change comments from stdin.
+
+
+File: buildbot.info,  Node: debugclient,  Prev: sendchange,  Up: Other Tools
+
+8.3.2 debugclient
+-----------------
+
+     buildbot debugclient --master MASTERHOST:PORT --passwd DEBUGPW
+
+   This launches a small Gtk+/Glade-based debug tool, connecting to
+the buildmaster's "debug port". This debug port shares the same port
+number as the slaveport (*note Setting the slaveport::), but the
+`debugPort' is only enabled if you set a debug password in the
+buildmaster's config file (*note Debug options::). The `--passwd'
+option must match the `c['debugPassword']' value.
+
+   `--master' can also be provided in `.debug/options' by the
+`master' key. `--passwd' can be provided by the `debugPassword' key.
+
+   The `Connect' button must be pressed before any of the other
+buttons will be active. This establishes the connection to the
+buildmaster. The other sections of the tool are as follows:
+
+`Reload .cfg'
+     Forces the buildmaster to reload its `master.cfg' file. This is
+     equivalent to sending a SIGHUP to the buildmaster, but can be
+     done remotely through the debug port. Note that it is a good
+     idea to be watching the buildmaster's `twistd.log' as you reload
+     the config file, as any errors which are detected in the config
+     file will be announced there.
+
+`Rebuild .py'
+     (not yet implemented). The idea here is to use Twisted's
+     "rebuild" facilities to replace the buildmaster's running code
+     with a new version. Even if this worked, it would only be used
+     by buildbot developers.
+
+`poke IRC'
+     This locates a `words.IRC' status target and causes it to emit a
+     message on all the channels to which it is currently connected.
+     This was used to debug a problem in which the buildmaster lost
+     the connection to the IRC server and did not attempt to
+     reconnect.
+
+`Commit'
+     This allows you to inject a Change, just as if a real one had
+     been delivered by whatever VC hook you are using. You can set
+     the name of the committed file and the name of the user who is
+     doing the commit.  Optionally, you can also set a revision for
+     the change. If the revision you provide looks like a number, it
+     will be sent as an integer, otherwise it will be sent as a
+     string.
+
+`Force Build'
+     This lets you force a Builder (selected by name) to start a
+     build of the current source tree.
+
+`Currently'
+     (obsolete). This was used to manually set the status of the given
+     Builder, but the status-assignment code was changed in an
+     incompatible way and these buttons are no longer meaningful.
+
+
+
+File: buildbot.info,  Node: .buildbot config directory,  Prev: Other Tools,  Up: Command-line tool
+
+8.4 .buildbot config directory
+==============================
+
+Many of the `buildbot' tools must be told how to contact the
+buildmaster that they interact with. This specification can be
+provided as a command-line argument, but most of the time it will be
+easier to set them in an "options" file. The `buildbot' command will
+look for a special directory named `.buildbot', starting from the
+current directory (where the command was run) and crawling upwards,
+eventually looking in the user's home directory. It will look for a
+file named `options' in this directory, and will evaluate it as a
+python script, looking for certain names to be set.  You can just put
+simple `name = 'value'' pairs in this file to set the options.
+
+   For a description of the names used in this file, please see the
+documentation for the individual `buildbot' sub-commands. The
+following is a brief sample of what this file's contents could be.
+
+     # for status-reading tools
+     masterstatus = 'buildbot.example.org:12345'
+     # for 'sendchange' or the debug port
+     master = 'buildbot.example.org:18990'
+     debugPassword = 'eiv7Po'
+
+`masterstatus'
+     Location of the `client.PBListener' status port, used by
+     `statuslog' and `statusgui'.
+
+`master'
+     Location of the `debugPort' (for `debugclient'). Also the
+     location of the `pb.PBChangeSource' (for `sendchange').  Usually
+     shares the slaveport, but a future version may make it possible
+     to have these listen on a separate port number.
+
+`debugPassword'
+     Must match the value of `c['debugPassword']', used to protect the
+     debug port, for the `debugclient' command.
+
+`username'
+     Provides a default username for the `sendchange' command.
+
+
+   The following options are used by the `buildbot try' command
+(*note try::):
+
+`try_connect'
+     This specifies how the "try" command should deliver its request
+     to the buildmaster. The currently accepted values are "ssh" and
+     "pb".
+
+`try_builders'
+     Which builders should be used for the "try" build.
+
+`try_vc'
+     This specifies the version control system being used.
+
+`try_branch'
+     This indicates that the current tree is on a non-trunk branch.
+
+`try_topdir'
+
+`try_topfile'
+     Use `try_topdir' to explicitly indicate the top of your working
+     tree, or `try_topfile' to name a file that will only be found in
+     that top-most directory.
+
+`try_host'
+
+`try_username'
+
+`try_dir'
+     When try_connect is "ssh", the command will pay attention to
+     `try_host', `try_username', and `try_dir'.
+
+`try_username'
+
+`try_password'
+
+`try_master'
+     Instead, when `try_connect' is "pb", the command will pay
+     attention to `try_username', `try_password', and `try_master'.
+
+`try_wait'
+
+`masterstatus'
+     `try_wait' and `masterstatus' are used to ask the "try" command
+     to wait for the requested build to complete.
+
+
+
+File: buildbot.info,  Node: Resources,  Next: Developer's Appendix,  Prev: Command-line tool,  Up: Top
+
+9 Resources
+***********
+
+The Buildbot's home page is at `http://buildbot.sourceforge.net/'
+
+   For configuration questions and general discussion, please use the
+`buildbot-devel' mailing list. The subscription instructions and
+archives are available at
+`http://lists.sourceforge.net/lists/listinfo/buildbot-devel'
+
+
+File: buildbot.info,  Node: Developer's Appendix,  Next: Index of Useful Classes,  Prev: Resources,  Up: Top
+
+Developer's Appendix
+********************
+
+This appendix contains random notes about the implementation of the
+Buildbot, and is likely to only be of use to people intending to
+extend the Buildbot's internals.
+
+   The buildmaster consists of a tree of Service objects, which is
+shaped as follows:
+
+     BuildMaster
+      ChangeMaster  (in .change_svc)
+       [IChangeSource instances]
+      [IScheduler instances]  (in .schedulers)
+      BotMaster  (in .botmaster)
+       [IBuildSlave instances]
+      [IStatusTarget instances]  (in .statusTargets)
+
+   The BotMaster has a collection of Builder objects as values of its
+`.builders' dictionary.
+
+
+File: buildbot.info,  Node: Index of Useful Classes,  Next: Index of master.cfg keys,  Prev: Developer's Appendix,  Up: Top
+
+Index of Useful Classes
+***********************
+
+This is a list of all user-visible classes. There are the ones that
+are useful in `master.cfg', the buildmaster's configuration file.
+Classes that are not listed here are generally internal things that
+admins are unlikely to have much use for.
+
+Change Sources
+==============
+
+ [index ]
+* Menu:
+
+* buildbot.changes.bonsaipoller.BonsaiPoller: BonsaiPoller.   (line 6)
+* buildbot.changes.freshcvs.FreshCVSSource: CVSToys - PBService.
+                                                              (line 6)
+* buildbot.changes.mail.BonsaiMaildirSource: BonsaiMaildirSource.
+                                                              (line 6)
+* buildbot.changes.mail.FCMaildirSource: FCMaildirSource.     (line 6)
+* buildbot.changes.mail.SVNCommitEmailMaildirSource: SVNCommitEmailMaildirSource.
+                                                              (line 6)
+* buildbot.changes.mail.SyncmailMaildirSource: SyncmailMaildirSource.
+                                                              (line 6)
+* buildbot.changes.p4poller.P4Source:    P4Source.            (line 6)
+* buildbot.changes.pb.PBChangeSource:    PBChangeSource.      (line 6)
+* buildbot.changes.svnpoller.SVNPoller:  SVNPoller.           (line 6)
+
+Schedulers and Locks
+====================
+
+ [index ]
+* Menu:
+
+* buildbot.locks.MasterLock:             Interlocks.         (line  6)
+* buildbot.locks.SlaveLock:              Interlocks.         (line  6)
+* buildbot.scheduler.AnyBranchScheduler: AnyBranchScheduler. (line  6)
+* buildbot.scheduler.Dependent:          Dependent Scheduler.
+                                                             (line  6)
+* buildbot.scheduler.Nightly:            Nightly Scheduler.  (line  6)
+* buildbot.scheduler.Periodic:           Periodic Scheduler. (line  6)
+* buildbot.scheduler.Scheduler:          Scheduler Scheduler.
+                                                             (line  6)
+* buildbot.scheduler.Triggerable:        Triggerable Scheduler.
+                                                             (line  6)
+* buildbot.scheduler.Try_Jobdir <1>:     try.                (line 32)
+* buildbot.scheduler.Try_Jobdir:         Try Schedulers.     (line  6)
+* buildbot.scheduler.Try_Userpass <1>:   try.                (line 32)
+* buildbot.scheduler.Try_Userpass:       Try Schedulers.     (line  6)
+
+Build Factories
+===============
+
+ [index ]
+* Menu:
+
+* buildbot.process.factory.BasicBuildFactory: BuildFactory.   (line 6)
+* buildbot.process.factory.BasicSVN:     BuildFactory.        (line 6)
+* buildbot.process.factory.BuildFactory: BuildFactory.        (line 6)
+* buildbot.process.factory.CPAN:         CPAN.                (line 6)
+* buildbot.process.factory.Distutils:    Python distutils.    (line 6)
+* buildbot.process.factory.GNUAutoconf:  GNUAutoconf.         (line 6)
+* buildbot.process.factory.QuickBuildFactory: Quick builds.   (line 6)
+* buildbot.process.factory.Trial:        Python/Twisted/trial projects.
+                                                              (line 6)
+
+Build Steps
+===========
+
+ [index ]
+* Menu:
+
+* buildbot.steps.maxq.MaxQ:              Index of Useful Classes.
+                                                             (line 72)
+* buildbot.steps.python.BuildEPYDoc:     BuildEPYDoc.        (line  6)
+* buildbot.steps.python.PyFlakes:        PyFlakes.           (line  6)
+* buildbot.steps.python_twisted.BuildDebs: Python/Twisted/trial projects.
+                                                             (line  6)
+* buildbot.steps.python_twisted.HLint:   Python/Twisted/trial projects.
+                                                             (line  6)
+* buildbot.steps.python_twisted.ProcessDocs: Python/Twisted/trial projects.
+                                                             (line  6)
+* buildbot.steps.python_twisted.RemovePYCs: Python/Twisted/trial projects.
+                                                             (line  6)
+* buildbot.steps.python_twisted.Trial:   Python/Twisted/trial projects.
+                                                             (line  6)
+* buildbot.steps.shell.Compile:          Compile.            (line  6)
+* buildbot.steps.shell.Configure:        Configure.          (line  6)
+* buildbot.steps.shell.PerlModuleTest:   PerlModuleTest.     (line  6)
+* buildbot.steps.shell.SetProperty:      SetProperty.        (line  6)
+* buildbot.steps.shell.ShellCommand:     ShellCommand.       (line  6)
+* buildbot.steps.shell.Test:             Test.               (line  6)
+* buildbot.steps.shell.TreeSize:         TreeSize.           (line  6)
+* buildbot.steps.source.Arch:            Arch.               (line  6)
+* buildbot.steps.source.Bazaar:          Bazaar.             (line  6)
+* buildbot.steps.source.Bzr:             Bzr.                (line  6)
+* buildbot.steps.source.CVS:             CVS.                (line  6)
+* buildbot.steps.source.Darcs:           Darcs.              (line  6)
+* buildbot.steps.source.Git <1>:         Index of Useful Classes.
+                                                             (line 72)
+* buildbot.steps.source.Git:             Git.                (line  6)
+* buildbot.steps.source.Mercurial:       Mercurial.          (line  6)
+* buildbot.steps.source.P4:              P4.                 (line  6)
+* buildbot.steps.source.SVN:             SVN.                (line  6)
+* buildbot.steps.transfer.FileDownload:  Transferring Files. (line  6)
+* buildbot.steps.transfer.FileUpload:    Transferring Files. (line  6)
+
+Status Targets
+==============
+
+ [index ]
+* Menu:
+
+* buildbot.status.client.PBListener:     PBListener.          (line 6)
+* buildbot.status.html.Waterfall:        HTML Waterfall.      (line 6)
+* buildbot.status.mail.MailNotifier:     MailNotifier.        (line 6)
+* buildbot.status.web.baseweb.WebStatus: WebStatus.           (line 6)
+* buildbot.status.words.IRC:             IRC Bot.             (line 6)
+
+
+File: buildbot.info,  Node: Index of master.cfg keys,  Next: Index,  Prev: Index of Useful Classes,  Up: Top
+
+Index of master.cfg keys
+************************
+
+This is a list of all of the significant keys in master.cfg . Recall
+that master.cfg is effectively a small python program with exactly one
+responsibility: create a dictionary named `BuildmasterConfig'.  The
+keys of this dictionary are listed here. The beginning of the
+master.cfg file typically starts with something like:
+
+     BuildmasterConfig = c = {}
+
+   Therefore a config key of `change_source' will usually appear in
+master.cfg as `c['change_source']'.
+
+ [index ]
+* Menu:
+
+* c['buildbotURL']:                      Defining the Project.
+                                                             (line 24)
+* c['builders']:                         Defining Builders.  (line  6)
+* c['change_source']:                    Change Sources and Schedulers.
+                                                             (line  6)
+* c['debugPassword']:                    Debug options.      (line  6)
+* c['manhole']:                          Debug options.      (line 17)
+* c['projectName']:                      Defining the Project.
+                                                             (line 15)
+* c['projectURL']:                       Defining the Project.
+                                                             (line 19)
+* c['properties']:                       Defining Global Properties.
+                                                             (line  6)
+* c['schedulers']:                       Change Sources and Schedulers.
+                                                             (line 13)
+* c['slavePortnum']:                     Setting the slaveport.
+                                                             (line  6)
+* c['slaves']:                           Buildslave Specifiers.
+                                                             (line  6)
+* c['sources']:                          Change Sources and Schedulers.
+                                                             (line  6)
+* c['status']:                           Defining Status Targets.
+                                                             (line 11)
+
+
+File: buildbot.info,  Node: Index,  Prev: Index of master.cfg keys,  Up: Top
+
+Index
+*****
+
+ [index ]
+* Menu:
+
+* addURL:                                BuildStep URLs.     (line  6)
+* Arch Checkout:                         Arch.               (line  6)
+* Bazaar Checkout:                       Bazaar.             (line  6)
+* Builder:                               Builder.            (line  6)
+* BuildRequest:                          BuildRequest.       (line  6)
+* BuildSet:                              BuildSet.           (line  6)
+* BuildStep URLs:                        BuildStep URLs.     (line  6)
+* Bzr Checkout:                          Bzr.                (line  6)
+* Configuration:                         Configuration.      (line  6)
+* CVS Checkout:                          CVS.                (line  6)
+* Darcs Checkout:                        Darcs.              (line  6)
+* Dependencies:                          Dependent Scheduler.
+                                                             (line  6)
+* Dependent:                             Dependent Scheduler.
+                                                             (line  6)
+* email:                                 MailNotifier.       (line  6)
+* File Transfer:                         Transferring Files. (line  6)
+* Git Checkout:                          Git.                (line  6)
+* installation:                          Installing the code.
+                                                             (line  6)
+* introduction:                          Introduction.       (line  6)
+* IRC:                                   IRC Bot.            (line  6)
+* links:                                 BuildStep URLs.     (line  6)
+* locks:                                 Interlocks.         (line  6)
+* logfiles:                              Logfiles.           (line  6)
+* LogLineObserver:                       Adding LogObservers.
+                                                             (line  6)
+* LogObserver:                           Adding LogObservers.
+                                                             (line  6)
+* mail:                                  MailNotifier.       (line  6)
+* Mercurial Checkout:                    Mercurial.          (line  6)
+* PBListener:                            PBListener.         (line  6)
+* Perforce Update:                       P4.                 (line  6)
+* Philosophy of operation:               History and Philosophy.
+                                                             (line  6)
+* Properties <1>:                        Using Build Properties.
+                                                             (line  6)
+* Properties <2>:                        Defining Global Properties.
+                                                             (line  6)
+* Properties <3>:                        Buildslave Specifiers.
+                                                             (line 27)
+* Properties <4>:                        Change Sources and Schedulers.
+                                                             (line 41)
+* Properties:                            Build Properties.   (line  6)
+* Scheduler:                             Schedulers.         (line  6)
+* statusgui:                             statusgui.          (line  6)
+* SVN Checkout:                          SVN.                (line  6)
+* treeStableTimer:                       BuildFactory Attributes.
+                                                             (line  8)
+* Triggers:                              Triggerable Scheduler.
+                                                             (line  6)
+* Users:                                 Users.              (line  6)
+* Version Control:                       Version Control Systems.
+                                                             (line  6)
+* Waterfall:                             HTML Waterfall.     (line  6)
+* WebStatus:                             WebStatus.          (line  6)
+* WithProperties:                        Using Build Properties.
+                                                             (line 34)
+
+

@@ -1,0 +1,177 @@
+This is buildbot.info, produced by makeinfo version 4.11 from
+buildbot.texinfo.
+
+This is the BuildBot manual.
+
+   Copyright (C) 2005,2006 Brian Warner
+
+   Copying and distribution of this file, with or without
+modification, are permitted in any medium without royalty provided
+the copyright notice and this notice are preserved.
+
+
+Indirect:
+buildbot.info-1: 330
+buildbot.info-2: 294171
+
+Tag Table:
+(Indirect)
+Node: Top330
+Node: Introduction4893
+Node: History and Philosophy6770
+Node: System Architecture9495
+Node: BuildSlave Connections12092
+Node: Buildmaster Architecture14205
+Node: Status Delivery Architecture19544
+Node: Control Flow21740
+Node: Installation24578
+Node: Requirements24931
+Node: Installing the code26732
+Node: Creating a buildmaster28682
+Node: Upgrading an Existing Buildmaster31130
+Node: Creating a buildslave32740
+Node: Buildslave Options38102
+Node: Launching the daemons41049
+Ref: Launching the daemons-Footnote-143916
+Node: Logfiles44091
+Node: Shutdown44630
+Node: Maintenance45862
+Node: Troubleshooting47254
+Node: Starting the buildslave47527
+Node: Connecting to the buildmaster48660
+Node: Forcing Builds49703
+Node: Concepts50455
+Node: Version Control Systems50854
+Ref: Version Control Systems-Footnote-151696
+Node: Generalizing VC Systems51842
+Ref: Generalizing VC Systems-Footnote-155469
+Node: Source Tree Specifications55690
+Ref: Source Tree Specifications-Footnote-158563
+Ref: Source Tree Specifications-Footnote-258757
+Node: How Different VC Systems Specify Sources58887
+Node: Attributes of Changes65001
+Node: Schedulers68853
+Node: BuildSet71243
+Node: BuildRequest73902
+Node: Builder74890
+Node: Users76163
+Node: Doing Things With Users77312
+Node: Email Addresses79677
+Node: IRC Nicknames81756
+Node: Live Status Clients82991
+Node: Build Properties83613
+Node: Configuration85452
+Node: Config File Format86735
+Node: Loading the Config File89110
+Node: Testing the Config File90805
+Node: Defining the Project92504
+Node: Change Sources and Schedulers94104
+Ref: Change Sources and Schedulers-Footnote-196222
+Node: Scheduler Scheduler96471
+Node: AnyBranchScheduler99118
+Node: Dependent Scheduler100339
+Node: Periodic Scheduler103048
+Node: Nightly Scheduler104005
+Node: Try Schedulers106640
+Node: Triggerable Scheduler107233
+Node: Setting the slaveport110061
+Node: Buildslave Specifiers111471
+Node: When Buildslaves Go Missing113530
+Node: Defining Global Properties115935
+Node: Defining Builders116373
+Node: Defining Status Targets119939
+Node: Debug options121021
+Node: Getting Source Code Changes125066
+Node: Change Sources126363
+Node: Choosing ChangeSources130302
+Node: CVSToys - PBService131687
+Node: Mail-parsing ChangeSources134499
+Node: Subscribing the Buildmaster136551
+Node: Using Maildirs137933
+Node: Parsing Email Change Messages139495
+Node: FCMaildirSource141283
+Node: SyncmailMaildirSource142268
+Node: BonsaiMaildirSource142749
+Node: SVNCommitEmailMaildirSource143234
+Node: PBChangeSource143854
+Node: P4Source147185
+Node: BonsaiPoller148712
+Node: SVNPoller149382
+Node: MercurialHook160765
+Node: Build Process164413
+Node: Build Steps165613
+Node: Common Parameters167244
+Node: Using Build Properties169269
+Ref: Using Build Properties-Footnote-1175385
+Node: Source Checkout175655
+Node: CVS180899
+Node: SVN182041
+Node: Darcs187937
+Node: Mercurial189631
+Node: Arch190545
+Node: Bazaar191341
+Node: Bzr191864
+Node: P4192884
+Node: Git194398
+Node: ShellCommand195167
+Node: Simple ShellCommand Subclasses200648
+Node: Configure201183
+Node: Compile201601
+Node: Test203008
+Node: TreeSize203251
+Node: PerlModuleTest203659
+Node: SetProperty204032
+Node: Python BuildSteps205545
+Node: BuildEPYDoc205856
+Node: PyFlakes207362
+Node: Transferring Files208279
+Node: Triggering Schedulers212118
+Node: Writing New BuildSteps213520
+Node: BuildStep LogFiles214466
+Node: Reading Logfiles218938
+Node: Adding LogObservers219745
+Ref: Adding LogObservers-Footnote-1232309
+Ref: Adding LogObservers-Footnote-2232376
+Node: BuildStep URLs232439
+Node: Interlocks235537
+Ref: Interlocks-Footnote-1243663
+Node: Build Factories243973
+Node: BuildStep Objects244950
+Node: BuildFactory246022
+Node: BuildFactory Attributes250578
+Node: Quick builds251240
+Node: Process-Specific build factories251976
+Node: GNUAutoconf252520
+Node: CPAN255099
+Node: Python distutils255860
+Node: Python/Twisted/trial projects257134
+Node: Status Delivery264009
+Node: WebStatus265106
+Node: WebStatus Configuration Parameters268387
+Ref: WebStatus Configuration Parameters-Footnote-1270793
+Node: Buildbot Web Resources270962
+Ref: Buildbot Web Resources-Footnote-1278190
+Node: XMLRPC server278277
+Node: HTML Waterfall279985
+Node: MailNotifier280431
+Node: IRC Bot285193
+Node: PBListener288504
+Node: Writing New Status Plugins289115
+Node: Command-line tool290385
+Node: Administrator Tools290911
+Node: Developer Tools292187
+Node: statuslog292506
+Node: statusgui293587
+Node: try294171
+Node: try --diff309744
+Node: Other Tools311501
+Node: sendchange311764
+Node: debugclient313580
+Node: .buildbot config directory316156
+Node: Resources319112
+Node: Developer's Appendix319533
+Node: Index of Useful Classes320289
+Node: Index of master.cfg keys326358
+Node: Index328597
+
+End Tag Table
