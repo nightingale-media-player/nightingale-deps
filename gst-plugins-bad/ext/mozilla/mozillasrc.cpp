@@ -35,6 +35,8 @@
 #include <nsIRunnable.h>
 #include <nsIHttpHeaderVisitor.h>
 #include <nsThreadUtils.h>
+#include <nsIWindowWatcher.h>
+#include <nsIAuthPrompt.h>
 
 #define GST_TYPE_MOZILLA_SRC \
   (gst_mozilla_src_get_type())
@@ -179,27 +181,29 @@ ResumeEvent::Run()
 }
 
 class StreamListener : public nsIStreamListener,
-                       public nsIHttpHeaderVisitor
+                       public nsIHttpHeaderVisitor,
+                       public nsIInterfaceRequestor
 {
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIREQUESTOBSERVER
   NS_DECL_NSISTREAMLISTENER
   NS_DECL_NSIHTTPHEADERVISITOR
+  NS_DECL_NSIINTERFACEREQUESTOR
  
-  StreamListener(GstMozillaSrc *src);
+  StreamListener(GstMozillaSrc *aSrc);
   virtual ~StreamListener();
 
 private:
-  GstMozillaSrc *src;
+  GstMozillaSrc *mSrc;
   GstAdapter *mAdapter;
-
+  
   void ReadHeaders (gchar *data);
   GstBuffer *ScanForHeaders(GstBuffer *buf);
 };
 
-StreamListener::StreamListener (GstMozillaSrc *src) : 
-    src(src),
+StreamListener::StreamListener (GstMozillaSrc *aSrc) : 
+    mSrc(aSrc),
     mAdapter(NULL)
 {
 }
@@ -210,16 +214,28 @@ StreamListener::~StreamListener ()
     g_object_unref (mAdapter);
 }
 
-NS_IMPL_ISUPPORTS3(StreamListener,
+NS_IMPL_ISUPPORTS4(StreamListener,
                    nsIRequestObserver,
                    nsIStreamListener,
-                   nsIHttpHeaderVisitor)
+                   nsIHttpHeaderVisitor,
+                   nsIInterfaceRequestor)
+
+NS_IMETHODIMP 
+StreamListener::GetInterface(const nsIID &aIID, void **aResult)
+{
+  if (aIID.Equals(NS_GET_IID(nsIAuthPrompt))) {
+    nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
+    return wwatch->GetNewAuthPrompter(NULL, (nsIAuthPrompt**)aResult);
+  }
+
+  return NS_ERROR_NO_INTERFACE;
+}
 
 NS_IMETHODIMP
 StreamListener::VisitHeader(const nsACString &header, const nsACString &value)
 {
   // If we see any headers, it's not shoutcast
-  src->is_shoutcast_server = FALSE;
+  mSrc->is_shoutcast_server = FALSE;
 
   return NS_OK;
 }
@@ -227,44 +243,53 @@ StreamListener::VisitHeader(const nsACString &header, const nsACString &value)
 NS_IMETHODIMP
 StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
 {
-  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(src->channel));
+  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(mSrc->channel));
   nsresult rv;
 
   if (httpChannel) {
     nsCAutoString acceptRangesHeader;
     nsCAutoString icyHeader;
+    PRBool succeeded;
+
+    if (NS_SUCCEEDED(httpChannel->GetRequestSucceeded(&succeeded)) 
+            && !succeeded) 
+    {
+      // HTTP response is not a 2xx!
+      req->Cancel(NS_BINDING_ABORTED);
+      return NS_OK;
+    }
     
     // Unfortunately, shoutcast isn't actually HTTP compliant - it sends back
     // a non-HTTP response. Mozilla accepts this, but just gives us back the
     // data - including the headers - as part of the body.
     // We detect this as a response with zero headers, and then handle it
     // specially.
-    src->is_shoutcast_server = TRUE;
+    mSrc->is_shoutcast_server = TRUE;
     rv = httpChannel->VisitResponseHeaders(this);
 
-    GST_DEBUG_OBJECT (src, "Is shoutcast: %d", src->is_shoutcast_server);
+    GST_DEBUG_OBJECT (mSrc, "Is shoutcast: %d", mSrc->is_shoutcast_server);
 
     rv = httpChannel->GetResponseHeader(NS_LITERAL_CSTRING("Accept-Ranges"),
             acceptRangesHeader);
     if (NS_FAILED (rv) || acceptRangesHeader.IsEmpty()) {
-      GST_DEBUG_OBJECT (src, "No Accept-Ranges header in response; "
+      GST_DEBUG_OBJECT (mSrc, "No Accept-Ranges header in response; "
               "setting is_seekable to false");
-      src->is_seekable = FALSE;
+      mSrc->is_seekable = FALSE;
     } else {
       if (acceptRangesHeader.Find (NS_LITERAL_CSTRING ("bytes")) < 0) {
-        GST_DEBUG_OBJECT (src, "No 'bytes' in Accept-Ranges header; "
+        GST_DEBUG_OBJECT (mSrc, "No 'bytes' in Accept-Ranges header; "
                 "setting is_seekable to false");
-        src->is_seekable = FALSE;
+        mSrc->is_seekable = FALSE;
       }
       else {
-        GST_DEBUG_OBJECT (src, "Accept-Ranges header includes 'bytes' field, "
+        GST_DEBUG_OBJECT (mSrc, "Accept-Ranges header includes 'bytes' field, "
                 "seeking supported");
       }
     }
 
-    if (!src->is_seekable) {
+    if (!mSrc->is_seekable) {
       /* There's no API for this, unfortunately */
-      ((GstBaseSrc *)src)->seekable = FALSE;
+      ((GstBaseSrc *)mSrc)->seekable = FALSE;
     }
 
     // Handle the metadata interval for non-shoutcast servers that support
@@ -273,53 +298,53 @@ StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
            icyHeader);
     if (NS_SUCCEEDED (rv) && !icyHeader.IsEmpty()) {
       int metadata_interval;
-      GST_DEBUG_OBJECT (src, "Received icy-metaint header, parsing it");
+      GST_DEBUG_OBJECT (mSrc, "Received icy-metaint header, parsing it");
 
       metadata_interval = icyHeader.ToInteger(&rv);
       if (NS_FAILED (rv)) {
-        GST_WARNING_OBJECT (src, "Could not parse icy-metaint header");
+        GST_WARNING_OBJECT (mSrc, "Could not parse icy-metaint header");
       }
       else {
-        GST_DEBUG_OBJECT (src, "Using icy caps with metadata interval %d",
+        GST_DEBUG_OBJECT (mSrc, "Using icy caps with metadata interval %d",
                 metadata_interval);
-        if (src->icy_caps) {
-          gst_caps_unref (src->icy_caps);
+        if (mSrc->icy_caps) {
+          gst_caps_unref (mSrc->icy_caps);
         }
-        src->icy_caps = gst_caps_new_simple ("application/x-icy",
+        mSrc->icy_caps = gst_caps_new_simple ("application/x-icy",
                 "metadata-interval", G_TYPE_INT, metadata_interval, NULL);
       }
     }
     else {
-      GST_DEBUG_OBJECT (src, "No icy-metaint header found");
+      GST_DEBUG_OBJECT (mSrc, "No icy-metaint header found");
     }
   }
 
   /* Unfortunately channel->GetContentLength() is only 32 bit; this is the 
    * 64 bit variant - excessively complex... */
-  nsCOMPtr<nsIPropertyBag2> properties(do_QueryInterface(src->channel));
-  if (properties && src->content_size == -1) {
+  nsCOMPtr<nsIPropertyBag2> properties(do_QueryInterface(mSrc->channel));
+  if (properties && mSrc->content_size == -1) {
     PRInt64 length;
     nsresult rv;
     rv = properties->GetPropertyAsInt64 (NS_LITERAL_STRING ("content-length"),
             &length);
 
     if (NS_SUCCEEDED(rv) && length != -1) {
-      src->content_size = length;
-      GST_DEBUG_OBJECT (src, "Read content length: %" G_GINT64_FORMAT,
-              src->content_size);
+      mSrc->content_size = length;
+      GST_DEBUG_OBJECT (mSrc, "Read content length: %" G_GINT64_FORMAT,
+              mSrc->content_size);
 
-      gst_segment_set_duration (&((GstBaseSrc *)src)->segment, 
-              GST_FORMAT_BYTES, src->content_size);
-      gst_element_post_message (GST_ELEMENT (src), 
-              gst_message_new_duration (GST_OBJECT (src), GST_FORMAT_BYTES,
-              src->content_size));
+      gst_segment_set_duration (&((GstBaseSrc *)mSrc)->segment, 
+              GST_FORMAT_BYTES, mSrc->content_size);
+      gst_element_post_message (GST_ELEMENT (mSrc), 
+              gst_message_new_duration (GST_OBJECT (mSrc), GST_FORMAT_BYTES,
+              mSrc->content_size));
     }
     else {
-      GST_DEBUG_OBJECT (src, "No content-length found");
+      GST_DEBUG_OBJECT (mSrc, "No content-length found");
     }
   }
   
-  GST_DEBUG_OBJECT (src, "%p::StreamListener::OnStartRequest called; "
+  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStartRequest called; "
           "connection made", this);
   return NS_OK;
 }
@@ -328,16 +353,16 @@ NS_IMETHODIMP
 StreamListener::OnStopRequest(nsIRequest *req, nsISupports *ctxt, 
     nsresult status)
 {
-  GST_DEBUG_OBJECT (src, "%p::StreamListener::OnStopRequest called; connection "
+  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; connection "
           "lost", this);
 
-  if (!src->is_cancelled)
+  if (!mSrc->is_cancelled)
   {
-    GST_DEBUG_OBJECT (src, "At EOS after request stopped");
-    src->eos = TRUE;
+    GST_DEBUG_OBJECT (mSrc, "At EOS after request stopped");
+    mSrc->eos = TRUE;
   }
 
-  src->is_cancelled = FALSE;
+  mSrc->is_cancelled = FALSE;
 
   return NS_OK;
 }
@@ -363,9 +388,9 @@ void StreamListener::ReadHeaders (gchar *data)
 
         if (metaint) {
           GST_DEBUG ("icy-metaint read: %d", metaint);
-          if (src->icy_caps)
-            gst_caps_unref (src->icy_caps);
-          src->icy_caps = gst_caps_new_simple ("application/x-icy",
+          if (mSrc->icy_caps)
+            gst_caps_unref (mSrc->icy_caps);
+          mSrc->icy_caps = gst_caps_new_simple ("application/x-icy",
                   "metadata-interval", G_TYPE_INT, metaint, NULL);
         }
       }
@@ -424,7 +449,7 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
                             nsIInputStream *stream,
                             PRUint32 offset, PRUint32 count)
 {
-  GST_DEBUG_OBJECT (src, "%p::OnDataAvailable called: [count=%u, offset=%u]", this, count, offset);
+  GST_DEBUG_OBJECT (mSrc, "%p::OnDataAvailable called: [count=%u, offset=%u]", this, count, offset);
 
   nsresult rv;
   PRUint32 bytesRead=0;
@@ -434,14 +459,14 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
 
   rv = stream->Read((char *)GST_BUFFER_DATA (buf), count, &bytesRead);
   if (NS_FAILED(rv)) {
-    GST_DEBUG_OBJECT (src, "stream->Read failed with rv=%x", rv);
+    GST_DEBUG_OBJECT (mSrc, "stream->Read failed with rv=%x", rv);
     return rv;
   }
 
   GST_BUFFER_SIZE (buf) = bytesRead;
 
-  if (src->is_shoutcast_server && !src->shoutcast_headers_read) {
-    GST_DEBUG_OBJECT (src, "Scanning for headers");
+  if (mSrc->is_shoutcast_server && !mSrc->shoutcast_headers_read) {
+    GST_DEBUG_OBJECT (mSrc, "Scanning for headers");
     // Scan the buffer for the end of the headers. Returns a new
     // buffer if we have any non-header data.
     buf = ScanForHeaders (buf);
@@ -450,23 +475,23 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
       return NS_OK;
     }
     else {
-      src->shoutcast_headers_read = TRUE;
+      mSrc->shoutcast_headers_read = TRUE;
     }
   }
 
   len = GST_BUFFER_SIZE (buf);
 
-  if (src->icy_caps)
-    gst_buffer_set_caps (buf, src->icy_caps);
+  if (mSrc->icy_caps)
+    gst_buffer_set_caps (buf, mSrc->icy_caps);
 
-  g_mutex_lock (src->queue_lock);
+  g_mutex_lock (mSrc->queue_lock);
 
-  src->queue_size += len;
-  g_queue_push_tail (src->queue, buf);
-  GST_DEBUG_OBJECT (src, "Pushed %d byte buffer onto queue (now %d bytes)",
-          len, src->queue_size);
+  mSrc->queue_size += len;
+  g_queue_push_tail (mSrc->queue, buf);
+  GST_DEBUG_OBJECT (mSrc, "Pushed %d byte buffer onto queue (now %d bytes)",
+          len, mSrc->queue_size);
 
-  g_cond_signal (src->queue_cond);
+  g_cond_signal (mSrc->queue_cond);
 
   /* If we're reading too quickly, we'll suspend after this.
    * Suspend if:
@@ -476,12 +501,12 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
    *
    * We're required to always read all the data.
    */
-  if ((src->queue_size > MAX_INTERNAL_BUFFER) ||
-      (src->queue_size + len > MAX_INTERNAL_BUFFER && 
-       src->queue_size > MAX_INTERNAL_BUFFER/2))
+  if ((mSrc->queue_size > MAX_INTERNAL_BUFFER) ||
+      (mSrc->queue_size + len > MAX_INTERNAL_BUFFER && 
+       mSrc->queue_size > MAX_INTERNAL_BUFFER/2))
   {
-    if (src->suspended) {
-      GST_WARNING_OBJECT (src, "Trying to suspend while already suspended, "
+    if (mSrc->suspended) {
+      GST_WARNING_OBJECT (mSrc, "Trying to suspend while already suspended, "
               "unexpected!");
       goto done;
     }
@@ -489,16 +514,16 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
     /* Then we should suspend the connection until we need more data.
      * If our channel doesn't support nsIRequest, we can't do this, but
      * that's not an error. */
-    nsCOMPtr<nsIRequest> request(do_QueryInterface(src->channel));
+    nsCOMPtr<nsIRequest> request(do_QueryInterface(mSrc->channel));
     if (request) {
-      GST_DEBUG_OBJECT (src, "Suspending request, reading too fast!");
+      GST_DEBUG_OBJECT (mSrc, "Suspending request, reading too fast!");
       request->Suspend();
-      src->suspended = TRUE;
+      mSrc->suspended = TRUE;
     }
   }
 
 done:
-  g_mutex_unlock (src->queue_lock);
+  g_mutex_unlock (mSrc->queue_lock);
 
   return NS_OK;
 }
@@ -804,8 +829,8 @@ gst_mozilla_src_cancel_request (GstMozillaSrc *src)
 static gboolean
 gst_mozilla_src_create_request (GstMozillaSrc *src, GstSegment *segment)
 {
-  nsCOMPtr<nsIStreamListener> listener = new StreamListener(src);
   nsresult rv;
+  nsCOMPtr<nsIStreamListener> listener = new StreamListener(src);
 
   rv = NS_NewChannel(getter_AddRefs(src->channel), src->uri, 
             nsnull, nsnull, nsnull, 
@@ -814,6 +839,9 @@ gst_mozilla_src_create_request (GstMozillaSrc *src, GstSegment *segment)
     GST_WARNING_OBJECT (src, "Failed to create channel for %s", src->location);
     return FALSE;
   }
+
+  nsCOMPtr<nsIInterfaceRequestor> requestor = do_QueryInterface (listener);
+  src->channel->SetNotificationCallbacks(requestor);
 
   if (segment && segment->format == GST_FORMAT_BYTES && segment->start > 0) {
     nsCOMPtr<nsIResumableChannel> resumable(do_QueryInterface(src->channel));
