@@ -50,6 +50,7 @@
 
 #include <gst/gst.h>
 #include <CoreAudio/CoreAudio.h>
+#include <AudioUnit/AudioUnit.h>
 
 #define GST_OSX_AUDIO_ELEMENT_TYPE                       (gst_osx_audio_element_get_type())
 #define GST_OSX_AUDIO_ELEMENT(obj)                       (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_OSX_AUDIO_ELEMENT_TYPE, GstOsxAudioElementInterface))
@@ -61,8 +62,11 @@ typedef struct _GstOsxAudioElementInterface GstOsxAudioElementInterface;
 struct _GstOsxAudioElementInterface {
 	GTypeInterface parent;
 	
-	OSStatus (*io_proc) (AudioDeviceID inDevice, const AudioTimeStamp *inNow, const AudioBufferList *inInputData, const AudioTimeStamp *inInputTime, AudioBufferList *outOutputData, const AudioTimeStamp *inOutputTime, void *inClientData);
-	
+	OSStatus (*io_proc) (void *userdata, 
+            AudioUnitRenderActionFlags * ioActionFlags, 
+            const AudioTimeStamp * inTimeStamp, 
+            UInt32 inBusNumber, UInt32 inNumberFrames, 
+            AudioBufferList * bufferList);
 };
 
 GType gst_osx_audio_element_get_type (void);

@@ -66,9 +66,13 @@ typedef struct _GstOsxRingBufferClass GstOsxRingBufferClass;
 struct _GstOsxRingBuffer {
 	GstRingBuffer         object;
 	
+	gboolean is_src;
+    AudioUnit      audiounit;
 	AudioDeviceID  device_id;
 	gboolean io_proc_active;
+	gboolean io_proc_needs_deactivation;
 	guint buffer_len;
+    guint segoffset;
 	GstOsxAudioElementInterface* element;
 };
 
