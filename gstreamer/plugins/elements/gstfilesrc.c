@@ -21,7 +21,6 @@
  */
 /**
  * SECTION:element-filesrc
- * @short_description: read from arbitrary point in a file
  * @see_also: #GstFileSrc
  *
  * Read data from a file in the local file system.
@@ -37,7 +36,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32
-#include <io.h>                 /* lseek, open, close, read */
+#include <io.h>      /* lseek, open, close, read */
 /* On win32, stat* default to 32 bit; we need the 64-bit
  * variants, so explicitly define it that way. */
 #define stat __stat64
@@ -89,17 +88,20 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
  * use the 'file descriptor' opened in glib (and returned from this function)
  * in this library, as they may have unrelated C runtimes. */
 int
-gst_open (const gchar * filename, int flags, int mode)
+gst_open (const gchar *filename,
+    int          flags,
+    int          mode)
 {
 #ifdef G_OS_WIN32
   wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
   int retval;
   int save_errno;
 
-  if (wfilename == NULL) {
-    errno = EINVAL;
-    return -1;
-  }
+  if (wfilename == NULL)
+    {
+      errno = EINVAL;
+      return -1;
+    }
 
   retval = _wopen (wfilename, flags, mode);
   save_errno = errno;
@@ -112,7 +114,6 @@ gst_open (const gchar * filename, int flags, int mode)
   return open (filename, flags, mode);
 #endif
 }
-
 
 
 /**********************************************************************
@@ -1096,45 +1097,26 @@ gst_file_src_uri_get_uri (GstURIHandler * handler)
 static gboolean
 gst_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
-  gchar *protocol, *location;
+  gchar *location;
   gboolean ret;
   GstFileSrc *src = GST_FILE_SRC (handler);
 
-  protocol = gst_uri_get_protocol (uri);
-  if (strcmp (protocol, "file") != 0) {
-    g_free (protocol);
+  location = g_filename_from_uri (uri, NULL, NULL);
+
+  if (!location) {
+    GST_WARNING_OBJECT (src, "Invalid URI '%s' for filesrc", uri);
     return FALSE;
   }
-  g_free (protocol);
 
-  /* allow file://localhost/foo/bar by stripping localhost but fail
-   * for every other hostname */
-  if (g_str_has_prefix (uri, "file://localhost/")) {
-    char *tmp;
-
-    /* 16 == strlen ("file://localhost") */
-    tmp = g_strconcat ("file://", uri + 16, NULL);
-    /* we use gst_uri_get_location() although we already have the
-     * "location" with uri + 16 because it provides unescaping */
-    location = gst_uri_get_location (tmp);
-    g_free (tmp);
-  } else if (strcmp (uri, "file://") == 0) {
-    /* Special case for "file://" as this is used by some applications
-     *  to test with gst_element_make_from_uri if there's an element
-     *  that supports the URI protocol. */
-    gst_file_src_set_location (src, NULL);
-    return TRUE;
-  } else {
-    location = gst_uri_get_location (uri);
-    GST_LOG_OBJECT (src, "Location '%s' found from uri '%s'", location, uri);
-  }
-
-  if (!location)
-    return FALSE;
-  if (!g_path_is_absolute (location)) {
-    g_free (location);
-    return FALSE;
-  }
+#ifdef G_OS_WIN32
+  /* Unfortunately, g_filename_from_uri() doesn't handle some UNC paths
+   * correctly on windows, it leaves them with an extra backslash
+   * at the start if they're of the mozilla-style file://///host/path/file 
+   * form. Correct this.
+   */
+  if (location[0] == '\\' && location[1] == '\\' && location[2] == '\\')
+    g_memmove (location, location+1, strlen(location+1)+1);
+#endif
 
   ret = gst_file_src_set_location (src, location);
   g_free (location);
