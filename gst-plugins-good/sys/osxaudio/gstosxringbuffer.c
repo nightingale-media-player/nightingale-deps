@@ -43,6 +43,7 @@
  */
 
 #include <CoreAudio/CoreAudio.h>
+
 #include <gst/gst.h>
 #include <gst/audio/multichannel.h>
 #include "gstosxringbuffer.h"
@@ -74,8 +75,6 @@ static OSStatus gst_osx_ring_buffer_render_notify (GstOsxRingBuffer *osxbuf,
         unsigned int inBusNumber,
         unsigned int inNumberFrames,
         AudioBufferList *ioData);
-
-/* ringbuffer abstract base class */
 
 GType
 gst_osx_ring_buffer_get_type (void)
@@ -150,6 +149,7 @@ gst_osx_ring_buffer_init (GstOsxRingBuffer * ringbuffer,
 static void
 gst_osx_ring_buffer_dispose (GObject * object)
 {
+  // TODO: free the audiounit 
   G_OBJECT_CLASS (ring_parent_class)->dispose (object);
 }
 
@@ -372,6 +372,9 @@ gst_osx_ring_buffer_remove_render_callback (GstOsxRingBuffer *osxbuf)
   AURenderCallbackStruct input;
   OSStatus status;
 
+  /* Deactivate the render callback by calling SetRenderCallback with a NULL
+   * inputProc.
+   */
   input.inputProc = NULL;
   input.inputProcRefCon = NULL;
 
@@ -384,6 +387,7 @@ gst_osx_ring_buffer_remove_render_callback (GstOsxRingBuffer *osxbuf)
     GST_WARNING_OBJECT (osxbuf, "Failed to remove render callback");
   }
 
+  /* Remove the RenderNotify too */
   status = AudioUnitRemoveRenderNotify (osxbuf->audiounit,
           (AURenderCallback)gst_osx_ring_buffer_render_notify,
           osxbuf);
@@ -392,6 +396,7 @@ gst_osx_ring_buffer_remove_render_callback (GstOsxRingBuffer *osxbuf)
     GST_WARNING_OBJECT (osxbuf, "Failed to remove render notify callback");
   }
 
+  /* We're deactivated.. */
   osxbuf->io_proc_needs_deactivation = FALSE;
   osxbuf->io_proc_active = FALSE;
 }
@@ -403,11 +408,14 @@ static OSStatus gst_osx_ring_buffer_render_notify (GstOsxRingBuffer *osxbuf,
         unsigned int inNumberFrames,
         AudioBufferList *ioData)
 {
-  GST_DEBUG_OBJECT (osxbuf, "Flags: %lx", *ioActionFlags);
+  /* After rendering a frame, we get the PostRender notification.
+   * Here, we detach the RenderCallback if we've been paused.
+   *
+   * This is necessary (rather than just directly detaching it) to work
+   * around some thread-safety issues in CoreAudio
+   */
   if ((*ioActionFlags) & kAudioUnitRenderAction_PostRender)
   {
-    GST_DEBUG_OBJECT (osxbuf, "PostRender");
-
     if (osxbuf->io_proc_needs_deactivation) {
       gst_osx_ring_buffer_remove_render_callback (osxbuf);
     }
@@ -511,7 +519,27 @@ gst_osx_ring_buffer_stop (GstRingBuffer * buf)
 static guint
 gst_osx_ring_buffer_delay (GstRingBuffer * buf)
 {
-  /* TODO: Look at kAudioUnitProperty_Latency, which is in seconds (as a double)
-   */
-  return 0;
+  double latency;
+  UInt32 size = sizeof(double);
+  GstOsxRingBuffer *osxbuf;
+  OSStatus status;
+  guint samples;
+
+  osxbuf = GST_OSX_RING_BUFFER (buf);
+
+  status = AudioUnitGetProperty (osxbuf->audiounit,
+          kAudioUnitProperty_Latency,
+          kAudioUnitScope_Global,
+          0,
+          &latency,
+          &size);
+
+  if (status) {
+    GST_WARNING_OBJECT (buf, "Failed to get latency: %x", status);
+    return 0;
+  }
+
+  samples = latency * GST_RING_BUFFER (buf)->spec.rate;
+  GST_DEBUG_OBJECT (buf, "Got latency: %f seconds -> %d samples", latency, samples);
+  return samples;
 }

@@ -1,7 +1,7 @@
 /*
  * GStreamer
  * Copyright 2005,2006 Zaheer Abbas Merali  <zaheerabbas at merali dot org>
- * Copyright 2007 Pioneers of the Inevitable <songbird@songbirdnest.com>
+ * Copyright 2007,2008 Pioneers of the Inevitable <songbird@songbirdnest.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -64,7 +64,6 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/audio/multichannel.h>
 
 #include <CoreAudio/CoreAudio.h>
 #include <CoreAudio/AudioHardware.h>
@@ -92,8 +91,11 @@ enum
 enum
 {
   ARG_0,
-  ARG_DEVICE
+  ARG_DEVICE,
+  ARG_VOLUME
 };
+
+#define DEFAULT_VOLUME 1.0
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -116,6 +118,7 @@ static GstRingBuffer *gst_osx_audio_sink_create_ringbuffer (GstBaseAudioSink *
 static void gst_osx_audio_sink_osxelement_init (gpointer g_iface,
     gpointer iface_data);
 static void gst_osx_audio_sink_select_device (GstOsxAudioSink * osxsink);
+static void gst_osx_audio_sink_set_volume(GstOsxAudioSink *sink);
 
 static OSStatus gst_osx_audio_sink_io_proc(GstOsxRingBuffer *buf, 
         AudioUnitRenderActionFlags * ioActionFlags,
@@ -141,7 +144,6 @@ gst_osx_audio_sink_osxelement_do_init (GType type)
 
 GST_BOILERPLATE_FULL (GstOsxAudioSink, gst_osx_audio_sink, GstBaseAudioSink,
     GST_TYPE_BASE_AUDIO_SINK, gst_osx_audio_sink_osxelement_do_init);
-
 
 static void
 gst_osx_audio_sink_base_init (gpointer g_class)
@@ -179,6 +181,10 @@ gst_osx_audio_sink_class_init (GstOsxAudioSinkClass * klass)
       g_param_spec_int ("device", "Device ID", "Device ID of output device",
           0, G_MAXINT, 0, G_PARAM_READWRITE));
 
+  g_object_class_install_property (gobject_class, ARG_VOLUME,
+      g_param_spec_double ("volume", "Volume", "Volume of this stream",
+          0, 1.0, 1.0, G_PARAM_READWRITE));
+
   gstbaseaudiosink_class->create_ringbuffer =
       GST_DEBUG_FUNCPTR (gst_osx_audio_sink_create_ringbuffer);
 
@@ -196,7 +202,7 @@ gst_osx_audio_sink_init (GstOsxAudioSink * sink, GstOsxAudioSinkClass * gclass)
   GST_DEBUG ("Initialising object");
 
   sink->device_id = kAudioDeviceUnknown;
-  sink->stream_id = kAudioStreamUnknown;
+  sink->volume = DEFAULT_VOLUME;
 }
 
 static void
@@ -208,6 +214,10 @@ gst_osx_audio_sink_set_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case ARG_DEVICE:
       sink->device_id = g_value_get_int (value);
+      break;
+    case ARG_VOLUME:
+      sink->volume = g_value_get_double (value);
+      gst_osx_audio_sink_set_volume(sink);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -224,15 +234,14 @@ gst_osx_audio_sink_get_property (GObject * object, guint prop_id,
     case ARG_DEVICE:
       g_value_set_int (value, sink->device_id);
       break;
+    case ARG_VOLUME:
+      g_value_set_double (value, sink->volume);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }
-
-/* GstElement vmethod implementations */
-
-/* GstBaseSink vmethod implementations */
 
 static AudioUnit gst_osx_audio_sink_create_audio_unit (GstOsxAudioSink *osxsink)
 {
@@ -241,6 +250,12 @@ static AudioUnit gst_osx_audio_sink_create_audio_unit (GstOsxAudioSink *osxsink)
   OSStatus status;
   AudioUnit unit;
 
+  /* Create a HALOutput AudioUnit.
+   * This is the lowest-level output API that is actually sensibly usable 
+   * (the lower level ones require that you do channel-remapping yourself,
+   * and the CoreAudio channel mapping is sufficiently complex that that would
+   * be very difficult)
+   */
   desc.componentType = kAudioUnitType_Output;
   desc.componentSubType = kAudioUnitSubType_HALOutput;
   desc.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -281,14 +296,20 @@ gst_osx_audio_sink_create_ringbuffer (GstBaseAudioSink * sink)
   GST_DEBUG ("osx sink 0x%p element 0x%p  ioproc 0x%p", osxsink,
       GST_OSX_AUDIO_ELEMENT_GET_INTERFACE (osxsink),
       (void *) gst_osx_audio_sink_io_proc);
-  ringbuffer->element = GST_OSX_AUDIO_ELEMENT_GET_INTERFACE (osxsink);
-  ringbuffer->device_id = osxsink->device_id;
 
-  ringbuffer->audiounit = gst_osx_audio_sink_create_audio_unit (osxsink);
+  osxsink->audiounit = gst_osx_audio_sink_create_audio_unit (osxsink);
+
+  ringbuffer->element = GST_OSX_AUDIO_ELEMENT_GET_INTERFACE (osxsink);
+  ringbuffer->audiounit = osxsink->audiounit;
+  ringbuffer->device_id = osxsink->device_id;
 
   return GST_RING_BUFFER (ringbuffer);
 }
 
+/* HALOutput AudioUnit will request fairly arbitrarily-sized chunks of data,
+ * not of a fixed size. So, we keep track of where in the current ringbuffer
+ * segment we are, and only advance the segment once we've read the whole
+ * thing */
 static OSStatus gst_osx_audio_sink_io_proc(GstOsxRingBuffer *buf, 
         AudioUnitRenderActionFlags * ioActionFlags,
         const AudioTimeStamp * inTimeStamp,
@@ -301,9 +322,9 @@ static OSStatus gst_osx_audio_sink_io_proc(GstOsxRingBuffer *buf,
   gint remaining = bufferList->mBuffers[0].mDataByteSize;
   gint offset = 0;
 
-  GST_DEBUG_OBJECT (buf, "Read into bufferList: %d bytes", bufferList->mBuffers[0].mDataByteSize);
   while (remaining) {
-    if (!gst_ring_buffer_prepare_read (GST_RING_BUFFER (buf), &readseg, &readptr, &len))
+    if (!gst_ring_buffer_prepare_read (GST_RING_BUFFER (buf), 
+                &readseg, &readptr, &len))
       return 0;
 
     len -= buf->segoffset;
@@ -311,7 +332,9 @@ static OSStatus gst_osx_audio_sink_io_proc(GstOsxRingBuffer *buf,
     if (len > remaining)
       len = remaining;
 
-    memcpy ((char *) bufferList->mBuffers[0].mData + offset, readptr + buf->segoffset, len);
+    memcpy ((char *) bufferList->mBuffers[0].mData + offset, 
+            readptr + buf->segoffset, len);
+
     buf->segoffset += len;
     offset += len;
     remaining -= len;
@@ -337,6 +360,14 @@ gst_osx_audio_sink_osxelement_init (gpointer g_iface, gpointer iface_data)
   iface->io_proc = (AURenderCallback)gst_osx_audio_sink_io_proc;
 }
 
+static void gst_osx_audio_sink_set_volume(GstOsxAudioSink *sink)
+{
+  if (!sink->audiounit)
+    return;
+
+  AudioUnitSetParameter (sink->audiounit, kHALOutputParam_Volume,
+          kAudioUnitScope_Global, 0, (float)sink->volume, 0);
+}
 
 static void
 gst_osx_audio_sink_select_device (GstOsxAudioSink * osxsink)
@@ -345,6 +376,8 @@ gst_osx_audio_sink_select_device (GstOsxAudioSink * osxsink)
   UInt32 propertySize;
 
   if (osxsink->device_id == kAudioDeviceUnknown) {
+    /* If no specific device has been selected by the user, then pick the
+     * default device */
     GST_DEBUG_OBJECT (osxsink, "Selecting device for OSXAudioSink");
     propertySize = sizeof (osxsink->device_id);
     status =
@@ -363,49 +396,5 @@ gst_osx_audio_sink_select_device (GstOsxAudioSink * osxsink)
 
     GST_DEBUG_OBJECT (osxsink, "AudioHardwareGetProperty: device_id is %lu",
         (long) osxsink->device_id);
-  }
-
-  if (osxsink->stream_id == kAudioStreamUnknown) {
-    AudioStreamID *streams;
-
-    GST_DEBUG_OBJECT (osxsink, "Getting streamid");
-    status = AudioDeviceGetPropertyInfo (osxsink->device_id, 0, /* Master channel */
-        FALSE,                  /* isInput */
-        kAudioDevicePropertyStreams, &propertySize, NULL);
-
-    if (status) {
-      GST_WARNING_OBJECT (osxsink,
-          "AudioDeviceGetProperty returned %d", (int) status);
-      return;
-    }
-
-    GST_DEBUG_OBJECT (osxsink,
-        "Getting available streamids from %d (%d bytes)",
-        (int) (propertySize / sizeof (AudioStreamID)),
-        (unsigned int) propertySize);
-    streams = g_malloc (propertySize);
-    status = AudioDeviceGetProperty (osxsink->device_id, 0,     /* Master channel */
-        FALSE,                  /* isInput */
-        kAudioDevicePropertyStreams, &propertySize, streams);
-
-    if (status) {
-      GST_WARNING_OBJECT (osxsink,
-          "AudioDeviceGetProperty returned %d", (int) status);
-      g_free (streams);
-      return;
-    }
-
-    GST_DEBUG_OBJECT (osxsink, "Getting streamid from %d (%d bytes)",
-        (int) (propertySize / sizeof (AudioStreamID)),
-        (unsigned int) propertySize);
-
-    if (propertySize >= sizeof (AudioStreamID)) {
-      osxsink->stream_id = streams[0];
-      GST_DEBUG_OBJECT (osxsink, "Selected stream %d of %d: %d", 0,
-          (int) (propertySize / sizeof (AudioStreamID)),
-          (int) osxsink->stream_id);
-    }
-
-    g_free (streams);
   }
 }

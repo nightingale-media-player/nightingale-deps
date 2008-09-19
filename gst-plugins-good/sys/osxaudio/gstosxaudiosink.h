@@ -72,7 +72,10 @@ struct _GstOsxAudioSink
   GstBaseAudioSink sink;
 
   AudioDeviceID device_id;
-  AudioStreamID stream_id;
+
+  AudioUnit audiounit;
+
+  double volume;
 };
 
 struct _GstOsxAudioSinkClass 
