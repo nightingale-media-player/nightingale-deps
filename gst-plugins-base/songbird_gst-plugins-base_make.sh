@@ -372,7 +372,10 @@ build()
     export VORBIS_CFLAGS=
     export VORBIS_LIBS=
     export PKG_CONFIG_PATH=
-    export DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib
+
+    # On OSX, some of our build tools need this, but get confused by the 
+    # version in /opt/lib, so direct them to the local version. 
+    export DYLD_LIBRARY_PATH=${dep_dir}/${tgt_arch}/gettext/${build_type}/lib:/usr/lib
 
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
@@ -514,14 +517,21 @@ build()
     fi
 
     # Generate, configure, build, and install.
-    echo cfg_opts
     export NOCONFIGURE="yes"
     ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
 	--disable-examples \
 	--disable-tests \
 	-C
-    make && make install
+    make 
+
+    if test $? == 0; then
+      # For some reason, 'make install' breaks if we use our local copy of
+      # the libraries. So, point at the version in /opt. This is only for
+      # install, so doesn't affect the built libraries at all.
+      export DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib
+      make install
+    fi
 
     # Post-process libraries on Mac.
     if [ "$sys_name" = "Darwin" ]; then
