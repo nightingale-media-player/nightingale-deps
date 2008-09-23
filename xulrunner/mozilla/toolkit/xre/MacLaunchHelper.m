@@ -84,6 +84,11 @@ void LaunchChildMac(int aArgc, char** aArgv)
 
   for (i = 1; i < aArgc; ++i) 
     [args addObject: [NSString stringWithCString: aArgv[i]]];
+
+  // If we're currently active, our child should be also
+  if ([NSApp isActive]) {
+    [args addObject: @"-foreground"];
+  }
   
   [child setCurrentDirectoryPath:[[[NSBundle mainBundle] executablePath] stringByDeletingLastPathComponent]];
   [child setLaunchPath:[[NSBundle mainBundle] executablePath]];
