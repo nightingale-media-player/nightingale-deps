@@ -35,7 +35,7 @@ copy_perm() {
 
 make_add_instruction() {
   f="$1"
-  is_extension=$(echo "$f" | grep -c 'extensions/.*/')
+  is_extension=$(echo "$f" | grep -c 'xulrunner/extensions/.*/')
   if [ $is_extension = "1" ]; then
     # Use the subdirectory of the extensions folder as the file to test
     # before performing this add instruction.
@@ -82,6 +82,7 @@ append_remove_instructions() {
       # directories.  The updater doesn't know how to remove entire directories.
       if [ -n "$f" ]; then
         if [ $(echo "$f" | grep -c '\/$') = 0 ]; then
+          notice "remove \"$prefix$f\""
           echo "remove \"$prefix$f\""
         else
           notice "ignoring remove instruction for directory: $f"
