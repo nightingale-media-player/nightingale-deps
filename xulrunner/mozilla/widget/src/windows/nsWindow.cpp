@@ -34,6 +34,7 @@
  *   Dainis Jonitis <Dainis_Jonitis@swh-t.lv>
  *   Christian Biesinger <cbiesinger@web.de>
  *   Mats Palmgren <mats.palmgren@bredband.net>
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -155,6 +156,10 @@
 #ifdef PR_LOGGING
 PRLogModuleInfo* sWindowsLog = nsnull;
 #endif
+
+// size constraints
+#include "nsIFrame.h"
+#include "nsIView.h"
 
 static const char kMozHeapDumpMessageString[] = "MOZ_HeapDump";
 
@@ -697,6 +702,15 @@ nsWindow::nsWindow() : nsBaseWidget()
   mPainting           = 0;
   mOldIMC             = NULL;
   mIMEEnabled         = nsIKBStateControl::IME_STATUS_ENABLED;
+
+  mIsChromeHidden     = PR_FALSE;
+  mIsMaximizing       = PR_FALSE;
+  mWasMaximized       = PR_FALSE;
+
+  mSizeConstraints.minWidth  = SizeConstraints::MIN_CONSTRAINT;
+  mSizeConstraints.maxWidth  = SizeConstraints::MAX_CONSTRAINT;
+  mSizeConstraints.minHeight = SizeConstraints::MIN_CONSTRAINT;
+  mSizeConstraints.maxHeight = SizeConstraints::MAX_CONSTRAINT;
 
   mLeadByte = '\0';
   mBlurEventSuppressionLevel = 0;
@@ -1946,6 +1960,118 @@ NS_METHOD nsWindow::ConstrainPosition(PRBool aAllowSlop,
   return NS_OK;
 }
 
+NS_IMETHODIMP nsWindow::SetSizeConstraints(PRInt32 aMinWidth,
+                                           PRInt32 aMaxWidth,
+                                           PRInt32 aMinHeight,
+                                           PRInt32 aMaxHeight)
+{
+  // This function is only guaranteed to work with top-level widget windows
+  if (!mIsTopWidgetWindow)
+    return NS_ERROR_UNEXPECTED;
+
+  mSizeConstraints.minWidth =
+    PR_MAX(::GetSystemMetrics(SM_CXMINTRACK), aMinWidth);
+  mSizeConstraints.minHeight =
+    PR_MAX(::GetSystemMetrics(SM_CYMINTRACK), aMinHeight);
+
+  mSizeConstraints.maxWidth = aMaxWidth;
+  mSizeConstraints.maxHeight = aMaxHeight;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsWindow::GetSizeConstraints(PRInt32* aMinWidth,
+                                           PRInt32* aMaxWidth,
+                                           PRInt32* aMinHeight,
+                                           PRInt32* aMaxHeight)
+{
+  SizeConstraints constraints;
+  
+  // read the constraints from CSS
+  nsresult rv;
+  nsCOMPtr<nsIDeviceContext> devContext = GetDeviceContext();
+  nsCOMPtr<nsIRenderingContext> renderingContext = GetRenderingContext();
+
+  nsIWidget* widget = GetFirstChild();
+  nsIView* view = nsnull;
+  if (widget) {
+    view = nsIView::GetViewFor(widget);
+  }
+  nsIFrame* frame = nsnull;
+  if (view) {
+    /* see nsLayoutUtils, except we can't use it */
+    frame = static_cast<nsIFrame*>(view->GetClientData());
+  }
+  const nsStylePosition* position = nsnull;
+  if (frame) {
+    position = frame->GetStylePosition();
+  }
+  if (position) {
+    PRInt32 appUnitsPerDevPixel = devContext->AppUnitsPerDevPixel();
+    nscoord coordTwips, appUnits;
+
+    nsStyleUnit unit = position->mMinWidth.GetUnit();
+    if (eStyleUnit_Coord != unit) {
+      coordTwips = nscoord_MIN;
+    } else {
+      coordTwips = position->mMinWidth.GetCoordValue();
+    }
+    if (coordTwips != nscoord_MIN) {
+      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
+      constraints.minWidth = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
+    }
+
+    unit = position->mMaxWidth.GetUnit();
+    if (eStyleUnit_Coord != unit) {
+      coordTwips = nscoord_MAX;
+    } else {
+      coordTwips = position->mMaxWidth.GetCoordValue();
+    }
+    if (coordTwips != nscoord_MAX) {
+      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
+      constraints.maxWidth = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
+    }
+
+    unit = position->mMinHeight.GetUnit();
+    if (eStyleUnit_Coord != unit) {
+      coordTwips = nscoord_MIN;
+    } else {
+      coordTwips = position->mMinHeight.GetCoordValue();
+    }
+    if (coordTwips != nscoord_MIN) {
+      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
+      constraints.minHeight = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
+    }
+
+    unit = position->mMaxHeight.GetUnit();
+    if (eStyleUnit_Coord != unit) {
+      coordTwips = nscoord_MIN;
+    } else {
+      coordTwips = position->mMaxHeight.GetCoordValue();
+    }
+    if (coordTwips != nscoord_MAX) {
+      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
+      constraints.maxHeight = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
+    }
+  }
+  
+  // override them with attributes, as usual for XUL
+  constraints.minWidth = PR_MAX(constraints.minWidth, mSizeConstraints.minWidth);
+  constraints.maxWidth = PR_MIN(constraints.maxWidth, mSizeConstraints.maxWidth);
+  constraints.minHeight = PR_MAX(constraints.minHeight, mSizeConstraints.minHeight);
+  constraints.maxHeight = PR_MIN(constraints.maxHeight, mSizeConstraints.maxHeight);
+  
+  if (aMinWidth)
+    *aMinWidth = constraints.minWidth;
+  if (aMaxWidth)
+    *aMaxWidth = constraints.maxWidth;
+  if (aMinHeight)
+    *aMinHeight = constraints.minHeight;
+  if (aMaxHeight)
+    *aMaxHeight = constraints.maxHeight;
+  return NS_OK;
+}
+
 //-------------------------------------------------------------------------
 //
 // Move this component
@@ -2669,6 +2795,8 @@ NS_IMETHODIMP nsWindow::HideWindowChrome(PRBool aShouldHide)
 
   ::SetWindowLongW(hwnd, GWL_STYLE, style);
   ::SetWindowLongW(hwnd, GWL_EXSTYLE, exStyle);
+  
+  mIsChromeHidden = aShouldHide;
 
   return NS_OK;
 }
@@ -4176,6 +4304,12 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 #ifndef WINCE
     case WM_DISPLAYCHANGE:
       DispatchStandardEvent(NS_DISPLAYCHANGED);
+
+      // When the window's chrome is hidden and the work area changes, 
+      // the window is not invalidated as it is supposed to
+      if (mIsChromeHidden)
+        Invalidate(PR_TRUE);
+
       break;
 #endif
 
@@ -4753,6 +4887,80 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
     break;
 #endif
 
+    case WM_GETMINMAXINFO:
+    {
+      PRInt32 minTrackWidth, maxTrackWidth, minTrackHeight, maxTrackHeight;
+      GetSizeConstraints(&minTrackWidth, &maxTrackWidth,
+                         &minTrackHeight, &maxTrackHeight);
+      PRInt32 maxWidth = maxTrackWidth;
+      PRInt32 maxHeight = maxTrackHeight;
+
+      PRInt32 left = -1, top = -1;
+
+      // Restrict the window from covering the taskbar if chrome is hidden
+      // (because the OS doesn't do this for us) and the size mode is set to
+      // maximized (because 'fullscreen' mode still uses nsSizeMode_Normal).
+      if (mIsChromeHidden &&
+          (mSizeMode == nsSizeMode_Maximized || mIsMaximizing)) {
+
+        // Figure out the maximized window's size and position
+        RECT workArea;
+        PRBool hasWorkArea = PR_FALSE;
+        nsCOMPtr<nsIScreenManager> screenmgr = do_GetService(sScreenManagerContractID);
+        if (screenmgr) {
+          nsCOMPtr<nsIScreen> screen;
+          PRInt32 left, top, width, height;
+      
+          // zero size rects confuse the screen manager
+          width = mBounds.width > 0 ? mBounds.width : 1;
+          height = mBounds.height > 0 ? mBounds.height : 1;
+          screenmgr->ScreenForNativeWidget(mWnd, getter_AddRefs(screen));
+          if (screen) {
+            screen->GetAvailRect(&left, &top, &width, &height);
+            workArea.left = left;
+            workArea.right = left+width;
+            workArea.top = top;
+            workArea.bottom = top+height;
+            hasWorkArea = PR_TRUE;
+          }
+        } else {
+          if (::SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0)) {
+            hasWorkArea = PR_TRUE;
+          }
+        }
+        if (hasWorkArea) {
+          PRInt32 workWidth = workArea.right - workArea.left;
+          maxWidth = PR_MIN(workWidth, mSizeConstraints.maxWidth);
+
+          PRInt32 workHeight = workArea.bottom - workArea.top;
+          maxHeight = PR_MIN(workHeight, mSizeConstraints.maxHeight);
+          
+          left = workArea.left;
+          top = workArea.top;
+        }
+      }
+
+      // Set our values
+      MINMAXINFO* mmi = (MINMAXINFO*)lParam;
+      if (minTrackWidth > mmi->ptMinTrackSize.x)
+        mmi->ptMinTrackSize.x = minTrackWidth;
+      if (minTrackHeight > mmi->ptMinTrackSize.y)
+        mmi->ptMinTrackSize.y = minTrackHeight;
+      if (maxTrackWidth < mmi->ptMaxTrackSize.x)
+        mmi->ptMaxTrackSize.x = maxTrackWidth;
+      if (maxTrackHeight < mmi->ptMaxTrackSize.y)
+        mmi->ptMaxTrackSize.y = maxTrackHeight;
+      if (maxWidth < mmi->ptMaxSize.x)
+        mmi->ptMaxSize.x = maxWidth;
+      if (maxHeight < mmi->ptMaxSize.y)
+        mmi->ptMaxSize.y = maxHeight;
+      if (left > mmi->ptMaxPosition.x)
+        mmi->ptMaxPosition.x = left;
+      if (top > mmi->ptMaxPosition.y)
+        mmi->ptMaxPosition.y = top;
+    }
+    break;
+
     case WM_SETFOCUS:
       result = DispatchFocus(NS_GOTFOCUS, PR_TRUE);
       if (gJustGotActivate) {
@@ -4822,6 +5030,11 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
     case WM_WINDOWPOSCHANGED:
     {
+      // Reset our special case flag for maximizing a hidechrome window now
+      // that all sizing is completed
+      if (mIsMaximizing)
+        mIsMaximizing = PR_FALSE;
+
       WINDOWPOS *wp = (LPWINDOWPOS)lParam;
 
       // We only care about a resize, so filter out things like z-order
@@ -5090,10 +5303,41 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
 #ifndef WINCE
     case WM_SYSCOMMAND:
-      // prevent Windows from trimming the working set. bug 76831
-      if (!gTrimOnMinimize && wParam == SC_MINIMIZE) {
-        ::ShowWindow(mWnd, SW_SHOWMINIMIZED);
-        result = PR_TRUE;
+      switch (wParam)
+      {
+        case SC_MINIMIZE:
+        {
+          // prevent Windows from trimming the working set. bug 76831
+          if (!gTrimOnMinimize) {
+            ::ShowWindow(mWnd, SW_SHOWMINIMIZED);
+            result = PR_TRUE;
+          }
+          // Set this flag so that we restore to the proper size
+          if (mIsChromeHidden && mSizeMode == nsSizeMode_Maximized)
+            mWasMaximized = PR_TRUE;
+          break;
+        }
+
+        case SC_MAXIMIZE:
+        {
+          if (mIsChromeHidden) {
+            // Set a flag to properly animate the maximizing of a hidechrome window
+            // that will be handled in WM_GETMINMAXINFO
+            mWasMaximized = PR_FALSE;
+            mIsMaximizing = PR_TRUE;
+          }
+          break;
+        }
+
+        case SC_RESTORE:
+        {
+          if (mWasMaximized) {
+            if (mIsChromeHidden)
+              mIsMaximizing = PR_TRUE;
+            mWasMaximized = PR_FALSE;
+          }
+          break;
+        }
       }
       break;
 #endif

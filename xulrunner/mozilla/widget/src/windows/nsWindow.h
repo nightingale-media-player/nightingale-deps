@@ -58,6 +58,8 @@
 #include "nsVoidArray.h"
 #include "nsTArray.h"
 
+#include "nsRect.h"
+
 class nsNativeDragTarget;
 class nsIRollupListener;
 
@@ -162,6 +164,10 @@ public:
   NS_IMETHOD              ModalEventFilter(PRBool aRealEvent, void *aEvent, PRBool *aForWindow);
   NS_IMETHOD              CaptureMouse(PRBool aCapture);
   NS_IMETHOD              ConstrainPosition(PRBool aAllowSlop, PRInt32 *aX, PRInt32 *aY);
+  NS_IMETHOD              SetSizeConstraints(PRInt32 aMinWidth, PRInt32 aMaxWidth,
+                                             PRInt32 aMinHeight, PRInt32 aMaxHeight);
+  NS_IMETHOD              GetSizeConstraints(PRInt32* aMinWidth, PRInt32* aMaxWidth,
+                                             PRInt32* aMinHeight, PRInt32* aMaxHeight);
   NS_IMETHOD              Move(PRInt32 aX, PRInt32 aY);
   NS_IMETHOD              Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint);
   NS_IMETHOD              Resize(PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint);
@@ -363,6 +369,7 @@ protected:
   void GetTextRangeList(PRUint32* textRangeListLengthResult, nsTextRangeArray* textRangeListResult);
 
   void ConstrainZLevel(HWND *aAfter);
+  void EnsureSizeConstraints(WINDOWPOS* aInfo);
 
   LPARAM lParamToScreen(LPARAM lParam);
   LPARAM lParamToClient(LPARAM lParam);
@@ -443,6 +450,10 @@ protected:
   PRPackedBool  mIsInMouseWheelProcessing;
   PRPackedBool  mUnicodeWidget;
 
+  PRPackedBool  mIsChromeHidden;
+  PRPackedBool  mIsMaximizing;
+  PRPackedBool  mWasMaximized;
+
   PRPackedBool  mPainting;
   char          mLeadByte;
   PRUint32      mBlurEventSuppressionLevel;
@@ -468,6 +479,9 @@ protected:
 
   // Drag & Drop
   nsNativeDragTarget * mNativeDragTarget;
+
+  // window sizing constraints (see SetSizeContraints, nsIWidget.h)
+  SizeConstraints mSizeConstraints;
 
   // Enumeration of the methods which are accessible on the "main GUI thread"
   // via the CallMethod(...) mechanism...

@@ -39,6 +39,10 @@
 #define nsResizerFrame_h___
 
 #include "nsTitleBarFrame.h"
+#include "nsCOMPtr.h"
+
+class nsIBaseWindow;
+class nsPresContext;
 
 class nsResizerFrame : public nsTitleBarFrame 
 {
@@ -47,12 +51,12 @@ protected:
   enum eDirection {
     topleft,
     top,
-	 topright,
-	 left,	 
-	 right,
-	 bottomleft,
-	 bottom,
-	 bottomright
+    topright,
+    left,
+    right,
+    bottomleft,
+    bottom,
+    bottomright
   };
   
 
@@ -76,12 +80,16 @@ public:
   virtual void MouseClicked(nsPresContext* aPresContext, nsGUIEvent *aEvent);
 
 protected:
-	PRBool GetInitialDirection(eDirection& aDirection);
-	PRBool EvalDirection(nsAutoString& aText,eDirection& aResult);
+  PRBool GetInitialDirection(eDirection& aDirection);
+  PRBool EvalDirection(nsAutoString& aText,eDirection& aResult);
+  static nsresult GetWindowFromPresContext(nsPresContext* aPresContext,
+                                           nsIBaseWindow** _retval);
+  PRBool IsDisabled(nsPresContext* aPresContext);
 
 protected:
-	eDirection mDirection;
-	nsRect mWidgetRect;
+  eDirection mDirection;
+  SizeConstraints mSizeConstraints;
+  nsCOMPtr<nsIBaseWindow> mResizingWindow;
 }; // class nsResizerFrame
 
 #endif /* nsResizerFrame_h___ */

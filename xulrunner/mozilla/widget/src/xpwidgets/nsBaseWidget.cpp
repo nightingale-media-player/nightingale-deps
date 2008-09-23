@@ -774,6 +774,39 @@ NS_METHOD nsBaseWidget::SetBounds(const nsRect &aRect)
 }
  
 
+/**
+* 
+*
+**/
+NS_IMETHODIMP nsBaseWidget::SetSizeConstraints(PRInt32 aMinWidth,
+                                               PRInt32 aMaxWidth,
+                                               PRInt32 aMinHeight,
+                                               PRInt32 aMaxHeight)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/**
+*
+*
+**/
+NS_IMETHODIMP nsBaseWidget::GetSizeConstraints(PRInt32* aMinWidth,
+                                               PRInt32* aMaxWidth,
+                                               PRInt32* aMinHeight,
+                                               PRInt32* aMaxHeight)
+{
+  // Returning -1 indicates that no constraints have been set
+  if (aMinWidth)
+    *aMinWidth = SizeConstraints::MIN_CONSTRAINT;
+  if (aMaxWidth)
+    *aMaxWidth = SizeConstraints::MAX_CONSTRAINT;
+  if (aMinHeight)
+    *aMinHeight = SizeConstraints::MIN_CONSTRAINT;
+  if (aMaxHeight)
+    *aMaxHeight = SizeConstraints::MAX_CONSTRAINT;
+  return NS_OK;
+}
+
 
 /**
 * Calculates the border width and height  

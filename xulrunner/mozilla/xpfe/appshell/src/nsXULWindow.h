@@ -176,6 +176,7 @@ protected:
    PRUint32                mPersistentAttributesMask;
    PRUint32                mChromeFlags;
    nsString                mTitle;
+   SizeConstraints         mSizeConstraints;
 
    nsCOMArray<nsIWeakReference> mTargetableShells; // targetable shells only
 };
