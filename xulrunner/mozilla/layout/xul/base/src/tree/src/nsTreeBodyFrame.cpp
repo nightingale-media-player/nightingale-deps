@@ -468,16 +468,9 @@ nsTreeBodyFrame::ReflowFinished()
     if (mTopRowIndex > lastPageTopRow)
       ScrollToRowInternal(parts, lastPageTopRow);
 
-    // make sure that the current selected item is still
-    // visible after the tree changes size.
-    nsCOMPtr<nsITreeSelection> sel;
-    mView->GetSelection(getter_AddRefs(sel));
-    if (sel) {
-      PRInt32 currentIndex;
-      sel->GetCurrentIndex(&currentIndex);
-      if (currentIndex != -1)
-        EnsureRowIsVisibleInternal(parts, currentIndex);
-    }
+    // XXXkreeger: Removing logic for ensuring selection is focused:
+    //             @see b.s.c 11433
+    //             @see b.m.o 454632
 
     if (!FullScrollbarsUpdate(PR_FALSE)) {
       return PR_FALSE;
