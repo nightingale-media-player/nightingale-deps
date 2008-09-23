@@ -1031,7 +1031,7 @@ XPCConvert::JSData2Native(XPCCallContext& ccx, void* d, jsval s,
             }
 
             return JSObject2NativeInterface(ccx, (void**)d, obj, iid,
-                                            nsnull, pErr);
+                                            nsnull, PR_TRUE, pErr);
         }
         default:
             NS_ASSERTION(0, "bad type");
@@ -1277,6 +1277,7 @@ XPCConvert::JSObject2NativeInterface(XPCCallContext& ccx,
                                      void** dest, JSObject* src,
                                      const nsID* iid,
                                      nsISupports* aOuter,
+                                     PRBool createNew,
                                      nsresult* pErr)
 {
     NS_ASSERTION(dest, "bad param");
@@ -1286,7 +1287,7 @@ XPCConvert::JSObject2NativeInterface(XPCCallContext& ccx,
     JSContext* cx = ccx.GetJSContext();
 
     *dest = nsnull;
-     if(pErr)
+    if(pErr)
         *pErr = NS_ERROR_XPC_BAD_CONVERT_JS;
 
     nsISupports* iface;
@@ -1335,8 +1336,15 @@ XPCConvert::JSObject2NativeInterface(XPCCallContext& ccx,
 
     // else...
 
+    nsresult rv;
+
     nsXPCWrappedJS* wrapper;
-    nsresult rv = nsXPCWrappedJS::GetNewOrUsed(ccx, src, *iid, aOuter, &wrapper);
+    if (createNew) {
+        rv = nsXPCWrappedJS::GetNewOrUsed(ccx, src, *iid, aOuter, &wrapper);
+    } else {
+        rv = nsXPCWrappedJS::GetUsedOnly(ccx, src, *iid, aOuter, &wrapper);
+    }
+
     if(pErr)
         *pErr = rv;
     if(NS_SUCCEEDED(rv) && wrapper)
