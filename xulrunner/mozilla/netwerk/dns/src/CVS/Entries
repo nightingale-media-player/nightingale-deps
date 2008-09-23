@@ -1,0 +1,20 @@
+/.cvsignore/1.1/Tue Jun  8 09:47:25 1999//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.30/Fri Mar 14 15:18:24 2008//TFIREFOX_3_0_1_RELEASE
+/effective_tld_names.dat/1.6/Tue Jul  1 06:38:10 2008//TFIREFOX_3_0_1_RELEASE
+/nameprep.c/1.3/Fri Jun  3 02:21:47 2005//TFIREFOX_3_0_1_RELEASE
+/nameprep_template.c/1.2/Fri Jun  3 02:21:47 2005//TFIREFOX_3_0_1_RELEASE
+/nameprepdata.c/1.1/Wed Jan 15 21:30:10 2003//TFIREFOX_3_0_1_RELEASE
+/nsDNSService2.cpp/1.15/Wed Apr  9 00:42:52 2008//TFIREFOX_3_0_1_RELEASE
+/nsDNSService2.h/1.3/Wed Apr  6 01:33:27 2005//TFIREFOX_3_0_1_RELEASE
+/nsEffectiveTLDService.cpp/1.11/Thu Feb 14 22:57:21 2008//TFIREFOX_3_0_1_RELEASE
+/nsEffectiveTLDService.h/1.5/Thu Feb 14 22:57:21 2008//TFIREFOX_3_0_1_RELEASE
+/nsHostResolver.cpp/1.23/Wed Apr  9 00:42:52 2008//TFIREFOX_3_0_1_RELEASE
+/nsHostResolver.h/1.10/Wed Feb 27 00:27:33 2008//TFIREFOX_3_0_1_RELEASE
+/nsIDNKitInterface.h/1.3/Fri Jun  3 02:21:47 2005//TFIREFOX_3_0_1_RELEASE
+/nsIDNService.cpp/1.38/Mon Apr 14 08:26:55 2008//TFIREFOX_3_0_1_RELEASE
+/nsIDNService.h/1.11/Tue Dec  4 06:30:48 2007//TFIREFOX_3_0_1_RELEASE
+/prepare_tlds.py/1.1/Thu Feb 14 22:57:21 2008//TFIREFOX_3_0_1_RELEASE
+/punycode.c/1.4/Sat Feb 26 07:36:15 2005//TFIREFOX_3_0_1_RELEASE
+/punycode.h/1.2/Wed Mar 12 21:31:39 2003//TFIREFOX_3_0_1_RELEASE
+/race.c/1.3/Fri Jun  3 02:21:47 2005//TFIREFOX_3_0_1_RELEASE
+D

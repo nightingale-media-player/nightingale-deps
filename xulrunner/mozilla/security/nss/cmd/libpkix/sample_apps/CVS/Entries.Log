@@ -1,0 +1,8 @@
+A D/build_chain////
+A D/dumpcert////
+A D/dumpcrl////
+A D/validate_chain////
+R D/validate_chain////
+R D/dumpcrl////
+R D/dumpcert////
+R D/build_chain////

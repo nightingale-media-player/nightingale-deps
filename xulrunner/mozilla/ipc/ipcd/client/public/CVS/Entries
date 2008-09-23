@@ -1,0 +1,8 @@
+/.cvsignore/1.2/Fri Nov  7 13:50:16 2003//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.4/Mon May  3 18:49:10 2004//TFIREFOX_3_0_1_RELEASE
+/ipcCID.h/1.2/Fri Nov  7 13:50:16 2003//TFIREFOX_3_0_1_RELEASE
+/ipcIClientObserver.idl/1.3/Mon May  3 18:40:31 2004//TFIREFOX_3_0_1_RELEASE
+/ipcIMessageObserver.idl/1.3/Mon May  3 18:40:31 2004//TFIREFOX_3_0_1_RELEASE
+/ipcIService.idl/1.4/Tue May 11 21:27:26 2004//TFIREFOX_3_0_1_RELEASE
+/ipcdclient.h/1.4/Mon Aug 28 20:12:32 2006//TFIREFOX_3_0_1_RELEASE
+D

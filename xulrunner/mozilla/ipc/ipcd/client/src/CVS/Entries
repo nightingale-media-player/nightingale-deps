@@ -1,0 +1,11 @@
+/.cvsignore/1.2/Fri Nov  7 13:50:16 2003//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.7/Thu Dec  9 19:28:19 2004//TFIREFOX_3_0_1_RELEASE
+/ipcConnection.h/1.4/Sun May  9 19:08:54 2004//TFIREFOX_3_0_1_RELEASE
+/ipcConnectionStub.cpp/1.3/Mon May 10 23:21:22 2004//TFIREFOX_3_0_1_RELEASE
+/ipcConnectionUnix.cpp/1.5/Tue May 11 21:27:27 2004//TFIREFOX_3_0_1_RELEASE
+/ipcConnectionWin.cpp/1.7/Tue Mar 11 22:46:28 2008//TFIREFOX_3_0_1_RELEASE
+/ipcModuleFactory.cpp/1.5/Mon May 17 19:49:42 2004//TFIREFOX_3_0_1_RELEASE
+/ipcService.cpp/1.7/Tue May 11 21:27:27 2004//TFIREFOX_3_0_1_RELEASE
+/ipcService.h/1.5/Sun May  9 19:08:54 2004//TFIREFOX_3_0_1_RELEASE
+/ipcdclient.cpp/1.5/Sun Jul  8 07:08:28 2007//TFIREFOX_3_0_1_RELEASE
+D

@@ -1,0 +1,11 @@
+/.cvsignore/1.1/Fri May 28 09:11:00 1999//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.26/Fri May 19 22:50:02 2006//TFIREFOX_3_0_1_RELEASE
+/nsIHttpActivityObserver.idl/1.1/Fri May 19 22:50:02 2006//TFIREFOX_3_0_1_RELEASE
+/nsIHttpAuthManager.idl/1.3/Sun Apr 18 21:59:17 2004//TFIREFOX_3_0_1_RELEASE
+/nsIHttpAuthenticator.idl/1.8/Tue Sep  5 23:47:29 2006//TFIREFOX_3_0_1_RELEASE
+/nsIHttpChannel.idl/1.21/Sat Jan 29 20:10:09 2005//TFIREFOX_3_0_1_RELEASE
+/nsIHttpChannelInternal.idl/1.8/Tue Aug  1 21:26:38 2006//TFIREFOX_3_0_1_RELEASE
+/nsIHttpEventSink.idl/1.4/Mon Mar  7 19:46:04 2005//TFIREFOX_3_0_1_RELEASE
+/nsIHttpHeaderVisitor.idl/1.3/Sun Apr 18 21:59:17 2004//TFIREFOX_3_0_1_RELEASE
+/nsIHttpProtocolHandler.idl/1.9/Wed Feb 22 14:07:09 2006//TFIREFOX_3_0_1_RELEASE
+D

@@ -1,0 +1,23 @@
+/reftest.list/1.2/Thu Jun 21 22:33:10 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-intrinsic-min-ref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-intrinsic-min.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-intrinsic-pref-ref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-intrinsic-pref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-multiple-line-notref-block-margin.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-multiple-line-ref-float.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-multiple-line-ref-inline-margin.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-multiple-line.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-negative-intrinsic-min-ref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-negative-intrinsic-min.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-negative-intrinsic-pref-ref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-negative-intrinsic-pref.html/1.1/Thu Jun 21 22:32:47 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-0.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-100.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-indent-inline-ref-block-margin.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-indent-inline-ref-inline-margin.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-indent-inline.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-percent-ref.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-percent.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-ref-margin.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+/text-indent-single-line-ref-unstyled.html/1.1/Sun Mar 25 19:26:32 2007//TFIREFOX_3_0_1_RELEASE
+D
