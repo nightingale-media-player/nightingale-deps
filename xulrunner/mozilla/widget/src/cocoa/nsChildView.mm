@@ -2954,9 +2954,65 @@ NSEvent* gLastDragEvent = nil;
 }
 
 
+- (void)setViewDisabled:(BOOL)inIsDisabled
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+  
+  mDisableView = inIsDisabled;
+  
+  NSEnumerator *subviewsEnum = [[self subviews] objectEnumerator];
+  id curSubview = nil;
+  while ((curSubview = [subviewsEnum nextObject])) {
+    if ([curSubview isKindOfClass:[ChildView class]]) {
+      [(ChildView *)curSubview setViewDisabled:inIsDisabled]; 
+    }
+  }
+  
+  NS_OBJC_END_TRY_ABORT_BLOCK;
+}
+
+
+- (BOOL)shouldDelayWindowOrderingForEvent:(NSEvent *)theEvent
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_RETURN;
+  
+  if (mDisableView) {
+    // If the app is not active, re-activate the application here.
+    if (![NSApp isActive]) {
+      [NSApp activateIgnoringOtherApps:YES];
+      [NSApp arrangeInFront:nil];
+    }
+    
+    return YES;
+  }
+  
+  return [super shouldDelayWindowOrderingForEvent:theEvent];
+  
+  NS_OBJC_END_TRY_ABORT_BLOCK_RETURN(NO);
+}
+
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_RETURN;
+  
+  if (mDisableView)
+    return YES;
+  
+  return [super acceptsFirstMouse:theEvent];
+  
+  NS_OBJC_END_TRY_ABORT_BLOCK_RETURN(NO);
+}
+
+
 - (void)mouseDown:(NSEvent*)theEvent
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+ 
+  if (mDisableView) {
+    [NSApp preventWindowOrdering];
+    return;
+  }
 
   // If we've already seen this event due to direct dispatch from menuForEvent:
   // just bail; if not, remember it.

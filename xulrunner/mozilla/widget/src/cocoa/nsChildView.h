@@ -123,6 +123,11 @@ union nsPluginPort;
   // All views are always opaque (non-transparent). The only exception is when we're
   // the content view in a transparent XUL window.
   BOOL mIsTransparent;
+  
+  // Since the native modal event loop can not be used with the gecko modal
+  // loop, we have to simulate the event ourselves. In order to accomplish this
+  // this view must disable click through to prevent window ordering.
+  BOOL mDisableView;
 
   // Holds our drag service across multiple drag calls. The reference to the
   // service is obtained when the mouse enters the view and is released when
@@ -144,6 +149,8 @@ union nsPluginPort;
 - (void)setTransparent:(BOOL)transparent;
 
 - (void)sendFocusEvent:(PRUint32)eventType;
+
+- (void)setViewDisabled:(BOOL)inIsDisabled;
 @end
 
 

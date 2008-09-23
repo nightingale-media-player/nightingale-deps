@@ -74,6 +74,13 @@ typedef struct _nsCocoaWindowList {
 @end
 
 
+@interface NSWindow (Resizer)
+
+- (BOOL)usesNativeResizer;
+
+@end
+
+
 @interface PopupWindow : NSWindow
 {
 @private
@@ -94,7 +101,11 @@ typedef struct _nsCocoaWindowList {
 
 - (BOOL)canBecomeKeyWindow;
 - (BOOL)canBecomeMainWindow;
+@end
 
+
+@interface SongbirdWindow : BorderlessWindow 
+{}
 @end
 
 
@@ -248,6 +259,8 @@ public:
     NS_IMETHOD GetHasTransparentBackground(PRBool& aTransparent);
     NS_IMETHOD SetHasTransparentBackground(PRBool aTransparent);
     NS_IMETHOD SetWindowTitlebarColor(nscolor aColor, PRBool aActive);
+  
+    NS_IMETHOD SetModalLockWindow(NSWindow *aWindow, PRBool aShouldLock);
 
     virtual gfxASurface* GetThebesSurface();
 
