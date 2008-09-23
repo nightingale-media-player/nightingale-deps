@@ -59,9 +59,25 @@
 #include "nsISupportsPrimitives.h"
 #include "nsObjCExceptions.h"
 
+#define ABOUT_MENUITEM_ID         1
+#define PREFERENCES_MENUTITEM_ID  2
+#define QUIT_MENUITEM_ID          3
+
 @interface MacApplicationDelegate : NSObject
 {
+  BOOL mIsSimulatingModalSession;
+  id   mAppDelegateOverride;
 }
+
+- (void)setAppDelegateOverride:(id)aDelegateOverride;
+
+@end
+
+@interface MacApplicationDelegate (Private)
+
+- (void)onBeginGeckoModalSession:(id)sender;
+- (void)onEndGeckoModalSession:(id)sender;
+- (void)configureAppMenu:(BOOL)inIsModal;
 
 @end
 
@@ -99,6 +115,34 @@ SetupMacApplicationDelegate()
 
 @implementation MacApplicationDelegate
 
+- (id)init
+{
+  if ((self = [super init])) {
+    mAppDelegateOverride = nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onBeginGeckoModalSession:) 
+                                                 name:@"GeckoStartModal" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onEndGeckoModalSession:) 
+                                                 name:@"GeckoEndModal" 
+                                               object:nil];
+  }
+  
+  return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [super dealloc];
+}
+
+- (void)setAppDelegateOverride:(id)aDelegateOverride
+{
+  mAppDelegateOverride = aDelegateOverride;
+}
+
 // Opening the application is handled specially elsewhere,
 // don't define applicationOpenUntitledFile: .
 
@@ -109,6 +153,12 @@ SetupMacApplicationDelegate()
 // nsCocoaNativeReOpen() if 'flag' is 'true'.
 - (BOOL)applicationShouldHandleReopen:(NSApplication*)theApp hasVisibleWindows:(BOOL)flag
 {
+  if (mAppDelegateOverride && 
+      [mAppDelegateOverride respondsToSelector:@selector(applicationShouldHandleReopen:hasVisibleWindows:)])
+  {
+    return [mAppDelegateOverride applicationShouldHandleReopen:theApp hasVisibleWindows:flag];
+  }
+
   nsCOMPtr<nsINativeAppSupport> nas = do_CreateInstance(NS_NATIVEAPPSUPPORT_CONTRACTID);
   NS_ENSURE_TRUE(nas, NO);
 
@@ -204,6 +254,12 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
 
+  if (mAppDelegateOverride &&
+      [mAppDelegateOverride respondsToSelector:@selector(applicationDockMenu:)]) 
+  {
+    return [mAppDelegateOverride applicationDockMenu:sender];
+  }
+
   // Why we're not just using Cocoa to enumerate our windows:
   // The Dock thinks we're a Carbon app, probably because we don't have a
   // blessed Window menu, so we get none of the automatic handling for dock
@@ -236,6 +292,13 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
 
   // Iterate through our list of windows to create our menu
   NSMenu *menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+  
+  // If we are currently running a gecko modal session, this item 
+  // needs to be disabled.
+  if (mIsSimulatingModalSession) {
+    [menu setAutoenablesItems:NO];
+  }
+  
   PRBool more;
   while (NS_SUCCEEDED(windowList->HasMoreElements(&more)) && more) {
     // Get our native window
@@ -245,9 +308,15 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
     NSWindow *cocoaWindow = GetCocoaWindowForXULWindow(xulWindow);
     if (!cocoaWindow) continue;
     
+    // Passing in a |nil| string to the |initWithTitle:| method on |NSMenuItem|
+    // will throw an obj-c exception haulting the XPCOM runtime.
+    NSString *windowTitle = [cocoaWindow title];
+    if (!windowTitle)
+      continue;
+    
     // Now, create a menu item, and add it to the menu
     NSMenuItem *menuItem = [[NSMenuItem alloc]
-                              initWithTitle:[cocoaWindow title]
+                              initWithTitle:windowTitle
                                      action:@selector(dockMenuItemSelected:)
                               keyEquivalent:@""];
     [menuItem setTarget:self];
@@ -256,10 +325,14 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
     // If this is the foreground window, put a checkmark next to it
     if (SameCOMIdentity(xulWindow, frontWindow))
       [menuItem setState:NSOnState];
+    
+    if (mIsSimulatingModalSession)
+      [menuItem setEnabled:NO];
 
     [menu addItem:menuItem];
     [menuItem release];
   }
+  
   return menu;
 
   NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
@@ -308,6 +381,27 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
     appService->Quit(nsIAppStartup::eForceQuit);
 
   return NSTerminateNow;
+}
+
+- (void)onBeginGeckoModalSession:(id)sender
+{
+  mIsSimulatingModalSession = YES;
+  [self configureAppMenu:YES];
+}
+
+- (void)onEndGeckoModalSession:(id)sender
+{
+  mIsSimulatingModalSession = NO;
+  [self configureAppMenu:NO];
+}
+
+- (void)configureAppMenu:(BOOL)inIsModal
+{
+  NSMenu *menu = [[[NSApp mainMenu] itemAtIndex:0] submenu];
+  [menu setAutoenablesItems:!inIsModal];
+  [[menu itemWithTag:ABOUT_MENUITEM_ID] setEnabled:!inIsModal];
+  [[menu itemWithTag:PREFERENCES_MENUTITEM_ID] setEnabled:!inIsModal];
+  [[menu itemWithTag:QUIT_MENUITEM_ID] setEnabled:!inIsModal];
 }
 
 @end
