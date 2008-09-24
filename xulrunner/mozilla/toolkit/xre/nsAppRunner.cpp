@@ -2580,9 +2580,8 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
          CrashReporter::SetExceptionHandler(appData.xreDirectory,
                                             appData.crashReporterURL))) {
     // pass some basic info from the app data
-    if (appData.vendor)
-      CrashReporter::AnnotateCrashReport(NS_LITERAL_CSTRING("Vendor"),
-                                         nsDependentCString(appData.vendor));
+    CrashReporter::AnnotateCrashReport(NS_LITERAL_CSTRING("Vendor"),
+                                       NS_LITERAL_CSTRING("Songbird"));
     if (appData.name)
       CrashReporter::AnnotateCrashReport(NS_LITERAL_CSTRING("ProductName"),
                                          nsDependentCString(appData.name));
