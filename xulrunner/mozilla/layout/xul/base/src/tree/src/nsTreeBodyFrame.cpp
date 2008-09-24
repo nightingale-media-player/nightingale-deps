@@ -1299,6 +1299,12 @@ nsTreeBodyFrame::GetRowAt(PRInt32 aX, PRInt32 aY)
   return row;
 }
 
+PRBool
+nsTreeBodyFrame::IsInVisibleSpace(PRInt32 aX, PRInt32 aY)
+{
+  return (aY <= (mRowHeight * mPageLength));
+}
+
 void
 nsTreeBodyFrame::CheckTextForBidi(nsAutoString& aText)
 {
@@ -2642,7 +2648,9 @@ nsTreeBodyFrame::HandleEvent(nsPresContext* aPresContext,
         mSlots->mTimer = nsnull;
       }
 
-      if (mSlots->mDropRow >= 0) {
+      if ((mSlots->mDropRow >= 0) ||
+          ((mSlots->mDropRow == -1) &&
+           (mSlots->mDropOrient == nsITreeView::DROP_AFTER))) {
         if (!mSlots->mTimer && mSlots->mDropOrient == nsITreeView::DROP_ON) {
           // Either there wasn't a timer running or it was just killed above.
           // If over a folder, start up a timer to open the folder.
@@ -4262,6 +4270,14 @@ nsTreeBodyFrame::ComputeDropPosition(nsGUIEvent* aEvent, PRInt32* aRow, PRInt16*
       else
         *aOrient = nsITreeView::DROP_AFTER;
     }
+  }
+  else if (IsInVisibleSpace(xTwips, yTwips)) {
+    // Drop after last row.  Return with drop after even if there are no rows.
+    if (mRowCount > 0)
+      *aRow = mRowCount - 1;
+    else
+      *aRow = -1;
+    *aOrient = nsITreeView::DROP_AFTER;
   }
 
   if (CanAutoScroll(*aRow)) {
