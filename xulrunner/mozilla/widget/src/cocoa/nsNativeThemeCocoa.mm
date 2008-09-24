@@ -672,8 +672,11 @@ nsNativeThemeCocoa::DrawFrame(CGContextRef cgContext, HIThemeFrameKind inKind,
 
 void
 nsNativeThemeCocoa::DrawProgress(CGContextRef cgContext,
-                                 const HIRect& inBoxRect, PRBool inIsIndeterminate, 
-                                 PRBool inIsHorizontal, PRInt32 inValue)
+                                 const HIRect& inBoxRect, 
+                                 PRBool inIsIndeterminate, 
+                                 PRBool inIsHorizontal, 
+                                 PRInt32 inValue, 
+                                 PRInt32 inMaxValue)
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
 
@@ -686,7 +689,7 @@ nsNativeThemeCocoa::DrawProgress(CGContextRef cgContext,
   tdi.kind = inIsIndeterminate ? kThemeMediumIndeterminateBar: kThemeMediumProgressBar;
   tdi.bounds = inBoxRect;
   tdi.min = 0;
-  tdi.max = 100;
+  tdi.max = inMaxValue;
   tdi.value = inValue;
   tdi.attributes = inIsHorizontal ? kThemeTrackHorizontal : 0;
   tdi.enableState = kThemeTrackActive;
@@ -1195,12 +1198,12 @@ nsNativeThemeCocoa::DrawWidgetBackground(nsIRenderingContext* aContext, nsIFrame
       
     case NS_THEME_PROGRESSBAR:
       DrawProgress(cgContext, macRect, IsIndeterminateProgress(aFrame),
-                   PR_TRUE, GetProgressValue(aFrame));
+                   PR_TRUE, GetProgressValue(aFrame), GetProgressMaxValue(aFrame));
       break;
 
     case NS_THEME_PROGRESSBAR_VERTICAL:
       DrawProgress(cgContext, macRect, IsIndeterminateProgress(aFrame),
-                   PR_FALSE, GetProgressValue(aFrame));
+                   PR_FALSE, GetProgressValue(aFrame), GetProgressMaxValue(aFrame));
       break;
 
     case NS_THEME_PROGRESSBAR_CHUNK:
