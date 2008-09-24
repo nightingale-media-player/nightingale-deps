@@ -82,7 +82,7 @@ class FaviconLoadListener : public nsIStreamListener,
 public:
   FaviconLoadListener(nsFaviconService* aFaviconService,
                       nsIURI* aPageURI, nsIURI* aFaviconURI,
-                      nsIChannel* aChannel);
+                      nsIChannel* aChannel, PRTime aExpiration);
 
   NS_DECL_ISUPPORTS
   NS_DECL_NSIREQUESTOBSERVER
@@ -97,6 +97,8 @@ private:
   nsCOMPtr<nsIChannel> mChannel;
   nsCOMPtr<nsIURI> mPageURI;
   nsCOMPtr<nsIURI> mFaviconURI;
+
+  PRTime mExpiration;
 
   nsCString mData;
 };
@@ -402,7 +404,8 @@ nsFaviconService::SendFaviconNotifications(nsIURI* aPageURI,
 NS_IMETHODIMP
 nsFaviconService::SetAndLoadFaviconForPage(nsIURI* aPageURI,
                                            nsIURI* aFaviconURI,
-                                           PRBool aForceReload)
+                                           PRBool aForceReload,
+                                           PRTime aExpiration)
 {
   NS_ENSURE_ARG_POINTER(aPageURI);
   NS_ENSURE_ARG_POINTER(aFaviconURI);
@@ -412,9 +415,10 @@ nsFaviconService::SetAndLoadFaviconForPage(nsIURI* aPageURI,
   NS_ENSURE_TRUE(historyService, NS_ERROR_OUT_OF_MEMORY);
   return historyService->AddLazyLoadFaviconMessage(aPageURI,
                                                    aFaviconURI,
-                                                   aForceReload);
+                                                   aForceReload,
+                                                   aExpiration);
 #else
-  return DoSetAndLoadFaviconForPage(aPageURI, aFaviconURI, aForceReload);
+  return DoSetAndLoadFaviconForPage(aPageURI, aFaviconURI, aForceReload, aExpiration);
 #endif
 }
 
@@ -424,7 +428,8 @@ nsFaviconService::SetAndLoadFaviconForPage(nsIURI* aPageURI,
 nsresult
 nsFaviconService::DoSetAndLoadFaviconForPage(nsIURI* aPageURI,
                                              nsIURI* aFaviconURI,
-                                             PRBool aForceReload)
+                                             PRBool aForceReload,
+                                             PRTime aExpiration)
 {
   nsCOMPtr<nsIURI> page(aPageURI);
 
@@ -550,7 +555,7 @@ nsFaviconService::DoSetAndLoadFaviconForPage(nsIURI* aPageURI,
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIStreamListener> listener =
-    new FaviconLoadListener(this, page, aFaviconURI, channel);
+    new FaviconLoadListener(this, page, aFaviconURI, channel, aExpiration);
   NS_ENSURE_TRUE(listener, NS_ERROR_OUT_OF_MEMORY);
   nsCOMPtr<nsIInterfaceRequestor> listenerRequestor =
     do_QueryInterface(listener, &rv);
@@ -893,11 +898,12 @@ NS_IMPL_ISUPPORTS4(FaviconLoadListener,
 
 FaviconLoadListener::FaviconLoadListener(nsFaviconService* aFaviconService,
                                          nsIURI* aPageURI, nsIURI* aFaviconURI,
-                                         nsIChannel* aChannel) :
+                                         nsIChannel* aChannel, PRTime aExpiration) :
   mFaviconService(aFaviconService),
   mChannel(aChannel),
   mPageURI(aPageURI),
-  mFaviconURI(aFaviconURI)
+  mFaviconURI(aFaviconURI),
+  mExpiration(aExpiration)
 {
 }
 
@@ -972,26 +978,28 @@ FaviconLoadListener::OnStopRequest(nsIRequest *aRequest, nsISupports *aContext,
     return NS_OK;
   }
 
-  // Expire this favicon in one day. An old version of this actually extracted
-  // the expiration time from the cache. But what if people (especially web
-  // developers) get a bad favicon or change it? The problem is that we're not
-  // aware when the icon has been reloaded in the cache or cleared. This way
-  // we'll always pick up any changes in the cache after a day. In most cases
-  // re-set favicons will come from the cache anyway and reloading them is not
-  // very expensive.
-  PRTime expiration = PR_Now() +
-                      (PRInt64)(24 * 60 * 60) * (PRInt64)PR_USEC_PER_SEC;
+  if (!mExpiration) {
+    // Expire this favicon in one day. An old version of this actually extracted
+    // the expiration time from the cache. But what if people (especially web
+    // developers) get a bad favicon or change it? The problem is that we're not
+    // aware when the icon has been reloaded in the cache or cleared. This way
+    // we'll always pick up any changes in the cache after a day. In most cases
+    // re-set favicons will come from the cache anyway and reloading them is not
+    // very expensive.
+    mExpiration = PR_Now() +
+                  (PRInt64)(24 * 60 * 60) * (PRInt64)PR_USEC_PER_SEC;
+  }
 
   // save the favicon data
   rv = mFaviconService->SetFaviconData(mFaviconURI,
                reinterpret_cast<PRUint8*>(const_cast<char*>(mData.get())),
-               mData.Length(), mimeType, expiration);
+               mData.Length(), mimeType, mExpiration);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // set the favicon for the page
   PRBool hasData;
   rv = mFaviconService->SetFaviconUrlForPageInternal(mPageURI, mFaviconURI,
-                                                     &hasData, &expiration);
+                                                     &hasData, &mExpiration);
   NS_ENSURE_SUCCESS(rv, rv);
 
   mFaviconService->SendFaviconNotifications(mPageURI, mFaviconURI);

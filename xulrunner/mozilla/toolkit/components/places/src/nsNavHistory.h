@@ -199,7 +199,7 @@ public:
    * that favicons are handled lazily just like page adds.
    */
   nsresult AddLazyLoadFaviconMessage(nsIURI* aPage, nsIURI* aFavicon,
-                                     PRBool aForceReload);
+                                     PRBool aForceReload, PRTime aExpiration);
 #endif
 
   /**
@@ -537,6 +537,7 @@ protected:
       isToplevel = PR_FALSE;
       time = 0;
       alwaysLoadFavicon = PR_FALSE;
+      expirationTime = 0;
     }
 
     // call this with common parms to initialize. Caller is responsible for
@@ -567,6 +568,7 @@ protected:
     // valid when type == LAZY_FAVICON
     nsCOMPtr<nsIURI> favicon;
     PRBool alwaysLoadFavicon;
+    PRTime expirationTime;
   };
   nsTArray<LazyMessage> mLazyMessages;
   nsCOMPtr<nsITimer> mLazyTimer;

@@ -4783,7 +4783,8 @@ nsNavHistory::Observe(nsISupports *aSubject, const char *aTopic,
 
 nsresult
 nsNavHistory::AddLazyLoadFaviconMessage(nsIURI* aPage, nsIURI* aFavicon,
-                                        PRBool aForceReload)
+                                        PRBool aForceReload,
+                                        PRTime aExpiration)
 {
   LazyMessage message;
   nsresult rv = message.Init(LazyMessage::Type_Favicon, aPage);
@@ -4791,6 +4792,7 @@ nsNavHistory::AddLazyLoadFaviconMessage(nsIURI* aPage, nsIURI* aFavicon,
   rv = aFavicon->Clone(getter_AddRefs(message.favicon));
   NS_ENSURE_SUCCESS(rv, rv);
   message.alwaysLoadFavicon = aForceReload;
+  message.expirationTime = aExpiration;
   return AddLazyMessage(message);
 }
 
@@ -4876,7 +4878,8 @@ nsNavHistory::CommitLazyMessages()
         if (faviconService) {
           faviconService->DoSetAndLoadFaviconForPage(message.uri,
                                                      message.favicon,
-                                                     message.alwaysLoadFavicon);
+                                                     message.alwaysLoadFavicon,
+                                                     message.expirationTime);
         }
         break;
       }
