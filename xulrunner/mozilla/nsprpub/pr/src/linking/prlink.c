@@ -54,6 +54,7 @@
 #include <CFString.h>
 #include <CFDictionary.h>
 #include <CFData.h>
+#include <mach-o/nlist.h>
 #endif
 
 #ifdef XP_UNIX
@@ -1402,10 +1403,54 @@ pr_FindSymbolInLib(PRLibrary *lm, const char *name)
 /* add this offset to skip the leading underscore in name */
 #define SYM_OFFSET 1
     if (lm->bundle) {
-        CFStringRef nameRef = CFStringCreateWithCString(NULL, name + SYM_OFFSET, kCFStringEncodingASCII);
-        if (nameRef) {
-            f = CFBundleGetFunctionPointerForName(lm->bundle, nameRef);
-            CFRelease(nameRef);
+        CFStringRef executable = NULL;
+        char path[PATH_MAX + 1] = {0};
+        struct nlist nl[2] = {{{0}}};
+        int nlist_rv = 0;
+
+        /* The call to CFBundleGetFunctionPointerForName() below loads (i.e.
+         * dlopens) the bundle, if it hasn't been loaded before.  But we don't
+         * actually need to dlopen it to find out whether or not it contains
+         * the symbol we're looking for ('name') -- nlink() can tell us just
+         * by reading the bundle's executable file.
+         *
+         * This usually makes no difference.  But in OS X 10.5.3 Apple
+         * introduced a serious bug that badly effects us if we always
+         * (indirectly) use dlopen() here -- it sometimes causes us to hang
+         * immediately, and it always causes the OS to hang on shutdown or
+         * restart.  The problem is that, as of 10.5.3, the
+         * VerifiedDownloadPlugin (a part of the standard OS install) can't be
+         * dlopened:  The first time "succeeds", but the second time causes a
+         * hang.  Furthermore even ("successully") dlopening the
+         * VerifiedDownloadPlugin, once, causes the OS to subsequently hang on
+         * shutdown/restart, and causes any subsequent attempt to access the
+         * VerifiedDownloadPlugin's executable (for example using the nm
+         * commandline program) to also hang.  There's never any need to
+         * dlopen VerifiedDownloadPlugin (and Safari never does so) -- as nm
+         * will tell you, this "executable" contains no symbols!
+         *
+         * This change (using nlink() to check to see if we need to dlopen
+         * the bundle) resolves bmo bug 436575.
+         */
+        strncpy(path, lm->name, sizeof(path) - 1);
+        strncat(path, "/Contents/MacOS/", sizeof(path) - strlen(path) - 1);
+        executable = (CFStringRef) CFBundleGetValueForInfoDictionaryKey(lm->bundle,
+                                                                        CFSTR("CFBundleExecutable"));
+        if (executable) {
+            size_t length = strlen(path);
+            CFStringGetCString(executable, path + length,
+                               sizeof(path) - length - 1, kCFStringEncodingUTF8);
+        }
+        nl[0].n_un.n_name = name;
+        nlist_rv = nlist(path, nl);
+
+        if (!nlist_rv && nl[0].n_value) {
+            CFStringRef nameRef = CFStringCreateWithCString(NULL, name + SYM_OFFSET,
+                                                            kCFStringEncodingASCII);
+            if (nameRef) {
+                f = CFBundleGetFunctionPointerForName(lm->bundle, nameRef);
+                CFRelease(nameRef);
+            }
         }
     }
     if (lm->connection) {
