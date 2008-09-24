@@ -40,6 +40,8 @@ topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
+USE_STATIC_LIBS = 1
+
 include $(DEPTH)/config/autoconf.mk
 
 # undefine (as best we can, thanks gmake!) so we don't need build_number
