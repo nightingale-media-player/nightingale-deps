@@ -741,6 +741,22 @@ GetSpecialSystemDirectory(SystemDirectories aSystemSystemDirectory,
         {
             return GetWindowsFolder(CSIDL_TEMPLATES, aFile);
         }
+        case Win_Documents:
+        {
+            return GetWindowsFolder(CSIDL_MYDOCUMENTS, aFile);
+        }
+        case Win_Pictures:
+        {
+            return GetWindowsFolder(CSIDL_MYPICTURES, aFile);
+        }
+        case Win_Music:
+        {
+            return GetWindowsFolder(CSIDL_MYMUSIC, aFile);
+        }
+        case Win_Video:
+        {
+            return GetWindowsFolder(CSIDL_MYVIDEO, aFile);
+        }
 #ifndef WINCE
         case Win_Common_Startmenu:
         {
@@ -758,6 +774,22 @@ GetSpecialSystemDirectory(SystemDirectories aSystemSystemDirectory,
         {
             return GetWindowsFolder(CSIDL_COMMON_DESKTOPDIRECTORY, aFile);
         }
+        case Win_Common_Documents:
+        {
+            return GetWindowsFolder(CSIDL_COMMON_DOCUMENTS, aFile);
+        }
+        case Win_Common_Pictures:
+        {
+            return GetWindowsFolder(CSIDL_COMMON_PICTURES, aFile);
+        }
+        case Win_Common_Music:
+        {
+            return GetWindowsFolder(CSIDL_COMMON_MUSIC, aFile);
+        }
+        case Win_Common_Video:
+        {
+            return GetWindowsFolder(CSIDL_COMMON_VIDEO, aFile);
+        }
         case Win_Printhood:
         {
             return GetWindowsFolder(CSIDL_PRINTHOOD, aFile);
@@ -765,6 +797,10 @@ GetSpecialSystemDirectory(SystemDirectories aSystemSystemDirectory,
         case Win_Cookies:
         {
             return GetWindowsFolder(CSIDL_COOKIES, aFile);
+        }
+        case Win_DiscBurning:
+        {
+            return GetWindowsFolder(CSIDL_CDBURN_AREA, aFile);
         }
 #endif
         case Win_Appdata:

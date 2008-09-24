@@ -152,11 +152,20 @@ public:
     static nsIAtom *sCommon_Programs;
     static nsIAtom *sCommon_Startup;
     static nsIAtom *sCommon_Desktopdirectory;
+    static nsIAtom *sCommon_Documents;
+    static nsIAtom *sCommon_Pictures;
+    static nsIAtom *sCommon_Music;
+    static nsIAtom *sCommon_Video;
     static nsIAtom *sAppdata;
     static nsIAtom *sLocalAppdata;
     static nsIAtom *sPrinthood;
     static nsIAtom *sWinCookiesDirectory;
     static nsIAtom *sDefaultDownloadDirectory;
+    static nsIAtom *sDocuments;
+    static nsIAtom *sPictures;
+    static nsIAtom *sMusic;
+    static nsIAtom *sVideo;
+    static nsIAtom *sDiscBurning;
 #elif defined (XP_UNIX)
     static nsIAtom *sLocalDirectory;
     static nsIAtom *sLibDirectory;
