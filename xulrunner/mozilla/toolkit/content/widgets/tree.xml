@@ -629,7 +629,7 @@
     </implementation>
     
     <handlers>
-      <handler event="DOMMouseScroll" phase="capturing">
+      <handler event="DOMMouseScroll">
         <![CDATA[
           if (this._editingColumn)
             return;
