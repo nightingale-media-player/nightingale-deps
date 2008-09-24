@@ -299,6 +299,9 @@ NS_IMETHODIMP nsTreeSelection::SetTree(nsITreeBoxObject * aTree)
 
 NS_IMETHODIMP nsTreeSelection::GetSingle(PRBool* aSingle)
 {
+  if (!mTree)
+    return NS_ERROR_UNEXPECTED;
+
   nsCOMPtr<nsIBoxObject> boxObject = do_QueryInterface(mTree);
 
   nsCOMPtr<nsIDOMElement> element;
