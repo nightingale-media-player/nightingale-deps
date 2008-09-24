@@ -21,6 +21,7 @@
 #
 # Contributor(s):
 #  Ted Mielczarek <ted.mielczarek@gmail.com>
+#  J. Paul Reed <mozpreed@sigkill.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -50,14 +51,61 @@ ifeq (WINNT,$(OS_TARGET))
 # or you use a pre-built DLL.
 ifneq (,$(WIN32_CRT_SRC_DIR))
 # Building the CRT from source
-CRT_OBJ_DIR=./$(shell basename "$(WIN32_CRT_SRC_DIR)")
-libs:: $(CRT_OBJ_DIR)/build/intel/mozcrt19.dll
-	$(INSTALL) $< $(FINAL_TARGET)
+CRT_OBJ_DIR=$(shell pwd)/$(shell basename "$(WIN32_CRT_SRC_DIR)")
+
+
+ifeq ($(MOZ_DEBUG),1)
+MOZ_CRT_DLL_NAME = mozcrt19d
+MOZ_MEMORY_WIN32_CRTLIBS = libcmtd libcmptd
+else
+MOZ_CRT_DLL_NAME = mozcrt19
+MOZ_MEMORY_WIN32_CRTLIBS = libcmt libcmpt
+endif # MOZ_DEBUG
+
+MOZ_CRT_DLL = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).dll
+MOZ_CRT_LIB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).lib
+MOZ_CRT_PDB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).pdb
+
+WIN32_CRT_SRC_MEM_HEADERS=crtdbg.h malloc.h xdebug xlocale
+
+.PHONY: mozcrtlibs mozcrtruntimedll
+
+libs:: mozcrtlibs mozcrtruntimedll
+
+mozcrtlibs: $(MOZ_CRT_DLL) $(MOZ_CRT_LIB) $(MOZ_CRT_PDB)
+	$(INSTALL) $^ $(DIST)/lib
+
+mozcrtruntimedll: $(MOZ_CRT_DLL)
+	$(INSTALL) $^ $(FINAL_TARGET)
 
 # patch if necessary
 $(CRT_OBJ_DIR)/jemalloc.c: $(srcdir)/crtsp1.diff
 	rm -rf $(CRT_OBJ_DIR)
 	cp -R "$(WIN32_CRT_SRC_DIR)" .
+
+	# Ooh, let's be clever...
+	cp $(addprefix $(CRT_OBJ_DIR)/, _sample_.rc mozcrt19.rc)
+	cp $(addprefix $(CRT_OBJ_DIR)/intel/, _sample_.def mozcrt19.def)
+	cp $(addprefix $(CRT_OBJ_DIR)/intel/, _sampld_.def mozcrt19d.def)
+
+	# release rc files
+	for f in $(addprefix $(CRT_OBJ_DIR)/, sample_p.rc sample_m.rc); do \
+	  a=`echo $$f | sed -e 's/sample/mozcrt19/'`; \
+	  cp -v $$f $$a; \
+	done
+
+	# Release dll def files; still need them for the patch, though...
+	for f in $(addprefix $(CRT_OBJ_DIR)/, sample_m.def sample_p.def sample_u.def); do \
+	  a=`echo $$f | sed -e 's/sample/mozcrt19/'`; \
+	  cp -v $$f $$a; \
+	done
+
+	# Debug dll def files; still need them for the patch, though...
+	for f in $(addprefix $(CRT_OBJ_DIR)/, sampld_m.def sampld_p.def sampld_u.def); do \
+	  a=`echo $$f | sed -e 's/sampld/mozcrt19d/'`; \
+	  cp -v $$f $$a; \
+	done
+
 	# per http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1189363&SiteID=1
 	for i in dll mt xdll xmt; do \
 	  pushd $(CRT_OBJ_DIR)/intel/$${i}_lib && lib -extract:..\\build\\intel\\$${i}_obj\\unhandld.obj eh.lib && popd; \
@@ -67,20 +115,40 @@ $(CRT_OBJ_DIR)/jemalloc.c: $(srcdir)/crtsp1.diff
 	$(PERL) $(srcdir)/apply-ed-patches.pl $(srcdir)/crtsp1.diff \
 	$(CRT_OBJ_DIR) $(srcdir)/ed.exe
 
-$(CRT_OBJ_DIR)/build/intel/mozcrt19.dll: \
+$(MOZ_CRT_DLL): \
   $(CRT_OBJ_DIR)/jemalloc.c $(srcdir)/jemalloc.c $(srcdir)/tree.h
 	cp $(srcdir)/jemalloc.c $(srcdir)/tree.h $(CRT_OBJ_DIR)
-# this pretty much sucks, but nmake and make don't play well together
-	$(PYTHON) $(srcdir)/build-crt.py $(CRT_OBJ_DIR)
+	# this pretty much sucks, but nmake and make don't play well together
+	MOZ_DEBUG=$(MOZ_DEBUG) $(PYTHON) $(srcdir)/build-crt.py $(CRT_OBJ_DIR)
+ifeq ($(MOZ_DEBUG),1)
+	# debug mode
+	# In debug mode, we need to copy the debug headers we've patched, so
+	# the mozilla build uses the same headers that we used for the CRT
+	# build; incidentally, this is why INCLUDE now gets munged
+	cp -v $(addprefix $(CRT_OBJ_DIR)/, $(WIN32_CRT_SRC_MEM_HEADERS)) $(CRT_OBJ_DIR)/build/intel
+	#XXX: these don't link right for some reason
+	# cp -v $(CRT_OBJ_DIR)/build/intel/{libcmtd,libcpmtd}.{lib,pdb} .
+	rm $(CRT_OBJ_DIR)/build/intel/{libcmtd,libcpmtd}.lib
+else
+	# release mode
 	#XXX: these don't link right for some reason
 	rm $(CRT_OBJ_DIR)/build/intel/{libcmt,libcpmt}.lib
-else
-# Using a pre-built DLL, so just install it.
-libs:: $(WIN32_CUSTOM_CRT_DIR)/mozcrt19.dll
-	$(INSTALL) $< $(FINAL_TARGET)
+	# Enable if we ever remove the above 
+	# cp -v $(CRT_OBJ_DIR)/build/intel/{libcmt,libcpmt}.{lib,pdb} . 
+endif # MOZ_DEBUG
+
+else # $(WIN32_CRT_SRC_DIR) != ""
+# Using a pre-built DLL, so just install it; can't redistrib the debug CRT, so
+# no target for it.
+ifdef ($(MOZ_DEBUG),1)
+$(error Cannot build debug mode with pre-built jemalloc Win32 CRT.)
 endif
 
-else
+libs:: $(WIN32_CUSTOM_CRT_DIR)/mozcrt19.dll
+	$(INSTALL) $< $(FINAL_TARGET)
+endif # neq(,$(WIN32_CRT_SRC_DIR)), i.e. pre-built mozcrt available
+
+else # WINNT != $(OS_TARGET)
 
 MODULE_OPTIMIZE_FLAGS = -O2
 ifeq ($(OS_ARCH),SunOS)
@@ -102,7 +170,7 @@ CSRCS		= \
 #XXX: PGO on Linux causes problems here
 # See bug 419470
 NO_PROFILE_GUIDED_OPTIMIZE = 1
-endif
+endif # (WINNT,$(OS_TARGET))
 
 include $(topsrcdir)/config/rules.mk
 
