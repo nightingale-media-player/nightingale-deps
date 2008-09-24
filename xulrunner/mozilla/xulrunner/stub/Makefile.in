@@ -62,7 +62,16 @@ LOCAL_INCLUDES = -I$(topsrcdir)/xpcom/build
 
 DEFINES  += -DXPCOM_GLUE
 
-LIBS = \
+# If we're using jemalloc and we're on Linux, link in jemalloc.so to
+# jemalloc-enable the entire XR app.
+ifeq ($(MOZ_MEMORY)_$(OS_ARCH),1_Linux)
+ifneq (,$(LIBS))
+$(warn Overwriting current LIBS: $(LIBS)...)
+endif
+LIBS = -ljemalloc
+endif
+
+LIBS += \
   $(XPCOM_STANDALONE_GLUE_LDOPTS) \
   $(NULL)
 
