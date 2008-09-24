@@ -97,6 +97,7 @@ const TOOLKIT_ID                      = "toolkit@mozilla.org"
 const KEY_PROFILEDIR                  = "ProfD";
 const KEY_PROFILEDS                   = "ProfDS";
 const KEY_APPDIR                      = "XCurProcD";
+const KEY_XREDIR                      = "GreD";
 const KEY_TEMPDIR                     = "TmpD";
 
 const EM_ACTION_REQUESTED_TOPIC       = "em-action-requested";
@@ -119,6 +120,7 @@ const KEY_APP_GLOBAL                  = "app-global";
 const KEY_APP_SYSTEM_LOCAL            = "app-system-local";
 const KEY_APP_SYSTEM_SHARE            = "app-system-share";
 const KEY_APP_SYSTEM_USER             = "app-system-user";
+const KEY_XRE_GLOBAL                  = "xre-global";
 
 const CATEGORY_INSTALL_LOCATIONS      = "extension-install-locations";
 const CATEGORY_UPDATE_PARAMS          = "extension-update-params";
@@ -2017,6 +2019,7 @@ function safeInstallOperation(itemID, installLocation, installCallback) {
   }
   else if (installLocation.name == KEY_APP_PROFILE ||
            installLocation.name == KEY_APP_GLOBAL ||
+           installLocation.name == KEY_XRE_GLOBAL ||
            installLocation.name == KEY_APP_SYSTEM_USER) {
     // Check for a pointer file and move it aside if it exists
     var pointerFile = installLocation.location.clone();
@@ -2429,6 +2432,21 @@ function ExtensionManager() {
                                                     appGlobalExtensions, true,
                                                     priority, false);
   InstallLocations.put(globalLocation);
+
+  // Register XRE Global Install Location if needed
+  // (e.g. app/xulrunner/extensions/ or app/Contents/Frameworks/XUL.framework/extensions/)
+  try {
+    var xreGlobalExtensions = getDirNoCreate(KEY_XREDIR, [DIR_EXTENSIONS]);
+  }
+  catch(e) { }
+  
+  if (xreGlobalExtensions && (xreGlobalExtensions.path != appGlobalExtensions.path)) {
+    var priority = Ci.nsIInstallLocation.PRIORITY_XRE_SYSTEM_GLOBAL;
+    var xreLocation = new DirectoryInstallLocation(KEY_XRE_GLOBAL,
+                                                   xreGlobalExtensions, true,
+                                                   priority, false);
+    InstallLocations.put(xreLocation);
+  }
 
   // Register App-Profile Install Location
   var appProfileExtensions = getDirNoCreate(KEY_PROFILEDS, [DIR_EXTENSIONS]);
@@ -3618,7 +3636,7 @@ ExtensionManager.prototype = {
         // Force an update of the metadata for appManaged extensions since the
         // last modified time is not updated for directories on FAT / FAT32
         // filesystems when software update applies a new version of the app.
-        if (location.name == KEY_APP_GLOBAL) {
+        if (location.name == KEY_APP_GLOBAL || location.name == KEY_XRE_GLOBAL) {
           var installRDF = location.getItemFile(id, FILE_INSTALL_MANIFEST);
           if (installRDF.exists()) {
             var metadataDS = getInstallManifest(installRDF);
@@ -3842,6 +3860,7 @@ ExtensionManager.prototype = {
       var items = PendingOperations.getOperations(OP_NEEDS_INSTALL);
       for (i = items.length - 1; i >= 0; --i) {
         if (items[i].locationKey == KEY_APP_PROFILE ||
+            items[i].locationKey == KEY_XRE_GLOBAL ||
             items[i].locationKey == KEY_APP_GLOBAL)
           itemsToCheck.push(items[i].id);
       }
@@ -4942,6 +4961,7 @@ ExtensionManager.prototype = {
     }
     else if (installLocation.name == KEY_APP_PROFILE ||
              installLocation.name == KEY_APP_GLOBAL ||
+             installLocation.name == KEY_XRE_GLOBAL ||
              installLocation.name == KEY_APP_SYSTEM_USER) {
       // Check for a pointer file and remove it if it exists
       var pointerFile = installLocation.location.clone();
@@ -7102,7 +7122,7 @@ ExtensionsDataSource.prototype = {
       // we will continue to support it.
       var locationKey = this.getItemProperty(id, "installLocation");
       var appManaged = this.getItemProperty(id, "appManaged") == "true";
-      if (appManaged && locationKey == KEY_APP_GLOBAL)
+      if (appManaged && (locationKey == KEY_APP_GLOBAL || locationKey == KEY_XRE_GLOBAL))
         continue;
 
       if (type != -1 && (type & desiredType) &&
@@ -7668,7 +7688,7 @@ ExtensionsDataSource.prototype = {
     // (can't be removed or disabled), and hidden (not shown in the UI)
     if (installLocation.restricted)
       singleProps = singleProps.concat(["locked", "hidden"]);
-    if (installLocation.name == KEY_APP_GLOBAL)
+    if (installLocation.name == KEY_APP_GLOBAL || installLocation.name == KEY_XRE_GLOBAL)
       singleProps = singleProps.concat(["appManaged"]);
     for (var i = 0; i < singleProps.length; ++i) {
       var property = EM_R(singleProps[i]);
@@ -8336,7 +8356,7 @@ ExtensionsDataSource.prototype = {
   _rdfGet_appManaged: function(item, property) {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
     var locationKey = this.getItemProperty(id, "installLocation");
-    if (locationKey != KEY_APP_GLOBAL)
+    if (locationKey != KEY_APP_GLOBAL && locationKey != KEY_XRE_GLOBAL)
       return EM_L("false");
     return null;
   },
