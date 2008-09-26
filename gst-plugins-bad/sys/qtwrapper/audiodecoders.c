@@ -560,6 +560,25 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
     }
   }
 
+  qtwrapper->outdesc.mSampleRate = 0; /* Use recommended; we read this out later */
+  qtwrapper->outdesc.mFormatID = kAudioFormatLinearPCM;
+  qtwrapper->outdesc.mFormatFlags = kAudioFormatFlagIsFloat ;
+  qtwrapper->outdesc.mBytesPerPacket = 0;
+  qtwrapper->outdesc.mFramesPerPacket = 0;
+  qtwrapper->outdesc.mBytesPerFrame = 4 * channels;
+  qtwrapper->outdesc.mChannelsPerFrame = channels;
+  qtwrapper->outdesc.mBitsPerChannel = 32;
+  qtwrapper->outdesc.mReserved = 0;
+
+  status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+      kQTSCAudioPropertyID_BasicDescription,
+      sizeof (qtwrapper->outdesc), &qtwrapper->outdesc);
+  if (status) {
+    GST_WARNING_OBJECT (qtwrapper, "Error setting output description: %ld",
+        status);
+    goto beach;
+  }
+
   status = QTGetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
       kQTSCAudioPropertyID_BasicDescription,
       sizeof (qtwrapper->outdesc), &qtwrapper->outdesc, NULL);
@@ -584,21 +603,20 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
   GST_DEBUG_OBJECT (qtwrapper, "Output is %d Hz, %d channels",
       qtwrapper->samplerate, qtwrapper->channels);
 
-  /* Create output bufferlist, big enough for 50ms of audio */
+  /* Create output bufferlist, big enough for 200ms of audio */
   GST_DEBUG_OBJECT (qtwrapper, "Allocating bufferlist for %d channels",
       channels);
   qtwrapper->bufferlist =
       AllocateAudioBufferList (channels, 
-      qtwrapper->samplerate / 20 * qtwrapper->channels * 4);
+      qtwrapper->samplerate / 5 * qtwrapper->channels * 4);
 
-  /* TODO: Figure out how the output format is determined, can we pick this? */
-  /* Create output caps */
+  /* Create output caps matching the format the component is giving us */
   *othercaps = gst_caps_new_simple ("audio/x-raw-float",
       "endianness", G_TYPE_INT, G_BYTE_ORDER,
       "signed", G_TYPE_BOOLEAN, TRUE,
       "width", G_TYPE_INT, 32,
       "depth", G_TYPE_INT, 32,
-      "rate", G_TYPE_INT, rate, "channels", G_TYPE_INT, channels, NULL);
+      "rate", G_TYPE_INT, qtwrapper->samplerate, "channels", G_TYPE_INT, qtwrapper->channels, NULL);
 
   ret = TRUE;
 
