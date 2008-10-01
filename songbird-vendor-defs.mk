@@ -57,7 +57,7 @@ endif
 
 ifeq (Linux,$(SB_VENDOR_ARCH))
    SB_VENDOR_ARCH_LINUX := 1
-   ifeq (i386,$(SB_VENDOR_SUBARCH))
+   ifeq (i686,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := linux-i686
       SB_ARCH_DETECTED := 1
    else
@@ -77,7 +77,7 @@ ifeq (Msys,$(SB_VENDOR_OS))
 endif
 
 ifeq (0,$(SB_ARCH_DETECTED))
-   $(error Unsupported vendor build environment ($(SB_VENDOR_ARCH), $(SB_VENDOR_SUBARCH), $SV_VENDOR_OS)) 
+   $(error Unsupported vendor build environment ($(SB_VENDOR_ARCH), $(SB_VENDOR_SUBARCH), $(SB_VENDOR_OS))) 
 endif
 
 #
@@ -185,7 +185,7 @@ SB_VENDOR_BREAKPAD_STORE_PATH := ./
 SB_VENDOR_GENERATE_SYMBOLS ?= 1
 
 # Symbols don't work on x86_64; don't even bother
-ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH))
+ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
   SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/$(SB_VENDOR_TARGET)-symbols-$(SB_VENDOR_TARGET_VERSION)-$(SB_VENDOR_ARCH).zip
 else
   SB_VENDOR_BREAKPAD_ARCHIVE = 
