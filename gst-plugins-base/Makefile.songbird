@@ -32,7 +32,7 @@
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET := gstreamer
+SB_VENDOR_TARGET := gst-plugins-base
 SB_VENDOR_TARGET_VERSION := 0.10.20
 
 CFLAGS += -DYY_NO_UNISTD_H
@@ -40,11 +40,7 @@ GST_PARSE_LA = parse/libgstparse_la-lex._gst_parse_yy.lo \
                parse/libgstparse_la-grammar.tab.lo
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-      --disable-loadsave \
-      --enable-binary-registry \
-      --disable-examples \
-      --disable-tests \
-      --disable-trace \
-      --disable-alloc-trace
+	--disable-examples \
+	--disable-tests \
 
 include $(CURDIR)/../songbird-vendor-rules.mk

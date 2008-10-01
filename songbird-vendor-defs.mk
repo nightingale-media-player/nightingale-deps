@@ -30,6 +30,15 @@
 ################################################################################
 ################################################################################
 
+# TODO
+# -- function to make sure paths can be prepended/appended to, and spaces
+#  are removed, ":"'s are added, etc.
+
+COMMA := ,
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY)
+
+
 ## vendor-autodefs.mk
 
 #
@@ -135,20 +144,49 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    _CC_MAJOR_VERSION=$(shell echo ${CC_VERSION} | awk -F\. '{ print $1 }')
    _CC_MINOR_VERSION=$(shell echo ${CC_VERSION} | awk -F\. '{ print $2 }')
    _MSC_VER=$(_CC_MAJOR_VERSION)$(_CC_MINOR_VERSION)
+
+   CFLAGS +=-D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
+   -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
+	-wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
+
+   CONFIGURE_TARGET = i686-pc-mingw32
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   CFLAGS += -fnested-functions \
-            -gstabs+
+            -gstabs+ \
+				-D__MACOSX__
+
   LDFLAGS += -headerpad_max_install_names
-  DYLD_LIBRARY_PATH += :/opt/local/lib:/usr/lib
+  DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
 endif
 
+# Default to release mode...
 ifeq (debug,$(MAKECMDGOALS))
    SB_BUILD_TYPE := debug
 else
-ifeq (release,$(MAKECMDGOALS))
    SB_BUILD_TYPE := release
+endif
+
+# Set up the target configuration options.
+ifneq (,$(CONFIGURE_TARGET))
+  SB_CONFIGURE_OPTS += --target=$(CONFIGURE_TARGET)
+  SB_CONFIGURE_OPTS += --host=$(CONFIGURE_TARGET)
+endif
+
+ifeq (debug, $(SB_BUILD_TYPE))
+  SB_CONFIGURE_OPTS += --enable-debug=yes
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+    CFLAGS += -MTd -Zi
+  endif
+else
+ifeq (release, $(SB_BUILD_TYPE))
+  SB_CONFIGURE_OPTS += --enable-debug=no
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+    CFLAGS += -MT
+  endif
+else
+  $(error Unknown SB_BUILD_TYPE: $(SB_BUILD_TYPE))
 endif
 endif
 
@@ -199,31 +237,46 @@ MOZSDK_DIR = $(SB_VENDOR_BINARIES_DIR)/mozilla/$(SB_BUILD_TYPE)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 
-# Gettext build options
+SB_PATH :=
+SB_PKG_CONFIG_PATH :=
+SB_DYLD_LIBRARY_PATH :=
+
+#
+# Dependent library section; this is where we define and point the build system
+# at our copies of various tools that are checked in.
+#
+
+#
+# GNU Gettext 
+#
 SB_GETTEXT_DIR = $(SB_VENDOR_BINARIES_DIR)/gettext/$(SB_BUILD_TYPE)
 LIBS += -L$(SB_GETTEXT_DIR)/lib -lintl
 CFLAGS += -I$(SB_GETTEXT_DIR)/include
-PATH := $(SB_GETTEXT_DIR)/bin:$(PATH)
+SB_PATH += $(SB_GETTEXT_DIR)/bin
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   LDFLAGS += -Wl,-dylib_file -Wl,libintl.dylib:$(SB_GETTEXT)/lib/libintl.dylib
   DYLD_LIBRARY_PATH := $(SB_GETTEXT_DIR)/lib:$(DYLD_LIBRARY_PATH)
 endif
 
-# Set up iconv build options.
+#
+# GNU iconv
+#
 SB_ICONV_DIR := $(SB_VENDOR_BINARIES_DIR)/iconv/$(SB_BUILD_TYPE)
 LIBS += -L$(SB_ICONV_DIR)/lib -liconv
 CFLAGS += -I$(SB_ICONV_DIR)/include
-PATH := $(SB_ICONV_DIR)/bin:$(PATH)
+SB_PATH += $(SB_ICONV_DIR)/bin
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
 endif
 
-# Set up glib build options.
+#
+# Glib
+# 
 SB_GLIB_DIR := $(SB_VENDOR_BINARIES_DIR)/glib/$(SB_BUILD_TYPE)
-PATH := $(SB_GLIB_DIR)/bin:$(PATH)
-PKG_CONFIG_PATH := $(SB_GLIB_DIR)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+SB_PATH += $(SB_GLIB_DIR)/bin
+SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
 
 GLIB_PARTS := glib gobject gmodule gthread
 
@@ -232,34 +285,88 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
   DYLD_LIBRARY_PATH := $(SB_GLIB_DIR)/lib:$(DYLD_LIBRARY_PATH)
 endif
 
-# Set up libtool.
-PATH := $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin:$(PATH)
+#
+# GNU libtool
+#
+SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
 ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
 
-# add win32 specific flags
+#
+# liboil
+#
+SB_LIBOIL_DIR := $(SB_VENDOR_BINARIES_DIR)/liboil/$(SB_BUILD_TYPE)
+SB_LIBOIL_LIBS := -L$(SB_LIBOIL_DIR)/lib -loil-0.3
+SB_LIBOIL_CFLAGS := -I$(SB_LIBOIL_DIR)/include/liboil-0.3
+SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
+
 ifeq (Msys, $(SB_VENDOR_ARCH))
-  CFLAGS +=-D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
-   -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
-	-wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
+   SB_PATH += $(SB_LIBOIL_DIR)/bin
+   ifeq (debug, $(SB_BUILD_TYPE))
+      SB_LIBOIL_LIBS += -Wl,-Zi
+   endif
 endif
 
-# Set up the target configuration options.
-ifneq (,$(CONFIGURE_TARGET))
-  SB_CONFIGURE_OPTS += --target=$(CONFIGURE_TARGET)
-  SB_CONFIGURE_OPTS += --host=$(CONFIGURE_TARGET)
-endif
+#
+# gstreamer
+#
+SB_GSTREAMER_DIR := $(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)
+SB_PATH += $(SB_GSTREAMER_DIR)/bin
+SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
 
-SB_VENDOR_MAKEFLAGS ?=
-
-ifeq (debug, $(SB_BUILD_TYPE))
-  SB_CONFIGURE_OPTS += --enable-debug=yes
-  ifeq (Msys, $(SB_VENDOR_ARCH))
-    CFLAGS += -MTd -Zi
-  endif
+#
+# libogg
+#
+SB_LIBOGG_DIR := $(SB_VENDOR_BINARIES_DIR)/libogg/$(SB_BUILD_TYPE)
+SB_OGG_LIBS := -L$(SB_LIBOGG_DIR)/lib
+ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
+   SB_OGG_LIBS += -logg_d
 else
-  # Default to release mode...
-  SB_CONFIGURE_OPTS += --enable-debug=no
-  ifeq (Msys, $(SB_VENDOR_ARCH))
-    CFLAGS += -MT
-  endif
+   SB_OGG_LIBS += -logg
 endif
+SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
+SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
+
+ifeq (Msys, $(SB_VENDOR_ARCH))
+   SB_PATH += $(SB_LIBOGG_DIR)/bin
+   ifeq (debug, $(SB_BUILD_TYPE))
+      SB_LIBOGG_LIBS += -Wl,-Zi
+   endif
+endif
+
+#
+# libvorbis
+#
+SB_LIBVORBIS_DIR := $(SB_VENDOR_BINARIES_DIR)/libvorbis/$(SB_BUILD_TYPE)
+SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
+SB_VORBIS_LIBS += $(SB_OGG_LIBS)
+SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
+SB_VORBIS_CFLAGS += $(SB_OGG_CFLAGS)
+SB_PKG_CONFIG_PATH += $(SB_LIBVORBIS_DIR)/lib/pkgconfig
+
+ifeq (Msys, $(SB_VENDOR_ARCH))
+   SB_PATH += $(SB_LIBVORBIS_DIR)/bin
+   ifeq (debug, $(SB_BUILD_TYPE))
+      SB_VORBIS_LIBS += -Wl,-Zi
+   endif
+endif
+
+# Filter things out of paths; done in two phases; normalize spaces 
+# then turn remaining spaces into path separators (colons).
+
+SB_PKG_CONFIG_PATH := $(subst $(SPACE),:,$(strip $(SB_PKG_CONFIG_PATH)))
+ifeq (,$(PKG_CONFIG_PATH))
+  PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH)
+else
+  PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
+endif
+
+SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH)))
+ifeq (,$(PATH))
+  PATH := $(SB_PATH)
+else
+  PATH := $(SB_PATH):$(PATH)
+endif
+
+# broken
+#DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(DYLD_LIBRARY_PATH))
+#DYLD_LIBRARY_PATH := $(subst $(SPACE),$(EMPTY),$(DYLD_LIBRARY_PATH))
