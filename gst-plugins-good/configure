@@ -29760,7 +29760,7 @@ if test x$USE_DIRECTSOUND = xyes; then
   save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTSOUND_CFLAGS"
   LDFLAGS="$LDFLAGS $DIRECTSOUND_LDFLAGS"
-  LIBS="$LIBS -ldsound -ldxerr9"
+  LIBS="$LIBS -ldsound -ldxerr9 -luser32"
   { echo "$as_me:$LINENO: checking for DirectSound LDFLAGS" >&5
 echo $ECHO_N "checking for DirectSound LDFLAGS... $ECHO_C" >&6; }
   cat >conftest.$ac_ext <<_ACEOF
@@ -29813,7 +29813,7 @@ echo "${ECHO_T}$HAVE_DIRECTSOUND" >&6; }
   LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTSOUND" = "xyes";  then
-        DIRECTSOUND_LIBS="-ldsound -ldxerr9"
+        DIRECTSOUND_LIBS="-ldsound -ldxerr9 -luser32"
 
 
 
