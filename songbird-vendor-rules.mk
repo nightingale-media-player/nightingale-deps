@@ -31,10 +31,38 @@
 ################################################################################
 
 all:
-	$(MAKE) $(SB_VENDOR_MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) debug
-	$(MAKE) $(SB_VENDOR_MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) release
+	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) debug
+	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) release
 
-debug release: build
+debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE)
+
+release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) strip_build
+
+strip_build:
+ifneq (Msys,$(SB_VENDOR_ARCH))
+	$(FIND) -L $(SB_VENDOR_BUILD_DIR) -not -type d \
+         -name "*.dylib" \
+			-or -name "*.so" \
+         -exec $(STRIP) {} \;
+endif
+
+post_build:
+ifeq (Darwin, $(SB_VENDOR_ARCH))
+	echo Perform scrubbing here.
+endif
+
+$(SB_VENDOR_BREAKPAD_ARCHIVE):
+	$(MKDIR) -p $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
+	$(PYTHON) $(MOZSDK_SCRIPTS_DIR)/symbolstore.py \
+              $(DUMP_SYM_ARGS) \
+              -s $(SB_CONFIGURE_PREFIX)/lib \
+              $(DUMP_SYMS) \
+              $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) \
+              $(SB_VENDOR_BREAKPAD_STORE_PATH) \
+              > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_TARGET_NAME)-symbols.txt
+
+	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \
+    $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE_PATH) .
 
 build: clean_build_dir setup_build
 	cd $(SB_VENDOR_BUILD_DIR) && \
@@ -71,4 +99,4 @@ clean_build_dir:
 	# TODO: this kinda sucks; fix this
 	$(CP) -R $(SB_TARGET_SRC_DIR)/* $(SB_VENDOR_BUILD_DIR)
 
-.PHONY: all release debug build build_setup clean_build_dir
+.PHONY: all release debug build build_setup clean_build_dir post_build strip_build

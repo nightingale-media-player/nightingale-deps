@@ -90,6 +90,40 @@ CONFIGURE ?= ./configure
 RM ?= rm
 CP ?= cp
 MKDIR ?= mkdir
+FIND ?= find
+ZIP ?= zip
+
+DUMP_SYMS_ARGS := --vcs-info
+
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+   STRIP ?= strip -x -S
+   DUMP_SYMS ?= $(MOZSDK_DIR)/dump_syms
+   OTOOL ?= otool
+   INSTALL_NAME_TOOL ?= install_name_tool
+
+   ifeq (i386,$(SB_VENDOR_SUBARCH))
+      DUMP_SYMS_ARGS += -a i386
+   else
+   ifeq (ppc,$(SB_VENDOR_SUBARCH))
+      DUMP_SYMS_ARGS += -a ppc
+   endif
+   endif
+else
+ifeq (Linux, $(SB_VENDOR_ARCH))
+   STRIP ?= strip -v
+   DUMP_SYMS = $(MOZSDK_DIR)/dump_syms
+   INSTALL_NAME_TOOL ?= echo install_name_tool called on Linux && exit 1;
+   OTOOL ?= echo otool called on Linux && exit 1;
+else
+ifeq (Msys, $(SB_VENDOR_ARCH))
+   DUMP_SYMS = $(MOZSDK_DIR)/dump_syms.exe
+   # Strip isn't needed/available on Win32; error out
+   STRIP ?= echo strip called on Win32 && exit 1;
+   INSTALL_NAME_TOOL ?= echo install_name_tool called on Win32 && exit 1;
+   OTOOL ?= echo otool called on Win32 && exit 1;
+endif
+endif
+endif
 
 #
 # On certain platforms, we need some extra information/flag munging
@@ -110,8 +144,6 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
   DYLD_LIBRARY_PATH += :/opt/local/lib:/usr/lib
 endif
 
-$(warn MAKECMDGOALS is $(MAKECMDGOALS))
-
 ifeq (debug,$(MAKECMDGOALS))
    SB_BUILD_TYPE := debug
 else
@@ -129,7 +161,6 @@ endif
 SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 
 SB_DEPENDENCIES_DIR ?= $(realpath $(CURDIR)/../..)
-SB_TOOLS_DIR := $(realpath $(SB_DEPENDENCIES_DIR)/../tools)
 
 SB_TARGET_SRC_DIR := $(CURDIR)
 
@@ -141,6 +172,24 @@ SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/build-$(SB_B
 
 # Where we'll point configure to install it to
 SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
+
+SB_VENDOR_BREAKPAD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/breakpad/$(SB_BUILD_TYPE)
+
+SB_VENDOR_BREAKPAD_SYMBOL_PATH = $(SB_VENDOR_BREAKPAD_DIR)/breakpad-symbols
+SB_VENDOR_BREAKPAD_ARCHIVE_PATH = $(SB_VENDOR_BREAKPAD_DIR)
+
+SB_VENDOR_BREAKPAD_STORE_PATH := ./
+
+# Generate syms by default; but make it easy to turn it off, if you're just
+# interested in building.
+SB_VENDOR_GENERATE_SYMBOLS ?= 1
+
+# Symbols don't work on x86_64; don't even bother
+ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH))
+  SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/$(SB_VENDOR_TARGET)-symbols-$(SB_VENDOR_TARGET_VERSION)-$(SB_VENDOR_ARCH).zip
+else
+  SB_VENDOR_BREAKPAD_ARCHIVE = 
+endif
 
 SB_CONFIGURE_OPTS :=
 SB_USE_SYSTEM_LIBS ?=
