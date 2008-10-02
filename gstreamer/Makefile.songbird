@@ -45,6 +45,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-examples \
       --disable-tests \
       --disable-trace \
+      --disable-gtk-doc \
       --disable-alloc-trace
 
 include $(CURDIR)/../songbird-vendor-rules.mk
