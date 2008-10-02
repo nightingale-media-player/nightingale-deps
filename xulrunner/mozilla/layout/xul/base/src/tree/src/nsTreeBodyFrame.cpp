@@ -2477,8 +2477,15 @@ nsTreeBodyFrame::CalcHorzWidth(const ScrollParts& aParts)
 {
   // Compute the adjustment to the last column. This varies depending on the
   // visibility of the columnpicker and the scrollbar.
-  if (aParts.mColumnsFrame)
-    mAdjustWidth = mRect.width - aParts.mColumnsFrame->GetRect().width;
+  if (aParts.mColumnsFrame) {
+    // Only compute the adjustment padding if the columns view width is at least the same
+    // size of bigger than the entire treeview width + vertical scrollbar width (if present).
+    PRInt32 colViewWidth = nsPresContext::CSSPixelsToAppUnits(mColumns->GetColumnsWidth());
+    if (colViewWidth < aParts.mColumnsFrame->GetRect().width)
+      mAdjustWidth = 0;
+    else 
+      mAdjustWidth = mRect.width - aParts.mColumnsFrame->GetRect().width;
+  }
   else
     mAdjustWidth = 0;
 
