@@ -431,6 +431,11 @@ gst_directsound_sink_prepare (GstAudioSink * asink, GstRingBufferSpec * spec)
   dsoundsink->buffer_size = gst_util_uint64_scale_int (wfx.nAvgBytesPerSec, spec->buffer_time, GST_MSECOND);
 
   spec->segsize = gst_util_uint64_scale_int (wfx.nAvgBytesPerSec, spec->latency_time, GST_MSECOND);
+  /* Now round the ringbuffer segment size to a multiple of the bytes per sample - 
+     otherwise the ringbuffer subtly fails */
+  spec->segsize = (spec->segsize + (spec->bytes_per_sample - 1))/ spec->bytes_per_sample * spec->bytes_per_sample;
+
+  /* And base the total number of segments on the configured buffer size */
   spec->segtotal = dsoundsink->buffer_size / spec->segsize;
 
   // Make the final buffer size be an integer number of segments
