@@ -32,12 +32,13 @@
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET := gst-plugins-base
+SB_VENDOR_TARGET := gst-plugins-good
 SB_VENDOR_TARGET_VERSION := 0.10.20
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
 	--disable-examples \
+	--disable-tests \
 	--disable-gtk-doc \
-	--disable-tests
+	--enable-flac=yes
 
 include $(CURDIR)/../songbird-vendor-rules.mk

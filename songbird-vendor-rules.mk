@@ -37,15 +37,15 @@
 #
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-  export MACOSX_DEPLOYMENT_TARGET
-  export DYLD_LIBRARY_PATH
+  export MACOSX_DEPLOYMENT_TARGET=10.4
+  export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
 endif
-export CPPFLAGS
-export CFLAGS
-export LDFLAGS
-export ACLOCAL_FLAGS
-export PKG_CONFIG_PATH
-export PATH
+export CPPFLAGS = $(SB_CPPFLAGS)
+export CFLAGS = $(SB_CFLAGS)
+export LDFLAGS = $(SB_LDFLAGS)
+export ACLOCAL_FLAGS = $(SB_ACLOCAL_FLAGS)
+export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
+export PATH = $(SB_PATH)
 
 export LIBOIL_CFLAGS = $(SB_LIBOIL_CFLAGS)
 export LIBOIL_LIBS = $(SB_LIBOIL_CFLAGS)
@@ -54,8 +54,8 @@ export OGG_LIBS = $(SB_OGG_LIBS)
 export VORBIS_CFLAGS = $(SB_VORBIS_CFLAGS)
 export VORBIS_LIBS = $(SB_VORBIS_LIBS)
 
-# Generate, configure, build, and install.
-export NOCONFIGURE=yes
+# Generate, configure, build, and install; probably not needed.
+export NOCONFIGURE = yes
 
 all:
 	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) debug
@@ -104,19 +104,19 @@ build: clean_build_dir setup_build module_setup_build
 setup_build:
 	echo Songbird Vendor Environment Settings
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-  @echo MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)
-  @echo DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH)
+  @echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
+  @echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
 endif
 	@echo CPPFLAGS = $(CPPFLAGS)
-	@echo CFLAGS=$(CFLAGS)
-	@echo LDFLAGS=$(LDFLAGS)
-	@echo ACLOCAL_FLAGS=$(ACLOCAL_FLAGS)
-	@echo PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)
-	@echo PATH=$(PATH)
-	@echo LIBOIL_CFLAGS=$(LIBOIL_CFLAGS)
-	@echo LIBOIL_LIBS=$(LIBOIL_LIBS)
-	@echo OGG_CFLAGS=$(OGG_CFLAGS)
-	@echo OGG_LIBS=$(OGG_LIBS)
+	@echo CFLAGS = $(CFLAGS)
+	@echo LDFLAGS = $(LDFLAGS)
+	@echo ACLOCAL_FLAGS = $(ACLOCAL_FLAGS)
+	@echo PKG_CONFIG_PATH = $(PKG_CONFIG_PATH)
+	@echo PATH = $(PATH)
+	@echo LIBOIL_CFLAGS = $(LIBOIL_CFLAGS)
+	@echo LIBOIL_LIBS = $(LIBOIL_LIBS)
+	@echo OGG_CFLAGS = $(OGG_CFLAGS)
+	@echo OGG_LIBS = $(OGG_LIBS)
 
 clean_build_dir:
 	$(RM) -Rf $(SB_VENDOR_BUILD_DIR)

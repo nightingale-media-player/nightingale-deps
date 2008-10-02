@@ -314,6 +314,13 @@ SB_PATH += $(SB_GSTREAMER_DIR)/bin
 SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
 
 #
+# gstreamer-plugins-base
+#
+SB_GST_PLUGINS_BASE_DIR := $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base/$(SB_BUILD_TYPE)
+SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
+SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
+
+#
 # libogg
 #
 SB_LIBOGG_DIR := $(SB_VENDOR_BINARIES_DIR)/libogg/$(SB_BUILD_TYPE)
@@ -350,23 +357,36 @@ ifeq (Msys, $(SB_VENDOR_ARCH))
    endif
 endif
 
+#
+# libFLAC
+#
+
+SB_LIBFLAC_DIR := $(SB_VENDOR_BINARIES_DIR)/flac/$(SB_BUILD_TYPE)
+SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
+ifeq (Msys,$(SB_TARGET_ARCH))
+  SB_LDFLAGS += -lFLAC-8
+endif
+SB_CPPFLAGS = -I$(SB_LIBFLAC_DIR)/include
+SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
+
+ifeq (Msys, $(SB_VENDOR_ARCH))
+   SB_PATH += $(SB_LIBVORBIS_DIR)/bin
+   ifeq (debug, $(SB_BUILD_TYPE))
+      SB_VORBIS_LIBS += -Wl,-Zi
+   endif
+endif
+
 # Filter things out of paths; done in two phases; normalize spaces 
 # then turn remaining spaces into path separators (colons).
 
 SB_PKG_CONFIG_PATH := $(subst $(SPACE),:,$(strip $(SB_PKG_CONFIG_PATH)))
-ifeq (,$(PKG_CONFIG_PATH))
-  PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH)
-else
-  PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
+ifneq (,$(PKG_CONFIG_PATH))
+  SB_PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
 endif
 
-SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH)))
-ifeq (,$(PATH))
-  PATH := $(SB_PATH)
-else
-  PATH := $(SB_PATH):$(PATH)
-endif
+SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
 
-# broken
-#DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(DYLD_LIBRARY_PATH))
-#DYLD_LIBRARY_PATH := $(subst $(SPACE),$(EMPTY),$(DYLD_LIBRARY_PATH))
+SB_DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(strip $(SB_DYLD_LIBRARY_PATH)))
+ifneq (,$(DYLD_LIBRARY_PATH))
+  SB_DYLD_LIBRARY_PATH := $(SB_DYLD_LIBRARY_PATH):$(DYLD_LIBRARY_PATH)
+endif
