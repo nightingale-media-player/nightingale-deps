@@ -51,26 +51,36 @@ ifneq (,$(DYLD_LIBRARY_PATH))
   SB_DYLD_LIBRARY_PATH := $(SB_DYLD_LIBRARY_PATH):$(DYLD_LIBRARY_PATH)
 endif
 
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-  export MACOSX_DEPLOYMENT_TARGET=10.4
-  export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
+# Only export these if we're actually building a target
+BUILD_TARGET_SET := $(if \
+                       $(or $(filter debug, $(MAKECMDGOALS)), \
+                            $(filter release, $(MAKECMDGOALS))),\
+                        build_requested,)
+
+ifneq (,$(BUILD_TARGET_SET))
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
+  endif
+  export CPPFLAGS = $(SB_CPPFLAGS)
+  export CFLAGS = $(SB_CFLAGS)
+  export LDFLAGS = $(SB_LDFLAGS)
+  export ACLOCAL_FLAGS = $(SB_ACLOCAL_FLAGS)
+  export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
+  export PATH = $(SB_PATH)
+
+  export LIBOIL_CFLAGS = $(SB_LIBOIL_CFLAGS)
+  export LIBOIL_LIBS = $(SB_LIBOIL_CFLAGS)
+  export OGG_CFLAGS = $(SB_OGG_CFLAGS)
+  export OGG_LIBS = $(SB_OGG_LIBS)
+  export VORBIS_CFLAGS = $(SB_VORBIS_CFLAGS)
+  export VORBIS_LIBS = $(SB_VORBIS_LIBS)
+  export FLAC_CFLAGS = $(SB_FLAC_CFLAGS)
+  export FLAC_LIBS = $(SB_FLAC_LIBS)
+
+  # Generate, configure, build, and install; probably not needed.
+  export NOCONFIGURE = yes
 endif
-export CPPFLAGS = $(SB_CPPFLAGS)
-export CFLAGS = $(SB_CFLAGS)
-export LDFLAGS = $(SB_LDFLAGS)
-export ACLOCAL_FLAGS = $(SB_ACLOCAL_FLAGS)
-export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
-export PATH = $(SB_PATH)
-
-export LIBOIL_CFLAGS = $(SB_LIBOIL_CFLAGS)
-export LIBOIL_LIBS = $(SB_LIBOIL_CFLAGS)
-export OGG_CFLAGS = $(SB_OGG_CFLAGS)
-export OGG_LIBS = $(SB_OGG_LIBS)
-export VORBIS_CFLAGS = $(SB_VORBIS_CFLAGS)
-export VORBIS_LIBS = $(SB_VORBIS_LIBS)
-
-# Generate, configure, build, and install; probably not needed.
-export NOCONFIGURE = yes
 
 all:
 	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) debug
@@ -106,7 +116,23 @@ $(SB_VENDOR_BREAKPAD_ARCHIVE):
 	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \
     $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE_PATH) .
 
-build: clean_build_dir setup_build module_setup_build
+$(SB_VENDOR_BINARIES_DIR):
+	mkdir -p $(SB_VENDOR_BINARIES_DIR)
+
+#$(SB_VENDOR_BINARIES_TARGET_DIRS): $(SB_VENDOR_BINARIES_DIR)
+
+setup_environment: $(SB_VENDOR_BINARIES_DIR)
+	mkdir -p $(SB_VENDOR_BUILD_ROOT)/build
+	$(foreach tgt, \
+          $(SB_VENDOR_BINARIES_TARGETS), \
+          $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
+           echo exists), \
+          , \
+          $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
+          $(SB_VENDOR_BINARIES_DIR); ))
+	-test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && rm -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+
+build: setup_environment clean_build_dir setup_build module_setup_build
 	cd $(SB_VENDOR_BUILD_DIR) && \
    $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
       $(SB_CONFIGURE_OPTS) \
@@ -125,7 +151,11 @@ $(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
 
 setup_build: \
  $(if $(SB_VENDOR_TARGET_DEPENDENT_DEBS), $(SB_VENDOR_TARGET_BINARY_DEPS_DIR),)
-	echo Songbird Vendor Environment Settings
+	@echo 
+	@echo 
+	@echo ====================================
+	@echo Songbird Vendor Environment Settings
+	@echo ====================================
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   @echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
   @echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
@@ -140,6 +170,13 @@ endif
 	@echo LIBOIL_LIBS = $(LIBOIL_LIBS)
 	@echo OGG_CFLAGS = $(OGG_CFLAGS)
 	@echo OGG_LIBS = $(OGG_LIBS)
+	@echo FLAC_CFLAGS = $(FLAC_CFLAGS)
+	@echo FLAC_LIBS = $(FLAC_LIBS)
+	@echo =============================
+	@echo END Environment Settings DUMP
+	@echo =============================
+	@echo 
+	@echo 
 
 clean_build_dir:
 	$(RM) -Rf $(SB_VENDOR_BUILD_DIR)

@@ -84,7 +84,7 @@ ifeq (Msys,$(SB_VENDOR_OS))
    SB_VENDOR_ARCH := Msys
 endif
 
-ifeq (0,$(SB_ARCH_DETECTED))
+ifneq (1,$(SB_ARCH_DETECTED))
    $(error Unsupported vendor build environment ($(SB_VENDOR_ARCH), $(SB_VENDOR_SUBARCH), $(SB_VENDOR_OS))) 
 endif
 
@@ -102,6 +102,7 @@ FIND ?= find
 ZIP ?= zip
 TAR ?= tar
 AR ?= ar
+LN ?= ln
 
 DUMP_SYMS_ARGS := --vcs-info
 
@@ -199,19 +200,39 @@ endif
 # Is typically Makefile.songbird
 SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 
-SB_DEPENDENCIES_DIR ?= $(realpath $(CURDIR)/../..)
-SB_VENDOR_DIR ?= $(realpath $(CURDIR)/..)
+# Hardcode all this for now; this is for official building of these tools,
+# so developers are likely to find this pretty painful.
 
+SB_VENDOR_BUILD_ROOT ?= /builds/sb-deps
+SB_VENDOR_BINARIES_CO_ROOT ?= $(SB_VENDOR_BUILD_ROOT)/checkout
+SB_VENDOR_CHECKOUT ?= $(realpath $(CURDIR)/..)
+
+ifeq (,$(shell test -e $(SB_VENDOR_BUILD_ROOT) && echo exists))
+   $(error SB_VENDOR_BUILD_ROOT ($(SB_VENDOR_BUILD_ROOT) does not exist...)
+endif
+
+ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_CO_ROOT) && echo exists))
+   $(error SB_VENDOR_BINARIES_CO_ROOT $(SB_VENDOR_BINARIES_CO_ROOT) does not exist...)
+endif
+
+
+SB_VENDOR_DIR ?= $(realpath $(CURDIR)/..)
 SB_TARGET_SRC_DIR := $(CURDIR)
 
-# TODO - check to see this dir exists
-SB_VENDOR_BINARIES_DIR := $(SB_DEPENDENCIES_DIR)/$(SB_TARGET_ARCH)
+SB_VENDOR_BINARIES_DIR := $(SB_VENDOR_BUILD_ROOT)/$(SB_TARGET_ARCH)
+SB_VENDOR_BINARIES_CHECKOUT := $(SB_VENDOR_BINARIES_CO_ROOT)/$(SB_TARGET_ARCH)
+
+SB_VENDOR_BINARIES_TARGETS := $(shell $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn -printf '%f ')
+
+#ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_DIR) && echo exists))
+#   $(error SB_VENDOR_BINARIES_CO_ROOT $(SB_VENDOR_BINARIES_CO_ROOT) does not exist...)
+#endif
 
 # Where we'll build this stuff
-SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/build-$(SB_BUILD_TYPE)
+SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
 
 # Where we'll point configure to install it to
-SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/install-$(SB_BUILD_TYPE)
+SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
 
 SB_VENDOR_TARGET_BINARY_DEPS_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/build-deps
 
@@ -373,14 +394,14 @@ endif
 SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
 SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
 ifeq (Msys,$(SB_TARGET_ARCH))
-  SB_LDFLAGS += -lFLAC-8
+  SB_FLAC_LDFLAGS += -lFLAC-8
 endif
 SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
 SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
 
 ifeq (Msys, $(SB_VENDOR_ARCH))
-   SB_PATH += $(SB_LIBVORBIS_DIR)/bin
+   SB_PATH += $(SB_LIBFLAC_DIR)/bin
    ifeq (debug, $(SB_BUILD_TYPE))
-      SB_VORBIS_LIBS += -Wl,-Zi
+      SB_FLAC_LIBS += -Wl,-Zi
    endif
 endif
