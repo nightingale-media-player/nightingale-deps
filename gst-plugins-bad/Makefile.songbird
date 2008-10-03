@@ -36,10 +36,32 @@ SB_VENDOR_TARGET := gst-plugins-bad
 SB_VENDOR_TARGET_VERSION := 0.10.20
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-        --disable-nls \
         --disable-examples \
         --disable-tests \
         --disable-gtk-doc \
         --with-mozilla=$(MOZSDK_DIR)
+        --disable-app --disable-bayer --disable-cdxaparse  \
+        --disable-deinterlace --disable-dvdspu --disable-festival \
+        --disable-filter --disable-flv --disable-freeze \
+        --disable-h264parse --disable-librfb --disable-modplug \
+        --disable-mpeg4videoparse --disable-mpegtsparse \
+        --disable-mpegvideoparse --disable-mve --disable-nsf \
+        --disable-nuvdemux --disable-rawparse --disable-real \
+        --disable-speed --disable-speexresample --disable-stereo \
+        --disable-subenc --disable-tta --disable-vmnc --disable-y4m \
+        --disable-apexsink --disable-bz2 --disable-dvb --disable-fbdev \
+        --disable-alsa --disable-metadata --disable-oss4 --disable-sdl \
+        --disable-vcd \
+        --disable-deinterlace2 \
+        --disable-amrwb --disable-cdaudio --disable-dc1394 \
+        --disable-dirac --disable-divx --disable-dts \
+        --disable-faad --disable-faac --disable-gsm \
+        --disable-ivorbis --disable-jack --disable-ladspa \
+        --disable-libmms --disable-mpeg2enc --disable-mplex \
+        --disable-musepack --disable-musicbrainz --disable-mythtv \
+        --disable-nas --disable-neon --disable-ofa --disable-dvdnav \
+        --disable-sndfile --disable-soundtouch --disable-swfdec \
+        --disable-theoradec --disable-timidity --disable-wildmidi \
+        --disable-wininet  --disable-x264 --disable-xvid
 
 include $(CURDIR)/../songbird-vendor-rules.mk

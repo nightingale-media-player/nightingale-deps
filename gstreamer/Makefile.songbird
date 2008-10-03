@@ -40,7 +40,6 @@ GST_PARSE_LA = parse/libgstparse_la-lex._gst_parse_yy.lo \
                parse/libgstparse_la-grammar.tab.lo
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-      --disable-nls \
       --disable-loadsave \
       --enable-binary-registry \
       --disable-examples \

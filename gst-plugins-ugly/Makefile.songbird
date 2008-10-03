@@ -36,9 +36,14 @@ SB_VENDOR_TARGET := gst-plugins-ugly
 SB_VENDOR_TARGET_VERSION := 0.10.20
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-        --disable-nls \
         --disable-examples \
         --disable-tests \
-        --disable-gtk-doc
+        --disable-gtk-doc \
+        --disable-dvdsub --disable-dvdlpcmdec --disable-realmedia \
+        --disable-mpegstream --disable-iec958 \
+        --disable-synaesthesia \
+        --disable-a52dec --disable-amrnb --disable-cdio \
+        --disable-dvdnav --disable-dvdread --disable-lame \
+        --disable-mad --disable-mpeg2dec --disable-sidplay
 
 include $(CURDIR)/../songbird-vendor-rules.mk

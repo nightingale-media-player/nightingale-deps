@@ -84,7 +84,7 @@ strip_build:
 ifneq (Msys,$(SB_VENDOR_ARCH))
 	$(FIND) -L $(SB_VENDOR_BUILD_DIR) -not -type d \
          -name "*.dylib" \
-			-or -name "*.so" \
+         -or -name "*.so" \
          -exec $(STRIP) {} \;
 endif
 
