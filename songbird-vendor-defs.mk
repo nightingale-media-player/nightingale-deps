@@ -52,7 +52,6 @@ SB_VENDOR_OS := $(shell uname -o)
 SB_ARCH_DETECTED := 0
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   SB_VENDOR_ARCH_MAC := 1
    ifeq (i386,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := macosx-i686
       SB_ARCH_DETECTED := 1
@@ -101,6 +100,8 @@ CP ?= cp
 MKDIR ?= mkdir
 FIND ?= find
 ZIP ?= zip
+TAR ?= tar
+AR ?= ar
 
 DUMP_SYMS_ARGS := --vcs-info
 
@@ -155,7 +156,7 @@ endif
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   CFLAGS += -fnested-functions \
             -gstabs+ \
-				-D__MACOSX__
+            -D__MACOSX__
 
   LDFLAGS += -headerpad_max_install_names
   DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
@@ -199,6 +200,7 @@ endif
 SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 
 SB_DEPENDENCIES_DIR ?= $(realpath $(CURDIR)/../..)
+SB_VENDOR_DIR ?= $(realpath $(CURDIR)/..)
 
 SB_TARGET_SRC_DIR := $(CURDIR)
 
@@ -209,7 +211,9 @@ SB_VENDOR_BINARIES_DIR := $(SB_DEPENDENCIES_DIR)/$(SB_TARGET_ARCH)
 SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/build-$(SB_BUILD_TYPE)
 
 # Where we'll point configure to install it to
-SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
+SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/install-$(SB_BUILD_TYPE)
+
+SB_VENDOR_TARGET_BINARY_DEPS_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/build-deps
 
 SB_VENDOR_BREAKPAD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/breakpad/$(SB_BUILD_TYPE)
 
@@ -220,7 +224,7 @@ SB_VENDOR_BREAKPAD_STORE_PATH := ./
 
 # Generate syms by default; but make it easy to turn it off, if you're just
 # interested in building.
-SB_VENDOR_GENERATE_SYMBOLS ?= 1
+SB_VENDOR_GENERATE_SYMBOLS ?= 0
 
 # Symbols don't work on x86_64; don't even bother
 ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
@@ -232,8 +236,13 @@ endif
 SB_CONFIGURE_OPTS :=
 SB_USE_SYSTEM_LIBS ?=
 
+# TODO: explain this gloop
+define find-dep-dir
+$(if $(shell test -e $1/install-$(SB_BUILD_TYPE) && echo exists),$(strip $1)/install-$(SB_BUILD_TYPE),$(strip $1)/$(SB_BUILD_TYPE))
+endef
+
 # Mozilla SDK settings
-MOZSDK_DIR = $(SB_VENDOR_BINARIES_DIR)/mozilla/$(SB_BUILD_TYPE)
+MOZSDK_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 
@@ -249,7 +258,7 @@ SB_DYLD_LIBRARY_PATH :=
 #
 # GNU Gettext 
 #
-SB_GETTEXT_DIR = $(SB_VENDOR_BINARIES_DIR)/gettext/$(SB_BUILD_TYPE)
+SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
 LIBS += -L$(SB_GETTEXT_DIR)/lib -lintl
 CFLAGS += -I$(SB_GETTEXT_DIR)/include
 SB_PATH += $(SB_GETTEXT_DIR)/bin
@@ -262,7 +271,7 @@ endif
 #
 # GNU iconv
 #
-SB_ICONV_DIR := $(SB_VENDOR_BINARIES_DIR)/iconv/$(SB_BUILD_TYPE)
+SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/iconv)
 LIBS += -L$(SB_ICONV_DIR)/lib -liconv
 CFLAGS += -I$(SB_ICONV_DIR)/include
 SB_PATH += $(SB_ICONV_DIR)/bin
@@ -274,7 +283,7 @@ endif
 #
 # Glib
 # 
-SB_GLIB_DIR := $(SB_VENDOR_BINARIES_DIR)/glib/$(SB_BUILD_TYPE)
+SB_GLIB_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/glib)
 SB_PATH += $(SB_GLIB_DIR)/bin
 SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
 
@@ -294,9 +303,9 @@ ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
 #
 # liboil
 #
-SB_LIBOIL_DIR := $(SB_VENDOR_BINARIES_DIR)/liboil/$(SB_BUILD_TYPE)
-SB_LIBOIL_LIBS := -L$(SB_LIBOIL_DIR)/lib -loil-0.3
-SB_LIBOIL_CFLAGS := -I$(SB_LIBOIL_DIR)/include/liboil-0.3
+SB_LIBOIL_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/liboil)
+SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
+SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
 SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
 
 ifeq (Msys, $(SB_VENDOR_ARCH))
@@ -309,22 +318,22 @@ endif
 #
 # gstreamer
 #
-SB_GSTREAMER_DIR := $(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)
+SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
 SB_PATH += $(SB_GSTREAMER_DIR)/bin
 SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
 
 #
 # gstreamer-plugins-base
 #
-SB_GST_PLUGINS_BASE_DIR := $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base/$(SB_BUILD_TYPE)
+SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base)
 SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
 SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
 
 #
 # libogg
 #
-SB_LIBOGG_DIR := $(SB_VENDOR_BINARIES_DIR)/libogg/$(SB_BUILD_TYPE)
-SB_OGG_LIBS := -L$(SB_LIBOGG_DIR)/lib
+SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
+SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib
 ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
    SB_OGG_LIBS += -logg_d
 else
@@ -343,7 +352,7 @@ endif
 #
 # libvorbis
 #
-SB_LIBVORBIS_DIR := $(SB_VENDOR_BINARIES_DIR)/libvorbis/$(SB_BUILD_TYPE)
+SB_LIBVORBIS_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libvorbis)
 SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
 SB_VORBIS_LIBS += $(SB_OGG_LIBS)
 SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
@@ -361,12 +370,12 @@ endif
 # libFLAC
 #
 
-SB_LIBFLAC_DIR := $(SB_VENDOR_BINARIES_DIR)/flac/$(SB_BUILD_TYPE)
+SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
 SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
 ifeq (Msys,$(SB_TARGET_ARCH))
   SB_LDFLAGS += -lFLAC-8
 endif
-SB_CPPFLAGS = -I$(SB_LIBFLAC_DIR)/include
+SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
 SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
 
 ifeq (Msys, $(SB_VENDOR_ARCH))
@@ -374,19 +383,4 @@ ifeq (Msys, $(SB_VENDOR_ARCH))
    ifeq (debug, $(SB_BUILD_TYPE))
       SB_VORBIS_LIBS += -Wl,-Zi
    endif
-endif
-
-# Filter things out of paths; done in two phases; normalize spaces 
-# then turn remaining spaces into path separators (colons).
-
-SB_PKG_CONFIG_PATH := $(subst $(SPACE),:,$(strip $(SB_PKG_CONFIG_PATH)))
-ifneq (,$(PKG_CONFIG_PATH))
-  SB_PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
-endif
-
-SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
-
-SB_DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(strip $(SB_DYLD_LIBRARY_PATH)))
-ifneq (,$(DYLD_LIBRARY_PATH))
-  SB_DYLD_LIBRARY_PATH := $(SB_DYLD_LIBRARY_PATH):$(DYLD_LIBRARY_PATH)
 endif

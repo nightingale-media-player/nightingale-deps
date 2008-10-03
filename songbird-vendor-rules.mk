@@ -36,6 +36,21 @@
 # me thinks this should be a target anyway...)
 #
 
+# Filter things out of paths; done in two phases; normalize spaces 
+# then turn remaining spaces into path separators (colons).
+
+SB_PKG_CONFIG_PATH := $(subst $(SPACE),:,$(strip $(SB_PKG_CONFIG_PATH)))
+ifneq (,$(PKG_CONFIG_PATH))
+  SB_PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
+endif
+
+SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
+
+SB_DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(strip $(SB_DYLD_LIBRARY_PATH)))
+ifneq (,$(DYLD_LIBRARY_PATH))
+  SB_DYLD_LIBRARY_PATH := $(SB_DYLD_LIBRARY_PATH):$(DYLD_LIBRARY_PATH)
+endif
+
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   export MACOSX_DEPLOYMENT_TARGET=10.4
   export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
@@ -100,8 +115,16 @@ build: clean_build_dir setup_build module_setup_build
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR)
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) install
 
-# Nothing for now...
-setup_build:
+$(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
+	mkdir -p $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+	$(foreach deb, \
+          $(SB_VENDOR_TARGET_DEPENDENT_DEBS), \
+          cd $(SB_VENDOR_TARGET_BINARY_DEPS_DIR) && \
+          $(AR) -x $(deb) && \
+          $(TAR) xfvz data.tar.gz)
+
+setup_build: \
+ $(if $(SB_VENDOR_TARGET_DEPENDENT_DEBS), $(SB_VENDOR_TARGET_BINARY_DEPS_DIR),)
 	echo Songbird Vendor Environment Settings
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   @echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
