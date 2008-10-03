@@ -1,0 +1,13 @@
+Vendor packages area
+====================
+
+This area is specifically for:
+
+* Binary blobs that we won't ever modify, and just use (some .debs are used
+  to fulfull build time dependencies)
+
+* Source tarballs of tools that are build time dependencies that we'll never
+  modify
+
+* Anything binary-blobular that is used in the reference platform that we can
+  can redistribute, but don't have any need to modify.
