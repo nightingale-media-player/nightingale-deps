@@ -70,7 +70,7 @@ ifneq (,$(BUILD_TARGET_SET))
   export PATH = $(SB_PATH)
 
   export LIBOIL_CFLAGS = $(SB_LIBOIL_CFLAGS)
-  export LIBOIL_LIBS = $(SB_LIBOIL_CFLAGS)
+  export LIBOIL_LIBS = $(SB_LIBOIL_LIBS)
   export OGG_CFLAGS = $(SB_OGG_CFLAGS)
   export OGG_LIBS = $(SB_OGG_LIBS)
   export VORBIS_CFLAGS = $(SB_VORBIS_CFLAGS)
@@ -130,7 +130,7 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
           , \
           $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
           $(SB_VENDOR_BINARIES_DIR); ))
-ifeq $(is_symlink, $(shell test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && echo is_symlink)
+ifeq (is_symlink,$(shell test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && echo is_symlink))
 	$(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 else
 	$(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
