@@ -130,7 +130,12 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
           , \
           $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
           $(SB_VENDOR_BINARIES_DIR); ))
-	-test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && rm -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+ifeq $(is_symlink, $(shell test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && echo is_symlink)
+	$(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+else
+	$(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
+	$(RM) -rf $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+endif
 
 build: setup_environment clean_build_dir setup_build module_setup_build
 	cd $(SB_VENDOR_BUILD_DIR) && \
@@ -147,7 +152,7 @@ $(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
           $(SB_VENDOR_TARGET_DEPENDENT_DEBS), \
           cd $(SB_VENDOR_TARGET_BINARY_DEPS_DIR) && \
           $(AR) -x $(deb) && \
-          $(TAR) xfvz data.tar.gz)
+          $(TAR) xfvz data.tar.gz ;)
 
 setup_build: \
  $(if $(SB_VENDOR_TARGET_DEPENDENT_DEBS), $(SB_VENDOR_TARGET_BINARY_DEPS_DIR),)
