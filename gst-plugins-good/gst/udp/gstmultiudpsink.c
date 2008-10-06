@@ -44,6 +44,10 @@
 #include <errno.h>
 #include <string.h>
 
+#ifdef G_OS_WIN32
+typedef int socklen_t;
+#endif
+
 GST_DEBUG_CATEGORY_STATIC (multiudpsink_debug);
 #define GST_CAT_DEFAULT (multiudpsink_debug)
 
@@ -374,6 +378,7 @@ gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
   gint ret, size, num = 0;
   guint8 *data;
   GList *clients;
+  socklen_t len;
 
   sink = GST_MULTIUDPSINK (bsink);
 
@@ -395,8 +400,22 @@ gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
     GST_LOG_OBJECT (sink, "sending %d bytes to client %p", size, client);
 
     while (TRUE) {
+      /* Mac OS is picky about the size for the bind so we switch on the family */
+      switch (client->theiraddr) {
+        case AF_INET:
+          len = sizeof (struct sockaddr_in);
+          break;
+        case AF_INET6:
+          len = sizeof (struct sockaddr_in6);
+          break;
+        default:
+          /* don't know, Screw MacOS and use the full length */
+          len = sizeof (client->theiraddr);
+          break;
+      }
+
       ret = sendto (*client->sock, data, size, 0,
-          (struct sockaddr *) &client->theiraddr, sizeof (client->theiraddr));
+          (struct sockaddr *) &client->theiraddr, len);
 
       if (ret < 0) {
         /* we get a non-posix EPERM on Linux when a firewall rule blocks this
