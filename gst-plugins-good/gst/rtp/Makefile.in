@@ -68,8 +68,10 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-fionread.m4 \
 	$(top_srcdir)/m4/gst-shout2.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -104,10 +106,11 @@ am_libgstrtp_la_OBJECTS = libgstrtp_la-fnv1hash.lo \
 	libgstrtp_la-gstrtph263pay.lo libgstrtp_la-gstrtph264depay.lo \
 	libgstrtp_la-gstrtph264pay.lo libgstrtp_la-gstrtpL16depay.lo \
 	libgstrtp_la-gstrtpL16pay.lo libgstrtp_la-gstasteriskh263.lo \
+	libgstrtp_la-gstrtpmp1sdepay.lo \
 	libgstrtp_la-gstrtpmp2tdepay.lo libgstrtp_la-gstrtpmp2tpay.lo \
 	libgstrtp_la-gstrtpmp4vdepay.lo libgstrtp_la-gstrtpmp4vpay.lo \
 	libgstrtp_la-gstrtpmp4gdepay.lo libgstrtp_la-gstrtpmp4gpay.lo \
-	libgstrtp_la-gstrtpmp4adepay.lo \
+	libgstrtp_la-gstrtpmp4adepay.lo libgstrtp_la-gstrtpmp4apay.lo \
 	libgstrtp_la-gstrtpspeexdepay.lo \
 	libgstrtp_la-gstrtpspeexpay.lo libgstrtp_la-gstrtpsv3vdepay.lo \
 	libgstrtp_la-gstrtptheoradepay.lo \
@@ -144,6 +147,9 @@ AMTAR = @AMTAR@
 ANNODEX_CFLAGS = @ANNODEX_CFLAGS@
 ANNODEX_LIBS = @ANNODEX_LIBS@
 AR = @AR@
+AR_FLAGS = @AR_FLAGS@
+AR_SEP = @AR_SEP@
+AR_TFLAGS = @AR_TFLAGS@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -185,9 +191,9 @@ DIRECTSOUND_LDFLAGS = @DIRECTSOUND_LDFLAGS@
 DIRECTSOUND_LIBS = @DIRECTSOUND_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 DV1394_CFLAGS = @DV1394_CFLAGS@
 DV1394_LIBS = @DV1394_LIBS@
-ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -202,8 +208,8 @@ ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 EXEEXT = @EXEEXT@
-F77 = @F77@
 FFLAGS = @FFLAGS@
+FGREP = @FGREP@
 FLAC_CFLAGS = @FLAC_CFLAGS@
 FLAC_LIBS = @FLAC_LIBS@
 GCONFTOOL = @GCONFTOOL@
@@ -323,6 +329,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 JPEG_LIBS = @JPEG_LIBS@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCACA_CFLAGS = @LIBCACA_CFLAGS@
 LIBCACA_CONFIG = @LIBCACA_CONFIG@
@@ -353,6 +360,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
+NM = @NM@
 NMEDIT = @NMEDIT@
 OBJC = @OBJC@
 OBJCDEPMODE = @OBJCDEPMODE@
@@ -555,9 +563,10 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZLIB_LIBS = @ZLIB_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
@@ -594,6 +603,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -645,6 +655,7 @@ libgstrtp_la_SOURCES = \
 	gstrtpL16depay.c \
 	gstrtpL16pay.c \
 	gstasteriskh263.c \
+	gstrtpmp1sdepay.c \
 	gstrtpmp2tdepay.c \
 	gstrtpmp2tpay.c \
 	gstrtpmp4vdepay.c \
@@ -652,6 +663,7 @@ libgstrtp_la_SOURCES = \
 	gstrtpmp4gdepay.c \
 	gstrtpmp4gpay.c \
 	gstrtpmp4adepay.c \
+	gstrtpmp4apay.c \
 	gstrtpspeexdepay.c \
 	gstrtpspeexpay.c \
 	gstrtpsv3vdepay.c \
@@ -701,13 +713,15 @@ noinst_HEADERS = \
 		 gstrtph263pay.h 	\
 		 gstrtph264depay.h 	\
 		 gstrtph264pay.h 	\
+		 gstrtpmp1sdepay.h 	\
 		 gstrtpmp2tdepay.h 	\
 		 gstrtpmp2tpay.h 	\
 		 gstrtpmp4vdepay.h	\
 		 gstrtpmp4vpay.h	\
 		 gstrtpmp4gdepay.h 	\
 		 gstrtpmp4gpay.h	\
-		 gstrtpmp4adepay.h \
+		 gstrtpmp4adepay.h      \
+		 gstrtpmp4apay.h        \
 		 gstrtpdepay.h		\
 		 gstasteriskh263.h	\
 		 gstrtpspeexdepay.h	\
@@ -814,9 +828,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtph264pay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpilbcdepay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpilbcpay.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp1sdepay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp2tdepay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp2tpay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp4adepay.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp4apay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp4gdepay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp4gpay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtp_la-gstrtpmp4vdepay.Plo@am__quote@
@@ -1091,6 +1107,13 @@ libgstrtp_la-gstasteriskh263.lo: gstasteriskh263.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -c -o libgstrtp_la-gstasteriskh263.lo `test -f 'gstasteriskh263.c' || echo '$(srcdir)/'`gstasteriskh263.c
 
+libgstrtp_la-gstrtpmp1sdepay.lo: gstrtpmp1sdepay.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -MT libgstrtp_la-gstrtpmp1sdepay.lo -MD -MP -MF "$(DEPDIR)/libgstrtp_la-gstrtpmp1sdepay.Tpo" -c -o libgstrtp_la-gstrtpmp1sdepay.lo `test -f 'gstrtpmp1sdepay.c' || echo '$(srcdir)/'`gstrtpmp1sdepay.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrtp_la-gstrtpmp1sdepay.Tpo" "$(DEPDIR)/libgstrtp_la-gstrtpmp1sdepay.Plo"; else rm -f "$(DEPDIR)/libgstrtp_la-gstrtpmp1sdepay.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrtpmp1sdepay.c' object='libgstrtp_la-gstrtpmp1sdepay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -c -o libgstrtp_la-gstrtpmp1sdepay.lo `test -f 'gstrtpmp1sdepay.c' || echo '$(srcdir)/'`gstrtpmp1sdepay.c
+
 libgstrtp_la-gstrtpmp2tdepay.lo: gstrtpmp2tdepay.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -MT libgstrtp_la-gstrtpmp2tdepay.lo -MD -MP -MF "$(DEPDIR)/libgstrtp_la-gstrtpmp2tdepay.Tpo" -c -o libgstrtp_la-gstrtpmp2tdepay.lo `test -f 'gstrtpmp2tdepay.c' || echo '$(srcdir)/'`gstrtpmp2tdepay.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrtp_la-gstrtpmp2tdepay.Tpo" "$(DEPDIR)/libgstrtp_la-gstrtpmp2tdepay.Plo"; else rm -f "$(DEPDIR)/libgstrtp_la-gstrtpmp2tdepay.Tpo"; exit 1; fi
@@ -1139,6 +1162,13 @@ libgstrtp_la-gstrtpmp4adepay.lo: gstrtpmp4adepay.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrtpmp4adepay.c' object='libgstrtp_la-gstrtpmp4adepay.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -c -o libgstrtp_la-gstrtpmp4adepay.lo `test -f 'gstrtpmp4adepay.c' || echo '$(srcdir)/'`gstrtpmp4adepay.c
+
+libgstrtp_la-gstrtpmp4apay.lo: gstrtpmp4apay.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -MT libgstrtp_la-gstrtpmp4apay.lo -MD -MP -MF "$(DEPDIR)/libgstrtp_la-gstrtpmp4apay.Tpo" -c -o libgstrtp_la-gstrtpmp4apay.lo `test -f 'gstrtpmp4apay.c' || echo '$(srcdir)/'`gstrtpmp4apay.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrtp_la-gstrtpmp4apay.Tpo" "$(DEPDIR)/libgstrtp_la-gstrtpmp4apay.Plo"; else rm -f "$(DEPDIR)/libgstrtp_la-gstrtpmp4apay.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrtpmp4apay.c' object='libgstrtp_la-gstrtpmp4apay.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -c -o libgstrtp_la-gstrtpmp4apay.lo `test -f 'gstrtpmp4apay.c' || echo '$(srcdir)/'`gstrtpmp4apay.c
 
 libgstrtp_la-gstrtpspeexdepay.lo: gstrtpspeexdepay.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtp_la_CFLAGS) $(CFLAGS) -MT libgstrtp_la-gstrtpspeexdepay.lo -MD -MP -MF "$(DEPDIR)/libgstrtp_la-gstrtpspeexdepay.Tpo" -c -o libgstrtp_la-gstrtpspeexdepay.lo `test -f 'gstrtpspeexdepay.c' || echo '$(srcdir)/'`gstrtpspeexdepay.c; \

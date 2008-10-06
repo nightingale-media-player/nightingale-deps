@@ -92,7 +92,7 @@ libgstrtsp_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libgstrtsp_la_OBJECTS = libgstrtsp_la-gstrtsp.lo \
 	libgstrtsp_la-gstrtspsrc.lo libgstrtsp_la-gstrtpdec.lo \
-	libgstrtsp_la-gstrtspext.lo
+	libgstrtsp_la-gstrtspext.lo libgstrtsp_la-gstrtspgoogle.lo
 libgstrtsp_la_OBJECTS = $(am_libgstrtsp_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -597,7 +597,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 plugin_LTLIBRARIES = libgstrtsp.la
 libgstrtsp_la_SOURCES = gstrtsp.c gstrtspsrc.c \
-			gstrtpdec.c gstrtspext.c
+			gstrtpdec.c gstrtspext.c gstrtspgoogle.c
 
 libgstrtsp_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstrtsp_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) \
@@ -609,7 +609,8 @@ libgstrtsp_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 noinst_HEADERS = gstrtspsrc.h     \
 		 gstrtsp.h        \
 		 gstrtpdec.h      \
-		 gstrtspext.h
+		 gstrtspext.h     \
+		 gstrtspgoogle.h
 
 all: all-am
 
@@ -683,6 +684,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtsp_la-gstrtpdec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtsp_la-gstrtsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtsp_la-gstrtspext.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtsp_la-gstrtspgoogle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtsp_la-gstrtspsrc.Plo@am__quote@
 
 .c.o:
@@ -733,6 +735,13 @@ libgstrtsp_la-gstrtspext.lo: gstrtspext.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrtspext.c' object='libgstrtsp_la-gstrtspext.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtsp_la_CFLAGS) $(CFLAGS) -c -o libgstrtsp_la-gstrtspext.lo `test -f 'gstrtspext.c' || echo '$(srcdir)/'`gstrtspext.c
+
+libgstrtsp_la-gstrtspgoogle.lo: gstrtspgoogle.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtsp_la_CFLAGS) $(CFLAGS) -MT libgstrtsp_la-gstrtspgoogle.lo -MD -MP -MF "$(DEPDIR)/libgstrtsp_la-gstrtspgoogle.Tpo" -c -o libgstrtsp_la-gstrtspgoogle.lo `test -f 'gstrtspgoogle.c' || echo '$(srcdir)/'`gstrtspgoogle.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrtsp_la-gstrtspgoogle.Tpo" "$(DEPDIR)/libgstrtsp_la-gstrtspgoogle.Plo"; else rm -f "$(DEPDIR)/libgstrtsp_la-gstrtspgoogle.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrtspgoogle.c' object='libgstrtsp_la-gstrtspgoogle.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtsp_la_CFLAGS) $(CFLAGS) -c -o libgstrtsp_la-gstrtspgoogle.lo `test -f 'gstrtspgoogle.c' || echo '$(srcdir)/'`gstrtspgoogle.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

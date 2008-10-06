@@ -34,6 +34,7 @@ libgstrtp_la_SOURCES = \
 	gstrtpL16depay.c \
 	gstrtpL16pay.c \
 	gstasteriskh263.c \
+	gstrtpmp1sdepay.c \
 	gstrtpmp2tdepay.c \
 	gstrtpmp2tpay.c \
 	gstrtpmp4vdepay.c \
@@ -41,6 +42,7 @@ libgstrtp_la_SOURCES = \
 	gstrtpmp4gdepay.c \
 	gstrtpmp4gpay.c \
 	gstrtpmp4adepay.c \
+	gstrtpmp4apay.c \
 	gstrtpspeexdepay.c \
 	gstrtpspeexpay.c \
 	gstrtpsv3vdepay.c \
@@ -95,13 +97,15 @@ noinst_HEADERS =			\
 		 gstrtph263pay.h 	\
 		 gstrtph264depay.h 	\
 		 gstrtph264pay.h 	\
+		 gstrtpmp1sdepay.h 	\
 		 gstrtpmp2tdepay.h 	\
 		 gstrtpmp2tpay.h 	\
 		 gstrtpmp4vdepay.h	\
 		 gstrtpmp4vpay.h	\
 		 gstrtpmp4gdepay.h 	\
 		 gstrtpmp4gpay.h	\
-		 gstrtpmp4adepay.h \
+		 gstrtpmp4adepay.h      \
+		 gstrtpmp4apay.h        \
 		 gstrtpdepay.h		\
 		 gstasteriskh263.h	\
 		 gstrtpspeexdepay.h	\
