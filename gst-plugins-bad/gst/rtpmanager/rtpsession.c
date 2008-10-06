@@ -40,6 +40,7 @@ enum
   SIGNAL_ON_BYE_SSRC,
   SIGNAL_ON_BYE_TIMEOUT,
   SIGNAL_ON_TIMEOUT,
+  SIGNAL_ON_SENDER_TIMEOUT,
   LAST_SIGNAL
 };
 
@@ -210,6 +211,18 @@ rtp_session_class_init (RTPSessionClass * klass)
   rtp_session_signals[SIGNAL_ON_TIMEOUT] =
       g_signal_new ("on-timeout", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (RTPSessionClass, on_timeout),
+      NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1,
+      RTP_TYPE_SOURCE);
+  /**
+   * RTPSession::on-sender-timeout:
+   * @session: the object which received the signal
+   * @src: the RTPSource that timed out
+   *
+   * Notify of an SSRC that was a sender but timed out and became a receiver.
+   */
+  rtp_session_signals[SIGNAL_ON_SENDER_TIMEOUT] =
+      g_signal_new ("on-sender-timeout", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (RTPSessionClass, on_sender_timeout),
       NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1,
       RTP_TYPE_SOURCE);
 
@@ -449,68 +462,95 @@ rtp_session_get_property (GObject * object, guint prop_id,
 static void
 on_new_ssrc (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_NEW_SSRC], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_ssrc_collision (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_SSRC_COLLISION], 0,
       source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_ssrc_validated (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_SSRC_VALIDATED], 0,
       source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_ssrc_active (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_SSRC_ACTIVE], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_ssrc_sdes (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   GST_DEBUG ("SDES changed for SSRC %08x", source->ssrc);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_SSRC_SDES], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_bye_ssrc (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_BYE_SSRC], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_bye_timeout (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_BYE_TIMEOUT], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 static void
 on_timeout (RTPSession * sess, RTPSource * source)
 {
+  g_object_ref (source);
   RTP_SESSION_UNLOCK (sess);
   g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_TIMEOUT], 0, source);
   RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
+}
+
+static void
+on_sender_timeout (RTPSession * sess, RTPSource * source)
+{
+  g_object_ref (source);
+  RTP_SESSION_UNLOCK (sess);
+  g_signal_emit (sess, rtp_session_signals[SIGNAL_ON_SENDER_TIMEOUT], 0,
+      source);
+  RTP_SESSION_LOCK (sess);
+  g_object_unref (source);
 }
 
 /**
@@ -908,9 +948,8 @@ check_collision (RTPSession * sess, RTPSource * source,
     RTPArrivalStats * arrival, gboolean rtp)
 {
   /* If we have not arrival address, we can't do collision checking */
-  if (!arrival->have_address) {
+  if (!arrival->have_address)
     return FALSE;
-  }
 
   if (sess->source != source) {
     /* This is not our local source, but lets check if two remote
@@ -1479,12 +1518,6 @@ rtp_session_process_sr (RTPSession * sess, GstRTCPPacket * packet,
   if (!source)
     return;
 
-  /* we somehow need to transfer the clock_base and the base time to the next
-   * element, we use the offset and offset_end fields in the buffer for this
-   * hack */
-  GST_BUFFER_OFFSET (packet->buffer) = source->clock_base;
-  GST_BUFFER_OFFSET_END (packet->buffer) = source->clock_base_time;
-
   prevsender = RTP_SOURCE_IS_SENDER (source);
 
   /* first update the source */
@@ -1800,6 +1833,7 @@ ignore:
  * @buffer: an RTP buffer
  * @current_time: the current system time
  * @ntpnstime: the NTP time in nanoseconds of when this buffer was captured.
+ * This is the buffer timestamp converted to NTP time.
  *
  * Send the RTP buffer in the session manager. This function takes ownership of
  * @buffer.
@@ -2096,6 +2130,7 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
 {
   gboolean remove = FALSE;
   gboolean byetimeout = FALSE;
+  gboolean sendertimeout = FALSE;
   gboolean is_sender, is_active;
   RTPSession *sess = data->sess;
   GstClockTime interval;
@@ -2138,6 +2173,7 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
             GST_TIME_ARGS (source->last_rtp_activity));
         source->is_sender = FALSE;
         sess->stats.sender_sources--;
+        sendertimeout = TRUE;
       }
     }
   }
@@ -2153,6 +2189,9 @@ session_cleanup (const gchar * key, RTPSource * source, ReportData * data)
       on_bye_timeout (sess, source);
     else
       on_timeout (sess, source);
+  } else {
+    if (sendertimeout)
+      on_sender_timeout (sess, source);
   }
   return remove;
 }

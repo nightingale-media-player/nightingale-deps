@@ -120,6 +120,7 @@
 #include "gstrtpbin-marshal.h"
 #include "gstrtpbin.h"
 #include "gstrtpsession.h"
+#include "gstrtpjitterbuffer.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_rtp_bin_debug);
 #define GST_CAT_DEFAULT gst_rtp_bin_debug
@@ -236,6 +237,7 @@ enum
   SIGNAL_ON_BYE_SSRC,
   SIGNAL_ON_BYE_TIMEOUT,
   SIGNAL_ON_TIMEOUT,
+  SIGNAL_ON_SENDER_TIMEOUT,
   LAST_SIGNAL
 };
 
@@ -323,7 +325,6 @@ struct _GstRtpBinStream
   guint64 clock_base_time;
   gint clock_rate;
   gint64 ts_offset;
-  gint64 prev_ts_offset;
   gint last_pt;
 };
 
@@ -455,6 +456,13 @@ on_timeout (GstElement * session, guint32 ssrc, GstRtpBinSession * sess)
       sess->id, ssrc);
 }
 
+static void
+on_sender_timeout (GstElement * session, guint32 ssrc, GstRtpBinSession * sess)
+{
+  g_signal_emit (sess->bin, gst_rtp_bin_signals[SIGNAL_ON_SENDER_TIMEOUT], 0,
+      sess->id, ssrc);
+}
+
 /* create a session with the given id.  Must be called with RTP_BIN_LOCK */
 static GstRtpBinSession *
 create_session (GstRtpBin * rtpbin, gint id)
@@ -507,6 +515,8 @@ create_session (GstRtpBin * rtpbin, gint id)
   g_signal_connect (sess->session, "on-bye-timeout",
       (GCallback) on_bye_timeout, sess);
   g_signal_connect (sess->session, "on-timeout", (GCallback) on_timeout, sess);
+  g_signal_connect (sess->session, "on-sender-timeout",
+      (GCallback) on_sender_timeout, sess);
 
   /* FIXME, change state only to what's needed */
   gst_bin_add (GST_BIN_CAST (rtpbin), session);
@@ -822,7 +832,9 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
       goto no_clock_rate;
   }
 
-  /* map last RTP time to local timeline using our clock-base */
+  /* take the extended rtptime we found in the SR packet and map it to the
+   * local rtptime. The local rtp time is used to construct timestamps on the
+   * buffers. */
   stream->local_rtp = stream->last_extrtptime - stream->clock_base;
 
   GST_DEBUG_OBJECT (bin,
@@ -830,12 +842,16 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
       ", local RTP %" G_GUINT64_FORMAT ", clock-rate %d", stream->clock_base,
       stream->last_extrtptime, stream->local_rtp, stream->clock_rate);
 
-  /* calculate local NTP time in gstreamer timestamp */
+  /* calculate local NTP time in gstreamer timestamp, we essentially perform the
+   * same conversion that a jitterbuffer would use to convert an rtp timestamp
+   * into a corresponding gstreamer timestamp. */
   stream->local_unix =
       gst_util_uint64_scale_int (stream->local_rtp, GST_SECOND,
       stream->clock_rate);
   stream->local_unix += stream->clock_base_time;
-  /* calculate delta between server and receiver */
+  /* calculate delta between server and receiver. last_unix is created by
+   * converting the ntptime in the last SR packet to a gstreamer timestamp. This
+   * delta expresses the difference to our timeline and the server timeline. */
   stream->unix_delta = stream->last_unix - stream->local_unix;
 
   GST_DEBUG_OBJECT (bin,
@@ -843,17 +859,28 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
       ", delta %" G_GINT64_FORMAT, stream->local_unix, stream->last_unix,
       stream->unix_delta);
 
-  /* recalc inter stream playout offset, but only if there are more than one
+  /* recalc inter stream playout offset, but only if there is more than one
    * stream. */
   if (client->nstreams > 1) {
     gint64 min;
 
-    /* calculate the min of all deltas */
+    /* calculate the min of all deltas, ignoring streams that did not yet have a
+     * valid unix_delta because we did not yet receive an SR packet for those
+     * streams. 
+     * We calculate the mininum because we would like to only apply positive
+     * offsets to streams, delaying their playback instead of trying to speed up
+     * other streams (which might be imposible when we have to create negative
+     * latencies).
+     * The stream that has the smalest diff is selected as the reference stream,
+     * all other streams will have a positive offset to this difference. */
     min = G_MAXINT64;
     for (walk = client->streams; walk; walk = g_slist_next (walk)) {
       GstRtpBinStream *ostream = (GstRtpBinStream *) walk->data;
 
-      if (ostream->unix_delta && ostream->unix_delta < min)
+      if (!ostream->have_sync)
+        continue;
+
+      if (ostream->unix_delta < min)
         min = ostream->unix_delta;
     }
 
@@ -863,32 +890,39 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
     /* calculate offsets for each stream */
     for (walk = client->streams; walk; walk = g_slist_next (walk)) {
       GstRtpBinStream *ostream = (GstRtpBinStream *) walk->data;
+      gint64 prev_ts_offset;
 
-      if (ostream->unix_delta == 0)
+      /* ignore streams for which we didn't receive an SR packet yet, we
+       * can't synchronize them yet. We can however sync other streams just
+       * fine. */
+      if (!ostream->have_sync)
         continue;
 
+      /* calculate offset to our reference stream, this should always give a
+       * positive number. */
       ostream->ts_offset = ostream->unix_delta - min;
 
+      g_object_get (ostream->buffer, "ts-offset", &prev_ts_offset, NULL);
+
       /* delta changed, see how much */
-      if (ostream->prev_ts_offset != ostream->ts_offset) {
+      if (prev_ts_offset != ostream->ts_offset) {
         gint64 diff;
 
-        if (ostream->prev_ts_offset > ostream->ts_offset)
-          diff = ostream->prev_ts_offset - ostream->ts_offset;
+        if (prev_ts_offset > ostream->ts_offset)
+          diff = prev_ts_offset - ostream->ts_offset;
         else
-          diff = ostream->ts_offset - ostream->prev_ts_offset;
+          diff = ostream->ts_offset - prev_ts_offset;
 
         GST_DEBUG_OBJECT (bin,
             "ts-offset %" G_GUINT64_FORMAT ", prev %" G_GUINT64_FORMAT
-            ", diff: %" G_GINT64_FORMAT, ostream->ts_offset,
-            ostream->prev_ts_offset, diff);
+            ", diff: %" G_GINT64_FORMAT, ostream->ts_offset, prev_ts_offset,
+            diff);
 
-        /* only change diff when it changed more than 1 millisecond. This
+        /* only change diff when it changed more than 4 milliseconds. This
          * compensates for rounding errors in NTP to RTP timestamp
          * conversions */
-        if (diff > GST_MSECOND && diff < (3 * GST_SECOND)) {
+        if (diff > 4 * GST_MSECOND && diff < (3 * GST_SECOND)) {
           g_object_set (ostream->buffer, "ts-offset", ostream->ts_offset, NULL);
-          ostream->prev_ts_offset = ostream->ts_offset;
         }
       }
       GST_DEBUG_OBJECT (bin, "stream SSRC %08x, delta %" G_GINT64_FORMAT,
@@ -896,6 +930,7 @@ gst_rtp_bin_associate (GstRtpBin * bin, GstRtpBinStream * stream, guint8 len,
     }
   }
   GST_RTP_BIN_UNLOCK (bin);
+
   return;
 
 no_clock_base:
@@ -937,8 +972,7 @@ gst_rtp_bin_sync_chain (GstPad * pad, GstBuffer * buffer)
   gboolean have_sr, have_sdes;
   gboolean more;
   guint64 clock_base;
-
-  clock_base = GST_BUFFER_OFFSET (buffer);
+  guint64 clock_base_time;
 
   stream = gst_pad_get_element_private (pad);
   bin = stream->bin;
@@ -947,6 +981,13 @@ gst_rtp_bin_sync_chain (GstPad * pad, GstBuffer * buffer)
 
   if (!gst_rtcp_buffer_validate (buffer))
     goto invalid_rtcp;
+
+  /* get the last relation between the rtp timestamps and the gstreamer
+   * timestamps. We get this info directly from the jitterbuffer which
+   * constructs gstreamer timestamps from rtp timestamps and so it know exactly
+   * what the current situation is. */
+  gst_rtp_jitter_buffer_get_sync (GST_RTP_JITTER_BUFFER (stream->buffer),
+      &clock_base, &clock_base_time);
 
   /* clock base changes when there is a huge gap in the timestamps or seqnum.
    * When this happens we don't want to calculate the extended timestamp based
@@ -1008,7 +1049,7 @@ gst_rtp_bin_sync_chain (GstPad * pad, GstBuffer * buffer)
 
             if (type == GST_RTCP_SDES_CNAME) {
               stream->clock_base = clock_base;
-              stream->clock_base_time = GST_BUFFER_OFFSET_END (buffer);
+              stream->clock_base_time = clock_base_time;
               /* associate the stream to CNAME */
               gst_rtp_bin_associate (bin, stream, len, data);
             }
@@ -1326,6 +1367,19 @@ gst_rtp_bin_class_init (GstRtpBinClass * klass)
   gst_rtp_bin_signals[SIGNAL_ON_TIMEOUT] =
       g_signal_new ("on-timeout", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstRtpBinClass, on_timeout),
+      NULL, NULL, gst_rtp_bin_marshal_VOID__UINT_UINT, G_TYPE_NONE, 2,
+      G_TYPE_UINT, G_TYPE_UINT);
+  /**
+   * GstRtpBin::on-sender-timeout:
+   * @rtpbin: the object which received the signal
+   * @session: the session
+   * @ssrc: the SSRC 
+   *
+   * Notify of a sender SSRC that has timed out and became a receiver
+   */
+  gst_rtp_bin_signals[SIGNAL_ON_SENDER_TIMEOUT] =
+      g_signal_new ("on-sender-timeout", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstRtpBinClass, on_sender_timeout),
       NULL, NULL, gst_rtp_bin_marshal_VOID__UINT_UINT, G_TYPE_NONE, 2,
       G_TYPE_UINT, G_TYPE_UINT);
 
@@ -2332,6 +2386,7 @@ gst_rtp_bin_request_new_pad (GstElement * element,
   GstRtpBin *rtpbin;
   GstElementClass *klass;
   GstPad *result;
+
   gchar *pad_name = NULL;
 
   g_return_val_if_fail (templ != NULL, NULL);
