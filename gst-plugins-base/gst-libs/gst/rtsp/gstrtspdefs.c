@@ -60,7 +60,9 @@ extern int h_errno;
 
 #include "gstrtspdefs.h"
 
-#ifndef G_OS_WIN32
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#else
 #include <netdb.h>
 #endif
 
@@ -244,7 +246,13 @@ gst_rtsp_strresult (GstRTSPResult result)
 
   switch (idx) {
     case -GST_RTSP_ESYS:
+#ifdef G_OS_WIN32
+      gchar *msg = g_win32_error_message(WSAGetLastError());
+      res = g_strdup_printf (rtsp_results[idx], msg);
+      g_free (msg);
+#else
       res = g_strdup_printf (rtsp_results[idx], g_strerror (errno));
+#endif
       break;
     case -GST_RTSP_ENET:
 #ifndef G_OS_WIN32
