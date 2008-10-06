@@ -177,7 +177,7 @@ gst_udp_join_group (int sockfd, struct sockaddr_storage *addr)
     }
     default:
 #ifdef G_OS_WIN32
-      WSASetLastError (WSAEAFNOSUPPORT);
+      WSASetLastError(WSAEAFNOSUPPORT);
 #else
       errno = EAFNOSUPPORT;
 #endif
@@ -224,7 +224,7 @@ gst_udp_leave_group (int sockfd, struct sockaddr_storage *addr)
 
     default:
 #ifdef G_OS_WIN32
-      WSASetLastError (WSAEAFNOSUPPORT);
+      WSASetLastError(WSAEAFNOSUPPORT);
 #else
       errno = EAFNOSUPPORT;
 #endif
@@ -257,7 +257,7 @@ gst_udp_is_multicast (struct sockaddr_storage *addr)
 
     default:
 #ifdef G_OS_WIN32
-      WSASetLastError (WSAEAFNOSUPPORT);
+      WSASetLastError(WSAEAFNOSUPPORT);
 #else
       errno = EAFNOSUPPORT;
 #endif

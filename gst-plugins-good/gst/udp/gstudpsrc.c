@@ -141,13 +141,6 @@ typedef int socklen_t;
 GST_DEBUG_CATEGORY_STATIC (udpsrc_debug);
 #define GST_CAT_DEFAULT (udpsrc_debug)
 
-#define CLOSE_IF_REQUESTED(udpctx)                                        \
-G_STMT_START {                                                            \
-  if ((!udpctx->externalfd) || (udpctx->externalfd && udpctx->closefd))   \
-    CLOSE_SOCKET(udpctx->sock.fd);                                        \
-  udpctx->sock.fd = -1;                                                   \
-} G_STMT_END
-
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -190,6 +183,16 @@ enum
 
   PROP_LAST
 };
+
+#define CLOSE_IF_REQUESTED(udpctx)                                        \
+G_STMT_START {                                                            \
+  if ((!udpctx->externalfd) || (udpctx->externalfd && udpctx->closefd)) { \
+    CLOSE_SOCKET(udpctx->sock.fd);                                        \
+    if (udpctx->sock.fd == udpctx->sockfd)                                \
+      udpctx->sockfd = UDP_DEFAULT_SOCKFD;                                \
+  }                                                                       \
+  udpctx->sock.fd = UDP_DEFAULT_SOCK;                                     \
+} G_STMT_END
 
 static void gst_udpsrc_uri_handler_init (gpointer g_iface, gpointer iface_data);
 
@@ -244,9 +247,7 @@ static void
 gst_udpsrc_class_init (GstUDPSrcClass * klass)
 {
   GObjectClass *gobject_class;
-
   GstBaseSrcClass *gstbasesrc_class;
-
   GstPushSrcClass *gstpushsrc_class;
 
   gobject_class = (GObjectClass *) klass;
@@ -348,7 +349,10 @@ gst_udpsrc_finalize (GObject * object)
   g_free (udpsrc->multi_group);
   g_free (udpsrc->uri);
 
-  WSA_CLEANUP (src);
+  if (udpsrc->sockfd >= 0 && udpsrc->closefd)
+    CLOSE_SOCKET (udpsrc->sockfd);
+
+  WSA_CLEANUP (object);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -370,26 +374,18 @@ static GstFlowReturn
 gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
   GstUDPSrc *udpsrc;
-
   GstNetBuffer *outbuf;
-
   struct sockaddr_storage tmpaddr;
-
   socklen_t len;
-
   guint8 *pktdata;
-
   gint pktsize;
-
 #ifdef G_OS_UNIX
   gint readsize;
 #elif defined G_OS_WIN32
   gulong readsize;
 #endif
   GstClockTime timeout;
-
   gint ret;
-
   gboolean try_again;
 
   udpsrc = GST_UDPSRC_CAST (psrc);
@@ -584,9 +580,7 @@ static gboolean
 gst_udpsrc_set_uri (GstUDPSrc * src, const gchar * uri)
 {
   gchar *protocol;
-
   gchar *location;
-
   gchar *colptr;
 
   protocol = gst_uri_get_protocol (uri);
@@ -671,6 +665,9 @@ gst_udpsrc_set_property (GObject * object, guint prop_id, const GValue * value,
       break;
     }
     case PROP_SOCKFD:
+      if (udpsrc->sockfd >= 0 && udpsrc->sockfd != udpsrc->sock.fd &&
+          udpsrc->closefd)
+        CLOSE_SOCKET (udpsrc->sockfd);
       udpsrc->sockfd = g_value_get_int (value);
       GST_DEBUG ("setting SOCKFD to %d", udpsrc->sockfd);
       break;
@@ -742,17 +739,11 @@ static gboolean
 gst_udpsrc_start (GstBaseSrc * bsrc)
 {
   guint bc_val;
-
   gint reuse;
-
   int port;
-
   GstUDPSrc *src;
-
   gint ret;
-
   int rcvsize;
-
   guint len;
 
   src = GST_UDPSRC (bsrc);
@@ -778,8 +769,21 @@ gst_udpsrc_start (GstBaseSrc * bsrc)
       goto setsockopt_error;
 
     GST_DEBUG_OBJECT (src, "binding on port %d", src->port);
-    if ((ret = bind (src->sock.fd, (struct sockaddr *) &src->myaddr,
-                sizeof (src->myaddr))) < 0)
+
+    /* Mac OS is picky about the size for the bind so we switch on the family */
+    switch (src->myaddr.ss_family) {
+      case AF_INET:
+        len = sizeof (struct sockaddr_in);
+        break;
+      case AF_INET6:
+        len = sizeof (struct sockaddr_in6);
+        break;
+      default:
+        /* don't know, Screw MacOS and use the full length */
+        len = sizeof (src->myaddr);
+        break;
+    }
+    if ((ret = bind (src->sock.fd, (struct sockaddr *) &src->myaddr, len)) < 0)
       goto bind_error;
 
     len = sizeof (src->myaddr);

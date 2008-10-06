@@ -1007,27 +1007,45 @@ gst_rtspsrc_alloc_udp_ports (GstRTSPStream * stream,
 {
   GstRTSPSrc *src;
   GstStateChangeReturn ret;
-  GstElement *tmp, *udpsrc0, *udpsrc1;
+  GstElement *udpsrc0, *udpsrc1;
   gint tmp_rtp, tmp_rtcp;
   guint count;
 
   src = stream->parent;
 
-  tmp = NULL;
   udpsrc0 = NULL;
   udpsrc1 = NULL;
   count = 0;
 
+  /* Start with random port */
+  tmp_rtp = 0;
+
   /* try to allocate 2 UDP ports, the RTP port should be an even
    * number and the RTCP port should be the next (uneven) port */
 again:
-  udpsrc0 = gst_element_make_from_uri (GST_URI_SRC, "udp://0.0.0.0:0", NULL);
+  udpsrc0 = gst_element_make_from_uri (GST_URI_SRC, "udp://0.0.0.0", NULL);
   if (udpsrc0 == NULL)
     goto no_udp_protocol;
+  g_object_set (G_OBJECT (udpsrc0), "port", tmp_rtp, NULL);
 
   ret = gst_element_set_state (udpsrc0, GST_STATE_PAUSED);
-  if (ret == GST_STATE_CHANGE_FAILURE)
-    goto start_udp_failure;
+  if (ret == GST_STATE_CHANGE_FAILURE) {
+    if (tmp_rtp != 0) {
+      GST_DEBUG_OBJECT (src, "Unable to make udpsrc from RTP port %d", tmp_rtp);
+
+      tmp_rtp += 2;
+      if (++count > src->retry)
+        goto no_ports;
+
+      GST_DEBUG_OBJECT (src, "free RTP udpsrc");
+      gst_element_set_state (udpsrc0, GST_STATE_NULL);
+      gst_object_unref (udpsrc0);
+
+      GST_DEBUG_OBJECT (src, "retry %d", count);
+      goto again;
+    }
+    goto no_udp_protocol;
+  }
 
   g_object_get (G_OBJECT (udpsrc0), "port", &tmp_rtp, NULL);
   GST_DEBUG_OBJECT (src, "got RTP port %d", tmp_rtp);
@@ -1035,26 +1053,18 @@ again:
   /* check if port is even */
   if ((tmp_rtp & 0x01) != 0) {
     /* port not even, close and allocate another */
-    count++;
-    if (count > src->retry)
+    if (++count > src->retry)
       goto no_ports;
 
-    GST_DEBUG_OBJECT (src, "RTP port not even, retry %d", count);
-    /* have to keep port allocated so we can get a new one */
-    if (tmp != NULL) {
-      GST_DEBUG_OBJECT (src, "free temp");
-      gst_element_set_state (tmp, GST_STATE_NULL);
-      gst_object_unref (tmp);
-    }
-    tmp = udpsrc0;
+    GST_DEBUG_OBJECT (src, "RTP port not even");
+
+    GST_DEBUG_OBJECT (src, "free RTP udpsrc");
+    gst_element_set_state (udpsrc0, GST_STATE_NULL);
+    gst_object_unref (udpsrc0);
+
     GST_DEBUG_OBJECT (src, "retry %d", count);
+    tmp_rtp++;
     goto again;
-  }
-  /* free leftover temp element/port */
-  if (tmp) {
-    gst_element_set_state (tmp, GST_STATE_NULL);
-    gst_object_unref (tmp);
-    tmp = NULL;
   }
 
   /* allocate port+1 for RTCP now */
@@ -1068,10 +1078,26 @@ again:
 
   GST_DEBUG_OBJECT (src, "starting RTCP on port %d", tmp_rtcp);
   ret = gst_element_set_state (udpsrc1, GST_STATE_PAUSED);
-  /* FIXME, this could fail if the next port is not free, we
-   * should retry with another port then */
-  if (ret == GST_STATE_CHANGE_FAILURE)
-    goto start_rtcp_failure;
+  /* tmp_rtcp port is busy already : retry to make rtp/rtcp pair */
+  if (ret == GST_STATE_CHANGE_FAILURE) {
+
+    GST_DEBUG_OBJECT (src, "Unable to make udpsrc from RTCP port %d", tmp_rtcp);
+
+    if (++count > src->retry)
+      goto no_ports;
+
+    GST_DEBUG_OBJECT (src, "free RTP udpsrc");
+    gst_element_set_state (udpsrc0, GST_STATE_NULL);
+    gst_object_unref (udpsrc0);
+
+    GST_DEBUG_OBJECT (src, "free RTCP udpsrc");
+    gst_element_set_state (udpsrc1, GST_STATE_NULL);
+    gst_object_unref (udpsrc1);
+
+    tmp_rtp += 2;
+    GST_DEBUG_OBJECT (src, "retry %d", count);
+    goto again;
+  }
 
   /* all fine, do port check */
   g_object_get (G_OBJECT (udpsrc0), "port", rtpport, NULL);
@@ -1098,11 +1124,6 @@ no_udp_protocol:
     GST_DEBUG_OBJECT (src, "could not get UDP source");
     goto cleanup;
   }
-start_udp_failure:
-  {
-    GST_DEBUG_OBJECT (src, "could not start UDP source");
-    goto cleanup;
-  }
 no_ports:
   {
     GST_DEBUG_OBJECT (src, "could not allocate UDP port pair after %d retries",
@@ -1114,11 +1135,6 @@ no_udp_rtcp_protocol:
     GST_DEBUG_OBJECT (src, "could not get UDP source for RTCP");
     goto cleanup;
   }
-start_rtcp_failure:
-  {
-    GST_DEBUG_OBJECT (src, "could not start UDP source for RTCP");
-    goto cleanup;
-  }
 port_error:
   {
     GST_DEBUG_OBJECT (src, "ports don't match rtp: %d<->%d, rtcp: %d<->%d",
@@ -1127,10 +1143,6 @@ port_error:
   }
 cleanup:
   {
-    if (tmp) {
-      gst_element_set_state (tmp, GST_STATE_NULL);
-      gst_object_unref (tmp);
-    }
     if (udpsrc0) {
       gst_element_set_state (udpsrc0, GST_STATE_NULL);
       gst_object_unref (udpsrc0);
@@ -1193,7 +1205,10 @@ gst_rtspsrc_connection_send (GstRTSPSrc * src, GstRTSPMessage * message,
   GstRTSPResult ret;
 
   GST_RTSP_CONN_LOCK (src);
-  ret = gst_rtsp_connection_send (src->connection, message, timeout);
+  if (src->connection)
+    ret = gst_rtsp_connection_send (src->connection, message, timeout);
+  else
+    ret = GST_RTSP_ERROR;
   GST_RTSP_CONN_UNLOCK (src);
 
   return ret;
@@ -1206,7 +1221,10 @@ gst_rtspsrc_connection_receive (GstRTSPSrc * src, GstRTSPMessage * message,
   GstRTSPResult ret;
 
   GST_RTSP_CONN_LOCK (src);
-  ret = gst_rtsp_connection_receive (src->connection, message, timeout);
+  if (src->connection)
+    ret = gst_rtsp_connection_receive (src->connection, message, timeout);
+  else
+    ret = GST_RTSP_ERROR;
   GST_RTSP_CONN_UNLOCK (src);
 
   return ret;
@@ -2045,6 +2063,11 @@ gst_rtspsrc_stream_configure_udp_sink (GstRTSPSrc * src, GstRTSPStream * stream,
   else
     port = transport->server_port.max;
 
+  /* it's possible that the server does not want us to send RTCP in which case
+   * the port is -1 */
+  if (port == -1)
+    goto no_port;
+
   /* first take the source, then the endpoint to figure out where to send
    * the RTCP. */
   destination = transport->source;
@@ -2101,6 +2124,11 @@ no_sink_element:
   {
     GST_DEBUG_OBJECT (src, "no UDP sink element found");
     return FALSE;
+  }
+no_port:
+  {
+    GST_DEBUG_OBJECT (src, "no valid port, ignoring RTCP for this stream");
+    return TRUE;
   }
 }
 
@@ -2897,10 +2925,12 @@ gst_rtspsrc_loop_send_cmd (GstRTSPSrc * src, gint cmd, gboolean flush)
   src->loop_cmd = cmd;
   if (flush) {
     GST_DEBUG_OBJECT (src, "start connection flush");
-    gst_rtsp_connection_flush (src->connection, TRUE);
+    if (src->connection)
+      gst_rtsp_connection_flush (src->connection, TRUE);
   } else {
     GST_DEBUG_OBJECT (src, "stop connection flush");
-    gst_rtsp_connection_flush (src->connection, FALSE);
+    if (src->connection)
+      gst_rtsp_connection_flush (src->connection, FALSE);
   }
   GST_OBJECT_UNLOCK (src);
 }
@@ -3335,6 +3365,7 @@ handle_request_failed:
  * @src: the rtsp source
  * @request: must point to a valid request
  * @response: must point to an empty #GstRTSPMessage
+ * @code: an optional code result
  *
  * send @request and retrieve the response in @response. optionally @code can be
  * non-NULL in which case it will contain the status code of the response.
@@ -3519,14 +3550,14 @@ gst_rtspsrc_parse_methods (GstRTSPSrc * src, GstRTSPMessage * response)
 
   if (src->methods == 0) {
     /* neither Allow nor Public are required, assume the server supports
-     * at least DESCRIBE, SETUP, we always assume it supports PLAY and PAUSE as
+     * at least DESCRIBE, SETUP, we always assume it supports PLAY as
      * well. */
     GST_DEBUG_OBJECT (src, "could not get OPTIONS");
     src->methods = GST_RTSP_DESCRIBE | GST_RTSP_SETUP;
   }
-  /* always assume PLAY and PAUSED, FIXME, extensions should be able to override
+  /* always assume PLAY, FIXME, extensions should be able to override
    * this */
-  src->methods |= GST_RTSP_PLAY | GST_RTSP_PAUSE;
+  src->methods |= GST_RTSP_PLAY;
 
   /* we need describe and setup */
   if (!(src->methods & GST_RTSP_DESCRIBE))
@@ -3555,8 +3586,9 @@ static GstRTSPResult
 gst_rtspsrc_create_transports_string (GstRTSPSrc * src,
     GstRTSPLowerTrans protocols, gchar ** transports)
 {
-  gchar *result;
   GstRTSPResult res;
+  GString *result;
+  gboolean add_udp_str;
 
   *transports = NULL;
 
@@ -3572,42 +3604,42 @@ gst_rtspsrc_create_transports_string (GstRTSPSrc * src,
   if (*transports != NULL)
     return GST_RTSP_OK;
 
-  /* the default RTSP transports */
-  result = g_strdup ("");
-  if (protocols & GST_RTSP_LOWER_TRANS_UDP) {
-    gchar *new;
+  /* it's the default but some servers need it */
+  add_udp_str = TRUE;
 
+  /* the default RTSP transports */
+  result = g_string_new ("");
+  if (protocols & GST_RTSP_LOWER_TRANS_UDP) {
     GST_DEBUG_OBJECT (src, "adding UDP unicast");
 
-    new =
-        g_strconcat (result, "RTP/AVP/UDP;unicast;client_port=%%u1-%%u2", NULL);
-    g_free (result);
-    result = new;
+    g_string_append (result, "RTP/AVP");
+    if (add_udp_str)
+      g_string_append (result, "/UDP");
+    g_string_append (result, ";unicast;client_port=%%u1-%%u2");
   }
   if (protocols & GST_RTSP_LOWER_TRANS_UDP_MCAST) {
-    gchar *new;
-
     GST_DEBUG_OBJECT (src, "adding UDP multicast");
 
     /* we don't have to allocate any UDP ports yet, if the selected transport
      * turns out to be multicast we can create them and join the multicast
      * group indicated in the transport reply */
-    new = g_strconcat (result, result[0] ? "," : "",
-        "RTP/AVP/UDP;multicast", NULL);
-    g_free (result);
-    result = new;
+    if (result->len > 0)
+      g_string_append (result, ",");
+    g_string_append (result, "RTP/AVP");
+    if (add_udp_str)
+      g_string_append (result, "/UDP");
+    g_string_append (result, ";multicast");
   }
   if (protocols & GST_RTSP_LOWER_TRANS_TCP) {
-    gchar *new;
-
     GST_DEBUG_OBJECT (src, "adding TCP");
 
-    new = g_strconcat (result, result[0] ? "," : "",
-        "RTP/AVP/TCP;unicast;interleaved=%%i1-%%i2", NULL);
-    g_free (result);
-    result = new;
+    if (result->len > 0)
+      g_string_append (result, ",");
+    g_string_append (result, "RTP/AVP/TCP;unicast;interleaved=%%i1-%%i2");
   }
-  *transports = result;
+  *transports = g_string_free (result, FALSE);
+
+  GST_DEBUG_OBJECT (src, "prepared transports %s", GST_STR_NULL (*transports));
 
   return GST_RTSP_OK;
 
@@ -3769,11 +3801,15 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src)
     if (res < 0)
       goto setup_transport_failed;
 
+    GST_DEBUG_OBJECT (src, "replace ports in %s", GST_STR_NULL (transports));
+
     /* replace placeholders with real values, this function will optionally
      * allocate UDP ports and other info needed to execute the setup request */
     res = gst_rtspsrc_prepare_transports (stream, &transports);
     if (res < 0)
       goto setup_transport_failed;
+
+    GST_DEBUG_OBJECT (src, "transport is now %s", GST_STR_NULL (transports));
 
     /* create SETUP request */
     res =
@@ -4075,6 +4111,10 @@ restart:
     goto restart;
   }
 
+  /* it could be that the DESCRIBE method was not implemented */
+  if (!src->methods & GST_RTSP_DESCRIBE)
+    goto no_describe;
+
   /* check if reply is SDP */
   gst_rtsp_message_get_header (&response, GST_RTSP_HDR_CONTENT_TYPE, &respcont,
       0);
@@ -4087,6 +4127,9 @@ restart:
 
   /* get message body and parse as SDP */
   gst_rtsp_message_get_body (&response, &data, &size);
+
+  if (data == NULL)
+    goto no_describe;
 
   GST_DEBUG_OBJECT (src, "parse SDP...");
   gst_sdp_message_init (&sdp);
@@ -4179,14 +4222,22 @@ wrong_content_type:
         ("Server does not support SDP, got %s.", respcont));
     goto cleanup_error;
   }
+no_describe:
+  {
+    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
+        ("Server can not provide an SDP."));
+    goto cleanup_error;
+  }
 setup_failed:
   {
+    gst_rtspsrc_close (src);
     /* error was posted */
     goto cleanup_error;
   }
 cleanup_error:
   {
     if (src->connection) {
+      GST_DEBUG_OBJECT (src, "free connection");
       gst_rtsp_connection_free (src->connection);
       src->connection = NULL;
     }
@@ -4244,6 +4295,9 @@ gst_rtspsrc_close (GstRTSPSrc * src)
     src->task = NULL;
   }
 
+  if (!src->connection)
+    goto done;
+
   GST_DEBUG_OBJECT (src, "stop connection flush");
   gst_rtsp_connection_flush (src->connection, FALSE);
 
@@ -4275,6 +4329,7 @@ gst_rtspsrc_close (GstRTSPSrc * src)
   gst_rtsp_connection_free (src->connection);
   src->connection = NULL;
 
+done:
   /* cleanup */
   gst_rtspsrc_cleanup (src);
 
@@ -4572,6 +4627,9 @@ gst_rtspsrc_pause (GstRTSPSrc * src)
   GST_DEBUG_OBJECT (src, "connection is idle now");
   GST_RTSP_CONN_UNLOCK (src);
 
+  if (!src->connection)
+    goto no_connection;
+
   GST_DEBUG_OBJECT (src, "stop connection flush");
   gst_rtsp_connection_flush (src->connection, FALSE);
 
@@ -4588,6 +4646,7 @@ gst_rtspsrc_pause (GstRTSPSrc * src)
   gst_rtsp_message_unset (&request);
   gst_rtsp_message_unset (&response);
 
+no_connection:
   src->state = GST_RTSP_STATE_READY;
 
 done:
