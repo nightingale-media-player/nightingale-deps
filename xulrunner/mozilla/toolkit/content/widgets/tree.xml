@@ -635,12 +635,21 @@
             return;
 
           var rows = event.detail;
-          if (rows == NSUIEvent.SCROLL_PAGE_UP)
-            this.treeBoxObject.scrollByPages(-1);
-          else if (rows == NSUIEvent.SCROLL_PAGE_DOWN)
-            this.treeBoxObject.scrollByPages(1);
-          else
-            this.treeBoxObject.scrollByLines(rows);
+          if (event.axis == event.HORIZONTAL_AXIS) {
+            var newHorzPos = this.treeBoxObject.horizontalPosition;
+            newHorzPos += rows * 10;
+            if (newHorzPos < 0)
+              newHorzPos = 0;
+            this.treeBoxObject.scrollToHorizontalPosition(newHorzPos);
+          }
+          else {
+            if (rows == NSUIEvent.SCROLL_PAGE_UP)
+              this.treeBoxObject.scrollByPages(-1);
+            else if (rows == NSUIEvent.SCROLL_PAGE_DOWN)
+              this.treeBoxObject.scrollByPages(1);
+            else
+              this.treeBoxObject.scrollByLines(rows);
+          }
         ]]>
       </handler>
       <handler event="select" phase="target"
@@ -1143,6 +1152,7 @@
                     
           var pos = {};
           var targetCol = col.parentNode.parentNode._getColumnAtX(aEvent.clientX, 0.5, pos);
+          dump("targetCol.id == " + targetCol.id + "\n\n");
           
           // bail if we haven't mousemoved to a different column
           if (col.mTargetCol == targetCol && col.mTargetDir == pos.value)
