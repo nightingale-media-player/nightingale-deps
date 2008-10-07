@@ -635,21 +635,12 @@
             return;
 
           var rows = event.detail;
-          if (event.axis == event.HORIZONTAL_AXIS) {
-            var newHorzPos = this.treeBoxObject.horizontalPosition;
-            newHorzPos += rows * 10;
-            if (newHorzPos < 0)
-              newHorzPos = 0;
-            this.treeBoxObject.scrollToHorizontalPosition(newHorzPos);
-          }
-          else {
-            if (rows == NSUIEvent.SCROLL_PAGE_UP)
-              this.treeBoxObject.scrollByPages(-1);
-            else if (rows == NSUIEvent.SCROLL_PAGE_DOWN)
-              this.treeBoxObject.scrollByPages(1);
-            else
-              this.treeBoxObject.scrollByLines(rows);
-          }
+          if (rows == NSUIEvent.SCROLL_PAGE_UP)
+            this.treeBoxObject.scrollByPages(-1);
+          else if (rows == NSUIEvent.SCROLL_PAGE_DOWN)
+            this.treeBoxObject.scrollByPages(1);
+          else
+            this.treeBoxObject.scrollByLines(rows);
         ]]>
       </handler>
       <handler event="select" phase="target"
