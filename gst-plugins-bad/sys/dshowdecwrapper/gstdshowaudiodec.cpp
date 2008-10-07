@@ -712,9 +712,18 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
   } 
   else 
   {
+    int realsize;
     size = sizeof (WAVEFORMATEX) +
         (adec->codec_data ? GST_BUFFER_SIZE (adec->codec_data) : 0);
-    format = (WAVEFORMATEX *)g_malloc0 (size);
+
+    /* The WinXP mp3 decoder has a code path where it unconditionally 
+     * copies 30 bytes from this pointer (12 bytes too much!). So, as a 
+     * special case, we over-allocate this to avoid a crash - but we 
+     * don't correspondingly increase cbFormat, the _claimed_ size 
+     * of this block.
+     */
+    realsize = MIN (30, size);
+    format = (WAVEFORMATEX *)g_malloc0 (realsize);
     if (adec->codec_data) {     /* Codec data is appended after our header */
       memcpy (((guchar *) format) + sizeof (WAVEFORMATEX),
           GST_BUFFER_DATA (adec->codec_data),
