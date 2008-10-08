@@ -83,8 +83,8 @@ ifneq (,$(BUILD_TARGET_SET))
 endif
 
 all:
-	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) debug
-	$(MAKE) $(MAKEFLAGS) -f $(SB_VENDOR_MAKEFILE) release
+	$(MAKE) -f $(SB_VENDOR_MAKEFILE) debug
+	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
 
 debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE)
 
@@ -104,7 +104,7 @@ ifeq (Darwin, $(SB_VENDOR_ARCH))
 endif
 
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
-	$(MKDIR) -p $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
+	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
 	$(PYTHON) $(MOZSDK_SCRIPTS_DIR)/symbolstore.py \
               $(DUMP_SYM_ARGS) \
               -s $(SB_CONFIGURE_PREFIX)/lib \
@@ -114,15 +114,15 @@ $(SB_VENDOR_BREAKPAD_ARCHIVE):
               > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_TARGET_NAME)-symbols.txt
 
 	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \
-    $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE_PATH) .
+         $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE_PATH) .
 
 $(SB_VENDOR_BINARIES_DIR):
-	mkdir -p $(SB_VENDOR_BINARIES_DIR)
+	$(MKDIR) $(SB_VENDOR_BINARIES_DIR)
 
 #$(SB_VENDOR_BINARIES_TARGET_DIRS): $(SB_VENDOR_BINARIES_DIR)
 
 setup_environment: $(SB_VENDOR_BINARIES_DIR)
-	mkdir -p $(SB_VENDOR_BUILD_ROOT)/build
+	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
 	$(foreach tgt, \
           $(SB_VENDOR_BINARIES_TARGETS), \
           $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
@@ -130,24 +130,22 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
           , \
           $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
           $(SB_VENDOR_BINARIES_DIR); ))
-ifeq (is_symlink,$(shell test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && echo is_symlink))
-	$(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
-else
-	$(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
-	$(RM) -rf $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
-endif
+	(test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
+          $(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
+
 
 build: setup_environment clean_build_dir setup_build module_setup_build
 	cd $(SB_VENDOR_BUILD_DIR) && \
-   $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
-      $(SB_CONFIGURE_OPTS) \
-		$(SB_VENDOR_TARGET_CONFIGURE_OPTS) \
-      -C
+          $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
+          $(SB_VENDOR_TARGET_CONFIGURE_OPTS) \
+          $(SB_CONFIGURE_OPTS) \
+          -C
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR)
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) install
 
 $(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
-	mkdir -p $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+	$(MKDIR) $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
 	$(foreach deb, \
           $(SB_VENDOR_TARGET_DEPENDENT_DEBS), \
           cd $(SB_VENDOR_TARGET_BINARY_DEPS_DIR) && \
@@ -162,8 +160,8 @@ setup_build: \
 	@echo Songbird Vendor Environment Settings
 	@echo ====================================
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-  @echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
-  @echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
+	@echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
+	@echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
 endif
 	@echo CPPFLAGS = $(CPPFLAGS)
 	@echo CFLAGS = $(CFLAGS)
@@ -182,11 +180,12 @@ endif
 	@echo =============================
 	@echo 
 	@echo 
-
-clean_build_dir:
-	$(RM) -Rf $(SB_VENDOR_BUILD_DIR)
-	$(MKDIR) -p $(SB_VENDOR_BUILD_DIR)
+	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
 	# TODO: this kinda sucks; fix this
 	$(CP) -R $(SB_TARGET_SRC_DIR)/* $(SB_VENDOR_BUILD_DIR)
 
-.PHONY: all release debug build build_setup clean_build_dir post_build strip_build module_setup_build module_post_build
+clean_build_dir:
+	$(RM) -rf $(SB_VENDOR_BUILD_DIR)
+	$(RM) -rf $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+
+.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build

@@ -41,6 +41,15 @@ SPACE := $(EMPTY) $(EMPTY)
 
 ## vendor-autodefs.mk
 
+# Initialize variables...
+
+SB_CONFIGURE_OPTS :=
+SB_USE_SYSTEM_LIBS ?=
+SB_PATH :=
+SB_PKG_CONFIG_PATH :=
+SB_DYLD_LIBRARY_PATH :=
+
+
 #
 # Operating system detection
 #
@@ -93,16 +102,16 @@ endif
 # overridden
 #
 
-PYTHON ?= python
-CONFIGURE ?= ./configure
-RM ?= rm
-CP ?= cp
-MKDIR ?= mkdir
-FIND ?= find
-ZIP ?= zip
-TAR ?= tar
 AR ?= ar
+CONFIGURE ?= ./configure
+CP ?= cp
+FIND ?= find
 LN ?= ln
+MKDIR ?= mkdir -p
+PYTHON ?= python
+RM ?= rm
+TAR ?= tar
+ZIP ?= zip
 
 DUMP_SYMS_ARGS := --vcs-info
 
@@ -177,13 +186,13 @@ ifneq (,$(CONFIGURE_TARGET))
 endif
 
 ifeq (debug, $(SB_BUILD_TYPE))
-  SB_CONFIGURE_OPTS += --enable-debug=yes
+  SB_CONFIGURE_OPTS += --enable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
     CFLAGS += -MTd -Zi
   endif
 else
 ifeq (release, $(SB_BUILD_TYPE))
-  SB_CONFIGURE_OPTS += --enable-debug=no
+  SB_CONFIGURE_OPTS += --disable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
     CFLAGS += -MT
   endif
@@ -254,9 +263,6 @@ else
   SB_VENDOR_BREAKPAD_ARCHIVE = 
 endif
 
-SB_CONFIGURE_OPTS :=
-SB_USE_SYSTEM_LIBS ?=
-
 # TODO: explain this gloop
 define find-dep-dir
 $(if $(shell test -e $1/install-$(SB_BUILD_TYPE) && echo exists),$(strip $1)/install-$(SB_BUILD_TYPE),$(strip $1)/$(SB_BUILD_TYPE))
@@ -266,10 +272,6 @@ endef
 MOZSDK_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
-
-SB_PATH :=
-SB_PKG_CONFIG_PATH :=
-SB_DYLD_LIBRARY_PATH :=
 
 #
 # Dependent library section; this is where we define and point the build system
