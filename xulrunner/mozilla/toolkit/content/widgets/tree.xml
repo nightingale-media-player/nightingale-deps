@@ -1140,10 +1140,12 @@
               window.addEventListener("click", col._onDragMouseClick, true);
             }
           }
-                    
+
+          // |aEvent.clientX| only reports the current X position, the horizontal position needs
+          // to be taken into account.
           var pos = {};
-          var targetCol = col.parentNode.parentNode._getColumnAtX(aEvent.clientX, 0.5, pos);
-          dump("targetCol.id == " + targetCol.id + "\n\n");
+          var adjustedX = aEvent.clientX + col.parentNode.parentNode.treeBoxObject.horizontalPosition;
+          var targetCol = col.parentNode.parentNode._getColumnAtX(adjustedX, 0.5, pos);
           
           // bail if we haven't mousemoved to a different column
           if (col.mTargetCol == targetCol && col.mTargetDir == pos.value)
