@@ -52,11 +52,13 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
 
 ifeq (linux-i686, $(SB_TARGET_ARCH))
   SB_VENDOR_TARGET_DEPENDENT_DEBS := \
-  $(SB_VENDOR_DIR)/packages/libpulse-dev_0.9.10-1ubuntu1_i386.deb \
-  $(SB_VENDOR_DIR)/packages/libpulse0_0.9.10-1ubuntu1_i386.deb
+    $(SB_VENDOR_DIR)/packages/libpulse-dev_0.9.10-1ubuntu1_i386.deb \
+    $(SB_VENDOR_DIR)/packages/libpulse0_0.9.10-1ubuntu1_i386.deb
 else
 ifeq (linux-x86_64, $(SB_TARGET_ARCH))
-  SB_VENDOR_TARGET_DEPENDENT_DEBS := $(SB_VENDOR_DIR)/packages/libpulse-dev_0.9.10-1ubuntu1_amd64.deb
+  SB_VENDOR_TARGET_DEPENDENT_DEBS := \
+    $(SB_VENDOR_DIR)/packages/libpulse-dev_0.9.10-1ubuntu1_amd64.deb \
+    $(SB_VENDOR_DIR)/packages/libpulse0_0.9.10-1ubuntu1_amd64.deb
 endif
 endif
 
