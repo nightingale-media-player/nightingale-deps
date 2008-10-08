@@ -187,8 +187,8 @@ setup_build()
 
             # Set up to use the MSVC linker and compiler
             export LD=link
-	    export CC=cl
-	    export CXX=cl
+	    export CC=${dep_dir}/vendor/wintools/clwrapper.py
+	    export CXX=${dep_dir}/vendor/wintools/clwrapper.py
 	    export OBJDUMP=objdump
 
 	    # cygpath tool
@@ -428,6 +428,8 @@ build()
 
     fi
 
+    EXTRA_CONFIGURE_ARGS=""
+
     # Set up libtool.
     export PATH="${dep_arch_dir}/libtool/release/bin:${PATH}"
     export_append "ACLOCAL_FLAGS"                                              \
@@ -442,7 +444,8 @@ build()
 	    export CFLAGS="${CFLAGS} -MT"
 	fi
 	export CFLAGS="${CFLAGS} -DYY_NO_UNISTD_H"
-	# add the directshow specific flags
+
+    	EXTRA_CONFIGURE_ARGS="--with-windows-sdk=/c/WindowsSDKv6 --with-directshow-libs=/c/WindowsSDKv6/Samples/Multimedia/DirectShow/BaseClasses/${build_type}"
     fi
 
     MOZILLA_DIR="${dep_arch_dir}/mozilla/${build_type}/"
@@ -483,6 +486,7 @@ build()
 	--disable-examples \
 	--disable-tests \
     --with-mozilla=${MOZILLA_DIR} \
+	$EXTRA_CONFIGURE_ARGS \
 	-C
     make && make install
 

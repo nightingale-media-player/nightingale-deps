@@ -346,13 +346,6 @@ int main ()
   LDFLAGS=$save_LDFLAGS
   LIBS=$save_LIBS
 
-  if test "x$HAVE_DIRECTSHOW" = "xyes";  then
-    dnl this is much more than we want
-    DIRECTSHOW_LIBS="-lstrmiids -lole32"
-    AC_SUBST(DIRECTSHOW_CFLAGS)
-    AC_SUBST(DIRECTSHOW_LDFLAGS)
-    AC_SUBST(DIRECTSHOW_LIBS)
-  fi
   AC_SUBST(HAVE_DIRECTSHOW)
 ])
 
@@ -1396,6 +1389,20 @@ esac
 AC_SUBST(MOZILLA_CFLAGS)
 AC_SUBST(MOZILLA_LIBS)
 dnl End Songbird-specific bits
+
+AC_ARG_WITH(windows-sdk,
+        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
+        [ WINDOWS_SDK_DIR=$withval ],
+        [ WINDOWS_SDK_DIR="" ]
+)
+AC_SUBST(WINDOWS_SDK_DIR)
+
+AC_ARG_WITH(directshow-libs,
+        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
+        [ DIRECTSHOW_LIB_DIR=$withval ],
+        [ DIRECTSHOW_LIB_DIR="" ]
+)
+AC_SUBST(DIRECTSHOW_LIB_DIR)
 
 dnl *** output files ***
 

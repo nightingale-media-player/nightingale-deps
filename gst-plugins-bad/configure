@@ -1096,9 +1096,6 @@ HAVE_WINSOCK2_H_TRUE
 HAVE_WINSOCK2_H_FALSE
 USE_QUICKTIME_TRUE
 USE_QUICKTIME_FALSE
-DIRECTSHOW_CFLAGS
-DIRECTSHOW_LDFLAGS
-DIRECTSHOW_LIBS
 HAVE_DIRECTSHOW
 USE_DIRECTSHOW_TRUE
 USE_DIRECTSHOW_FALSE
@@ -1289,6 +1286,8 @@ USE_MOZILLA_TRUE
 USE_MOZILLA_FALSE
 MOZILLA_CFLAGS
 MOZILLA_LIBS
+WINDOWS_SDK_DIR
+DIRECTSHOW_LIB_DIR
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -2093,6 +2092,8 @@ Optional Packages:
   --with-sdl-exec-prefix=PFX
                           exec prefix where SDL is installed (optional)
   --with-mozilla=PATH     Specify path to Mozilla installation
+ --with-windows-sdk=PATH   Specify path to Windows SDK installation
+ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries
 
 Some influential environment variables:
   CC          C compiler command
@@ -5432,13 +5433,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5435: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5436: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5438: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5439: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5441: output\"" >&5)
+  (eval echo "\"\$as_me:5442: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6036,7 +6037,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6039: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6040: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6654,7 +6655,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6657 "configure"' > conftest.$ac_ext
+  echo '#line 6658 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8194,11 +8195,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8197: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8198: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8201: \$? = $ac_status" >&5
+   echo "$as_me:8202: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8518,11 +8519,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8521: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8522: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8525: \$? = $ac_status" >&5
+   echo "$as_me:8526: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8623,11 +8624,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8626: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8627: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8630: \$? = $ac_status" >&5
+   echo "$as_me:8631: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8678,11 +8679,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8681: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8682: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8685: \$? = $ac_status" >&5
+   echo "$as_me:8686: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11515,7 +11516,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11518 "configure"
+#line 11519 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11615,7 +11616,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11618 "configure"
+#line 11619 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18821,11 +18822,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18824: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18825: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18828: \$? = $ac_status" >&5
+   echo "$as_me:18829: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18920,11 +18921,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18923: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18924: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18927: \$? = $ac_status" >&5
+   echo "$as_me:18928: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18972,11 +18973,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18975: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18976: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18979: \$? = $ac_status" >&5
+   echo "$as_me:18980: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -28095,12 +28096,6 @@ echo "${ECHO_T}$HAVE_DIRECTSHOW" >&6; }
   LDFLAGS=$save_LDFLAGS
   LIBS=$save_LIBS
 
-  if test "x$HAVE_DIRECTSHOW" = "xyes";  then
-        DIRECTSHOW_LIBS="-lstrmiids -lole32"
-
-
-
-  fi
 
 
 
@@ -42712,6 +42707,28 @@ esac
 
 
 
+# Check whether --with-windows-sdk was given.
+if test "${with_windows_sdk+set}" = set; then
+  withval=$with_windows_sdk;  WINDOWS_SDK_DIR=$withval
+else
+   WINDOWS_SDK_DIR=""
+
+fi
+
+
+
+
+# Check whether --with-directshow-libs was given.
+if test "${with_directshow_libs+set}" = set; then
+  withval=$with_directshow_libs;  DIRECTSHOW_LIB_DIR=$withval
+else
+   DIRECTSHOW_LIB_DIR=""
+
+fi
+
+
+
+
 
 
 ac_config_files="$ac_config_files Makefile gst-plugins-bad.spec gst/Makefile gst/aiffparse/Makefile gst/app/Makefile gst/bayer/Makefile gst/cdxaparse/Makefile gst/deinterlace/Makefile gst/deinterlace2/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/filter/Makefile gst/flv/Makefile gst/freeze/Makefile gst/h264parse/Makefile gst/librfb/Makefile gst/modplug/Makefile gst/modplug/libmodplug/Makefile gst/mpegtsparse/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/rawparse/Makefile gst/rtpmanager/Makefile gst/sdp/Makefile gst/selector/Makefile gst/speed/Makefile gst/speexresample/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst/real/Makefile gst/y4m/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/app/Makefile gst-libs/gst/dshow/Makefile sys/Makefile sys/acmenc/Makefile sys/dshowdecwrapper/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/wininet/Makefile examples/Makefile examples/app/Makefile examples/directfb/Makefile examples/switch/Makefile ext/amrwb/Makefile ext/alsaspdif/Makefile ext/apexsink/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/metadata/Makefile ext/mozilla/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/ladspa/Makefile ext/libmms/Makefile ext/Makefile ext/nas/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/neon/Makefile ext/ofa/Makefile ext/resindvd/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/x264/Makefile ext/xvid/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/version.entities common/Makefile common/m4/Makefile m4/Makefile tests/Makefile tests/check/Makefile tests/icles/Makefile win32/common/config.h"
@@ -45433,9 +45450,6 @@ HAVE_WINSOCK2_H_TRUE!$HAVE_WINSOCK2_H_TRUE$ac_delim
 HAVE_WINSOCK2_H_FALSE!$HAVE_WINSOCK2_H_FALSE$ac_delim
 USE_QUICKTIME_TRUE!$USE_QUICKTIME_TRUE$ac_delim
 USE_QUICKTIME_FALSE!$USE_QUICKTIME_FALSE$ac_delim
-DIRECTSHOW_CFLAGS!$DIRECTSHOW_CFLAGS$ac_delim
-DIRECTSHOW_LDFLAGS!$DIRECTSHOW_LDFLAGS$ac_delim
-DIRECTSHOW_LIBS!$DIRECTSHOW_LIBS$ac_delim
 HAVE_DIRECTSHOW!$HAVE_DIRECTSHOW$ac_delim
 USE_DIRECTSHOW_TRUE!$USE_DIRECTSHOW_TRUE$ac_delim
 USE_DIRECTSHOW_FALSE!$USE_DIRECTSHOW_FALSE$ac_delim
@@ -45489,6 +45503,9 @@ EXIF_CFLAGS!$EXIF_CFLAGS$ac_delim
 EXIF_LIBS!$EXIF_LIBS$ac_delim
 IPTC_CFLAGS!$IPTC_CFLAGS$ac_delim
 IPTC_LIBS!$IPTC_LIBS$ac_delim
+XMP_CFLAGS!$XMP_CFLAGS$ac_delim
+XMP_LIBS!$XMP_LIBS$ac_delim
+XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45530,9 +45547,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-XMP_CFLAGS!$XMP_CFLAGS$ac_delim
-XMP_LIBS!$XMP_LIBS$ac_delim
-XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 XMP_1_99_5_LIBS!$XMP_1_99_5_LIBS$ac_delim
 METADATA_CFLAGS!$METADATA_CFLAGS$ac_delim
 METADATA_LIBS!$METADATA_LIBS$ac_delim
@@ -45627,6 +45641,9 @@ USE_SNDFILE_TRUE!$USE_SNDFILE_TRUE$ac_delim
 USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
 SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
 SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
+USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
+USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
+SPC_LIBS!$SPC_LIBS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45668,9 +45685,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
-USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
-SPC_LIBS!$SPC_LIBS$ac_delim
 USE_SPC_TRUE!$USE_SPC_TRUE$ac_delim
 USE_SPC_FALSE!$USE_SPC_FALSE$ac_delim
 SWFDEC_CFLAGS!$SWFDEC_CFLAGS$ac_delim
@@ -45708,11 +45722,13 @@ USE_MOZILLA_TRUE!$USE_MOZILLA_TRUE$ac_delim
 USE_MOZILLA_FALSE!$USE_MOZILLA_FALSE$ac_delim
 MOZILLA_CFLAGS!$MOZILLA_CFLAGS$ac_delim
 MOZILLA_LIBS!$MOZILLA_LIBS$ac_delim
+WINDOWS_SDK_DIR!$WINDOWS_SDK_DIR$ac_delim
+DIRECTSHOW_LIB_DIR!$DIRECTSHOW_LIB_DIR$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 42; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 41; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

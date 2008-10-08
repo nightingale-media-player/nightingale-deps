@@ -47,9 +47,9 @@ QT_DIR=
 endif
 
 if USE_DIRECTSHOW
-DSHOW_DIR=dshowdecwrapper
+DSHOW_DIRS=dshowdecwrapper dshowvideosink
 else
-DSHOW_DIR=
+DSHOW_DIRS=
 endif
 
 if USE_WININET
@@ -65,7 +65,7 @@ ACM_DIR=
 endif
 
 
-SUBDIRS = $(ACM_DIR) $(DSHOW_DIR) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+SUBDIRS = $(ACM_DIR) $(DSHOW_DIRS) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
 
 DIST_SUBDIRS = acmenc dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
 			   oss4 qtwrapper vcd wininet
