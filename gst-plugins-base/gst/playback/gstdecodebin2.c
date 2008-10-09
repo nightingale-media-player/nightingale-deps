@@ -1393,6 +1393,17 @@ type_found (GstElement * typefind, guint probability,
 
   GST_DEBUG_OBJECT (decode_bin, "typefind found caps %" GST_PTR_FORMAT, caps);
 
+  /* If the typefinder (but not something else) finds text/plain - i.e. that's
+   * the top-level type of the file - then error out.
+   */
+  if (gst_structure_has_name (gst_caps_get_structure (caps, 0), "text/plain"))
+  {
+    GST_ELEMENT_ERROR (decode_bin, STREAM, WRONG_TYPE,
+        (_("This appears to be a text file")),
+        ("decodebin2 cannot decode plain text files"));
+    goto exit;
+  }
+
   /* we can only deal with one type, we don't yet support dynamically changing
    * caps from the typefind element */
   if (decode_bin->have_type)

@@ -1231,13 +1231,15 @@ gst_play_sink_reconfigure (GstPlaySink * playsink)
     if (!playsink->textchain) {
       playsink->textchain = gen_text_chain (playsink);
     }
-    add_chain (GST_PLAY_CHAIN (playsink->textchain), TRUE);
-    gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->text_pad),
-        playsink->textchain->textsinkpad);
-    gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->video_pad),
-        playsink->textchain->videosinkpad);
-    gst_pad_link (playsink->textchain->srcpad, playsink->videochain->sinkpad);
-    activate_chain (GST_PLAY_CHAIN (playsink->textchain), TRUE);
+    if (playsink->textchain) {
+      add_chain (GST_PLAY_CHAIN (playsink->textchain), TRUE);
+      gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->text_pad),
+          playsink->textchain->textsinkpad);
+      gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->video_pad),
+          playsink->textchain->videosinkpad);
+      gst_pad_link (playsink->textchain->srcpad, playsink->videochain->sinkpad);
+      activate_chain (GST_PLAY_CHAIN (playsink->textchain), TRUE);
+    }
   } else {
     /* we have no audio or we are requested to not play audio */
     if (playsink->textchain) {
