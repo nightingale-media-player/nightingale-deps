@@ -102,21 +102,19 @@ endif
 # overridden
 #
 
-AR ?= ar
 CONFIGURE ?= ./configure
 CP ?= cp
 FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p
 PYTHON ?= python
-RM ?= rm
 TAR ?= tar
 ZIP ?= zip
 
 DUMP_SYMS_ARGS := --vcs-info
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   STRIP ?= strip -x -S
+   SB_STRIP ?= strip -x -S
    DUMP_SYMS ?= $(MOZSDK_DIR)/dump_syms
    OTOOL ?= otool
    INSTALL_NAME_TOOL ?= install_name_tool
@@ -129,18 +127,23 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    endif
    endif
 else
-ifeq (Linux, $(SB_VENDOR_ARCH))
-   STRIP ?= strip -v
+ifeq (Linux,$(SB_VENDOR_ARCH))
+   SB_STRIP ?= strip -v
    DUMP_SYMS = $(MOZSDK_DIR)/dump_syms
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Linux && exit 1;
    OTOOL ?= echo otool called on Linux && exit 1;
 else
-ifeq (Msys, $(SB_VENDOR_ARCH))
+ifeq (Msys,$(SB_VENDOR_ARCH))
    DUMP_SYMS = $(MOZSDK_DIR)/dump_syms.exe
    # Strip isn't needed/available on Win32; error out
-   STRIP ?= echo strip called on Win32 && exit 1;
+   SB_STRIP ?= echo strip called on Win32 && exit 1;
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Win32 && exit 1;
    OTOOL ?= echo otool called on Win32 && exit 1;
+
+   SB_CC = cl
+   SB_CXX = cl
+   SB_LD = link
+   SB_OBJDUMP = objdump
 endif
 endif
 endif
@@ -150,23 +153,23 @@ endif
 #
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-   _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
-   CC_VERSION= $(shell cl -v 2>&1 | sed -ne "$(_MSVC_VER_FILTER)")
-   _CC_MAJOR_VERSION=$(shell echo ${CC_VERSION} | awk -F\. '{ print $1 }')
-   _CC_MINOR_VERSION=$(shell echo ${CC_VERSION} | awk -F\. '{ print $2 }')
-   _MSC_VER=$(_CC_MAJOR_VERSION)$(_CC_MINOR_VERSION)
+   _MSVC_VER_FILTER := s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p
+   CC_VERSION := $(shell cl -v 2>&1 | sed -ne "$(_MSVC_VER_FILTER)")
+   _CC_MAJOR_VERSION := $(shell echo $(CC_VERSION) | awk -F\. '{ print $$1 }')
+   _CC_MINOR_VERSION := $(shell echo $(CC_VERSION) | awk -F\. '{ print $$2 }')
+   _MSC_VER := $(_CC_MAJOR_VERSION)$(_CC_MINOR_VERSION)
 
-   CFLAGS +=-D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
-   -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
-	-wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
+   SB_CFLAGS += -D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
+     -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
+     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
 
    CONFIGURE_TARGET = i686-pc-mingw32
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-  CFLAGS += -fnested-functions \
-            -gstabs+ \
-            -D__MACOSX__
+  SB_CFLAGS += -fnested-functions \
+               -gstabs+ \
+                -D__MACOSX__
 
   LDFLAGS += -headerpad_max_install_names
   DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
@@ -182,19 +185,19 @@ endif
 # Set up the target configuration options.
 ifneq (,$(CONFIGURE_TARGET))
   SB_CONFIGURE_OPTS += --target=$(CONFIGURE_TARGET)
-  SB_CONFIGURE_OPTS += --host=$(CONFIGURE_TARGET)
+  SB_CONFIGURE_OPTS += --build=$(CONFIGURE_TARGET)
 endif
 
 ifeq (debug, $(SB_BUILD_TYPE))
   SB_CONFIGURE_OPTS += --enable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
-    CFLAGS += -MTd -Zi
+    SB_CFLAGS += -MTd -Zi
   endif
 else
 ifeq (release, $(SB_BUILD_TYPE))
   SB_CONFIGURE_OPTS += --disable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
-    CFLAGS += -MT
+    SB_CFLAGS += -MT
   endif
 else
   $(error Unknown SB_BUILD_TYPE: $(SB_BUILD_TYPE))
@@ -212,12 +215,12 @@ SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 # Hardcode all this for now; this is for official building of these tools,
 # so developers are likely to find this pretty painful.
 
-SB_VENDOR_BUILD_ROOT ?= /builds/sb-deps
+SB_VENDOR_BUILD_ROOT ?= /d/builds/sb-deps
 SB_VENDOR_BINARIES_CO_ROOT ?= $(SB_VENDOR_BUILD_ROOT)/checkout
 SB_VENDOR_CHECKOUT ?= $(realpath $(CURDIR)/..)
 
 ifeq (,$(shell test -e $(SB_VENDOR_BUILD_ROOT) && echo exists))
-   $(error SB_VENDOR_BUILD_ROOT ($(SB_VENDOR_BUILD_ROOT) does not exist...)
+   $(error SB_VENDOR_BUILD_ROOT ($(SB_VENDOR_BUILD_ROOT)) does not exist...)
 endif
 
 ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_CO_ROOT) && echo exists))
@@ -282,8 +285,8 @@ MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 # GNU Gettext 
 #
 SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
-LIBS += -L$(SB_GETTEXT_DIR)/lib -lintl
-CFLAGS += -I$(SB_GETTEXT_DIR)/include
+SB_LIBS += -L$(SB_GETTEXT_DIR)/lib -lintl
+SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
 SB_PATH += $(SB_GETTEXT_DIR)/bin
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
@@ -294,9 +297,9 @@ endif
 #
 # GNU iconv
 #
-SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/iconv)
-LIBS += -L$(SB_ICONV_DIR)/lib -liconv
-CFLAGS += -I$(SB_ICONV_DIR)/include
+SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
+SB_LIBS += -L$(SB_ICONV_DIR)/lib -liconv
+SB_CFLAGS += -I$(SB_ICONV_DIR)/include
 SB_PATH += $(SB_ICONV_DIR)/bin
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))

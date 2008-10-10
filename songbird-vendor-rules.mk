@@ -57,17 +57,24 @@ BUILD_TARGET_SET := $(if \
                             $(filter release, $(MAKECMDGOALS))),\
                         build_requested,)
 
+# TODO: define these as a list of exportable targets and expand that, so
+# we can match the printouts in -rules.mk
 ifneq (,$(BUILD_TARGET_SET))
-  ifeq (Darwin,$(SB_VENDOR_ARCH))
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-    export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
-  endif
+  export CC = $(SB_CC)
+  export CXX = $(SB_CXX)
+  export LD = $(SB_LD)
+  export OBJDUMP = $(SB_OBJDUMP)
+  export STRIP = $(SB_STRIP)
+
   export CPPFLAGS = $(SB_CPPFLAGS)
   export CFLAGS = $(SB_CFLAGS)
   export LDFLAGS = $(SB_LDFLAGS)
   export ACLOCAL_FLAGS = $(SB_ACLOCAL_FLAGS)
   export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
   export PATH = $(SB_PATH)
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  export LIBS = $(SB_LIBS)
+endif
 
   export LIBOIL_CFLAGS = $(SB_LIBOIL_CFLAGS)
   export LIBOIL_LIBS = $(SB_LIBOIL_LIBS)
@@ -77,6 +84,11 @@ ifneq (,$(BUILD_TARGET_SET))
   export VORBIS_LIBS = $(SB_VORBIS_LIBS)
   export FLAC_CFLAGS = $(SB_FLAC_CFLAGS)
   export FLAC_LIBS = $(SB_FLAC_LIBS)
+
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
+  endif
 
   # Generate, configure, build, and install; probably not needed.
   export NOCONFIGURE = yes
@@ -159,22 +171,43 @@ setup_build: \
 	@echo ====================================
 	@echo Songbird Vendor Environment Settings
 	@echo ====================================
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-	@echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
-	@echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
-endif
+	@echo Tools
+	@echo -----
+	@echo CC = "$(CC)"
+	@echo CXX = "$(CXX)"
+	@echo LD = "$(LD)"
+	@echo OBJDUMP = "$(OBJDUMP)"
+	@echo STRIP = "$(STRIP)"
+	@echo
+	@echo Flags
+	@echo -----
 	@echo CPPFLAGS = $(CPPFLAGS)
 	@echo CFLAGS = $(CFLAGS)
 	@echo LDFLAGS = $(LDFLAGS)
 	@echo ACLOCAL_FLAGS = $(ACLOCAL_FLAGS)
+	@echo
+	@echo Paths
+	@echo -----
 	@echo PKG_CONFIG_PATH = $(PKG_CONFIG_PATH)
 	@echo PATH = $(PATH)
+	@echo LIBS = $(LIBS)
+	@echo
+	@echo Dependent library settings
+	@echo --------------------------
 	@echo LIBOIL_CFLAGS = $(LIBOIL_CFLAGS)
 	@echo LIBOIL_LIBS = $(LIBOIL_LIBS)
 	@echo OGG_CFLAGS = $(OGG_CFLAGS)
 	@echo OGG_LIBS = $(OGG_LIBS)
 	@echo FLAC_CFLAGS = $(FLAC_CFLAGS)
 	@echo FLAC_LIBS = $(FLAC_LIBS)
+	@echo
+	@echo Platform-specific settings
+	@echo -----------------------
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+	@echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
+	@echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
+endif
+	@echo
 	@echo =============================
 	@echo END Environment Settings DUMP
 	@echo =============================
