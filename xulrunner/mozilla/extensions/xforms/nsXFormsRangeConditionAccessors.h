@@ -45,21 +45,19 @@
  * nsIXFormsRangeConditionAccessors.
  *
  */
-class nsXFormsRangeConditionAccessors : public nsXFormsAccessors,
+class nsXFormsRangeConditionAccessors : public nsXFormsControlAccessors,
                                         public nsIXFormsRangeConditionAccessors
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIXFORMSRANGECONDITIONACCESSORS
-  NS_FORWARD_NSIXFORMSACCESSORS(nsXFormsAccessors::)
+  NS_FORWARD_NSIXFORMSACCESSORS(nsXFormsControlAccessors::)
 
   // Constructor
   nsXFormsRangeConditionAccessors(nsIDelegateInternal *aDelegate,
-                                  nsIDOMElement *aElement)
-    : nsXFormsAccessors(aDelegate, aElement)
-  {
-  }
+                                  nsIDOMElement *aElement);
 
   // nsIClassInfo overrides
   NS_IMETHOD GetInterfaces(PRUint32 *aCount, nsIID * **aArray);
 };
+

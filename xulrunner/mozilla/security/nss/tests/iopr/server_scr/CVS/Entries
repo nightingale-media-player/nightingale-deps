@@ -1,9 +1,9 @@
-/apache_unix.cfg/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
-/cert_gen.sh/1.2/Fri Mar  2 23:13:31 2007//TFIREFOX_3_0_1_RELEASE
-/cipher.list/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
-/client.cgi/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
-/config/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
-/iis_windows.cfg/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
-/iopr_server.cfg/1.1/Fri Mar  2 23:13:31 2007//TFIREFOX_3_0_1_RELEASE
-/sslreq.dat/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_1_RELEASE
+/apache_unix.cfg/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
+/cert_gen.sh/1.2/Fri Mar  2 23:13:31 2007//TFIREFOX_3_0_2_RELEASE
+/cipher.list/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
+/client.cgi/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
+/config/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
+/iis_windows.cfg/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
+/iopr_server.cfg/1.1/Fri Mar  2 23:13:31 2007//TFIREFOX_3_0_2_RELEASE
+/sslreq.dat/1.1/Mon Oct 23 23:46:46 2006//TFIREFOX_3_0_2_RELEASE
 D

@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Thu Aug 15 23:20:58 2002//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.13/Wed Aug 22 11:13:52 2007//TFIREFOX_3_0_1_RELEASE
-/nsTypeAheadFind.cpp/1.137/Thu Feb 28 15:28:39 2008//TFIREFOX_3_0_1_RELEASE
-/nsTypeAheadFind.h/1.38/Tue Feb 26 23:35:52 2008//TFIREFOX_3_0_1_RELEASE
-/nsTypeAheadFindRegistration.cpp/1.5/Sun Apr 18 22:14:01 2004//TFIREFOX_3_0_1_RELEASE
-/typeaheadfind.pkg/1.2/Wed Jan  7 01:21:30 2004//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Thu Aug 15 23:20:58 2002//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.13/Wed Aug 22 11:13:52 2007//TFIREFOX_3_0_2_RELEASE
+/nsTypeAheadFind.cpp/1.138/Sat Jul 19 11:04:47 2008//TFIREFOX_3_0_2_RELEASE
+/nsTypeAheadFind.h/1.39/Sat Jul 19 11:04:47 2008//TFIREFOX_3_0_2_RELEASE
+/nsTypeAheadFindRegistration.cpp/1.5/Sun Apr 18 22:14:01 2004//TFIREFOX_3_0_2_RELEASE
+/typeaheadfind.pkg/1.2/Wed Jan  7 01:21:30 2004//TFIREFOX_3_0_2_RELEASE
 D

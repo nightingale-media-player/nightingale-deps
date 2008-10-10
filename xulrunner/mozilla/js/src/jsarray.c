@@ -116,11 +116,8 @@
 
 JS_STATIC_ASSERT(sizeof(JSScopeProperty) > 4 * sizeof(jsval));
 
-static JSBool
-MakeArraySlow(JSContext *cx, JSObject *obj);
-
 #define ENSURE_SLOW_ARRAY(cx, obj)                                             \
-    (OBJ_GET_CLASS(cx, obj) == &js_SlowArrayClass || MakeArraySlow(cx, obj))
+    (OBJ_GET_CLASS(cx, obj) == &js_SlowArrayClass || js_MakeArraySlow(cx, obj))
 
 /*
  * Determine if the id represents an array index or an XML property index.
@@ -417,7 +414,7 @@ SetArrayElement(JSContext *cx, JSObject *obj, jsuint index, jsval v)
 
     if (OBJ_IS_DENSE_ARRAY(cx, obj)) {
         if (INDEX_TOO_SPARSE(obj, index)) {
-            if (!MakeArraySlow(cx, obj))
+            if (!js_MakeArraySlow(cx, obj))
                 return JS_FALSE;
         } else {
 
@@ -646,11 +643,11 @@ array_lookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
      * We have only indexed properties up to DENSELEN (excepting holes), plus
      * the length property. For all else, we delegate to the prototype.
      */
-    if ((!js_IdIsIndex(id, &i) &&
-         id != ATOM_TO_JSID(cx->runtime->atomState.lengthAtom)) ||
-        obj->fslots[JSSLOT_ARRAY_LENGTH] == 0 ||
-        i >= ARRAY_DENSE_LENGTH(obj) ||
-        obj->dslots[i] == JSVAL_HOLE)
+    if (id != ATOM_TO_JSID(cx->runtime->atomState.lengthAtom) &&
+        (!js_IdIsIndex(id, &i) ||
+         obj->fslots[JSSLOT_ARRAY_LENGTH] == 0 ||
+         i >= ARRAY_DENSE_LENGTH(obj) ||
+         obj->dslots[i] == JSVAL_HOLE))
     {
         JSObject *proto = STOBJ_GET_PROTO(obj);
 
@@ -763,7 +760,7 @@ array_setProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         return js_SetProperty(cx, obj, id, vp);
 
     if (!js_IdIsIndex(id, &i) || INDEX_TOO_SPARSE(obj, i)) {
-        if (!MakeArraySlow(cx, obj))
+        if (!js_MakeArraySlow(cx, obj))
             return JS_FALSE;
         return js_SetProperty(cx, obj, id, vp);
     }
@@ -1109,8 +1106,8 @@ JSClass js_SlowArrayClass = {
 /*
  * Convert an array object from fast-and-dense to slow-and-flexible.
  */
-static JSBool
-MakeArraySlow(JSContext *cx, JSObject *obj)
+JSBool
+js_MakeArraySlow(JSContext *cx, JSObject *obj)
 {
     JSObjectMap *map, *oldmap;
     uint32 i, length;
@@ -2048,7 +2045,7 @@ array_push(JSContext *cx, uintN argc, jsval *vp)
 
     length = obj->fslots[JSSLOT_ARRAY_LENGTH];
     if (INDEX_TOO_SPARSE(obj, length)) {
-        if (!MakeArraySlow(cx, obj))
+        if (!js_MakeArraySlow(cx, obj))
             return JS_FALSE;
         return array_push_slowly(cx, obj, argc, vp);
     }
@@ -2074,23 +2071,16 @@ array_pop(JSContext *cx, uintN argc, jsval *vp)
     if (!obj)
         return JS_FALSE;
     if (OBJ_IS_DENSE_ARRAY(cx, obj)) {
-        *vp = JSVAL_VOID;
         index = obj->fslots[JSSLOT_ARRAY_LENGTH];
-        if (index == 0)
+        if (index == 0) {
+            *vp = JSVAL_VOID;
             return JS_TRUE;
-        index--;
-        if (index < ARRAY_DENSE_LENGTH(obj)) {
-            *vp = obj->dslots[index];
-            JS_ASSERT(*vp != JSVAL_HOLE);
-            if (index == 0) {
-                JS_free(cx, obj->dslots - 1);
-                obj->dslots = NULL;
-            } else {
-                ARRAY_SET_DENSE_LENGTH(obj, index);
-            }
-            obj->fslots[JSSLOT_ARRAY_COUNT]--;
         }
-
+        index--;
+        if (!GetArrayElement(cx, obj, index, &hole, vp))
+            return JS_FALSE;
+        if (!hole && !DeleteArrayElement(cx, obj, index))
+            return JS_FALSE;
         obj->fslots[JSSLOT_ARRAY_LENGTH] = index;
         return JS_TRUE;
     }

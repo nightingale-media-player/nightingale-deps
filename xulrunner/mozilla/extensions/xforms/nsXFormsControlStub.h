@@ -81,6 +81,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIXFormsControl
+  NS_IMETHOD GetModel(nsIModelElementPrivate **aModel);
   NS_IMETHOD GetBoundNode(nsIDOMNode **aBoundNode);
   NS_IMETHOD BindToModel(PRBool aSetBoundNode = PR_FALSE);
   NS_IMETHOD GetDependencies(nsCOMArray<nsIDOMNode> **aDependencies);

@@ -1,13 +1,13 @@
-/.cvsignore/1.1/Sat Jul  3 08:32:38 1999//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.36/Sat Oct 13 04:54:07 2007//TFIREFOX_3_0_1_RELEASE
-/nsAboutBlank.cpp/1.35/Mon Jun 19 21:02:11 2006//TFIREFOX_3_0_1_RELEASE
-/nsAboutBlank.h/1.8/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_1_RELEASE
-/nsAboutBloat.cpp/1.43/Sat Oct 13 04:54:07 2007//TFIREFOX_3_0_1_RELEASE
-/nsAboutBloat.h/1.6/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_1_RELEASE
-/nsAboutCache.cpp/1.45/Mon Jun 19 21:02:11 2006//TFIREFOX_3_0_1_RELEASE
-/nsAboutCache.h/1.9/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_1_RELEASE
-/nsAboutCacheEntry.cpp/1.34/Mon Apr 14 01:15:45 2008//TFIREFOX_3_0_1_RELEASE
-/nsAboutCacheEntry.h/1.12/Sat Nov 12 18:17:15 2005//TFIREFOX_3_0_1_RELEASE
-/nsAboutProtocolHandler.cpp/1.46/Fri Nov 10 23:49:06 2006//TFIREFOX_3_0_1_RELEASE
-/nsAboutProtocolHandler.h/1.10/Thu Jun 22 02:19:49 2006//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Sat Jul  3 08:32:38 1999//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.36/Sat Oct 13 04:54:07 2007//TFIREFOX_3_0_2_RELEASE
+/nsAboutBlank.cpp/1.35/Mon Jun 19 21:02:11 2006//TFIREFOX_3_0_2_RELEASE
+/nsAboutBlank.h/1.8/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_2_RELEASE
+/nsAboutBloat.cpp/1.43/Sat Oct 13 04:54:07 2007//TFIREFOX_3_0_2_RELEASE
+/nsAboutBloat.h/1.6/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_2_RELEASE
+/nsAboutCache.cpp/1.45/Mon Jun 19 21:02:11 2006//TFIREFOX_3_0_2_RELEASE
+/nsAboutCache.h/1.9/Sun Apr 18 21:59:13 2004//TFIREFOX_3_0_2_RELEASE
+/nsAboutCacheEntry.cpp/1.34/Mon Apr 14 01:15:45 2008//TFIREFOX_3_0_2_RELEASE
+/nsAboutCacheEntry.h/1.12/Sat Nov 12 18:17:15 2005//TFIREFOX_3_0_2_RELEASE
+/nsAboutProtocolHandler.cpp/1.46/Fri Nov 10 23:49:06 2006//TFIREFOX_3_0_2_RELEASE
+/nsAboutProtocolHandler.h/1.10/Thu Jun 22 02:19:49 2006//TFIREFOX_3_0_2_RELEASE
 D

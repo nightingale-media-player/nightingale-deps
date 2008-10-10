@@ -50,6 +50,8 @@ ifndef MINIMO
 # Do not set EXPORT_LIBRARY as we do not want schema-validation in the static libs list
 #EXPORT_LIBRARY	= 1
 FORCE_SHARED_LIB = 1
+# required for Windows builds with VS2005+ (links in the c runtime)
+USE_STATIC_LIBS  = 1
 else
 EXPORT_LIBRARY	= 1
 MODULE_NAME	= schemavalidation

@@ -1,11 +1,11 @@
-/PageInfoOverlay.dtd/1.2/Tue Jul 18 16:27:52 2006//TFIREFOX_3_0_1_RELEASE
-/PrefOverlay.dtd/1.1/Mon Mar 14 10:00:55 2005//TFIREFOX_3_0_1_RELEASE
-/certManager.dtd/1.19/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_1_RELEASE
-/deviceManager.dtd/1.3/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_1_RELEASE
-/pippki.dtd/1.5/Thu Feb  7 14:18:09 2008//TFIREFOX_3_0_1_RELEASE
-/pippki.properties/1.19/Sun Apr 20 18:14:30 2008//TFIREFOX_3_0_1_RELEASE
-/pref-masterpass.dtd/1.5/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_1_RELEASE
-/pref-security.dtd/1.3/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_1_RELEASE
-/pref-ssl.dtd/1.5/Tue May 16 01:09:37 2006//TFIREFOX_3_0_1_RELEASE
-/pref-validation.dtd/1.7/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_1_RELEASE
+/PageInfoOverlay.dtd/1.2/Tue Jul 18 16:27:52 2006//TFIREFOX_3_0_2_RELEASE
+/PrefOverlay.dtd/1.1/Mon Mar 14 10:00:55 2005//TFIREFOX_3_0_2_RELEASE
+/certManager.dtd/1.19/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_2_RELEASE
+/deviceManager.dtd/1.3/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_2_RELEASE
+/pippki.dtd/1.5/Thu Feb  7 14:18:09 2008//TFIREFOX_3_0_2_RELEASE
+/pippki.properties/1.19/Sun Apr 20 18:14:30 2008//TFIREFOX_3_0_2_RELEASE
+/pref-masterpass.dtd/1.5/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_2_RELEASE
+/pref-security.dtd/1.3/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_2_RELEASE
+/pref-ssl.dtd/1.5/Tue May 16 01:09:37 2006//TFIREFOX_3_0_2_RELEASE
+/pref-validation.dtd/1.7/Tue Nov 27 02:44:48 2007//TFIREFOX_3_0_2_RELEASE
 D

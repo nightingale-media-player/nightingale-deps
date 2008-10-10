@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *  Allan Beaufour <abeaufour@novell.com>
+ *  Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,47 +40,101 @@
 #ifndef __NSXFORMSACCESSORS_H__
 #define __NSXFORMSACCESSORS_H__
 
+#include "nsCOMPtr.h"
+
 #include "nsIClassInfo.h"
 #include "nsIXFormsAccessors.h"
 #include "nsIDelegateInternal.h"
-
-class nsIDOMElement;
+#include "nsIModelElementPrivate.h"
 
 /**
- * Implementation of the nsIXFormsAccessors object. It is always owned by a
- * nsIXFormsDelegate.
+ * Abstract class for nsIXFormsAccessors objects. nsXFormsAccessorsBase isn't
+ * meant to be instantiated, but instead a user should instantiate
+ * nsXFormsAccessors or nsXFormsControlAccessors.
  */
-class nsXFormsAccessors : public nsIXFormsAccessors,
-                          public nsIClassInfo
+class nsXFormsAccessorsBase : public nsIXFormsAccessors,
+                              public nsIClassInfo
 {
 public:
   NS_DECL_ISUPPORTS
+
   NS_DECL_NSICLASSINFO
   NS_DECL_NSIXFORMSACCESSORS
 
-  /** Constructor */
-  nsXFormsAccessors(nsIDelegateInternal* aDelegate, nsIDOMElement* aElement)
-    : mDelegate(aDelegate), mElement(aElement) 
-  {
-  }
-
-  /** Called by the owning delegate when it itself is destroyed */
-  void Destroy();
-
 protected:
+  // The next methods should be implemented by successors. Methods are used
+  // to get xforms model and instance node that are both needed to make possible
+  // implementation of nsIXFormsAccessors interface by this class.
+  virtual nsresult GetModel(nsIModelElementPrivate **aModel) = 0;
+  virtual nsresult GetInstanceNode(nsIDOMNode **aInstanceNode) = 0;
+
   /**
    * Checks the status of the model item properties
    *
    * @param aState       The state to check
    * @para  aStateVal    The returned state
    */
-  nsresult GetState(PRInt32 aState, PRBool *aStateVal);
+  virtual nsresult GetState(PRInt32 aState, PRBool *aStateVal);
+};
 
-  /** The delegate owning us */
-  nsIDelegateInternal*   mDelegate;
 
-  /** The control DOM element */
-  nsIDOMElement*         mElement;
+/**
+ * Implementation of the nsIXFormsAccessors object for instance node.
+ */
+
+class nsXFormsAccessors : public nsXFormsAccessorsBase
+{
+public:
+  nsXFormsAccessors(nsIModelElementPrivate *aModel, nsIDOMNode *aInstanceNode);
+
+protected:
+  virtual nsresult GetModel(nsIModelElementPrivate **aModel);
+  virtual nsresult GetInstanceNode(nsIDOMNode **aInstanceNode);
+
+private:
+  /* The model */
+  nsCOMPtr<nsIModelElementPrivate> mModel;
+
+  /* The instance node */
+  nsCOMPtr<nsIDOMNode>             mInstanceNode;
+};
+
+/**
+ * Implementation of the nsIXFormsAccessors object for nsIXFormsDelegate
+ * controls.
+ *
+ * Some nsIXFormsDelegate controls have a value even if they are not bound to
+ * instance node (like xforms:label and xforms:output). nsXFormsControlAccessors
+ * object redirects getValue()/setValue() calls to nsIXFormsDelegate control.
+ */
+
+class nsXFormsControlAccessors : public nsXFormsAccessorsBase
+{
+public:
+  nsXFormsControlAccessors(nsIDelegateInternal *aControl,
+                           nsIDOMElement *aElement);
+
+  // nsIXFormsAccessors
+  NS_IMETHOD GetValue(nsAString &aValue);
+  NS_IMETHOD SetValue(const nsAString &aValue);
+
+  /**
+   * Called by the owning delegate when it itself is destroyed.
+   */
+  void Destroy();
+
+protected:
+  virtual nsresult GetModel(nsIModelElementPrivate **aModel);
+  virtual nsresult GetInstanceNode(nsIDOMNode **aInstanceNode);
+  virtual nsresult GetState(PRInt32 aState, PRBool *aStateVal);
+
+  /* The DOM element for xforms control the accessor is bound to. */
+  nsIDOMElement *mElement;
+
+private:
+  /* The XTF element for xforms control the accessor is bound to. */
+  nsIDelegateInternal *mDelegate;
 };
 
 #endif
+

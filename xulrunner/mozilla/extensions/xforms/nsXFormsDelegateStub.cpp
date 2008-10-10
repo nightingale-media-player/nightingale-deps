@@ -94,6 +94,7 @@ nsXFormsDelegateStub::OnDestroyed()
   nsXFormsModelElement::CancelPostRefresh(this);
   if (mAccessor) {
     mAccessor->Destroy();
+    mAccessor = nsnull;
   }
   return nsXFormsControlStub::OnDestroyed();
 }
@@ -310,7 +311,7 @@ NS_IMETHODIMP
 nsXFormsDelegateStub::GetXFormsAccessors(nsIXFormsAccessors **aAccessor)
 {
   if (!mAccessor) {
-    mAccessor = new nsXFormsAccessors(this, mElement);
+    mAccessor = new nsXFormsControlAccessors(this, mElement);
     if (!mAccessor) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
@@ -318,3 +319,4 @@ nsXFormsDelegateStub::GetXFormsAccessors(nsIXFormsAccessors **aAccessor)
   NS_ADDREF(*aAccessor = mAccessor);
   return NS_OK;
 }
+

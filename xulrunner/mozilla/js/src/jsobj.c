@@ -1214,13 +1214,16 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         return JS_FALSE;
 
     /*
-     * Script.prototype.compile/exec and Object.prototype.eval all take an
-     * optional trailing argument that overrides the scope object.
+     * Script.prototype.compile/exec and Object.prototype.eval no longer take
+     * an optional trailing argument.
      */
     if (argc >= 2) {
-        if (!js_ValueToObject(cx, argv[1], &scopeobj))
+        if (!JS_ReportErrorFlagsAndNumber(cx,
+                                          JSREPORT_WARNING | JSREPORT_STRICT,
+                                          js_GetErrorMessage, NULL,
+                                          JSMSG_EVAL_ARITY)) {
             return JS_FALSE;
-        argv[1] = OBJECT_TO_JSVAL(scopeobj);
+        }
     }
 
     /* From here on, control must exit through label out with ok set. */
@@ -1432,6 +1435,9 @@ obj_watch(JSContext *cx, uintN argc, jsval *vp)
     if (attrs & JSPROP_READONLY)
         return JS_TRUE;
     *vp = JSVAL_VOID;
+
+    if (OBJ_IS_DENSE_ARRAY(cx, obj) && !js_MakeArraySlow(cx, obj))
+        return JS_FALSE;
     return JS_SetWatchPoint(cx, obj, userid, obj_watch_handler, callable);
 }
 
@@ -3341,7 +3347,8 @@ js_LookupPropertyWithFlags(JSContext *cx, JSObject *obj, jsid id, uintN flags,
                         /* Resolved: juggle locks and lookup id again. */
                         if (obj2 != obj) {
                             JS_UNLOCK_OBJ(cx, obj);
-                            JS_LOCK_OBJ(cx, obj2);
+                            if (OBJ_IS_NATIVE(obj2))
+                                JS_LOCK_OBJ(cx, obj2);
                         }
                         protoIndex = 0;
                         for (proto = start; proto && proto != obj2;
@@ -3352,7 +3359,6 @@ js_LookupPropertyWithFlags(JSContext *cx, JSObject *obj, jsid id, uintN flags,
                         if (!MAP_IS_NATIVE(&scope->map)) {
                             /* Whoops, newresolve handed back a foreign obj2. */
                             JS_ASSERT(obj2 != obj);
-                            JS_UNLOCK_OBJ(cx, obj2);
                             ok = OBJ_LOOKUP_PROPERTY(cx, obj2, id, objp, propp);
                             if (!ok || *propp)
                                 goto cleanup;
@@ -3373,7 +3379,8 @@ js_LookupPropertyWithFlags(JSContext *cx, JSObject *obj, jsid id, uintN flags,
                             JS_ASSERT(obj2 == scope->object);
                             obj = obj2;
                         } else if (obj2 != obj) {
-                            JS_UNLOCK_OBJ(cx, obj2);
+                            if (OBJ_IS_NATIVE(obj2))
+                                JS_UNLOCK_OBJ(cx, obj2);
                             JS_LOCK_OBJ(cx, obj);
                         }
                     }
@@ -4359,8 +4366,10 @@ js_CheckAccess(JSContext *cx, JSObject *obj, jsid id, JSAccessMode mode,
 
             /* Avoid diverging for non-natives that reuse js_CheckAccess. */
             if (pobj->map->ops->checkAccess == js_CheckAccess) {
-                if (!writing)
+                if (!writing) {
                     *vp = JSVAL_VOID;
+                    *attrsp = 0;
+                }
                 break;
             }
             return OBJ_CHECK_ACCESS(cx, pobj, id, mode, vp, attrsp);

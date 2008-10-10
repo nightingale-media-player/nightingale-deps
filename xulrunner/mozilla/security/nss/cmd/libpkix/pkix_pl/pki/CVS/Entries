@@ -1,12 +1,12 @@
-/Makefile/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_1_RELEASE
-/manifest.mn/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_1_RELEASE
-/test_authorityinfoaccess.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_cert.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_crl.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_crlentry.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_date.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_generalname.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_nameconstraints.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_subjectinfoaccess.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
-/test_x500name.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_1_RELEASE
+/Makefile/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_2_RELEASE
+/manifest.mn/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_2_RELEASE
+/test_authorityinfoaccess.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_cert.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_crl.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_crlentry.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_date.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_generalname.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_nameconstraints.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_subjectinfoaccess.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
+/test_x500name.c/1.4/Thu Sep 20 19:03:52 2007//TFIREFOX_3_0_2_RELEASE
 D

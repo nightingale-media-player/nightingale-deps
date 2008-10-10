@@ -1,9 +1,9 @@
-/.cvsignore/1.1/Mon Apr  5 05:19:33 1999//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.35/Tue Apr  5 14:13:02 2005//TFIREFOX_3_0_1_RELEASE
-/nsChromeProtocolHandler.cpp/1.114/Fri Dec 22 16:11:16 2006//TFIREFOX_3_0_1_RELEASE
-/nsChromeProtocolHandler.h/1.8/Sat Apr 17 18:29:59 2004//TFIREFOX_3_0_1_RELEASE
-/nsChromeRegistry.cpp/1.340/Thu Apr 17 21:41:11 2008//TFIREFOX_3_0_1_RELEASE
-/nsChromeRegistry.h/1.63/Tue Jan 30 10:20:27 2007//TFIREFOX_3_0_1_RELEASE
-/nsChromeUIDataSource.cpp/1.20/Wed Apr 25 16:35:30 2007//TFIREFOX_3_0_1_RELEASE
-/nsChromeUIDataSource.h/1.9/Tue Apr 10 22:05:42 2007//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Mon Apr  5 05:19:33 1999//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.35/Tue Apr  5 14:13:02 2005//TFIREFOX_3_0_2_RELEASE
+/nsChromeProtocolHandler.cpp/1.114/Fri Dec 22 16:11:16 2006//TFIREFOX_3_0_2_RELEASE
+/nsChromeProtocolHandler.h/1.8/Sat Apr 17 18:29:59 2004//TFIREFOX_3_0_2_RELEASE
+/nsChromeRegistry.cpp/1.340/Thu Apr 17 21:41:11 2008//TFIREFOX_3_0_2_RELEASE
+/nsChromeRegistry.h/1.63/Tue Jan 30 10:20:27 2007//TFIREFOX_3_0_2_RELEASE
+/nsChromeUIDataSource.cpp/1.20/Wed Apr 25 16:35:30 2007//TFIREFOX_3_0_2_RELEASE
+/nsChromeUIDataSource.h/1.9/Tue Apr 10 22:05:42 2007//TFIREFOX_3_0_2_RELEASE
 D

@@ -80,7 +80,9 @@ function run_test() {
                                    bmsvc.DEFAULT_INDEX, "");
   do_check_true(observer.itemChangedProperty == null);
 
-  var newDate = Date.now() * 1000;
+  // We set lastModified 1us in the past to workaround a timing bug on
+  // virtual machines, see bug 427142 for details.
+  var newDate = Date.now() * 1000 - 1;
   bmsvc.setItemDateAdded(bookmarkId, newDate);
   // test notification
   do_check_eq(observer._itemChangedProperty, "dateAdded");
@@ -106,7 +108,7 @@ function run_test() {
   do_check_eq(observer._itemChangedValue, "Google");
 
   // check lastModified has been updated
-  do_check_neq(bmsvc.getItemLastModified(bookmarkId), newDate);
+  do_check_true(bmsvc.getItemLastModified(bookmarkId) > newDate);
 
   // check that node properties are updated 
   var query = histsvc.getNewQuery();
@@ -122,14 +124,15 @@ function run_test() {
   do_check_eq(bmsvc.getItemLastModified(bookmarkId), childNode.lastModified);
 
   // test live update of lastModified caused by other changes:
+  // We set lastModified 1us in the past to workaround a timing bug on
+  // virtual machines, see bug 427142 for details.
+  var pastDate = Date.now() * 1000 - 1;
+  bmsvc.setItemLastModified(bookmarkId, pastDate);
   // set title (causing update of last modified)
   var oldLastModified = bmsvc.getItemLastModified(bookmarkId);
-  // This double call to setItemTitle is a temporary hack to workaround a
-  // timing bug on virtual machines. See bug 427142 for details.
-  bmsvc.setItemTitle(bookmarkId, "Google"); 
   bmsvc.setItemTitle(bookmarkId, "Google");
-  // test that lm is updated
-  do_check_neq(oldLastModified, childNode.lastModified);
+  // test that lastModified is updated
+  do_check_true(oldLastModified < childNode.lastModified);
   // test that node value matches db value
   do_check_eq(bmsvc.getItemLastModified(bookmarkId), childNode.lastModified);
 

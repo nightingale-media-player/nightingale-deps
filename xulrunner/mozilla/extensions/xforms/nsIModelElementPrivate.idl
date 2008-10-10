@@ -48,7 +48,7 @@ interface nsISVSchemaBuiltinType;
  * Private interface implemented by the model element for other
  * elements to use.
  */
-[uuid(bbc19255-4341-45fb-a9dc-23f4add8a7c3)]
+[uuid(64599272-49a8-463c-8937-b69165541f4f)]
 interface nsIModelElementPrivate : nsIXFormsModelElement
 {
   /**
@@ -121,6 +121,12 @@ interface nsIModelElementPrivate : nsIXFormsModelElement
    * Handles an instance data node and returns one of the above 3 values.
    */
   unsigned short handleInstanceDataNode(in nsIDOMNode aInstanceDataNode);
+
+  /**
+   * Return states for bound node in terms of NS_EVENT_STATE constants
+   * @param aBoundNode         The instance node
+   */
+  long getStates(in nsIDOMNode aBoundNode);
 
   /**
    * Set MIP states for given control bound to the given bound node.

@@ -1,12 +1,12 @@
-/Makefile.in/1.21/Wed Mar  5 22:08:23 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierDBService.cpp/1.79/Wed May  7 20:33:45 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierDBService.h/1.15/Fri May  9 07:25:29 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierHashCompleter.cpp/1.7/Wed May  7 22:33:19 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierHashCompleter.h/1.6/Wed May  7 22:33:19 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierLib.js/1.10/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierListManager.js/1.11/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierStreamUpdater.cpp/1.26/Wed May  7 20:33:45 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierStreamUpdater.h/1.18/Wed May  7 20:33:45 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierUtils.cpp/1.10/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_1_RELEASE
-/nsUrlClassifierUtils.h/1.6/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.22/Fri Aug 15 21:19:31 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierDBService.cpp/1.81/Mon Aug 25 20:59:14 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierDBService.h/1.15/Fri May  9 07:25:29 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierHashCompleter.cpp/1.7/Wed May  7 22:33:19 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierHashCompleter.h/1.6/Wed May  7 22:33:19 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierLib.js/1.10/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierListManager.js/1.11/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierStreamUpdater.cpp/1.26/Wed May  7 20:33:45 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierStreamUpdater.h/1.18/Wed May  7 20:33:45 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierUtils.cpp/1.10/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_2_RELEASE
+/nsUrlClassifierUtils.h/1.6/Wed Feb 27 08:51:04 2008//TFIREFOX_3_0_2_RELEASE
 D

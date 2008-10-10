@@ -545,7 +545,7 @@ nsSubDocumentFrame::Reflow(nsPresContext*          aPresContext,
   vm->ResizeView(mInnerView, nsRect(nsPoint(0, 0), innerSize), PR_TRUE);
 
   // Determine if we need to repaint our border, background or outline
-  CheckInvalidateSizeChange(aPresContext, aDesiredSize, aReflowState);
+  CheckInvalidateSizeChange(aDesiredSize);
 
   FinishAndStoreOverflow(&aDesiredSize);
 

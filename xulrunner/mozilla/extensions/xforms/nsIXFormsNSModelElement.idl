@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Allan Beaufour <allan@beaufour.dk>
+ *   Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -39,12 +40,32 @@
 #include "domstubs.idl"
 
 interface nsIDOMNodeList;
+interface nsIXFormsAccessors;
 
 /**
  * Defines additional post-spec. functions for the \<model\> element.
  */
-[scriptable, uuid(85fd60c7-1db7-40c0-ae8d-f723fdd1eea8)]
+[scriptable, uuid(b1638cdd-db01-4082-a3e9-dc629c469a01)]
 interface nsIXFormsNSModelElement : nsISupports
 {
+  /*
+   * Returns a list of the instance documents for the model.
+   */
   nsIDOMNodeList getInstanceDocuments();
+
+  /*
+   * Returns an accessor interface to the given instance node.
+   */
+  nsIXFormsAccessors getAccessorsByNode(in nsIDOMNode node);
+
+  /*
+   * Evaluates the XPath expression as if it was an XForms single node binding
+   * expression for an outer-most control and returns an accessor interface to
+   * the resulting node. If XPath expression is invalid then method dispatches
+   * "xforms-compute-exception" event to the model and rises an exception. If
+   * XPath doesn't point to a node then method rises an exception.
+   *
+   * @note The expression is only evaluated once.
+   */
+  nsIXFormsAccessors getAccessorsByExpr(in DOMString xpath);
 };

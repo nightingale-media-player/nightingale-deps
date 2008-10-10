@@ -1,13 +1,13 @@
-/Makefile.in/1.19/Mon May  5 21:08:15 2008//TFIREFOX_3_0_1_RELEASE
-/Throbber-small.avi/1.1/Tue Jan 22 01:07:20 2008/-kb/TFIREFOX_3_0_1_RELEASE
-/crashreporter.cpp/1.21/Mon Apr  7 21:18:06 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter.exe.manifest/1.2/Tue Jan 22 01:07:20 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter.h/1.14/Mon Apr  7 21:18:06 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter.ico/1.1/Wed Jul 25 01:06:15 2007/-kb/TFIREFOX_3_0_1_RELEASE
-/crashreporter.rc/1.7/Wed Mar 19 20:24:45 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter_linux.cpp/1.21/Mon May  5 21:08:15 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter_osx.h/1.11/Tue Mar 11 23:39:34 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter_osx.mm/1.22/Mon Apr  7 21:18:06 2008//TFIREFOX_3_0_1_RELEASE
-/crashreporter_win.cpp/1.28/Tue Apr 22 17:01:33 2008//TFIREFOX_3_0_1_RELEASE
-/resource.h/1.5/Wed Feb 20 09:46:57 2008//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.19/Mon May  5 21:08:15 2008//TFIREFOX_3_0_2_RELEASE
+/Throbber-small.avi/1.1/Tue Jan 22 01:07:20 2008/-kb/TFIREFOX_3_0_2_RELEASE
+/crashreporter.cpp/1.22/Sun Jul 20 22:19:32 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter.exe.manifest/1.2/Tue Jan 22 01:07:20 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter.h/1.14/Mon Apr  7 21:18:06 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter.ico/1.1/Wed Jul 25 01:06:15 2007/-kb/TFIREFOX_3_0_2_RELEASE
+/crashreporter.rc/1.7/Wed Mar 19 20:24:45 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter_linux.cpp/1.21/Mon May  5 21:08:15 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter_osx.h/1.12/Sun Jul 20 22:22:00 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter_osx.mm/1.23/Sun Jul 20 22:22:00 2008//TFIREFOX_3_0_2_RELEASE
+/crashreporter_win.cpp/1.28/Tue Apr 22 17:01:33 2008//TFIREFOX_3_0_2_RELEASE
+/resource.h/1.5/Wed Feb 20 09:46:57 2008//TFIREFOX_3_0_2_RELEASE
 D

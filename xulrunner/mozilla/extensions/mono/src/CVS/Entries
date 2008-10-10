@@ -1,11 +1,11 @@
-/Makefile/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/components.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/interface-generator.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/proxy-generator.cs/1.2/Sun Jun  5 15:10:12 2005//TFIREFOX_3_0_1_RELEASE
-/typeinfo.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/typeinfo.cs/1.2/Sun Jun  5 15:10:12 2005//TFIREFOX_3_0_1_RELEASE
-/wrapped-clr.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/wrapped-clr.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/xpcom-core.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
-/xptinvoke.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_1_RELEASE
+/Makefile/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/components.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/interface-generator.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/proxy-generator.cs/1.2/Sun Jun  5 15:10:12 2005//TFIREFOX_3_0_2_RELEASE
+/typeinfo.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/typeinfo.cs/1.2/Sun Jun  5 15:10:12 2005//TFIREFOX_3_0_2_RELEASE
+/wrapped-clr.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/wrapped-clr.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/xpcom-core.cpp/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
+/xptinvoke.cs/1.1/Tue Feb  1 23:58:57 2005//TFIREFOX_3_0_2_RELEASE
 D

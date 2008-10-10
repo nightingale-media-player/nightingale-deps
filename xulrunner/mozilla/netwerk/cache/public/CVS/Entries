@@ -1,10 +1,10 @@
-/.cvsignore/1.1/Tue Dec  7 09:31:05 1999//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.14/Mon May 14 20:09:19 2007//TFIREFOX_3_0_1_RELEASE
-/nsICache.idl/1.11/Wed Mar 14 01:52:06 2007//TFIREFOX_3_0_1_RELEASE
-/nsICacheEntryDescriptor.idl/1.15/Sun Apr 18 21:59:10 2004//TFIREFOX_3_0_1_RELEASE
-/nsICacheListener.idl/1.5/Sun Apr 18 21:59:10 2004//TFIREFOX_3_0_1_RELEASE
-/nsICacheService.idl/1.9/Wed Jul 25 06:31:28 2007//TFIREFOX_3_0_1_RELEASE
-/nsICacheSession.idl/1.11/Thu Jan 13 03:25:17 2005//TFIREFOX_3_0_1_RELEASE
-/nsICacheVisitor.idl/1.11/Thu Jan 13 03:25:17 2005//TFIREFOX_3_0_1_RELEASE
-/nsIOfflineCacheSession.idl/1.5/Thu Feb  7 09:04:30 2008//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Tue Dec  7 09:31:05 1999//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.14/Mon May 14 20:09:19 2007//TFIREFOX_3_0_2_RELEASE
+/nsICache.idl/1.11/Wed Mar 14 01:52:06 2007//TFIREFOX_3_0_2_RELEASE
+/nsICacheEntryDescriptor.idl/1.15/Sun Apr 18 21:59:10 2004//TFIREFOX_3_0_2_RELEASE
+/nsICacheListener.idl/1.5/Sun Apr 18 21:59:10 2004//TFIREFOX_3_0_2_RELEASE
+/nsICacheService.idl/1.9/Wed Jul 25 06:31:28 2007//TFIREFOX_3_0_2_RELEASE
+/nsICacheSession.idl/1.11/Thu Jan 13 03:25:17 2005//TFIREFOX_3_0_2_RELEASE
+/nsICacheVisitor.idl/1.11/Thu Jan 13 03:25:17 2005//TFIREFOX_3_0_2_RELEASE
+/nsIOfflineCacheSession.idl/1.5/Thu Feb  7 09:04:30 2008//TFIREFOX_3_0_2_RELEASE
 D

@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsIXFormsContextControl.idl"
+#include "nsIModelElementPrivate.idl"
 
 interface nsIDOMNode;
 interface nsIDOMElement;
@@ -49,13 +50,18 @@ interface nsIDOMElement;
 /**
  * Interface implemented by all XForms form control classes.
  */
-[uuid(6fb46b32-9aa1-4d81-aa54-d57a414948c3)]
+[uuid(2dd97021-e7bd-46cb-b439-2affb8bbd482)]
 interface nsIXFormsControl : nsIXFormsContextControl
 {
   /**
    * Tries to move focus to form control and returns true if succeeded.
    */
   boolean tryFocus();
+
+  /**
+   * The model that the control is bound to.
+   */
+  readonly attribute nsIModelElementPrivate model;
 
   /**
    * The instance node that the control is bound to.

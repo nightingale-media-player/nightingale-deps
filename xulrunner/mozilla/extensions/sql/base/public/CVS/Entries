@@ -1,10 +1,10 @@
-/Makefile.in/1.2/Sun Feb  8 21:51:00 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlConnection.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlDataSource.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlInputStream.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlRequest.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlRequestObserver.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlResult.idl/1.7/Mon Apr 19 07:21:37 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlResultEnumerator.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_1_RELEASE
-/mozISqlService.idl/1.6/Sun Apr 18 20:07:20 2004//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.2/Sun Feb  8 21:51:00 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlConnection.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlDataSource.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlInputStream.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlRequest.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlRequestObserver.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlResult.idl/1.7/Mon Apr 19 07:21:37 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlResultEnumerator.idl/1.4/Sun Feb  8 21:51:03 2004//TFIREFOX_3_0_2_RELEASE
+/mozISqlService.idl/1.6/Sun Apr 18 20:07:20 2004//TFIREFOX_3_0_2_RELEASE
 D

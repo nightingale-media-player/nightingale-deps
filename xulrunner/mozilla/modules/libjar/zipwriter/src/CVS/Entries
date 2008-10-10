@@ -1,13 +1,13 @@
-/Makefile.in/1.2/Fri Sep 21 10:04:37 2007//TFIREFOX_3_0_1_RELEASE
-/StreamFunctions.cpp/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_1_RELEASE
-/StreamFunctions.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_1_RELEASE
-/ZipWriterModule.cpp/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_1_RELEASE
-/nsDeflateConverter.cpp/1.3/Thu Mar  6 11:01:08 2008//TFIREFOX_3_0_1_RELEASE
-/nsDeflateConverter.h/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_1_RELEASE
-/nsZipDataStream.cpp/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_1_RELEASE
-/nsZipDataStream.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_1_RELEASE
-/nsZipHeader.cpp/1.2/Sat Mar 29 21:10:22 2008//TFIREFOX_3_0_1_RELEASE
-/nsZipHeader.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_1_RELEASE
-/nsZipWriter.cpp/1.3/Tue Jul  1 06:03:11 2008//TFIREFOX_3_0_1_RELEASE
-/nsZipWriter.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.2/Fri Sep 21 10:04:37 2007//TFIREFOX_3_0_2_RELEASE
+/StreamFunctions.cpp/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_2_RELEASE
+/StreamFunctions.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_2_RELEASE
+/ZipWriterModule.cpp/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_2_RELEASE
+/nsDeflateConverter.cpp/1.3/Thu Mar  6 11:01:08 2008//TFIREFOX_3_0_2_RELEASE
+/nsDeflateConverter.h/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_2_RELEASE
+/nsZipDataStream.cpp/1.2/Wed Nov 21 22:05:11 2007//TFIREFOX_3_0_2_RELEASE
+/nsZipDataStream.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_2_RELEASE
+/nsZipHeader.cpp/1.2/Sat Mar 29 21:10:22 2008//TFIREFOX_3_0_2_RELEASE
+/nsZipHeader.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_2_RELEASE
+/nsZipWriter.cpp/1.3/Tue Jul  1 06:03:11 2008//TFIREFOX_3_0_2_RELEASE
+/nsZipWriter.h/1.1/Sun Sep 16 23:48:05 2007//TFIREFOX_3_0_2_RELEASE
 D

@@ -41,6 +41,8 @@ function run_test() {
                getSelectedLocale('global');
   var prefs = Cc['@mozilla.org/preferences-service;1'].
               getService(Ci.nsIPrefBranch);
+  prefs.QueryInterface(Ci.nsIPrefService);
+  var defaults = prefs.getDefaultBranch(null);
 
   var upperUrlRaw = "http://%LOCALE%.%VENDOR%.foo/?name=%NAME%&id=%ID%&version=%VERSION%&platversion=%PLATFORMVERSION%&abid=%APPBUILDID%&pbid=%PLATFORMBUILDID%&app=%APP%&os=%OS%&abi=%XPCOMABI%";
   var lowerUrlRaw = "http://%locale%.%vendor%.foo/?name=%name%&id=%id%&version=%version%&platversion=%platformversion%&abid=%appbuildid%&pbid=%platformbuildid%&app=%app%&os=%os%&abi=%xpcomabi%";
@@ -64,4 +66,14 @@ function run_test() {
   do_check_eq(formatter.formatURL(multiUrl), multiUrlRef);
   // Encoded strings must be kept as is (Bug 427304)
   do_check_eq(formatter.formatURL(encodedUrl), encodedUrlRef);
+
+  // Test for bug 438925: localizable prefs set with the data: method
+  var pref2 = "xpcshell.urlformatter.test2";
+  var localizedStr = Cc["@mozilla.org/pref-localizedstring;1"].
+    createInstance(Ci.nsIPrefLocalizedString);
+  localizedStr.data = "data:text/plain," + pref2 + "=" + upperUrlRaw;
+
+  defaults.setComplexValue(pref2, Ci.nsIPrefLocalizedString, localizedStr);
+
+  do_check_eq(formatter.formatURLPref(pref2), ulUrlRef);
 }

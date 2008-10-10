@@ -65,6 +65,7 @@
 #include "nsIURL.h"
 #include "nsNetUtil.h"
 #include "nsIXFormsControl.h"
+#include "nsXFormsAccessors.h"
 #include "nsXFormsTypes.h"
 #include "nsXFormsXPathParser.h"
 #include "nsXFormsXPathAnalyzer.h"
@@ -1037,7 +1038,7 @@ nsXFormsModelElement::OnCreated(nsIXTFElementWrapper *aWrapper)
   return NS_OK;
 }
 
-// nsIXFormsModelElement
+// nsIXFormsNSModelElement
 
 NS_IMETHODIMP
 nsXFormsModelElement::GetInstanceDocuments(nsIDOMNodeList **aDocuments)
@@ -1047,6 +1048,69 @@ nsXFormsModelElement::GetInstanceDocuments(nsIDOMNodeList **aDocuments)
   NS_ADDREF(*aDocuments = mInstanceDocuments);
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetAccessorsByNode(nsIDOMNode          *aInstanceNode,
+                                         nsIXFormsAccessors **aAccessors)
+{
+  NS_ENSURE_ARG(aInstanceNode);
+  NS_ENSURE_ARG_POINTER(aAccessors);
+  *aAccessors = nsnull;
+
+  nsCOMPtr<nsIDOMNode> instanceDocNode;
+  nsresult rv =
+    nsXFormsUtils::GetInstanceNodeForData(aInstanceNode,
+                                          getter_AddRefs(instanceDocNode));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIDOMNode> modelNode;
+  instanceDocNode->GetParentNode(getter_AddRefs(modelNode));
+  NS_ENSURE_STATE(modelNode);
+
+  nsCOMPtr<nsIDOM3Node> theModelNode(do_QueryInterface(mElement));
+  PRBool isSameNode = PR_FALSE;
+  theModelNode->IsSameNode(modelNode, &isSameNode);
+  NS_ENSURE_TRUE(isSameNode, NS_ERROR_UNEXPECTED);
+
+  *aAccessors = new nsXFormsAccessors(this, aInstanceNode);
+  NS_ENSURE_TRUE(*aAccessors, NS_ERROR_OUT_OF_MEMORY);
+
+  NS_ADDREF(*aAccessors);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetAccessorsByExpr(const nsAString&     aXPathExpr,
+                                         nsIXFormsAccessors **aAccessors)
+{
+  NS_ENSURE_ARG_POINTER(aAccessors);
+  *aAccessors = nsnull;
+
+  nsCOMPtr<nsIDOMDocument> firstInstanceDoc =
+    FindInstanceDocument(EmptyString());
+  NS_ENSURE_STATE(firstInstanceDoc);
+
+  nsCOMPtr<nsIDOMElement> defaultContextNode;
+  firstInstanceDoc->GetDocumentElement(getter_AddRefs(defaultContextNode));
+
+  nsCOMPtr<nsIDOMXPathResult> xpRes;
+  nsXFormsUtils::EvaluateXPath(aXPathExpr, defaultContextNode, mElement,
+                               nsIDOMXPathResult::FIRST_ORDERED_NODE_TYPE,
+                               getter_AddRefs(xpRes));
+  NS_ENSURE_STATE(xpRes);
+
+  nsCOMPtr<nsIDOMNode> instanceNode;
+  xpRes->GetSingleNodeValue(getter_AddRefs(instanceNode));
+  NS_ENSURE_STATE(instanceNode);
+
+  *aAccessors = new nsXFormsAccessors(this, instanceNode);
+  NS_ENSURE_TRUE(*aAccessors, NS_ERROR_OUT_OF_MEMORY);
+
+  NS_ADDREF(*aAccessors);
+  return NS_OK;
+}
+
+// nsIXFormsModelElement
 
 NS_IMETHODIMP
 nsXFormsModelElement::GetInstanceDocument(const nsAString& aInstanceID,
@@ -1177,6 +1241,18 @@ nsXFormsModelElement::SetStates(nsIXFormsControl *aControl,
     nsXFormsUtils::DispatchEvent(element, eEvent_ValueChanged);
   }
 
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetStates(nsIDOMNode *aBoundNode, PRInt32 *aStates)
+{
+  NS_ENSURE_ARG_POINTER(aStates);
+
+  const nsXFormsNodeState *ns = mMDG.GetNodeState(aBoundNode);
+  NS_ENSURE_STATE(ns);
+
+  *aStates = ns->GetIntrinsicState();
   return NS_OK;
 }
 

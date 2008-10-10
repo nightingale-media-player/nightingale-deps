@@ -105,8 +105,19 @@ nsXFormsHintHelpListener::HandleEvent(nsIDOMEvent* aEvent)
 }
 
 NS_IMETHODIMP
+nsXFormsControlStub::GetModel(nsIModelElementPrivate **aModel)
+{
+  NS_ENSURE_ARG_POINTER(aModel);
+
+  NS_IF_ADDREF(*aModel = mModel);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsXFormsControlStub::GetBoundNode(nsIDOMNode **aBoundNode)
 {
+  NS_ENSURE_ARG_POINTER(aBoundNode);
+
   NS_IF_ADDREF(*aBoundNode = mBoundNode);
   return NS_OK;  
 }

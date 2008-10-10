@@ -1,11 +1,11 @@
-/Makefile.in/1.8/Fri Feb 29 23:24:55 2008//TFIREFOX_3_0_1_RELEASE
-/mozGrowlDelegate.h/1.3/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_1_RELEASE
-/mozGrowlDelegate.mm/1.8/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_1_RELEASE
-/nsAlertsImageLoadListener.h/1.6/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_1_RELEASE
-/nsAlertsImageLoadListener.mm/1.4/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_1_RELEASE
-/nsAlertsService.h/1.6/Sat Sep 22 02:08:28 2007//TFIREFOX_3_0_1_RELEASE
-/nsAlertsService.mm/1.10/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_1_RELEASE
-/nsAlertsServiceModule.cpp/1.4/Tue May 15 20:25:53 2007//TFIREFOX_3_0_1_RELEASE
-/nsNotificationsList.h/1.1/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_1_RELEASE
-/nsNotificationsList.mm/1.2/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_1_RELEASE
-D
+/Makefile.in/1.8/Fri Feb 29 23:24:55 2008//TFIREFOX_3_0_2_RELEASE
+/mozGrowlDelegate.h/1.3/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_2_RELEASE
+/mozGrowlDelegate.mm/1.8/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_2_RELEASE
+/nsAlertsImageLoadListener.h/1.6/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_2_RELEASE
+/nsAlertsImageLoadListener.mm/1.4/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_2_RELEASE
+/nsAlertsService.h/1.6/Sat Sep 22 02:08:28 2007//TFIREFOX_3_0_2_RELEASE
+/nsAlertsService.mm/1.10/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_2_RELEASE
+/nsAlertsServiceModule.cpp/1.4/Tue May 15 20:25:53 2007//TFIREFOX_3_0_2_RELEASE
+/nsNotificationsList.h/1.1/Sun Jul 15 21:16:53 2007//TFIREFOX_3_0_2_RELEASE
+/nsNotificationsList.mm/1.2/Wed Feb 20 17:34:21 2008//TFIREFOX_3_0_2_RELEASE
+D/growl////

@@ -1,6 +1,6 @@
-/.cvsignore/1.1/Thu Jun 19 17:42:41 2003//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.7/Thu Jun 22 21:27:32 2006//TFIREFOX_3_0_1_RELEASE
-/nsIconChannel.cpp/1.23/Thu Jun  1 22:05:08 2006//TFIREFOX_3_0_1_RELEASE
-/nsIconChannel.h/1.9/Tue May  2 21:23:57 2006//TFIREFOX_3_0_1_RELEASE
-/nsIconChannelCocoa.mm/1.5/Wed Feb 20 17:32:13 2008//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Thu Jun 19 17:42:41 2003//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.7/Thu Jun 22 21:27:32 2006//TFIREFOX_3_0_2_RELEASE
+/nsIconChannel.cpp/1.23/Thu Jun  1 22:05:08 2006//TFIREFOX_3_0_2_RELEASE
+/nsIconChannel.h/1.9/Tue May  2 21:23:57 2006//TFIREFOX_3_0_2_RELEASE
+/nsIconChannelCocoa.mm/1.5/Wed Feb 20 17:32:13 2008//TFIREFOX_3_0_2_RELEASE
 D

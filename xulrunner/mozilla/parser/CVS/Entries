@@ -1,2 +1,4 @@
-/Makefile.in/1.2/Mon Apr 17 01:13:05 2006//TFIREFOX_3_0_1_RELEASE
-D
+/Makefile.in/1.2/Mon Apr 17 01:13:05 2006//TFIREFOX_3_0_2_RELEASE
+D/expat////
+D/htmlparser////
+D/xml////

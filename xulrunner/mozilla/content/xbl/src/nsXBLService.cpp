@@ -87,6 +87,7 @@
 #endif
 #include "nsIDOMLoadListener.h"
 #include "nsIDOMEventGroup.h"
+#include "nsDocument.h"
 
 #define NS_MAX_XBL_BINDING_RECURSION 20
 
@@ -366,6 +367,10 @@ nsXBLStreamListener::Load(nsIDOMEvent* aEvent)
     NS_WARNING("XBL load did not complete until after document went away! Modal dialog bug?\n");
   }
   else {
+    // Clear script handling object on asynchronously loaded XBL documents.
+    static_cast<nsDocument*>(static_cast<nsIDocument*>(doc.get()))->
+      ClearScriptHandlingObject();
+
     // We have to do a flush prior to notification of the document load.
     // This has to happen since the HTML content sink can be holding on
     // to notifications related to our children (e.g., if you bind to the
@@ -1201,6 +1206,10 @@ nsXBLService::FetchBindingDocument(nsIContent* aBoundElement, nsIDocument* aBoun
 
   rv = nsSyncLoadService::PushSyncStreamToListener(in, listener, channel);
   NS_ENSURE_SUCCESS(rv, rv);
+
+  // Clear script handling object on synchronously loaded XBL documents.
+  static_cast<nsDocument*>(static_cast<nsIDocument*>(doc.get()))->
+    ClearScriptHandlingObject();
 
   doc.swap(*aResult);
 

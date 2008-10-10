@@ -51,11 +51,10 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIXFORMSRANGEACCESSORS
   NS_FORWARD_NSIXFORMSRANGECONDITIONACCESSORS(nsXFormsRangeConditionAccessors::)
-  NS_FORWARD_NSIXFORMSACCESSORS(nsXFormsAccessors::)
+  NS_FORWARD_NSIXFORMSACCESSORS(nsXFormsControlAccessors::)
 
   // Constructor
-  nsXFormsRangeAccessors(nsIDelegateInternal* aDelegate,
-                         nsIDOMElement* aElement)
+  nsXFormsRangeAccessors(nsIDelegateInternal* aDelegate, nsIDOMElement *aElement)
     : nsXFormsRangeConditionAccessors(aDelegate, aElement)
   {
   }

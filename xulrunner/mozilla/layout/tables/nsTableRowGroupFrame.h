@@ -43,6 +43,7 @@
 #include "nsILineIterator.h"
 #include "nsTablePainter.h"
 #include "nsTArray.h"
+#include "nsCSSAnonBoxes.h"
 
 class nsTableFrame;
 class nsTableRowFrame;
@@ -360,6 +361,11 @@ public:
    * decided not to use a cursor or we already have one set up.
    */
   FrameCursorData* SetupRowCursor();
+  
+  PRBool IsScrolled() {
+    return GetStyleContext()->GetPseudoType() == nsCSSAnonBoxes::scrolledContent ||
+           GetStyleDisplay()->mOverflowX == NS_STYLE_OVERFLOW_CLIP;
+  }
 
 protected:
   nsTableRowGroupFrame(nsStyleContext* aContext);

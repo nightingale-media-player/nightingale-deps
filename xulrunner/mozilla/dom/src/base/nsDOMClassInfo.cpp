@@ -4495,10 +4495,14 @@ nsWindowSH::GetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
     const char *name = JS_GET_CLASS(cx, JSVAL_TO_OBJECT(*vp))->name;
 
     // The list of Window class names here need to be kept in sync
-    // with the actual class names!
+    // with the actual class names! The class name
+    // XPCCrossOriginWrapper needs to be handled here too as XOWs
+    // define child frame names with a XOW as the value, and thus
+    // we'll need to get through here with XOWs class name too.
     if ((*name == 'W' && strcmp(name, "Window") == 0) ||
         (*name == 'C' && strcmp(name, "ChromeWindow") == 0) ||
-        (*name == 'M' && strcmp(name, "ModalContentWindow") == 0)) {
+        (*name == 'M' && strcmp(name, "ModalContentWindow") == 0) ||
+        (*name == 'X' && strcmp(name, "XPCCrossOriginWrapper") == 0)) {
       nsCOMPtr<nsIXPConnectWrappedNative> vpwrapper;
       sXPConnect->GetWrappedNativeOfJSObject(cx, JSVAL_TO_OBJECT(*vp),
                                              getter_AddRefs(vpwrapper));
@@ -8002,6 +8006,8 @@ nsHTMLDocumentSH::DocumentAllGetProperty(JSContext *cx, JSObject *obj,
       }
 
       *vp = INT_TO_JSVAL(length);
+
+      return JS_TRUE;
     } else if (id != sTags_id) {
       // For all other strings, look for an element by id or name.
 
@@ -8015,7 +8021,7 @@ nsHTMLDocumentSH::DocumentAllGetProperty(JSContext *cx, JSObject *obj,
         return JS_FALSE;
       }
     }
-  } else if (JSVAL_TO_INT(id) >= 0) {
+  } else if (JSVAL_IS_INT(id) && JSVAL_TO_INT(id) >= 0) {
     // Map document.all[n] (where n is a number) to the n:th item in
     // the document.all node list.
 

@@ -53,6 +53,8 @@ ifndef MINIMO
 # Do not set EXPORT_LIBRARY as we do not want xforms in the static libs list
 #EXPORT_LIBRARY	= 1
 FORCE_SHARED_LIB = 1
+# required for Windows builds with VS2005+ (links in the c runtime)
+USE_STATIC_LIBS  = 1
 else
 MODULE_NAME	= xforms
 EXPORT_LIBRARY	= 1
@@ -83,6 +85,7 @@ XULAPP_DEFINES = \
 	-DBUILD_ID=$(BUILD_ID) \
 	-DPACKAGE_VERSION=$(PACKAGE_VERSION) \
 	-DID=${INSTALL_EXTENSION_ID} \
+	-DTARGET_PLATFORM=$(OS_TARGET)_$(TARGET_XPCOM_ABI) \
 	$(NULL)
 
 # Include these in the XPI
@@ -111,6 +114,7 @@ REQUIRES	= \
 		htmlparser \
 		exthandler \
 		chardet \
+		pipnss \
 		$(NULL)
 
 # XForms IDLs
@@ -228,6 +232,12 @@ EXTRA_DSO_LDOPTS = \
 		$(LIBXUL_DIST)/lib/$(LIB_PREFIX)unicharutil_s.$(LIB_SUFFIX) \
 		$(XPCOM_GLUE_LDOPTS) \
 		$(NULL)
+
+ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))
+EXTRA_DSO_LDOPTS += $(DIST)/lib/$(LIB_PREFIX)nss3.$(LIB_SUFFIX)
+else
+EXTRA_DSO_LDOPTS += $(LIBXUL_DIST)/lib/$(LIB_PREFIX)nss3$(DLL_SUFFIX)
+endif
 
 # Do not clean schema-validation on distclean, it should handle that itself
 distclean:: LOOP_OVER_DIRS=

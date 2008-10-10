@@ -1,12 +1,12 @@
-/.cvsignore/1.1/Sat Dec  5 09:04:13 1998//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.20/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_1_RELEASE
-/nsIPref.idl/3.47/Mon Feb  5 22:34:35 2007//TFIREFOX_3_0_1_RELEASE
-/nsIPrefBranch.idl/1.20/Fri Dec 29 13:08:41 2006//TFIREFOX_3_0_1_RELEASE
-/nsIPrefBranch2.idl/1.5/Sat Nov 17 04:25:41 2007//TFIREFOX_3_0_1_RELEASE
-/nsIPrefBranchInternal.idl/1.12/Wed Feb 23 13:59:16 2005//TFIREFOX_3_0_1_RELEASE
-/nsIPrefLocalizedString.idl/1.8/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_1_RELEASE
-/nsIPrefService.idl/1.17/Sat Sep  1 02:16:47 2007//TFIREFOX_3_0_1_RELEASE
-/nsIRelativeFilePref.idl/1.1/Tue Apr  9 14:15:01 2002//TFIREFOX_3_0_1_RELEASE
-/nsISecurityPref.idl/3.8/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_1_RELEASE
-/nsPrefsCID.h/3.3/Sun Feb  6 12:59:37 2005//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Sat Dec  5 09:04:13 1998//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.20/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_2_RELEASE
+/nsIPref.idl/3.47/Mon Feb  5 22:34:35 2007//TFIREFOX_3_0_2_RELEASE
+/nsIPrefBranch.idl/1.20/Fri Dec 29 13:08:41 2006//TFIREFOX_3_0_2_RELEASE
+/nsIPrefBranch2.idl/1.5/Sat Nov 17 04:25:41 2007//TFIREFOX_3_0_2_RELEASE
+/nsIPrefBranchInternal.idl/1.12/Wed Feb 23 13:59:16 2005//TFIREFOX_3_0_2_RELEASE
+/nsIPrefLocalizedString.idl/1.8/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_2_RELEASE
+/nsIPrefService.idl/1.17/Sat Sep  1 02:16:47 2007//TFIREFOX_3_0_2_RELEASE
+/nsIRelativeFilePref.idl/1.1/Tue Apr  9 14:15:01 2002//TFIREFOX_3_0_2_RELEASE
+/nsISecurityPref.idl/3.8/Sat Dec 31 12:14:37 2005//TFIREFOX_3_0_2_RELEASE
+/nsPrefsCID.h/3.3/Sun Feb  6 12:59:37 2005//TFIREFOX_3_0_2_RELEASE
 D

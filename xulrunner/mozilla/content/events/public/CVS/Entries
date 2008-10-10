@@ -1,13 +1,13 @@
-/.cvsignore/1.1/Sat Dec  5 09:02:53 1998//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.13/Thu Feb 15 23:04:28 2007//TFIREFOX_3_0_1_RELEASE
-/nsEventDispatcher.h/1.4/Sun May 13 13:59:00 2007//TFIREFOX_3_0_1_RELEASE
-/nsIEventListenerManager.h/1.53/Tue May  8 21:13:13 2007//TFIREFOX_3_0_1_RELEASE
-/nsIEventStateManager.h/1.88/Wed Jan  9 09:38:29 2008//TFIREFOX_3_0_1_RELEASE
-/nsIPrivateCompositionEvent.h/1.9/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_1_RELEASE
-/nsIPrivateDOMEvent.h/1.38/Wed Jan 30 01:31:29 2008//TFIREFOX_3_0_1_RELEASE
-/nsIPrivateTextEvent.h/1.8/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_1_RELEASE
-/nsIPrivateTextRange.h/1.6/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_1_RELEASE
-/nsMutationEvent.h/1.11/Fri Oct  6 05:24:01 2006//TFIREFOX_3_0_1_RELEASE
-/nsPIDOMEventTarget.h/1.7/Thu Apr 17 22:15:07 2008//TFIREFOX_3_0_1_RELEASE
-/nsPLDOMEvent.h/1.7/Fri Apr 11 17:29:07 2008//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Sat Dec  5 09:02:53 1998//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.13/Thu Feb 15 23:04:28 2007//TFIREFOX_3_0_2_RELEASE
+/nsEventDispatcher.h/1.4/Sun May 13 13:59:00 2007//TFIREFOX_3_0_2_RELEASE
+/nsIEventListenerManager.h/1.53/Tue May  8 21:13:13 2007//TFIREFOX_3_0_2_RELEASE
+/nsIEventStateManager.h/1.88/Wed Jan  9 09:38:29 2008//TFIREFOX_3_0_2_RELEASE
+/nsIPrivateCompositionEvent.h/1.9/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_2_RELEASE
+/nsIPrivateDOMEvent.h/1.38/Wed Jan 30 01:31:29 2008//TFIREFOX_3_0_2_RELEASE
+/nsIPrivateTextEvent.h/1.8/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_2_RELEASE
+/nsIPrivateTextRange.h/1.6/Fri Nov 11 14:35:54 2005//TFIREFOX_3_0_2_RELEASE
+/nsMutationEvent.h/1.11/Fri Oct  6 05:24:01 2006//TFIREFOX_3_0_2_RELEASE
+/nsPIDOMEventTarget.h/1.7/Thu Apr 17 22:15:07 2008//TFIREFOX_3_0_2_RELEASE
+/nsPLDOMEvent.h/1.7/Fri Apr 11 17:29:07 2008//TFIREFOX_3_0_2_RELEASE
 D

@@ -302,6 +302,28 @@ static struct nsMyTrustedEVInfo myTrustedEVInfos[] = {
     nsnull
   },
   {
+    // CN=GlobalSign Root CA,OU=Root CA,O=GlobalSign nv-sa,C=BE
+    "1.3.6.1.4.1.4146.1.1",
+    "GlobalSign EV OID",
+    SEC_OID_UNKNOWN,
+    "B1:BC:96:8B:D4:F4:9D:62:2A:A8:9A:81:F2:15:01:52:A4:1D:82:9C",
+    "MFcxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMRAwDgYD"
+    "VQQLEwdSb290IENBMRswGQYDVQQDExJHbG9iYWxTaWduIFJvb3QgQ0E=",
+    "BAAAAAABFUtaw5Q=",
+    nsnull
+  },
+  {
+    // CN=GlobalSign,O=GlobalSign,OU=GlobalSign Root CA - R2
+    "1.3.6.1.4.1.4146.1.1",
+    "GlobalSign EV OID",
+    SEC_OID_UNKNOWN,
+    "75:E0:AB:B6:13:85:12:27:1C:04:F8:5F:DD:DE:38:E4:B7:24:2E:FE",
+    "MEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIyMRMwEQYDVQQKEwpH"
+    "bG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWdu",
+    "BAAAAAABD4Ym5g0=",
+    nsnull
+  },
+  {
     // OU=Sample Certification Authority,O=\"Sample, Inc.\",C=US
     "0.0.0.0",
     0, // for real entries use a string like "Sample INVALID EV OID"
@@ -597,7 +619,7 @@ getRootsForOidFromExternalRootsFile(CERTCertList* certList,
     if (!ev)
       continue;
     if (policyOIDTag == ev->oid_tag)
-      CERT_AddCertToListTail(certList, ev->cert);
+      CERT_AddCertToListTail(certList, CERT_DupCertificate(ev->cert));
   }
 
   return PR_FALSE;
@@ -666,7 +688,7 @@ getRootsForOid(SECOidTag oid_tag)
     if (!entry.oid_name) // invalid or placeholder list entry
       continue;
     if (entry.oid_tag == oid_tag)
-      CERT_AddCertToListTail(certList, entry.cert);
+      CERT_AddCertToListTail(certList, CERT_DupCertificate(entry.cert));
   }
 
 #ifdef PSM_ENABLE_TEST_EV_ROOTS
@@ -888,7 +910,7 @@ nsNSSCertificate::hasValidEVOidTag(SECOidTag &resultOidTag, PRBool &validEV)
     return NS_OK;
 
   CERTCertList *rootList = getRootsForOid(oid_tag);
-  CERTCertListCleaner rootListCleaner();
+  CERTCertListCleaner rootListCleaner(rootList);
 
   CERTRevocationMethodIndex preferedRevMethods[1] = { 
     cert_revocation_method_ocsp

@@ -22,6 +22,7 @@
  * Contributor(s):
  *  Allan Beaufour <abeaufour@novell.com>
  *  Olli Pettay <Olli.Pettay@helsinki.fi>
+ *  Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -46,100 +47,113 @@
 #include "nsIXFormsControl.h"
 #include "nsIProgrammingLanguage.h"
 
-NS_IMPL_ISUPPORTS2(nsXFormsAccessors, nsIXFormsAccessors, nsIClassInfo)
+// nsXFormsAccessors object implementation
 
-void
-nsXFormsAccessors::Destroy()
-{
-  mElement = nsnull;
-  mDelegate = nsnull;
-}
+NS_IMPL_ISUPPORTS2(nsXFormsAccessorsBase, nsIXFormsAccessors, nsIClassInfo)
 
 nsresult
-nsXFormsAccessors::GetState(PRInt32 aState, PRBool *aStateVal)
+nsXFormsAccessorsBase::GetState(PRInt32 aState, PRBool *aStateVal)
 {
   NS_ENSURE_ARG_POINTER(aStateVal);
-  nsCOMPtr<nsIContent> content(do_QueryInterface(mElement));
-  *aStateVal = (content && (content->IntrinsicState() & aState));
+
+  nsCOMPtr<nsIModelElementPrivate> model;
+  GetModel(getter_AddRefs(model));
+  NS_ENSURE_STATE(model);
+
+  nsCOMPtr<nsIDOMNode> instNode;
+  GetInstanceNode(getter_AddRefs(instNode));
+  NS_ENSURE_STATE(instNode);
+
+  PRInt32 states;
+  model->GetStates(instNode, &states);
+  *aStateVal = states & aState;
 
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetValue(nsAString &aValue)
+nsXFormsAccessorsBase::GetValue(nsAString &aValue)
 {
-  if (mDelegate) {
-    mDelegate->GetValue(aValue);
-  } else {
-    aValue.SetIsVoid(PR_TRUE);
-  }
+  nsCOMPtr<nsIDOMNode> instNode;
+  GetInstanceNode(getter_AddRefs(instNode));
+  NS_ENSURE_STATE(instNode);
+
+  nsXFormsUtils::GetNodeValue(instNode, aValue);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::SetValue(const nsAString & aValue)
+nsXFormsAccessorsBase::SetValue(const nsAString &aValue)
 {
-  return mDelegate ? mDelegate->SetValue(aValue) : NS_OK;
+  nsCOMPtr<nsIModelElementPrivate> model;
+  GetModel(getter_AddRefs(model));
+  NS_ENSURE_STATE(model);
+
+  nsCOMPtr<nsIDOMNode> instNode;
+  GetInstanceNode(getter_AddRefs(instNode));
+  NS_ENSURE_STATE(instNode);
+
+  PRBool nodeChanged;
+  return model->SetNodeValue(instNode, aValue, PR_TRUE, &nodeChanged);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::HasBoundNode(PRBool *aHasBoundNode)
+nsXFormsAccessorsBase::HasBoundNode(PRBool *aHasBoundNode)
 {
   NS_ENSURE_ARG_POINTER(aHasBoundNode);
-  *aHasBoundNode = PR_FALSE;
-  return mDelegate ? mDelegate->GetHasBoundNode(aHasBoundNode) : NS_OK;
+
+  nsCOMPtr<nsIDOMNode> instNode;
+  GetInstanceNode(getter_AddRefs(instNode));
+  *aHasBoundNode = instNode ? PR_TRUE : PR_FALSE;
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::IsReadonly(PRBool *aStateVal)
+nsXFormsAccessorsBase::IsReadonly(PRBool *aStateVal)
 {
   return GetState(NS_EVENT_STATE_MOZ_READONLY, aStateVal);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::IsRelevant(PRBool *aStateVal)
+nsXFormsAccessorsBase::IsRelevant(PRBool *aStateVal)
 {
   return GetState(NS_EVENT_STATE_ENABLED, aStateVal);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::IsRequired(PRBool *aStateVal)
+nsXFormsAccessorsBase::IsRequired(PRBool *aStateVal)
 {
   return GetState(NS_EVENT_STATE_REQUIRED, aStateVal);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::IsValid(PRBool *aStateVal)
+nsXFormsAccessorsBase::IsValid(PRBool *aStateVal)
 {
   return GetState(NS_EVENT_STATE_VALID, aStateVal);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::SetContent(nsIDOMNode *aNode, PRBool aForceUpdate)
+nsXFormsAccessorsBase::SetContent(nsIDOMNode *aNode, PRBool aForceUpdate)
 {
-  NS_ENSURE_STATE(mElement);
   NS_ENSURE_ARG(aNode);
 
-  nsCOMPtr<nsIDOMNode> boundNode;
-  nsresult rv = GetBoundNode(getter_AddRefs(boundNode));
-  NS_ENSURE_SUCCESS(rv, rv);
-  NS_ENSURE_STATE(boundNode);
+  nsCOMPtr<nsIModelElementPrivate> model;
+  GetModel(getter_AddRefs(model));
+  NS_ENSURE_STATE(model);
 
-  nsCOMPtr<nsIModelElementPrivate> modelPriv = nsXFormsUtils::GetModel(mElement);
-  NS_ENSURE_STATE(modelPriv);
+  nsCOMPtr<nsIDOMNode> instNode;
+  GetInstanceNode(getter_AddRefs(instNode));
+  NS_ENSURE_STATE(instNode);
 
-  return modelPriv->SetNodeContent(boundNode, aNode, aForceUpdate);
+  return model->SetNodeContent(instNode, aNode, aForceUpdate);
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetBoundNode(nsIDOMNode **aBoundNode)
+nsXFormsAccessorsBase::GetBoundNode(nsIDOMNode **aBoundNode)
 {
-  NS_ENSURE_ARG_POINTER(aBoundNode);
-  if (mDelegate) {
-    nsCOMPtr<nsIXFormsControl> control = do_QueryInterface(mDelegate);
-    return control->GetBoundNode(aBoundNode);
-  }
-  return NS_OK;
+  return GetInstanceNode(aBoundNode);
 }
 
 // nsIClassInfo implementation
@@ -149,7 +163,7 @@ static const nsIID sScriptingIIDs[] = {
 };
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetInterfaces(PRUint32 *aCount, nsIID * **aArray)
+nsXFormsAccessorsBase::GetInterfaces(PRUint32 *aCount, nsIID * **aArray)
 {
   return nsXFormsUtils::CloneScriptingInterfaces(sScriptingIIDs,
                                                  NS_ARRAY_LENGTH(sScriptingIIDs),
@@ -157,50 +171,141 @@ nsXFormsAccessors::GetInterfaces(PRUint32 *aCount, nsIID * **aArray)
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetHelperForLanguage(PRUint32 language,
-                                        nsISupports **_retval)
+nsXFormsAccessorsBase::GetHelperForLanguage(PRUint32 language,
+                                            nsISupports **_retval)
 {
   *_retval = nsnull;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetContractID(char * *aContractID)
+nsXFormsAccessorsBase::GetContractID(char * *aContractID)
 {
   *aContractID = nsnull;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetClassDescription(char * *aClassDescription)
+nsXFormsAccessorsBase::GetClassDescription(char * *aClassDescription)
 {
   *aClassDescription = nsnull;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetClassID(nsCID * *aClassID)
+nsXFormsAccessorsBase::GetClassID(nsCID * *aClassID)
 {
   *aClassID = nsnull;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetImplementationLanguage(PRUint32 *aImplementationLanguage)
+nsXFormsAccessorsBase::GetImplementationLanguage(PRUint32 *aImplementationLanguage)
 {
   *aImplementationLanguage = nsIProgrammingLanguage::CPLUSPLUS;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetFlags(PRUint32 *aFlags)
+nsXFormsAccessorsBase::GetFlags(PRUint32 *aFlags)
 {
   *aFlags = nsIClassInfo::DOM_OBJECT;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsAccessors::GetClassIDNoAlloc(nsCID *aClassIDNoAlloc)
+nsXFormsAccessorsBase::GetClassIDNoAlloc(nsCID *aClassIDNoAlloc)
 {
   return NS_ERROR_NOT_AVAILABLE;
+}
+
+// nsXFormsAccessors implementation
+
+nsXFormsAccessors::nsXFormsAccessors(nsIModelElementPrivate *aModel,
+                                     nsIDOMNode *aInstanceNode)
+  : mModel(aModel), mInstanceNode(aInstanceNode)
+{
+}
+
+nsresult
+nsXFormsAccessors::GetModel(nsIModelElementPrivate **aModel)
+{
+  NS_ENSURE_ARG_POINTER(aModel);
+
+  NS_IF_ADDREF(*aModel = mModel);
+  return NS_OK;
+}
+
+nsresult
+nsXFormsAccessors::GetInstanceNode(nsIDOMNode **aInstanceNode)
+{
+  NS_ENSURE_ARG_POINTER(aInstanceNode);
+
+  NS_IF_ADDREF(*aInstanceNode = mInstanceNode);
+  return NS_OK;
+}
+
+// nsXFormsControlAccessors implementation
+nsXFormsControlAccessors::nsXFormsControlAccessors(nsIDelegateInternal *aControl,
+                                                   nsIDOMElement *aElement)
+: mDelegate(aControl), mElement(aElement)
+{
+}
+
+nsresult
+nsXFormsControlAccessors::GetModel(nsIModelElementPrivate **aModel)
+{
+  NS_ENSURE_ARG_POINTER(aModel);
+  NS_ENSURE_STATE(mDelegate);
+
+  nsCOMPtr<nsIXFormsControl> control = do_QueryInterface(mDelegate);
+  return control->GetModel(aModel);
+}
+
+nsresult
+nsXFormsControlAccessors::GetInstanceNode(nsIDOMNode **aInstanceNode)
+{
+  NS_ENSURE_ARG_POINTER(aInstanceNode);
+  NS_ENSURE_STATE(mDelegate);
+
+  nsCOMPtr<nsIXFormsControl> control = do_QueryInterface(mDelegate);
+  return control->GetBoundNode(aInstanceNode);
+}
+
+nsresult
+nsXFormsControlAccessors::GetState(PRInt32 aState, PRBool *aStateVal)
+{
+  NS_ENSURE_ARG_POINTER(aStateVal);
+
+  if (mDelegate) {
+    NS_ENSURE_STATE(mElement);
+
+    nsCOMPtr<nsIContent> content(do_QueryInterface(mElement));
+    *aStateVal = (content && (content->IntrinsicState() & aState));
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsControlAccessors::GetValue(nsAString &aValue)
+{
+  if (mDelegate)
+    return mDelegate->GetValue(aValue);
+
+  aValue.SetIsVoid(PR_TRUE);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsControlAccessors::SetValue(const nsAString &aValue)
+{
+  return mDelegate ? mDelegate->SetValue(aValue) : NS_OK;
+}
+
+void
+nsXFormsControlAccessors::Destroy()	
+{
+  mElement = nsnull;
+  mDelegate = nsnull;
 }

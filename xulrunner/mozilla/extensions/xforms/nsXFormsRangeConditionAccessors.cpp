@@ -45,9 +45,16 @@
 #include "nsXFormsUtils.h"
 
 NS_IMPL_ISUPPORTS_INHERITED2(nsXFormsRangeConditionAccessors,
-                             nsXFormsAccessors,
+                             nsXFormsControlAccessors,
                              nsIXFormsRangeConditionAccessors,
                              nsIClassInfo)
+
+// Constructor
+nsXFormsRangeConditionAccessors::nsXFormsRangeConditionAccessors(nsIDelegateInternal *aDelegate,
+                                                                 nsIDOMElement *aElement)
+  : nsXFormsControlAccessors(aDelegate, aElement)
+{
+}
 
 // nsXFormsRangeConditionAccessors
 
@@ -71,14 +78,9 @@ nsXFormsRangeConditionAccessors::SetInRange(PRBool aInRange)
    * then we need to set the state to the new value and dispatch
    * xforms-in-range or xforms-out-of-range
    */
-  nsCOMPtr<nsIXFormsControl> control(do_QueryInterface(mDelegate));
-  NS_ENSURE_STATE(control);
-
-  nsCOMPtr<nsIDOMElement> element;
-  control->GetElement(getter_AddRefs(element));
-  nsCOMPtr<nsIXTFElementWrapper> xtfWrap(do_QueryInterface(element));
+  nsCOMPtr<nsIXTFElementWrapper> xtfWrap(do_QueryInterface(mElement));
   NS_ENSURE_STATE(xtfWrap);
-  nsCOMPtr<nsIContent> content(do_QueryInterface(element));
+  nsCOMPtr<nsIContent> content(do_QueryInterface(mElement));
   NS_ENSURE_STATE(content);
 
   PRInt32 state = content->IntrinsicState();
@@ -93,7 +95,7 @@ nsXFormsRangeConditionAccessors::SetInRange(PRBool aInRange)
   rv = xtfWrap->SetIntrinsicState(state);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsXFormsUtils::DispatchEvent(element,
+  nsXFormsUtils::DispatchEvent(mElement,
                                aInRange ? eEvent_InRange : eEvent_OutOfRange);
 
   return NS_OK;

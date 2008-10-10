@@ -119,7 +119,7 @@ protected:
 
   nsString      mControlType;
   /** The accessors object for this delegate */
-  nsRefPtr<nsXFormsAccessors> mAccessor;
+  nsRefPtr<nsXFormsControlAccessors> mAccessor;
 };
 
 #endif

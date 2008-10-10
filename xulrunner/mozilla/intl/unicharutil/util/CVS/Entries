@@ -1,14 +1,14 @@
-/.cvsignore/1.1/Wed Sep 26 21:06:45 2001//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.17/Mon Feb 18 08:50:17 2008//TFIREFOX_3_0_1_RELEASE
-/bidicattable.h/3.11/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_1_RELEASE
-/genbidicattable.pl/1.9/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_1_RELEASE
-/gensymmtable.pl/1.7/Sat Oct  6 12:08:43 2007//TFIREFOX_3_0_1_RELEASE
-/nsBidiUtils.cpp/3.19/Wed Mar 12 07:56:38 2008//TFIREFOX_3_0_1_RELEASE
-/nsBidiUtils.h/1.14/Wed Mar 12 07:56:38 2008//TFIREFOX_3_0_1_RELEASE
-/nsCompressedCharMap.cpp/1.19/Sun Apr 18 14:21:17 2004//TFIREFOX_3_0_1_RELEASE
-/nsCompressedCharMap.h/1.24/Mon Apr 23 14:21:59 2007//TFIREFOX_3_0_1_RELEASE
-/nsUnicharUtils.cpp/1.31/Fri Dec  1 19:26:18 2006//TFIREFOX_3_0_1_RELEASE
-/nsUnicharUtils.h/1.22/Wed Sep 27 17:44:27 2006//TFIREFOX_3_0_1_RELEASE
-/objs.mk/1.2/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_1_RELEASE
-/symmtable.h/3.10/Thu Sep 20 11:16:17 2007//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Wed Sep 26 21:06:45 2001//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.17/Mon Feb 18 08:50:17 2008//TFIREFOX_3_0_2_RELEASE
+/bidicattable.h/3.11/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_2_RELEASE
+/genbidicattable.pl/1.9/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_2_RELEASE
+/gensymmtable.pl/1.7/Sat Oct  6 12:08:43 2007//TFIREFOX_3_0_2_RELEASE
+/nsBidiUtils.cpp/3.19/Wed Mar 12 07:56:38 2008//TFIREFOX_3_0_2_RELEASE
+/nsBidiUtils.h/1.14/Wed Mar 12 07:56:38 2008//TFIREFOX_3_0_2_RELEASE
+/nsCompressedCharMap.cpp/1.19/Sun Apr 18 14:21:17 2004//TFIREFOX_3_0_2_RELEASE
+/nsCompressedCharMap.h/1.24/Mon Apr 23 14:21:59 2007//TFIREFOX_3_0_2_RELEASE
+/nsUnicharUtils.cpp/1.31/Fri Dec  1 19:26:18 2006//TFIREFOX_3_0_2_RELEASE
+/nsUnicharUtils.h/1.22/Wed Sep 27 17:44:27 2006//TFIREFOX_3_0_2_RELEASE
+/objs.mk/1.2/Sun Jul  1 05:56:10 2007//TFIREFOX_3_0_2_RELEASE
+/symmtable.h/3.10/Thu Sep 20 11:16:17 2007//TFIREFOX_3_0_2_RELEASE
 D

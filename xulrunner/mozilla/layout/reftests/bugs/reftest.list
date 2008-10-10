@@ -555,7 +555,7 @@ fails == 385823-2b.html 385823-2-ref.html
 == 386014-1c.html 386014-1-ref.html
 == 386065-1.html 386065-1-ref.html
 == 386065-2.html about:blank
-== 386147-1.html 386147-1-ref.html
+fails == 386147-1.html 386147-1-ref.html # bug 447460
 == 386310-1a.html 386310-1-ref.html
 fails == 386310-1b.html 386310-1-ref.html
 == 386310-1c.html 386310-1-ref.html
@@ -773,6 +773,7 @@ skip-if(MOZ_WIDGET_TOOLKIT=="cocoa") == 413292-1.html 413292-1-ref.html # disabl
 == 417676.html 417676-ref.html
 == 418766-1a.html 418766-1-ref.html
 == 418766-1b.html 418766-1-ref.html
+== 419285-1.html 419285-1-ref.html
 == 419060.html 419060-ref.html
 == 419531-1.html 419531-1-ref.html
 == 420069-1.html 420069-1-ref.html
@@ -793,6 +794,7 @@ skip-if(MOZ_WIDGET_TOOLKIT=="cocoa") == 413292-1.html 413292-1-ref.html # disabl
 == 423385-1.html 423385-1-ref.html
 == 423599-1.html 423599-1-ref.html
 == 423676-1.html 423676-1-ref.html
+== 423823-1.html 423823-1-ref.html
 == 424074-1.xul 424074-1-ref.xul
 != 424074-1.xul 424074-1-ref2.xul
 fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
@@ -800,6 +802,8 @@ fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
 == 424434-1.html 424434-1-ref.html
 == 424631-1.html 424631-1-ref.html
 == 424710-1.html 424710-1-ref.html
+== 425247-1.html 425247-1-ref.html
+== 425247-2.html 425247-2-ref.html
 == 425972-1.html 425972-1-ref.html
 == 425972-2.html 425972-2-ref.html
 != 425972-1.html 425972-2.html
@@ -821,3 +825,7 @@ fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
 == 430813-2.html 430813-2-ref.html
 == 430813-3.html 430813-3-ref.html
 == 433640-1.html 433640-1-ref.html
+== 433700.html 433700-ref.html
+== 436356-1.html 436356-1-ref.html
+== 436356-2.html 436356-2-ref.html
+== 440112.html 440112-ref.html

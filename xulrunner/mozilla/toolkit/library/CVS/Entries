@@ -1,11 +1,11 @@
-/Makefile.in/1.69/Thu May  8 09:20:45 2008//TFIREFOX_3_0_1_RELEASE
-/dlldeps-xul.cpp/1.4/Thu Aug 17 14:22:04 2006//TFIREFOX_3_0_1_RELEASE
-/dlldeps-zlib.cpp/1.2/Thu Dec  9 19:28:30 2004//TFIREFOX_3_0_1_RELEASE
-/libxul-config.mk/1.69/Tue Feb 26 01:28:51 2008//TFIREFOX_3_0_1_RELEASE
-/libxul-rules.mk/1.28/Sat Mar  8 09:43:03 2008//TFIREFOX_3_0_1_RELEASE
-/nsDllMain.cpp/1.2/Mon Feb 21 20:54:15 2005//TFIREFOX_3_0_1_RELEASE
-/nsGFXDeps.cpp/1.1/Thu Dec  9 19:28:30 2004//TFIREFOX_3_0_1_RELEASE
-/nsStaticXULComponents.cpp/1.59/Mon Apr 21 14:04:10 2008//TFIREFOX_3_0_1_RELEASE
-/xulrunner.rc/1.1/Thu Feb  9 21:02:11 2006//TFIREFOX_3_0_1_RELEASE
-/xulrunos2.rc/1.3/Sat Jan 19 08:35:50 2008//TFIREFOX_3_0_1_RELEASE
+/Makefile.in/1.69/Thu May  8 09:20:45 2008//TFIREFOX_3_0_2_RELEASE
+/dlldeps-xul.cpp/1.4/Thu Aug 17 14:22:04 2006//TFIREFOX_3_0_2_RELEASE
+/dlldeps-zlib.cpp/1.2/Thu Dec  9 19:28:30 2004//TFIREFOX_3_0_2_RELEASE
+/libxul-config.mk/1.69/Tue Feb 26 01:28:51 2008//TFIREFOX_3_0_2_RELEASE
+/libxul-rules.mk/1.28/Sat Mar  8 09:43:03 2008//TFIREFOX_3_0_2_RELEASE
+/nsDllMain.cpp/1.2/Mon Feb 21 20:54:15 2005//TFIREFOX_3_0_2_RELEASE
+/nsGFXDeps.cpp/1.1/Thu Dec  9 19:28:30 2004//TFIREFOX_3_0_2_RELEASE
+/nsStaticXULComponents.cpp/1.59/Mon Apr 21 14:04:10 2008//TFIREFOX_3_0_2_RELEASE
+/xulrunner.rc/1.1/Thu Feb  9 21:02:11 2006//TFIREFOX_3_0_2_RELEASE
+/xulrunos2.rc/1.3/Sat Jan 19 08:35:50 2008//TFIREFOX_3_0_2_RELEASE
 D

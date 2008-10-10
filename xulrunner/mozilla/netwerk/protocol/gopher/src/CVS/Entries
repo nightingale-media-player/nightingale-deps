@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Wed Mar 14 02:48:45 2001//TFIREFOX_3_0_1_RELEASE
-/Makefile.in/1.14/Mon Feb 18 08:50:28 2008//TFIREFOX_3_0_1_RELEASE
-/nsGopherChannel.cpp/1.55/Tue Aug  7 01:59:10 2007//TFIREFOX_3_0_1_RELEASE
-/nsGopherChannel.h/1.19/Tue Aug  1 21:26:38 2006//TFIREFOX_3_0_1_RELEASE
-/nsGopherHandler.cpp/1.22/Fri Nov 10 23:49:06 2006//TFIREFOX_3_0_1_RELEASE
-/nsGopherHandler.h/1.5/Sat Nov 12 18:17:17 2005//TFIREFOX_3_0_1_RELEASE
+/.cvsignore/1.1/Wed Mar 14 02:48:45 2001//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.14/Mon Feb 18 08:50:28 2008//TFIREFOX_3_0_2_RELEASE
+/nsGopherChannel.cpp/1.55/Tue Aug  7 01:59:10 2007//TFIREFOX_3_0_2_RELEASE
+/nsGopherChannel.h/1.19/Tue Aug  1 21:26:38 2006//TFIREFOX_3_0_2_RELEASE
+/nsGopherHandler.cpp/1.22/Fri Nov 10 23:49:06 2006//TFIREFOX_3_0_2_RELEASE
+/nsGopherHandler.h/1.5/Sat Nov 12 18:17:17 2005//TFIREFOX_3_0_2_RELEASE
 D

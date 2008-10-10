@@ -308,11 +308,8 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
     NSWindow *cocoaWindow = GetCocoaWindowForXULWindow(xulWindow);
     if (!cocoaWindow) continue;
     
-    // Passing in a |nil| string to the |initWithTitle:| method on |NSMenuItem|
-    // will throw an obj-c exception haulting the XPCOM runtime.
     NSString *windowTitle = [cocoaWindow title];
-    if (!windowTitle)
-      continue;
+    if (!windowTitle) continue;
     
     // Now, create a menu item, and add it to the menu
     NSMenuItem *menuItem = [[NSMenuItem alloc]

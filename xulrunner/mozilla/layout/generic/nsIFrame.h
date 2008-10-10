@@ -1509,11 +1509,17 @@ public:
   virtual nsPoint GetOffsetToExternal(const nsIFrame* aOther) const;
 
   /**
-   * Get the screen rect of the frame.
+   * Get the screen rect of the frame in pixels.
    * @return the pixel rect of the frame in screen coordinates.
    */
   nsIntRect GetScreenRect() const;
   virtual nsIntRect GetScreenRectExternal() const;
+
+  /**
+   * Get the screen rect of the frame in app units.
+   * @return the app unit rect of the frame in screen coordinates.
+   */
+  nsRect GetScreenRectInAppUnits() const;
 
   /**
    * Returns the offset from this frame to the closest geometric parent that
@@ -2124,6 +2130,17 @@ NS_PTR_TO_INT32(frame->GetProperty(nsGkAtoms::embeddingLevel))
    *         are encountered rummaging through the frame.
    */
   nsPeekOffsetStruct GetExtremeCaretPosition(PRBool aStart);
+
+  /**
+   * Same thing as nsFrame::CheckInvalidateSizeChange, but more flexible.  The
+   * implementation of this method must not depend on the mRect or
+   * GetOverflowRect() of the frame!  Note that it's safe to assume in this
+   * method that the frame origin didn't change.  If it did, whoever moved the
+   * frame will invalidate as needed anyway.
+   */
+  void CheckInvalidateSizeChange(const nsRect& aOldRect,
+                                 const nsRect& aOldOverflowRect,
+                                 nsHTMLReflowMetrics& aNewDesiredSize);
 
 protected:
   // Members

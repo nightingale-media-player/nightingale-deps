@@ -983,7 +983,8 @@ nsImageMap::Blur(nsIDOMEvent* aEvent)
 }
 
 nsresult
-nsImageMap::ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus) {
+nsImageMap::ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus)
+{
   //Set which one of our areas changed focus
   nsCOMPtr<nsIDOMEventTarget> target;
   if (NS_SUCCEEDED(aEvent->GetTarget(getter_AddRefs(target))) && target) {
@@ -994,7 +995,6 @@ nsImageMap::ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus) {
         Area* area = (Area*) mAreas.ElementAt(i);
         nsCOMPtr<nsIContent> areaContent;
         area->GetArea(getter_AddRefs(areaContent));
-        if (areaContent) {
           if (areaContent.get() == targetContent.get()) {
             //Set or Remove internal focus
             area->HasFocus(aFocus);
@@ -1010,12 +1010,12 @@ nsImageMap::ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus) {
                   if (presContext) {
                     nsRect dmgRect;
                     area->GetRect(presContext, dmgRect);
-                    imgFrame->Invalidate(dmgRect, PR_TRUE);
-                  }
+                  imgFrame->Invalidate(dmgRect, PR_FALSE);
                 }
               }
             }
           }
+          break;
         }
       }
     }

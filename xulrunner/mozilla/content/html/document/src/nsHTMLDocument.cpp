@@ -2069,12 +2069,15 @@ nsHTMLDocument::OpenCommon(const nsACString& aContentType, PRBool aReplace)
 
   // check whether we're in the middle of unload.  If so, ignore this call.
   nsCOMPtr<nsIDocShell> shell = do_QueryReferent(mDocumentContainer);
-  if (shell) {
-    PRBool inUnload;
-    shell->GetIsInUnload(&inUnload);
-    if (inUnload) {
-      return NS_OK;
-    }
+  if (!shell) {
+    // We won't be able to create a parser anyway.
+    return NS_OK;
+  }
+
+  PRBool inUnload;
+  shell->GetIsInUnload(&inUnload);
+  if (inUnload) {
+    return NS_OK;
   }
 
   // Note: We want to use GetDocumentFromContext here because this document
@@ -2130,12 +2133,10 @@ nsHTMLDocument::OpenCommon(const nsACString& aContentType, PRBool aReplace)
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  nsCOMPtr<nsIDocShell> docshell = do_QueryReferent(mDocumentContainer);
-
   // Stop current loads targeted at the window this document is in.
-  if (mScriptGlobalObject && docshell) {
+  if (mScriptGlobalObject) {
     nsCOMPtr<nsIContentViewer> cv;
-    docshell->GetContentViewer(getter_AddRefs(cv));
+    shell->GetContentViewer(getter_AddRefs(cv));
 
     if (cv) {
       PRBool okToUnload;
@@ -2148,7 +2149,7 @@ nsHTMLDocument::OpenCommon(const nsACString& aContentType, PRBool aReplace)
       }
     }
 
-    nsCOMPtr<nsIWebNavigation> webnav(do_QueryInterface(docshell));
+    nsCOMPtr<nsIWebNavigation> webnav(do_QueryInterface(shell));
     webnav->Stop(nsIWebNavigation::STOP_NETWORK);
   }
 
@@ -2281,30 +2282,33 @@ nsHTMLDocument::OpenCommon(const nsACString& aContentType, PRBool aReplace)
   if (NS_SUCCEEDED(rv)) {
     nsCOMPtr<nsIHTMLContentSink> sink;
 
-    rv = NS_NewHTMLContentSink(getter_AddRefs(sink), this, uri, docshell,
+    rv = NS_NewHTMLContentSink(getter_AddRefs(sink), this, uri, shell,
                                channel);
-    NS_ENSURE_SUCCESS(rv, rv);
+    if (NS_FAILED(rv)) {
+      // Don't use a parser without a content sink.
+      mParser = nsnull;
+      mWriteState = eNotWriting;
+      return rv;
+    }
 
     mParser->SetContentSink(sink);
   }
 
   // Prepare the docshell and the document viewer for the impending
   // out of band document.write()
-  if (docshell) {
-    docshell->PrepareForNewContentModel();
+  shell->PrepareForNewContentModel();
 
-    // Now check whether we were opened with a "replace" argument.  If
-    // so, we need to tell the docshell to not create a new history
-    // entry for this load. Otherwise, make sure that we're doing a normal load,
-    // not whatever type of load was previously done on this docshell.
-    docshell->SetLoadType(aReplace ? LOAD_NORMAL_REPLACE : LOAD_NORMAL);
+  // Now check whether we were opened with a "replace" argument.  If
+  // so, we need to tell the docshell to not create a new history
+  // entry for this load. Otherwise, make sure that we're doing a normal load,
+  // not whatever type of load was previously done on this docshell.
+  shell->SetLoadType(aReplace ? LOAD_NORMAL_REPLACE : LOAD_NORMAL);
 
-    nsCOMPtr<nsIContentViewer> cv;
-    docshell->GetContentViewer(getter_AddRefs(cv));
-    nsCOMPtr<nsIDocumentViewer> docViewer = do_QueryInterface(cv);
-    if (docViewer) {
-      docViewer->LoadStart(static_cast<nsIHTMLDocument *>(this));
-    }
+  nsCOMPtr<nsIContentViewer> cv;
+  shell->GetContentViewer(getter_AddRefs(cv));
+  nsCOMPtr<nsIDocumentViewer> docViewer = do_QueryInterface(cv);
+  if (docViewer) {
+    docViewer->LoadStart(static_cast<nsIHTMLDocument *>(this));
   }
 
   // Add a wyciwyg channel request into the document load group
@@ -3831,12 +3835,19 @@ DocAllResultMatch(nsIContent* aContent, PRInt32 aNamespaceID, nsIAtom* aAtom,
   }
 
   nsIAtom* tag = elm->Tag();
-  if (tag != nsGkAtoms::img    &&
-      tag != nsGkAtoms::form   &&
+  if (tag != nsGkAtoms::a &&
       tag != nsGkAtoms::applet &&
-      tag != nsGkAtoms::embed  &&
+      tag != nsGkAtoms::button &&
+      tag != nsGkAtoms::embed &&
+      tag != nsGkAtoms::form &&
+      tag != nsGkAtoms::iframe &&
+      tag != nsGkAtoms::img &&
+      tag != nsGkAtoms::input &&
+      tag != nsGkAtoms::map &&
+      tag != nsGkAtoms::meta &&
       tag != nsGkAtoms::object &&
-      tag != nsGkAtoms::input) {
+      tag != nsGkAtoms::select &&
+      tag != nsGkAtoms::textarea) {
     return PR_FALSE;
   }
 
@@ -3877,19 +3888,21 @@ nsHTMLDocument::GetDocumentAllResult(const nsAString& aID, nsISupports** aResult
     NS_ENSURE_TRUE(entry->mDocAllList, NS_ERROR_OUT_OF_MEMORY);
   }
 
+  nsRefPtr<nsContentList> docAllList = entry->mDocAllList;
+
   // Check if there are more than 1 entries. Do this by getting the second one
   // rather than the length since getting the length always requires walking
   // the entire document.
 
-  nsIContent* cont = entry->mDocAllList->Item(1, PR_TRUE);
+  nsIContent* cont = docAllList->Item(1, PR_TRUE);
   if (cont) {
-    NS_ADDREF(*aResult = static_cast<nsIDOMNodeList*>(entry->mDocAllList));
+    NS_ADDREF(*aResult = static_cast<nsIDOMNodeList*>(docAllList));
 
     return NS_OK;
   }
 
   // There's only 0 or 1 items. Return the first one or null.
-  NS_IF_ADDREF(*aResult = entry->mDocAllList->Item(0, PR_TRUE));
+  NS_IF_ADDREF(*aResult = docAllList->Item(0, PR_TRUE));
 
   return NS_OK;
 }
