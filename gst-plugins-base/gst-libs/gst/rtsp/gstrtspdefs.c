@@ -246,6 +246,7 @@ gst_rtsp_strresult (GstRTSPResult result)
 
   switch (idx) {
     case -GST_RTSP_ESYS:
+    {
 #ifdef G_OS_WIN32
       gchar *msg = g_win32_error_message(WSAGetLastError());
       res = g_strdup_printf (rtsp_results[idx], msg);
@@ -254,6 +255,7 @@ gst_rtsp_strresult (GstRTSPResult result)
       res = g_strdup_printf (rtsp_results[idx], g_strerror (errno));
 #endif
       break;
+    }
     case -GST_RTSP_ENET:
 #ifndef G_OS_WIN32
       res = g_strdup_printf (rtsp_results[idx], hstrerror (h_errno));
