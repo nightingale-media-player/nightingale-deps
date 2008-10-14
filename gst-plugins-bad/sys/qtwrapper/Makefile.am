@@ -11,9 +11,15 @@ libgstqtwrapper_la_SOURCES = \
 
 # flags used to compile this plugin
 # add other _CFLAGS and _LIBS as needed
-libgstqtwrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS)
+libgstqtwrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
 libgstqtwrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
-libgstqtwrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore
+libgstqtwrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
+
+# Mac:
+#	-Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore
+# Windows:
+#   -I/c/QuicktimeSDK/CIncludes
+#   -lCVClient -lQTMLClient
 
 
 # headers we need but don't want installed

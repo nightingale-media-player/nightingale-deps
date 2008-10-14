@@ -307,9 +307,38 @@ fi
 dnl *** sys plug-ins ***
 
 dnl check for QuickTime
+
+AC_ARG_WITH(quicktime-sdk,
+        [ --with-quicktime-sdk=PATH   Specify path to Quicktime SDK installation ],
+        [ QUICKTIME_SDK_DIR=$withval ],
+        [ QUICKTIME_SDK_DIR="" ]
+)
+
 translit(dnm, m, l) AM_CONDITIONAL(USE_QUICKTIME, true)
 AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
-  AC_CHECK_HEADER(QuickTime/Movies.h, HAVE_QUICKTIME="yes", HAVE_QUICKTIME="no")
+  QUICKTIME_CFLAGS=""
+  QUICKTIME_LDFLAGS=""
+  AC_CHECK_HEADER(QuickTime/Movies.h, 
+      [ HAVE_QUICKTIME="yes", 
+        QUICKTIME_LDFLAGS="-Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore" 
+      ],
+      [ 
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -I$QUICKTIME_SDK_DIR/CIncludes"
+        AC_CHECK_HEADER(Movies.h, 
+            [
+              HAVE_QUICKTIME="yes"
+              QUICKTIME_CFLAGS="-I$QUICKTIME_SDK_DIR/CIncludes"
+              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient"
+            ], 
+            [
+              HAVE_QUICKTIME="no"
+            ])
+        CFLAGS=$save_CFLAGS
+      ])
+
+  AC_SUBST(QUICKTIME_CFLAGS)
+  AC_SUBST(QUICKTIME_LDFLAGS)
 ])
 
 dnl check for DirectShow
@@ -1388,7 +1417,6 @@ esac
 
 AC_SUBST(MOZILLA_CFLAGS)
 AC_SUBST(MOZILLA_LIBS)
-dnl End Songbird-specific bits
 
 AC_ARG_WITH(windows-sdk,
         [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
@@ -1403,6 +1431,8 @@ AC_ARG_WITH(directshow-libs,
         [ DIRECTSHOW_LIB_DIR="" ]
 )
 AC_SUBST(DIRECTSHOW_LIB_DIR)
+
+dnl End Songbird-specific bits
 
 dnl *** output files ***
 

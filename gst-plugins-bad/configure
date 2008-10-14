@@ -1094,6 +1094,8 @@ USE_PLUGIN_Y4M_TRUE
 USE_PLUGIN_Y4M_FALSE
 HAVE_WINSOCK2_H_TRUE
 HAVE_WINSOCK2_H_FALSE
+QUICKTIME_CFLAGS
+QUICKTIME_LDFLAGS
 USE_QUICKTIME_TRUE
 USE_QUICKTIME_FALSE
 HAVE_DIRECTSHOW
@@ -2083,6 +2085,7 @@ Optional Packages:
   --with-plugins          comma-separated list of dependencyless plug-ins to
                           compile
   --with-html-dir=PATH    path to installed docs
+ --with-quicktime-sdk=PATH   Specify path to Quicktime SDK installation
   --with-alsa-prefix=PFX  prefix where Alsa library is installed(optional)
   --with-alsa-inc-prefix=PFX
                           prefix where include libraries are (optional)
@@ -5433,13 +5436,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5436: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5439: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5439: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5442: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5442: output\"" >&5)
+  (eval echo "\"\$as_me:5445: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6037,7 +6040,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6040: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6043: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6655,7 +6658,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6658 "configure"' > conftest.$ac_ext
+  echo '#line 6661 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8195,11 +8198,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8198: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8201: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8202: \$? = $ac_status" >&5
+   echo "$as_me:8205: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8519,11 +8522,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8522: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8525: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8526: \$? = $ac_status" >&5
+   echo "$as_me:8529: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8624,11 +8627,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8627: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8630: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8631: \$? = $ac_status" >&5
+   echo "$as_me:8634: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8679,11 +8682,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8682: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8685: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8686: \$? = $ac_status" >&5
+   echo "$as_me:8689: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11516,7 +11519,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11519 "configure"
+#line 11522 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11616,7 +11619,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11619 "configure"
+#line 11622 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18822,11 +18825,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18825: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18828: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18829: \$? = $ac_status" >&5
+   echo "$as_me:18832: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18921,11 +18924,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18924: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18927: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18928: \$? = $ac_status" >&5
+   echo "$as_me:18931: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18973,11 +18976,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18976: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18979: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18980: \$? = $ac_status" >&5
+   echo "$as_me:18983: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -27767,6 +27770,17 @@ fi
 fi
 
 
+
+
+# Check whether --with-quicktime-sdk was given.
+if test "${with_quicktime_sdk+set}" = set; then
+  withval=$with_quicktime_sdk;  QUICKTIME_SDK_DIR=$withval
+else
+   QUICKTIME_SDK_DIR=""
+
+fi
+
+
 echo
 { echo "$as_me:$LINENO: *** checking feature: QuickTime wrapper ***" >&5
 echo "$as_me: *** checking feature: QuickTime wrapper ***" >&6;}
@@ -27810,6 +27824,8 @@ if test x$USE_QUICKTIME = xyes; then
 
   HAVE_QUICKTIME=no
 
+  QUICKTIME_CFLAGS=""
+  QUICKTIME_LDFLAGS=""
   if test "${ac_cv_header_QuickTime_Movies_h+set}" = set; then
   { echo "$as_me:$LINENO: checking for QuickTime/Movies.h" >&5
 echo $ECHO_N "checking for QuickTime/Movies.h... $ECHO_C" >&6; }
@@ -27941,10 +27957,162 @@ echo "${ECHO_T}$ac_cv_header_QuickTime_Movies_h" >&6; }
 
 fi
 if test $ac_cv_header_QuickTime_Movies_h = yes; then
-  HAVE_QUICKTIME="yes"
+   HAVE_QUICKTIME="yes",
+        QUICKTIME_LDFLAGS="-Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore"
+
 else
-  HAVE_QUICKTIME="no"
+
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -I$QUICKTIME_SDK_DIR/CIncludes"
+        if test "${ac_cv_header_Movies_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for Movies.h" >&5
+echo $ECHO_N "checking for Movies.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_Movies_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
 fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_Movies_h" >&5
+echo "${ECHO_T}$ac_cv_header_Movies_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking Movies.h usability" >&5
+echo $ECHO_N "checking Movies.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <Movies.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking Movies.h presence" >&5
+echo $ECHO_N "checking Movies.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <Movies.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: Movies.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: Movies.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: Movies.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: Movies.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: Movies.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: Movies.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: Movies.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: Movies.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: Movies.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: Movies.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: Movies.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ------------------------------------------------------------------------ ##
+## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
+## ------------------------------------------------------------------------ ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for Movies.h" >&5
+echo $ECHO_N "checking for Movies.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_Movies_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_Movies_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_Movies_h" >&5
+echo "${ECHO_T}$ac_cv_header_Movies_h" >&6; }
+
+fi
+if test $ac_cv_header_Movies_h = yes; then
+
+              HAVE_QUICKTIME="yes"
+              QUICKTIME_CFLAGS="-I$QUICKTIME_SDK_DIR/CIncludes"
+              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient"
+
+else
+
+              HAVE_QUICKTIME="no"
+
+fi
+
+
+        CFLAGS=$save_CFLAGS
+
+fi
+
+
+
 
 
 
@@ -42731,6 +42899,7 @@ fi
 
 
 
+
 ac_config_files="$ac_config_files Makefile gst-plugins-bad.spec gst/Makefile gst/aiffparse/Makefile gst/app/Makefile gst/bayer/Makefile gst/cdxaparse/Makefile gst/deinterlace/Makefile gst/deinterlace2/Makefile gst/dvdspu/Makefile gst/festival/Makefile gst/filter/Makefile gst/flv/Makefile gst/freeze/Makefile gst/h264parse/Makefile gst/librfb/Makefile gst/modplug/Makefile gst/modplug/libmodplug/Makefile gst/mpegtsparse/Makefile gst/mpeg4videoparse/Makefile gst/mpegvideoparse/Makefile gst/mve/Makefile gst/nsf/Makefile gst/nuvdemux/Makefile gst/rawparse/Makefile gst/rtpmanager/Makefile gst/sdp/Makefile gst/selector/Makefile gst/speed/Makefile gst/speexresample/Makefile gst/subenc/Makefile gst/stereo/Makefile gst/tta/Makefile gst/videosignal/Makefile gst/vmnc/Makefile gst/real/Makefile gst/y4m/Makefile gst-libs/Makefile gst-libs/gst/Makefile gst-libs/gst/app/Makefile gst-libs/gst/dshow/Makefile sys/Makefile sys/acmenc/Makefile sys/dshowdecwrapper/Makefile sys/dshowsrcwrapper/Makefile sys/dshowvideosink/Makefile sys/dvb/Makefile sys/fbdev/Makefile sys/oss4/Makefile sys/qtwrapper/Makefile sys/vcd/Makefile sys/wininet/Makefile examples/Makefile examples/app/Makefile examples/directfb/Makefile examples/switch/Makefile ext/amrwb/Makefile ext/alsaspdif/Makefile ext/apexsink/Makefile ext/bz2/Makefile ext/cdaudio/Makefile ext/dc1394/Makefile ext/dirac/Makefile ext/directfb/Makefile ext/divx/Makefile ext/dts/Makefile ext/metadata/Makefile ext/mozilla/Makefile ext/faac/Makefile ext/faad/Makefile ext/gsm/Makefile ext/ivorbis/Makefile ext/jack/Makefile ext/ladspa/Makefile ext/libmms/Makefile ext/Makefile ext/nas/Makefile ext/mpeg2enc/Makefile ext/mplex/Makefile ext/musepack/Makefile ext/musicbrainz/Makefile ext/mythtv/Makefile ext/neon/Makefile ext/ofa/Makefile ext/resindvd/Makefile ext/sdl/Makefile ext/sndfile/Makefile ext/soundtouch/Makefile ext/spc/Makefile ext/swfdec/Makefile ext/theora/Makefile ext/timidity/Makefile ext/x264/Makefile ext/xvid/Makefile po/Makefile.in docs/Makefile docs/plugins/Makefile docs/version.entities common/Makefile common/m4/Makefile m4/Makefile tests/Makefile tests/check/Makefile tests/icles/Makefile win32/common/config.h"
 
 cat >confcache <<\_ACEOF
@@ -45448,6 +45617,8 @@ USE_PLUGIN_Y4M_TRUE!$USE_PLUGIN_Y4M_TRUE$ac_delim
 USE_PLUGIN_Y4M_FALSE!$USE_PLUGIN_Y4M_FALSE$ac_delim
 HAVE_WINSOCK2_H_TRUE!$HAVE_WINSOCK2_H_TRUE$ac_delim
 HAVE_WINSOCK2_H_FALSE!$HAVE_WINSOCK2_H_FALSE$ac_delim
+QUICKTIME_CFLAGS!$QUICKTIME_CFLAGS$ac_delim
+QUICKTIME_LDFLAGS!$QUICKTIME_LDFLAGS$ac_delim
 USE_QUICKTIME_TRUE!$USE_QUICKTIME_TRUE$ac_delim
 USE_QUICKTIME_FALSE!$USE_QUICKTIME_FALSE$ac_delim
 HAVE_DIRECTSHOW!$HAVE_DIRECTSHOW$ac_delim
@@ -45504,8 +45675,6 @@ EXIF_LIBS!$EXIF_LIBS$ac_delim
 IPTC_CFLAGS!$IPTC_CFLAGS$ac_delim
 IPTC_LIBS!$IPTC_LIBS$ac_delim
 XMP_CFLAGS!$XMP_CFLAGS$ac_delim
-XMP_LIBS!$XMP_LIBS$ac_delim
-XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45547,6 +45716,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+XMP_LIBS!$XMP_LIBS$ac_delim
+XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 XMP_1_99_5_LIBS!$XMP_1_99_5_LIBS$ac_delim
 METADATA_CFLAGS!$METADATA_CFLAGS$ac_delim
 METADATA_LIBS!$METADATA_LIBS$ac_delim
@@ -45642,8 +45813,6 @@ USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
 SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
 SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
 USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
-USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
-SPC_LIBS!$SPC_LIBS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45685,6 +45854,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
+SPC_LIBS!$SPC_LIBS$ac_delim
 USE_SPC_TRUE!$USE_SPC_TRUE$ac_delim
 USE_SPC_FALSE!$USE_SPC_FALSE$ac_delim
 SWFDEC_CFLAGS!$SWFDEC_CFLAGS$ac_delim
@@ -45728,7 +45899,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 41; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 43; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

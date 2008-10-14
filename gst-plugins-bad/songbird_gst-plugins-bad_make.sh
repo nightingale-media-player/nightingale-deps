@@ -445,7 +445,7 @@ build()
 	fi
 	export CFLAGS="${CFLAGS} -DYY_NO_UNISTD_H"
 
-    	EXTRA_CONFIGURE_ARGS="--with-windows-sdk=/c/WindowsSDKv6 --with-directshow-libs=/c/WindowsSDKv6/Samples/Multimedia/DirectShow/BaseClasses/${build_type}"
+    	EXTRA_CONFIGURE_ARGS="--with-windows-sdk=/c/WindowsSDKv6 --with-directshow-libs=/c/WindowsSDKv6/Samples/Multimedia/DirectShow/BaseClasses/${build_type} --with-quicktime-sdk=/c/QuickTimeSDK"
     fi
 
     MOZILLA_DIR="${dep_arch_dir}/mozilla/${build_type}/"
