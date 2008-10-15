@@ -364,7 +364,7 @@ AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
   # -TP to compile as C++
   CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
   AC_MSG_CHECKING(for DirectShow Base classes)
-  AC_CHECK_HEADER([amfilter.h],
+  AC_CHECK_HEADER([streams.h],
     [HAVE_DIRECTSHOW="yes"],
     [HAVE_DIRECTSHOW="no"])
   AC_MSG_RESULT($HAVE_DIRECTSHOW)
