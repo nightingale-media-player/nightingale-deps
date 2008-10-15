@@ -544,7 +544,10 @@ gst_dshowvideodec_sink_setcaps (GstPad * pad, GstCaps * caps)
     vdec->fps_d = gst_value_get_fraction_denominator (fps);
   }
   else {
-    vdec->fps_n = vdec->fps_d = 0; /* Not set */
+    /* Invent a sane default framerate; the timestamps matter
+     * more anyway. */
+    vdec->fps_n = 25;
+    vdec->fps_d = 1;
   }
 
   if ((v = gst_structure_get_value (s, "codec_data")))
