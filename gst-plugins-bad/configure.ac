@@ -342,39 +342,33 @@ AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
 ])
 
 dnl check for DirectShow
+
+AC_ARG_WITH(windows-sdk,
+        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
+        [ WINDOWS_SDK_DIR=$withval ],
+        [ WINDOWS_SDK_DIR="" ]
+)
+AC_SUBST(WINDOWS_SDK_DIR)
+
+AC_ARG_WITH(directshow-libs,
+        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
+        [ DIRECTSHOW_LIB_DIR=$withval ],
+        [ DIRECTSHOW_LIB_DIR="" ]
+)
+AC_SUBST(DIRECTSHOW_LIB_DIR)
+
 translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
 AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
   HAVE_DIRECTSHOW="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS -TP"
-  LDFLAGS="$LDFLAGS $DIRECTSHOW_LDFLAGS"
-  LIBS="$LIBS -lstrmiids -lole32"
-  AC_MSG_CHECKING(for DirectShow LDFLAGS)
-  AC_LINK_IFELSE([
-#include <windows.h>
-#include <dshow.h>
-
-int main ()
-{
-  IFilterMapper2 *mapper = NULL;
-  
-  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_INPROC,
-  IID_IFilterMapper2,(void **) &mapper);
-  if (mapper)
-    mapper->Release ();  
-
-  return 0;
-}
-],
+  # -TP to compile as C++
+  CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
+  AC_MSG_CHECKING(for DirectShow Base classes)
+  AC_CHECK_HEADER([amfilter.h],
     [HAVE_DIRECTSHOW="yes"],
     [HAVE_DIRECTSHOW="no"])
   AC_MSG_RESULT($HAVE_DIRECTSHOW)
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
-
   AC_SUBST(HAVE_DIRECTSHOW)
 ])
 
@@ -1417,20 +1411,6 @@ esac
 
 AC_SUBST(MOZILLA_CFLAGS)
 AC_SUBST(MOZILLA_LIBS)
-
-AC_ARG_WITH(windows-sdk,
-        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
-        [ WINDOWS_SDK_DIR=$withval ],
-        [ WINDOWS_SDK_DIR="" ]
-)
-AC_SUBST(WINDOWS_SDK_DIR)
-
-AC_ARG_WITH(directshow-libs,
-        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
-        [ DIRECTSHOW_LIB_DIR=$withval ],
-        [ DIRECTSHOW_LIB_DIR="" ]
-)
-AC_SUBST(DIRECTSHOW_LIB_DIR)
 
 dnl End Songbird-specific bits
 

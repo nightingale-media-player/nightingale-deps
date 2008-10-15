@@ -1098,6 +1098,8 @@ QUICKTIME_CFLAGS
 QUICKTIME_LDFLAGS
 USE_QUICKTIME_TRUE
 USE_QUICKTIME_FALSE
+WINDOWS_SDK_DIR
+DIRECTSHOW_LIB_DIR
 HAVE_DIRECTSHOW
 USE_DIRECTSHOW_TRUE
 USE_DIRECTSHOW_FALSE
@@ -1288,8 +1290,6 @@ USE_MOZILLA_TRUE
 USE_MOZILLA_FALSE
 MOZILLA_CFLAGS
 MOZILLA_LIBS
-WINDOWS_SDK_DIR
-DIRECTSHOW_LIB_DIR
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -2086,6 +2086,8 @@ Optional Packages:
                           compile
   --with-html-dir=PATH    path to installed docs
  --with-quicktime-sdk=PATH   Specify path to Quicktime SDK installation
+ --with-windows-sdk=PATH   Specify path to Windows SDK installation
+ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries
   --with-alsa-prefix=PFX  prefix where Alsa library is installed(optional)
   --with-alsa-inc-prefix=PFX
                           prefix where include libraries are (optional)
@@ -2095,8 +2097,6 @@ Optional Packages:
   --with-sdl-exec-prefix=PFX
                           exec prefix where SDL is installed (optional)
   --with-mozilla=PATH     Specify path to Mozilla installation
- --with-windows-sdk=PATH   Specify path to Windows SDK installation
- --with-directshow-libs=PATH   Specify path to DirectShow base class libraries
 
 Some influential environment variables:
   CC          C compiler command
@@ -28160,6 +28160,29 @@ fi
 
 
 
+
+
+# Check whether --with-windows-sdk was given.
+if test "${with_windows_sdk+set}" = set; then
+  withval=$with_windows_sdk;  WINDOWS_SDK_DIR=$withval
+else
+   WINDOWS_SDK_DIR=""
+
+fi
+
+
+
+
+# Check whether --with-directshow-libs was given.
+if test "${with_directshow_libs+set}" = set; then
+  withval=$with_directshow_libs;  DIRECTSHOW_LIB_DIR=$withval
+else
+   DIRECTSHOW_LIB_DIR=""
+
+fi
+
+
+
 echo
 { echo "$as_me:$LINENO: *** checking feature: DirectShow plug-in ***" >&5
 echo "$as_me: *** checking feature: DirectShow plug-in ***" >&6;}
@@ -28205,39 +28228,39 @@ if test x$USE_DIRECTSHOW = xyes; then
 
   HAVE_DIRECTSHOW="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $DIRECTSHOW_CFLAGS -TP"
-  LDFLAGS="$LDFLAGS $DIRECTSHOW_LDFLAGS"
-  LIBS="$LIBS -lstrmiids -lole32"
-  { echo "$as_me:$LINENO: checking for DirectShow LDFLAGS" >&5
-echo $ECHO_N "checking for DirectShow LDFLAGS... $ECHO_C" >&6; }
-  cat >conftest.$ac_ext <<_ACEOF
-
-#include <windows.h>
-#include <dshow.h>
-
-int main ()
-{
-  IFilterMapper2 *mapper = NULL;
-
-  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_INPROC,
-  IID_IFilterMapper2,(void **) &mapper);
-  if (mapper)
-    mapper->Release ();
-
-  return 0;
-}
-
+  # -TP to compile as C++
+  CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
+  { echo "$as_me:$LINENO: checking for DirectShow Base classes" >&5
+echo $ECHO_N "checking for DirectShow Base classes... $ECHO_C" >&6; }
+  if test "${ac_cv_header_amfilter_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for amfilter.h" >&5
+echo $ECHO_N "checking for amfilter.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_amfilter_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_amfilter_h" >&5
+echo "${ECHO_T}$ac_cv_header_amfilter_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking amfilter.h usability" >&5
+echo $ECHO_N "checking amfilter.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
 _ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <amfilter.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
 case "(($ac_try" in
   *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
   *) ac_try_echo=$ac_try;;
 esac
 eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
+  (eval "$ac_compile") 2>conftest.er1
   ac_status=$?
   grep -v '^ *+' conftest.er1 >conftest.err
   rm -f conftest.er1
@@ -28246,24 +28269,109 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
   (exit $ac_status); } && {
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  HAVE_DIRECTSHOW="yes"
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	HAVE_DIRECTSHOW="no"
+	ac_header_compiler=no
 fi
 
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking amfilter.h presence" >&5
+echo $ECHO_N "checking amfilter.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <amfilter.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: amfilter.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: amfilter.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: amfilter.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: amfilter.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: amfilter.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: amfilter.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: amfilter.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: amfilter.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: amfilter.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ------------------------------------------------------------------------ ##
+## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
+## ------------------------------------------------------------------------ ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for amfilter.h" >&5
+echo $ECHO_N "checking for amfilter.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_amfilter_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_amfilter_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_amfilter_h" >&5
+echo "${ECHO_T}$ac_cv_header_amfilter_h" >&6; }
+
+fi
+if test $ac_cv_header_amfilter_h = yes; then
+  HAVE_DIRECTSHOW="yes"
+else
+  HAVE_DIRECTSHOW="no"
+fi
+
+
   { echo "$as_me:$LINENO: result: $HAVE_DIRECTSHOW" >&5
 echo "${ECHO_T}$HAVE_DIRECTSHOW" >&6; }
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
-
 
 
 
@@ -42875,28 +42983,6 @@ esac
 
 
 
-# Check whether --with-windows-sdk was given.
-if test "${with_windows_sdk+set}" = set; then
-  withval=$with_windows_sdk;  WINDOWS_SDK_DIR=$withval
-else
-   WINDOWS_SDK_DIR=""
-
-fi
-
-
-
-
-# Check whether --with-directshow-libs was given.
-if test "${with_directshow_libs+set}" = set; then
-  withval=$with_directshow_libs;  DIRECTSHOW_LIB_DIR=$withval
-else
-   DIRECTSHOW_LIB_DIR=""
-
-fi
-
-
-
-
 
 
 
@@ -45621,6 +45707,8 @@ QUICKTIME_CFLAGS!$QUICKTIME_CFLAGS$ac_delim
 QUICKTIME_LDFLAGS!$QUICKTIME_LDFLAGS$ac_delim
 USE_QUICKTIME_TRUE!$USE_QUICKTIME_TRUE$ac_delim
 USE_QUICKTIME_FALSE!$USE_QUICKTIME_FALSE$ac_delim
+WINDOWS_SDK_DIR!$WINDOWS_SDK_DIR$ac_delim
+DIRECTSHOW_LIB_DIR!$DIRECTSHOW_LIB_DIR$ac_delim
 HAVE_DIRECTSHOW!$HAVE_DIRECTSHOW$ac_delim
 USE_DIRECTSHOW_TRUE!$USE_DIRECTSHOW_TRUE$ac_delim
 USE_DIRECTSHOW_FALSE!$USE_DIRECTSHOW_FALSE$ac_delim
@@ -45673,8 +45761,6 @@ USE_DVDNAV_FALSE!$USE_DVDNAV_FALSE$ac_delim
 EXIF_CFLAGS!$EXIF_CFLAGS$ac_delim
 EXIF_LIBS!$EXIF_LIBS$ac_delim
 IPTC_CFLAGS!$IPTC_CFLAGS$ac_delim
-IPTC_LIBS!$IPTC_LIBS$ac_delim
-XMP_CFLAGS!$XMP_CFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45716,6 +45802,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+IPTC_LIBS!$IPTC_LIBS$ac_delim
+XMP_CFLAGS!$XMP_CFLAGS$ac_delim
 XMP_LIBS!$XMP_LIBS$ac_delim
 XMP_1_99_5_CFLAGS!$XMP_1_99_5_CFLAGS$ac_delim
 XMP_1_99_5_LIBS!$XMP_1_99_5_LIBS$ac_delim
@@ -45811,8 +45899,6 @@ SNDFILE_LIBS!$SNDFILE_LIBS$ac_delim
 USE_SNDFILE_TRUE!$USE_SNDFILE_TRUE$ac_delim
 USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
 SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
-SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
-USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45854,6 +45940,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
+USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
 USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
 SPC_LIBS!$SPC_LIBS$ac_delim
 USE_SPC_TRUE!$USE_SPC_TRUE$ac_delim
@@ -45893,8 +45981,6 @@ USE_MOZILLA_TRUE!$USE_MOZILLA_TRUE$ac_delim
 USE_MOZILLA_FALSE!$USE_MOZILLA_FALSE$ac_delim
 MOZILLA_CFLAGS!$MOZILLA_CFLAGS$ac_delim
 MOZILLA_LIBS!$MOZILLA_LIBS$ac_delim
-WINDOWS_SDK_DIR!$WINDOWS_SDK_DIR$ac_delim
-DIRECTSHOW_LIB_DIR!$DIRECTSHOW_LIB_DIR$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
