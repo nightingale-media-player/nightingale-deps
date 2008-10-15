@@ -350,34 +350,17 @@ translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTDRAW, true)
 AG_GST_CHECK_FEATURE(DIRECTDRAW, [DirectDraw plug-in], directdrawsink, [
   HAVE_DIRECTDRAW="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTDRAW_CFLAGS"
-  LDFLAGS="$LDFLAGS $DIRECTDRAW_LDFLAGS"
-  LIBS="$LIBS -lddraw -lgdi32"
-  AC_MSG_CHECKING(for DirectDraw LDFLAGS)
-  AC_LINK_IFELSE([
-#include <windows.h>
-#include <ddraw.h>
-
-int main ()
-{
-  GetStockObject(0);
-  DirectDrawCreate(NULL, NULL, NULL);
-
-  return 0;
-}
-],
+  AC_MSG_CHECKING(for DirectDraw)
+  AC_CHECK_HEADER([ddraw.h],
     [HAVE_DIRECTDRAW="yes"],
     [HAVE_DIRECTDRAW="no"])
   AC_MSG_RESULT($HAVE_DIRECTDRAW)
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTDRAW" = "xyes";  then
     dnl this is much more than we want
-    DIRECTDRAW_LIBS="-lddraw -ldxguid -lgdi32"
+    DIRECTDRAW_LIBS="-lddraw -ldxguid -lgdi32 -luser32"
     AC_SUBST(DIRECTDRAW_CFLAGS)
     AC_SUBST(DIRECTDRAW_LDFLAGS)
     AC_SUBST(DIRECTDRAW_LIBS)
@@ -390,31 +373,13 @@ translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSOUND, true)
 AG_GST_CHECK_FEATURE(DIRECTSOUND, [DirectSound plug-in], directsoundsink, [
   HAVE_DIRECTSOUND="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTSOUND_CFLAGS"
-  LDFLAGS="$LDFLAGS $DIRECTSOUND_LDFLAGS"
-  LIBS="$LIBS -ldsound -ldxerr9 -luser32"
-  AC_MSG_CHECKING(for DirectSound LDFLAGS)
-  AC_LINK_IFELSE([
-#include <windows.h>
-#include <dxerr9.h>
-#include <dsound.h>
-
-int main ()
-{
-  DXGetErrorString9 (0);
-  DirectSoundCreate(NULL, NULL, NULL);
-
-  return 0;
-}
-],
+  AC_MSG_CHECKING(for DirectSound)
+  AC_CHECK_HEADER([dsound.h],
     [HAVE_DIRECTSOUND="yes"],
     [HAVE_DIRECTSOUND="no"])
   AC_MSG_RESULT($HAVE_DIRECTSOUND)
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTSOUND" = "xyes";  then
     dnl this is much more than we want

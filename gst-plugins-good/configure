@@ -20209,7 +20209,6 @@ fi
 
 OBJC_LDFLAGS="-lobjc"
 
-if test "x$OBJC" != xnone ; then
 
 depcc="$OBJC" am_compiler_list='gcc3 gcc'
 
@@ -20320,6 +20319,7 @@ else
 fi
 
 
+if test "x$OBJC" != xnone ; then
   { echo "$as_me:$LINENO: checking if Objective C compiler works" >&5
 echo $ECHO_N "checking if Objective C compiler works... $ECHO_C" >&6; }
   cat >>conftest.m <<EOF
@@ -29604,35 +29604,38 @@ if test x$USE_DIRECTDRAW = xyes; then
 
   HAVE_DIRECTDRAW="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTDRAW_CFLAGS"
-  LDFLAGS="$LDFLAGS $DIRECTDRAW_LDFLAGS"
-  LIBS="$LIBS -lddraw -lgdi32"
-  { echo "$as_me:$LINENO: checking for DirectDraw LDFLAGS" >&5
-echo $ECHO_N "checking for DirectDraw LDFLAGS... $ECHO_C" >&6; }
-  cat >conftest.$ac_ext <<_ACEOF
-
-#include <windows.h>
-#include <ddraw.h>
-
-int main ()
-{
-  GetStockObject(0);
-  DirectDrawCreate(NULL, NULL, NULL);
-
-  return 0;
-}
-
+  { echo "$as_me:$LINENO: checking for DirectDraw" >&5
+echo $ECHO_N "checking for DirectDraw... $ECHO_C" >&6; }
+  if test "${ac_cv_header_ddraw_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for ddraw.h" >&5
+echo $ECHO_N "checking for ddraw.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_ddraw_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_ddraw_h" >&5
+echo "${ECHO_T}$ac_cv_header_ddraw_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking ddraw.h usability" >&5
+echo $ECHO_N "checking ddraw.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
 _ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <ddraw.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
 case "(($ac_try" in
   *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
   *) ac_try_echo=$ac_try;;
 esac
 eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
+  (eval "$ac_compile") 2>conftest.er1
   ac_status=$?
   grep -v '^ *+' conftest.er1 >conftest.err
   rm -f conftest.er1
@@ -29641,26 +29644,112 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
   (exit $ac_status); } && {
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  HAVE_DIRECTDRAW="yes"
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	HAVE_DIRECTDRAW="no"
+	ac_header_compiler=no
 fi
 
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking ddraw.h presence" >&5
+echo $ECHO_N "checking ddraw.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ddraw.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: ddraw.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: ddraw.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: ddraw.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: ddraw.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: ddraw.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: ddraw.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: ddraw.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: ddraw.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: ddraw.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ------------------------------------------------------------------------ ##
+## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
+## ------------------------------------------------------------------------ ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for ddraw.h" >&5
+echo $ECHO_N "checking for ddraw.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_ddraw_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_ddraw_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_ddraw_h" >&5
+echo "${ECHO_T}$ac_cv_header_ddraw_h" >&6; }
+
+fi
+if test $ac_cv_header_ddraw_h = yes; then
+  HAVE_DIRECTDRAW="yes"
+else
+  HAVE_DIRECTDRAW="no"
+fi
+
+
   { echo "$as_me:$LINENO: result: $HAVE_DIRECTDRAW" >&5
 echo "${ECHO_T}$HAVE_DIRECTDRAW" >&6; }
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTDRAW" = "xyes";  then
-        DIRECTDRAW_LIBS="-lddraw -ldxguid -lgdi32"
+        DIRECTDRAW_LIBS="-lddraw -ldxguid -lgdi32 -luser32"
 
 
 
@@ -29756,36 +29845,38 @@ if test x$USE_DIRECTSOUND = xyes; then
 
   HAVE_DIRECTSOUND="no"
   save_CFLAGS="$CFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTSOUND_CFLAGS"
-  LDFLAGS="$LDFLAGS $DIRECTSOUND_LDFLAGS"
-  LIBS="$LIBS -ldsound -ldxerr9 -luser32"
-  { echo "$as_me:$LINENO: checking for DirectSound LDFLAGS" >&5
-echo $ECHO_N "checking for DirectSound LDFLAGS... $ECHO_C" >&6; }
-  cat >conftest.$ac_ext <<_ACEOF
-
-#include <windows.h>
-#include <dxerr9.h>
-#include <dsound.h>
-
-int main ()
-{
-  DXGetErrorString9 (0);
-  DirectSoundCreate(NULL, NULL, NULL);
-
-  return 0;
-}
-
+  { echo "$as_me:$LINENO: checking for DirectSound" >&5
+echo $ECHO_N "checking for DirectSound... $ECHO_C" >&6; }
+  if test "${ac_cv_header_dsound_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for dsound.h" >&5
+echo $ECHO_N "checking for dsound.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_dsound_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_dsound_h" >&5
+echo "${ECHO_T}$ac_cv_header_dsound_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking dsound.h usability" >&5
+echo $ECHO_N "checking dsound.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
 _ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <dsound.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
 case "(($ac_try" in
   *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
   *) ac_try_echo=$ac_try;;
 esac
 eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
+  (eval "$ac_compile") 2>conftest.er1
   ac_status=$?
   grep -v '^ *+' conftest.er1 >conftest.err
   rm -f conftest.er1
@@ -29794,23 +29885,109 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
   (exit $ac_status); } && {
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  HAVE_DIRECTSOUND="yes"
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	HAVE_DIRECTSOUND="no"
+	ac_header_compiler=no
 fi
 
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking dsound.h presence" >&5
+echo $ECHO_N "checking dsound.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <dsound.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: dsound.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: dsound.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: dsound.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: dsound.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: dsound.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: dsound.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: dsound.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: dsound.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: dsound.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: dsound.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: dsound.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ------------------------------------------------------------------------ ##
+## Report this to http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer ##
+## ------------------------------------------------------------------------ ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for dsound.h" >&5
+echo $ECHO_N "checking for dsound.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_dsound_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_dsound_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_dsound_h" >&5
+echo "${ECHO_T}$ac_cv_header_dsound_h" >&6; }
+
+fi
+if test $ac_cv_header_dsound_h = yes; then
+  HAVE_DIRECTSOUND="yes"
+else
+  HAVE_DIRECTSOUND="no"
+fi
+
+
   { echo "$as_me:$LINENO: result: $HAVE_DIRECTSOUND" >&5
 echo "${ECHO_T}$HAVE_DIRECTSOUND" >&6; }
   CFLAGS=$save_CFLAGS
-  LDFLAGS=$save_LDFLAGS
-  LIBS=$save_LIBS
 
   if test "x$HAVE_DIRECTSOUND" = "xyes";  then
         DIRECTSOUND_LIBS="-ldsound -ldxerr9 -luser32"
