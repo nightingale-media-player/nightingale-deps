@@ -92,8 +92,7 @@ libgstosxaudio_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 am_libgstosxaudio_la_OBJECTS = libgstosxaudio_la-gstosxringbuffer.lo \
 	libgstosxaudio_la-gstosxaudioelement.lo \
 	libgstosxaudio_la-gstosxaudiosink.lo \
-	libgstosxaudio_la-gstosxaudiosrc.lo \
-	libgstosxaudio_la-gstosxaudio.lo
+	libgstosxaudio_la-gstosxaudiosrc.lo
 libgstosxaudio_la_OBJECTS = $(am_libgstosxaudio_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -137,7 +136,6 @@ BUILD_EXPERIMENTAL_FALSE = @BUILD_EXPERIMENTAL_FALSE@
 BUILD_EXPERIMENTAL_TRUE = @BUILD_EXPERIMENTAL_TRUE@
 BUILD_EXTERNAL_FALSE = @BUILD_EXTERNAL_FALSE@
 BUILD_EXTERNAL_TRUE = @BUILD_EXTERNAL_TRUE@
-BZ2_LIBS = @BZ2_LIBS@
 CAIRO_CFLAGS = @CAIRO_CFLAGS@
 CAIRO_LIBS = @CAIRO_LIBS@
 CC = @CC@
@@ -251,7 +249,6 @@ GTK_VERSION = @GTK_VERSION@
 HAL_CFLAGS = @HAL_CFLAGS@
 HAL_LIBS = @HAL_LIBS@
 HAVE_AVC1394 = @HAVE_AVC1394@
-HAVE_BZ2 = @HAVE_BZ2@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
 HAVE_CPU_ARM_FALSE = @HAVE_CPU_ARM_FALSE@
@@ -388,8 +385,6 @@ USE_AALIB_FALSE = @USE_AALIB_FALSE@
 USE_AALIB_TRUE = @USE_AALIB_TRUE@
 USE_ANNODEX_FALSE = @USE_ANNODEX_FALSE@
 USE_ANNODEX_TRUE = @USE_ANNODEX_TRUE@
-USE_BZ2_FALSE = @USE_BZ2_FALSE@
-USE_BZ2_TRUE = @USE_BZ2_TRUE@
 USE_CAIRO_FALSE = @USE_CAIRO_FALSE@
 USE_CAIRO_TRUE = @USE_CAIRO_TRUE@
 USE_DIRECTDRAW_FALSE = @USE_DIRECTDRAW_FALSE@
@@ -604,8 +599,7 @@ plugin_LTLIBRARIES = libgstosxaudio.la
 libgstosxaudio_la_SOURCES = gstosxringbuffer.c		\
 			    gstosxaudioelement.c	\
 			    gstosxaudiosink.c \
-			    gstosxaudiosrc.c \
-			    gstosxaudio.c
+			    gstosxaudiosrc.c
 
 libgstosxaudio_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 	-Wno-deprecated-declarations
@@ -691,7 +685,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstosxaudio_la-gstosxaudio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstosxaudio_la-gstosxaudioelement.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstosxaudio_la-gstosxaudiosink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstosxaudio_la-gstosxaudiosrc.Plo@am__quote@
@@ -745,13 +738,6 @@ libgstosxaudio_la-gstosxaudiosrc.lo: gstosxaudiosrc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstosxaudiosrc.c' object='libgstosxaudio_la-gstosxaudiosrc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstosxaudio_la_CFLAGS) $(CFLAGS) -c -o libgstosxaudio_la-gstosxaudiosrc.lo `test -f 'gstosxaudiosrc.c' || echo '$(srcdir)/'`gstosxaudiosrc.c
-
-libgstosxaudio_la-gstosxaudio.lo: gstosxaudio.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstosxaudio_la_CFLAGS) $(CFLAGS) -MT libgstosxaudio_la-gstosxaudio.lo -MD -MP -MF "$(DEPDIR)/libgstosxaudio_la-gstosxaudio.Tpo" -c -o libgstosxaudio_la-gstosxaudio.lo `test -f 'gstosxaudio.c' || echo '$(srcdir)/'`gstosxaudio.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstosxaudio_la-gstosxaudio.Tpo" "$(DEPDIR)/libgstosxaudio_la-gstosxaudio.Plo"; else rm -f "$(DEPDIR)/libgstosxaudio_la-gstosxaudio.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstosxaudio.c' object='libgstosxaudio_la-gstosxaudio.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstosxaudio_la_CFLAGS) $(CFLAGS) -c -o libgstosxaudio_la-gstosxaudio.lo `test -f 'gstosxaudio.c' || echo '$(srcdir)/'`gstosxaudio.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

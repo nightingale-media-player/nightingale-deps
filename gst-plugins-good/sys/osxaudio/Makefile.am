@@ -3,8 +3,7 @@ plugin_LTLIBRARIES = libgstosxaudio.la
 libgstosxaudio_la_SOURCES = gstosxringbuffer.c		\
 			    gstosxaudioelement.c	\
 			    gstosxaudiosink.c \
-			    gstosxaudiosrc.c \
-			    gstosxaudio.c
+			    gstosxaudiosrc.c
 
 libgstosxaudio_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 	-Wno-deprecated-declarations
