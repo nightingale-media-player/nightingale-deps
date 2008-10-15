@@ -329,7 +329,7 @@ AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
             [
               HAVE_QUICKTIME="yes"
               QUICKTIME_CFLAGS="-I$QUICKTIME_SDK_DIR/CIncludes"
-              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient"
+              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient -luser32 -ladvapi32"
             ], 
             [
               HAVE_QUICKTIME="no"
