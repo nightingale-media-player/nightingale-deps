@@ -452,8 +452,12 @@ build()
 	fi
 	export CFLAGS="${CFLAGS} -DYY_NO_UNISTD_H"
 	GST_PARSE_LA="parse/libgstparse_la-lex._gst_parse_yy.lo parse/libgstparse_la-grammar.tab.lo"
+
         export DIRECTSOUND_CFLAGS=-I/c/DirectXSDKMarch2008/Include
         export DIRECTSOUND_LDFLAGS=-L/c/DirectXSDKMarch2008/Lib/x86
+
+        export DIRECTDRAW_CFLAGS=-I/c/DirectXSDKMarch2008/Include
+        export DIRECTDRAW_LDFLAGS=-L/c/DirectXSDKMarch2008/Lib/x86
     fi
 
     # Apply command line options pre-processing.

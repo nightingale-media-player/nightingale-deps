@@ -401,7 +401,7 @@ gst_multiudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
 
     while (TRUE) {
       /* Mac OS is picky about the size for the bind so we switch on the family */
-      switch (client->theiraddr) {
+      switch (client->theiraddr.ss_family) {
         case AF_INET:
           len = sizeof (struct sockaddr_in);
           break;
