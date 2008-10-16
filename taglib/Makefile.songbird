@@ -1,0 +1,76 @@
+################################################################################
+################################################################################
+#
+# BEGIN SONGBIRD GPL
+# 
+# This file is part of the Songbird web player.
+#
+# Copyright(c) 2007 POTI, Inc.
+# http://www.songbirdnest.com
+# 
+# This file may be licensed under the terms of of the
+# GNU General Public License Version 2 (the "GPL").
+# 
+# Software distributed under the License is distributed 
+# on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either 
+# express or implied. See the GPL for the specific language 
+# governing rights and limitations.
+#
+# You should have received a copy of the GPL along with this 
+# program. If not, go to http://www.gnu.org/licenses/gpl.html
+# or write to the Free Software Foundation, Inc., 
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# 
+# END SONGBIRD GPL
+#
+################################################################################
+#
+# Makefile for building Songbird vendor: taglib
+#
+################################################################################
+################################################################################
+
+SB_VENDOR_TARGET_DEP_MODULES :=
+
+include $(CURDIR)/../songbird-vendor-defs.mk
+
+SB_VENDOR_TARGET := taglib
+SB_VENDOR_TARGET_VERSION := 1.5
+
+# Set compiler flags.
+CMAKE_C_FLAGS := -fPIC -fno-stack-protector
+CMAKE_CXX_FLAGS := -fPIC -fno-stack-protector
+
+ifeq (debug,$(SB_BUILD_TYPE))
+  CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Debug
+endif
+ifeq (release,$(SB_BUILD_TYPE))
+  CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Release
+endif
+
+# Set makefile type.
+CMAKE_MAKEFILE_TYPE := Unix Makefiles
+CMAKE_MAKE_CMD = $(MAKE)
+
+SB_RUN_CONFIGURE := 0
+
+include $(CURDIR)/../songbird-vendor-rules.mk
+
+module_setup_build:
+	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) -f Makefile.cvs
+	cd $(SB_VENDOR_BUILD_DIR) && $(CMAKE) $(CMAKE_ARGS) \
+          -DCMAKE_C_FLAGS="$(CMAKE_C_FLAGS)" \
+          -DCMAKE_CXX_FLAGS="$(CMAKE_CXX_FLAGS)" \
+          -DCMAKE_C_FLAGS_DEBUG="$(CMAKE_C_FLAGS_DEBUG)" \
+          -DCMAKE_CXX_FLAGS_DEBUG="$(CMAKE_CXX_FLAGS_DEBUG)" \
+          -DCMAKE_C_FLAGS_RELEASE="$(CMAKE_C_FLAGS_RELEASE)" \
+          -DCMAKE_CXX_FLAGS_RELEASE="$(CMAKE_CXX_FLAGS_RELEASE)" \
+          -DCMAKE_VERBOSE_MAKEFILE=1 \
+          -DCMAKE_INSTALL_PREFIX=$(SB_CONFIGURE_PREFIX) \
+          -DCMAKE_DEBUG_POSTFIX= \
+          -G "$(CMAKE_MAKEFILE_TYPE)"
+
+
+module_post_build:
+	@echo Removing \(unused\) taglib C-bindings...
+	$(FIND) $(SB_CONFIGURE_PREFIX) -regex '.*_c.*' -exec rm -v {} \;
