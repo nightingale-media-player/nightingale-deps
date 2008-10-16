@@ -325,7 +325,7 @@ long MPEG::File::nextFrameOffset(long position)
 
   ByteVector buffer;
 
-  while(buffer.size() > 0) {
+  do {
     if (seek(position) < 0)
       return -1;
     ByteVector buffer = readBlock(bufferSize());
@@ -336,8 +336,8 @@ long MPEG::File::nextFrameOffset(long position)
     }
 
     foundLastSyncPattern = uchar(buffer[buffer.size() - 1]) == 0xff;
-    position += buffer.size();
-  }
+    position += bufferSize();
+  } while(buffer.size() > 0);
   return -1;
 }
 
