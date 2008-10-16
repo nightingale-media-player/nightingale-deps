@@ -178,7 +178,7 @@ void MP4::Tag::setTrack(const TagLib::uint i)
   d->isEmpty = false;
 }
 
-void MP4::Tag::setNumTracks(TagLib::uint i)
+void MP4::Tag::setNumTracks(const TagLib::uint i)
 {
   d->numTracks = i;
   d->isEmpty = false;

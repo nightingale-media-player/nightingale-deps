@@ -53,36 +53,55 @@ tgt_name=taglib
 #   tgt_arch_list               List of build target architectures.
 #
 
-sys_name=`uname`
 mach_name=`uname -m`
-if [ "$sys_name" = "Darwin" ]; then
-    build_sys_type=Darwin
-    if [ "$mach_name" = "i386" ]; then
-        tgt_arch_list="macosx-i686"
-    else
-        tgt_arch_list=macosx-ppc
-    fi
-elif [ "$sys_name" = "Linux" ]; then
-    build_sys_type=Linux
-    if [ "$mach_name" = "x86_64" ]; then
-        tgt_arch_list=linux-x86_64
-    else
-        tgt_arch_list=linux-i686
-    fi
-else
-    build_sys_type=Cygwin
-    _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
-    CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
-    case "$CC_VERSION" in
-        13.*)
-            tgt_arch_list=windows-i686
-            ;;
-        *)
-            tgt_arch_list=windows-i686-msvc8
-            ;;
-    esac
-fi
+case `uname` in
+    Darwin)
+        build_sys_type=Darwin
+        if [ "$mach_name" = "i386" ]; then
+            tgt_arch_list="macosx-i686 macosx-ppc"
+        else
+            tgt_arch_list=macosx-ppc
+        fi
+        ;;
 
+    Linux)
+        build_sys_type=Linux
+        if [ "$mach_name" = "x86_64" ]; then
+            tgt_arch_list=linux-x86_64
+        else
+            tgt_arch_list=linux-i686
+        fi
+        ;;
+
+    SunOS)
+        build_sys_type=Solaris
+        case "mach_name" in
+            x86_64)
+                tgt_arch_list=solaris-x86_64
+                ;;
+            i86pc)
+                tgt_arch_list=solaris-i386
+                ;;
+            *)
+                tgt_arch_list=solaris-sparc
+                ;;
+        esac
+        ;;
+
+    *)
+        build_sys_type=Cygwin
+        _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+        CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+        case "$CC_VERSION" in
+            13.*)
+                tgt_arch_list=windows-i686
+                ;;
+            *)
+                tgt_arch_list=windows-i686-msvc8
+                ;;
+        esac
+        ;;
+esac
 
 #
 # Build configuration
@@ -158,6 +177,19 @@ setup_build()
             # Set compiler flags.
             CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC -fno-stack-protector"
             CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fPIC -fno-stack-protector"
+
+            # Set makefile type.
+            CMAKE_MAKEFILE_TYPE="Unix Makefiles"
+            CMAKE_MAKE_CMD="make"
+            ;;
+
+        solaris-*)
+            # Set library defs.
+            ZLIB_LIBRARY="libz.a"
+
+            # Set compiler flags.
+            CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -KPIC"
+            CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -KPIC"
 
             # Set makefile type.
             CMAKE_MAKEFILE_TYPE="Unix Makefiles"
@@ -247,7 +279,7 @@ build()
     ${CMAKE_MAKE_CMD} && ${CMAKE_MAKE_CMD} install
 
     # Post-process libraries on Mac.
-    if [ "$sys_name" = "Darwin" ]; then
+    if [ "$build_sys_type" = "Darwin" ]; then
         install_name_tool                                                      \
             -id @executable_path/libtag.dylib                                  \
             ${dep_arch_dir}/${tgt_name}/${build_type}/lib/libtag.dylib
