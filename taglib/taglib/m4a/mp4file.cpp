@@ -28,6 +28,8 @@
 #include <tdebug.h>
 #include "tlist.h"
 
+#include "id3v1genres.h"
+
 #include "mp4itunestag.h"
 #include "mp4file.h"
 #include "boxfactory.h"
@@ -234,6 +236,8 @@ MP4::Mp4PropsProxy* MP4::File::propProxy() const
   return &d->propsProxy;
 }
 
+/* This function has been updated based on information at */
+/* "http://atomicparsley.sourceforge.net/mpeg-4files.html". */
 void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
 {
   // tmp buffer for each tag
@@ -272,11 +276,27 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
   databox = proxy.genreData();
   if( databox != 0 )
   {
-    // convert data to string
-    TagLib::String datastring( databox->data(), String::UTF8 );
-    // check if string was set
-    if( !(datastring == "") )
-      mp4tag.setGenre( datastring );
+    if (databox->flags() == 0)
+    {
+      // convert data to uint
+      TagLib::ByteVector datavec = databox->data();
+      int genreVal = static_cast<int>( datavec[1] );
+      if (genreVal > 0)
+      {
+        TagLib::String datastring = ID3v1::genre( genreVal - 1 );
+        // check if string was set
+        if( !(datastring == "") )
+          mp4tag.setGenre( datastring );
+      }
+    }
+    else
+    {
+      // convert data to string
+      TagLib::String datastring( databox->data(), String::UTF8 );
+      // check if string was set
+      if( !(datastring == "") )
+        mp4tag.setGenre( datastring );
+    }
   }
 
   databox = proxy.yearData();
@@ -294,12 +314,14 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
   {
     // convert data to uint
     TagLib::ByteVector datavec = databox->data();
+    if( datavec.size() >= 6 )
+    {
+      TagLib::uint notracks = static_cast<TagLib::uint>( datavec[5] );
+      mp4tag.setNumTracks( notracks );
+    }
     if( datavec.size() >= 4 )
     {
-      TagLib::uint trackno = static_cast<TagLib::uint>( static_cast<unsigned char>(datavec[0]) << 24 |
-	                                                static_cast<unsigned char>(datavec[1]) << 16 |
-	                                                static_cast<unsigned char>(datavec[2]) <<  8 |
-	                                                static_cast<unsigned char>(datavec[3]) );
+      TagLib::uint trackno = static_cast<TagLib::uint>( datavec[3] );
       mp4tag.setTrack( trackno );
     }
     else
@@ -341,12 +363,14 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
   {
     // convert data to uint
     TagLib::ByteVector datavec = databox->data();
+    if( datavec.size() >= 6 )
+    {
+      TagLib::uint nodiscs = static_cast<TagLib::uint>( datavec[5] );
+      mp4tag.setNumDisks( nodiscs );
+    }
     if( datavec.size() >= 4 )
     {
-      TagLib::uint discno = static_cast<TagLib::uint>( static_cast<unsigned char>(datavec[0]) << 24 |
-	                                               static_cast<unsigned char>(datavec[1]) << 16 |
-	                                               static_cast<unsigned char>(datavec[2]) <<  8 |
-	                                               static_cast<unsigned char>(datavec[3]) );
+      TagLib::uint discno = static_cast<TagLib::uint>( datavec[3] );
       mp4tag.setDisk( discno );
     }
     else

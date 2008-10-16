@@ -37,10 +37,12 @@ public:
   TagLib::String     genre;
   TagLib::uint       year;
   TagLib::uint       track;
+  TagLib::uint       numTracks;
   TagLib::String     comment;
   TagLib::String     grouping;
   TagLib::String     composer;
   TagLib::uint       disk;
+  TagLib::uint       numDisks;
   TagLib::uint       bpm;
   bool               isEmpty;
   TagLib::ByteVector cover;
@@ -50,11 +52,13 @@ public:
 MP4::Tag::Tag( )
 {
   d = new TagPrivate();
-  d->year  = 0;
-  d->track = 0;
-  d->disk  = 0;
-  d->bpm   = 0;
-  d->isEmpty = true;
+  d->year       = 0;
+  d->track      = 0;
+  d->numTracks  = 0;
+  d->disk       = 0;
+  d->numTracks  = 0;
+  d->bpm        = 0;
+  d->isEmpty    = true;
 }
 
 MP4::Tag::~Tag()
@@ -97,6 +101,11 @@ TagLib::uint MP4::Tag::track() const
   return d->track;
 }
 
+TagLib::uint MP4::Tag::numTracks() const
+{
+  return d->numTracks;
+}
+
 String MP4::Tag::grouping() const
 {
   return d->grouping;
@@ -110,6 +119,11 @@ String MP4::Tag::composer() const
 TagLib::uint MP4::Tag::disk() const
 {
   return d->disk;
+}
+
+TagLib::uint MP4::Tag::numDisks() const
+{
+  return d->numDisks;
 }
 
 TagLib::uint MP4::Tag::bpm() const
@@ -164,6 +178,12 @@ void MP4::Tag::setTrack(const TagLib::uint i)
   d->isEmpty = false;
 }
 
+void MP4::Tag::setNumTracks(TagLib::uint i)
+{
+  d->numTracks = i;
+  d->isEmpty = false;
+}
+
 void MP4::Tag::setGrouping(const String &s)
 {
   d->grouping = s;
@@ -179,6 +199,12 @@ void MP4::Tag::setComposer(const String &s)
 void MP4::Tag::setDisk(const TagLib::uint i)
 {
   d->disk = i;
+  d->isEmpty = false;
+}
+
+void MP4::Tag::setNumDisks(const TagLib::uint i)
+{
+  d->numDisks = i;
   d->isEmpty = false;
 }
 

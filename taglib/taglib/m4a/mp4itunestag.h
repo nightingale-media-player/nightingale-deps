@@ -71,13 +71,17 @@ namespace TagLib
 
       String     grouping() const;
       String     composer() const;
+      uint       numTracks() const;
       uint       disk() const;
+      uint       numDisks() const;
       uint       bpm() const;
       ByteVector cover() const;
 
       void setGrouping(const String &s);
       void setComposer(const String &s);
+      void setNumTracks(const uint i);
       void setDisk(const uint i);
+      void setNumDisks(const uint i);
       void setBpm(const uint i);
       void setCover( const ByteVector& cover );
 
