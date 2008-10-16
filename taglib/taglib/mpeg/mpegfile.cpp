@@ -197,8 +197,7 @@ bool MPEG::File::save(int tags, bool stripOthers)
   if(ID3v1 & tags) {
     if(ID3v1Tag() && !ID3v1Tag()->isEmpty()) {
       int offset = d->hasID3v1 ? -128 : 0;
-      if (seek(offset, End) < 0)
-        return false;
+      seek(offset, End);
       writeBlock(ID3v1Tag()->render());
       d->hasID3v1 = true;
       d->ID3v1Location = findID3v1();
@@ -223,8 +222,7 @@ bool MPEG::File::save(int tags, bool stripOthers)
         d->ID3v1Location += d->APEOriginalSize;
       }
       else {
-        if (seek(0, End) < 0)
-          return false;
+        seek(0, End);
         d->APELocation = tell();
 	d->APEFooterLocation = d->APELocation
 	  + d->tag.access<APE::Tag>(APEIndex, false)->footer()->completeTagSize()
@@ -326,11 +324,13 @@ long MPEG::File::nextFrameOffset(long position)
   ByteVector buffer;
 
   do {
-    if (seek(position) < 0)
-      return -1;
-    ByteVector buffer = readBlock(bufferSize());
+    seek(position);
+    buffer = readBlock(bufferSize());
 
-    for(int i = 0; i < ((int) buffer.size()) - 1; i++) {
+    if(buffer.size() <= 0)
+      return -1;
+
+    for(uint i = 0; i < buffer.size() - 1; i++) {
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
         return position + i;
     }
@@ -461,8 +461,7 @@ long MPEG::File::findID3v2()
 
     // Start the search at the beginning of the file.
 
-    if (seek(0) < 0)
-      return -1;
+    seek(0);
 
     // This loop is the crux of the find method.  There are three cases that we
     // want to account for:
@@ -486,8 +485,7 @@ long MPEG::File::findID3v2()
       if(previousPartialMatch >= 0 && int(bufferSize()) > previousPartialMatch) {
         const int patternOffset = (bufferSize() - previousPartialMatch);
         if(buffer.containsAt(ID3v2::Header::fileIdentifier(), 0, patternOffset)) {
-          if (seek(originalPosition) < 0)
-            return -1;
+          seek(originalPosition);
           return bufferOffset - bufferSize() + previousPartialMatch;
         }
       }
@@ -496,8 +494,7 @@ long MPEG::File::findID3v2()
 
       long location = buffer.find(ID3v2::Header::fileIdentifier());
       if(location >= 0) {
-        if (seek(originalPosition) < 0)
-          return -1;
+        seek(originalPosition);
         return bufferOffset + location;
       }
 
@@ -543,8 +540,7 @@ long MPEG::File::findID3v2()
 
     clear();
 
-    if (seek(originalPosition) < 0)
-      return -1;
+    seek(originalPosition);
   }
 
   return -1;
@@ -553,8 +549,7 @@ long MPEG::File::findID3v2()
 long MPEG::File::findID3v1()
 {
   if(isValid()) {
-    if (seek(-128, End) < 0)
-      return -1;
+    seek(-128, End);
     long p = tell();
 
     if(readBlock(3) == ID3v1::Tag::fileIdentifier())

@@ -200,8 +200,7 @@ void ID3v1::Tag::setStringHandler(const StringHandler *handler)
 void ID3v1::Tag::read()
 {
   if(d->file && d->file->isValid()) {
-    if (d->file->seek(d->tagOffset) < 0)
-      return;
+    d->file->seek(d->tagOffset);
     // read the tag -- always 128 bytes
     ByteVector data = d->file->readBlock(128);
 

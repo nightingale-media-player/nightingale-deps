@@ -151,12 +151,15 @@ void MPEG::Properties::read()
   // Since we've likely just looked for the ID3v1 tag, start at the end of the
   // file where we're least likely to have to have to move the disk head.
 
-  long last = d->file->length();
+  long last = d->file->lastFrameOffset();
 
   if(last < 0) {
     debug("MPEG::Properties::read() -- Could not find a valid last MPEG frame in the stream.");
     return;
   }
+
+  d->file->seek(last);
+  Header lastHeader(d->file->readBlock(4));
 
   long first = d->file->firstFrameOffset();
 
@@ -165,13 +168,34 @@ void MPEG::Properties::read()
     return;
   }
 
+  if(!lastHeader.isValid()) {
+
+    long pos = last;
+
+    while(pos > first) {
+
+      pos = d->file->previousFrameOffset(pos);
+
+      if(pos < 0)
+        break;
+
+      d->file->seek(pos);
+      Header header(d->file->readBlock(4));
+
+      if(header.isValid()) {
+        lastHeader = header;
+        last = pos;
+        break;
+      }
+    }
+  }
+
   // Now jump back to the front of the file and read what we need from there.
 
-  if (d->file->seek(first) < 0)
-    return;
+  d->file->seek(first);
   Header firstHeader(d->file->readBlock(4));
 
-  if(!firstHeader.isValid()) {
+  if(!firstHeader.isValid() || !lastHeader.isValid()) {
     debug("MPEG::Properties::read() -- Page headers were invalid.");
     return;
   }
@@ -182,9 +206,8 @@ void MPEG::Properties::read()
   int xingHeaderOffset = MPEG::XingHeader::xingHeaderOffset(firstHeader.version(),
                                                             firstHeader.channelMode());
 
-  if (d->file->seek(first + xingHeaderOffset) < 0)
-    return;
-  XingHeader xingHeader(d->file->readBlock(16));
+  d->file->seek(first + xingHeaderOffset);
+  d->xingHeader = new XingHeader(d->file->readBlock(16));
 
   // Read the length and the bitrate from the Xing header.
 

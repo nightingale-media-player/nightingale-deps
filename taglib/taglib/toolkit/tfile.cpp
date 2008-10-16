@@ -165,8 +165,7 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
   // Start the search at the offset.
 
-  if (seek(fromOffset) < 0)
-    return -1;
+  seek(fromOffset);
 
   // This loop is the crux of the find method.  There are three cases that we
   // want to account for:
@@ -193,8 +192,7 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
     if(previousPartialMatch >= 0 && int(d->bufferSize) > previousPartialMatch) {
       const int patternOffset = (d->bufferSize - previousPartialMatch);
       if(buffer.containsAt(pattern, 0, patternOffset)) {
-        if (seek(originalPosition) < 0)
-          return -1;
+        seek(originalPosition);
         return bufferOffset - d->bufferSize + previousPartialMatch;
       }
     }
@@ -211,8 +209,7 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
     long location = buffer.find(pattern);
     if(location >= 0) {
-      if (seek(originalPosition) < 0)
-        return -1;
+      seek(originalPosition);
       return bufferOffset + location;
     }
 
@@ -267,13 +264,11 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
   long bufferOffset;
   if(fromOffset == 0) {
-    if (seek(-1 * int(d->bufferSize), End) < 0)
-      return -1;
+    seek(-1 * int(d->bufferSize), End);
     bufferOffset = tell();
   }
   else {
-    if (seek(fromOffset + -1 * int(d->bufferSize), Beginning) < 0)
-      return -1;
+    seek(fromOffset + -1 * int(d->bufferSize), Beginning);
     bufferOffset = tell();    
   }
 
@@ -287,8 +282,7 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
     long location = buffer.rfind(pattern);
     if(location >= 0) {
-      if (seek(originalPosition) < 0)
-        return -1;
+      seek(originalPosition);
       return bufferOffset + location;
     }
 
@@ -300,8 +294,7 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
     // TODO: (3) partial match
 
     bufferOffset -= d->bufferSize;
-    if (seek(bufferOffset) < 0)
-      return -1;
+    seek(bufferOffset);
   }
 
   // Since we hit the end of the file, reset the status before continuing.
