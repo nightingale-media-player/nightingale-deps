@@ -194,12 +194,13 @@ build()
         cfg_opts="${cfg_opts} --host=${cfg_tgt}"
     fi
 
-    # Remake the source distribution.
+    # Make the source distribution.
     make -f Makefile.cvs
 
     # Configure, build, and install.
     ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
+                --disable-libsuffix                                            \
                 --enable-static                                                \
                 --disable-shared                                               \
                 --enable-cxx-warnings=no
