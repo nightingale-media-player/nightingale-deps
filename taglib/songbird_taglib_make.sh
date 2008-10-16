@@ -162,6 +162,9 @@ setup_build()
     build_tgt_arch="$1"
     build_type="$2"
 
+    # Get the target architecture depedencies directory.
+    dep_arch_dir=${dep_dir}/${tgt_arch}
+
     # Set up the build type environment.
     case "${build_type}" in
         debug)
@@ -209,8 +212,8 @@ setup_build()
 
         windows-i686-msvc8)
             # Set compiler flags.
-            CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -Zc:wchar_t-"
-            CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Zc:wchar_t-"
+            CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -Zc:wchar_t- -Zi"
+            CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Zc:wchar_t- -Zi"
 
             # Set to use multi-threaded libraries.  Can't set in CMAKE_C_FLAGS
             # because default flags will override.
