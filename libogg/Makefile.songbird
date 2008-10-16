@@ -25,10 +25,12 @@
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: gstreamer (core)
+# Makefile for building Songbird vendor: libogg
 #
 ################################################################################
 ################################################################################
+
+SB_VENDOR_TARGET_DEP_MODULES := 
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
