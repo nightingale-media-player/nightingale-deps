@@ -128,7 +128,11 @@ setup_build()
     build_tgt_arch="$1"
 
     # Set up the build environment for the given target.
-    case $build_tgt_arch in
+    case "${build_tgt_arch}" in
+
+        linux-x86 | linux-x86_64)
+            export CPPFLAGS="-fPIC"
+            ;;
 
         windows-i686)
             export CPPFLAGS="-MD"
@@ -187,6 +191,9 @@ build()
     else
         cfg_opts="${cfg_opts} --enable-debug=no"
     fi
+
+    # Enable use of zlib.
+    export ac_cv_header_zlib_h=yes
 
     # Set up the target configuration options.
     if test -n "${cfg_tgt}"; then
