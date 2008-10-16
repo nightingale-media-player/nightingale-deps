@@ -35,6 +35,7 @@
 #include "id3v1genres.h"
 
 #include "frames/textidentificationframe.h"
+#include "frames/unsynchronizedlyricsframe.h"
 #include "frames/commentsframe.h"
 
 using namespace TagLib;
@@ -94,26 +95,34 @@ ID3v2::Tag::~Tag()
   delete d;
 }
 
+/* Standard, no-brainer version of the get property function */
+String ID3v2::Tag::getTextFrame(const String &property) const
+{
+  if(!d->frameListMap[property.data(String::UTF8)].isEmpty())
+    return d->frameListMap[property.data(String::UTF8)].front()->toString();
+  return String::null;
+}
+
+
 
 String ID3v2::Tag::title() const
 {
-  if(!d->frameListMap["TIT2"].isEmpty())
-    return d->frameListMap["TIT2"].front()->toString();
-  return String::null;
+  return getTextFrame("TIT2");
 }
 
 String ID3v2::Tag::artist() const
 {
-  if(!d->frameListMap["TPE1"].isEmpty())
-    return d->frameListMap["TPE1"].front()->toString();
-  return String::null;
+  return getTextFrame("TPE1");
+}
+
+String ID3v2::Tag::albumArtist() const
+{
+  return getTextFrame("TPE2");
 }
 
 String ID3v2::Tag::album() const
 {
-  if(!d->frameListMap["TALB"].isEmpty())
-    return d->frameListMap["TALB"].front()->toString();
-  return String::null;
+  return getTextFrame("TALB");
 }
 
 String ID3v2::Tag::comment() const
@@ -130,6 +139,13 @@ String ID3v2::Tag::comment() const
   }
 
   return comments.front()->toString();
+}
+
+String ID3v2::Tag::lyrics() const
+{
+  if(!d->frameListMap["USLT"].isEmpty())
+    return (static_cast<ID3v2::UnsynchronizedLyricsFrame *>(d->frameListMap["USLT"].front())->text());
+  return String::null;
 }
 
 String ID3v2::Tag::genre() const
@@ -180,6 +196,83 @@ String ID3v2::Tag::genre() const
   return genres.toString();
 }
 
+String ID3v2::Tag::producer() const
+{
+  /* TODO: this.
+  
+  if(d->frameListMap["TIPL"].isEmpty())
+  {
+    return String::null;
+  }
+
+  // ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
+  // role/person, role/person.
+  // here we look up the producer in the first TIPL frame.
+
+  TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
+    d->frameListMap["TIPL"].front());
+
+  StringList fields = f->fieldList();
+  // loop increments twice to skip involved-person names and only check roles.
+  // you know, just in case someone named "Producer" is your recording tech.
+  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
+    if(*it.upper() == String("PRODUCER")) {
+      return ++it; // the next field will be the producer
+    }
+  }
+
+  // i guess we didn't find it.
+  return String::null;
+  */
+  return getTextFrame("TCOM");
+}
+
+String ID3v2::Tag::composer() const
+{
+  return getTextFrame("TCOM");
+}
+
+String ID3v2::Tag::conductor() const
+{
+  return getTextFrame("TPE3");
+}
+
+String ID3v2::Tag::lyricist() const
+{
+  return getTextFrame("TEXT");
+}
+
+String ID3v2::Tag::recordLabel() const
+{
+  return getTextFrame("TPUB"); // TODO!
+}
+
+// TODO: ACK! Popularimeter? Weak!
+String ID3v2::Tag::rating() const
+{
+  return getTextFrame("TXXX");
+}
+
+String ID3v2::Tag::language() const
+{
+  return getTextFrame("TLAN");
+}
+
+String ID3v2::Tag::key() const
+{
+  return getTextFrame("TKEY");
+}
+
+String ID3v2::Tag::license() const
+{
+  return getTextFrame("TCOP");
+}
+
+String ID3v2::Tag::licenseUrl() const
+{
+  return getTextFrame("WCOP");
+}
+
 TagLib::uint ID3v2::Tag::year() const
 {
   if(!d->frameListMap["TDRC"].isEmpty())
@@ -187,10 +280,70 @@ TagLib::uint ID3v2::Tag::year() const
   return 0;
 }
 
+// TODO: parsing logic for "n of m" and "n/m"
+//        or better n(.+)m
 TagLib::uint ID3v2::Tag::track() const
 {
   if(!d->frameListMap["TRCK"].isEmpty())
     return d->frameListMap["TRCK"].front()->toString().toInt();
+  return 0;
+
+  /*
+  if(d->frameListMap["TRCK"].isEmpty())
+    return 0;
+  
+  
+  String trackDetails = d->frameListMap["TRCK"].front()->toString();
+
+  bool wasSeparatorFirst = false;
+  bool isNumber = true;
+
+  for(String::ConstIterator charIt = trackDetails.begin();
+      isNumber && charIt != (*it).end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+  }
+
+  return track;
+  */
+}
+
+// TODO: finish this
+TagLib::uint ID3v2::Tag::totalTracks() const
+{
+  if(!d->frameListMap["TRCK"].isEmpty())
+    return d->frameListMap["TRCK"].front()->toString().toInt();
+  return 0;
+}
+
+// TODO: this.
+TagLib::uint ID3v2::Tag::disc() const
+{
+  if(!d->frameListMap["TRCK"].isEmpty())
+    return d->frameListMap["TRCK"].front()->toString().toInt();
+  return 0;
+}
+
+TagLib::uint ID3v2::Tag::totalDiscs() const
+{
+  if(!d->frameListMap["TRCK"].isEmpty())
+    return d->frameListMap["TRCK"].front()->toString().toInt();
+  return 0;
+}
+
+TagLib::uint ID3v2::Tag::bpm() const
+{
+  if(!d->frameListMap["TBPM"].isEmpty())
+    return d->frameListMap["TBPM"].front()->toString().toInt();
+  return 0;
+}
+
+// TODO: weak
+bool ID3v2::Tag::isCompilation() const
+{
+  if(!d->frameListMap["TCMP"].isEmpty())
+    return (d->frameListMap["TCMP"].front()->toString().isEmpty());
   return 0;
 }
 
@@ -202,6 +355,11 @@ void ID3v2::Tag::setTitle(const String &s)
 void ID3v2::Tag::setArtist(const String &s)
 {
   setTextFrame("TPE1", s);
+}
+
+void ID3v2::Tag::setAlbumArtist(const String &s)
+{
+  setTextFrame("TPE2", s);
 }
 
 void ID3v2::Tag::setAlbum(const String &s)
@@ -225,6 +383,23 @@ void ID3v2::Tag::setComment(const String &s)
   }
 }
 
+void ID3v2::Tag::setLyrics(const String &s)
+{
+  if(s.isEmpty()) {
+    removeFrames("USLT");
+    return;
+  }
+
+  if(!d->frameListMap["USLT"].isEmpty())
+    d->frameListMap["USLT"].front()->setText(s);
+  else {
+    UnsynchronizedLyricsFrame *f = new UnsynchronizedLyricsFrame(d->factory->defaultTextEncoding());
+    addFrame(f);
+    f->setText(s);
+  }
+}
+
+// TODO: this is (oddly) no good either
 void ID3v2::Tag::setGenre(const String &s)
 {
   if(s.isEmpty()) {
@@ -251,6 +426,84 @@ void ID3v2::Tag::setGenre(const String &s)
 #endif
 }
 
+void ID3v2::Tag::setProducer(const String &s)
+{
+  /* TODO: this
+  if(d->frameListMap["TIPL"].isEmpty())
+  {
+    return String::null;
+  }
+
+  // ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
+  // role/person, role/person.
+  // here we look up the producer in the first TIPL frame.
+
+  TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
+    d->frameListMap["TIPL"].front());
+
+  StringList fields = f->fieldList();
+  // loop increments twice to skip involved-person names and only check roles.
+  // you know, just in case someone named "Producer" is your recording tech.
+  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
+    if(*it.upper() == String("PRODUCER")) {
+      ++it; // the next field will be the producer
+    }
+  }
+
+  // i guess we didn't find it.
+  return String::null;
+  */
+  
+  setTextFrame("TIPL", s);
+  
+}
+
+
+void ID3v2::Tag::setComposer(const String &s)
+{
+  setTextFrame("TCOM", s);
+}
+
+void ID3v2::Tag::setConductor(const String &s)
+{
+  setTextFrame("TPE3", s);
+}
+
+void ID3v2::Tag::setLyricist(const String &s)
+{
+  setTextFrame("TEXT", s);
+}
+
+void ID3v2::Tag::setRecordLabel(const String &s)
+{
+  setTextFrame("TPUB", s);
+}
+
+void ID3v2::Tag::setRating(const String &s)
+{
+  setTextFrame("TXXX", s); // TODO: popularimeter
+}
+
+void ID3v2::Tag::setLanguage(const String &s)
+{
+  setTextFrame("TLAN", s);
+}
+
+void ID3v2::Tag::setKey(const String &s)
+{
+  setTextFrame("TKEY", s);
+}
+
+void ID3v2::Tag::setLicense(const String &s)
+{
+  setTextFrame("TCOP", s);
+}
+
+void ID3v2::Tag::setLicenseUrl(const String &s)
+{
+  setTextFrame("WCOP", s);
+}
+
 void ID3v2::Tag::setYear(uint i)
 {
   if(i <= 0) {
@@ -260,6 +513,8 @@ void ID3v2::Tag::setYear(uint i)
   setTextFrame("TDRC", String::number(i));
 }
 
+// TODO: store the set/parsed values internally and during
+//       render() create the right value.
 void ID3v2::Tag::setTrack(uint i)
 {
   if(i <= 0) {
@@ -267,6 +522,55 @@ void ID3v2::Tag::setTrack(uint i)
     return;
   }
   setTextFrame("TRCK", String::number(i));
+}
+
+void ID3v2::Tag::setTotalTracks(uint i)
+{
+  if(i <= 0) {
+    removeFrames("TRCK");
+    return;
+  }
+  setTextFrame("TRCK", String::number(i));
+}
+
+// TODO: store the set/parsed values internally and during
+//       render() create the right value.
+void ID3v2::Tag::setDisc(uint i)
+{
+  if(i <= 0) {
+    removeFrames("TPOS");
+    return;
+  }
+  setTextFrame("TPOS", String::number(i));
+}
+
+void ID3v2::Tag::setTotalDiscs(uint i)
+{
+  if(i <= 0) {
+    removeFrames("TPOS");
+    return;
+  }
+  setTextFrame("TPOS", String::number(i));
+}
+
+void ID3v2::Tag::setBpm(uint i)
+{
+  if(i <= 0) {
+    removeFrames("TBPM");
+    return;
+  }
+  setTextFrame("TBPM", String::number(i));
+}
+
+// TODO: make this an iTunes hack thing and use something more
+//       "speccish"? compiletime option?
+void ID3v2::Tag::setIsCompilation(bool i)
+{
+  if(!i) {
+    removeFrames("TCMP");
+    return;
+  }
+  setTextFrame("TCMP", "true");
 }
 
 bool ID3v2::Tag::isEmpty() const

@@ -163,23 +163,23 @@ bool MPEG::File::save(int tags, bool stripOthers)
   // Create the tags if we've been asked to.  Copy the values from the tag that
   // does exist into the new tag.
 
-  if((tags & ID3v2) && ID3v1Tag())
-    Tag::duplicate(ID3v1Tag(), ID3v2Tag(true), false);
+  // TODO: figure out the consequences of this.
+  //if((tags & ID3v2) && ID3v1Tag())
+  //  Tag::duplicate(ID3v1Tag(), ID3v2Tag(true), false);
 
   if((tags & ID3v1) && d->tag[ID3v2Index])
     Tag::duplicate(ID3v2Tag(), ID3v1Tag(true), false);
-
+  
   bool success = true;
 
   if(ID3v2 & tags) {
-
     if(ID3v2Tag() && !ID3v2Tag()->isEmpty()) {
 
       if(!d->hasID3v2)
         d->ID3v2Location = 0;
 
       insert(ID3v2Tag()->render(), d->ID3v2Location, d->ID3v2OriginalSize);
-
+      
       d->hasID3v2 = true;
 
       // v1 tag location has changed, update if it exists
