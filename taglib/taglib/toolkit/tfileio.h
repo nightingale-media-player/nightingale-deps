@@ -119,7 +119,7 @@ namespace TagLib {
      *
      * \see Position
      */
-    virtual void seek(long offset, Position p = Beginning) = 0;
+    virtual int seek(long offset, Position p = Beginning) = 0;
 
     /*!
      * Reset the end-of-file and error flags on the file.

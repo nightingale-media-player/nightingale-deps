@@ -165,7 +165,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
   // Start the search at the offset.
 
-  seek(fromOffset);
+  if (seek(fromOffset) < 0)
+    return -1;
 
   // This loop is the crux of the find method.  There are three cases that we
   // want to account for:
@@ -192,7 +193,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
     if(previousPartialMatch >= 0 && int(d->bufferSize) > previousPartialMatch) {
       const int patternOffset = (d->bufferSize - previousPartialMatch);
       if(buffer.containsAt(pattern, 0, patternOffset)) {
-        seek(originalPosition);
+        if (seek(originalPosition) < 0)
+          return -1;
         return bufferOffset - d->bufferSize + previousPartialMatch;
       }
     }
@@ -209,7 +211,8 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
 
     long location = buffer.find(pattern);
     if(location >= 0) {
-      seek(originalPosition);
+      if (seek(originalPosition) < 0)
+        return -1;
       return bufferOffset + location;
     }
 
@@ -264,12 +267,14 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
   long bufferOffset;
   if(fromOffset == 0) {
-    seek(-1 * int(d->bufferSize), End);
+    if (seek(-1 * int(d->bufferSize), End) < 0)
+      return -1;
     bufferOffset = tell();
   }
   else {
-    seek(fromOffset + -1 * int(d->bufferSize), Beginning);
-    bufferOffset = tell();
+    if (seek(fromOffset + -1 * int(d->bufferSize), Beginning) < 0)
+      return -1;
+    bufferOffset = tell();    
   }
 
   // See the notes in find() for an explanation of this algorithm.
@@ -282,7 +287,8 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
 
     long location = buffer.rfind(pattern);
     if(location >= 0) {
-      seek(originalPosition);
+      if (seek(originalPosition) < 0)
+        return -1;
       return bufferOffset + location;
     }
 
@@ -294,7 +300,8 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
     // TODO: (3) partial match
 
     bufferOffset -= d->bufferSize;
-    seek(bufferOffset);
+    if (seek(bufferOffset) < 0)
+      return -1;
   }
 
   // Since we hit the end of the file, reset the status before continuing.
@@ -351,14 +358,14 @@ bool File::isValid() const
   return isOpen() && d->valid;
 }
 
-void File::seek(long offset, Position p)
+int File::seek(long offset, Position p)
 {
   if(!d->fileIO) {
     debug("File::seek() -- trying to seek in a file that isn't opened.");
-    return;
+    return -1;
   }
 
-  d->fileIO->seek(offset, p);
+  return d->fileIO->seek(offset, p);
 }
 
 void File::clear()

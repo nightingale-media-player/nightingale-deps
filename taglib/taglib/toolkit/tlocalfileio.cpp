@@ -296,11 +296,11 @@ bool LocalFileIO::isOpen() const
   return d->file;
 }
 
-void LocalFileIO::seek(long offset, Position p)
+int LocalFileIO::seek(long offset, Position p)
 {
   if(!d->file) {
     debug("LocalFileIO::seek() -- trying to seek in a file that isn't opened.");
-    return;
+    return -1;
   }
 
   switch(p) {
@@ -314,6 +314,8 @@ void LocalFileIO::seek(long offset, Position p)
     fseek(d->file, offset, SEEK_END);
     break;
   }
+
+  return 0;
 }
 
 void LocalFileIO::clear()

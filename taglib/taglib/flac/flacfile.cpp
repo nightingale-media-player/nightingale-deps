@@ -408,7 +408,8 @@ long FLAC::File::findID3v1()
   if(!isValid())
     return -1;
 
-  seek(-128, End);
+  if (seek(-128, End) < 0)
+    return -1;
   long p = tell();
 
   if(readBlock(3) == ID3v1::Tag::fileIdentifier())
@@ -422,7 +423,8 @@ long FLAC::File::findID3v2()
   if(!isValid())
     return -1;
 
-  seek(0);
+  if (seek(0) < 0)
+    return -1;
 
   if(readBlock(3) == ID3v2::Header::fileIdentifier())
     return 0;

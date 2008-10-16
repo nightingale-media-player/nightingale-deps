@@ -234,7 +234,8 @@ ByteVector Ogg::PageHeader::render() const
 
 void Ogg::PageHeader::read()
 {
-  d->file->seek(d->fileOffset);
+  if (d->file->seek(d->fileOffset) < 0)
+    return;
 
   // An Ogg page header is at least 27 bytes, so we'll go ahead and read that
   // much and then get the rest when we're ready for it.
