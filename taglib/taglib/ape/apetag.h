@@ -49,7 +49,7 @@ namespace TagLib {
      *
      * \see APE::Tag::itemListMap()
      */
-    typedef Map<String, Item> ItemListMap;
+    typedef Map<const String, Item> ItemListMap;
 
 
     //! An APE tag implementation
