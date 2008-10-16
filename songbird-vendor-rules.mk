@@ -110,9 +110,44 @@ ifneq (Msys,$(SB_VENDOR_ARCH))
          -exec $(STRIP) {} \;
 endif
 
+# post_build's heroic (but byzantine) shell loop needs some explanation;
+# the goal here is to run two command on .dylib's that get spit out of libtool's
+# bowels on the mac:
+#  1. install_name_tool -id, which seemingly gives libraries an internal name
+#
+#  2. install_name_tool -change, which allows you to rename references to other
+#     .dylibs which contain hardcoded paths to .dylibs on a filesystem, which
+#     are pretty much guaranteed to not exist on someone's machine.
+#
+# This shell loop uses find to find all the .dylibs in the final install
+# directory after we've finished building; the first thing we do is give the
+# library its name, which we obtain by basenaming it.
+#
+# Then, we run otool on each library to give us a list of .dylibs of *OURS*
+# it depends on (that's what the grep is about); we run it through awk before
+# we call basename because the output of otool includes a ":", because there's
+# a string which indicates the version of the .dylib). Finally, we loop through
+# these referenced libraries, and rename them within the library that we just
+# ran -id on.
+#
+# Simple, no?
+#
+
 post_build: module_post_build
-ifeq (Darwin, $(SB_VENDOR_ARCH))
-	echo Perform scrubbing here.
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+	for l in `$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.dylib"`; do \
+          echo Processing dylib $$l...; \
+          new_id=`basename $$l`; \
+          echo ==\> $(INSTALL_NAME_TOOL) -id $$new_id $$l; \
+          $(INSTALL_NAME_TOOL) -id $$new_id $$l; \
+          otool_lib_list=`$(OTOOL) -L $$l | grep $(SB_CONFIGURE_PREFIX)`; \
+          full_path_libs=`echo $$otool_lib_list | $(AWK) '{ print $$1}' | $(SED) -e 's/:$$//'`; \
+          for fpl in $$full_path_libs; do \
+            dep_lib_basename=`basename $$fpl`; \
+            echo ==\> $(INSTALL_NAME_TOOL) -change $$fpl $$dep_lib_basename $$l; \
+            $(INSTALL_NAME_TOOL) -change $$fpl $$dep_lib_basename $$l; \
+          done \
+        done
 endif
 
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
@@ -190,7 +225,9 @@ setup_build: \
 	@echo -----
 	@echo PKG_CONFIG_PATH = $(PKG_CONFIG_PATH)
 	@echo PATH = $(PATH)
+ifeq (Msys,$(SB_VENDOR_ARCH))
 	@echo LIBS = $(LIBS)
+endif
 	@echo
 	@echo Dependent library settings
 	@echo --------------------------
