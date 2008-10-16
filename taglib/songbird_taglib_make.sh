@@ -207,10 +207,7 @@ setup_build()
             CMAKE_MAKE_CMD="make"
             ;;
 
-        windows-i686)
-            ;;
-
-        windows-i686-msvc8)
+        windows-i686 | windows-i686-msvc8)
             # Set compiler flags.
             CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -Zc:wchar_t- -Zi"
             CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Zc:wchar_t- -Zi"

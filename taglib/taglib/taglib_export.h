@@ -26,7 +26,7 @@
 #ifndef TAGLIB_EXPORT_H
 #define TAGLIB_EXPORT_H
 
-#if defined(_WIN32) || defined(_WIN64)
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(TAGLIB_STATIC_LIB)
 #ifdef MAKE_TAGLIB_LIB
 #define TAGLIB_EXPORT __declspec(dllexport)
 #else
