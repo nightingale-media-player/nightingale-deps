@@ -167,7 +167,7 @@ build()
     # Set up zlib build options.
     export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/zlib/${build_type}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/zlib/${build_type}/include"
-    if [ "${tgt_arch}" == "windows-i686" ]; then
+    if [ "${tgt_arch}" = "windows-i686" ]; then
         export LDFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper \
                         echo ${LDFLAGS}`
         export CPPFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper\
