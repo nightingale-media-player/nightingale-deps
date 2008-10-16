@@ -26,6 +26,7 @@
 #include <stdio.h>
 
 #include <fileref.h>
+#include "mp4itunestag.h"
 #include <tag.h>
 
 using namespace std;
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     if(!f.isNull() && f.tag()) {
 
       TagLib::Tag *tag = f.tag();
+      TagLib::MP4::Tag *mp4tag = static_cast<TagLib::MP4::Tag*>(f.tag());
 
       cout << "-- TAG --" << endl;
       cout << "title   - \"" << tag->title()   << "\"" << endl;
@@ -57,6 +59,11 @@ int main(int argc, char *argv[])
       cout << "comment - \"" << tag->comment() << "\"" << endl;
       cout << "track   - \"" << tag->track()   << "\"" << endl;
       cout << "genre   - \"" << tag->genre()   << "\"" << endl;
+
+      cout << "grouping - \"" << mp4tag->grouping() << "\"" << endl;
+      cout << "composer - \"" << mp4tag->composer() << "\"" << endl;
+      cout << "disk     - \"" << mp4tag->disk()     << "\"" << endl;
+      cout << "bpm      - \"" << mp4tag->bpm()      << "\"" << endl;
     }
 
     if(!f.isNull() && f.audioProperties()) {

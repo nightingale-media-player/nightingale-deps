@@ -35,6 +35,7 @@
 #include "wavpackfile.h"
 #include "speexfile.h"
 #include "trueaudiofile.h"
+#include "mp4file.h"
 
 using namespace TagLib;
 
@@ -121,6 +122,8 @@ StringList FileRef::defaultFileExtensions()
   l.append("wv");
   l.append("spx");
   l.append("tta");
+  l.append("m4a");
+  l.append("m4p");
 
   return l;
 }
@@ -197,6 +200,10 @@ File *FileRef::create(FileName fileName, bool readAudioProperties,
       return new Ogg::Speex::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(s.substr(s.size() - 4, 4).upper() == ".TTA")
       return new TrueAudio::File(fileName, readAudioProperties, audioPropertiesStyle);
+     if(s.substr(s.size() - 4, 4).upper() == ".M4A")
+       return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
+     if(s.substr(s.size() - 4, 4).upper() == ".M4P")
+       return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
   }
 
   return 0;
