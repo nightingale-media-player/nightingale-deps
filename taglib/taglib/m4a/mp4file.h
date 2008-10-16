@@ -51,7 +51,7 @@ namespace TagLib {
      * information specific to mp4 itunes files. (TODO)
      */
 
-    class File : public TagLib::File
+    class TAGLIB_EXPORT File : public TagLib::File
     {
     public:
       /*!

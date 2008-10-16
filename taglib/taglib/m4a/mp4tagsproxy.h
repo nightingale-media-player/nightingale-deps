@@ -26,6 +26,8 @@
 #ifndef MP4TAGSPROXY_H
 #define MP4TAGSPROXY_H
 
+#include "taglib_export.h"
+
 namespace TagLib
 {
   namespace MP4
@@ -39,7 +41,7 @@ namespace TagLib
      *  the mp4 file structure and stepping through all box layers
      *  is avoided by registration at the proxy object.
      */
-    class Mp4TagsProxy
+    class TAGLIB_EXPORT Mp4TagsProxy
     {
     public:
       /*! enum for all supported box types */

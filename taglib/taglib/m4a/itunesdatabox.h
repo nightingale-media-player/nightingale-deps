@@ -33,7 +33,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class ITunesDataBox: public Mp4IsoFullBox
+    class TAGLIB_EXPORT ITunesDataBox: public Mp4IsoFullBox
     {
     public:
       ITunesDataBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );

@@ -33,7 +33,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class Mp4StblBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4StblBox: public Mp4IsoBox
     {
     public:
       Mp4StblBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );

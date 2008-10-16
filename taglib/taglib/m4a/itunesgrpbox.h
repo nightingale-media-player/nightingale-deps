@@ -33,7 +33,7 @@ namespace TagLib
 {
   namespace MP4
   {
-    class ITunesGrpBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesGrpBox: public Mp4IsoBox
     {
     public:
       ITunesGrpBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );

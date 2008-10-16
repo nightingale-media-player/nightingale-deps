@@ -35,7 +35,7 @@ namespace TagLib
 
   namespace MP4
   {
-    class Mp4IsoBox
+    class TAGLIB_EXPORT Mp4IsoBox
     {
     public:
       //! constructor for base class

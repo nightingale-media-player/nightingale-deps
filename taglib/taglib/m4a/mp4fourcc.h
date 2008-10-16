@@ -33,7 +33,7 @@ namespace TagLib
   namespace MP4
   {
     /*! union for easy fourcc / type handling */
-    class Fourcc
+    class TAGLIB_EXPORT Fourcc
     {
     public:
       //! std constructor
