@@ -125,7 +125,7 @@ build()
 
     # Build a multi-threaded library.
     #zzz msvc specific, fix it
-    export CPPFLAGS="/MT"
+    export CPPFLAGS="-MD"
 
     # Configure, build, and install.
     ./configure --prefix=${install_dir}/${tgt_arch}/${tgt_name}/${build_type}  \

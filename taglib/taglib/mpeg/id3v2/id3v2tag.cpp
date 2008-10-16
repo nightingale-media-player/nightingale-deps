@@ -138,8 +138,7 @@ String ID3v2::Tag::genre() const
   // should be separated by " / " instead of " ".  For the moment to keep
   // the behavior the same as released versions it is being left with " ".
 
-  if(d->frameListMap["TCON"].isEmpty() ||
-     !dynamic_cast<TextIdentificationFrame *>(d->frameListMap["TCON"].front()))
+  if(d->frameListMap["TCON"].isEmpty() || !(d->frameListMap["TCON"].front()))
   {
     return String::null;
   }
