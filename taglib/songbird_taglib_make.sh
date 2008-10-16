@@ -50,8 +50,7 @@ tgt_name=taglib
 # System configuration.
 #
 #   build_sys_type              Build system type.
-#   tgt_arch                    Build target architecture.
-#zzz should build for both i686 and ppc on Mac
+#   tgt_arch_list               List of build target architectures.
 #
 
 sys_name=`uname`
@@ -59,20 +58,20 @@ mach_name=`uname -m`
 if [ "$sys_name" = "Darwin" ]; then
     build_sys_type=Darwin
     if [ "$mach_name" = "i386" ]; then
-        tgt_arch=macosx-i686
+        tgt_arch_list="macosx-i686 macosx-ppc"
     else
-        tgt_arch=macosx-ppc
+        tgt_arch_list=macosx-ppc
     fi
 elif [ "$sys_name" = "Linux" ]; then
     build_sys_type=Linux
     if [ "$mach_name" = "x86_64" ]; then
-        tgt_arch=linux-x86_64
+        tgt_arch_list=linux-x86_64
     else
-        tgt_arch=linux-i686
+        tgt_arch_list=linux-i686
     fi
 else
     build_sys_type=Cygwin
-    tgt_arch=windows-i686
+    tgt_arch_list=windows-i686
 fi
 
 
@@ -91,15 +90,68 @@ install_dir=${PWD}/../..
 #
 ################################################################################
 
+#
+# build_all
+#
+#   This function builds all of the configured targets.
+#
+
 build_all()
 {
-    # Build release target.
-    build release
+    # Build for each of the target architectures.
+    for tgt_arch in ${tgt_arch_list}
+    do
+        # Set up the build environment.
+        setup_build ${tgt_arch}
 
-    # Build debug target.
-    build debug
+        # Build release target.
+        build release
+
+        # Build debug target.
+        build debug
+    done
 }
 
+
+#
+# setup_build
+#
+#   --> build_tgt_arch          Target build architecture.
+#
+#   This function sets up a build for the target architecture specified by
+# build_tgt_arch.
+#
+
+setup_build()
+{
+    # Read the function parameters.
+    build_tgt_arch="$1"
+
+    # Set up the build environment for the given target.
+    case $build_tgt_arch in
+
+        windows-i686)
+            export CPPFLAGS="-MD"
+            ;;
+
+        macosx-ppc)
+            cfg_tgt=i686-apple-darwin8.0.0
+            export CFLAGS="-arch ppc"
+            export CXXFLAGS="-arch ppc"
+            export LDFLAGS="-Wl,-arch,ppc"
+            ;;
+
+    esac
+}
+
+
+#
+# build
+#
+#   --> build_type              Type of build (release or debug).
+#
+#   This function runs the configured build of the type specified by build_type.
+#
 
 build()
 {
@@ -118,18 +170,26 @@ build()
 
     # Determine the debug options.
     if [ "${build_type}" = "debug" ]; then
-        debug_option=--enable-debug=yes
+        cfg_opts="${cfg_opts} --enable-debug=yes"
     else
-        debug_option=--enable-debug=no
+        cfg_opts="${cfg_opts} --enable-debug=no"
     fi
 
-    # Build a multi-threaded library.
-    #zzz msvc specific, fix it
-    export CPPFLAGS="-MD"
+    # Disable use of zlib.
+    export ac_cv_header_zlib_h=no
+
+    # Set up the target configuration options.
+    if test -n "${cfg_tgt}"; then
+        cfg_opts="${cfg_opts} --target=${cfg_tgt}"
+        cfg_opts="${cfg_opts} --host=${cfg_tgt}"
+    fi
+
+    # Remake the source distribution.
+    make -f Makefile.cvs
 
     # Configure, build, and install.
     ./configure --prefix=${install_dir}/${tgt_arch}/${tgt_name}/${build_type}  \
-                ${debug_option}                                                \
+                ${cfg_opts}                                                    \
                 --enable-static                                                \
                 --disable-shared                                               \
                 --enable-cxx-warnings=no
