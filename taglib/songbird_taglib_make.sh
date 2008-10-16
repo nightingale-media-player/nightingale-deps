@@ -179,6 +179,7 @@ setup_build()
         linux-i686 | linux-x86_64 | linux-ppc)
             # Set library defs.
             ZLIB_LIBRARY="libz.a"
+            zlib_dir=${dep_arch_dir}/zlib/${build_type}
 
             # Set compiler flags.
             CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC -fno-stack-protector"
@@ -191,7 +192,8 @@ setup_build()
 
         solaris-*)
             # Set library defs.
-            ZLIB_LIBRARY="libz.a"
+            ZLIB_LIBRARY="libz.so"
+            zlib_dir=/usr
 
             # Set compiler flags.
             CMAKE_C_FLAGS="${CMAKE_C_FLAGS} -KPIC"
@@ -219,6 +221,7 @@ setup_build()
 
             # Set library defs.
             ZLIB_LIBRARY="zlib.lib"
+            zlib_dir=${dep_arch_dir}/zlib/${build_type}
 
             # Set makefile type.
             CMAKE_MAKEFILE_TYPE="NMake Makefiles"
@@ -228,6 +231,7 @@ setup_build()
         macosx-i686 | macosx-ppc)
             # Set library defs.
             ZLIB_LIBRARY="libz.a"
+            zlib_dir=${dep_arch_dir}/zlib/${build_type}
 
             # Set makefile type.
             CMAKE_MAKEFILE_TYPE="Unix Makefiles"
@@ -268,7 +272,6 @@ build()
     make -f Makefile.cvs
 
     # Build and install.
-    zlib_dir=${dep_arch_dir}/zlib/${build_type}
     cmake ${CMAKE_ARGS}                                                        \
           -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS}"                                   \
           -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                               \
