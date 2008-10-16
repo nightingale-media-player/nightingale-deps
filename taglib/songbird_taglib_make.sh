@@ -135,6 +135,7 @@ setup_build()
 {
     # Read the function parameters.
     build_tgt_arch="$1"
+    build_type="$2"
 
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
