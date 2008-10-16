@@ -71,7 +71,16 @@ elif [ "$sys_name" = "Linux" ]; then
     fi
 else
     build_sys_type=Cygwin
-    tgt_arch_list=windows-i686
+    _MSVC_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+    CC_VERSION=`cl -v 2>&1 | sed -ne "$_MSVC_VER_FILTER"`
+    case "$CC_VERSION" in
+        13.*)
+            tgt_arch_list=windows-i686
+            ;;
+        *)
+            tgt_arch_list=windows-i686-msvc8
+            ;;
+    esac
 fi
 
 
@@ -141,6 +150,13 @@ setup_build()
             export LD="link"
             ;;
 
+        windows-i686-msvc8)
+            export CPPFLAGS="-MT -Zc:wchar_t-"
+            export CC="cl"
+            export CXX="cl"
+            export LD="link"
+            ;;
+
         macosx-ppc)
             cfg_tgt=i686-apple-darwin8.0.0
             export CFLAGS="-arch ppc"
@@ -179,7 +195,7 @@ build()
     # Set up zlib build options.
     export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/zlib/${build_type}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/zlib/${build_type}/include"
-    if [ "${tgt_arch}" = "windows-i686" ]; then
+    if [ "${tgt_arch}" = "windows-i686" -o "${tgt_arch}" = "windows-i686-msvc8" ]; then
         export LDFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper \
                         echo ${LDFLAGS}`
         export CPPFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper\
