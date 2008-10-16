@@ -66,11 +66,17 @@ case `uname` in
 
     Linux)
         build_sys_type=Linux
-        if [ "$mach_name" = "x86_64" ]; then
-            tgt_arch_list=linux-x86_64
-        else
-            tgt_arch_list=linux-i686
-        fi
+        case "$mach_name" in
+            x86_64)
+                tgt_arch_list=linux-x86_64
+                ;;
+            *86)
+                tgt_arch_list=linux-i686
+                ;;
+            powerpc* | ppc*)
+                tgt_arch_list=linux-ppc
+                ;;
+        esac
         ;;
 
     SunOS)
@@ -170,7 +176,7 @@ setup_build()
     # Set up the build environment for the given target.
     case "${build_tgt_arch}" in
 
-        linux-i686 | linux-x86_64)
+        linux-i686 | linux-x86_64 | linux-ppc)
             # Set library defs.
             ZLIB_LIBRARY="libz.a"
 
