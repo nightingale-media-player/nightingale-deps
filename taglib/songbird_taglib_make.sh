@@ -136,6 +136,9 @@ setup_build()
 
         windows-i686)
             export CPPFLAGS="-MD"
+            export CC="cl"
+            export CXX="cl"
+            export LD="link"
             ;;
 
         macosx-ppc)
