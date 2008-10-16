@@ -23,6 +23,7 @@
 #include "tstring.h"
 #include "tdebug.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
@@ -93,6 +94,13 @@ LocalFileIO::LocalFileIO(FileName file)
 #endif
   if (!d->file)
     d->file = fopen(file, d->readOnly ? "rb" : "rb+");
+
+  // On Mac, fopen for write can sometimes still fail even if isWritable is
+  // true (e.g., when file is on an SMB share).
+  if (!d->file && !d->readOnly && (errno == EACCES)) {
+    d->readOnly = true;
+    d->file = fopen(file, d->readOnly ? "rb" : "rb+");
+  }
 
   if(!d->file)
     debug("Could not open file " + String((const char *) file));
