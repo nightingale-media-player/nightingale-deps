@@ -48,15 +48,15 @@ SB_USE_SYSTEM_LIBS ?=
 SB_PATH :=
 SB_PKG_CONFIG_PATH :=
 SB_DYLD_LIBRARY_PATH :=
-
+SB_VENDOR_TARGET_DEP_MODULES ?= all
 
 #
 # Operating system detection
 #
 
-SB_VENDOR_ARCH := $(shell uname)
-SB_VENDOR_SUBARCH := $(shell uname -m)
-SB_VENDOR_OS := $(shell uname -o)
+SB_VENDOR_ARCH := $(shell uname 2>&1)
+SB_VENDOR_SUBARCH := $(shell uname -m 2>&1)
+SB_VENDOR_OS := $(shell uname -o 2>&1)
 
 SB_ARCH_DETECTED := 0
 
@@ -102,12 +102,14 @@ endif
 # overridden
 #
 
+AWK ?= awk
 CONFIGURE ?= ./configure
 CP ?= cp
 FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p
 PYTHON ?= python
+SED ?= sed
 TAR ?= tar
 ZIP ?= zip
 
@@ -169,10 +171,11 @@ endif
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   SB_CFLAGS += -fnested-functions \
                -gstabs+ \
-                -D__MACOSX__
+                -D__MACOSX__ \
+                -D__APPLE__
 
-  LDFLAGS += -headerpad_max_install_names
-  DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
+  SB_LDFLAGS += -headerpad_max_install_names
+  #DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
 endif
 
 # Default to release mode...
@@ -215,7 +218,7 @@ SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 # Hardcode all this for now; this is for official building of these tools,
 # so developers are likely to find this pretty painful.
 
-SB_VENDOR_BUILD_ROOT ?= /d/builds/sb-deps
+SB_VENDOR_BUILD_ROOT ?= /builds/sb-deps
 SB_VENDOR_BINARIES_CO_ROOT ?= $(SB_VENDOR_BUILD_ROOT)/checkout
 SB_VENDOR_CHECKOUT ?= $(realpath $(CURDIR)/..)
 
@@ -234,11 +237,19 @@ SB_TARGET_SRC_DIR := $(CURDIR)
 SB_VENDOR_BINARIES_DIR := $(SB_VENDOR_BUILD_ROOT)/$(SB_TARGET_ARCH)
 SB_VENDOR_BINARIES_CHECKOUT := $(SB_VENDOR_BINARIES_CO_ROOT)/$(SB_TARGET_ARCH)
 
-SB_VENDOR_BINARIES_TARGETS := $(shell $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn -printf '%f ')
+SB_VENDOR_BINARIES_TARGETS_FIND := $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn
+ 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  SB_VENDOR_BINARIES_TARGETS_FIND += -exec basename {} \;
+else
+  SB_VENDOR_BINARIES_TARGETS_FIND += -printf '%f '
+endif
 
-#ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_DIR) && echo exists))
-#   $(error SB_VENDOR_BINARIES_CO_ROOT $(SB_VENDOR_BINARIES_CO_ROOT) does not exist...)
-#endif
+SB_VENDOR_BINARIES_TARGETS := $(shell $(SB_VENDOR_BINARIES_TARGETS_FIND))
+
+ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_DIR) && echo exists))
+   $(error SB_VENDOR_BINARIES_DIR $(SB_VENDOR_BINARIES_DIR) does not exist...)
+endif
 
 # Where we'll build this stuff
 SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/$(SB_BUILD_TYPE)
@@ -281,132 +292,162 @@ MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 # at our copies of various tools that are checked in.
 #
 
+define enable-sb-lib
+$(filter $1 all, $(SB_VENDOR_TARGET_DEP_MODULES))
+endef
+
 #
 # GNU Gettext 
 #
-SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
-SB_LIBS += -L$(SB_GETTEXT_DIR)/lib -lintl
-SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
-SB_PATH += $(SB_GETTEXT_DIR)/bin
+ifneq (,$(call enable-sb-lib, gettext))
+  $(info turning gettext on)
+  SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
+  SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
+  SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
+  SB_CPPFLAGS += -I$(SB_GETTEXT_DIR)/include
+  SB_PATH += $(SB_GETTEXT_DIR)/bin
 
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-  LDFLAGS += -Wl,-dylib_file -Wl,libintl.dylib:$(SB_GETTEXT)/lib/libintl.dylib
-  DYLD_LIBRARY_PATH := $(SB_GETTEXT_DIR)/lib:$(DYLD_LIBRARY_PATH)
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    #SB_LDFLAGS += -Wl,-dylib_file -Wl,libintl.dylib:$(SB_GETTEXT_DIR)/lib/libintl.dylib
+    SB_DYLD_LIBRARY_PATH += $(SB_GETTEXT_DIR)/lib
+  endif
 endif
 
 #
 # GNU iconv
 #
-SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
-SB_LIBS += -L$(SB_ICONV_DIR)/lib -liconv
-SB_CFLAGS += -I$(SB_ICONV_DIR)/include
-SB_PATH += $(SB_ICONV_DIR)/bin
-
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-  LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
-endif
+#ifneq (,$(call enable-sb-lib, iconv))
+#  $(info turning iconv on)
+#  SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
+#  SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
+#  SB_CFLAGS += -I$(SB_ICONV_DIR)/include
+#  SB_PATH += $(SB_ICONV_DIR)/bin
+#
+#  ifeq (Darwin,$(SB_VENDOR_ARCH))
+#    LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+#  endif
+#endif
 
 #
 # Glib
 # 
-SB_GLIB_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/glib)
-SB_PATH += $(SB_GLIB_DIR)/bin
-SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, glib))
+  $(info turning glib on)
+  SB_GLIB_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/glib)
+  SB_PATH += $(SB_GLIB_DIR)/bin
+  SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
 
-GLIB_PARTS := glib gobject gmodule gthread
+  GLIB_PARTS := glib gobject gmodule gthread
 
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-  LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
-  DYLD_LIBRARY_PATH := $(SB_GLIB_DIR)/lib:$(DYLD_LIBRARY_PATH)
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
+    DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
+  endif
 endif
 
 #
 # GNU libtool
 #
-SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
-ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
+#ifneq (,$(call enable-sb-lib, libtool))
+#  SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
+#  ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
+#endif
 
 #
 # liboil
 #
-SB_LIBOIL_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/liboil)
-SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
-SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
-SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, liboil))
+  $(info turning liboil on)
+  SB_LIBOIL_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/liboil)
+  SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
+  SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
+  SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
 
-ifeq (Msys, $(SB_VENDOR_ARCH))
-   SB_PATH += $(SB_LIBOIL_DIR)/bin
-   ifeq (debug, $(SB_BUILD_TYPE))
-      SB_LIBOIL_LIBS += -Wl,-Zi
-   endif
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+     SB_PATH += $(SB_LIBOIL_DIR)/bin
+     ifeq (debug, $(SB_BUILD_TYPE))
+        SB_LIBOIL_LIBS += -Wl,-Zi
+     endif
+  endif
 endif
 
 #
 # gstreamer
 #
-SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
-SB_PATH += $(SB_GSTREAMER_DIR)/bin
-SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, gstreamer))
+  $(info turning gstreamer on)
+  SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
+  SB_PATH += $(SB_GSTREAMER_DIR)/bin
+  SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
+endif
 
 #
 # gstreamer-plugins-base
 #
-SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base)
-SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
-SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, gst-plugins-base))
+  $(info turning gstreamer-plugins-base on)
+  SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base)
+  SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
+  SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
+endif
 
 #
 # libogg
 #
-SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
-SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib
-ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
-   SB_OGG_LIBS += -logg_d
-else
-   SB_OGG_LIBS += -logg
-endif
-SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
-SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, ogg))
+  SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
+  SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib
+  ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
+    SB_OGG_LIBS += -logg_d
+  else
+     SB_OGG_LIBS += -logg
+  endif
+  SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
+  SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
 
-ifeq (Msys, $(SB_VENDOR_ARCH))
-   SB_PATH += $(SB_LIBOGG_DIR)/bin
-   ifeq (debug, $(SB_BUILD_TYPE))
-      SB_LIBOGG_LIBS += -Wl,-Zi
-   endif
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+     SB_PATH += $(SB_LIBOGG_DIR)/bin
+     ifeq (debug, $(SB_BUILD_TYPE))
+       SB_LIBOGG_LIBS += -Wl,-Zi
+     endif
+  endif
 endif
 
 #
 # libvorbis
 #
-SB_LIBVORBIS_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libvorbis)
-SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
-SB_VORBIS_LIBS += $(SB_OGG_LIBS)
-SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
-SB_VORBIS_CFLAGS += $(SB_OGG_CFLAGS)
-SB_PKG_CONFIG_PATH += $(SB_LIBVORBIS_DIR)/lib/pkgconfig
+ifneq (,$(call enable-sb-lib, vorbis))
+  SB_LIBVORBIS_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libvorbis)
+  SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
+  SB_VORBIS_LIBS += $(SB_OGG_LIBS)
+  SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
+  SB_VORBIS_CFLAGS += $(SB_OGG_CFLAGS)
+  SB_PKG_CONFIG_PATH += $(SB_LIBVORBIS_DIR)/lib/pkgconfig
 
-ifeq (Msys, $(SB_VENDOR_ARCH))
-   SB_PATH += $(SB_LIBVORBIS_DIR)/bin
-   ifeq (debug, $(SB_BUILD_TYPE))
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+     SB_PATH += $(SB_LIBVORBIS_DIR)/bin
+     ifeq (debug, $(SB_BUILD_TYPE))
       SB_VORBIS_LIBS += -Wl,-Zi
-   endif
+     endif
+  endif
 endif
 
 #
 # libFLAC
 #
+ifneq (,$(call enable-sb-lib, flac))
+  SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
+  SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
+  ifeq (Msys,$(SB_TARGET_ARCH))
+    SB_FLAC_LDFLAGS += -lFLAC-8
+  endif
+  SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
+  SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
 
-SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
-SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
-ifeq (Msys,$(SB_TARGET_ARCH))
-  SB_FLAC_LDFLAGS += -lFLAC-8
-endif
-SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
-SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
-
-ifeq (Msys, $(SB_VENDOR_ARCH))
-   SB_PATH += $(SB_LIBFLAC_DIR)/bin
-   ifeq (debug, $(SB_BUILD_TYPE))
-      SB_FLAC_LIBS += -Wl,-Zi
-   endif
+  ifeq (Msys, $(SB_VENDOR_ARCH))
+     SB_PATH += $(SB_LIBFLAC_DIR)/bin
+     ifeq (debug, $(SB_BUILD_TYPE))
+       SB_FLAC_LIBS += -Wl,-Zi
+     endif
+  endif
 endif
