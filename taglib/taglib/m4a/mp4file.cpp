@@ -330,7 +330,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     if( datavec.size() >= 6 )
     {
       TagLib::uint notracks = static_cast<TagLib::uint>( datavec[5] );
-      mp4tag.setNumTracks( notracks );
+      mp4tag.setTotalTracks( notracks );
     }
     if( datavec.size() >= 4 )
     {
@@ -379,15 +379,15 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     if( datavec.size() >= 6 )
     {
       TagLib::uint nodiscs = static_cast<TagLib::uint>( datavec[5] );
-      mp4tag.setNumDisks( nodiscs );
+      mp4tag.setTotalDiscs( nodiscs );
     }
     if( datavec.size() >= 4 )
     {
       TagLib::uint discno = static_cast<TagLib::uint>( datavec[3] );
-      mp4tag.setDisk( discno );
+      mp4tag.setDisc( discno );
     }
     else
-      mp4tag.setDisk( 0 );
+      mp4tag.setDisc( 0 );
   }
 
   databox = proxy.bpmData();

@@ -44,7 +44,8 @@ using namespace ID3v2;
 class ID3v2::Tag::TagPrivate
 {
 public:
-  TagPrivate() : file(0), tagOffset(-1), extendedHeader(0), footer(0), paddingSize(0)
+  TagPrivate() : file(0), tagOffset(-1), extendedHeader(0), footer(0), paddingSize(0),
+                 track(0), totalTracks(0), disc(0), totalDiscs(0)
   {
     frameList.setAutoDelete(true);
   }
@@ -66,6 +67,11 @@ public:
 
   FrameListMap frameListMap;
   FrameList frameList;
+  
+  uint track;
+  uint totalTracks;
+  uint disc;
+  uint totalDiscs;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,8 +108,6 @@ String ID3v2::Tag::getTextFrame(const String &property) const
     return d->frameListMap[property.data(String::UTF8)].front()->toString();
   return String::null;
 }
-
-
 
 String ID3v2::Tag::title() const
 {
@@ -198,33 +202,79 @@ String ID3v2::Tag::genre() const
 
 String ID3v2::Tag::producer() const
 {
-  /* TODO: this.
+  /*
+   * ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
+   * role/person, role/person.
+   * ID3v2.3 mooshes everyone together into IPLS (involved person list)
+   */
   
-  if(d->frameListMap["TIPL"].isEmpty())
+  /*
+   * DISABLED: See bug 9086.
+   *
+   * 
+  if(!d->frameListMap["TIPL"].isEmpty())
   {
-    return String::null;
-  }
-
-  // ID3v2.4 lists "Involved People" (non-performers) in an alternating list of
-  // role/person, role/person.
-  // here we look up the producer in the first TIPL frame.
-
-  TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
-    d->frameListMap["TIPL"].front());
-
-  StringList fields = f->fieldList();
-  // loop increments twice to skip involved-person names and only check roles.
-  // you know, just in case someone named "Producer" is your recording tech.
-  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it, ++it) {
-    if(*it.upper() == String("PRODUCER")) {
-      return ++it; // the next field will be the producer
+    printf("TIPL\n");
+    TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
+      d->frameListMap["TIPL"].front());
+  
+    StringList fields = f->fieldList();
+    // loop increments twice to skip involved-person names and only check roles.
+    // you know, just in case someone named "Producer" is your recording tech.
+    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
+      
+      StringList::Iterator next = it;
+      if (it != fields.end()) { next++; }
+      printf("\tTIPL: %s=>%s\n", *it, *next);
+      
+      if((*it).upper() == String("PRODUCER")) {
+        return *(++it); // the next field will be the producer
+      }
+      // don't run over the end, but do skip over the names
+      else if (it != fields.end()) {
+          ++it;
+      }
     }
   }
+ */
 
-  // i guess we didn't find it.
-  return String::null;
+  /*
+   * Now try the ID3v2.3 "IPLS" frame.
+   */
+  /*
+   * DISABLED: See bug 9086.
+   *
+   * 
+  
+  if(!d->frameListMap["IPLS"].isEmpty())
+  {
+    printf("IPLS\n");
+    TextIdentificationFrame *f = static_cast<TextIdentificationFrame *>(
+      d->frameListMap["IPLS"].front());
+    printf("IPLSFRAME\n");
+    StringList fields = f->fieldList();
+    printf("IPLSFIELDLIST\n");
+    // loop increments twice to skip involved-person names and only check roles.
+    // you know, just in case someone named "Producer" is your recording tech.
+    for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
+      StringList::Iterator next = it;
+      if (it != fields.end()) { next++; }
+      printf("\tIPLS: %s=>%s\n", *it, *next);
+      
+      if((*it).upper() == String("PRODUCER")) {
+        return *(++it); // the next field will be the producer
+      }
+      // don't run over the end, but do skip over the names
+      else if (it != fields.end()) {
+          ++it;
+      }
+    }
+  }
   */
-  return getTextFrame("TCOM");
+  /*
+   * Give up. We can't find it.
+   */
+  return String::null;
 }
 
 String ID3v2::Tag::composer() const
@@ -244,13 +294,17 @@ String ID3v2::Tag::lyricist() const
 
 String ID3v2::Tag::recordLabel() const
 {
-  return getTextFrame("TPUB"); // TODO!
+  return getTextFrame("TPUB");
 }
 
-// TODO: ACK! Popularimeter? Weak!
 String ID3v2::Tag::rating() const
 {
-  return getTextFrame("TXXX");
+  /* TODO: SEE BUG 9084
+   * should use a TXXX field and a TextInformationFrame
+   * or Popularimeter (which is not implemented in TagLib and is insane)
+   */
+  
+  return String::null;
 }
 
 String ID3v2::Tag::language() const
@@ -280,56 +334,125 @@ TagLib::uint ID3v2::Tag::year() const
   return 0;
 }
 
-// TODO: parsing logic for "n of m" and "n/m"
-//        or better n(.+)m
+// TODO: probably ought to not require people to read these values
+//       prior to being able to store them.
 TagLib::uint ID3v2::Tag::track() const
 {
-  if(!d->frameListMap["TRCK"].isEmpty())
-    return d->frameListMap["TRCK"].front()->toString().toInt();
-  return 0;
-
-  /*
   if(d->frameListMap["TRCK"].isEmpty())
     return 0;
-  
-  
+
   String trackDetails = d->frameListMap["TRCK"].front()->toString();
 
-  bool wasSeparatorFirst = false;
+  uint value = 0;
   bool isNumber = true;
 
   for(String::ConstIterator charIt = trackDetails.begin();
-      isNumber && charIt != (*it).end();
+      isNumber && charIt != trackDetails.end();
       ++charIt)
   {
       isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
   }
+  
+  d->track = value;
 
-  return track;
-  */
+  return value;
 }
 
-// TODO: finish this
 TagLib::uint ID3v2::Tag::totalTracks() const
 {
-  if(!d->frameListMap["TRCK"].isEmpty())
-    return d->frameListMap["TRCK"].front()->toString().toInt();
-  return 0;
+  if(d->frameListMap["TRCK"].isEmpty())
+    return 0;  
+  
+  String trackDetails = d->frameListMap["TRCK"].front()->toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  bool reachedSecondNumber = false;
+  bool foundSeparator = false;
+
+  // TODO: right now we treat " 33" as a totalTracks number
+  //       but not as a track number. this might be ungood.
+  for(String::ConstIterator charIt = trackDetails.begin();
+      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber && foundSeparator) {
+        reachedSecondNumber = true;
+      }
+      else if (!isNumber) {
+        foundSeparator = true;
+      }
+      
+      if (reachedSecondNumber && isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+
+  d->totalTracks = value;
+
+  return value;
 }
 
-// TODO: this.
 TagLib::uint ID3v2::Tag::disc() const
 {
-  if(!d->frameListMap["TRCK"].isEmpty())
-    return d->frameListMap["TRCK"].front()->toString().toInt();
-  return 0;
+  if(d->frameListMap["TPOS"].isEmpty())
+    return 0;
+
+  String trackDetails = d->frameListMap["TPOS"].front()->toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  for(String::ConstIterator charIt = trackDetails.begin();
+      isNumber && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+  
+  d->disc = value;
+
+  return value;
 }
 
 TagLib::uint ID3v2::Tag::totalDiscs() const
 {
-  if(!d->frameListMap["TRCK"].isEmpty())
-    return d->frameListMap["TRCK"].front()->toString().toInt();
-  return 0;
+  if(d->frameListMap["TPOS"].isEmpty())
+    return 0;  
+  
+  String trackDetails = d->frameListMap["TPOS"].front()->toString();
+
+  uint value = 0;
+  bool isNumber = true;
+  bool reachedSecondNumber = false;
+  bool foundSeparator = false;
+
+  for(String::ConstIterator charIt = trackDetails.begin();
+      (!reachedSecondNumber || isNumber) && charIt != trackDetails.end();
+      ++charIt)
+  {
+      isNumber = *charIt >= '0' && *charIt <= '9';
+      if (isNumber && foundSeparator) {
+        reachedSecondNumber = true;
+      }
+      else if (!isNumber) {
+        foundSeparator = true;
+      }
+      
+      if (reachedSecondNumber && isNumber) {
+        value = value * 10 + (*charIt - '0');
+      }
+  }
+
+  d->totalDiscs = value;
+
+  return value;
 }
 
 TagLib::uint ID3v2::Tag::bpm() const
@@ -343,8 +466,8 @@ TagLib::uint ID3v2::Tag::bpm() const
 bool ID3v2::Tag::isCompilation() const
 {
   if(!d->frameListMap["TCMP"].isEmpty())
-    return (d->frameListMap["TCMP"].front()->toString().isEmpty());
-  return 0;
+    return (d->frameListMap["TCMP"].front()->toString() == "true");
+  return false;
 }
 
 void ID3v2::Tag::setTitle(const String &s)
@@ -428,7 +551,9 @@ void ID3v2::Tag::setGenre(const String &s)
 
 void ID3v2::Tag::setProducer(const String &s)
 {
-  /* TODO: this
+  /*
+   * DISABLED: SEE BUG 9086
+   * 
   if(d->frameListMap["TIPL"].isEmpty())
   {
     return String::null;
@@ -453,9 +578,9 @@ void ID3v2::Tag::setProducer(const String &s)
   // i guess we didn't find it.
   return String::null;
   */
-  
-  setTextFrame("TIPL", s);
-  
+
+  // no, don't do that, that's ridiculous.  
+  //setTextFrame("TIPL", s);
 }
 
 
@@ -481,7 +606,11 @@ void ID3v2::Tag::setRecordLabel(const String &s)
 
 void ID3v2::Tag::setRating(const String &s)
 {
-  setTextFrame("TXXX", s); // TODO: popularimeter
+  /* TODO: SEE BUG 9084
+   * should use a TXXX field and a TextInformationFrame
+   * or Popularimeter (which is not implemented in TagLib and is insane)
+   */
+  return;
 }
 
 void ID3v2::Tag::setLanguage(const String &s)
@@ -513,44 +642,47 @@ void ID3v2::Tag::setYear(uint i)
   setTextFrame("TDRC", String::number(i));
 }
 
-// TODO: store the set/parsed values internally and during
-//       render() create the right value.
 void ID3v2::Tag::setTrack(uint i)
 {
-  if(i <= 0) {
+  if(i <= 0 && d->totalTracks == 0) {
     removeFrames("TRCK");
     return;
   }
-  setTextFrame("TRCK", String::number(i));
+  
+  d->track = i;
+  setTextFrame("TRCK", Tag::splitNumberRender(i, d->totalTracks));
 }
 
 void ID3v2::Tag::setTotalTracks(uint i)
 {
-  if(i <= 0) {
+  if(i <= 0 && d->track == 0) {
     removeFrames("TRCK");
     return;
   }
-  setTextFrame("TRCK", String::number(i));
+  
+  d->totalTracks = i;
+  setTextFrame("TRCK", Tag::splitNumberRender(d->track, i));
 }
 
-// TODO: store the set/parsed values internally and during
-//       render() create the right value.
 void ID3v2::Tag::setDisc(uint i)
 {
-  if(i <= 0) {
+  if(i <= 0 && d->totalDiscs == 0) {
     removeFrames("TPOS");
     return;
   }
-  setTextFrame("TPOS", String::number(i));
+  
+  d->disc = i;
+  setTextFrame("TPOS", Tag::splitNumberRender(i, d->totalDiscs));
 }
 
 void ID3v2::Tag::setTotalDiscs(uint i)
 {
-  if(i <= 0) {
+  if(i <= 0 && d->disc == 0) {
     removeFrames("TPOS");
     return;
   }
-  setTextFrame("TPOS", String::number(i));
+  
+  setTextFrame("TPOS", Tag::splitNumberRender(d->disc, i));
 }
 
 void ID3v2::Tag::setBpm(uint i)
