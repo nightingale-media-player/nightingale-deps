@@ -165,6 +165,8 @@ bool MP4::File::readSizeAndType( TagLib::uint& size, MP4::Fourcc& fourcc )
          static_cast<unsigned char>(readsize[1]) << 16 |
          static_cast<unsigned char>(readsize[2]) <<  8 |
          static_cast<unsigned char>(readsize[3]);
+  if (size == 0)
+    return false;
 
   // set fourcc
   fourcc = readtype.data();
