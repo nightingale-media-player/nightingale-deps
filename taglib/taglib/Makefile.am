@@ -12,7 +12,7 @@ INCLUDES = \
 	-I$(top_srcdir)/taglib/ogg/speex \
 	-I$(top_srcdir)/taglib/wavpack \
 	-I$(top_srcdir)/taglib/trueaudio \
- 	-I$(top_srcdir)/taglib/m4a \
+	-I$(top_srcdir)/taglib/m4a \
 	$(all_includes)
 
 lib_LTLIBRARIES = libtag.la
