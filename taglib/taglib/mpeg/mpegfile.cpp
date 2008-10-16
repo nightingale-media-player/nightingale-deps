@@ -94,13 +94,19 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+MPEG::File::File(ID3v2::FrameFactory *frameFactory) : TagLib::File()
+{
+  if (frameFactory)
+    d = new FilePrivate(frameFactory);
+  else
+    d = new FilePrivate;
+}
+
 MPEG::File::File(FileName file, bool readProperties,
                  Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
   d = new FilePrivate;
-
-  if(isOpen())
-    read(readProperties, propertiesStyle);
+  read(readProperties, propertiesStyle);
 }
 
 MPEG::File::File(FileName file, ID3v2::FrameFactory *frameFactory,
@@ -108,9 +114,7 @@ MPEG::File::File(FileName file, ID3v2::FrameFactory *frameFactory,
   TagLib::File(file)
 {
   d = new FilePrivate(frameFactory);
-
-  if(isOpen())
-    read(readProperties, propertiesStyle);
+  read(readProperties, propertiesStyle);
 }
 
 MPEG::File::~File()
@@ -321,14 +325,24 @@ long MPEG::File::nextFrameOffset(long position)
 {
   bool foundLastSyncPattern = false;
 
+  long endPosition;
+  long maxScanBytes = getMaxScanBytes();
+  if (maxScanBytes > 0)
+    endPosition = position + maxScanBytes;
+  else
+    endPosition = 0;
+
   ByteVector buffer;
 
-  do {
+  while(true) {
     seek(position);
     buffer = readBlock(bufferSize());
 
     if(buffer.size() <= 0)
       return -1;
+
+    if(foundLastSyncPattern && secondSynchByte(buffer[0]))
+      return position - 1;
 
     for(uint i = 0; i < buffer.size() - 1; i++) {
       if(uchar(buffer[i]) == 0xff && secondSynchByte(buffer[i + 1]))
@@ -336,8 +350,11 @@ long MPEG::File::nextFrameOffset(long position)
     }
 
     foundLastSyncPattern = uchar(buffer[buffer.size() - 1]) == 0xff;
-    position += bufferSize();
-  } while(buffer.size() > 0);
+    position += buffer.size();
+
+    if (endPosition && (position >= endPosition))
+      break;
+  }
   return -1;
 }
 
@@ -345,6 +362,13 @@ long MPEG::File::previousFrameOffset(long position)
 {
   bool foundFirstSyncPattern = false;
   ByteVector buffer;
+
+  long endPosition;
+  long maxScanBytes = getMaxScanBytes();
+  if ((maxScanBytes > 0) && (position > maxScanBytes))
+    endPosition = position - maxScanBytes;
+  else
+    endPosition = 0;
 
   while (position > 0) {
     long size = ulong(position) < bufferSize() ? position : bufferSize();
@@ -365,6 +389,9 @@ long MPEG::File::previousFrameOffset(long position)
     }
 
     foundFirstSyncPattern = secondSynchByte(buffer[0]);
+
+    if (endPosition && (position <= endPosition))
+      break;
   }
   return -1;
 }
@@ -388,8 +415,12 @@ long MPEG::File::lastFrameOffset()
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
+/*XXXeps public method but kept here to ease merging. */
 void MPEG::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
+  if (!isOpen())
+    return;
+
   // Look for an ID3v2 tag
 
   d->ID3v2Location = findID3v2();
@@ -445,7 +476,9 @@ long MPEG::File::findID3v2()
 
     // The position in the file that the current buffer starts at.
 
+    long maxScanBytes = getMaxScanBytes();
     long bufferOffset = 0;
+    long endBufferOffset;
     ByteVector buffer;
 
     // These variables are used to keep track of a partial match that happens at
@@ -458,6 +491,13 @@ long MPEG::File::findID3v2()
     // position using seek() before all returns.
 
     long originalPosition = tell();
+
+    // Determine where to end search.
+
+    if (maxScanBytes > 0)
+      endBufferOffset = bufferOffset + maxScanBytes;
+    else
+      endBufferOffset = 0;
 
     // Start the search at the beginning of the file.
 
@@ -534,6 +574,9 @@ long MPEG::File::findID3v2()
       previousPartialMatch = buffer.endsWithPartialMatch(ID3v2::Header::fileIdentifier());
 
       bufferOffset += bufferSize();
+
+      if (endBufferOffset && (bufferOffset >= endBufferOffset))
+        break;
     }
 
     // Since we hit the end of the file, reset the status before continuing.

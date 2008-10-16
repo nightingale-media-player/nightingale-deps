@@ -81,6 +81,12 @@ namespace TagLib {
       };
 
       /*!
+       * Contructs an MPC file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
+
+      /*!
        * Contructs an MPC file from \a file.  If \a readProperties is true the
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
@@ -104,6 +110,14 @@ namespace TagLib {
        * were read then this will return a null pointer.
        */
       virtual Properties *audioProperties() const;
+
+      /*!
+       * Reads from MPC file.  If \a readProperties is true the file's audio
+       * properties will also be read using \a propertiesStyle.  If false,
+       * \a propertiesStyle is ignored.
+       */
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
 
       /*!
        * Saves the file.
@@ -160,7 +174,6 @@ namespace TagLib {
       File(const File &);
       File &operator=(const File &);
 
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
       void scan();
       long findAPE();
       long findID3v1();

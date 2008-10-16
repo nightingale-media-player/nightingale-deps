@@ -92,6 +92,13 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+FLAC::File::File(ID3v2::FrameFactory *frameFactory) : TagLib::File()
+{
+  d = new FilePrivate;
+  if (frameFactory)
+    d->ID3v2FrameFactory = frameFactory;
+}
+
 FLAC::File::File(FileName file, bool readProperties,
                  Properties::ReadStyle propertiesStyle) :
   TagLib::File(file)
@@ -251,6 +258,7 @@ void FLAC::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
+/*XXXeps public method but kept here to ease merging. */
 void FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
   // Look for an ID3v2 tag

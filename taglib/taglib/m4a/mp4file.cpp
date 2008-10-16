@@ -62,13 +62,47 @@ public:
 //! function to fill the tags with converted proxy data, which has been parsed out of the file previously
 static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 
+MP4::File::File() : TagLib::File()
+{
+  // create member container
+  d = new MP4::File::FilePrivate();
+  d->isValid = false;
+}
+
 MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
 	:TagLib::File( file )
 {
   // create member container
   d = new MP4::File::FilePrivate();
 
+  read();
+}
 
+MP4::File::~File()
+{
+  TagLib::List<Mp4IsoBox*>::Iterator delIter;
+  for( delIter  = d->boxes.begin();
+       delIter != d->boxes.end();
+       delIter++ )
+  {
+    delete *delIter;
+  }
+  delete d;
+}
+
+Tag *MP4::File::tag() const
+{
+  return &d->mp4tag;
+}
+
+AudioProperties * MP4::File::audioProperties() const
+{
+  d->mp4audioproperties.setProxy( &d->propsProxy );
+  return &d->mp4audioproperties;
+}
+
+void MP4::File::read( bool, TagLib::AudioProperties::ReadStyle  )
+{
   d->isValid = false;
   TagLib::uint size;
   MP4::Fourcc  fourcc;
@@ -99,29 +133,6 @@ MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
 
   // fill tags from proxy data
   fillTagFromProxy( d->tagsProxy, d->mp4tag );
-}
-
-MP4::File::~File()
-{
-  TagLib::List<Mp4IsoBox*>::Iterator delIter;
-  for( delIter  = d->boxes.begin();
-       delIter != d->boxes.end();
-       delIter++ )
-  {
-    delete *delIter;
-  }
-  delete d;
-}
-
-Tag *MP4::File::tag() const
-{
-  return &d->mp4tag;
-}
-
-AudioProperties * MP4::File::audioProperties() const
-{
-  d->mp4audioproperties.setProxy( &d->propsProxy );
-  return &d->mp4audioproperties;
 }
 
 bool MP4::File::save()

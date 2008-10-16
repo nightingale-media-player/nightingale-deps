@@ -64,6 +64,12 @@ namespace TagLib {
     {
     public:
       /*!
+       * Contructs an Ogg/FLAC file object without reading a file.  Allows object
+       * fields to be set up before reading.
+       */
+      File();
+
+      /*!
        * Contructs an Ogg/FLAC file from \a file.  If \a readProperties is true
        * the file's audio properties will also be read using \a propertiesStyle.
        * If false, \a propertiesStyle is ignored.
@@ -88,6 +94,14 @@ namespace TagLib {
       virtual Properties *audioProperties() const;
 
       /*!
+       * Reads from Ogg/FLAC file.  If \a readProperties is true the file's
+       * audio properties will also be read using \a propertiesStyle.  If false,
+       * \a propertiesStyle is ignored.
+       */
+      void read(bool readProperties = true,
+                Properties::ReadStyle propertiesStyle = Properties::Average);
+
+      /*!
        * Save the file.  This will primarily save and update the XiphComment.
        * Returns true if the save is successful.
        */
@@ -103,7 +117,6 @@ namespace TagLib {
       File(const File &);
       File &operator=(const File &);
 
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
       void scan();
       ByteVector streamInfoData();
       ByteVector xiphCommentData();

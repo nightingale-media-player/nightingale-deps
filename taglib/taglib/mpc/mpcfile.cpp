@@ -89,6 +89,11 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
+MPC::File::File() : TagLib::File()
+{
+  d = new FilePrivate;
+}
+
 MPC::File::File(FileName file, bool readProperties,
                 Properties::ReadStyle propertiesStyle) : TagLib::File(file)
 {
@@ -227,6 +232,7 @@ void MPC::File::remove(int tags)
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
+/*XXXeps public method but kept here to ease merging. */
 void MPC::File::read(bool readProperties, Properties::ReadStyle /* propertiesStyle */)
 {
   // Look for an ID3v1 tag
