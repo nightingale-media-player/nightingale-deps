@@ -171,6 +171,11 @@ build()
     # Get the target architecture depedencies directory.
     dep_arch_dir=${dep_dir}/${tgt_arch}
 
+    # Set up internal taglib include paths and build defs.
+    #XXXeps taglib makefiles should do this.
+    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/taglib/build/taglib/taglib"
+    export CPPFLAGS="${CPPFLAGS} -DMAKE_TAGLIB_LIB"
+
     # Set up zlib build options.
     export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/zlib/${build_type}/lib"
     export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/zlib/${build_type}/include"
