@@ -24,6 +24,7 @@
  ***************************************************************************/
 
 #include "tfile.h"
+#include "tlist.h"
 #include "tlocalfileio.h"
 #include "tstring.h"
 #include "tdebug.h"
@@ -61,6 +62,7 @@ public:
   bool valid;
   ulong size;
   static const uint bufferSize = 1024;
+  static List<const FileIOTypeResolver *> fileIOTypeResolvers;
 };
 
 File::FilePrivate::FilePrivate(FileName fileName) :
@@ -70,6 +72,8 @@ File::FilePrivate::FilePrivate(FileName fileName) :
 {
 }
 
+List<const File::FileIOTypeResolver *> File::FilePrivate::fileIOTypeResolvers;
+
 ////////////////////////////////////////////////////////////////////////////////
 // public members
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +82,18 @@ File::File(FileName file)
 {
   d = new FilePrivate(file);
 
-  d->fileIO = new LocalFileIO(file);
+  List<const FileIOTypeResolver *>::ConstIterator it = FilePrivate::fileIOTypeResolvers.begin();
+
+  for(; it != FilePrivate::fileIOTypeResolvers.end(); ++it) {
+    FileIO *fileIO = (*it)->createFileIO(file);
+    if(fileIO) {
+      d->fileIO = fileIO;
+      break;
+    }
+  }
+
+  if (!d->fileIO)
+    d->fileIO = new LocalFileIO(file);
 
   if (d->fileIO && !d->fileIO->isOpen()) {
     delete d->fileIO;
@@ -376,6 +391,12 @@ bool File::isWritable()
     return false;
 
   return d->fileIO->isWritable();
+}
+
+const File::FileIOTypeResolver *File::addFileIOTypeResolver(const File::FileIOTypeResolver *resolver) // static
+{
+  FilePrivate::fileIOTypeResolvers.prepend(resolver);
+  return resolver;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
