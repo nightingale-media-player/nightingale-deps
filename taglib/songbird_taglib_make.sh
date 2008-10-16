@@ -133,8 +133,7 @@ build()
                 --enable-static                                                \
                 --disable-shared                                               \
                 --enable-cxx-warnings=no
-    make
-    make install
+    make && make install
 
     # Move back to starting directory.
     cd ${start_dir}

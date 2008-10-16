@@ -29,28 +29,13 @@
 #include "taglib_export.h"
 #include "taglib.h"
 #include "tbytevector.h"
+#include "tfileio.h"
 
 namespace TagLib {
 
   class String;
   class Tag;
   class AudioProperties;
-
-#ifdef _WIN32
-  class TAGLIB_EXPORT FileName
-  {
-  public:
-    FileName(const wchar_t *name) : m_wname(name) {}
-    FileName(const char *name) : m_name(name) {}
-    operator const wchar_t *() const { return m_wname.c_str(); }
-    operator const char *() const { return m_name.c_str(); }
-  private:
-    std::string m_name;
-    std::wstring m_wname;
-  };
-#else
-  typedef const char *FileName;
-#endif
 
   //! A file class with some useful methods for tag manipulation
 
@@ -60,21 +45,9 @@ namespace TagLib {
    * ByteVector and a binary search method for finding patterns in a file.
    */
 
-  class TAGLIB_EXPORT File
+  class TAGLIB_EXPORT File : public TagLib::FileIO
   {
   public:
-    /*!
-     * Position in the file used for seeking.
-     */
-    enum Position {
-      //! Seek from the beginning of the file.
-      Beginning,
-      //! Seek from the current position in the file.
-      Current,
-      //! Seek from the end of the file.
-      End
-    };
-
     /*!
      * Destroys this File instance.
      */
@@ -217,19 +190,15 @@ namespace TagLib {
     long length();
 
     /*!
-     * Returns true if \a file can be opened for reading.  If the file does not
+     * Returns true if the file can be opened for reading.  If the file does not
      * exist, this will return false.
-     *
-     * \deprecated
      */
-    static bool isReadable(const char *file);
+     bool isReadable();
 
     /*!
-     * Returns true if \a file can be opened for writing.
-     *
-     * \deprecated
+     * Returns true if the file can be opened for writing.
      */
-    static bool isWritable(const char *name);
+    bool isWritable();
 
   protected:
     /*!

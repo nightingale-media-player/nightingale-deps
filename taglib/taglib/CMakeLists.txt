@@ -125,6 +125,7 @@ toolkit/tbytevector.cpp
 toolkit/tbytevectorlist.cpp
 toolkit/tfile.cpp
 toolkit/tdebug.cpp
+toolkit/tlocalfileio.cpp
 toolkit/unicode.cpp
 )
 
