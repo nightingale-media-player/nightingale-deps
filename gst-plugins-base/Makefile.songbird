@@ -42,4 +42,9 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-gnome_vfs --disable-gst_v4l --disable-pango \
         --disable-cdparanoia --disable-gio --disable-libvisual --disable-theora
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  SB_VENDOR_TARGET_CONFIGURE_OPTS += \
+    --disable-x --disable-xvideo --disable-xshm --disable-alsa
+endif
+
 include $(CURDIR)/../songbird-vendor-rules.mk
