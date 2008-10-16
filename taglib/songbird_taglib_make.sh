@@ -78,10 +78,10 @@ fi
 #
 # Build configuration
 #
-#   install_dir                 Directory in which to install build targets.
+#   dep_dir                     Directory containing dependencies.
 #
 
-install_dir=${PWD}/../..
+dep_dir=${PWD}/../..
 
 
 ################################################################################
@@ -161,8 +161,21 @@ build()
     # Get starting directory.
     start_dir=${PWD}
 
+    # Get the target architecture depedencies directory.
+    dep_arch_dir=${dep_dir}/${tgt_arch}
+
+    # Set up zlib build options.
+    export LDFLAGS="${LDFLAGS} -L${dep_arch_dir}/zlib/${build_type}/lib"
+    export CPPFLAGS="${CPPFLAGS} -I${dep_arch_dir}/zlib/${build_type}/include"
+    if [ "${tgt_arch}" == "windows-i686" ]; then
+        export LDFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper \
+                        echo ${LDFLAGS}`
+        export CPPFLAGS=`${dep_arch_dir}/mozilla/release/scripts/cygwin-wrapper\
+                         echo ${CPPFLAGS}`
+    fi
+
     # Set up to build within a clean build directory.
-    build_dir=${install_dir}/${tgt_arch}/${tgt_name}/build
+    build_dir=${dep_arch_dir}/${tgt_name}/build
     rm -Rf ${build_dir}
     mkdir -p ${build_dir}
     cp -R ../taglib ${build_dir}
@@ -175,9 +188,6 @@ build()
         cfg_opts="${cfg_opts} --enable-debug=no"
     fi
 
-    # Disable use of zlib.
-    export ac_cv_header_zlib_h=no
-
     # Set up the target configuration options.
     if test -n "${cfg_tgt}"; then
         cfg_opts="${cfg_opts} --target=${cfg_tgt}"
@@ -188,7 +198,7 @@ build()
     make -f Makefile.cvs
 
     # Configure, build, and install.
-    ./configure --prefix=${install_dir}/${tgt_arch}/${tgt_name}/${build_type}  \
+    ./configure --prefix=${dep_arch_dir}/${tgt_name}/${build_type}             \
                 ${cfg_opts}                                                    \
                 --enable-static                                                \
                 --disable-shared                                               \
