@@ -66,12 +66,13 @@ endif
 # pulseaudio
 #
 
-# TODO: isolate this
-#SB_PULSEAUDIO_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/libpulse/usr
+# TODO: isolate this SB_PULSEAUDIO_DIR 
 
-SB_PULSEAUDIO_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/usr
-SB_LDFLAGS += -L$(SB_PULSEAUDIO_DIR)/lib
-SB_CFLAGS += -I$(SB_PULSEAUDIO_DIR)/include
-SB_PKG_CONFIG_PATH += $(SB_PULSEAUDIO_DIR)/lib/pkgconfig
+ifeq (,$(filter-out Msys Darwin,$(SB_TARGET_ARCH)))
+  SB_PULSEAUDIO_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/usr
+  SB_LDFLAGS += -L$(SB_PULSEAUDIO_DIR)/lib
+  SB_CFLAGS += -I$(SB_PULSEAUDIO_DIR)/include
+  SB_PKG_CONFIG_PATH += $(SB_PULSEAUDIO_DIR)/lib/pkgconfig
+endif
 
 include $(CURDIR)/../songbird-vendor-rules.mk
