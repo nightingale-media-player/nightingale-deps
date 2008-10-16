@@ -112,7 +112,7 @@ build_all()
     do
         # Build release target.
         setup_build ${tgt_arch} release
-        #ZZZbuild release
+        build release
 
         # Build debug target.
         setup_build ${tgt_arch} debug
