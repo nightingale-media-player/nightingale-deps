@@ -57,6 +57,8 @@ BUILD_TARGET_SET := $(if \
                             $(filter release, $(MAKECMDGOALS))),\
                         build_requested,)
 
+SB_RUN_CONFIGURE ?= 1
+
 # TODO: define these as a list of exportable targets and expand that, so
 # we can match the printouts in -rules.mk
 ifneq (,$(BUILD_TARGET_SET))
@@ -183,11 +185,13 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
 
 
 build: setup_environment clean_build_dir setup_build module_setup_build
+ifeq (1,$(SB_RUN_CONFIGURE))
 	cd $(SB_VENDOR_BUILD_DIR) && \
           $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
           $(SB_VENDOR_TARGET_CONFIGURE_OPTS) \
           $(SB_CONFIGURE_OPTS) \
           -C
+endif
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR)
 	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) install
 

@@ -103,6 +103,7 @@ endif
 #
 
 AWK ?= awk
+CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
 FIND ?= find
