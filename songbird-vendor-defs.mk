@@ -172,11 +172,12 @@ endif
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   SB_CFLAGS += -fnested-functions \
                -gstabs+ \
-                -D__MACOSX__ \
-                -D__APPLE__
+               -isysroot $(MACOSX_SDK) \
+               -D__MACOSX__ \
+               -D__APPLE__
 
-  SB_LDFLAGS += -headerpad_max_install_names
-  #DYLD_LIBRARY_PATH += /opt/local/lib:/usr/lib
+  SB_LDFLAGS += -headerpad_max_install_names -isysroot $(MACOSX_SDK) \
+   -Wl,-syslibroot,$(MACOSX_SDK)
 endif
 
 # Default to release mode...
@@ -288,6 +289,10 @@ MOZSDK_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/xulrunner)
+
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
+endif
 
 #
 # Dependent library section; this is where we define and point the build system
