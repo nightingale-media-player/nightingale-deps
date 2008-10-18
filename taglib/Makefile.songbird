@@ -57,7 +57,6 @@ SB_RUN_CONFIGURE := 0
 include $(CURDIR)/../songbird-vendor-rules.mk
 
 module_setup_build:
-	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) -f Makefile.cvs
 	cd $(SB_VENDOR_BUILD_DIR) && $(CMAKE) $(CMAKE_ARGS) \
           -DCMAKE_C_FLAGS="$(CMAKE_C_FLAGS)" \
           -DCMAKE_CXX_FLAGS="$(CMAKE_CXX_FLAGS)" \
