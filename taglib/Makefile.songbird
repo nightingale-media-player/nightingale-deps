@@ -38,8 +38,26 @@ SB_VENDOR_TARGET := taglib
 SB_VENDOR_TARGET_VERSION := 1.5
 
 # Set compiler flags.
-CMAKE_C_FLAGS := -fPIC -fno-stack-protector
-CMAKE_CXX_FLAGS := -fPIC -fno-stack-protector
+ifeq (linux,$(SB_VENDOR_ARCH))
+  CMAKE_C_FLAGS := -fPIC -fno-stack-protector
+  CMAKE_CXX_FLAGS := -fPIC -fno-stack-protector
+endif
+
+SB_ZLIB_DIR := $(SB_VENDOR_BINARIES_DIR)/zlib/$(SB_BUILD_TYPE)
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  CMAKE_C_FLAGS := -Zc:wchar_t-
+  CMAKE_CXX_FLAGS := -Zc:wchar_t-
+
+  CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MTd
+  CMAKE_C_FLAGS_RELEASE := $(CMAKE_C_FLAGS) -MT
+  CMAKE_CXX_FLAGS_DEBUG := $(CMAKE_CXX_FLAGS) -MTd
+  CMAKE_CXX_FLAGS_RELEASE := $(CMAKE_CXX_FLAGS) -MT
+
+  CMAKE_ZLIB_FLAGS := -DZLIB_INCLUDE_DIR:PATH="$(SB_ZLIB_DIR)/include" \
+   -DZLIB_LIBRARY:FILEPATH="$(SB_ZLIB_DIR)/lib/zlib.lib"
+endif
+
 
 ifeq (debug,$(SB_BUILD_TYPE))
   CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Debug
@@ -49,8 +67,14 @@ ifeq (release,$(SB_BUILD_TYPE))
 endif
 
 # Set makefile type.
-CMAKE_MAKEFILE_TYPE := Unix Makefiles
-CMAKE_MAKE_CMD = $(MAKE)
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  CMAKE_MAKEFILE_TYPE := NMake Makefiles
+
+  # Used by -rules; defaults to $(MAKE), BUT NOT FOR Win32 CMAKE!!
+  SUBMAKE_CMD = call-nmake.py
+else
+  CMAKE_MAKEFILE_TYPE := Unix Makefiles
+endif
 
 SB_RUN_CONFIGURE := 0
 
@@ -67,8 +91,8 @@ module_setup_build:
           -DCMAKE_VERBOSE_MAKEFILE=1 \
           -DCMAKE_INSTALL_PREFIX=$(SB_CONFIGURE_PREFIX) \
           -DCMAKE_DEBUG_POSTFIX= \
+          $(CMAKE_ZLIB_FLAGS) \
           -G "$(CMAKE_MAKEFILE_TYPE)"
-
 
 module_post_build:
 	@echo Removing \(unused\) taglib C-bindings...
