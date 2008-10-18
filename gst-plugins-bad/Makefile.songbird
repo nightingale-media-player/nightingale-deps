@@ -64,6 +64,25 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-theoradec --disable-timidity --disable-wildmidi \
         --disable-wininet  --disable-x264 --disable-xvid
 
+DIRECTSHOW_LIBS_ROOT = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/DirectShowBaseClasses
+
+ifeq (debug,$(SB_BUILD_TYPE))
+  DIRECTSHOW_LIBS_CONFIGURE_ARG = $(DIRECTSHOW_LIBS_ROOT)/Debug
+endif
+
+ifeq (release,$(SB_BUILD_TYPE))
+  DIRECTSHOW_LIBS_CONFIGURE_ARG = $(DIRECTSHOW_LIBS_ROOT)/Release
+endif
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_VENDOR_TARGET_CONFIGURE_OPTS += \
+    --with-windows-sdk=$(WINDOWS_SDK_ROOT) \
+    --with-quicktime-sdk=$(QUICKTIME_SDK_ROOT) \
+    --with-directshow-libs=$(DIRECTSHOW_LIBS_CONFIGURE_ARG)
+
+  SB_CFLAGS += -D_USE_MATH_DEFINES
+endif
+
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   DARWIN_XUL_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/XUL.framework
   SB_VENDOR_TARGET_CONFIGURE_OPTS += \
@@ -75,8 +94,21 @@ SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
-module_setup_build:
+module_setup_build: directshow-libs
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DARWIN_XUL_DIR)
 	$(TAR) -C $(DARWIN_XUL_DIR) -xvz -f $(MOZ_XR_DIR)/xulrunner.tar.gz
 endif
+
+directshow-libs:
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	$(MKDIR) $(DIRECTSHOW_LIBS_ROOT)
+	$(CP) $(CP_RECURSE_FLAGS) $(WINDOWS_SDK_ROOT)/Samples/MultiMedia/DirectShow/BaseClasses/* $(DIRECTSHOW_LIBS_ROOT)
+	patch -d $(DIRECTSHOW_LIBS_ROOT) -p0 < $(CURDIR)/sb-directshow-baseclasses.patch
+	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Build "Debug" -Project baseclasses
+	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Build "Release" -Project baseclasses
+endif
+
+.PHONY: directshow-libs
