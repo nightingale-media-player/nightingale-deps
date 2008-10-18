@@ -1403,11 +1403,15 @@ AC_ARG_WITH(mozilla,
         ]
 )
 
-case "$target_os" in
-  macos*|darwin*)
-    MOZILLA_LIBS="-Wl,-executable_path,\$(top_srcdir)/../../../../../compiled/dist/Songbird.app/Contents/Frameworks/XUL.framework $MOZILLA_LIBS"
-    ;;
-esac
+AC_ARG_WITH(xul-framework,
+        [  --with-xul-framework=PATH     Specify path to XUL.framework for OSX only ],
+        [
+          MOZILLA_LIBS="-Wl,-executable_path,$withval $MOZILLA_LIBS"
+        ], 
+        [
+          MOZILLA_LIBS="$MOZILLA_LIBS"
+        ]
+)
 
 AC_SUBST(MOZILLA_CFLAGS)
 AC_SUBST(MOZILLA_LIBS)
