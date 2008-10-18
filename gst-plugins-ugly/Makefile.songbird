@@ -46,6 +46,10 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-dvdnav --disable-dvdread --disable-lame \
         --disable-mad --disable-mpeg2dec --disable-sidplay
 
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_CFLAGS += -D_USE_MATH_DEFINES
+endif
+
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
   $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
 

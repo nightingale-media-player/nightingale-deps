@@ -48,6 +48,10 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-gtk-doc \
       --disable-alloc-trace
 
+ifeq (Msys,$(SB_TARGET_ARCH))
+  SB_CFLAGS += -D_USE_MATH_DEFINES
+endif
+
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
       libgstreamer-0.10 \
       libgstbase-0.10 \
