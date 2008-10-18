@@ -36,6 +36,7 @@ SB_VENDOR_TARGET := gst-plugins-good
 SB_VENDOR_TARGET_VERSION := 0.10.20
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
+        --disable-dependency-tracking \
         --disable-examples \
         --disable-tests \
         --disable-gtk-doc \
@@ -73,6 +74,18 @@ ifeq (,$(filter-out Msys Darwin,$(SB_TARGET_ARCH)))
   SB_LDFLAGS += -L$(SB_PULSEAUDIO_DIR)/lib
   SB_CFLAGS += -I$(SB_PULSEAUDIO_DIR)/include
   SB_PKG_CONFIG_PATH += $(SB_PULSEAUDIO_DIR)/lib/pkgconfig
+endif
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_MODULE_EXPORTS := DIRECTSOUND_CFLAGS DIRECTSOUND_LDFLAGS \
+                       DIRECTDRAW_CFLAGS DIRECTDRAW_LDFLAGS
+  export DIRECTSOUND_CFLAGS = -I$(DIRECTX_SDK_ROOT)/Include
+  export DIRECTSOUND_LDFLAGS = -L$(DIRECTX_SDK_ROOT)/Lib/x86
+
+  export DIRECTDRAW_CFLAGS = -I$(DIRECTX_SDK_ROOT)/Include
+  export DIRECTDRAW_LDFLAGS = -L$(DIRECTX_SDK_ROOT)/Lib/x86
+
+  SB_CFLAGS += -D_USE_MATH_DEFINES
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
