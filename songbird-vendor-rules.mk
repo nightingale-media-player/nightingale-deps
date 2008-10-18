@@ -52,10 +52,10 @@ ifneq (,$(DYLD_LIBRARY_PATH))
 endif
 
 # Only export these if we're actually building a target
-BUILD_TARGET_SET := $(if \
-                       $(or $(filter debug, $(MAKECMDGOALS)), \
-                            $(filter release, $(MAKECMDGOALS))),\
-                        build_requested,)
+BUILD_TARGET_SET = $(if \
+                      $(or $(filter debug, $(MAKECMDGOALS)), \
+                           $(filter release, $(MAKECMDGOALS))),\
+                       build_requested,)
 
 SB_RUN_CONFIGURE ?= 1
 
@@ -201,6 +201,7 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
 
 
 build: setup_environment clean_build_dir setup_build module_setup_build
+	# We do this RUN_CONFIGURE insanity to support cmake
 ifeq (1,$(SB_RUN_CONFIGURE))
 	cd $(SB_VENDOR_BUILD_DIR) && \
           $(CONFIGURE) --prefix=$(SB_CONFIGURE_PREFIX) \
@@ -208,8 +209,9 @@ ifeq (1,$(SB_RUN_CONFIGURE))
           $(SB_CONFIGURE_OPTS) \
           -C
 endif
-	$(MAKE) -C $(SB_VENDOR_BUILD_DIR)
-	$(MAKE) -C $(SB_VENDOR_BUILD_DIR) install
+	# We do this submade-cmd insanity to support cmake
+	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR)
+	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR) install
 
 $(SB_VENDOR_TARGET_BINARY_DEPS_DIR): $(SB_VENDOR_TARGET_DEPENDENT_DEBS)
 	$(MKDIR) $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
@@ -258,11 +260,16 @@ endif
 	@echo FLAC_CFLAGS = $(FLAC_CFLAGS)
 	@echo FLAC_LIBS = $(FLAC_LIBS)
 	@echo
-	@echo Platform-specific settings
-	@echo -----------------------
+	@echo Platform- and Module- specific settings
+	@echo ---------------------------------------
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 	@echo MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET)
 	@echo DYLD_LIBRARY_PATH = $(DYLD_LIBRARY_PATH)
+endif
+ifneq (,$(SB_MODULE_EXPORTS))
+	@$(foreach mod_exp, \
+          $(strip $(SB_MODULE_EXPORTS)), \
+          echo $(mod_exp) = $$$(mod_exp) ;)
 endif
 	@echo
 	@echo =============================
@@ -272,7 +279,7 @@ endif
 	@echo 
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
 	# TODO: this kinda sucks; fix this
-	$(CP) -R $(SB_TARGET_SRC_DIR)/* $(SB_VENDOR_BUILD_DIR)
+	$(CP) $(CP_RECURSE_FLAGS) $(SB_TARGET_SRC_DIR)/* $(SB_VENDOR_BUILD_DIR)
 
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)

@@ -48,7 +48,11 @@ SB_USE_SYSTEM_LIBS ?=
 SB_PATH :=
 SB_PKG_CONFIG_PATH :=
 SB_DYLD_LIBRARY_PATH :=
-SB_VENDOR_TARGET_DEP_MODULES ?= all
+
+SB_VENDOR_TARGET_DEP_MODULES ?= \
+  gettext glib \
+  liboil flac ogg vorbis \
+  gstreamer gst-plugins-base
 
 #
 # Operating system detection
@@ -106,6 +110,11 @@ AWK ?= awk
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  CP_RECURSE_FLAGS ?= -dpr
+else
+  CP_RECURSE_FLAGS ?= -R
+endif
 FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p
@@ -113,6 +122,8 @@ PYTHON ?= python
 SED ?= sed
 TAR ?= tar
 ZIP ?= zip
+
+SUBMAKE_CMD = $(MAKE)
 
 DUMP_SYMS_ARGS := --vcs-info
 
@@ -167,6 +178,9 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
      -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
 
    CONFIGURE_TARGET = i686-pc-mingw32
+
+   # We need iconv on Win32, since the system doesn't provide it...
+   SB_VENDOR_TARGET_DEP_MODULES += iconv
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
@@ -290,6 +304,13 @@ MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/xulrunner)
 
+# Supporting SDK paths on Win32
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  DIRECTX_SDK_ROOT ?= /d/ms-sdks/directx-aug08
+  WINDOWS_SDK_ROOT ?= /d/ms-sdks/Windows/v6.0
+  QUICKTIME_SDK_ROOT ?= /d/ms-sdks/QuickTimeSDK
+endif
+
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
 endif
@@ -300,14 +321,14 @@ endif
 #
 
 define enable-sb-lib
-$(filter $1 all, $(SB_VENDOR_TARGET_DEP_MODULES))
+$(filter $1, $(SB_VENDOR_TARGET_DEP_MODULES))
 endef
 
 #
 # GNU Gettext 
 #
 ifneq (,$(call enable-sb-lib, gettext))
-  $(info turning gettext on)
+  $(info Enabling Songbird vendor lib: gettext)
   SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
   SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
   SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
@@ -323,23 +344,23 @@ endif
 #
 # GNU iconv
 #
-#ifneq (,$(call enable-sb-lib, iconv))
-#  $(info turning iconv on)
-#  SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
-#  SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
-#  SB_CFLAGS += -I$(SB_ICONV_DIR)/include
-#  SB_PATH += $(SB_ICONV_DIR)/bin
-#
-#  ifeq (Darwin,$(SB_VENDOR_ARCH))
-#    LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
-#  endif
-#endif
+ifneq (,$(call enable-sb-lib, iconv))
+  $(info Enabling Songbird vendor lib: iconv)
+  SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
+  SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
+  SB_CFLAGS += -I$(SB_ICONV_DIR)/include
+  SB_PATH += $(SB_ICONV_DIR)/bin
+
+  ifeq (Darwin,$(SB_VENDOR_ARCH))
+    LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+  endif
+endif
 
 #
 # Glib
 # 
 ifneq (,$(call enable-sb-lib, glib))
-  $(info turning glib on)
+  $(info Enabling Songbird vendor lib: glib)
   SB_GLIB_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/glib)
   SB_PATH += $(SB_GLIB_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
@@ -355,16 +376,17 @@ endif
 #
 # GNU libtool
 #
-#ifneq (,$(call enable-sb-lib, libtool))
-#  SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
-#  ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
-#endif
+ifneq (,$(call enable-sb-lib, libtool))
+  $(info Enabling Songbird vendor lib: libtool)
+  SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
+  ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
+endif
 
 #
 # liboil
 #
 ifneq (,$(call enable-sb-lib, liboil))
-  $(info turning liboil on)
+  $(info Enabling Songbird vendor lib: liboil)
   SB_LIBOIL_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/liboil)
   SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
   SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
@@ -382,7 +404,7 @@ endif
 # gstreamer
 #
 ifneq (,$(call enable-sb-lib, gstreamer))
-  $(info turning gstreamer on)
+  $(info Enabling Songbird vendor lib: gstreamer)
   SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
   SB_PATH += $(SB_GSTREAMER_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
@@ -398,7 +420,7 @@ endif
 # gstreamer-plugins-base
 #
 ifneq (,$(call enable-sb-lib, gst-plugins-base))
-  $(info turning gstreamer-plugins-base on)
+  $(info Enabling Songbird vendor lib: gst-plugins-base)
   SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base)
   SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
@@ -408,6 +430,7 @@ endif
 # libogg
 #
 ifneq (,$(call enable-sb-lib, ogg))
+  $(info Enabling Songbird vendor lib: ogg)
   SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
   SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib
   ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
@@ -430,6 +453,7 @@ endif
 # libvorbis
 #
 ifneq (,$(call enable-sb-lib, vorbis))
+  $(info Enabling Songbird vendor lib: vorbis)
   SB_LIBVORBIS_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libvorbis)
   SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
   SB_VORBIS_LIBS += $(SB_OGG_LIBS)
@@ -449,18 +473,16 @@ endif
 # libFLAC
 #
 ifneq (,$(call enable-sb-lib, flac))
+  $(info Enabling Songbird vendor lib: flac)
   SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
   SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
   ifeq (Msys,$(SB_TARGET_ARCH))
-    SB_FLAC_LDFLAGS += -lFLAC-8
+    SB_FLAC_LIBS += -lFLAC-8
+    SB_PATH += $(SB_LIBFLAC_DIR)/bin
+    ifeq (debug,$(SB_BUILD_TYPE))
+      SB_FLAC_LIBS += -Wl,-Zi
+    endif
   endif
   SB_CPPFLAGS += -I$(SB_LIBFLAC_DIR)/include
   SB_PKG_CONFIG_PATH += $(SB_LIBFLAC_DIR)/lib/pkgconfig
-
-  ifeq (Msys, $(SB_VENDOR_ARCH))
-     SB_PATH += $(SB_LIBFLAC_DIR)/bin
-     ifeq (debug, $(SB_BUILD_TYPE))
-       SB_FLAC_LIBS += -Wl,-Zi
-     endif
-  endif
 endif
