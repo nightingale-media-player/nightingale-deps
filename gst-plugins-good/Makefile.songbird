@@ -75,4 +75,7 @@ ifeq (,$(filter-out Msys Darwin,$(SB_TARGET_ARCH)))
   SB_PKG_CONFIG_PATH += $(SB_PULSEAUDIO_DIR)/lib/pkgconfig
 endif
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
+  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+
 include $(CURDIR)/../songbird-vendor-rules.mk

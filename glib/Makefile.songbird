@@ -44,4 +44,10 @@ ifneq (,$(filter Msys Darwin,$(SB_VENDOR_ARCH)))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += --with-libiconv=gnu
 endif
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+  libglib-2.0 \
+  libgobject-2.0 \
+  libgmodule-2.0 \
+  libgthread-2.0 \
+
 include $(CURDIR)/../songbird-vendor-rules.mk

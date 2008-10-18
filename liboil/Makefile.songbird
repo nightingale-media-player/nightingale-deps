@@ -41,4 +41,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-examples \
       --disable-tests
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+      liboil-0.3
+
 include $(CURDIR)/../songbird-vendor-rules.mk

@@ -64,4 +64,19 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-theoradec --disable-timidity --disable-wildmidi \
         --disable-wininet  --disable-x264 --disable-xvid
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  DARWIN_XUL_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/XUL.framework
+  SB_VENDOR_TARGET_CONFIGURE_OPTS += \
+   --with-xul-framework=$(DARWIN_XUL_DIR)
+endif
+
+SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
+  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+
 include $(CURDIR)/../songbird-vendor-rules.mk
+
+module_setup_build:
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+	$(MKDIR) $(DARWIN_XUL_DIR)
+	$(TAR) -C $(DARWIN_XUL_DIR) -xvz -f $(MOZ_XR_DIR)/xulrunner.tar.gz
+endif

@@ -45,4 +45,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-oggtest \
       --disable-asm-optimizations 
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+      libFLAC
+
 include $(CURDIR)/../songbird-vendor-rules.mk

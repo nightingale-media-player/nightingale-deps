@@ -46,4 +46,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-dvdnav --disable-dvdread --disable-lame \
         --disable-mad --disable-mpeg2dec --disable-sidplay
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
+  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+
 include $(CURDIR)/../songbird-vendor-rules.mk

@@ -287,6 +287,7 @@ endef
 MOZSDK_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
+MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/xulrunner)
 
 #
 # Dependent library section; this is where we define and point the build system
@@ -380,6 +381,12 @@ ifneq (,$(call enable-sb-lib, gstreamer))
   SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
   SB_PATH += $(SB_GSTREAMER_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
+  
+  # A list of basic dylibs on mac that need to be fixed up across all the
+  # gstreamer modules; these are built by various parts of gstreamer and 
+  # base
+  GST_BASE_DYLIBS = audio cdda fft interfaces netbuffer pbutils riff \
+    rtp rtsp sdp tag video
 endif
 
 #

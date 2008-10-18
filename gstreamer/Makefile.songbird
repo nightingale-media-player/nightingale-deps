@@ -48,4 +48,13 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-gtk-doc \
       --disable-alloc-trace
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+      libgstreamer-0.10 \
+      libgstbase-0.10 \
+      libgstcontroller-0.10 \
+      libgstdataprotocol-0.10 \
+      libgstnet-0.10 \
+      libgstelements-0.10 \
+      libgstindexers-0.10
+
 include $(CURDIR)/../songbird-vendor-rules.mk

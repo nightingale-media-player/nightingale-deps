@@ -41,4 +41,11 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
       --disable-libsuffix \
       --enable-cxx-warnings=no
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+   libintl \
+   libasprintf \
+   libgettextlib \
+   libgettextsrc \
+   libgettextpo
+
 include $(CURDIR)/../songbird-vendor-rules.mk

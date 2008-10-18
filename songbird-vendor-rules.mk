@@ -136,19 +136,35 @@ endif
 #
 
 post_build: module_post_build
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-	for l in `$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.dylib"`; do \
-          echo Processing dylib $$l...; \
-          new_id=`basename $$l`; \
-          echo ==\> $(INSTALL_NAME_TOOL) -id $$new_id $$l; \
-          $(INSTALL_NAME_TOOL) -id $$new_id $$l; \
-          otool_lib_list=`$(OTOOL) -L $$l | grep $(SB_CONFIGURE_PREFIX)`; \
-          full_path_libs=`echo $$otool_lib_list | $(AWK) '{ print $$1}' | $(SED) -e 's/:$$//'`; \
-          for fpl in $$full_path_libs; do \
-            dep_lib_basename=`basename $$fpl`; \
-            echo ==\> $(INSTALL_NAME_TOOL) -change $$fpl $$dep_lib_basename $$l; \
-            $(INSTALL_NAME_TOOL) -change $$fpl $$dep_lib_basename $$l; \
-          done \
+ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
+	@echo On the prowl for the following .dylib and .so external references:
+	@echo    $(SB_VENDOR_TARGET_DYLIB_FIXUPS)
+	@echo
+	@echo Fixing up .dylib -ids
+	@for l in `$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.dylib" \
+          -o -name "*.so"`; do \
+          for fix in $(SB_VENDOR_TARGET_DYLIB_FIXUPS); do \
+            if ! test -z `echo $$l | grep $$fix`; then \
+              echo --\> $(INSTALL_NAME_TOOL) -id $${fix}.dylib $$l; \
+              $(INSTALL_NAME_TOOL) -id $${fix}.dylib $$l; \
+              break; \
+            fi; \
+          done; \
+        done
+
+	@echo Fixing up .dylib reference paths
+	@for l in `$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.dylib" \
+          -o -name "*.so"`; do \
+          echo Checking $$l...; \
+          for path in `$(OTOOL) -L $$l | perl -nle 'print $1 if (m#\s+($(SB_CONFIGURE_PREFIX)\S+)\s+#);'`; do \
+            for fix in $(SB_VENDOR_TARGET_DYLIB_FIXUPS); do \
+              if ! test -z `echo $$path | grep $$fix`; then \
+                echo --\> $(INSTALL_NAME_TOOL) -change $$path $${fix}.dylib $$l; \
+                $(INSTALL_NAME_TOOL) -change $$path $${fix}.dylib $$l; \
+                break; \
+              fi; \
+            done; \
+          done; \
         done
 endif
 

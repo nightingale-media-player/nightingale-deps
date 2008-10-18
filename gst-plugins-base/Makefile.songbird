@@ -47,4 +47,7 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
     --disable-x --disable-xvideo --disable-xshm --disable-alsa
 endif
 
+SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
+  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+
 include $(CURDIR)/../songbird-vendor-rules.mk
