@@ -59,6 +59,18 @@ BUILD_TARGET_SET = $(if \
 
 SB_RUN_CONFIGURE ?= 1
 
+ifeq (,$(shell test -d $(WINDOWS_SDK_ROOT) && echo exists))
+  $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
+endif
+
+ifeq (,$(shell test -d $(DIRECTX_SDK_ROOT) && echo exists))
+  $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
+endif
+
+ifeq (,$(shell test -d $(QUICKTIME_SDK_ROOT) && echo exists))
+  $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+endif
+
 # TODO: define these as a list of exportable targets and expand that, so
 # we can match the printouts in -rules.mk
 ifneq (,$(BUILD_TARGET_SET))
@@ -196,6 +208,15 @@ $(SB_VENDOR_BINARIES_DIR):
 
 setup_environment: $(SB_VENDOR_BINARIES_DIR)
 	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	$(foreach tgt, \
+          $(SB_VENDOR_BINARIES_TARGETS), \
+          $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
+           echo exists), \
+          , \
+          $(CP) -dpr $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
+          $(SB_VENDOR_BINARIES_DIR); ))
+else
 	$(foreach tgt, \
           $(SB_VENDOR_BINARIES_TARGETS), \
           $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
@@ -203,10 +224,16 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
           , \
           $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
           $(SB_VENDOR_BINARIES_DIR); ))
+endif
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.svn && \
+          $(RM) -rf -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
+          $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
+else
 	(test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(RM) -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
-
+endif
 
 build: setup_environment clean_build_dir setup_build module_setup_build
 	# We do this RUN_CONFIGURE insanity to support cmake
@@ -292,5 +319,6 @@ endif
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)
 	$(RM) -rf $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
 .PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build
