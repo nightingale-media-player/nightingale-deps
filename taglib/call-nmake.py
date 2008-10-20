@@ -12,7 +12,7 @@
 #
 
 from optparse import OptionParser
-import os, sys
+import os, sys, subprocess
 
 def main(argv):
    o = OptionParser()
@@ -29,7 +29,7 @@ def main(argv):
       del os.environ['MAKEFLAGS']
 
    os.chdir(options.runningDir)
-   return os.execvp(nmakeCmd, (nmakeCmd,) + tuple(args))
+   return subprocess.call((nmakeCmd,) + tuple(args))
 
 if __name__ == '__main__':
    sys.exit(main(sys.argv[1:]))
