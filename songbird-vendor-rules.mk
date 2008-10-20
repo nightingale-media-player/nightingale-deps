@@ -136,6 +136,7 @@ endif
 #
 
 post_build: module_post_build
+ifeq (Darwin,$(SB_VENOR_ARCH))
 ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 	@echo On the prowl for the following .dylib and .so external references:
 	@echo    $(SB_VENDOR_TARGET_DYLIB_FIXUPS)
@@ -166,6 +167,7 @@ ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
             done; \
           done; \
         done
+endif
 endif
 
 $(SB_VENDOR_BREAKPAD_ARCHIVE):

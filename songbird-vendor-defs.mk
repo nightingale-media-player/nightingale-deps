@@ -179,8 +179,9 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
    CONFIGURE_TARGET = i686-pc-mingw32
 
-   # We need iconv on Win32, since the system doesn't provide it...
-   SB_VENDOR_TARGET_DEP_MODULES += iconv
+   # We need these for all builds on Win32, since the system doesn't provide
+   # it...
+   SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
