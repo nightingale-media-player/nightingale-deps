@@ -15,7 +15,7 @@
 #  restrictive of those mentioned above.  See the file COPYING.Xiph in this
 #  distribution.
 
-SUBDIRS = getopt replaygain_analysis replaygain_synthesis grabbag utf8
+SUBDIRS = replaygain_analysis replaygain_synthesis grabbag utf8
 
 EXTRA_DIST = \
 	Makefile.lite \

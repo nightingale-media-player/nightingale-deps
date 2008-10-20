@@ -256,7 +256,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = getopt replaygain_analysis replaygain_synthesis grabbag utf8
+SUBDIRS = replaygain_analysis replaygain_synthesis grabbag utf8
 EXTRA_DIST = \
 	Makefile.lite \
 	README
