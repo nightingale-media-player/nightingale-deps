@@ -101,8 +101,14 @@ all:
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
 
 debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE)
+ifneq (,$(SB_VENDOR_BUILD_LOG))
+	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+endif
 
 release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) strip_build
+ifneq (,$(SB_VENDOR_BUILD_LOG))
+	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
+endif
 
 strip_build:
 ifneq (Msys,$(SB_VENDOR_ARCH))
@@ -136,7 +142,7 @@ endif
 #
 
 post_build: module_post_build
-ifeq (Darwin,$(SB_VENOR_ARCH))
+ifeq (Darwin,$(SB_VENDOR_ARCH))
 ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 	@echo On the prowl for the following .dylib and .so external references:
 	@echo    $(SB_VENDOR_TARGET_DYLIB_FIXUPS)
