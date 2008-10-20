@@ -40,6 +40,9 @@ SB_VENDOR_TARGET_VERSION := 1.1.3
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-docs
 
+SB_CC = $(CURDIR)/../clwrapper.py
+SB_CXX = $(CURDIR)/../clwrapper.py
+
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
       libogg
 
