@@ -82,6 +82,7 @@ ifneq (,$(BUILD_TARGET_SET))
 
   export CPPFLAGS = $(SB_CPPFLAGS)
   export CFLAGS = $(SB_CFLAGS)
+  export CXXFLAGS = $(SB_CXXFLAGS)
   export LDFLAGS = $(SB_LDFLAGS)
   export ACLOCAL_FLAGS = $(SB_ACLOCAL_FLAGS)
   export PKG_CONFIG_PATH = $(SB_PKG_CONFIG_PATH)
@@ -204,8 +205,6 @@ $(SB_VENDOR_BREAKPAD_ARCHIVE):
 $(SB_VENDOR_BINARIES_DIR):
 	$(MKDIR) $(SB_VENDOR_BINARIES_DIR)
 
-#$(SB_VENDOR_BINARIES_TARGET_DIRS): $(SB_VENDOR_BINARIES_DIR)
-
 setup_environment: $(SB_VENDOR_BINARIES_DIR)
 	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
 ifeq (Msys,$(SB_VENDOR_ARCH))
@@ -227,7 +226,7 @@ else
 endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.svn && \
-          $(RM) -rf -v $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
+          $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
 else
 	(test -h $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
@@ -275,6 +274,7 @@ setup_build: \
 	@echo -----
 	@echo CPPFLAGS = $(CPPFLAGS)
 	@echo CFLAGS = $(CFLAGS)
+	@echo CXXFLAGS = $(CXXFLAGS)
 	@echo LDFLAGS = $(LDFLAGS)
 	@echo ACLOCAL_FLAGS = $(ACLOCAL_FLAGS)
 	@echo
