@@ -321,7 +321,7 @@ endif
 #
 
 define enable-sb-lib
-$(filter $1, $(SB_VENDOR_TARGET_DEP_MODULES))
+$(filter $1, $(filter-out $(SB_VENDOR_TARGET), $(SB_VENDOR_TARGET_DEP_MODULES)))
 endef
 
 #
