@@ -1990,7 +1990,6 @@ NS_IMETHODIMP nsWindow::GetSizeConstraints(PRInt32* aMinWidth,
   // read the constraints from CSS
   nsresult rv;
   nsCOMPtr<nsIDeviceContext> devContext = GetDeviceContext();
-  nsCOMPtr<nsIRenderingContext> renderingContext = GetRenderingContext();
 
   nsIWidget* widget = GetFirstChild();
   nsIView* view = nsnull;
