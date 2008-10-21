@@ -55,6 +55,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   ifeq (debug,$(SB_BUILD_TYPE))
     SB_CFLAGS += -MTd -Zi
   endif
+  SB_CXXFLAGS += $(SB_CFLAGS)
 endif 
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
