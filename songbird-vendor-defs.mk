@@ -77,7 +77,6 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
 endif
 
 ifeq (Linux,$(SB_VENDOR_ARCH))
-   SB_VENDOR_ARCH_LINUX := 1
    ifeq (i686,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := linux-i686
       SB_ARCH_DETECTED := 1
@@ -477,7 +476,7 @@ ifneq (,$(call enable-sb-lib, flac))
   $(info Enabling Songbird vendor lib: flac)
   SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
   SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
-  ifeq (Msys,$(SB_TARGET_ARCH))
+  ifeq (Msys,$(SB_VENDOR_ARCH))
     SB_FLAC_LIBS += -lFLAC-8
     SB_PATH += $(SB_LIBFLAC_DIR)/bin
     ifeq (debug,$(SB_BUILD_TYPE))

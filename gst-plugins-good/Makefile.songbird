@@ -51,7 +51,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-speex --disable-sunaudio --disable-taglib \
         --disable-wavpack
 
-ifeq (linux-i686, $(SB_TARGET_ARCH))
+ifeq (linux-i686,$(SB_TARGET_ARCH))
   SB_VENDOR_TARGET_DEPENDENT_DEBS := \
     $(SB_VENDOR_DIR)/packages/libpulse-dev_0.9.10-1ubuntu1_i386.deb \
     $(SB_VENDOR_DIR)/packages/libpulse0_0.9.10-1ubuntu1_i386.deb
@@ -69,7 +69,7 @@ endif
 
 # TODO: isolate this SB_PULSEAUDIO_DIR 
 
-ifeq (,$(filter-out Msys Darwin,$(SB_TARGET_ARCH)))
+ifeq (,$(filter-out Msys Darwin,$(SB_VENDOR_ARCH)))
   SB_PULSEAUDIO_DIR = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/usr
   SB_LDFLAGS += -L$(SB_PULSEAUDIO_DIR)/lib
   SB_CFLAGS += -I$(SB_PULSEAUDIO_DIR)/include

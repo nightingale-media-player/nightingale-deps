@@ -48,7 +48,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-gtk-doc \
       --disable-alloc-trace
 
-ifeq (Msys,$(SB_TARGET_ARCH))
+ifeq (Msys,$(SB_VENDOR_ARCH))
   SB_CFLAGS += -D_USE_MATH_DEFINES
 endif
 
