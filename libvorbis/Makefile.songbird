@@ -41,12 +41,14 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-docs \
       --disable-oggtest
 
-SB_CC = $(CURDIR)/../clwrapper.py
-SB_CXX = $(CURDIR)/../clwrapper.py
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
+endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-      libvorbis \
-      libvorbisenc \
-      libvorbisfile
+      libvorbis.0 \
+      libvorbisenc.2 \
+      libvorbisfile.3
 
 include $(CURDIR)/../songbird-vendor-rules.mk

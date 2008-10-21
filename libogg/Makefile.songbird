@@ -40,10 +40,12 @@ SB_VENDOR_TARGET_VERSION := 1.1.3
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-docs
 
-SB_CC = $(CURDIR)/../clwrapper.py
-SB_CXX = $(CURDIR)/../clwrapper.py
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
+endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-      libogg
+      libogg.0
 
 include $(CURDIR)/../songbird-vendor-rules.mk
