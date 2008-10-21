@@ -47,14 +47,15 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
 
 SB_CFLAGS += -DFLAC_API_EXPORTS
 
-ifeq (release,$(SB_BUILD_TYPE))
-  SB_CFLAGS += -MT
-endif
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  ifeq (release,$(SB_BUILD_TYPE))
+    SB_CFLAGS += -MT
+  endif
 
-ifeq (debug,$(SB_BUILD_TYPE))
-  SB_CFLAGS += -MTd -Zi
-endif
- 
+  ifeq (debug,$(SB_BUILD_TYPE))
+    SB_CFLAGS += -MTd -Zi
+  endif
+endif 
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
       libFLAC
