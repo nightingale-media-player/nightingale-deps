@@ -950,8 +950,6 @@ qtwrapper_audio_decoders_register (GstPlugin * plugin)
   };
 
   /* Find all SoundDecompressors ! */
-  fprintf (stderr, "There are %ld decompressors available\n",
-      CountComponents (&desc));
   GST_DEBUG ("There are %ld decompressors available", CountComponents (&desc));
 
   /* loop over SoundDecompressors */
