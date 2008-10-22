@@ -712,23 +712,28 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
   } 
   else 
   {
-    int realsize;
     size = sizeof (WAVEFORMATEX) +
         (adec->codec_data ? GST_BUFFER_SIZE (adec->codec_data) : 0);
 
-    /* The WinXP mp3 decoder has a code path where it unconditionally 
-     * copies 30 bytes from this pointer (12 bytes too much!). So, as a 
-     * special case, we over-allocate this to avoid a crash - but we 
-     * don't correspondingly increase cbFormat, the _claimed_ size 
-     * of this block.
-     */
-    realsize = MIN (30, size);
-    format = (WAVEFORMATEX *)g_malloc0 (realsize);
-    if (adec->codec_data) {     /* Codec data is appended after our header */
-      memcpy (((guchar *) format) + sizeof (WAVEFORMATEX),
-          GST_BUFFER_DATA (adec->codec_data),
-          GST_BUFFER_SIZE (adec->codec_data));
-      format->cbSize = GST_BUFFER_SIZE (adec->codec_data);
+    if (adec->layer == 3) {
+      /* The WinXP mp3 decoder seems to want to (without checking 
+       * format->cbSize!) copy MPEGLAYER3_WFX_EXTRA_BYTES extra.
+       * So, we allocate this much extra, but zero-initialise it because the
+       * contents aren't usefully documented, and nothing seems to need to use
+       * it.
+       */
+      format = (WAVEFORMATEX *)g_malloc0 (
+              sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES)
+      format->cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
+    }
+    else {
+      format = (WAVEFORMATEX *)g_malloc0 (size);
+      if (adec->codec_data) {     /* Codec data is appended after our header */
+        memcpy (((guchar *) format) + sizeof (WAVEFORMATEX),
+            GST_BUFFER_DATA (adec->codec_data),
+            GST_BUFFER_SIZE (adec->codec_data));
+        format->cbSize = GST_BUFFER_SIZE (adec->codec_data);
+      }
     }
 
     format->wFormatTag = codec_entry->format;
