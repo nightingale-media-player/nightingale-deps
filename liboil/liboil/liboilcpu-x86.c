@@ -324,8 +324,8 @@ oil_cpu_detect_kernel_support (void)
   /* NetBSD is OK */
 #else
    
-  OIL_WARNING("Operating system is not known to support SSE.  "
-      "Assuming it does, which might cause problems");
+//  OIL_WARNING("Operating system is not known to support SSE.  "
+//      "Assuming it does, which might cause problems");
 #if 0
   oil_cpu_flags &= ~(OIL_IMPL_FLAG_SSE | OIL_IMPL_FLAG_SSE2 |
 		     OIL_IMPL_FLAG_MMXEXT | OIL_IMPL_FLAG_SSE3);
