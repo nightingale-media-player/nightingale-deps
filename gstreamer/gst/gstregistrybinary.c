@@ -256,10 +256,24 @@ gst_registry_binary_cache_finish (GstRegistry * registry,
   gboolean ret = TRUE;
   GError *error = NULL;
   if (!g_file_set_contents (cache->location, (const gchar *) cache->mem,
-          cache->len, &error)) {
-    GST_ERROR ("Failed to write to cache file: %s", error->message);
+          cache->len, &error)) 
+  {
+    /* Probably the directory didn't exist; create it */
+    gchar *dir;
+    dir = g_path_get_dirname (cache->location);
+    g_mkdir_with_parents (dir, 0777);
+    g_free (dir);
+
     g_error_free (error);
-    ret = FALSE;
+    error = NULL;
+
+    if (!g_file_set_contents (cache->location, (const gchar *) cache->mem,
+            cache->len, &error)) 
+    {
+      GST_ERROR ("Failed to write to cache file: %s", error->message);
+      g_error_free (error);
+      ret = FALSE;
+    }
   }
 
   g_free (cache->mem);
