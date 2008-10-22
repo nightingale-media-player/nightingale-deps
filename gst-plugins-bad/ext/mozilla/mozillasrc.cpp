@@ -34,6 +34,7 @@
 #include <nsIResumableChannel.h>
 #include <nsIRunnable.h>
 #include <nsIHttpHeaderVisitor.h>
+#include <nsIHttpEventSink.h>
 #include <nsThreadUtils.h>
 #include <nsIWindowWatcher.h>
 #include <nsIAuthPrompt.h>
@@ -182,7 +183,8 @@ ResumeEvent::Run()
 
 class StreamListener : public nsIStreamListener,
                        public nsIHttpHeaderVisitor,
-                       public nsIInterfaceRequestor
+                       public nsIInterfaceRequestor,
+                       public nsIHttpEventSink
 {
 public:
   NS_DECL_ISUPPORTS
@@ -190,6 +192,7 @@ public:
   NS_DECL_NSISTREAMLISTENER
   NS_DECL_NSIHTTPHEADERVISITOR
   NS_DECL_NSIINTERFACEREQUESTOR
+  NS_DECL_NSIHTTPEVENTSINK
  
   StreamListener(GstMozillaSrc *aSrc);
   virtual ~StreamListener();
@@ -227,8 +230,25 @@ StreamListener::GetInterface(const nsIID &aIID, void **aResult)
     nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
     return wwatch->GetNewAuthPrompter(NULL, (nsIAuthPrompt**)aResult);
   }
+  else if (aIID.Equals(NS_GET_IID(nsIHttpEventSink))) {
+    NS_ADDREF(*aResult = this);
+    return NS_OK;
+  }
 
   return NS_ERROR_NO_INTERFACE;
+}
+
+NS_IMETHODIMP
+StreamListener::OnRedirect(nsIHttpChannel *httpChannel, nsIChannel *newChannel)
+{
+  nsCOMPtr<nsIChannel> channel(do_QueryInterface(newChannel));
+
+  GST_DEBUG_OBJECT (mSrc, "Redirecting, got new channel");
+
+  mSrc->channel = channel;
+  mSrc->suspended = FALSE;
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -243,7 +263,7 @@ StreamListener::VisitHeader(const nsACString &header, const nsACString &value)
 NS_IMETHODIMP
 StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
 {
-  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(mSrc->channel));
+  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(req));
   nsresult rv;
 
   if (httpChannel) {
@@ -254,8 +274,29 @@ StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
     if (NS_SUCCEEDED(httpChannel->GetRequestSucceeded(&succeeded)) 
             && !succeeded) 
     {
-      // HTTP response is not a 2xx!
-      req->Cancel(NS_BINDING_ABORTED);
+      // HTTP response is not a 2xx! Error out, then cancel the request.
+      PRUint32 responsecode;
+      nsCString responsetext;
+
+      rv = httpChannel->GetResponseStatus(&responsecode);
+      NS_ENSURE_SUCCESS(rv, rv);
+      rv = httpChannel->GetResponseStatusText(responsetext);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      GST_WARNING_OBJECT (mSrc, "HTTP Response %d (%s)", responsecode, responsetext.get());
+
+      /* Shut down if this is our current channel (but not if we've been redirected, in which
+       * case we have a different channel now
+       */
+      nsCOMPtr<nsIChannel> channel(do_QueryInterface(req));
+      if (mSrc->channel == channel) {
+        GST_ELEMENT_ERROR (mSrc, RESOURCE, READ,
+            ("Could not read from URL %s", mSrc->location), 
+            ("HTTP response code %d (%s) when fetching uri %s", responsecode, responsetext.get(),
+             mSrc->location));
+
+        req->Cancel(NS_BINDING_ABORTED);
+      }
       return NS_OK;
     }
     
