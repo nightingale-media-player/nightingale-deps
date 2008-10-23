@@ -134,8 +134,25 @@ void AttachedPictureFrame::parseFields(const ByteVector &data)
   d->textEncoding = String::Type(data[0]);
 
   int pos = 1;
-
-  d->mimeType = readStringField(data, String::Latin1, &pos);
+  
+  /* ID3v2.2 PIC frames store format as JPG or PNG */
+  if (header()->version() == 2) {
+    debug("Converting ID3v2.2 PIC frame.");
+    String str = String(data.mid(pos, 3), String::Latin1);
+    pos += 3;
+    if (str == "PNG") {
+      d->mimeType = String("image/png");
+    } else if (str == "JPG") {
+      d->mimeType = String("image/jpeg");
+    } else {
+      d->mimeType = String("image/unknown");
+    }
+    
+  /* ID3v2.3 APIC frames store format as image/jpeg\0 and image/png\0 */
+  } else {
+    d->mimeType = readStringField(data, String::Latin1, &pos);
+  }
+  
   /* Now we need at least two more bytes available */
   if (pos + 1 >= data.size()) {
     debug("Truncated picture frame.");
