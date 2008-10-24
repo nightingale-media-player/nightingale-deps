@@ -233,7 +233,8 @@ StreamListener::GetInterface(const nsIID &aIID, void **aResult)
     return wwatch->GetNewAuthPrompter(NULL, (nsIAuthPrompt**)aResult);
   }
   else if (aIID.Equals(NS_GET_IID(nsIHttpEventSink))) {
-    NS_ADDREF(*aResult = this);
+    NS_ADDREF(this);
+    *aResult = this;
     return NS_OK;
   }
 
@@ -398,8 +399,8 @@ NS_IMETHODIMP
 StreamListener::OnStopRequest(nsIRequest *req, nsISupports *ctxt, 
     nsresult status)
 {
-  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; 
-          connection lost", this);
+  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; "
+          "connection lost", this);
 
   if (!mSrc->is_cancelled)
   {
