@@ -107,7 +107,8 @@ GST_DEBUG_CATEGORY_STATIC (mozillasrc_debug);
 static const GstElementDetails gst_mozilla_src_details =
 GST_ELEMENT_DETAILS ((gchar *)"Mozilla nsIInputStream source",
     (gchar *)"Source/Network",
-    (gchar *)"Receive data from a hosting mozilla application Mozilla's I/O APIs",
+    (gchar *)"Receive data from a hosting mozilla "
+             "application Mozilla's I/O APIs",
     (gchar *)"Pioneers of the Inevitable <songbird@songbirdnest.com");
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
@@ -161,8 +162,8 @@ private:
   GstMozillaSrc *mSrc;
 };
 
-NS_IMPL_ISUPPORTS1(ResumeEvent,
-                   nsIRunnable)
+NS_IMPL_THREADSAFE_ISUPPORTS1(ResumeEvent,
+                              nsIRunnable)
 
 NS_IMETHODIMP
 ResumeEvent::Run()
@@ -217,7 +218,7 @@ StreamListener::~StreamListener ()
     g_object_unref (mAdapter);
 }
 
-NS_IMPL_ISUPPORTS4(StreamListener,
+NS_IMPL_THREADSAFE_ISUPPORTS4(StreamListener,
                    nsIRequestObserver,
                    nsIStreamListener,
                    nsIHttpHeaderVisitor,
@@ -227,7 +228,8 @@ NS_IMETHODIMP
 StreamListener::GetInterface(const nsIID &aIID, void **aResult)
 {
   if (aIID.Equals(NS_GET_IID(nsIAuthPrompt))) {
-    nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
+    nsCOMPtr<nsIWindowWatcher> wwatch(
+            do_GetService(NS_WINDOWWATCHER_CONTRACTID));
     return wwatch->GetNewAuthPrompter(NULL, (nsIAuthPrompt**)aResult);
   }
   else if (aIID.Equals(NS_GET_IID(nsIHttpEventSink))) {
@@ -283,16 +285,18 @@ StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
       rv = httpChannel->GetResponseStatusText(responsetext);
       NS_ENSURE_SUCCESS(rv, rv);
 
-      GST_WARNING_OBJECT (mSrc, "HTTP Response %d (%s)", responsecode, responsetext.get());
+      GST_WARNING_OBJECT (mSrc, "HTTP Response %d (%s)", responsecode, 
+              responsetext.get());
 
-      /* Shut down if this is our current channel (but not if we've been redirected, in which
-       * case we have a different channel now
+      /* Shut down if this is our current channel (but not if we've been 
+       * redirected, in which case we have a different channel now
        */
       nsCOMPtr<nsIChannel> channel(do_QueryInterface(req));
       if (mSrc->channel == channel) {
         GST_ELEMENT_ERROR (mSrc, RESOURCE, READ,
             ("Could not read from URL %s", mSrc->location), 
-            ("HTTP response code %d (%s) when fetching uri %s", responsecode, responsetext.get(),
+            ("HTTP response code %d (%s) when fetching uri %s", 
+             responsecode, responsetext.get(),
              mSrc->location));
 
         req->Cancel(NS_BINDING_ABORTED);
@@ -394,8 +398,8 @@ NS_IMETHODIMP
 StreamListener::OnStopRequest(nsIRequest *req, nsISupports *ctxt, 
     nsresult status)
 {
-  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; connection "
-          "lost", this);
+  GST_DEBUG_OBJECT (mSrc, "%p::StreamListener::OnStopRequest called; 
+          connection lost", this);
 
   if (!mSrc->is_cancelled)
   {
@@ -490,7 +494,8 @@ StreamListener::OnDataAvailable(nsIRequest *req, nsISupports *ctxt,
                             nsIInputStream *stream,
                             PRUint32 offset, PRUint32 count)
 {
-  GST_DEBUG_OBJECT (mSrc, "%p::OnDataAvailable called: [count=%u, offset=%u]", this, count, offset);
+  GST_DEBUG_OBJECT (mSrc, "%p::OnDataAvailable called: [count=%u, offset=%u]",
+          this, count, offset);
 
   nsresult rv;
   PRUint32 bytesRead=0;
@@ -618,7 +623,8 @@ gst_mozilla_src_class_init (GstMozillaSrcClass * klass)
   g_object_class_install_property
       (gobject_class, PROP_IRADIO_MODE,
       g_param_spec_boolean ("iradio-mode", "iradio-mode",
-          "Enable reading of shoutcast/icecast metadata", FALSE, (GParamFlags)G_PARAM_READWRITE));
+          "Enable reading of shoutcast/icecast metadata", 
+          FALSE, (GParamFlags)G_PARAM_READWRITE));
 
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_mozilla_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_mozilla_src_stop);
@@ -892,7 +898,8 @@ gst_mozilla_src_create_request (GstMozillaSrc *src, GstSegment *segment)
       rv = resumable->ResumeAt(segment->start, EmptyCString());
       // If we failed, just log it and continue; it's not critical.
       if (NS_FAILED (rv))
-        GST_WARNING_OBJECT (src, "Failed to resume channel at non-zero offsets");
+        GST_WARNING_OBJECT (src, 
+                "Failed to resume channel at non-zero offsets");
       else
         src->current_position = segment->start;
     }
@@ -913,7 +920,8 @@ gst_mozilla_src_create_request (GstMozillaSrc *src, GstSegment *segment)
               NS_LITERAL_CSTRING("1"),
               PR_FALSE);
       if (NS_FAILED (rv))
-        GST_WARNING_OBJECT (src, "Failed to set icy-metadata header on channel");
+        GST_WARNING_OBJECT (src, 
+                "Failed to set icy-metadata header on channel");
     }
 
     // Some servers (notably shoutcast) serve html to web browsers, and the 
