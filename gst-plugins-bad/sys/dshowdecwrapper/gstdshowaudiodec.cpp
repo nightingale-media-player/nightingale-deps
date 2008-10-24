@@ -632,6 +632,7 @@ gst_dshowaudiodec_flush (GstDshowAudioDec * adec)
   /* flush dshow decoder and reset timestamp */
   adec->fakesrc->GetOutputPin()->Flush();
   adec->timestamp = GST_CLOCK_TIME_NONE;
+  adec->last_ret = GST_FLOW_OK;
 
   return TRUE;
 }
@@ -723,7 +724,7 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
        * it.
        */
       format = (WAVEFORMATEX *)g_malloc0 (
-              sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES)
+              sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES);
       format->cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
     }
     else {
