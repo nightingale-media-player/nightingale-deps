@@ -80,7 +80,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
     --with-quicktime-sdk=$(QUICKTIME_SDK_ROOT) \
     --with-directshow-libs=$(DIRECTSHOW_LIBS_CONFIGURE_ARG)
 
-  SB_CFLAGS += -D_USE_MATH_DEFINES
+  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
   SB_CXXFLAGS += $(SB_CFLAGS)
 endif
 

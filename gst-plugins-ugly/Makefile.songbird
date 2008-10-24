@@ -47,7 +47,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-mad --disable-mpeg2dec --disable-sidplay
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  SB_CFLAGS += -D_USE_MATH_DEFINES
+  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
