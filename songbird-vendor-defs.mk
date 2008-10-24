@@ -50,7 +50,6 @@ SB_PKG_CONFIG_PATH :=
 SB_DYLD_LIBRARY_PATH :=
 
 SB_VENDOR_TARGET_DEP_MODULES ?= \
-  gettext glib \
   liboil flac ogg vorbis \
   gstreamer gst-plugins-base
 
@@ -192,6 +191,9 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
 
   SB_LDFLAGS += -headerpad_max_install_names -isysroot $(MACOSX_SDK) \
    -Wl,-syslibroot,$(MACOSX_SDK)
+
+   # We need these for all builds on OSX, since the system doesn't provide them
+   SB_VENDOR_TARGET_DEP_MODULES += glib gettext
 endif
 
 # Default to release mode...
