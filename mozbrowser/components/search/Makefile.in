@@ -36,29 +36,30 @@
 #
 # ***** END LICENSE BLOCK ***** */
 
-DEPTH     = ../../..
+DEPTH     = ../../../../../..
 topsrcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
-include $(DEPTH)/config/autoconf.mk
+include $(DEPTH)/build/autodefs.mk
 
-ifdef MOZ_MOCHITEST
-DIRS = test
-endif
+JAR_MANIFEST = jar.mn
 
-MODULE = browsersearch
-XPIDL_MODULE = browsersearch
+XPIDL_SRCS = nsIBrowserSearchService.idl \
+             $(NULL)
 
-XPIDLSRCS = nsIBrowserSearchService.idl
+XPIDL_MODULE = browsersearch.xpt
+XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
-EXTRA_PP_COMPONENTS = nsSearchService.js \
-	nsSearchSuggestions.js
+COMPONENTS_PPFLAGS = -DMOZ_DISTRIBUTION_ID=\"Songbird\"
 
-ifneq (,$(BUILD_OFFICIAL)$(MOZILLA_OFFICIAL))
-DEFINES += -DOFFICIAL_BUILD=1
-endif
+SONGBIRD_PP_COMPONENTS = $(srcdir)/nsSearchService.js \
+                         $(NULL)
 
-DEFINES += -DMOZ_DISTRIBUTION_ID=$(MOZ_DISTRIBUTION_ID)
+SONGBIRD_COMPONENTS = $(srcdir)/nsSearchSuggestions.js \
+                      $(XPIDL_MODULE) \
+                      $(NULL)
 
-include $(topsrcdir)/config/rules.mk
+GARBAGE = $(XPIDL_MODULE_TYPELIBS)
+
+include $(topsrcdir)/build/rules.mk
