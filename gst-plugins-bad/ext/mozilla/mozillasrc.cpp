@@ -218,11 +218,12 @@ StreamListener::~StreamListener ()
     g_object_unref (mAdapter);
 }
 
-NS_IMPL_THREADSAFE_ISUPPORTS4(StreamListener,
-                   nsIRequestObserver,
-                   nsIStreamListener,
-                   nsIHttpHeaderVisitor,
-                   nsIInterfaceRequestor)
+NS_IMPL_THREADSAFE_ISUPPORTS5(StreamListener,
+                              nsIRequestObserver,
+                              nsIStreamListener,
+                              nsIHttpHeaderVisitor,
+                              nsIInterfaceRequestor,
+                              nsIHttpEventSink)
 
 NS_IMETHODIMP 
 StreamListener::GetInterface(const nsIID &aIID, void **aResult)
@@ -233,9 +234,7 @@ StreamListener::GetInterface(const nsIID &aIID, void **aResult)
     return wwatch->GetNewAuthPrompter(NULL, (nsIAuthPrompt**)aResult);
   }
   else if (aIID.Equals(NS_GET_IID(nsIHttpEventSink))) {
-    NS_ADDREF(this);
-    *aResult = this;
-    return NS_OK;
+    return QueryInterface(aIID, aResult);
   }
 
   return NS_ERROR_NO_INTERFACE;
@@ -286,7 +285,7 @@ StreamListener::OnStartRequest(nsIRequest *req, nsISupports *ctxt)
       rv = httpChannel->GetResponseStatusText(responsetext);
       NS_ENSURE_SUCCESS(rv, rv);
 
-      GST_WARNING_OBJECT (mSrc, "HTTP Response %d (%s)", responsecode, 
+      GST_INFO_OBJECT (mSrc, "HTTP Response %d (%s)", responsecode, 
               responsetext.get());
 
       /* Shut down if this is our current channel (but not if we've been 
