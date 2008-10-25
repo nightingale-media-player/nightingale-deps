@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -36,6 +37,7 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+ */
 
 const Ci = Components.interfaces;
 const Cc = Components.classes;
@@ -43,7 +45,11 @@ const Cr = Components.results;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource:///modules/distribution.js");
+try {
+  Cu.import("resource:///modules/distribution.js");
+} catch (e if e.result == Components.results.NS_ERROR_NOT_AVAILABLE) {
+  // XXX Songbird: allow not having a distribution file
+}
 
 const PREF_EM_NEW_ADDONS_LIST = "extensions.newAddons";
 
@@ -168,8 +174,11 @@ BrowserGlue.prototype = {
   {
     // apply distribution customizations (prefs)
     // other customizations are applied in _onProfileStartup()
-    var distro = new DistributionCustomizer();
-    distro.applyPrefDefaults();
+    // XXX Songbird: allow not having a distribution customizer
+    if ("function" == typeof(DistributionCustomizer)) {
+      var distro = new DistributionCustomizer();
+      distro.applyPrefDefaults();
+    }
   },
 
   // profile startup handler (contains profile initialization routines)
@@ -218,8 +227,11 @@ BrowserGlue.prototype = {
 
     // apply distribution customizations
     // prefs are applied in _onAppDefaults()
-    var distro = new DistributionCustomizer();
-    distro.applyCustomizations();
+    // XXX Songbird: allow not having a distribution customizer
+    if ("function" == typeof(DistributionCustomizer)) {
+      var distro = new DistributionCustomizer();
+      distro.applyCustomizations();
+    }
 
     // handle any UI migration
     this._migrateUI();
@@ -418,6 +430,9 @@ BrowserGlue.prototype = {
    *   bookmarks.
    */
   _initPlaces: function bg__initPlaces() {
+    // XXX Songbird: Songbird does not use Places
+    return;
+  
     // we need to instantiate the history service before checking
     // the browser.places.importBookmarksHTML pref, as
     // nsNavHistory::ForceMigrateBookmarksDB() will set that pref
