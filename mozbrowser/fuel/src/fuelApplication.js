@@ -737,4 +737,4 @@ function NSGetModule(aCompMgr, aFileSpec) {
   return XPCOMUtils.generateModule([Application]);
 }
 
-#include ../../../toolkit/components/exthelper/extApplication.js
+#include ../../exthelper/extApplication.js
