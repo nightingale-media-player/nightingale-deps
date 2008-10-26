@@ -333,6 +333,7 @@ gst_directsound_sink_init (GstDirectSoundSink * dsoundsink,
   dsoundsink->volume = 100;
   dsoundsink->dsound_lock = g_mutex_new ();
   dsoundsink->first_buffer_after_reset = FALSE;
+  dsoundsink->has_set_thread_priority = FALSE;
 }
 
 static void
@@ -413,6 +414,8 @@ gst_directsound_sink_prepare (GstAudioSink * asink, GstRingBufferSpec * spec)
   DSBUFFERDESC descSecondary;
   WAVEFORMATEX wfx;
 
+  dsoundsink->has_set_thread_priority = FALSE;
+
   /*save number of bytes per sample */
   dsoundsink->bytes_per_sample = spec->bytes_per_sample;
 
@@ -482,6 +485,8 @@ gst_directsound_sink_unprepare (GstAudioSink * asink)
   if (dsoundsink->pDSBSecondary)
     IDirectSoundBuffer_Release (dsoundsink->pDSBSecondary);
 
+  dsoundsink->has_set_thread_priority = FALSE;
+
   return TRUE;
 }
 
@@ -511,6 +516,21 @@ gst_directsound_sink_write (GstAudioSink * asink, gpointer data, guint length)
 
   dsoundsink = GST_DIRECTSOUND_SINK (asink);
 
+  if (!dsoundsink->has_set_thread_priority) {
+    HANDLE hThread = GetCurrentThread();
+    
+    BOOL success = SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+    if (success) {
+      GST_DEBUG_OBJECT (dsoundsink, 
+        "Setting thread priority for sink to time critical.");
+    }
+    else {
+      GST_WARNING_OBJECT (dsoundsink, 
+          "gst_directsound_sink_write: Failed to set thread priority.");
+    }
+    dsoundsink->has_set_thread_priority = TRUE;
+  }
+
   GST_DSOUND_LOCK (dsoundsink);
 
   /* get current buffer status */
@@ -534,7 +554,7 @@ gst_directsound_sink_write (GstAudioSink * asink, gpointer data, guint length)
           dwCurrentPlayCursor - dsoundsink->current_circular_offset;
 
     if (length >= dwFreeBufferSize) {
-      Sleep (100);
+      Sleep (1);
       hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
           &dwCurrentPlayCursor, NULL);
 

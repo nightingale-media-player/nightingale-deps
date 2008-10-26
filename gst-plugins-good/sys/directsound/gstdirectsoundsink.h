@@ -76,6 +76,8 @@ struct _GstDirectSoundSink
   GMutex *dsound_lock;
 
   gboolean first_buffer_after_reset;
+
+  gboolean has_set_thread_priority;
 };
 
 struct _GstDirectSoundSinkClass
