@@ -434,12 +434,7 @@ endif
 ifneq (,$(call enable-sb-lib, ogg))
   $(info Enabling Songbird vendor lib: ogg)
   SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
-  SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib
-  ifeq (Msys_debug,$(SB_VENDOR_ARCH)_$(SB_BUILD_TYPE))
-    SB_OGG_LIBS += -logg_d
-  else
-     SB_OGG_LIBS += -logg
-  endif
+  SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib -logg
   SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
   SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
 
