@@ -209,11 +209,12 @@
           var col = this.columns.getFirstColumn();
           var lastCol = null;
           var currentX = this.boxObject.x;
+          var adjustedX = aX + this.treeBoxObject.horizontalPosition;
           while (col) {
             var cw = col.element.boxObject.width;
             if (cw > 0) {
               currentX += cw;
-              if (currentX - (cw * aThresh) > aX)
+              if (currentX - (cw * aThresh) > adjustedX)
                 return col.element;
             }
             lastCol = col;
@@ -1141,11 +1142,8 @@
             }
           }
 
-          // |aEvent.clientX| only reports the current X position, the horizontal position needs
-          // to be taken into account.
           var pos = {};
-          var adjustedX = aEvent.clientX + col.parentNode.parentNode.treeBoxObject.horizontalPosition;
-          var targetCol = col.parentNode.parentNode._getColumnAtX(adjustedX, 0.5, pos);
+          var targetCol = col.parentNode.parentNode._getColumnAtX(aEvent.clientX, 0.5, pos);
           
           // bail if we haven't mousemoved to a different column
           if (col.mTargetCol == targetCol && col.mTargetDir == pos.value)
