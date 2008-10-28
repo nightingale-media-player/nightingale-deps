@@ -41,7 +41,7 @@
 # For now all we want is the en-US locale added to browser.jar
 #
 
-DEPTH = ../../../../..
+DEPTH = ../../../..
 topsrcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
