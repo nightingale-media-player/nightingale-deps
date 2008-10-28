@@ -32,10 +32,10 @@
 
 SB_VENDOR_TARGET_DEP_MODULES := 
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = libogg
+SB_VENDOR_TARGET_VERSION = 1.1.3
 
-SB_VENDOR_TARGET := libogg
-SB_VENDOR_TARGET_VERSION := 1.1.3
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-docs

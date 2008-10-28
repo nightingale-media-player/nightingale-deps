@@ -30,10 +30,10 @@
 ################################################################################
 ################################################################################
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = gst-plugins-bad
+SB_VENDOR_TARGET_VERSION = 0.10.20
 
-SB_VENDOR_TARGET := gst-plugins-bad
-SB_VENDOR_TARGET_VERSION := 0.10.20
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-examples \

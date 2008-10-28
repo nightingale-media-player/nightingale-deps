@@ -30,10 +30,10 @@
 ################################################################################
 ################################################################################
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = gstreamer
+SB_VENDOR_TARGET_VERSION = 0.10.20
 
-SB_VENDOR_TARGET := gstreamer
-SB_VENDOR_TARGET_VERSION := 0.10.20
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_CFLAGS += -DYY_NO_UNISTD_H
 GST_PARSE_LA = parse/libgstparse_la-lex._gst_parse_yy.lo \

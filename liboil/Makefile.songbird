@@ -32,10 +32,10 @@
 
 SB_VENDOR_TARGET_DEP_MODULES := 
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = liboil
+SB_VENDOR_TARGET_VERSION = 0.3.15
 
-SB_VENDOR_TARGET := liboil
-SB_VENDOR_TARGET_VERSION := 0.3.15
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-examples \

@@ -32,10 +32,10 @@
 
 SB_VENDOR_TARGET_DEP_MODULES := gettext
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = glib
+SB_VENDOR_TARGET_VERSION = 2.12.13
 
-SB_VENDOR_TARGET := glib
-SB_VENDOR_TARGET_VERSION := 2.12.13
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-libsuffix \
                                    --enable-cxx-warnings=no

@@ -32,10 +32,10 @@
 
 SB_VENDOR_TARGET_DEP_MODULES := ogg
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = libvorbis
+SB_VENDOR_TARGET_VERSION = 1.2.0
 
-SB_VENDOR_TARGET := libvorbis
-SB_VENDOR_TARGET_VERSION := 1.2.0
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-docs \

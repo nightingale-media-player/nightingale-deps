@@ -32,10 +32,10 @@
 
 SB_VENDOR_TARGET_DEP_MODULES :=
 
-include $(CURDIR)/../songbird-vendor-defs.mk
+SB_VENDOR_TARGET = gettext
+SB_VENDOR_TARGET_VERSION = 0.14.6
 
-SB_VENDOR_TARGET := gettext
-SB_VENDOR_TARGET_VERSION := 0.14.6
+include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
       --disable-libsuffix \
