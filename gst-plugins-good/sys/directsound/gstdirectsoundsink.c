@@ -482,8 +482,10 @@ gst_directsound_sink_unprepare (GstAudioSink * asink)
   dsoundsink = GST_DIRECTSOUND_SINK (asink);
 
   /* release secondary DirectSound buffer */
-  if (dsoundsink->pDSBSecondary)
+  if (dsoundsink->pDSBSecondary) {
     IDirectSoundBuffer_Release (dsoundsink->pDSBSecondary);
+    dsoundsink->pDSBSecondary = NULL;
+  }
 
   dsoundsink->has_set_thread_priority = FALSE;
 
