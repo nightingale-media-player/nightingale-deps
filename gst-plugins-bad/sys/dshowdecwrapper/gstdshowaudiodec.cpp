@@ -723,8 +723,8 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
        * contents aren't usefully documented, and nothing seems to need to use
        * it.
        */
-      format = (WAVEFORMATEX *)g_malloc0 (
-              sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES);
+      size = sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES;
+      format = (WAVEFORMATEX *)g_malloc0 (size);
       format->cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
     }
     else {
