@@ -126,8 +126,8 @@ SUBMAKE_CMD = $(MAKE)
 DUMP_SYMS_ARGS := --vcs-info
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   SB_STRIP ?= strip -x -S
-   DUMP_SYMS ?= $(MOZSDK_DIR)/dump_syms
+   STRIP ?= strip -x -S
+   DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms
    OTOOL ?= otool
    INSTALL_NAME_TOOL ?= install_name_tool
 
@@ -140,15 +140,15 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    endif
 else
 ifeq (Linux,$(SB_VENDOR_ARCH))
-   SB_STRIP ?= strip -v
-   DUMP_SYMS = $(MOZSDK_DIR)/dump_syms
+   STRIP ?= strip -v
+   DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Linux && exit 1;
    OTOOL ?= echo otool called on Linux && exit 1;
 else
 ifeq (Msys,$(SB_VENDOR_ARCH))
-   DUMP_SYMS = $(MOZSDK_DIR)/dump_syms.exe
+   DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms.exe
    # Strip isn't needed/available on Win32; error out
-   SB_STRIP ?= echo strip called on Win32 && exit 1;
+   STRIP ?= echo strip called on Win32 && exit 1;
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Win32 && exit 1;
    OTOOL ?= echo otool called on Win32 && exit 1;
 
@@ -277,20 +277,20 @@ SB_CONFIGURE_PREFIX = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/$(SB_BUILD_T
 
 SB_VENDOR_TARGET_BINARY_DEPS_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/build-deps
 
-SB_VENDOR_BREAKPAD_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/breakpad/$(SB_BUILD_TYPE)
+SB_VENDOR_BREAKPAD_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/breakpad/$(SB_BUILD_TYPE)
 
 SB_VENDOR_BREAKPAD_SYMBOL_PATH = $(SB_VENDOR_BREAKPAD_DIR)/breakpad-symbols
 SB_VENDOR_BREAKPAD_ARCHIVE_PATH = $(SB_VENDOR_BREAKPAD_DIR)
 
-SB_VENDOR_BREAKPAD_STORE_PATH := ./
+SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
 
 # Generate syms by default; but make it easy to turn it off, if you're just
 # interested in building.
-SB_VENDOR_GENERATE_SYMBOLS ?= 0
+SB_VENDOR_GENERATE_SYMBOLS ?= 1
 
 # Symbols don't work on x86_64; don't even bother
 ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
-  SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/$(SB_VENDOR_TARGET)-symbols-$(SB_VENDOR_TARGET_VERSION)-$(SB_VENDOR_ARCH).zip
+  SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/sb-vendor-symbols-$(SB_VENDOR_TARGET)-$(SB_VENDOR_TARGET_VERSION)-$(SB_TARGET_ARCH)-$(SB_BUILD_TYPE).zip
 else
   SB_VENDOR_BREAKPAD_ARCHIVE = 
 endif

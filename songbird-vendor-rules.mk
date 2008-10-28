@@ -78,7 +78,6 @@ ifneq (,$(BUILD_TARGET_SET))
   export CXX = $(SB_CXX)
   export LD = $(SB_LD)
   export OBJDUMP = $(SB_OBJDUMP)
-  export STRIP = $(SB_STRIP)
 
   export CPPFLAGS = $(SB_CPPFLAGS)
   export CFLAGS = $(SB_CFLAGS)
@@ -125,10 +124,18 @@ endif
 
 strip_build:
 ifneq (Msys,$(SB_VENDOR_ARCH))
-	$(FIND) -L $(SB_VENDOR_BUILD_DIR) -not -type d \
-         -name "*.dylib" \
-         -or -name "*.so" \
-         -exec $(STRIP) {} \;
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+	for d in $(SB_VENDOR_BUILD_DIR) $(SB_CONFIGURE_PREFIX); do \
+          $(FIND) $$d \
+            -type f -name "*.dylib" \
+            -exec $(STRIP) {} \; ; \
+        done
+endif
+	for d in $(SB_VENDOR_BUILD_DIR) $(SB_CONFIGURE_PREFIX); do \
+          $(FIND) $$d \
+           -type f -name "*.so" \
+           -exec $(STRIP) {} \; ; \
+        done
 endif
 
 # post_build's heroic (but byzantine) shell loop needs some explanation;
@@ -192,15 +199,14 @@ endif
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
 	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
 	$(PYTHON) $(MOZSDK_SCRIPTS_DIR)/symbolstore.py \
-              $(DUMP_SYM_ARGS) \
-              -s $(SB_CONFIGURE_PREFIX)/lib \
+              $(DUMP_SYMS_ARGS) \
+              -s $(SB_CONFIGURE_PREFIX) \
               $(DUMP_SYMS) \
               $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) \
               $(SB_VENDOR_BREAKPAD_STORE_PATH) \
-              > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_TARGET_NAME)-symbols.txt
-
+              > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_VENDOR_TARGET)-symbol-list.txt
 	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \
-         $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE_PATH) .
+         $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE) .
 
 $(SB_VENDOR_BINARIES_DIR):
 	$(MKDIR) $(SB_VENDOR_BINARIES_DIR)
@@ -319,6 +325,7 @@ endif
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)
 	$(RM) -rf $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)
+	$(RM) -rf $(SB_VENDOR_BREAKPAD_DIR)
 	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
 .PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build
