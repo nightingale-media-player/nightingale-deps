@@ -338,7 +338,6 @@ ifneq (,$(call enable-sb-lib, gettext))
   SB_PATH += $(SB_GETTEXT_DIR)/bin
 
   ifeq (Darwin,$(SB_VENDOR_ARCH))
-    #SB_LDFLAGS += -Wl,-dylib_file -Wl,libintl.dylib:$(SB_GETTEXT_DIR)/lib/libintl.dylib
     SB_DYLD_LIBRARY_PATH += $(SB_GETTEXT_DIR)/lib
   endif
 endif
@@ -371,7 +370,7 @@ ifneq (,$(call enable-sb-lib, glib))
 
   ifeq (Darwin,$(SB_VENDOR_ARCH))
     LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
-    DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
+    SB_DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
   endif
 endif
 
