@@ -297,11 +297,11 @@ endif
 
 # TODO: explain this gloop
 define find-dep-dir
-$(if $(shell test -e $1/install-$(SB_BUILD_TYPE) && echo exists),$(strip $1)/install-$(SB_BUILD_TYPE),$(strip $1)/$(SB_BUILD_TYPE))
+$(SB_VENDOR_BINARIES_DIR)/$(strip $1)/$(SB_BUILD_TYPE)
 endef
 
 # Mozilla SDK settings
-MOZSDK_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/mozilla)
+MOZSDK_DIR = $(call find-dep-dir, mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
 MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/xulrunner)
@@ -331,7 +331,7 @@ endef
 #
 ifneq (,$(call enable-sb-lib, gettext))
   $(info Enabling Songbird vendor lib: gettext)
-  SB_GETTEXT_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gettext)
+  SB_GETTEXT_DIR = $(call find-dep-dir, gettext)
   SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
   SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
   SB_CPPFLAGS += -I$(SB_GETTEXT_DIR)/include
@@ -348,7 +348,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, iconv))
   $(info Enabling Songbird vendor lib: iconv)
-  SB_ICONV_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libiconv)
+  SB_ICONV_DIR := $(call find-dep-dir, libiconv)
   SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
   SB_CFLAGS += -I$(SB_ICONV_DIR)/include
   SB_PATH += $(SB_ICONV_DIR)/bin
@@ -363,7 +363,7 @@ endif
 # 
 ifneq (,$(call enable-sb-lib, glib))
   $(info Enabling Songbird vendor lib: glib)
-  SB_GLIB_DIR := $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/glib)
+  SB_GLIB_DIR := $(call find-dep-dir, glib)
   SB_PATH += $(SB_GLIB_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
 
@@ -389,7 +389,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, liboil))
   $(info Enabling Songbird vendor lib: liboil)
-  SB_LIBOIL_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/liboil)
+  SB_LIBOIL_DIR = $(call find-dep-dir, liboil)
   SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
   SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
   SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
@@ -407,7 +407,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, gstreamer))
   $(info Enabling Songbird vendor lib: gstreamer)
-  SB_GSTREAMER_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gstreamer)
+  SB_GSTREAMER_DIR = $(call find-dep-dir, gstreamer)
   SB_PATH += $(SB_GSTREAMER_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
   
@@ -423,7 +423,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, gst-plugins-base))
   $(info Enabling Songbird vendor lib: gst-plugins-base)
-  SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base)
+  SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, gst-plugins-base)
   SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
   SB_PKG_CONFIG_PATH += $(SB_GST_PLUGINS_BASE_DIR)/lib/pkgconfig
 endif
@@ -433,7 +433,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, ogg))
   $(info Enabling Songbird vendor lib: ogg)
-  SB_LIBOGG_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libogg)
+  SB_LIBOGG_DIR = $(call find-dep-dir, libogg)
   SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib -logg
   SB_OGG_CFLAGS := -I$(SB_LIBOGG_DIR)/include
   SB_PKG_CONFIG_PATH += $(SB_LIBOGG_DIR)/lib/pkgconfig
@@ -451,7 +451,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, vorbis))
   $(info Enabling Songbird vendor lib: vorbis)
-  SB_LIBVORBIS_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/libvorbis)
+  SB_LIBVORBIS_DIR = $(call find-dep-dir, libvorbis)
   SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
   SB_VORBIS_LIBS += $(SB_OGG_LIBS)
   SB_VORBIS_CFLAGS = -I$(SB_LIBVORBIS_DIR)/include
@@ -471,7 +471,7 @@ endif
 #
 ifneq (,$(call enable-sb-lib, flac))
   $(info Enabling Songbird vendor lib: flac)
-  SB_LIBFLAC_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/flac)
+  SB_LIBFLAC_DIR = $(call find-dep-dir, flac)
   SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
   ifeq (Msys,$(SB_VENDOR_ARCH))
     SB_FLAC_LIBS += -lFLAC-8
