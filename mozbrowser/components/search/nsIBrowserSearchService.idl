@@ -160,6 +160,11 @@ interface nsISearchEngine : nsISupports
    */
   readonly attribute long type;
 
+  /**
+   * XXX Songbird extension
+   * A string containing a space delimited set of keywords describing this search engine
+   */
+  readonly attribute AString tags;
 };
 
 [scriptable, uuid(8307b8f2-08ea-45b8-96bf-b1dc7688fe3b)]

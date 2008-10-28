@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -37,6 +38,7 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+ */
 
 const Ci = Components.interfaces;
 const Cc = Components.classes;
@@ -942,6 +944,7 @@ function Engine(aLocation, aSourceDataType, aIsReadOnly) {
       case "data":
       case "file":
       case "resource":
+      case "chrome": // XXX Songbird: allow chrome search engines
         this._uri = aLocation;
         break;
       default:
@@ -979,6 +982,8 @@ Engine.prototype = {
   _name: null,
   // The engine type. See engine types (TYPE_) defined above.
   _type: null,
+  // XXX Songbird: Space delimited keyword string
+  _tags: "",
   // The name of the charset used to submit the search terms.
   _queryCharset: null,
   // A URL string pointing to the engine's search form.
@@ -1284,6 +1289,8 @@ Engine.prototype = {
         + this.name + "\".");
     // Only accept remote icons from http[s] or ftp
     switch (uri.scheme) {
+      // XXX Songbird: Accept chrome icons. Needed for library stub.
+      case "chrome":
       case "data":
         this._iconURI = uri;
         notifyAction(this, SEARCH_ENGINE_CHANGED);
@@ -1538,6 +1545,14 @@ Engine.prototype = {
         case "IconUpdateUrl":
           this._iconUpdateURL = child.textContent;
           break;
+        
+        // XXX Songbird: extensions for the internal search
+        case "Alias":                                                           
+          this.alias = child.textContent;                                      
+          break;
+        case "Tags":
+          this._tags = child.textContent;
+          break;          
       }
     }
     ENSURE(this.name && (this._urls.length > 0),
@@ -2097,6 +2112,11 @@ Engine.prototype = {
     return this._type;
   },
 
+  // XXX Songbird: engine tags
+  get tags() {
+    return this._tags;
+  },
+  
   get searchForm() {
     if (!this._searchForm) {
       // No searchForm specified in the engine definition file, use the prePath
@@ -2232,6 +2252,8 @@ SearchService.prototype = {
     engineUpdateService.init();
 
     this._addObservers();
+    
+    DO_LOG("Starting search engine enumeration...\n");
 
     var fileLocator = Cc["@mozilla.org/file/directory_service;1"].
                       getService(Ci.nsIProperties);
@@ -2242,6 +2264,7 @@ SearchService.prototype = {
       var location = locations.getNext().QueryInterface(Ci.nsIFile);
       this._loadEngines(location);
     }
+    DO_LOG("search engine enumeration done...\n");
 
     // Now that all engines are loaded, build the sorted engine list
     this._buildSortedEngineList();
@@ -2254,6 +2277,14 @@ SearchService.prototype = {
 
   _addEngineToStore: function SRCH_SVC_addEngineToStore(aEngine) {
     LOG("_addEngineToStore: Adding engine: \"" + aEngine.name + "\"");
+
+    // XXX Songbird HACK
+    // For now any engines with special songbird tags should be hidden by default
+    // This is to ensure that if an extension adds a programmatic search engine
+    // the search engine will not show up after the extension is uninstalled
+    if (aEngine.tags.indexOf("songbird") > -1) {
+      aEngine.hidden = true;
+    }
 
     // See if there is an existing engine with the same name. However, if this
     // engine is updating another engine, it's allowed to have the same name.
@@ -2695,11 +2726,13 @@ SearchService.prototype = {
   },
 
   getEngineByAlias: function SRCH_SVC_getEngineByAlias(aAlias) {
+    LOG("Looking for search engine " + aAlias + "...\n");
     for (var engineName in this._engines) {
       var engine = this._engines[engineName];
       if (engine && engine.alias == aAlias)
         return engine;
     }
+    LOG("Not found\n");
     return null;
   },
 
@@ -3186,4 +3219,4 @@ function NSGetModule(componentManager, fileSpec) {
   return gModule;
 }
 
-#include ../../../toolkit/content/debug.js
+#include ./debug.js

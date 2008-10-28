@@ -1,3 +1,4 @@
+/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -37,6 +38,7 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
+ */
 
 const Ci = Components.interfaces;
 const Cc = Components.classes;
@@ -218,10 +220,14 @@ var gEngineManagerDialog = {
                          (gEngineView.lastIndex == 0);
     var lastSelected = (gEngineView.selectedIndex == gEngineView.lastIndex);
     var firstSelected = (gEngineView.selectedIndex == 0);
+
+    // Songbird: do not allow removal of the songbird internal search engine
+    var isSongbirdEngine = (gEngineView.selectedEngine.alias == "songbird-internal-search");
+
     var noSelection = (gEngineView.selectedIndex == -1);
 
     document.getElementById("cmd_remove").setAttribute("disabled",
-                                                       disableButtons);
+                                                       disableButtons || isSongbirdEngine);
 
     document.getElementById("cmd_moveup").setAttribute("disabled",
                                             disableButtons || firstSelected);
