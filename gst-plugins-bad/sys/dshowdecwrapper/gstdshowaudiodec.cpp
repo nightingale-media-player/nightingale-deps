@@ -717,15 +717,26 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
         (adec->codec_data ? GST_BUFFER_SIZE (adec->codec_data) : 0);
 
     if (adec->layer == 3) {
-      /* The WinXP mp3 decoder seems to want to (without checking 
-       * format->cbSize!) copy MPEGLAYER3_WFX_EXTRA_BYTES extra.
-       * So, we allocate this much extra, but zero-initialise it because the
-       * contents aren't usefully documented, and nothing seems to need to use
-       * it.
+      MPEGLAYER3WAVEFORMAT *mp3format;
+
+      /* The WinXP mp3 decoder doesn't actually check the size of this structure, 
+       * but requires that this be allocated and filled out (or we get obscure
+       * random crashes)
        */
-      size = sizeof (WAVEFORMATEX) + MPEGLAYER3_WFX_EXTRA_BYTES;
-      format = (WAVEFORMATEX *)g_malloc0 (size);
+      size = sizeof (MPEGLAYER3WAVEFORMAT);
+      mp3format = (MPEGLAYER3WAVEFORMAT *)g_malloc0 (size);
+      format = (WAVEFORMATEX *)mp3format;
       format->cbSize = MPEGLAYER3_WFX_EXTRA_BYTES;
+
+      mp3format->wID = MPEGLAYER3_ID_MPEG;
+      mp3format->fdwFlags = MPEGLAYER3_FLAG_PADDING_ISO; /* No idea what this means for a decoder */
+
+      /* The XP decoder divides by nBlockSize, so we must set this to a
+         non-zero value, but it doesn't matter what - this is meaningless
+         for VBR mp3 anyway */
+      mp3format->nBlockSize = 1;
+      mp3format->nFramesPerBlock = 1;
+      mp3format->nCodecDelay = 0;
     }
     else {
       format = (WAVEFORMATEX *)g_malloc0 (size);
