@@ -298,6 +298,7 @@ gst_osx_audio_sink_create_ringbuffer (GstBaseAudioSink * sink)
       (void *) gst_osx_audio_sink_io_proc);
 
   osxsink->audiounit = gst_osx_audio_sink_create_audio_unit (osxsink);
+  gst_osx_audio_sink_set_volume(osxsink);
 
   ringbuffer->element = GST_OSX_AUDIO_ELEMENT_GET_INTERFACE (osxsink);
   ringbuffer->audiounit = osxsink->audiounit;
