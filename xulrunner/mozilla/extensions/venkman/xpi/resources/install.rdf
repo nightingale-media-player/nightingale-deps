@@ -62,6 +62,15 @@
 			</Description>
 		</em:targetApplication>
 
+		<!-- Disable Venkman unless the developer tools are installed. See Bug 13196 -->
+		<em:requires>
+			<Description>
+				<em:id>developer-tools@extensions.songbirdnest.com</em:id>
+				<em:minVersion>0.1</em:minVersion>
+				<em:maxVersion>*</em:maxVersion>
+			</Description>
+		</em:requires>
+
 		<!-- front-end metadata -->
 		<em:name>JavaScript Debugger</em:name>
 		<em:description>JavaScript debugger and profiler</em:description>
