@@ -358,6 +358,36 @@ gst_base_audio_sink_query (GstElement * element, GstQuery * query)
       }
       break;
     }
+    case GST_QUERY_POSITION:
+    {
+      GstFormat format;
+      gst_query_parse_position (query, &format, NULL);
+      if (format == GST_FORMAT_TIME) {
+        GstState state;
+        GST_OBJECT_LOCK (element);
+        state = GST_STATE (element);
+        GST_OBJECT_UNLOCK (element);
+
+        if (state == GST_STATE_PAUSED) {
+          /* Use our position reporting in PAUSED, since it's more accurate
+           * than what basesink does */
+          GstBaseAudioSink *sink = (GstBaseAudioSink *)element;
+          if (sink->ringbuffer != NULL && sink->ringbuffer->spec.rate != 0) {
+            guint64 samples = gst_ring_buffer_samples_done (sink->ringbuffer);
+            GstClockTime position = gst_util_uint64_scale_int (
+                    samples, GST_SECOND, sink->ringbuffer->spec.rate);
+            gst_query_set_position (query, format, position);
+
+            return TRUE;
+          }
+        }
+      }
+
+      /* Otherwise, just use basesink's query implementation */
+      res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
+
+      break;
+    }
     default:
       res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
       break;
