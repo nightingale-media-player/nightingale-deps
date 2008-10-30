@@ -300,6 +300,28 @@ write_len (guint8 * buf, int val)
   return 4;
 }
 
+static void
+aac_parse_codec_data(GstBuffer *codec_data, guint *channels)
+{
+  guint8 *data = GST_BUFFER_DATA (codec_data);
+  int codec_channels;
+
+  if (GST_BUFFER_SIZE (codec_data) < 2) {
+    GST_WARNING ("Cannot parse codec_data for channel count");
+    return;
+  }
+
+  codec_channels = (data[1] & 0x7f)>>3;
+
+  if (*channels != codec_channels) {
+    GST_INFO ("Overwriting channels %d with %d", *channels, codec_channels);
+    *channels = codec_channels;
+  }
+  else {
+    GST_INFO ("Retaining channel count %d", codec_channels);
+  }
+}
+
 /* The AAC decoder requires the entire mpeg4 audio elementary stream 
  * descriptor, which is the body (except the 4-byte version field) of
  * the quicktime 'esds' atom. However, qtdemux only passes through the 
@@ -401,6 +423,16 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
     codec_data = GST_BUFFER_CAST (gst_value_get_mini_object (value));
   }
 
+  oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
+
+  if (codec_data && oclass->componentSubType == QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a')) 
+  {
+    /* QuickTime/iTunes creates AAC files with the wrong channel count in the header,
+       so parse that out of the codec data if we can.
+     */
+    aac_parse_codec_data(codec_data, &channels);
+  }
+
   /* If the quicktime demuxer gives us a full esds atom, use that instead of 
    * the codec_data */
   if ((value = gst_structure_get_value (s, "quicktime_esds"))) {
@@ -416,7 +448,6 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
 
   GST_INFO_OBJECT (qtwrapper, "rate:%d, channels:%d", rate, channels);
 
-  oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
   GST_INFO_OBJECT (qtwrapper, "componentSubType is %" GST_FOURCC_FORMAT,
       QT_FOURCC_ARGS (oclass->componentSubType));
 
