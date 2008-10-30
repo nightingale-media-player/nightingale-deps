@@ -1126,6 +1126,7 @@ gst_riff_create_audio_caps (guint16 codec_id,
     {
       /* WMA Version 9 Lossless */
       caps = gst_caps_new_simple ("audio/x-wma", "wmaversion", G_TYPE_INT, 4, NULL);
+      block_align = TRUE;
 
       if (codec_name)
         *codec_name = g_strdup ("WMA Version 3 Lossless");
