@@ -4934,8 +4934,9 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
           PRInt32 workHeight = workArea.bottom - workArea.top;
           maxHeight = PR_MIN(workHeight, mSizeConstraints.maxHeight);
           
-          left = workArea.left;
-          top = workArea.top;
+          // left and top are translated to be relative to the current screen.
+          left = 0;
+          top = 0;
         }
       }
 
