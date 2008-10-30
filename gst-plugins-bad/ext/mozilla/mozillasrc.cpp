@@ -83,8 +83,6 @@ struct _GstMozillaSrc {
   nsCOMPtr<nsIChannel> channel;
   gboolean suspended; /* Is reading from the channel currently suspended? */
 
-  nsCOMPtr<nsIRunnable> resume_event;
-
   /* Simple async queue to decouple mozilla (which is reading
    * from the main thread) and the streaming thread run by basesrc.
    * We keep it limited in size by suspending the request if we get
@@ -150,13 +148,14 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIRUNNABLE
 
-  explicit ResumeEvent (GstMozillaSrc *src) :
-      mSrc(src)
+  explicit ResumeEvent (GstMozillaSrc *src)
   {
+    mSrc = (GstMozillaSrc *)g_object_ref (src);
   }
 
   ~ResumeEvent() 
   {
+    g_object_unref (mSrc);
   }
 private:
   GstMozillaSrc *mSrc;
@@ -176,8 +175,6 @@ ResumeEvent::Run()
       mSrc->suspended = FALSE;
     }
   }
-
-  mSrc->resume_event = 0;
 
   return NS_OK;
 }
@@ -817,8 +814,8 @@ gst_mozilla_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
     GST_DEBUG_OBJECT (src, "Queue is empty; waiting");
 
     /* Ask mozilla to resume reading the stream */
-    src->resume_event = new ResumeEvent (src);
-    NS_DispatchToMainThread (src->resume_event);
+    nsCOMPtr<nsIRunnable> resume_event = new ResumeEvent (src);
+    NS_DispatchToMainThread (resume_event);
 
     GST_DEBUG_OBJECT (src, "Starting wait");
     g_cond_wait (src->queue_cond, src->queue_lock);
