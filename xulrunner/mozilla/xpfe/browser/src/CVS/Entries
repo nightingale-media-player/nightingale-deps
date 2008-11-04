@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Wed Jan 27 05:09:47 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.76/Mon Feb 18 08:50:32 2008//TFIREFOX_3_0_2_RELEASE
-/nsBrowserInstance.cpp/1.287/Sun Jan 13 02:13:24 2008//TFIREFOX_3_0_2_RELEASE
-/nsBrowserInstance.h/1.59/Sun Jan 13 02:13:24 2008//TFIREFOX_3_0_2_RELEASE
-/nsBrowserStatusFilter.cpp/1.17/Sat Oct  6 20:52:21 2007//TFIREFOX_3_0_2_RELEASE
-/nsBrowserStatusFilter.h/1.6/Sat Oct  6 20:52:21 2007//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Wed Jan 27 05:09:47 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.76/Mon Feb 18 08:50:32 2008//TFIREFOX_3_0_3_RELEASE
+/nsBrowserInstance.cpp/1.287/Sun Jan 13 02:13:24 2008//TFIREFOX_3_0_3_RELEASE
+/nsBrowserInstance.h/1.59/Sun Jan 13 02:13:24 2008//TFIREFOX_3_0_3_RELEASE
+/nsBrowserStatusFilter.cpp/1.17/Sat Oct  6 20:52:21 2007//TFIREFOX_3_0_3_RELEASE
+/nsBrowserStatusFilter.h/1.6/Sat Oct  6 20:52:21 2007//TFIREFOX_3_0_3_RELEASE
 D

@@ -1,9 +1,9 @@
-/DefaultPluginPrefix.h/1.1/Fri Apr  4 22:46:56 2003//TFIREFOX_3_0_2_RELEASE
-/Info-DefaultPlugin.plist/1.1/Wed Jun  1 18:53:29 2005//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.22/Sat Feb  9 10:37:43 2008//TFIREFOX_3_0_2_RELEASE
-/NullPlugin.cpp/1.14/Thu Nov 15 06:23:46 2007//TFIREFOX_3_0_2_RELEASE
-/NullPlugin.rsrc/1.8/Fri Feb 17 20:54:30 2006/-kb/TFIREFOX_3_0_2_RELEASE
-/npmac.cpp/1.9/Wed Dec 28 18:21:33 2005//TFIREFOX_3_0_2_RELEASE
-/npnul.pkg/1.2/Wed Jan  7 01:22:06 2004//TFIREFOX_3_0_2_RELEASE
+/DefaultPluginPrefix.h/1.1/Fri Apr  4 22:46:56 2003//TFIREFOX_3_0_3_RELEASE
+/Info-DefaultPlugin.plist/1.1/Wed Jun  1 18:53:29 2005//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.22/Sat Feb  9 10:37:43 2008//TFIREFOX_3_0_3_RELEASE
+/NullPlugin.cpp/1.14/Thu Nov 15 06:23:46 2007//TFIREFOX_3_0_3_RELEASE
+/NullPlugin.rsrc/1.8/Fri Feb 17 20:54:30 2006/-kb/TFIREFOX_3_0_3_RELEASE
+/npmac.cpp/1.9/Wed Dec 28 18:21:33 2005//TFIREFOX_3_0_3_RELEASE
+/npnul.pkg/1.2/Wed Jan  7 01:22:06 2004//TFIREFOX_3_0_3_RELEASE
 D/DefaultPlugin.xcodeproj////
 D/English.lproj////

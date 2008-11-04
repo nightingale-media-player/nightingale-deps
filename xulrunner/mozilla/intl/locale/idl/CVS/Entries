@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Mon Aug  2 11:56:13 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.10/Sun Sep 10 19:15:08 2006//TFIREFOX_3_0_2_RELEASE
-/nsICollation.idl/1.2/Wed Aug 25 07:20:06 2004//TFIREFOX_3_0_2_RELEASE
-/nsILocale.idl/1.8/Sun Apr 18 14:20:57 2004//TFIREFOX_3_0_2_RELEASE
-/nsILocaleService.idl/1.10/Sun Mar 25 07:38:18 2007//TFIREFOX_3_0_2_RELEASE
-/nsIScriptableDateFormat.idl/1.11/Sun Apr 18 14:20:57 2004//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Mon Aug  2 11:56:13 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.10/Sun Sep 10 19:15:08 2006//TFIREFOX_3_0_3_RELEASE
+/nsICollation.idl/1.2/Wed Aug 25 07:20:06 2004//TFIREFOX_3_0_3_RELEASE
+/nsILocale.idl/1.8/Sun Apr 18 14:20:57 2004//TFIREFOX_3_0_3_RELEASE
+/nsILocaleService.idl/1.10/Sun Mar 25 07:38:18 2007//TFIREFOX_3_0_3_RELEASE
+/nsIScriptableDateFormat.idl/1.11/Sun Apr 18 14:20:57 2004//TFIREFOX_3_0_3_RELEASE
 D

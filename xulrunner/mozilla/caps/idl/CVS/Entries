@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Sun Jul 18 00:26:01 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.20/Fri Sep 15 22:06:30 2006//TFIREFOX_3_0_2_RELEASE
-/nsIPrincipal.idl/1.43/Fri Apr 18 17:35:56 2008//TFIREFOX_3_0_2_RELEASE
-/nsIScriptSecurityManager.idl/1.79/Fri Apr 18 17:35:56 2008//TFIREFOX_3_0_2_RELEASE
-/nsISecurityCheckedComponent.idl/1.7/Fri Aug 12 23:11:32 2005//TFIREFOX_3_0_2_RELEASE
-/nsISignatureVerifier.idl/1.9/Wed Jun  1 17:40:08 2005//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Sun Jul 18 00:26:01 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.20/Fri Sep 15 22:06:30 2006//TFIREFOX_3_0_3_RELEASE
+/nsIPrincipal.idl/1.43/Fri Apr 18 17:35:56 2008//TFIREFOX_3_0_3_RELEASE
+/nsIScriptSecurityManager.idl/1.79/Fri Apr 18 17:35:56 2008//TFIREFOX_3_0_3_RELEASE
+/nsISecurityCheckedComponent.idl/1.7/Fri Aug 12 23:11:32 2005//TFIREFOX_3_0_3_RELEASE
+/nsISignatureVerifier.idl/1.9/Wed Jun  1 17:40:08 2005//TFIREFOX_3_0_3_RELEASE
 D

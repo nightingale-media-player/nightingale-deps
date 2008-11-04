@@ -1,11 +1,11 @@
-/.cvsignore/1.2/Fri Mar  1 00:22:07 2002//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.23/Sat Oct  6 12:08:47 2007//TFIREFOX_3_0_2_RELEASE
-/PhRemoteClient.cpp/1.8/Tue Dec 18 22:00:52 2007//TFIREFOX_3_0_2_RELEASE
-/PhRemoteClient.h/1.4/Tue Dec 18 22:00:52 2007//TFIREFOX_3_0_2_RELEASE
-/XRemoteClient.cpp/1.22/Tue Sep  4 04:13:24 2007//TFIREFOX_3_0_2_RELEASE
-/XRemoteClient.h/1.11/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_2_RELEASE
-/XRemoteClientFactory.cpp/1.5/Wed Dec  1 22:27:00 2004//TFIREFOX_3_0_2_RELEASE
-/mozilla-xremote-client.cpp/1.7/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_2_RELEASE
-/nsRemoteClient.h/1.3/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_2_RELEASE
-/xremoteclient.pkg/1.2/Wed Jan  7 01:22:22 2004//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.2/Fri Mar  1 00:22:07 2002//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.23/Sat Oct  6 12:08:47 2007//TFIREFOX_3_0_3_RELEASE
+/PhRemoteClient.cpp/1.8/Tue Dec 18 22:00:52 2007//TFIREFOX_3_0_3_RELEASE
+/PhRemoteClient.h/1.4/Tue Dec 18 22:00:52 2007//TFIREFOX_3_0_3_RELEASE
+/XRemoteClient.cpp/1.22/Tue Sep  4 04:13:24 2007//TFIREFOX_3_0_3_RELEASE
+/XRemoteClient.h/1.11/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_3_RELEASE
+/XRemoteClientFactory.cpp/1.5/Wed Dec  1 22:27:00 2004//TFIREFOX_3_0_3_RELEASE
+/mozilla-xremote-client.cpp/1.7/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_3_RELEASE
+/nsRemoteClient.h/1.3/Fri Feb  9 01:33:25 2007//TFIREFOX_3_0_3_RELEASE
+/xremoteclient.pkg/1.2/Wed Jan  7 01:22:22 2004//TFIREFOX_3_0_3_RELEASE
 D

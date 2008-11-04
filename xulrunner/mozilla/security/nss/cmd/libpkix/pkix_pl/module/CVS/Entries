@@ -1,8 +1,8 @@
-/Makefile/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_2_RELEASE
-/manifest.mn/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_2_RELEASE
-/test_colcertstore.c/1.4/Thu Sep 20 19:03:51 2007//TFIREFOX_3_0_2_RELEASE
-/test_ekuchecker.c/1.5/Mon Dec 10 23:53:08 2007//TFIREFOX_3_0_2_RELEASE
-/test_httpcertstore.c/1.4/Tue Sep 25 00:48:07 2007//TFIREFOX_3_0_2_RELEASE
-/test_pk11certstore.c/1.6/Fri Nov 16 20:46:25 2007//TFIREFOX_3_0_2_RELEASE
-/test_socket.c/1.4/Tue Sep 25 00:48:07 2007//TFIREFOX_3_0_2_RELEASE
+/Makefile/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_3_RELEASE
+/manifest.mn/1.5/Tue Sep 18 16:37:46 2007//TFIREFOX_3_0_3_RELEASE
+/test_colcertstore.c/1.4/Thu Sep 20 19:03:51 2007//TFIREFOX_3_0_3_RELEASE
+/test_ekuchecker.c/1.5/Mon Dec 10 23:53:08 2007//TFIREFOX_3_0_3_RELEASE
+/test_httpcertstore.c/1.4/Tue Sep 25 00:48:07 2007//TFIREFOX_3_0_3_RELEASE
+/test_pk11certstore.c/1.6/Fri Nov 16 20:46:25 2007//TFIREFOX_3_0_3_RELEASE
+/test_socket.c/1.4/Tue Sep 25 00:48:07 2007//TFIREFOX_3_0_3_RELEASE
 D

@@ -1,9 +1,9 @@
-/.cvsignore/1.1/Mon Apr 26 18:25:56 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.13/Tue Feb  1 21:12:51 2005//TFIREFOX_3_0_2_RELEASE
-/nsIInlineSpellChecker.idl/1.2/Fri Feb  4 01:38:43 2005//TFIREFOX_3_0_2_RELEASE
-/nsISpellChecker.h/1.15/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_2_RELEASE
-/nsITextService.h/1.8/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_2_RELEASE
-/nsITextServicesDocument.h/1.15/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_2_RELEASE
-/nsITextServicesFilter.idl/1.2/Sun Apr 18 14:19:38 2004//TFIREFOX_3_0_2_RELEASE
-/nsTextServicesCID.h/1.8/Sun Apr 18 14:19:38 2004//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Mon Apr 26 18:25:56 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.13/Tue Feb  1 21:12:51 2005//TFIREFOX_3_0_3_RELEASE
+/nsIInlineSpellChecker.idl/1.2/Fri Feb  4 01:38:43 2005//TFIREFOX_3_0_3_RELEASE
+/nsISpellChecker.h/1.15/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_3_RELEASE
+/nsITextService.h/1.8/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_3_RELEASE
+/nsITextServicesDocument.h/1.15/Fri Nov 11 14:35:59 2005//TFIREFOX_3_0_3_RELEASE
+/nsITextServicesFilter.idl/1.2/Sun Apr 18 14:19:38 2004//TFIREFOX_3_0_3_RELEASE
+/nsTextServicesCID.h/1.8/Sun Apr 18 14:19:38 2004//TFIREFOX_3_0_3_RELEASE
 D

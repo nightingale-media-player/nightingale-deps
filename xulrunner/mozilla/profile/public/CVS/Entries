@@ -1,6 +1,6 @@
-/.cvsignore/1.1/Thu Apr 15 22:56:15 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.20/Thu Aug  2 18:43:33 2007//TFIREFOX_3_0_2_RELEASE
-/nsIProfile.idl/1.32/Sun Sep  5 13:29:58 2004//TFIREFOX_3_0_2_RELEASE
-/nsIProfileChangeStatus.idl/1.10/Sun Sep  5 13:29:58 2004//TFIREFOX_3_0_2_RELEASE
-/nsIProfileUnlocker.idl/1.1/Tue Mar 15 20:01:11 2005//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Thu Apr 15 22:56:15 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.20/Thu Aug  2 18:43:33 2007//TFIREFOX_3_0_3_RELEASE
+/nsIProfile.idl/1.32/Sun Sep  5 13:29:58 2004//TFIREFOX_3_0_3_RELEASE
+/nsIProfileChangeStatus.idl/1.10/Sun Sep  5 13:29:58 2004//TFIREFOX_3_0_3_RELEASE
+/nsIProfileUnlocker.idl/1.1/Tue Mar 15 20:01:11 2005//TFIREFOX_3_0_3_RELEASE
 D

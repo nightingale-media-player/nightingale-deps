@@ -1,8 +1,8 @@
-/Makefile.in/1.4/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_2_RELEASE
-/nsISVSchema.idl/1.12/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_2_RELEASE
-/nsISVSchemaErrorHandler.idl/1.2/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_2_RELEASE
-/nsISVSchemaLoader.idl/1.9/Mon Feb 25 22:48:09 2008//TFIREFOX_3_0_2_RELEASE
-/nsISchemaDuration.idl/1.2/Tue Jul 26 19:57:16 2005//TFIREFOX_3_0_2_RELEASE
-/nsISchemaValidator.idl/1.4/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_2_RELEASE
-/nsISchemaValidatorRegexp.idl/1.2/Fri Jun 24 15:38:12 2005//TFIREFOX_3_0_2_RELEASE
+/Makefile.in/1.4/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_3_RELEASE
+/nsISVSchema.idl/1.12/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_3_RELEASE
+/nsISVSchemaErrorHandler.idl/1.2/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_3_RELEASE
+/nsISVSchemaLoader.idl/1.9/Mon Feb 25 22:48:09 2008//TFIREFOX_3_0_3_RELEASE
+/nsISchemaDuration.idl/1.2/Tue Jul 26 19:57:16 2005//TFIREFOX_3_0_3_RELEASE
+/nsISchemaValidator.idl/1.4/Tue Feb 12 14:36:38 2008//TFIREFOX_3_0_3_RELEASE
+/nsISchemaValidatorRegexp.idl/1.2/Fri Jun 24 15:38:12 2005//TFIREFOX_3_0_3_RELEASE
 D

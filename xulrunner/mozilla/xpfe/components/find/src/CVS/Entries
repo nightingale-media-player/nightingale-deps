@@ -1,7 +1,7 @@
-/.cvsignore/1.1/Thu Apr 22 02:48:21 1999//TFIREFOX_3_0_2_RELEASE
-/Makefile.in/1.37/Fri Mar 18 21:23:46 2005//TFIREFOX_3_0_2_RELEASE
-/mozfind.pkg/1.2/Wed Jan  7 01:22:27 2004//TFIREFOX_3_0_2_RELEASE
-/nsFindModule.cpp/1.5/Fri May  9 04:17:41 2003//TFIREFOX_3_0_2_RELEASE
-/nsFindService.cpp/1.8/Fri Jul 13 16:04:34 2007//TFIREFOX_3_0_2_RELEASE
-/nsFindService.h/1.4/Sat Apr 17 16:51:25 2004//TFIREFOX_3_0_2_RELEASE
+/.cvsignore/1.1/Thu Apr 22 02:48:21 1999//TFIREFOX_3_0_3_RELEASE
+/Makefile.in/1.37/Fri Mar 18 21:23:46 2005//TFIREFOX_3_0_3_RELEASE
+/mozfind.pkg/1.2/Wed Jan  7 01:22:27 2004//TFIREFOX_3_0_3_RELEASE
+/nsFindModule.cpp/1.5/Fri May  9 04:17:41 2003//TFIREFOX_3_0_3_RELEASE
+/nsFindService.cpp/1.8/Fri Jul 13 16:04:34 2007//TFIREFOX_3_0_3_RELEASE
+/nsFindService.h/1.4/Sat Apr 17 16:51:25 2004//TFIREFOX_3_0_3_RELEASE
 D
