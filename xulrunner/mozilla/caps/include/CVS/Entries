@@ -1,8 +1,0 @@
-/.cvsignore/1.1/Sat Dec  5 09:00:55 1998//TFIREFOX_3_0_3_RELEASE
-/Makefile.in/1.23/Sat Apr 17 21:50:35 2004//TFIREFOX_3_0_3_RELEASE
-/nsJSPrincipals.h/1.13/Fri Sep 28 14:31:04 2007//TFIREFOX_3_0_3_RELEASE
-/nsNullPrincipal.h/1.1/Sun Apr  2 20:58:22 2006//TFIREFOX_3_0_3_RELEASE
-/nsPrincipal.h/1.23/Wed Mar 19 00:27:56 2008//TFIREFOX_3_0_3_RELEASE
-/nsScriptSecurityManager.h/1.116/Fri Apr 18 17:35:56 2008//TFIREFOX_3_0_3_RELEASE
-/nsSystemPrincipal.h/1.19/Sun Apr  2 20:58:22 2006//TFIREFOX_3_0_3_RELEASE
-D

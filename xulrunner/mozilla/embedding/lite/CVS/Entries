@@ -1,9 +1,0 @@
-/.cvsignore/1.1/Fri Apr 26 20:47:57 2002//TFIREFOX_3_0_3_RELEASE
-/Makefile.in/1.18/Sat Oct  6 12:08:39 2007//TFIREFOX_3_0_3_RELEASE
-/embedlite.pkg/1.2/Wed Jan  7 01:21:20 2004//TFIREFOX_3_0_3_RELEASE
-/nsEmbedChromeRegistry.cpp/1.10/Tue Sep 21 20:43:36 2004//TFIREFOX_3_0_3_RELEASE
-/nsEmbedChromeRegistry.h/1.4/Sat Jun 16 19:54:00 2007//TFIREFOX_3_0_3_RELEASE
-/nsEmbedGlobalHistory.cpp/1.7/Sun Jul  8 07:08:18 2007//TFIREFOX_3_0_3_RELEASE
-/nsEmbedGlobalHistory.h/1.4/Sun Apr 18 22:00:51 2004//TFIREFOX_3_0_3_RELEASE
-/nsEmbedLiteModule.cpp/1.6/Sat Jan 29 00:44:55 2005//TFIREFOX_3_0_3_RELEASE
-D

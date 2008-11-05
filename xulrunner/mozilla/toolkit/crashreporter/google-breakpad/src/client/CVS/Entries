@@ -1,9 +1,0 @@
-/Makefile.in/1.2/Wed Jul 25 01:06:11 2007//TFIREFOX_3_0_3_RELEASE
-/minidump_file_writer-inl.h/1.4/Wed Jul 25 01:06:11 2007//TFIREFOX_3_0_3_RELEASE
-/minidump_file_writer.cc/1.3/Fri Aug 10 02:56:16 2007//TFIREFOX_3_0_3_RELEASE
-/minidump_file_writer.h/1.4/Wed Jul 25 01:06:11 2007//TFIREFOX_3_0_3_RELEASE
-/minidump_file_writer_unittest.cc/1.1/Wed Jul 25 01:06:11 2007//TFIREFOX_3_0_3_RELEASE
-D/linux////
-D/mac////
-D/solaris////
-D/windows////

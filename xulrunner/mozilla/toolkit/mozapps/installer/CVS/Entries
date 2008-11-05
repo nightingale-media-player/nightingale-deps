@@ -1,9 +1,0 @@
-/.cvsignore/1.1/Wed Apr  7 23:48:15 2004//TFIREFOX_3_0_3_RELEASE
-/CFGParser.pm/1.3/Tue Jan 10 02:36:03 2006//TFIREFOX_3_0_3_RELEASE
-/build_static.pl/1.13/Wed May 24 01:54:20 2006//TFIREFOX_3_0_3_RELEASE
-/make-installjsremoves.pl/1.1/Thu Sep 15 18:09:56 2005//TFIREFOX_3_0_3_RELEASE
-/makecfgini.pl/1.7/Tue Jan 10 02:36:03 2006//TFIREFOX_3_0_3_RELEASE
-/makeinstallini.pl/1.1/Thu Jul 14 15:46:26 2005//TFIREFOX_3_0_3_RELEASE
-/package-name.mk/1.8/Tue Apr  1 08:24:41 2008//TFIREFOX_3_0_3_RELEASE
-/packager.mk/1.60/Mon Apr 28 19:14:12 2008//TFIREFOX_3_0_3_RELEASE
-D
