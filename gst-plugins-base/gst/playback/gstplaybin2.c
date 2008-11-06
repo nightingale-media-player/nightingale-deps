@@ -357,6 +357,9 @@ struct _GstPlayBin
   gint current_text;            /* the currently selected stream */
   gchar *encoding;              /* subtitle encoding */
 
+  guint64 buffer_duration;      /* When buffering, the max buffer duration (ns) */
+  guint buffer_size;            /* When buffering, the max buffer size (bytes) */
+
   /* our play sink */
   GstPlaySink *playsink;
 
@@ -414,6 +417,8 @@ struct _GstPlayBinClass
 #define DEFAULT_FRAME             NULL
 #define DEFAULT_FONT_DESC         NULL
 #define DEFAULT_CONNECTION_SPEED  0
+#define DEFAULT_BUFFER_DURATION   -1
+#define DEFAULT_BUFFER_SIZE       -1
 
 enum
 {
@@ -436,7 +441,9 @@ enum
   PROP_MUTE,
   PROP_FRAME,
   PROP_FONT_DESC,
-  PROP_CONNECTION_SPEED
+  PROP_CONNECTION_SPEED,
+  PROP_BUFFER_SIZE,
+  PROP_BUFFER_DURATION
 };
 
 /* signals */
@@ -721,6 +728,18 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
           "Network connection speed in kbps (0 = unknown)",
           0, G_MAXUINT, DEFAULT_CONNECTION_SPEED,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_klass, PROP_BUFFER_SIZE,
+      g_param_spec_int ("buffer-size", "Buffer size (bytes)",
+          "Buffer size when buffering network streams",
+          -1, G_MAXINT, DEFAULT_BUFFER_SIZE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_BUFFER_DURATION,
+      g_param_spec_int64 ("buffer-duration", "Buffer duration (ns)",
+          "Buffer duration when buffering network streams",
+          -1, G_MAXINT64, DEFAULT_BUFFER_DURATION,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   /**
    * GstPlayBin2::about-to-finish
    * @playbin: a #GstPlayBin2
@@ -980,6 +999,9 @@ gst_play_bin_init (GstPlayBin * playbin)
   playbin->current_video = DEFAULT_CURRENT_VIDEO;
   playbin->current_audio = DEFAULT_CURRENT_AUDIO;
   playbin->current_text = DEFAULT_CURRENT_TEXT;
+
+  playbin->buffer_duration = DEFAULT_BUFFER_DURATION;
+  playbin->buffer_size = DEFAULT_BUFFER_SIZE;
 }
 
 static void
@@ -1413,6 +1435,12 @@ gst_play_bin_set_property (GObject * object, guint prop_id,
       playbin->connection_speed = g_value_get_uint (value) * 1000;
       GST_PLAY_BIN_UNLOCK (playbin);
       break;
+    case PROP_BUFFER_SIZE:
+      playbin->buffer_size = g_value_get_int (value);
+      break;
+    case PROP_BUFFER_DURATION:
+      playbin->buffer_duration = g_value_get_int64 (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1543,6 +1571,16 @@ gst_play_bin_get_property (GObject * object, guint prop_id, GValue * value,
       GST_PLAY_BIN_LOCK (playbin);
       g_value_set_uint (value, playbin->connection_speed / 1000);
       GST_PLAY_BIN_UNLOCK (playbin);
+      break;
+    case PROP_BUFFER_SIZE:
+      GST_OBJECT_LOCK (playbin);
+      g_value_set_int (value, playbin->buffer_size);
+      GST_OBJECT_UNLOCK (playbin);
+      break;
+    case PROP_BUFFER_DURATION:
+      GST_OBJECT_LOCK (playbin);
+      g_value_set_int64 (value, playbin->buffer_duration);
+      GST_OBJECT_UNLOCK (playbin);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2114,6 +2152,9 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
   g_object_set (uridecodebin, "subtitle-encoding", playbin->encoding, NULL);
   /* configure uri */
   g_object_set (uridecodebin, "uri", group->uri, NULL);
+  g_object_set (uridecodebin, "buffer-duration", 
+          playbin->buffer_duration, NULL);
+  g_object_set (uridecodebin, "buffer-size", playbin->buffer_size, NULL);
 
   /* connect pads and other things */
   g_signal_connect (uridecodebin, "pad-added", G_CALLBACK (pad_added_cb),
