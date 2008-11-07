@@ -304,7 +304,7 @@ endef
 MOZSDK_DIR = $(call find-dep-dir, mozilla)
 MOZSDK_BIN_DIR = $(MOZSDK_DIR)/bin
 MOZSDK_SCRIPTS_DIR = $(MOZSDK_DIR)/scripts
-MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_BINARIES_DIR)/xulrunner)
+MOZ_XR_DIR = $(call find-dep-dir, xulrunner)
 
 # Supporting SDK paths on Win32
 ifeq (Msys,$(SB_VENDOR_ARCH))
