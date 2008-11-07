@@ -124,10 +124,12 @@ static const AudioCodecEntry audio_dec_codecs[] = {
    "audio/x-wma, wmaversion = (int) 3",
    preferred_wma_filters},
 
+#if 0
   {"dshowadec_wma4", "Windows Media Audio 9 Lossless",
    WAVE_FORMAT_WMAUDIO_LOSSLESS,
    "audio/x-wma, wmaversion = (int) 4",
    preferred_wma_filters},
+#endif
 
   {"dshowadec_wms", "Windows Media Audio Voice v9",
    WAVE_FORMAT_WMAVOICE9,
@@ -419,6 +421,9 @@ gst_dshowaudiodec_init (GstDshowAudioDec * adec,
   adec->layer = 0;
   adec->codec_data = NULL;
 
+  adec->check_mp3_frames = FALSE;
+  adec->first_frame = TRUE;
+
   adec->last_ret = GST_FLOW_OK;
 
   hr = CoInitialize (0);
@@ -528,6 +533,72 @@ end:
   return ret;
 }
 
+static gboolean
+gst_dshowaudiodec_skip_mp3_frame (GstDshowAudioDec *adec, GstBuffer *inbuf)
+{
+  guint8 *data = GST_BUFFER_DATA (inbuf);
+  int bytes_in_sequence = 0;
+  int i;
+  /* We look for LAME3.9x for any digit x */
+  const char *lame_identifier = "LAME3.9"; 
+
+  if (adec->first_frame) {
+    /* Skip the frame if it's a Xing/LAME header too, these sometimes
+     * cause problems for the decoder. Logic for finding this header
+     * taken from mp3parse
+     */
+    int offset;
+    if (adec->mpegaudioversion == 1) {
+      if (adec->channels == 1)
+        offset = 0x11;
+      else
+        offset = 0x20;
+    } else {
+      if (adec->channels == 1)
+        offset = 0x11;
+      else
+        offset = 0x20;
+    }
+    offset += 4;
+
+    if (GST_BUFFER_SIZE (inbuf) > offset + 4) {
+      guint32 header = GST_READ_UINT32_LE (data + offset);
+      if (header == GST_MAKE_FOURCC ('X', 'i', 'n' , 'g') ||
+          header == GST_MAKE_FOURCC ('I', 'n', 'f' , 'o'))
+        return TRUE;
+    }
+  }
+
+
+  /* Check if the buffer ends with a sequence of bytes matching the
+   * particular sequence LAME creates that the XP mp3 decoder fails
+   * on: 10 or more bytes of 0x55 and optionally 'LAME3.9x' somewhere
+   * in there
+   */
+  for (i = GST_BUFFER_SIZE (inbuf) - 1; i >= 0; i--) {
+    if (data[i] == 0x55) {
+      bytes_in_sequence++;
+    }
+    else if (isdigit(data[i]) && i >= (sizeof(lame_identifier))) {
+      if (!memcmp (data + i - sizeof(lame_identifier), lame_identifier, sizeof(lame_identifier))) {
+        bytes_in_sequence += sizeof(lame_identifier) + 1;
+        i -= sizeof(lame_identifier) + 1;
+      }
+      else
+        break;
+    }
+    else
+      break;
+  }
+
+  if (bytes_in_sequence >= 4) {
+    GST_WARNING ("Skipping frame: has weird LAME padding");
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 static GstFlowReturn
 gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
 {
@@ -562,6 +633,12 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
     discont = TRUE;
   }
 
+  if (adec->check_mp3_frames) {
+    if (gst_dshowaudiodec_skip_mp3_frame (adec, buffer)) {
+      goto beach;
+    }
+  }
+
   /* push the buffer to the directshow decoder */
   adec->fakesrc->GetOutputPin()->PushBuffer (
       GST_BUFFER_DATA (buffer), GST_BUFFER_TIMESTAMP (buffer),
@@ -569,6 +646,9 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
       GST_BUFFER_SIZE (buffer), (bool)discont);
 
 beach:
+  if (adec->first_frame)
+    adec->first_frame = FALSE;
+
   gst_buffer_unref (buffer);
   gst_object_unref (adec);
   return adec->last_ret;
@@ -664,7 +744,7 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
    * decoder which doesn't need this */
   if (adec->layer == 1 || adec->layer == 2) {
     MPEG1WAVEFORMAT *mpeg1_format;
-    int version, samples;
+    int samples;
     GstStructure *structure = gst_caps_get_structure (caps, 0);
 
     size = sizeof (MPEG1WAVEFORMAT);
@@ -696,11 +776,11 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
         break;
     };
 
-    gst_structure_get_int (structure, "mpegaudioversion", &version);
+    gst_structure_get_int (structure, "mpegaudioversion", &adec->mpegaudioversion);
     if (adec->layer == 1) {
       samples = 384;
     } else {
-      if (version == 1) {
+      if (adec->mpegaudioversion == 1) {
         samples = 576;
       } else {
         samples = 1152;
@@ -737,6 +817,12 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
       mp3format->nBlockSize = 1;
       mp3format->nFramesPerBlock = 1;
       mp3format->nCodecDelay = 0;
+
+      /* The XP decoder also has problems with some MP3 frames. If it tries
+       * to decode one, then forever after it outputs silence.
+       * If we recognise such a frame, just skip decoding it.
+       */
+      adec->check_mp3_frames = TRUE;
     }
     else {
       format = (WAVEFORMATEX *)g_malloc0 (size);

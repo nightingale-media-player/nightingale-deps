@@ -105,6 +105,10 @@ struct _GstDshowAudioDec
   gint rate;
   gint layer;
   GstBuffer *codec_data;
+
+  gboolean check_mp3_frames;
+  gboolean first_frame;
+  gint mpegaudioversion;
   
   /* current segment */
   GstSegment * segment;
