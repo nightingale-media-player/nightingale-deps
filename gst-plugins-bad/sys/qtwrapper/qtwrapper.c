@@ -72,10 +72,12 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
   }
 
+#if 0
   GST_INFO ("Registering video decoders");
   res = qtwrapper_video_decoders_register (plugin);
+#endif
   GST_INFO ("Registering audio decoders");
-  res &= qtwrapper_audio_decoders_register (plugin);
+  res = qtwrapper_audio_decoders_register (plugin);
 
   return res;
 }
