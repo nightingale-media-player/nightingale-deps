@@ -58,7 +58,7 @@ case `uname` in
     Darwin)
         build_sys_type=Darwin
         if [ "$mach_name" = "i386" ]; then
-            tgt_arch_list="macosx-i686 macosx-ppc"
+            tgt_arch_list=macosx-i686
         else
             tgt_arch_list=macosx-ppc
         fi
@@ -232,7 +232,8 @@ setup_build()
             # Set library defs.
             ZLIB_LIBRARY="libz.a"
             zlib_dir=${dep_arch_dir}/zlib/${build_type}
-
+            CMAKE_C_FLAGS_DEBUG="${CMAKE_C_FLAGS} -ggdb"
+            CMAKE_CXX_FLAGS_DEBUG="${CMAKE_CXX_FLAGS} -ggdb"
             # Set makefile type.
             CMAKE_MAKEFILE_TYPE="Unix Makefiles"
             CMAKE_MAKE_CMD="make"
