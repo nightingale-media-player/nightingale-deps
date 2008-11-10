@@ -591,7 +591,7 @@ gst_dshowaudiodec_skip_mp3_frame (GstDshowAudioDec *adec, GstBuffer *inbuf)
       break;
   }
 
-  if (bytes_in_sequence >= 4) {
+  if (bytes_in_sequence >= 120) {
     GST_WARNING ("Skipping frame: has weird LAME padding");
     return TRUE;
   }
