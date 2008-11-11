@@ -1,13 +1,16 @@
 #!/bin/bash
+
+#set -v
 #set -x
+#set -e
 
 . ../common/unpack.sh 
 . ../common/download_mars.sh
 . ../common/download_builds.sh
 . ../common/check_updates.sh
 
-ftp_server="http://stage.mozilla.org/pub/mozilla.org"
-aus_server="https://aus2.mozilla.org"
+ftp_server="http://s3.amazonaws.com/download.songbirdnest.com/"
+aus_server="https://updates.songbirdnest.com"
 
 runmode=0
 config_file="updates.cfg"
@@ -120,7 +123,7 @@ do
         fi
         from_path=`echo $from | sed "s/%locale%/${locale}/"`
         to_path=`echo $to | sed "s/%locale%/${locale}/"`
-        download_builds "${ftp_server}/${from_path}" "${ftp_server}/${to_path}"
+        download_builds "${from_path}" "${to_path}"
         err=$?
         if [ "$err" != "0" ]; then
           echo "FAIL: download_builds returned non-zero exit code: $err"

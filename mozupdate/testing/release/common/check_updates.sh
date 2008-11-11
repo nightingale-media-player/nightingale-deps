@@ -21,17 +21,17 @@ check_updates () {
   fi
   
   case $update_platform in
-      Darwin_ppc-gcc | Darwin_Universal-gcc3) 
+      Darwin_ppc-gcc | Darwin_Universal-gcc3 | Darwin_x86-gcc3) 
           platform_dirname="*.app"
-          updater="Contents/MacOS/updater.app/Contents/MacOS/updater"
+          updater="Contents/Frameworks/XUL.framework/updater.app/Contents/MacOS/updater"
           ;;
       WINNT_x86-msvc) 
-          platform_dirname="bin"
-          updater="updater.exe"
+          platform_dirname="Songbird"
+          updater="xulrunner/updater.exe"
           ;;
-      Linux_x86-gcc | Linux_x86-gcc3) 
-          platform_dirname=`echo $product | tr '[A-Z]' '[a-z]'`
-          updater="updater"
+      Linux_x86-gcc | Linux_x86-gcc3 | Linux_x86_64-gcc3) 
+          platform_dirname=`echo $product`
+          updater="xulrunner/updater"
           ;;
   esac
 

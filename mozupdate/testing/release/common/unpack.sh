@@ -8,7 +8,7 @@ unpack_build () {
     mkdir -p $dir_name
     pushd $dir_name > /dev/null
     case $unpack_platform in
-        mac|mac-ppc|Darwin_ppc-gcc|Darwin_Universal-gcc3)
+        mac|mac-ppc|Darwin_ppc-gcc|Darwin_Universal-gcc3|Darwin_x86-gcc3)
             cd ../
             mkdir -p mnt
             echo "mounting $pkg_file"
@@ -18,7 +18,11 @@ unpack_build () {
             cd $dir_name
             ;;
         win32|WINNT_x86-msvc)
-            7z x ../"$pkg_file" > /dev/null
+            doscwd=`pwd -W | sed -e 's/\//\\\\/g'`
+            dos_pkg_file=`echo $pkg_file | sed -e 's/\//\\\\/g'`
+        
+            echo cmd /c "${doscwd}\\..\\$dos_pkg_file /S /D=$doscwd"
+            cmd /c "${doscwd}\\..\\$dos_pkg_file /S /D=${doscwd}\\Songbird"
             if [ -d localized ]
             then
               mkdir bin/
@@ -33,10 +37,9 @@ unpack_build () {
               do
                 unzip -o $file > /dev/null
               done
-              unzip -o ${locale}.xpi > /dev/null
             fi
             ;;
-        linux-i686|linux|Linux_x86-gcc|Linux_x86-gcc3)
+        linux-i686|linux|Linux_x86-gcc|Linux_x86-gcc3|Linux_x86_64-gcc3)
             if `echo $pkg_file | grep -q "tar.gz"`
             then
                 tar xfz ../"$pkg_file" > /dev/null
