@@ -202,7 +202,7 @@ sub BuildTools {
         $mozconfig .= "ac_add_options --disable-svg\n";
         # This is necessary because PANGO'S NOW A DEPENDANCY! WHEEEEEE.
         # (but update packaging doesn't need it)
-        $mozconfig .= "ac_add_options --enable-default-toolkit=gtk2\n";
+        $mozconfig .= "ac_add_options --enable-default-toolkit=cairo-gtk2\n";
         open(MOZCFG, '>' . catfile($mozDir, '.mozconfig')) or die "ERROR: Opening .mozconfig for writing failed: $!";
         print MOZCFG $mozconfig;
         close(MOZCFG);
@@ -278,13 +278,18 @@ sub download_complete_patches {
                 $download_url = SubstitutePath(path => $download_url,
                                                platform => $p,
                                                version => $r,
+                                               branch => $rl_config->{'branch'},
+                                               build_id => $rlp_config->{$p}->{'build_id'},
                                                locale => $l);
 
                 my $output_filename = SubstitutePath(
-                 path => $MozAUSConfig::DEFAULT_MAR_NAME,
+                 #path => $config->GetMarName(),
+                 path => $rl_config->{'marname'},
                  platform => $p,
                  locale => $l,
                  version => $r,
+                 branch => $rl_config->{'branch'},
+                 build_id => $rlp_config->{$p}->{'build_id'},
                  app => lc($config->GetApp()));
 
                 next if -e $output_filename;
@@ -364,6 +369,7 @@ sub PrintProgress
 }
 
 sub CreateCompletePatches {
+    printf("CreateCompletePatches");
     my %args = @_;
     my $config = $args{'config'};
 
@@ -383,7 +389,7 @@ sub CreateCompletePatches {
     my $u_config = $config->{'mAppConfig'}->{'update_data'};
     my @updates = sort keys %$u_config;
 
-    #printf("%s", Data::Dumper::Dumper($config->{'app_config'}->{'update_data'}));
+    #printf("%s", Data::Dumper::Dumper($config->{'mAppConfig'}->{'update_data'}));
 
     for my $u (@updates) {
         my $complete = $u_config->{$u}->{'complete'};
@@ -406,13 +412,17 @@ sub CreateCompletePatches {
                 my $gen_complete_path = $complete_path;
                 $gen_complete_path = SubstitutePath(path => $complete_path,
                                                     platform => $p,
-                                                    version => $to->{'appv'},
+                                                    version => $to_name,
+                                                    branch => $to->{'branch'},
+                                                    build_id => $to->{'build_id'},
                                                     locale => $l);
 
                 my $gen_complete_url = $complete_url;
                 $gen_complete_url = SubstitutePath(path => $complete_url,
                                                    platform => $p,
-                                                   version => $to->{'appv'},
+                                                   version => $to_name,
+                                                   branch => $to->{'branch'},
+                                                   build_id => $to->{'build_id'},
                                                    locale => $l);
 
                 #printf("%s", Data::Dumper::Dumper($to));
@@ -482,13 +492,19 @@ sub CreatePartialPatches {
     my $u_config = $config->{'mAppConfig'}->{'update_data'};
     my @updates = sort keys %$u_config;
 
-    #printf("%s", Data::Dumper::Dumper($config->{'app_config'}->{'update_data'}));
+    #printf("%s", Data::Dumper::Dumper($config->{'mAppConfig'}->{'update_data'}));
 
     for my $u (@updates) {
         my $partial = $u_config->{$u}->{'partial'};
         my $partial_path = $partial->{'path'};
         my $partial_url = $partial->{'url'};
+        ## <Preed was here...>
         my $forcedUpdateList = $u_config->{$u}->{'force'};
+        #my @fuList = defined($u_config->{$u}->{'force'}) ?
+        # split(/\s+/, $u_config->{$u}->{'force'}->[0]) : ();
+        #my $forcedUpdateList = (scalar(@fuList) > 0) ? \@fuList : undef;
+        ##print STDERR "FORCES were " . join(' ', @{$forcedUpdateList}) . "\n";
+        ### </Preed was here...>
 
         my @platforms = sort keys %{$u_config->{$u}->{'platforms'}};
         for my $p (@platforms) {
@@ -502,17 +518,23 @@ sub CreatePartialPatches {
                 my $to_path = $to->{'path'};
 
                 my $to_name = $u_config->{$u}->{'to'};
+                my $from_name = $u_config->{$u}->{'from'};
+                my $from_to_version = "$from_name-$to_name";
 
                 my $gen_partial_path = $partial_path;
                 $gen_partial_path = SubstitutePath(path => $partial_path,
                                                    platform => $p,
-                                                   version => $to->{'appv'},
+                                                   version => $from_to_version,
+                                                   branch => $to->{'branch'},
+                                                   build_id => $to->{'build_id'},
                                                    locale => $l );
 
                 my $gen_partial_url = $partial_url;
                 $gen_partial_url = SubstitutePath(path => $partial_url,
                                                   platform => $p,
-                                                  version => $to->{'appv'},
+                                                  version => $from_to_version,
+                                                  branch => $to->{'branch'},
+                                                  build_id => $to->{'build_id'},
                                                   locale => $l );
 
                 #printf("%s", Data::Dumper::Dumper($to));
@@ -621,7 +643,7 @@ sub CreateCompletePatchinfo {
 
     printf("Complete patch info - $total to create\n");
 
-    #printf("%s", Data::Dumper::Dumper($config->{'app_config'}->{'update_data'}));
+    #printf("%s", Data::Dumper::Dumper($config->{'mAppConfig'}->{'update_data'}));
 
     for my $u (@updates) {
         my $complete = $u_config->{$u}->{'complete'};
@@ -647,33 +669,37 @@ sub CreateCompletePatchinfo {
 
                 # Build patch info
                 my $from_aus_app = ucfirst($config->GetApp());
-                my $from_aus_version = $from->{'appv'};
+                my $from_aus_version = $u_config->{$u}->{'from'};
                 my $from_aus_platform = get_aus_platform_string($p);
                 my $from_aus_buildid = $from->{'build_id'};
 
                 my $gen_complete_path = $complete_path;
                 $gen_complete_path = SubstitutePath(path => $complete_path,
                                                     platform => $p,
-                                                    version => $to->{'appv'},
+                                                    version => $to_name,
+                                                    branch => $to->{'branch'},
+                                                    build_id => $to->{'build_id'},
                                                     locale => $l );
                 my $complete_pathname = "$u/ftp/$gen_complete_path";
 
                 my $gen_complete_url = SubstitutePath(path => $complete_url,
                                                       platform => $p,
-                                                      version => $to->{'appv'},
+                                                      version => $to_name,
+                                                      branch => $to->{'branch'},
+                                                      build_id => $to->{'build_id'},
                                                       locale => $l );
 
                 my $detailsUrl = SubstitutePath(
                  path => $u_config->{$u}->{'details'},
                  locale => $l,
-                 version => $to->{'appv'});
+                 version => $to_name);
 
                 my $licenseUrl = undef;
                 if (defined($u_config->{$u}->{'license'})) {
                     $licenseUrl = SubstitutePath(
                      path => $u_config->{$u}->{'license'},
                      locale => $l,
-                     version => $to->{'appv'});
+                     version => $to_name);
                 }
 
                 my $updateType = $config->GetCurrentUpdate()->{'updateType'};
@@ -694,8 +720,8 @@ sub CreateCompletePatchinfo {
                     my $aus_prefix = catfile($u, $snippetDir, 
                                              $from_aus_app,
                                              $from_aus_version,
-                                             $from_aus_platform,
                                              $from_aus_buildid,
+                                             $from_aus_platform,
                                              $l, $c);
 
                     my $complete_patch = $ul_config->{$l}->{'complete_patch'};
@@ -739,10 +765,12 @@ sub CreateCompletePatchinfo {
 
                     if (exists($complete->{$channelSpecificUrlKey})) {
                         $complete_patch->{'url'} = SubstitutePath(
-                         path => $complete->{$channelSpecificUrlKey}, 
-                         platform => $p,
-                         version => $to->{'appv'},
-                         locale => $l);
+                        path => $complete->{$channelSpecificUrlKey}, 
+                        platform => $p,
+                        version => $to_name,
+                        branch => $to->{'branch'},
+                        build_id => $to->{'build_id'},
+                        locale => $l);
                     } else {
                         $complete_patch->{'url'} = $gen_complete_url;
                     }
@@ -801,10 +829,12 @@ sub CreateCompletePatchinfo {
 
                             if (exists($complete->{$testUrlKey})) {
                                 $testPatch->{'url'} = SubstitutePath(
-                                 path => $complete->{$testUrlKey},
-                                 platform => $p,
-                                 version => $to->{'appv'},
-                                 locale => $l );
+                                  path => $complete->{$testUrlKey},
+                                  platform => $p,
+                                  version => $to_name,
+                                  branch => $to->{'branch'},
+                                  build_id => $to->{'build_id'},
+                                  locale => $l );
                             } else {
                                 $testPatch->{'url'} = $gen_complete_url;
                             }
@@ -827,7 +857,20 @@ sub CreateCompletePatchinfo {
     return $i;
 } # create_complete_patch_info
 
+##
+## CreatePastReleasePatchInfo() is BROKEN!
+## 
+## It creates snippet urls that have buildID and buildTarget reversed.
+##
+## We fixed this for CreatePartialPatchInfo() and CreateCompletePatchInfo(),
+## but punted on doing it here.
+##
+## Fix it before you use this function. -preed
+##
+##
+
 sub CreatePastReleasePatchinfo {
+    warn "THIS FUNCTION IS BROKEN; see comment.\n";
     my %args = @_;
     my $config = $args{'config'};
 
@@ -897,45 +940,49 @@ sub CreatePastReleasePatchinfo {
                 $patchPlatformNode = $update->{'platforms'}->{$toPlatform};
             }
 
-
             foreach my $locale (@{$fromRelease->{'platforms'}->{$fromPlatform}->{'locales'}}) {
                 my $patchLocaleNode = $patchPlatformNode->{'locales'}->{$locale}->{'to'};
                 if ($patchLocaleNode eq undef) {
-                    print STDERR "No known patch for locale $locale, $fromRelease->{'version'} -> $currentRelease->{'version'}; skipping...\n";
+                    print STDERR "No known patch for locale $locale, $pastUpd->{'from'} -> $currentRelease->{'version'}; skipping...\n";
                     next;
                 }
 
                 my $to_path = $patchLocaleNode->{'path'};
+                my $to_name = $config->GetCurrentUpdate()->{'to'};
 
                 # Build patch info
                 my $fromAusApp = ucfirst($config->GetApp());
-                my $fromAusVersion = $fromRelease->{'version'};
+                my $fromAusVersion = $pastUpd->{'from'};
                 my $fromAusPlatform = get_aus_platform_string($fromPlatform);
                 my $fromAusBuildId = $fromRelease->{'platforms'}->{$fromPlatform}->{'build_id'};
 
                 my $genCompletePath = SubstitutePath(path => $completePath,
                                                      platform => $toPlatform,
-                                                     version => $patchLocaleNode->{'appv'},
+                                                     version => $to_name,
+                                                     branch => $patchLocaleNode->{'branch'},
+                                                     build_id => $patchLocaleNode->{'build_id'},
                                                      locale => $locale );
 
                 my $completePathname = "$prefixStr/ftp/$genCompletePath";
 
                 my $genCompleteUrl = SubstitutePath(path => $completeUrl,
                                                     platform => $toPlatform,
-                                                    version => $patchLocaleNode->{'appv'},
+                                                    version => $to_name,
+                                                    branch => $patchLocaleNode->{'branch'},
+                                                    build_id => $patchLocaleNode->{'build_id'},
                                                     locale => $locale );
 
                 my $detailsUrl = SubstitutePath(
                  path => $config->GetCurrentUpdate()->{'details'},
                  locale => $locale,
-                 version => $patchLocaleNode->{'appv'});
+                 version => $to_name);
 
                 my $licenseUrl = undef;
                 if (defined($config->GetCurrentUpdate()->{'license'})) {
                     $licenseUrl = SubstitutePath(
                      path => $config->GetCurrentUpdate()->{'license'},
                      locale => $locale,
-                     version => $patchLocaleNode->{'appv'});
+                     version => $to_name);
                 }
 
                 my $updateType = $config->GetCurrentUpdate()->{'updateType'};
@@ -994,7 +1041,9 @@ sub CreatePastReleasePatchinfo {
                         $completePatch->{'url'} = SubstitutePath(
                          path => $complete->{$channelSpecificUrlKey},
                          platform => $toPlatform,
-                         version => $patchLocaleNode->{'appv'},
+                         version => $to_name,
+                         branch => $patchLocaleNode->{'branch'},
+                         build_id => $patchLocaleNode->{'build_id'},
                          locale => $locale);
                     } else {
                         $completePatch->{'url'} = $genCompleteUrl;
@@ -1036,7 +1085,7 @@ sub CreatePartialPatchinfo {
     my $i = 0;
     my $total = 0;
 
-    #printf("%s", Data::Dumper::Dumper($config->{'app_config'}->{'update_data'}));
+    #printf("%s", Data::Dumper::Dumper($config->{'mAppConfig'}->{'update_data'}));
 
     my $startdir = getcwd();
     my $deliverableDir = EnsureDeliverablesDir(config => $config);
@@ -1062,9 +1111,10 @@ sub CreatePartialPatchinfo {
 
     printf("Partial patch info - $total to create\n");
 
-    #printf("%s", Data::Dumper::Dumper($config->{'app_config'}->{'update_data'}));
+    #printf("%s", Data::Dumper::Dumper($config->{'mAppConfig'}->{'update_data'}));
 
-    for my $u (@updates) {
+    #for my $u (@updates) {
+    foreach my $u (@updates) {
         my $partial = $u_config->{$u}->{'partial'};
         my $partial_path = $partial->{'path'};
         my $partial_url = $partial->{'url'};
@@ -1099,24 +1149,30 @@ sub CreatePartialPatchinfo {
                 my $from_path = $from->{'path'};
                 my $to_path = $to->{'path'};
 
-                #my $to_name = $u_config->{$u}->{'to'};
+                my $to_name = $u_config->{$u}->{'to'};
+                my $from_name = $u_config->{$u}->{'from'};
+                my $from_to_version = "$from_name-$to_name";
 
                 # Build patch info
                 my $from_aus_app = ucfirst($config->GetApp());
-                my $from_aus_version = $from->{'appv'};
+                my $from_aus_version = $u_config->{$u}->{'from'};
                 my $from_aus_platform = get_aus_platform_string($p);
                 my $from_aus_buildid = $from->{'build_id'};
 
                 my $gen_partial_path = $partial_path;
                 $gen_partial_path = SubstitutePath(path => $partial_path,
                                                    platform => $p,
-                                                   version => $to->{'appv'},
+                                                   version => $from_to_version,
+                                                   branch => $to->{'branch'},
+                                                   build_id => $to->{'build_id'},
                                                    locale => $l );
                 my $partial_pathname = "$u/ftp/$gen_partial_path";
 
                 my $gen_partial_url = SubstitutePath(path => $partial_url,
                                                      platform => $p,
-                                                     version => $to->{'appv'},
+                                                     version => $from_to_version,
+                                                     branch => $to->{'branch'},
+                                                     build_id => $to->{'build_id'},
                                                      locale => $l );
 
                 my $partialPatchHash = CachedHashFile(file => $partial_pathname,
@@ -1125,14 +1181,18 @@ sub CreatePartialPatchinfo {
 
                 my $gen_complete_path = SubstitutePath(path => $complete_path,
                                                        platform => $p,
-                                                       version => $to->{'appv'},
+                                                       branch => $to->{'branch'},
+                                                       version => $to_name,
+                                                       build_id => $to->{'build_id'},
                                                        locale => $l );
 
                 my $complete_pathname = "$u/ftp/$gen_complete_path";
 
                 my $gen_complete_url = SubstitutePath(path => $complete_url,
                                                       platform => $p,
-                                                      version => $to->{'appv'},
+                                                      branch => $to->{'branch'},
+                                                      version => $to_name,
+                                                      build_id => $to->{'build_id'},
                                                       locale => $l );
 
                 my $completePatchHash = CachedHashFile(
@@ -1144,14 +1204,14 @@ sub CreatePartialPatchinfo {
                 my $detailsUrl = SubstitutePath(
                  path => $u_config->{$u}->{'details'},
                  locale => $l,
-                 version => $to->{'appv'});
+                 version => $to_name);
             
                 my $licenseUrl = undef;
                 if (defined($u_config->{$u}->{'license'})) {
                     $licenseUrl = SubstitutePath(
                      path => $u_config->{$u}->{'license'},
                      locale => $l,
-                     version => $to->{'appv'});
+                     version => $to_name);
                 }
 
                 my $updateType = $u_config->{$u}->{'updateType'};
@@ -1186,8 +1246,8 @@ sub CreatePartialPatchinfo {
                     my $aus_prefix = catfile($u, $snippetDir,
                                              $from_aus_app,
                                              $from_aus_version,
-                                             $from_aus_platform,
                                              $from_aus_buildid,
+                                             $from_aus_platform,
                                              $l,
                                              $c);
 
@@ -1226,17 +1286,19 @@ sub CreatePartialPatchinfo {
                     if ($serveCompleteUpdateToRcs && 
                      (exists($complete->{$channelSpecificUrlKey}))) {
                             $partial_patch->{'url'} = SubstitutePath(
-                             path => $complete->{$channelSpecificUrlKey}, 
-                             platform => $p,
-                             version => $to->{'appv'},
-                             locale => $l);
+                              path => $partial->{$channelSpecificUrlKey}, 
+                              platform => $p,
+                              version => $to_name,
+                              branch => $to->{'branch'},
+                              build_id => $to->{'build_id'},
+                              locale => $l);
                             $partial_patch->{'hash_value'} = $completePatchHash;
                             $partial_patch->{'size'} = $completePatchSize;
                     } elsif (exists($partial->{$channelSpecificUrlKey})) {
                             $partial_patch->{'url'} = SubstitutePath(
                              path => $partial->{$channelSpecificUrlKey}, 
                              platform => $p,
-                             version => $to->{'appv'},
+                             version => $from_to_version,
                              locale => $l);
                     } else {
                         $partial_patch->{'url'} = $snippetUrl;
@@ -1307,8 +1369,10 @@ sub CreatePartialPatchinfo {
                             if ($serveCompleteUpdateToRcs && 
                              (exists($complete->{$testChanKey}))) {
                                 $testPatch->{'url'} = SubstitutePath(
-                                 path => $complete->{$testChanKey},
-                                 version => $to->{'appv'},
+                                 path => $partial->{$testChanKey},
+                                 version => $to_name,
+                                 branch => $to->{'branch'},
+                                 build_id => $to->{'build_id'},
                                  platform => $p,
                                  locale => $l );
                                 $testPatch->{'hash_value'} = $completePatchHash;
@@ -1316,7 +1380,7 @@ sub CreatePartialPatchinfo {
                             } elsif (exists($partial->{$testChanKey})) {
                                 $testPatch->{'url'} = SubstitutePath(
                                  path => $partial->{$testChanKey},
-                                 version => $to->{'appv'},
+                                 version => $from_to_version,
                                  platform => $p,
                                  locale => $l );
                             } else {

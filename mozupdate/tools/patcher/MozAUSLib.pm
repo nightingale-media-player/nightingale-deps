@@ -94,7 +94,12 @@ $TMPDIR_PREFIX = '/dev/shm/tmp/MozAUSLib';
 
 %AUS2_PLATFORMS = ( 'macppc' => 'Darwin_ppc-gcc3',
                     'mac' => 'Darwin_Universal-gcc3',
+                    'macosx-i686' => 'Darwin_x86-gcc3',
+                    'macosx-ppc' => 'Darwin_ppc-gcc3',
                     'linux-i686' => 'Linux_x86-gcc3',
+                    'linux-x86_64' => 'Linux_x86_64-gcc3',
+                    'windows-i686' => 'WINNT_x86-msvc',
+                    'windows-i686-msvc8' => 'WINNT_x86-msvc',
                     'win32' => 'WINNT_x86-msvc' );
 
 $DEFAULT_PARTIAL_MAR_OUTPUT_FILE = 'partial.mar';
@@ -225,7 +230,7 @@ sub CreatePartialMarFile
     }
 
     if ( not -r $fromCompleteMar) {
-        print STDERR "CreatePartialMarFile: $fromCompleteMardoesn't exist!";
+        print STDERR "CreatePartialMarFile: $fromCompleteMar doesn't exist!";
         return -1;
     }
 
@@ -242,8 +247,8 @@ sub CreatePartialMarFile
     my $extractCommand = catfile($mozdir, $UNWRAP_FULL_UPDATE_BIN);
     my $unwrapArgs = [catfile($startingWd, $fromCompleteMar)];
 
-    printf("Decompressing $fromCompleteMar with $extractCommand " .
-     join(" ", @{$unwrapArgs}) . "...\n");
+    printf("Decompressing (from)mar: $fromCompleteMar \n with command: $extractCommand "
+           .  join(" ", @{$unwrapArgs}) . "\n");
     chdir($fromDir) or die "chdir() $fromDir failed: $ERRNO";
 
     my $rv = RunShellCommand(command => $extractCommand,
@@ -259,8 +264,8 @@ sub CreatePartialMarFile
     # Extract the destination MAR file.
  
     $unwrapArgs = [catfile($startingWd, $toCompleteMar)];
-    printf("Decompressing $toCompleteMar with $extractCommand " .
-     join(" ", @{$unwrapArgs}) . "...\n");
+    printf("Decompressing (to)mar: $toCompleteMar \n with $extractCommand "
+           .  join(" ", @{$unwrapArgs}) . "\n");
     chdir($toDir) or die "chdir() $toDir failed: $ERRNO";;
 
     $rv = RunShellCommand(command => $extractCommand,
@@ -285,13 +290,14 @@ sub CreatePartialMarFile
     if (defined($forceList) && scalar(@{$forceList}) > 0) {
         foreach my $file (@{$forceList}) {
             push(@{$incrUpdateArgs}, ('-f', $file));
+            print STDERR "Pushing file $file onto args\n";
         }
     }
 
     push(@{$incrUpdateArgs}, ($outputMar, $fromDir, $toDir));
 
-    printf("Building partial update with: $makeIncrementalUpdate " . 
-     join(" ", @{$incrUpdateArgs}) . "\n...");
+    printf("Building partial update with command: $makeIncrementalUpdate "
+           .  join(" ", @{$incrUpdateArgs}) . "\n");
 
     $rv = RunShellCommand(command => $makeIncrementalUpdate,
                           args => $incrUpdateArgs,
@@ -311,7 +317,8 @@ sub CreatePartialMarFile
     }
 
     my $finalDeliverable = catfile($outputDir, $outputFile);
-    printf("Moving $outputMar to $finalDeliverable... \n");
+
+    printf("Moving outputMar: $outputMar to finalDeliv: $finalDeliverable\n");
     move($outputMar, $finalDeliverable) or 
      die "move($outputMar, $finalDeliverable) failed: $ERRNO";
     printf("done\n");
@@ -335,22 +342,36 @@ sub SubstitutePath
 {
     my %args = @_;
 
+    #printf("*** SubstitutePath ***\n");
+    #for my $key ( sort keys %args ) {
+    #    printf("    $key is   \t\t  %s\n", $args{$key});
+    #}
+
     my $string = $args{'path'} || 
      die 'ASSERT: SubstitutePath() called with null path';
     my $platform = $args{'platform'} || 'UNDEFINED';
     my $locale = $args{'locale'} ||'UNDEFINED';
     my $version = $args{'version'} || 'UNDEFINED';
+    my $branch = $args{'branch'} || 'UNDEFINED';
+    my $build_id = $args{'build_id'} || 'UNDEFINED';
     my $app = $args{'app'} || 'UNDEFINED';
 
     my %bouncer_platforms = GetBouncerPlatformStrings();
     my $bouncer_platform = $bouncer_platforms{$platform};
 
+    my ($platformtype, $cputype) = split('-', $platform, 2);
+
     $string =~ s/%platform%/$platform/g;
+    $string =~ s/%platformtype%/$platformtype/g;
+    $string =~ s/%cputype%/$cputype/g;
     $string =~ s/%locale%/$locale/g;
     $string =~ s/%bouncer\-platform%/$bouncer_platform/g;
     $string =~ s/%version%/$version/g;
+    $string =~ s/%branch%/$branch/g;
+    $string =~ s/%build_id%/$build_id/g;
     $string =~ s/%app%/$app/g;
 
+    #printf("returning the substitue string: $string\n");
     return $string;
 }
 

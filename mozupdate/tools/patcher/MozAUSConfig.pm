@@ -295,6 +295,7 @@ sub ReadPastUpdates
     for my $u (@update_config) {
         # Parse apart the update definition into from/to/update channels and 
         # stuff the info into @updates.
+        #printf("\n\n*** ReadPastUpdates ***\n%s\n\n", Data::Dumper::Dumper($u));
         if ( $u =~ /^\s*(\S+)\s+(\S+)\s+([\w\s\-]+)$/ ) {
             my $update_node = {};
             $update_node->{'from'} = $1;
@@ -350,6 +351,8 @@ sub CreateUpdateGraph
 
     my $temp_prefix = lc($this->GetApp());
 
+    # get the list of current updates to be completed for the current app,
+    #   these will generate partial mars.
     my @updates;
     my $update = $appConfig->{'current-update'};
     if (ref($update) eq 'ARRAY') {
@@ -364,6 +367,8 @@ sub CreateUpdateGraph
 
     my $u_config = $appConfig->{'update_data'};
 
+    # each current update gets a map entry describing all the information needed
+    #   to create the mars and snippets and the paths to each
     for my $u (@updates) {
         my $u_from = $u->{'from'};
         my $u_to = $u->{'to'};
@@ -387,21 +392,23 @@ sub CreateUpdateGraph
 
         my $u_key = "$u_from-$u_to";
 
-        # If the release that this update points to isn't defined, ...
-        # TODO - check the from release
-        if (not defined($this->GetAppRelease($u_to))) {
+        # If either release that this update points to isn't defined, ...
+        if (not defined($this->GetAppRelease($u_to)) ||
+            not defined($this->GetAppRelease($u_from))) {
             # Skip to the next update.
-            print STDERR "Update $u_key refers to a non-existant release endpoint: $u_to\n";
+            print STDERR "Update $u_key refers to a non-existant release startpoint:($u_to) or endpoint:($u_from)\n";
             next;
         }
 
-        # Add the channel(s) to the update information.
+        # get the config section that corresponds to the source release
         my $ur_config = $appConfig->{'release'}->{$u_from};
+        # Add the channel(s) to the update information for the release.
         my @channels = split(/\s+/, $u_channel);
         for my $c (@channels) {
             $this->AddChannelToRelease(release => $ur_config, channel => $c);
         }
 
+        # u_key is from-to; create a section in the graph for it
         if (!defined($u_config->{$u_key})) {
             $u_config->{$u_key} = {};
         }
@@ -441,6 +448,7 @@ sub CreateUpdateGraph
             }
         }
 
+        # get the keys for all the releases listed in the cfg
         my $r_config = $this->{'mAppConfig'}->{'release'};
         my @releases = keys %$r_config;
 
@@ -455,9 +463,15 @@ sub CreateUpdateGraph
                 die "ERROR: trying to update from/to a build that we have no release info about!";
             }
 
+            # config data for the from/to release
             my $rl_config = $r_config->{$subu};
+            # config data for the platform section
             my $rlp_config = $rl_config->{'platforms'};
             my @platforms = keys %$rlp_config;
+
+
+            # for each platform for the release mark it in the locale intersection
+            #   which will define what locales get built for this from-to pairing
             for my $p (@platforms) {
                 my $platform_locales = $rlp_config->{$p}->{'locales'};
 
@@ -504,6 +518,11 @@ sub CreateUpdateGraph
             }
 
             my $rl_config = $r_config->{$subu};
+            # if the version wasn't specified in the config, use the release version
+            if (!defined($rl_config->{'version'})) {
+                $rl_config->{'version'} = ${subu};
+            }
+
             my $rlp_config = $rl_config->{'platforms'};
             my @platforms = keys %$rlp_config;
             for my $p (@platforms) {
@@ -512,8 +531,6 @@ sub CreateUpdateGraph
                 }
 
                 my $up_config = $u_config->{$u_key}->{'platforms'}->{$p};
-
-                $up_config->{'build_id'} = $rlp_config->{$p}->{'build_id'};
 
                 if (!defined($up_config->{'locales'})) {
                     $up_config->{'locales'} = {};
@@ -534,12 +551,18 @@ sub CreateUpdateGraph
                      locale => $l,
                      build_id => $rlp_config->{$p}->{'build_id'},
                      version => $rl_config->{'version'},
+                     branch => $rl_config->{'branch'},
                      extensionVersion => $rl_config->{'extension-version'},
-                     schemaVersion => $rl_config->{'schema'} );
+                     schemaVersion => $rl_config->{'schema'},
+                     mar_name => $rl_config->{'marname'} );
                 }
             }
         } # for my $side ("from", "to")
-    }
+    } # for my $u (@updates)
+
+    # this will be the master graph all data is pulled from. if it is
+    # wrong in here it will be wrong.
+    printf("\n\n*** CreateUpdateGraph ***\n%s\n\n", Data::Dumper::Dumper($appConfig));
     return 1;
 }
 
@@ -555,8 +578,10 @@ sub GatherCompleteData
     my $release = $args{'release'};
     my $build_id = $args{'build_id'};
     my $version = $args{'version'};
+    my $branch = $args{'branch'};
     my $extensionVersion = $args{'extensionVersion'};
     my $schemaVersion = $args{'schemaVersion'};
+    my $mar_name = $args{'mar_name'};
 
     my $config = $args{'config'};
 
@@ -564,12 +589,16 @@ sub GatherCompleteData
     $completemarurl = SubstitutePath(path => $completemarurl,
                                      platform => $platform,
                                      locale => $locale,
+                                     branch => $branch,
+                                     build_id => $build_id,
                                      version => $version );
 
-    my $filename = SubstitutePath(path => $DEFAULT_MAR_NAME,
+    my $filename = SubstitutePath(path => $mar_name,
                                   platform => $platform,
                                   locale => $locale,
-                                  version => $release,
+                                  version => $version,
+                                  branch => $branch,
+                                  build_id => $build_id,
                                   app => lc($this->GetApp()));
 
     my $local_filename = "$release/ftp/$filename";
@@ -589,6 +618,7 @@ sub GatherCompleteData
         #printf("did not find $local_filename\n");
     }
 
+    $node->{'branch'} = $branch;
     $node->{'url'} = $completemarurl;
     $node->{'build_id'} = $build_id;
     # XXX - This is a huge hack and needs to be fixed. It's to support 
@@ -709,13 +739,17 @@ sub RemoveBrokenUpdates
                 my $gen_partial_path = $partial_path;
                 $gen_partial_path = SubstitutePath(path => $partial_path,
                                                    platform => $p,
-                                                   version => $to->{'appv'},
+                                                   version => $to_name,
+                                                   branch => $to->{'branch'},
+                                                   build_id => $to->{'build_id'},
                                                    locale => $l);
 
                 my $gen_partial_url = $partial_url;
                 $gen_partial_url = SubstitutePath(path => $partial_url,
                                                   platform => $p,
-                                                  version => $to->{'appv'},
+                                                  version => $to_name,
+                                                  branch => $to->{'branch'},
+                                                  build_id => $to->{'build_id'},
                                                   locale => $l);
 
                 my $partial_pathname = "$u/ftp/$gen_partial_path";
@@ -787,6 +821,13 @@ sub GetToolsRevision
 {
     my $this = shift;
     return $this->{'mToolsRevision'};
+}
+
+sub GetMarName
+{
+    my $this = shift;
+
+    return $this->{'mApp'}->{'marname'};
 }
 
 1;
