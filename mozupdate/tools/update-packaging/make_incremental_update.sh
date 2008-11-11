@@ -112,8 +112,10 @@ for ((i=0; $i<$num_oldfiles; i=$i+1)); do
       dir=$(dirname "$workdir/$f")
       mkdir -p "$dir"
       $MBSDIFF "$olddir/$f" "$newdir/$f" "$workdir/$f.patch"
+      copy_perm "$newdir/$f" "$workdir/$f.patch"
       $BZIP2 -z9 "$workdir/$f.patch"
       $BZIP2 -cz9 "$newdir/$f" > "$workdir/$f"
+      copy_perm "$newdir/$f" "$workdir/$f"
       patchfile="$workdir/$f.patch.bz2"
       patchsize=$(get_file_size "$patchfile")
       fullsize=$(get_file_size "$workdir/$f")
@@ -160,6 +162,7 @@ for ((i=0; $i<$num_newfiles; i=$i+1)); do
   mkdir -p "$dir"
 
   $BZIP2 -cz9 "$newdir/$f" > "$workdir/$f"
+  copy_perm "$newdir/$f" "$workdir/$f"
 
   if check_for_forced_update "$requested_forced_updates" "$f"; then
     make_add_instruction "$f" "1" >> "$manifest"
