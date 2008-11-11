@@ -109,6 +109,9 @@ struct _GstDshowAudioDec
   gboolean check_mp3_frames;
   gboolean first_frame;
   gint mpegaudioversion;
+  GstBuffer *good_mp3_frame;
+  gboolean seen_bad_mp3_frames;
+  gboolean decoder_is_xp_mp3;
   
   /* current segment */
   GstSegment * segment;

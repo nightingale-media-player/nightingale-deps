@@ -437,6 +437,11 @@ gst_dshowaudiodec_dispose (GObject * object)
 {
   GstDshowAudioDec *adec = (GstDshowAudioDec *) (object);
 
+  if (adec->good_mp3_frame) {
+    gst_buffer_unref (adec->good_mp3_frame);
+    adec->good_mp3_frame = NULL;
+  }
+
   if (adec->segment) {
     gst_segment_free (adec->segment);
     adec->segment = NULL;
@@ -565,10 +570,12 @@ gst_dshowaudiodec_skip_mp3_frame (GstDshowAudioDec *adec, GstBuffer *inbuf)
       guint32 header = GST_READ_UINT32_LE (data + offset);
       if (header == GST_MAKE_FOURCC ('X', 'i', 'n' , 'g') ||
           header == GST_MAKE_FOURCC ('I', 'n', 'f' , 'o'))
+      {
+        adec->seen_bad_mp3_frames = TRUE;
         return TRUE;
+      }
     }
   }
-
 
   /* Check if the buffer ends with a sequence of bytes matching the
    * particular sequence LAME creates that the XP mp3 decoder fails
@@ -593,10 +600,14 @@ gst_dshowaudiodec_skip_mp3_frame (GstDshowAudioDec *adec, GstBuffer *inbuf)
 
   if (bytes_in_sequence >= 120) {
     GST_WARNING ("Skipping frame: has weird LAME padding");
+    adec->seen_bad_mp3_frames = TRUE;
     return TRUE;
   }
-  else
+  else {
+    if (!adec->good_mp3_frame)
+      adec->good_mp3_frame = gst_buffer_ref (inbuf);
     return FALSE;
+  }
 }
 
 static GstFlowReturn
@@ -711,6 +722,13 @@ gst_dshowaudiodec_flush (GstDshowAudioDec * adec)
 
   /* flush dshow decoder and reset timestamp */
   adec->fakesrc->GetOutputPin()->Flush();
+
+  if (adec->seen_bad_mp3_frames && adec->good_mp3_frame) {
+    adec->fakesrc->GetOutputPin()->PushBuffer (
+        GST_BUFFER_DATA (adec->good_mp3_frame), -1, -1,
+        GST_BUFFER_SIZE (adec->good_mp3_frame), TRUE);
+  }
+
   adec->timestamp = GST_CLOCK_TIME_NONE;
   adec->last_ret = GST_FLOW_OK;
 
@@ -822,7 +840,8 @@ dshowaudiodec_set_input_format (GstDshowAudioDec *adec, GstCaps *caps)
        * to decode one, then forever after it outputs silence.
        * If we recognise such a frame, just skip decoding it.
        */
-      adec->check_mp3_frames = TRUE;
+     if (adec->decoder_is_xp_mp3)
+        adec->check_mp3_frames = TRUE;
     }
     else {
       format = (WAVEFORMATEX *)g_malloc0 (size);
@@ -1078,15 +1097,20 @@ gst_dshowaudiodec_create_graph_and_filters (GstDshowAudioDec * adec)
   adec->fakesrc->AddRef();
 
   /* create decoder filter */
+  GUID filterclsid = {0};
   adec->decfilter = gst_dshow_find_filter (MEDIATYPE_Audio,
           insubtype,
           MEDIATYPE_Audio,
           outsubtype,
-          klass->entry->preferred_filters);
+          klass->entry->preferred_filters, &filterclsid);
   if (adec->decfilter == NULL) {
     GST_ELEMENT_ERROR (adec, STREAM, FAILED,
         ("Can't create an instance of the decoder filter"), (NULL));
     goto error;
+  }
+
+  if (IsEqualGUID (filterclsid, CLSID_XP_MP3_DECODER)) {
+    adec->decoder_is_xp_mp3 = TRUE;
   }
 
   /* create fake sink filter */
@@ -1204,7 +1228,7 @@ dshow_adec_register (GstPlugin * plugin)
             insubtype,
             MEDIATYPE_Audio,
             outsubtype,
-            audio_dec_codecs[i].preferred_filters);
+            audio_dec_codecs[i].preferred_filters, NULL);
 
     if (filter) 
     {
