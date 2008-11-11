@@ -427,7 +427,7 @@ sub DownloadFile {
     my $sourceUrl = $args{'url'};
 
     die("ASSERT: DownloadFile() Invalid Source URL: $sourceUrl\n") 
-     if (not(defined($sourceUrl)) || $sourceUrl !~ m|^http://|);
+     if (not(defined($sourceUrl)) || $sourceUrl !~ m|^https?://|);
 
     my @wgetArgs = ();
     
