@@ -531,7 +531,7 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
             mp3parse_bytepos_to_time (mp3parse, pos, &seg_pos, FALSE)) {
           gst_event_unref (event);
           event = gst_event_new_new_segment_full (update, rate, applied_rate,
-              GST_FORMAT_TIME, seg_start, seg_stop, seg_pos);
+              GST_FORMAT_TIME, seg_start, -1, seg_pos);
           format = GST_FORMAT_TIME;
           GST_DEBUG_OBJECT (mp3parse, "Converted incoming segment to TIME. "
               "start = %" GST_TIME_FORMAT ", stop = %" GST_TIME_FORMAT
