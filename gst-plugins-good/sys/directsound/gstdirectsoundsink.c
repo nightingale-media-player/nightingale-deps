@@ -84,6 +84,8 @@ static void gst_directsound_sink_set_property (GObject *object, guint prop_id,
 static void gst_directsound_sink_get_property (GObject *object, guint prop_id,
     GValue *value, GParamSpec *pspec);
 
+static gboolean gst_directsound_sink_event (GstBaseSink * bsink,
+    GstEvent * event);
 static GstCaps *gst_directsound_sink_getcaps (GstBaseSink * bsink);
 static gboolean gst_directsound_sink_prepare (GstAudioSink * asink,
     GstRingBufferSpec * spec);
@@ -291,6 +293,8 @@ gst_directsound_sink_class_init (GstDirectSoundSinkClass * klass)
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_directsound_sink_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_directsound_sink_get_property);
 
+  gstbasesink_class->event = GST_DEBUG_FUNCPTR (gst_directsound_sink_event);
+
   gstbasesink_class->get_caps =
       GST_DEBUG_FUNCPTR (gst_directsound_sink_getcaps);
 
@@ -367,6 +371,61 @@ gst_directsound_sink_get_property (GObject *object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static gboolean
+gst_directsound_sink_event (GstBaseSink * bsink, GstEvent * event)
+{
+  HRESULT hRes;
+  DWORD dwStatus;
+  DWORD dwSizeBuffer = 0;
+  LPVOID pLockedBuffer = NULL;
+
+  GstDirectSoundSink *dsoundsink;
+
+  dsoundsink = GST_DIRECTSOUND_SINK (bsink);
+
+  GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
+
+  GST_DSOUND_LOCK (dsoundsink);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_FLUSH_STOP:
+      if (dsoundsink->pDSBSecondary) {
+        hRes = IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
+
+        /*stop playing */
+        hRes = IDirectSoundBuffer_Stop (dsoundsink->pDSBSecondary);
+
+        if (!(dwStatus & DSBSTATUS_PLAYING)) {
+          /*reset position */
+          hRes = IDirectSoundBuffer_SetCurrentPosition (dsoundsink->pDSBSecondary, 0);
+          dsoundsink->current_circular_offset = 0;
+
+          /*reset the buffer */
+          hRes = IDirectSoundBuffer_Lock (dsoundsink->pDSBSecondary,
+              dsoundsink->current_circular_offset, dsoundsink->buffer_size,
+              &pLockedBuffer, &dwSizeBuffer, NULL, NULL, 0L);
+
+          if (SUCCEEDED (hRes)) {
+            memset (pLockedBuffer, 0, dwSizeBuffer);
+
+            hRes =
+                IDirectSoundBuffer_Unlock (dsoundsink->pDSBSecondary, pLockedBuffer,
+                dwSizeBuffer, NULL, 0);
+          }
+        }
+
+        dsoundsink->first_buffer_after_reset = TRUE;
+      }
+      break;
+    default:
+      break;
+  }
+
+  GST_DSOUND_UNLOCK (dsoundsink);
+
+  return TRUE;
 }
 
 static GstCaps *
@@ -652,31 +711,38 @@ gst_directsound_sink_reset (GstAudioSink * asink)
 {
   GstDirectSoundSink *dsoundsink;
   LPVOID pLockedBuffer = NULL;
+
+  HRESULT hRes;
+  DWORD dwStatus;
   DWORD dwSizeBuffer = 0;
 
   dsoundsink = GST_DIRECTSOUND_SINK (asink);
 
   GST_DSOUND_LOCK (dsoundsink);
-
+  
   if (dsoundsink->pDSBSecondary) {
+    hRes = IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
+
     /*stop playing */
-    HRESULT hRes = IDirectSoundBuffer_Stop (dsoundsink->pDSBSecondary);
+    hRes = IDirectSoundBuffer_Stop (dsoundsink->pDSBSecondary);
 
-    /*reset position */
-    hRes = IDirectSoundBuffer_SetCurrentPosition (dsoundsink->pDSBSecondary, 0);
-    dsoundsink->current_circular_offset = 0;
+    if (!(dwStatus & DSBSTATUS_PLAYING)) {
+      /*reset position */
+      hRes = IDirectSoundBuffer_SetCurrentPosition (dsoundsink->pDSBSecondary, 0);
+      dsoundsink->current_circular_offset = 0;
 
-    /*reset the buffer */
-    hRes = IDirectSoundBuffer_Lock (dsoundsink->pDSBSecondary,
-        dsoundsink->current_circular_offset, dsoundsink->buffer_size,
-        &pLockedBuffer, &dwSizeBuffer, NULL, NULL, 0L);
+      /*reset the buffer */
+      hRes = IDirectSoundBuffer_Lock (dsoundsink->pDSBSecondary,
+          dsoundsink->current_circular_offset, dsoundsink->buffer_size,
+          &pLockedBuffer, &dwSizeBuffer, NULL, NULL, 0L);
 
-    if (SUCCEEDED (hRes)) {
-      memset (pLockedBuffer, 0, dwSizeBuffer);
+      if (SUCCEEDED (hRes)) {
+        memset (pLockedBuffer, 0, dwSizeBuffer);
 
-      hRes =
-          IDirectSoundBuffer_Unlock (dsoundsink->pDSBSecondary, pLockedBuffer,
-          dwSizeBuffer, NULL, 0);
+        hRes =
+            IDirectSoundBuffer_Unlock (dsoundsink->pDSBSecondary, pLockedBuffer,
+            dwSizeBuffer, NULL, 0);
+      }
     }
   }
 
