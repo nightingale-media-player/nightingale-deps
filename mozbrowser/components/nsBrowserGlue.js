@@ -46,8 +46,11 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 try {
+/* XXX An nsFastLoadFileUpdater and associated objects will leak whenever this
+   XXX fails
   Cu.import("resource:///modules/distribution.js");
-} catch (e if e.result == Components.results.NS_ERROR_NOT_AVAILABLE) {
+   XXX */
+} catch (e if e.result == Components.results.NS_ERROR_FILE_NOT_FOUND) {
   // XXX Songbird: allow not having a distribution file
 }
 
