@@ -120,7 +120,7 @@ for ((i=0; $i<$num_oldfiles; i=$i+1)); do
 
       if check_for_forced_update "$requested_forced_updates" "$f"; then
         echo 1>&2 "  FORCING UPDATE for file '$f'..."
-        make_add_instruction "$f" >> $manifest
+        make_add_instruction "$f" "1" >> $manifest
         rm -f "$patchfile"
         archivefiles="$archivefiles \"$f\""
         continue 1
@@ -150,7 +150,8 @@ for ((i=0; $i<$num_newfiles; i=$i+1)); do
 
   # If we've already tested this file, then skip it
   for ((j=0; $j<$num_oldfiles; j=$j+1)); do
-    if [ "\"$f\"" = "${oldfiles[j]}" ]; then
+    if [ "$f" = "${oldfiles[$j]}" ]; then
+      #echo "matched $f to ${oldfiles[$j]}"
       continue 2
     fi
   done
@@ -160,7 +161,11 @@ for ((i=0; $i<$num_newfiles; i=$i+1)); do
 
   $BZIP2 -cz9 "$newdir/$f" > "$workdir/$f"
 
-  make_add_instruction "$f" >> "$manifest"
+  if check_for_forced_update "$requested_forced_updates" "$f"; then
+    make_add_instruction "$f" "1" >> "$manifest"
+  else
+    make_add_instruction "$f" >> "$manifest"
+  fi
   archivefiles="$archivefiles \"$f\""
 done
 

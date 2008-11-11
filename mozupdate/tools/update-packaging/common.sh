@@ -35,8 +35,9 @@ copy_perm() {
 
 make_add_instruction() {
   f="$1"
+  force_add_instruction="$2"
   is_extension=$(echo "$f" | grep -c 'extensions/.*/')
-  if [ $is_extension = "1" ]; then
+  if [ $is_extension = "1" -a "$force_add_instruction" != "1" ]; then
     # Use the subdirectory of the extensions folder as the file to test
     # before performing this add instruction.
     testdir=$(echo "$f" | sed 's/\(extensions\/[^\/]*\)\/.*/\1/')
