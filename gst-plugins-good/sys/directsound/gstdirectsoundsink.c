@@ -601,12 +601,12 @@ gst_directsound_sink_write (GstAudioSink * asink, gpointer data, guint length)
   hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
       &dwCurrentPlayCursor, NULL);
 
-  if (SUCCEEDED (hRes) && (dwStatus & DSBSTATUS_PLAYING)) {
+  if (SUCCEEDED (hRes)) {
     DWORD dwFreeBufferSize;
 
   calculate_freesize:
     /* calculate the free size of the circular buffer */
-    if (dwCurrentPlayCursor < dsoundsink->current_circular_offset)
+    if (dwCurrentPlayCursor <= dsoundsink->current_circular_offset)
       dwFreeBufferSize =
           dsoundsink->buffer_size - (dsoundsink->current_circular_offset -
           dwCurrentPlayCursor);
@@ -615,6 +615,14 @@ gst_directsound_sink_write (GstAudioSink * asink, gpointer data, guint length)
           dwCurrentPlayCursor - dsoundsink->current_circular_offset;
 
     if (length >= dwFreeBufferSize) {
+      /* If we're not already playing, start playback now, so that space
+       * can become available */
+      if (!(dwStatus & DSBSTATUS_PLAYING)) {
+        hRes = IDirectSoundBuffer_Play (dsoundsink->pDSBSecondary, 0, 0,
+            DSBPLAY_LOOPING);
+        hRes = IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
+      }
+
       Sleep (1);
       hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
           &dwCurrentPlayCursor, NULL);
