@@ -124,12 +124,10 @@ static const AudioCodecEntry audio_dec_codecs[] = {
    "audio/x-wma, wmaversion = (int) 3",
    preferred_wma_filters},
 
-#if 0
   {"dshowadec_wma4", "Windows Media Audio 9 Lossless",
    WAVE_FORMAT_WMAUDIO_LOSSLESS,
    "audio/x-wma, wmaversion = (int) 4",
    preferred_wma_filters},
-#endif
 
   {"dshowadec_wms", "Windows Media Audio Voice v9",
    WAVE_FORMAT_WMAVOICE9,
