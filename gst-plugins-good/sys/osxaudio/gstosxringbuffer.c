@@ -408,13 +408,13 @@ static OSStatus gst_osx_ring_buffer_render_notify (GstOsxRingBuffer *osxbuf,
         unsigned int inNumberFrames,
         AudioBufferList *ioData)
 {
-  /* After rendering a frame, we get the PostRender notification.
+  /* Before rendering a frame, we get the PreRender notification.
    * Here, we detach the RenderCallback if we've been paused.
    *
    * This is necessary (rather than just directly detaching it) to work
    * around some thread-safety issues in CoreAudio
    */
-  if ((*ioActionFlags) & kAudioUnitRenderAction_PostRender)
+  if ((*ioActionFlags) & kAudioUnitRenderAction_PreRender)
   {
     if (osxbuf->io_proc_needs_deactivation) {
       gst_osx_ring_buffer_remove_render_callback (osxbuf);
