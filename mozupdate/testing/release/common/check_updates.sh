@@ -41,7 +41,14 @@ check_updates () {
   if [ -d source/$platform_dirname ]; then
     cd source/$platform_dirname;
     cp $updater ../../update
-    ../../update/updater ../../update 0
+    case $update_platform in
+      WINNT_x86-msvc) 
+        ../../update/updater ../../update 0 .
+      ;;
+      *)
+        ../../update/updater ../../update 0
+      ;;
+    esac
     cd ../..
   else
     echo "FAIL: no dir in source/$platform_dirname"
