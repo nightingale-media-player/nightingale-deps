@@ -108,6 +108,13 @@ static PreferredFilter preferred_mpegaudio_filters[] = {
   {0}
 };
 
+static const char * xp_mp3_decoder_filename = 
+  "l3codecx.ax";
+
+typedef HRESULT (STDAPICALLTYPE* dll_register_proc_t)();
+static const char * dll_register_server_proc_name = 
+  "DllRegisterServer";
+
 static const AudioCodecEntry audio_dec_codecs[] = {
   {"dshowadec_wma1", "Windows Media Audio 7",
    WAVE_FORMAT_MSAUDIO1,
@@ -1211,11 +1218,62 @@ dshow_adec_register (GstPlugin * plugin)
   };
   gint i;
   HRESULT hr;
+  OSVERSIONINFO osvi;
+  
+  UINT len = 0;
+  HMODULE hDll = NULL;
+  BOOL success = FALSE;
+  char system_folder[MAX_PATH] = {0};
+
+  dll_register_proc_t dll_register_proc = NULL;
 
   GST_DEBUG_CATEGORY_INIT (dshowaudiodec_debug, "dshowaudiodec", 0,
       "Directshow filter audio decoder");
 
   hr = CoInitialize(0);
+
+  // ensure that the mp3 decoder is loaded on windows xp.
+
+  // first, get the windows version.
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+  success = GetVersionEx(&osvi);
+
+  // if the major version is less than 6, we'll have the decoder available.
+  if (success && 
+      (osvi.dwMajorVersion < 6) &&
+      GetSystemDirectoryA (system_folder, MAX_PATH)) {
+    char path[512] = {0};
+
+    success = FALSE;
+
+    strcat(path, system_folder);
+    strcat(path, "\\");
+    strcat(path, xp_mp3_decoder_filename);
+    
+    hDll = LoadLibraryExA(path, NULL, 0);
+
+    if (hDll) {
+      dll_register_proc = 
+        (dll_register_proc_t) GetProcAddress (hDll, 
+                                              dll_register_server_proc_name);
+      if(dll_register_proc) {
+        HRESULT hr2;
+        hr2 = dll_register_proc();
+
+        if (SUCCEEDED(hr2)) {
+          success = TRUE;
+          GST_DEBUG ("Registering %s", path);
+        }
+      }
+    }
+
+    if (!success) {
+      GST_DEBUG ("Failed to register %s", path);
+    }
+  }
+  
   for (i = 0; i < sizeof (audio_dec_codecs) / sizeof (AudioCodecEntry); i++) {
     GType type;
     CComPtr<IBaseFilter> filter;
