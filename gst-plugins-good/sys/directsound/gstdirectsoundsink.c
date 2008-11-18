@@ -338,6 +338,8 @@ gst_directsound_sink_init (GstDirectSoundSink * dsoundsink,
   dsoundsink->dsound_lock = g_mutex_new ();
   dsoundsink->first_buffer_after_reset = FALSE;
   dsoundsink->has_set_thread_priority = FALSE;
+
+  dsoundsink->flushing = FALSE;
 }
 
 static void
@@ -387,10 +389,16 @@ gst_directsound_sink_event (GstBaseSink * bsink, GstEvent * event)
 
   GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
 
-  GST_DSOUND_LOCK (dsoundsink);
 
   switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_FLUSH_START:
+      GST_DSOUND_LOCK (dsoundsink);
+      dsoundsink->flushing = TRUE;
+      GST_DSOUND_UNLOCK (dsoundsink);
+      break;
     case GST_EVENT_FLUSH_STOP:
+      GST_DSOUND_LOCK (dsoundsink);
+      dsoundsink->flushing = FALSE;
       if (dsoundsink->pDSBSecondary) {
         hRes = IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
 
@@ -418,12 +426,11 @@ gst_directsound_sink_event (GstBaseSink * bsink, GstEvent * event)
 
         dsoundsink->first_buffer_after_reset = TRUE;
       }
+      GST_DSOUND_UNLOCK (dsoundsink);
       break;
     default:
       break;
   }
-
-  GST_DSOUND_UNLOCK (dsoundsink);
 
   return TRUE;
 }
@@ -624,12 +631,13 @@ gst_directsound_sink_write (GstAudioSink * asink, gpointer data, guint length)
       }
 
       Sleep (1);
+
       hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
           &dwCurrentPlayCursor, NULL);
 
       hRes =
           IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
-      if (SUCCEEDED (hRes) && (dwStatus & DSBSTATUS_PLAYING))
+      if (SUCCEEDED (hRes) && (dwStatus & DSBSTATUS_PLAYING) && !dsoundsink->flushing)
         goto calculate_freesize;
       else {
         dsoundsink->first_buffer_after_reset = FALSE;

@@ -78,6 +78,8 @@ struct _GstDirectSoundSink
   gboolean first_buffer_after_reset;
 
   gboolean has_set_thread_priority;
+
+  gboolean flushing;
 };
 
 struct _GstDirectSoundSinkClass
