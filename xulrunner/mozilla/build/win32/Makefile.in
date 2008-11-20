@@ -45,6 +45,7 @@ include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
 ifdef WIN32_REDIST_DIR
+ifndef MOZ_MEMORY
 
 ifeq (1400,$(_MSC_VER))
 REDIST_FILES = \
@@ -64,7 +65,8 @@ REDIST_FILES = \
 	$(NULL)
 endif
 
-endif
+endif # MOZ_MEMORY
+endif # WIN32_REDIST_DIR
 
 ifdef REDIST_FILES
 libs::
