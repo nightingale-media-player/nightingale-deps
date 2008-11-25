@@ -1467,6 +1467,7 @@ gst-libs/gst/app/Makefile
 gst-libs/gst/dshow/Makefile
 sys/Makefile
 sys/acmenc/Makefile
+sys/acmmp3dec/Makefile
 sys/dshowdecwrapper/Makefile
 sys/dshowsrcwrapper/Makefile
 sys/dshowvideosink/Makefile
