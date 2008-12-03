@@ -1152,6 +1152,11 @@ static gboolean
 gst_dshowvideosink_build_filtergraph (GstDshowVideoSink *sink)
 {
   HRESULT hres;
+  gboolean comInit = FALSE;
+  
+  hres = CoInitialize(0);
+  if (SUCCEEDED (hres))
+    comInit = TRUE;
 
   /* Build our DirectShow FilterGraph, looking like: 
    *
@@ -1203,6 +1208,8 @@ gst_dshowvideosink_build_filtergraph (GstDshowVideoSink *sink)
     goto error;
   }
 
+  if (comInit)
+    CoUninitialize();
   return TRUE;
 
 error:
@@ -1215,6 +1222,9 @@ error:
     sink->filter_graph->Release();
     sink->filter_graph = NULL;
   }
+
+  if (comInit)
+    CoUninitialize();
 
   return FALSE;
 }
