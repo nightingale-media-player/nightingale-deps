@@ -1073,6 +1073,7 @@ gst_input_selector_activate_sinkpad (GstInputSelector * sel, GstPad * pad)
     /* first pad we get activity on becomes the activated pad by default */
     active_sinkpad = sel->active_sinkpad = gst_object_ref (pad);
     GST_DEBUG_OBJECT (sel, "Activating pad %s:%s", GST_DEBUG_PAD_NAME (pad));
+    g_object_notify (G_OBJECT (sel), "active-pad");
   }
 
   return active_sinkpad;
