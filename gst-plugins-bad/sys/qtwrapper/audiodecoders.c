@@ -738,6 +738,8 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
   guint32 outsamples;
   guint32 savedbytes;
   guint32 realbytes;
+  gboolean padding = FALSE;
+  QTWrapperAudioDecoderClass *oclass;
 
   qtwrapper = (QTWrapperAudioDecoder *) gst_pad_get_parent (pad);
 
@@ -755,17 +757,45 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
 #endif
 
   if (qtwrapper->gotnewsegment) {
-
-    GST_DEBUG_OBJECT (qtwrapper, "SCAudioReset()");
+    GST_INFO_OBJECT (qtwrapper, "SCAudioReset()");
 
     SCAudioReset (qtwrapper->adec);
 
     /* some formats can give us a better initial time using the buffer
      * timestamp. */
-    if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (buf)))
+    if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (buf))) {
       qtwrapper->initial_time = GST_BUFFER_TIMESTAMP (buf);
+      GST_LOG ("initial_time is now %" GST_TIME_FORMAT, GST_TIME_ARGS (qtwrapper->initial_time));
+    }
 
     qtwrapper->gotnewsegment = FALSE;
+    padding = TRUE;
+  }
+
+  oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
+  if (padding && oclass->componentSubType == QT_MAKE_FOURCC_LE ('.', 'm', 'p', '3'))
+  {
+    /* For gapless playback, we want to introduce a 529 sample delay - to make the quicktime
+       decoder behave like our other decoders. This is really a bit nasty... */
+    int padsize = 529 * qtwrapper->channels * sizeof(float);
+    GstBuffer *padbuf;
+
+    ret = gst_pad_alloc_buffer (qtwrapper->srcpad, qtwrapper->cur_offset,
+        padsize, GST_PAD_CAPS (qtwrapper->srcpad), &padbuf);
+    if (ret != GST_FLOW_OK)
+      goto beach;
+
+    memset (GST_BUFFER_DATA (padbuf), 0, padsize);
+    qtwrapper->cur_offset += 529;
+
+    GST_BUFFER_TIMESTAMP (padbuf) = qtwrapper->initial_time;
+    GST_BUFFER_DURATION (padbuf) = GST_SECOND * 529 / qtwrapper->samplerate;
+
+    ret = gst_pad_push (qtwrapper->srcpad, padbuf);
+    if (ret != GST_FLOW_OK) {
+      gst_buffer_unref (padbuf);
+      goto beach;
+    }
   }
 
   outsamples = qtwrapper->bufferlist->mBuffers[0].mDataByteSize / 8;
@@ -892,8 +922,7 @@ qtwrapper_audio_decoder_sink_event (GstPad * pad, GstEvent * event)
 
       GST_LOG ("initial_time is now %" GST_TIME_FORMAT, GST_TIME_ARGS (start));
 
-      if (qtwrapper->adec)
-        qtwrapper->gotnewsegment = TRUE;
+      qtwrapper->gotnewsegment = TRUE;
 
       break;
     }
