@@ -244,19 +244,27 @@ acmmp3dec_push_output (ACMMP3Dec *dec)
     memcpy (GST_BUFFER_DATA (outbuf), dec->header.pbDst, 
             dec->header.cbDstLengthUsed);
 
-    GST_BUFFER_TIMESTAMP (outbuf) = dec->timestamp;
+    if (dec->timestamp != GST_CLOCK_TIME_NONE)
+      GST_BUFFER_TIMESTAMP (outbuf) = dec->timestamp;
     GST_BUFFER_DURATION (outbuf) = gst_util_uint64_scale_int (
             GST_BUFFER_SIZE (outbuf), GST_SECOND,
             dec->rate * dec->channels * 2);
 
+    GST_DEBUG_OBJECT (dec, "decoded buffer has ts %d, duration %d", 
+(int)(GST_BUFFER_TIMESTAMP(outbuf)), (int)(GST_BUFFER_DURATION(outbuf)));
+
     gst_buffer_set_caps (outbuf, dec->output_caps);
 
-    dec->timestamp += GST_BUFFER_DURATION (outbuf);
+    if (dec->timestamp != GST_CLOCK_TIME_NONE)
+      dec->timestamp += GST_BUFFER_DURATION (outbuf);
 
     GST_DEBUG_OBJECT (dec, "Pushing %d byte decoded buffer", 
             dec->header.cbDstLengthUsed);
     ret = gst_pad_push (dec->srcpad, outbuf);
   }
+else
+  GST_DEBUG_OBJECT (dec, "Not pushing decoded buffer, no output");
+
 
   return ret;
 }
@@ -274,7 +282,10 @@ static GstFlowReturn acmmp3dec_chain (GstPad * pad, GstBuffer * buf)
     return GST_FLOW_ERROR;
   }
 
-  if (GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE) {
+  if (GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE &&
+      (dec->timestamp == GST_CLOCK_TIME_NONE ||
+       GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_DISCONT)))
+  { 
     dec->timestamp = GST_BUFFER_TIMESTAMP (buf);
   }
 
