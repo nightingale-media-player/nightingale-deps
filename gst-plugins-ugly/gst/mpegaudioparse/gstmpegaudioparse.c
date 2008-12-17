@@ -29,6 +29,10 @@
 GST_DEBUG_CATEGORY_STATIC (mp3parse_debug);
 #define GST_CAT_DEFAULT mp3parse_debug
 
+/* Magic value for the decoder delay. I'm unsure if this should be adjusted for
+ * other sample rates/modes */
+#define MP3_DECODER_DELAY 529
+
 #define MP3_CHANNEL_MODE_UNKNOWN -1
 #define MP3_CHANNEL_MODE_STEREO 0
 #define MP3_CHANNEL_MODE_JOINT_STEREO 1
@@ -44,7 +48,9 @@ GST_DEBUG_CATEGORY_STATIC (mp3parse_debug);
 #define XING_TOC_FLAG        0x0004
 #define XING_VBR_SCALE_FLAG  0x0008
 
+#ifndef GST_READ_UINT24_BE
 #define GST_READ_UINT24_BE(p) (p[2] | (p[1] << 8) | (p[0] << 16))
+#endif
 
 static inline MPEGAudioSeekEntry *
 mpeg_audio_seek_entry_new ()
@@ -278,6 +284,77 @@ mp3_caps_create (guint version, guint layer, guint channels, guint samplerate)
   return new;
 }
 
+static guint
+mp3parse_itunes_field (gchar *data, int field)
+{
+  guint value = 0;
+  int i = 0;
+
+  /* Skip 'field' leading fields */
+  while (field--) {
+    while (g_ascii_isspace (data[i]))
+      i++;
+    while (g_ascii_isxdigit(data[i]))
+      i++;
+  }
+
+  /* Skip leading space */
+  while (g_ascii_isspace (data[i]))
+    i++;
+
+  /* Parse hex values */
+  while (g_ascii_isxdigit(data[i])) {
+    value = (value << 4) | g_ascii_xdigit_value(data[i]);
+    i++;
+  }
+
+  return value;
+}
+
+
+/* Private copy of this to avoid having to link in an extra lib */
+static gboolean
+tag_parse_extended_comment (const gchar * ext_comment, gchar ** key,
+    gchar ** lang, gchar ** value, gboolean fail_if_no_key)
+{
+  const gchar *div, *bop, *bcl;
+
+  if (key)
+    *key = NULL;
+  if (lang)
+    *lang = NULL;
+
+  div = strchr (ext_comment, '=');
+  bop = strchr (ext_comment, '[');
+  bcl = strchr (ext_comment, ']');
+
+  if (div == NULL) {
+    if (fail_if_no_key)
+      return FALSE;
+    if (value)
+      *value = g_strdup (ext_comment);
+    return TRUE;
+  }
+
+  if (bop != NULL && bop < div) {
+    if (bcl < bop || bcl > div)
+      return FALSE;
+    if (key)
+      *key = g_strndup (ext_comment, bop - ext_comment);
+    if (lang)
+      *lang = g_strndup (bop + 1, bcl - bop - 1);
+  } else {
+    if (key)
+      *key = g_strndup (ext_comment, div - ext_comment);
+  }
+
+  if (value)
+    *value = g_strdup (div + 1);
+
+  return TRUE;
+}
+
+
 static void
 gst_mp3parse_base_init (gpointer klass)
 {
@@ -364,6 +441,10 @@ gst_mp3parse_reset (GstMPEGAudioParse * mp3parse)
   memset (mp3parse->xing_seek_table, 0, 100);
   memset (mp3parse->xing_seek_table_inverse, 0, 256);
 
+  mp3parse->trim_start = 0;
+  mp3parse->trim_end = 0;
+  mp3parse->unknown_incoming_format = FALSE;
+
   mp3parse->vbri_bitrate = 0;
   mp3parse->vbri_frames = 0;
   mp3parse->vbri_total_time = 0;
@@ -371,6 +452,8 @@ gst_mp3parse_reset (GstMPEGAudioParse * mp3parse)
   mp3parse->vbri_seek_points = 0;
   g_free (mp3parse->vbri_seek_table);
   mp3parse->vbri_seek_table = NULL;
+
+  mp3parse->itunsmpb_total_samples = 0;
 
   if (mp3parse->seek_table) {
     g_list_foreach (mp3parse->seek_table, (GFunc) mpeg_audio_seek_entry_free,
@@ -514,12 +597,18 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
           return res;
         } else {
           GST_WARNING_OBJECT (mp3parse,
-              "Accurate seek not possible, didn't get an appropiate upstream segment");
+              "Accurate seek not possible, didn't get an appropriate upstream segment");
         }
       }
       g_mutex_unlock (mp3parse->pending_accurate_seeks_lock);
 
       mp3parse->exact_position = FALSE;
+
+      if (format != GST_FORMAT_TIME) {
+        /* Incoming format isn't in time; we can apply appropriate segment 
+         * adjustments according to LAME's Info tag, if present */
+        mp3parse->unknown_incoming_format = TRUE;
+      }
 
       if (format == GST_FORMAT_BYTES) {
         GstClockTime seg_start, seg_stop, seg_pos;
@@ -531,7 +620,7 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
             mp3parse_bytepos_to_time (mp3parse, pos, &seg_pos, FALSE)) {
           gst_event_unref (event);
           event = gst_event_new_new_segment_full (update, rate, applied_rate,
-              GST_FORMAT_TIME, seg_start, -1, seg_pos);
+              GST_FORMAT_TIME, seg_start, GST_CLOCK_TIME_NONE, seg_pos);
           format = GST_FORMAT_TIME;
           GST_DEBUG_OBJECT (mp3parse, "Converted incoming segment to TIME. "
               "start = %" GST_TIME_FORMAT ", stop = %" GST_TIME_FORMAT
@@ -571,6 +660,47 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
       res = TRUE;
       break;
     }
+    case GST_EVENT_TAG:
+    {
+      /* Parse for iTunSMPB tags, so that we can later set up a segment to
+       * clip our output based on this. */
+      GstTagList *taglist = NULL;
+      int index = 0;
+      gchar *tag;
+
+      gst_event_parse_tag (event, &taglist);
+      if (taglist) {
+        while (gst_tag_list_get_string_index (taglist, 
+                        GST_TAG_EXTENDED_COMMENT, index++, &tag))
+        {
+          gchar *key, *value;
+          if ( tag_parse_extended_comment (tag, &key, NULL, &value, TRUE))
+          {
+            if (key && value && !strcmp (key, "iTunSMPB")) 
+            {
+              /* Ok, value is a series of hex-encoded integer fields, 
+               * each (including the first) starting with a space.
+               * We're interested in the 2nd and 4th values
+               */
+              mp3parse->trim_start = mp3parse_itunes_field (value, 1) + 
+                  MP3_DECODER_DELAY;
+              mp3parse->itunsmpb_total_samples = 
+                  mp3parse_itunes_field (value, 3);
+              GST_INFO_OBJECT (mp3parse, 
+                      "Read initial clip %d, total samples %d", 
+                      mp3parse->trim_start, mp3parse->itunsmpb_total_samples);
+            }
+
+            g_free (key);
+            g_free (value);
+          }
+
+          g_free(tag);
+        }
+      }
+      res = gst_pad_push_event (mp3parse->srcpad, event);
+      break;
+    }
     case GST_EVENT_FLUSH_STOP:
       /* Clear our adapter and set up for a new position */
       gst_adapter_clear (mp3parse->adapter);
@@ -578,6 +708,12 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
       gst_event_replace (eventp, NULL);
       res = gst_pad_push_event (mp3parse->srcpad, event);
       break;
+    case GST_EVENT_EOS:
+      if (mp3parse->frame_count == 0) {
+        GST_ELEMENT_ERROR (mp3parse, STREAM, WRONG_TYPE,
+            ("No valid frames found before end of stream"), (NULL));
+      }
+      /* fall through */
     default:
       if (mp3parse->pending_segment &&
           (GST_EVENT_TYPE (event) != GST_EVENT_EOS) &&
@@ -620,7 +756,7 @@ gst_mp3parse_emit_frame (GstMPEGAudioParse * mp3parse, guint size,
 
   GstFlowReturn ret = GST_FLOW_OK;
 
-  GstClockTime push_start;
+  GstClockTime push_start, push_stop;
 
   GstTagList *taglist;
 
@@ -788,6 +924,11 @@ gst_mp3parse_emit_frame (GstMPEGAudioParse * mp3parse, guint size,
     push_start = mp3parse->segment.start;
   }
 
+  if (GST_CLOCK_TIME_IS_VALID (mp3parse->segment.stop))
+    push_stop = mp3parse->segment.stop + (mp3parse->trim_end*GST_SECOND/mp3parse->rate);
+  else
+    push_stop = GST_CLOCK_TIME_NONE;
+
   if (G_UNLIKELY ((GST_CLOCK_TIME_IS_VALID (push_start) &&
               GST_BUFFER_TIMESTAMP_IS_VALID (outbuf) &&
               GST_BUFFER_DURATION_IS_VALID (outbuf) &&
@@ -806,8 +947,9 @@ gst_mp3parse_emit_frame (GstMPEGAudioParse * mp3parse, guint size,
     gst_buffer_unref (outbuf);
     ret = GST_FLOW_OK;
   } else if (G_UNLIKELY (GST_BUFFER_TIMESTAMP_IS_VALID (outbuf) &&
-          GST_CLOCK_TIME_IS_VALID (mp3parse->segment.stop) &&
-          GST_BUFFER_TIMESTAMP (outbuf) >= mp3parse->segment.stop)) {
+          GST_CLOCK_TIME_IS_VALID (push_stop) && 
+          GST_BUFFER_TIMESTAMP (outbuf) >= push_stop))
+  {
     GST_DEBUG_OBJECT (mp3parse,
         "Buffer after configured segment range %" GST_TIME_FORMAT
         " to %" GST_TIME_FORMAT ", returning GST_FLOW_UNEXPECTED, timestamp %"
@@ -848,7 +990,7 @@ gst_mp3parse_emit_frame (GstMPEGAudioParse * mp3parse, guint size,
 }
 
 static void
-gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
+gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse, int size)
 {
   GstTagList *taglist;
 
@@ -907,13 +1049,13 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
   /* Check if we have enough data to read the Xing header */
   avail = gst_adapter_available (mp3parse->adapter);
 
-  if (avail < offset + 8)
+  if (avail < offset + 8 || offset + 8 > size)
     return;
 
   data = gst_adapter_peek (mp3parse->adapter, offset + 8);
   if (data == NULL)
     return;
-  /* The header starts at the provided offset */
+   /* The header starts at the provided offset */
   data += offset;
 
   read_id = GST_READ_UINT32_BE (data);
@@ -938,7 +1080,7 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
       bytes_needed += 100;
     if (xing_flags & XING_VBR_SCALE_FLAG)
       bytes_needed += 4;
-    if (avail < bytes_needed) {
+    if (avail < bytes_needed || bytes_needed > size) {
       GST_DEBUG_OBJECT (mp3parse,
           "Not enough data to read Xing header (need %d)", bytes_needed);
       return;
@@ -956,6 +1098,9 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
             "Invalid number of frames in Xing header");
         mp3parse->xing_flags &= ~XING_FRAMES_FLAG;
       } else {
+        /* Xing frame count doesn't include the Xing header frame; add one
+         * to include it */
+        mp3parse->xing_frames++;
         mp3parse->xing_total_time = gst_util_uint64_scale (GST_SECOND,
             (guint64) (mp3parse->xing_frames) * (mp3parse->spf),
             mp3parse->rate);
@@ -1053,9 +1198,38 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
       mp3parse->xing_vbr_scale = 0;
 
     GST_DEBUG_OBJECT (mp3parse, "Xing header reported %u frames, time %"
-        GST_TIME_FORMAT ", %u bytes, vbr scale %u", mp3parse->xing_frames,
+        GST_TIME_FORMAT ", %u bytes, vbr scale %u", mp3parse->xing_frames-1,
         GST_TIME_ARGS (mp3parse->xing_total_time), mp3parse->xing_bytes,
         mp3parse->xing_vbr_scale);
+
+    /* LAME-specific part of structure is 36 bytes */
+    if (size >= bytes_needed + 36) {
+      /* If we have this, then try to read the LAME 'Info' tag encoder 
+       * delay/padding values */
+      gint delay, padding;
+      gint lameoffset = bytes_needed;
+
+      data = gst_adapter_peek (mp3parse->adapter, size);
+      data += lameoffset;
+      data += 21; /* Offset inside the LAME-specific part of the structure to 
+                     the encoder delays */
+
+      delay = (data[0] << 4) | (data[1] >> 4);
+      padding = ((data[1] & 0x0f) << 8) | data[2];
+
+      GST_INFO_OBJECT (mp3parse, "Encoder delay %d, encoder padding %d",
+              delay, padding);
+
+      /* Trim the encoded delay, plus the decoder delay, plus one extra frame
+       * (for the LAME Info tag frame itself) off the front) */
+      if (delay)
+        mp3parse->trim_start = delay + MP3_DECODER_DELAY + mp3parse->spf;
+      /* Trim the encoded padding, minus the decoder delay, from the end */
+      if (padding)
+        mp3parse->trim_end = MAX(0, padding - MP3_DECODER_DELAY);
+      GST_INFO_OBJECT (mp3parse, "Overall delay %d, overall padding %d", 
+              mp3parse->trim_start, mp3parse->trim_end);
+    }
   } else if (read_id == vbri_id) {
     gint64 total_bytes, total_frames;
 
@@ -1064,7 +1238,7 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
     guint16 nseek_points;
 
     GST_DEBUG_OBJECT (mp3parse, "Found VBRI header marker 0x%x", vbri_id);
-    if (avail < offset + 26) {
+    if (avail < offset + 26 || offset + 26 > size) {
       GST_DEBUG_OBJECT (mp3parse,
           "Not enough data to read VBRI header (need %d)", offset + 26);
       return;
@@ -1182,6 +1356,55 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse)
   } else {
     GST_DEBUG_OBJECT (mp3parse,
         "Xing, LAME or VBRI header not found in first frame");
+  }
+
+  /* Set up our segment based on clipping values if we now
+   * have them (from any source)
+   */
+  if (mp3parse->trim_start || mp3parse->trim_end)
+  {
+    if (mp3parse->pending_segment && mp3parse->unknown_incoming_format)
+    {
+      gdouble rate, applied_rate;
+      GstFormat format;
+      gint64 start, stop, pos;
+      gboolean update;
+      GstEvent **eventp, *event;
+      gint total_samples = 0;
+
+      if (mp3parse->xing_frames) 
+        total_samples = mp3parse->xing_frames * mp3parse->spf - 
+            (mp3parse->trim_start + mp3parse->trim_end);
+      else if (mp3parse->itunsmpb_total_samples)
+        total_samples = mp3parse->itunsmpb_total_samples;
+
+      GST_INFO_OBJECT (mp3parse, "Trimming %d samples from front, "
+              "outputting %d total samples", mp3parse->trim_start, 
+              total_samples);
+
+      gst_event_parse_new_segment_full (mp3parse->pending_segment, 
+              &update, &rate, &applied_rate, &format, &start, &stop, &pos);
+
+      start = (GST_SECOND * mp3parse->trim_start + GST_SECOND/2) / 
+          mp3parse->rate;
+      if (total_samples)
+        stop = start + ((total_samples-1)*GST_SECOND)/mp3parse->rate;
+      else
+        stop = -1;
+
+      GST_DEBUG_OBJECT (mp3parse, "Pushing newseg rate %g, applied rate %g, "
+          "format %d, start %lld, stop %lld, pos %lld",
+          rate, applied_rate, format, start, stop, pos);
+      gst_segment_set_newsegment_full (&mp3parse->segment, update, rate,
+          applied_rate, format, start, stop, pos);
+
+      event = gst_event_new_new_segment_full (update, rate, applied_rate, 
+              format, start, stop, pos);
+
+      eventp = &mp3parse->pending_segment;
+      gst_event_replace (eventp, event);
+      gst_event_unref (event);
+    }
   }
 }
 
@@ -1358,7 +1581,7 @@ gst_mp3parse_chain (GstPad * pad, GstBuffer * buf)
       if (mp3parse->frame_count == 0) {
         /* For the first frame in the file, look for a Xing frame after 
          * the header, and output a codec tag */
-        gst_mp3parse_handle_first_frame (mp3parse);
+        gst_mp3parse_handle_first_frame (mp3parse, bpf);
       }
 
       /* Update VBR stats */
@@ -1407,7 +1630,7 @@ head_check (GstMPEGAudioParse * mp3parse, unsigned long head)
   GST_DEBUG_OBJECT (mp3parse, "checking mp3 header 0x%08lx", head);
   /* if it's not a valid sync */
   if ((head & 0xffe00000) != 0xffe00000) {
-    GST_WARNING_OBJECT (mp3parse, "invalid sync");
+    GST_WARNING_OBJECT (mp3parse, "invalid sync at offset %d", mp3parse->cur_offset);
     return FALSE;
   }
   /* if it's an invalid MPEG version */
