@@ -358,6 +358,50 @@ gst_base_audio_sink_query (GstElement * element, GstQuery * query)
       }
       break;
     }
+    case GST_QUERY_POSITION:
+    {
+#if 0
+      GstFormat format;
+      gst_query_parse_position (query, &format, NULL);
+      if (format == GST_FORMAT_TIME) {
+        GstState state;
+        GST_OBJECT_LOCK (element);
+        state = GST_STATE (element);
+        GST_OBJECT_UNLOCK (element);
+
+        if (state == GST_STATE_PAUSED) {
+          res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
+          if (res && spec->ringbuffer && spec->ringbuffer->spec.rate) {
+            /* In PAUSED, basesink doesn't include the latency of the
+             * ringbuffer in its position reporting, so add that here.
+             */
+            GstClockTime position;
+            GstRingBufferSpec;
+            guint64 latency_samples;
+
+            gst_query_parse_position (query, &format, &position);
+            spec = &basesink->ringbuffer->spec;
+
+            latency_samples = (guint64)spec->seglatency * spec->segsize / spec->bytes_per_sample;
+            latency_samples += gst_ring_buffer_delay (sink->ringbuffer);
+
+            position += gst_util_uint64_scale_int (latency_samples,
+                GST_SECOND, spec->rate);
+            
+            gst_query_set_position (query, format, position);
+
+            return TRUE;
+          }
+        }
+      }
+
+      /* Otherwise, just use basesink's query implementation */
+      res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
+
+      break;
+#endif
+    }
+
     default:
       res = GST_ELEMENT_CLASS (parent_class)->query (element, query);
       break;
@@ -585,6 +629,9 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   spec->buffer_time = spec->segtotal * spec->latency_time;
 
   gst_ring_buffer_debug_spec_buff (spec);
+
+  /* After a caps change, we don't want to align the next sample */
+  sink->next_sample = -1;
 
   return TRUE;
 
