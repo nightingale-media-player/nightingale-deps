@@ -341,17 +341,23 @@ gst_selector_pad_event (GstPad * pad, GstEvent * event)
   gboolean forward = TRUE;
   GstInputSelector *sel;
   GstSelectorPad *selpad;
+  GstPad *active_sinkpad;
+  gboolean notify;
 
   sel = GST_INPUT_SELECTOR (gst_pad_get_parent (pad));
   selpad = GST_SELECTOR_PAD_CAST (pad);
 
-  /* only forward if we are dealing with the active sinkpad */
-  forward = gst_input_selector_is_active_sinkpad (sel, pad);
+  GST_INPUT_SELECTOR_LOCK (sel);
+  active_sinkpad = gst_input_selector_activate_sinkpad (sel, pad, &notify);
 
-  /* forward all events in select_all mode by default */
-  if (sel->select_all) {
-    forward = TRUE;
-  }
+  /* only forward if we are dealing with the active sinkpad or if select_all
+   * is enabled */
+  if (pad != active_sinkpad && !sel->select_all)
+    forward = FALSE;
+  GST_INPUT_SELECTOR_UNLOCK (sel);
+
+  if (notify)
+    g_object_notify (G_OBJECT (sel), "active-pad");
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_START:
