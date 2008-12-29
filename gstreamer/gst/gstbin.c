@@ -1866,9 +1866,11 @@ gst_bin_element_set_state (GstBin * bin, GstElement * element,
   GstStateChangeReturn ret;
   gboolean locked;
   GList *found;
+  GstState element_state;
 
   /* peel off the locked flag */
   GST_OBJECT_LOCK (element);
+  element_state = GST_STATE (element);
   locked = GST_OBJECT_FLAG_IS_SET (element, GST_ELEMENT_LOCKED_STATE);
   /* get previous state return */
   ret = GST_STATE_RETURN (element);
@@ -1917,6 +1919,10 @@ no_latency:
   GST_OBJECT_UNLOCK (bin);
 
 no_preroll:
+  if (((next < current) && (next > element_state)) ||
+      ((next > current) && (next < element_state)))
+    return GST_STATE_CHANGE_SUCCESS;
+
   GST_DEBUG_OBJECT (bin,
       "setting element %s to %s, base_time %" GST_TIME_FORMAT,
       GST_ELEMENT_NAME (element), gst_element_state_get_name (next),
