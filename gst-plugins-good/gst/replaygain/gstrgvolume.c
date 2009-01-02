@@ -62,6 +62,7 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 #include <math.h>
+#include <string.h>
 
 #include "gstrgvolume.h"
 #include "replaygain.h"
@@ -468,6 +469,9 @@ gst_rg_volume_sink_event (GstPad * pad, GstEvent * event)
   volume_sink_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (pad));
 
   switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_NEWSEGMENT:
+      self->got_newsegment = TRUE;
+      break;
     case GST_EVENT_TAG:
 
       GST_LOG_OBJECT (self, "received tag event");
@@ -498,15 +502,101 @@ gst_rg_volume_sink_event (GstPad * pad, GstEvent * event)
   return res;
 }
 
+static double
+rgvolume_itunnorm_to_db(int norm_value, int scale)
+{
+  return log10((double)norm_value / scale) * -10;
+}
+
+static guint
+rgvolume_itunes_field (gchar *data, int field)
+{
+  guint value = 0;
+  int i = 0;
+
+  /* Skip 'field' leading fields */
+  while (field--) {
+    while (g_ascii_isspace (data[i]))
+      i++;
+    while (g_ascii_isxdigit(data[i]))
+      i++;
+  }
+
+  /* Skip leading space */
+  while (g_ascii_isspace (data[i]))
+    i++;
+
+  /* Parse hex values */
+  while (g_ascii_isxdigit(data[i])) {
+    value = (value << 4) | g_ascii_xdigit_value(data[i]);
+    i++;
+  }
+
+  return value;
+}
+
+
+/* Private copy of this to avoid having to link in an extra lib */
+static gboolean
+tag_parse_extended_comment (const gchar * ext_comment, gchar ** key,
+    gchar ** lang, gchar ** value, gboolean fail_if_no_key)
+{
+  const gchar *div, *bop, *bcl;
+
+  if (key)
+    *key = NULL;
+  if (lang)
+    *lang = NULL;
+
+  div = strchr (ext_comment, '=');
+  bop = strchr (ext_comment, '[');
+  bcl = strchr (ext_comment, ']');
+
+  if (div == NULL) {
+    if (fail_if_no_key)
+      return FALSE;
+    if (value)
+      *value = g_strdup (ext_comment);
+    return TRUE;
+  }
+
+  if (bop != NULL && bop < div) {
+    if (bcl < bop || bcl > div)
+      return FALSE;
+    if (key)
+      *key = g_strndup (ext_comment, bop - ext_comment);
+    if (lang)
+      *lang = g_strndup (bop + 1, bcl - bop - 1);
+  } else {
+    if (key)
+      *key = g_strndup (ext_comment, div - ext_comment);
+  }
+
+  if (value)
+    *value = g_strdup (div + 1);
+
+  return TRUE;
+}
+
 static GstEvent *
 gst_rg_volume_tag_event (GstRgVolume * self, GstEvent * event)
 {
   GstTagList *tag_list;
   gboolean has_track_gain, has_track_peak, has_album_gain, has_album_peak;
   gboolean has_ref_level;
+  gboolean has_itunnorm = FALSE;
+  int index = 0;
+  gchar *tag = NULL;
 
   g_return_val_if_fail (event != NULL, NULL);
   g_return_val_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_TAG, event);
+
+  if (self->got_newsegment) {
+    /* A tag event following a new segment probably means we don't want any
+     * old replaygain info
+     */
+    gst_rg_volume_reset (self);
+  }
 
   gst_event_parse_tag (event, &tag_list);
 
@@ -525,6 +615,50 @@ gst_rg_volume_tag_event (GstRgVolume * self, GstEvent * event)
       &self->reference_level);
 
   if (!has_track_gain && !has_track_peak && !has_album_gain && !has_album_peak)
+  {
+    while (gst_tag_list_get_string_index (tag_list, 
+        GST_TAG_EXTENDED_COMMENT, index++, &tag))
+    {
+      gchar *key = NULL, *value = NULL;
+      if ( tag_parse_extended_comment (tag, &key, NULL, &value, TRUE))
+      {
+        if (key && value && !strcmp (key, "iTunNORM"))
+        {
+          /* Ok, value is a series of hex-encoded integer fields, 
+           * each (including the first) starting with a space.
+           */
+          int volume_adj_1 = MAX (rgvolume_itunes_field (value, 0), 
+                                  rgvolume_itunes_field (value, 1));
+          int volume_adj_2 = MAX (rgvolume_itunes_field (value, 2), 
+                                  rgvolume_itunes_field (value, 3));
+
+          /* Now calculate the desired volume adjustment in dB */
+          double volume_adjustment = MAX (
+              rgvolume_itunnorm_to_db(volume_adj_1, 1000),
+              rgvolume_itunnorm_to_db(volume_adj_2, 2500));
+
+          if (VALID_GAIN (volume_adjustment)) {
+            GST_DEBUG_OBJECT (self, "Using volume adjustment %" GAIN_FORMAT 
+                " from iTunNORM field", volume_adjustment);
+            self->track_gain = volume_adjustment;
+            self->has_track_gain = TRUE;
+            has_itunnorm = TRUE;
+          }
+          else
+            GST_WARNING_OBJECT (self, 
+                    "Ignoring iTunNORM volume adjustment of %" GAIN_FORMAT, 
+                    volume_adjustment);
+        }
+
+        g_free (key);
+        g_free (value);
+      }
+      g_free(tag);
+    }
+  }
+
+  if (!has_track_gain && !has_track_peak && !has_album_gain && 
+          !has_album_peak && !has_itunnorm)
     return event;
 
   if (has_ref_level && (has_track_gain || has_album_gain)
@@ -596,6 +730,8 @@ gst_rg_volume_reset (GstRgVolume * self)
   self->has_album_peak = FALSE;
 
   self->reference_level = RG_REFERENCE_LEVEL;
+
+  self->got_newsegment = FALSE;
 
   gst_rg_volume_update_gain (self);
 }
