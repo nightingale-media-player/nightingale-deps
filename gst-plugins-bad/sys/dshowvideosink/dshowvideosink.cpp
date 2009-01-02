@@ -1244,8 +1244,12 @@ gst_dshowvideosink_set_caps (GstBaseSink * bsink, GstCaps * caps)
 {
   GstDshowVideoSink *sink = GST_DSHOWVIDEOSINK (bsink);
 
-  /* TODO: What do we want to do if the caps change while we're running?
-   * Find out if we can handle this or not... */
+  if (sink->connected) {
+    /* Look at the DShow APIs for dynamically modifying the pipeline and see
+     * if we can make this work later... */
+    GST_WARNING_OBJECT (sink, "Changing caps at runtime is not yet supported");
+    return FALSE;
+  }
 
   if (!gst_caps_to_directshow_media_type (caps, &sink->mediatype)) {
     GST_WARNING_OBJECT (sink, "Cannot convert caps to AM_MEDIA_TYPE, rejecting");
