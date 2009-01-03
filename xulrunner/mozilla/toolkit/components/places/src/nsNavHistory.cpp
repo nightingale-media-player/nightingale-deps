@@ -744,15 +744,20 @@ nsNavHistory::InitDB(PRInt16 *aMadeChanges)
 
   // compute the size of the database cache
   PRInt32 cachePercentage;
-  if (NS_FAILED(mPrefBranch->GetIntPref(PREF_DB_CACHE_PERCENTAGE,
-                                        &cachePercentage)))
-    cachePercentage = DEFAULT_DB_CACHE_PERCENTAGE;
-  if (cachePercentage > 50)
-    cachePercentage = 50; // sanity check, don't take too much
-  if (cachePercentage < 0)
-    cachePercentage = 0;
-  PRInt64 cacheSize = PR_GetPhysicalMemorySize() * cachePercentage / 100;
-  PRInt64 cachePages = cacheSize / pageSize;
+  
+  // XXX SONGBIRD HACK, Bug 14444: "640k should be enough for anyone"
+  PRInt64 cachePages = 160;
+  
+  // Allow cache size to be controlled by a pref
+  if (NS_SUCCEEDED(mPrefBranch->GetIntPref(PREF_DB_CACHE_PERCENTAGE,
+                                           &cachePercentage))) {
+    if (cachePercentage > 50)
+      cachePercentage = 50; // sanity check, don't take too much
+    if (cachePercentage < 0)
+      cachePercentage = 0;
+    PRInt64 cacheSize = PR_GetPhysicalMemorySize() * cachePercentage / 100; 
+    cachePages = cacheSize / pageSize;
+  }
 
   // set the cache size
   nsCAutoString cacheSizePragma("PRAGMA cache_size=");
