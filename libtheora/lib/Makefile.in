@@ -43,9 +43,11 @@ DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/pkg.m4 \
-	$(top_srcdir)/m4/sdl.m4 $(top_srcdir)/m4/vorbis.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/ogg.m4 \
+	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/m4/sdl.m4 \
+	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -61,32 +63,41 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libtheora_la_LIBADD =
-am__libtheora_la_SOURCES_DIST = dec/x86/mmxidct.c dec/x86/mmxfrag.c \
-	dec/x86/mmxstate.c dec/x86/x86state.c dec/apiwrapper.c \
-	dec/bitpack.c dec/decapiwrapper.c dec/decinfo.c dec/decode.c \
-	dec/dequant.c dec/fragment.c dec/huffdec.c dec/idct.c \
-	dec/info.c dec/internal.c dec/quant.c dec/state.c \
-	$(enc_arch_dir)/dct_decode_mmx.c $(enc_arch_dir)/dsp_mmx.c \
-	$(enc_arch_dir)/dsp_mmxext.c $(enc_arch_dir)/recon_mmx.c \
-	$(enc_arch_dir)/idct_mmx.c $(enc_arch_dir)/fdct_mmx.c \
-	enc/dct_encode.c enc/encode.c enc/encoder_huffman.c \
-	enc/encoder_idct.c enc/encoder_toplevel.c enc/encoder_quant.c \
-	enc/encapiwrapper.c enc/blockmap.c enc/dct.c enc/dct_decode.c \
-	enc/frarray.c enc/frinit.c enc/mcomp.c enc/misc_common.c \
-	enc/pb.c enc/pp.c enc/reconstruct.c enc/scan.c enc/dsp.c \
-	enc/encoder_disabled.c Version_script
-am__objects_1 = mmxidct.lo mmxfrag.lo mmxstate.lo x86state.lo
+am__libtheora_la_SOURCES_DIST = $(dec_arch_dir)/mmxidct.c \
+	$(dec_arch_dir)/mmxfrag.c $(dec_arch_dir)/mmxstate.c \
+	$(dec_arch_dir)/x86state.c $(dec_arch_dir)/mmxloopfilter.c \
+	dec/apiwrapper.c dec/bitpack.c dec/decapiwrapper.c \
+	dec/decinfo.c dec/decode.c dec/dequant.c dec/fragment.c \
+	dec/huffdec.c dec/idct.c dec/info.c dec/internal.c dec/quant.c \
+	dec/state.c $(enc_arch_dir)/dct_decode_mmx.c \
+	$(enc_arch_dir)/dsp_mmx.c $(enc_arch_dir)/dsp_mmxext.c \
+	$(enc_arch_dir)/recon_mmx.c $(enc_arch_dir)/idct_mmx.c \
+	$(enc_arch_dir)/fdct_mmx.c enc/dct_encode.c enc/encode.c \
+	enc/encoder_huffman.c enc/encoder_idct.c \
+	enc/encoder_toplevel.c enc/encoder_quant.c enc/encapiwrapper.c \
+	enc/blockmap.c enc/dct.c enc/dct_decode.c enc/frarray.c \
+	enc/frinit.c enc/mcomp.c enc/misc_common.c enc/pb.c enc/pp.c \
+	enc/reconstruct.c enc/scan.c enc/dsp.c enc/encoder_disabled.c \
+	Version_script
+@COMPILER_visualstudio_FALSE@am__objects_1 = mmxidct.lo mmxfrag.lo \
+@COMPILER_visualstudio_FALSE@	mmxstate.lo x86state.lo
+@COMPILER_visualstudio_TRUE@am__objects_1 = mmxloopfilter.lo \
+@COMPILER_visualstudio_TRUE@	mmxidct.lo mmxfrag.lo mmxstate.lo \
+@COMPILER_visualstudio_TRUE@	x86state.lo
 @CPU_x86_32_TRUE@@CPU_x86_64_FALSE@am__objects_2 = $(am__objects_1)
 @CPU_x86_64_TRUE@am__objects_2 = $(am__objects_1)
 am__objects_3 = apiwrapper.lo bitpack.lo decapiwrapper.lo decinfo.lo \
 	decode.lo dequant.lo fragment.lo huffdec.lo idct.lo info.lo \
 	internal.lo quant.lo state.lo
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@am__objects_4 = dct_decode_mmx.lo \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmx.lo \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmxext.lo \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	recon_mmx.lo \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	idct_mmx.lo \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	fdct_mmx.lo
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@am__objects_4 = dct_decode_mmx.lo \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmx.lo \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmxext.lo \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	recon_mmx.lo \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	idct_mmx.lo \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	fdct_mmx.lo
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@am__objects_4 = dsp_mmx.lo \
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	recon_mmx.lo \
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	fdct_mmx.lo
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@am__objects_4 = dct_decode_mmx.lo \
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmx.lo \
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@	dsp_mmxext.lo \
@@ -108,12 +119,13 @@ am_libtheora_la_OBJECTS = $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5)
 libtheora_la_OBJECTS = $(am_libtheora_la_OBJECTS)
 libtheoradec_la_LIBADD =
-am__libtheoradec_la_SOURCES_DIST = dec/x86/mmxidct.c dec/x86/mmxfrag.c \
-	dec/x86/mmxstate.c dec/x86/x86state.c dec/apiwrapper.c \
-	dec/bitpack.c dec/decapiwrapper.c dec/decinfo.c dec/decode.c \
-	dec/dequant.c dec/fragment.c dec/huffdec.c dec/idct.c \
-	dec/info.c dec/internal.c dec/quant.c dec/state.c \
-	Version_script-dec
+am__libtheoradec_la_SOURCES_DIST = $(dec_arch_dir)/mmxidct.c \
+	$(dec_arch_dir)/mmxfrag.c $(dec_arch_dir)/mmxstate.c \
+	$(dec_arch_dir)/x86state.c $(dec_arch_dir)/mmxloopfilter.c \
+	dec/apiwrapper.c dec/bitpack.c dec/decapiwrapper.c \
+	dec/decinfo.c dec/decode.c dec/dequant.c dec/fragment.c \
+	dec/huffdec.c dec/idct.c dec/info.c dec/internal.c dec/quant.c \
+	dec/state.c Version_script-dec
 am_libtheoradec_la_OBJECTS = $(am__objects_2) $(am__objects_3)
 libtheoradec_la_OBJECTS = $(am_libtheoradec_la_OBJECTS)
 libtheoraenc_la_LIBADD =
@@ -155,6 +167,9 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
 AR = @AR@
+AR_FLAGS = @AR_FLAGS@
+AR_SEP = @AR_SEP@
+AR_TFLAGS = @AR_TFLAGS@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -167,30 +182,28 @@ BUILD_SPEC_TRUE = @BUILD_SPEC_TRUE@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+COMPILER_visualstudio_FALSE = @COMPILER_visualstudio_FALSE@
+COMPILER_visualstudio_TRUE = @COMPILER_visualstudio_TRUE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPU_x86_32_FALSE = @CPU_x86_32_FALSE@
 CPU_x86_32_TRUE = @CPU_x86_32_TRUE@
 CPU_x86_64_FALSE = @CPU_x86_64_FALSE@
 CPU_x86_64_TRUE = @CPU_x86_64_TRUE@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEBUG = @DEBUG@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DOCDIR = @DOCDIR@
-ECHO = @ECHO@
+DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FFLAGS = @FFLAGS@
+FGREP = @FGREP@
 GETOPT_OBJS = @GETOPT_OBJS@
 GREP = @GREP@
 HAVE_BIBTEX = @HAVE_BIBTEX@
@@ -206,6 +219,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDIR = @LIBDIR@
 LIBOBJS = @LIBOBJS@
@@ -217,6 +231,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
+NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OC_X86ASM_FALSE = @OC_X86ASM_FALSE@
@@ -238,6 +254,7 @@ RANLIB = @RANLIB@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_CONFIG = @SDL_CONFIG@
 SDL_LIBS = @SDL_LIBS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -265,13 +282,11 @@ VORBISENC_LIBS = @VORBISENC_LIBS@
 VORBISFILE_LIBS = @VORBISFILE_LIBS@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
-am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
-am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -301,6 +316,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -366,15 +382,21 @@ lib_LTLIBRARIES = libtheoradec.la libtheoraenc.la libtheora.la
 @THEORA_DISABLE_ENCODE_TRUE@	enc/encapiwrapper.c \
 @THEORA_DISABLE_ENCODE_TRUE@	enc/encoder_disabled.c
 
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@enc_arch_dir = enc/x86_32
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@enc_arch_dir = enc/x86_32
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@enc_arch_dir = enc/x86_32_vs
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@enc_arch_dir = enc/x86_64
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@encoder_arch_sources = \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dct_decode_mmx.c \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dsp_mmx.c \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dsp_mmxext.c \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/recon_mmx.c \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/idct_mmx.c \
-@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/fdct_mmx.c
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@encoder_arch_sources = \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dct_decode_mmx.c \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dsp_mmx.c \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dsp_mmxext.c \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/recon_mmx.c \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/idct_mmx.c \
+@COMPILER_visualstudio_FALSE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/fdct_mmx.c
+
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@encoder_arch_sources = \
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dsp_mmx.c \
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/recon_mmx.c \
+@COMPILER_visualstudio_TRUE@@CPU_x86_32_TRUE@@CPU_x86_64_FALSE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/fdct_mmx.c
 
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@encoder_arch_sources = \
 @CPU_x86_64_TRUE@@THEORA_DISABLE_ENCODE_FALSE@	$(enc_arch_dir)/dct_decode_mmx.c \
@@ -399,11 +421,20 @@ decoder_sources = \
 	dec/quant.c \
 	dec/state.c
 
-decoder_x86_sources = \
-	dec/x86/mmxidct.c \
-	dec/x86/mmxfrag.c \
-	dec/x86/mmxstate.c \
-	dec/x86/x86state.c
+@COMPILER_visualstudio_FALSE@dec_arch_dir = dec/x86
+@COMPILER_visualstudio_TRUE@dec_arch_dir = dec/x86_vc
+@COMPILER_visualstudio_FALSE@decoder_x86_sources = \
+@COMPILER_visualstudio_FALSE@	$(dec_arch_dir)/mmxidct.c \
+@COMPILER_visualstudio_FALSE@	$(dec_arch_dir)/mmxfrag.c \
+@COMPILER_visualstudio_FALSE@	$(dec_arch_dir)/mmxstate.c \
+@COMPILER_visualstudio_FALSE@	$(dec_arch_dir)/x86state.c
+
+@COMPILER_visualstudio_TRUE@decoder_x86_sources = \
+@COMPILER_visualstudio_TRUE@	$(dec_arch_dir)/mmxloopfilter.c \
+@COMPILER_visualstudio_TRUE@	$(dec_arch_dir)/mmxidct.c \
+@COMPILER_visualstudio_TRUE@	$(dec_arch_dir)/mmxfrag.c \
+@COMPILER_visualstudio_TRUE@	$(dec_arch_dir)/mmxstate.c \
+@COMPILER_visualstudio_TRUE@	$(dec_arch_dir)/x86state.c
 
 @CPU_x86_32_FALSE@@CPU_x86_64_FALSE@decoder_arch_sources = 
 @CPU_x86_32_TRUE@@CPU_x86_64_FALSE@decoder_arch_sources = $(decoder_x86_sources)
@@ -438,7 +469,7 @@ libtheoradec_la_SOURCES = \
   Version_script-dec
 
 libtheoradec_la_LDFLAGS = \
-  -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
+  -no-undefined -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
   @THEORADEC_LDFLAGS@
 
 libtheoraenc_la_SOURCES = \
@@ -447,7 +478,8 @@ libtheoraenc_la_SOURCES = \
   Version_script-enc
 
 libtheoraenc_la_LDFLAGS = \
-  -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
+  -no-undefined -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
+  $(top_builddir)/lib/libtheoradec.la \
   @THEORAENC_LDFLAGS@ $(OGG_LIBS)
 
 libtheora_la_SOURCES = \
@@ -458,7 +490,7 @@ libtheora_la_SOURCES = \
   Version_script
 
 libtheora_la_LDFLAGS = \
-  -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
+  -no-undefined -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
   @THEORA_LDFLAGS@ $(OGG_LIBS)
 
 all: all-am
@@ -474,9 +506,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  lib/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  lib/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  lib/Makefile
+	  $(AUTOMAKE) --gnu  lib/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -568,6 +600,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc_common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmxfrag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmxidct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmxloopfilter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmxstate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pp.Plo@am__quote@
@@ -599,33 +632,40 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-mmxidct.lo: dec/x86/mmxidct.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxidct.lo -MD -MP -MF "$(DEPDIR)/mmxidct.Tpo" -c -o mmxidct.lo `test -f 'dec/x86/mmxidct.c' || echo '$(srcdir)/'`dec/x86/mmxidct.c; \
+mmxidct.lo: $(dec_arch_dir)/mmxidct.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxidct.lo -MD -MP -MF "$(DEPDIR)/mmxidct.Tpo" -c -o mmxidct.lo `test -f '$(dec_arch_dir)/mmxidct.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxidct.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mmxidct.Tpo" "$(DEPDIR)/mmxidct.Plo"; else rm -f "$(DEPDIR)/mmxidct.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dec/x86/mmxidct.c' object='mmxidct.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(dec_arch_dir)/mmxidct.c' object='mmxidct.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxidct.lo `test -f 'dec/x86/mmxidct.c' || echo '$(srcdir)/'`dec/x86/mmxidct.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxidct.lo `test -f '$(dec_arch_dir)/mmxidct.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxidct.c
 
-mmxfrag.lo: dec/x86/mmxfrag.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxfrag.lo -MD -MP -MF "$(DEPDIR)/mmxfrag.Tpo" -c -o mmxfrag.lo `test -f 'dec/x86/mmxfrag.c' || echo '$(srcdir)/'`dec/x86/mmxfrag.c; \
+mmxfrag.lo: $(dec_arch_dir)/mmxfrag.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxfrag.lo -MD -MP -MF "$(DEPDIR)/mmxfrag.Tpo" -c -o mmxfrag.lo `test -f '$(dec_arch_dir)/mmxfrag.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxfrag.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mmxfrag.Tpo" "$(DEPDIR)/mmxfrag.Plo"; else rm -f "$(DEPDIR)/mmxfrag.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dec/x86/mmxfrag.c' object='mmxfrag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(dec_arch_dir)/mmxfrag.c' object='mmxfrag.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxfrag.lo `test -f 'dec/x86/mmxfrag.c' || echo '$(srcdir)/'`dec/x86/mmxfrag.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxfrag.lo `test -f '$(dec_arch_dir)/mmxfrag.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxfrag.c
 
-mmxstate.lo: dec/x86/mmxstate.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxstate.lo -MD -MP -MF "$(DEPDIR)/mmxstate.Tpo" -c -o mmxstate.lo `test -f 'dec/x86/mmxstate.c' || echo '$(srcdir)/'`dec/x86/mmxstate.c; \
+mmxstate.lo: $(dec_arch_dir)/mmxstate.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxstate.lo -MD -MP -MF "$(DEPDIR)/mmxstate.Tpo" -c -o mmxstate.lo `test -f '$(dec_arch_dir)/mmxstate.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxstate.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mmxstate.Tpo" "$(DEPDIR)/mmxstate.Plo"; else rm -f "$(DEPDIR)/mmxstate.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dec/x86/mmxstate.c' object='mmxstate.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(dec_arch_dir)/mmxstate.c' object='mmxstate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxstate.lo `test -f 'dec/x86/mmxstate.c' || echo '$(srcdir)/'`dec/x86/mmxstate.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxstate.lo `test -f '$(dec_arch_dir)/mmxstate.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxstate.c
 
-x86state.lo: dec/x86/x86state.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x86state.lo -MD -MP -MF "$(DEPDIR)/x86state.Tpo" -c -o x86state.lo `test -f 'dec/x86/x86state.c' || echo '$(srcdir)/'`dec/x86/x86state.c; \
+x86state.lo: $(dec_arch_dir)/x86state.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x86state.lo -MD -MP -MF "$(DEPDIR)/x86state.Tpo" -c -o x86state.lo `test -f '$(dec_arch_dir)/x86state.c' || echo '$(srcdir)/'`$(dec_arch_dir)/x86state.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/x86state.Tpo" "$(DEPDIR)/x86state.Plo"; else rm -f "$(DEPDIR)/x86state.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dec/x86/x86state.c' object='x86state.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(dec_arch_dir)/x86state.c' object='x86state.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x86state.lo `test -f 'dec/x86/x86state.c' || echo '$(srcdir)/'`dec/x86/x86state.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x86state.lo `test -f '$(dec_arch_dir)/x86state.c' || echo '$(srcdir)/'`$(dec_arch_dir)/x86state.c
+
+mmxloopfilter.lo: $(dec_arch_dir)/mmxloopfilter.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mmxloopfilter.lo -MD -MP -MF "$(DEPDIR)/mmxloopfilter.Tpo" -c -o mmxloopfilter.lo `test -f '$(dec_arch_dir)/mmxloopfilter.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxloopfilter.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mmxloopfilter.Tpo" "$(DEPDIR)/mmxloopfilter.Plo"; else rm -f "$(DEPDIR)/mmxloopfilter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(dec_arch_dir)/mmxloopfilter.c' object='mmxloopfilter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mmxloopfilter.lo `test -f '$(dec_arch_dir)/mmxloopfilter.c' || echo '$(srcdir)/'`$(dec_arch_dir)/mmxloopfilter.c
 
 apiwrapper.lo: dec/apiwrapper.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apiwrapper.lo -MD -MP -MF "$(DEPDIR)/apiwrapper.Tpo" -c -o apiwrapper.lo `test -f 'dec/apiwrapper.c' || echo '$(srcdir)/'`dec/apiwrapper.c; \
