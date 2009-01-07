@@ -35,6 +35,6 @@ SB_VENDOR_TARGET_VERSION = 0.8.11
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_DYLIB_FIXUPS := libIDL-2.0.dylib 
+SB_VENDOR_TARGET_DYLIB_FIXUPS := libIDL-2.0
 
 include $(CURDIR)/../songbird-vendor-rules.mk
