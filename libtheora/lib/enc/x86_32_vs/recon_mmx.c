@@ -15,7 +15,7 @@
 
  ********************************************************************/
 
-#include "codec_internal.h"
+#include "../codec_internal.h"
 
 
 static const unsigned __int64 V128 = 0x8080808080808080;

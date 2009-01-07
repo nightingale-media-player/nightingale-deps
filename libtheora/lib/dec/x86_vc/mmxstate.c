@@ -21,12 +21,13 @@
 
   Conversion to MSC intrinsics by Nils Pipenbrinck.
   ---------------------------------------------------------------------*/
-#if defined(USE_ASM)
 
 #include "../../internal.h"
 #include "../idct.h"
 #include "x86int.h"
 #include <mmintrin.h>
+
+#if defined(USE_ASM)
 
 static const unsigned char OC_FZIG_ZAGMMX[64]=
 {

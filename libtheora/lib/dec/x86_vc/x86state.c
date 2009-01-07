@@ -15,10 +15,11 @@
 
  ********************************************************************/
 
-#if defined(USE_ASM)
 
 #include "x86int.h"
 #include "../../cpu.c"
+
+#if defined(USE_ASM)
 
 void oc_state_vtable_init_x86(oc_theora_state *_state){
   _state->cpu_flags=oc_cpu_flags_get();

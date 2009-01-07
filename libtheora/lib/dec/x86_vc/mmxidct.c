@@ -22,12 +22,13 @@
   Converted to Visual Studio inline assembly by Nils Pipenbrinck.
 
   ---------------------------------------------------------------------*/
-#if defined(USE_ASM)
 
 #include <ogg/ogg.h>
 #include "../dct.h"
 #include "../idct.h"
 #include "x86int.h"
+
+#if defined(USE_ASM)
 
 /*A table of constants used by the MMX routines.*/
 static const __declspec(align(16)) ogg_uint16_t

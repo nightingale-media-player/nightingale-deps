@@ -62,6 +62,13 @@ encoder_arch_sources= \
 	$(enc_arch_dir)/fdct_mmx.c
 else
 if CPU_x86_32
+if COMPILER_visualstudio
+enc_arch_dir = enc/x86_32_vs
+encoder_arch_sources= \
+	$(enc_arch_dir)/dsp_mmx.c \
+	$(enc_arch_dir)/recon_mmx.c \
+	$(enc_arch_dir)/fdct_mmx.c
+else
 enc_arch_dir = enc/x86_32
 encoder_arch_sources= \
 	$(enc_arch_dir)/dct_decode_mmx.c \
@@ -70,6 +77,7 @@ encoder_arch_sources= \
 	$(enc_arch_dir)/recon_mmx.c \
 	$(enc_arch_dir)/idct_mmx.c \
 	$(enc_arch_dir)/fdct_mmx.c
+endif
 endif
 endif
 
@@ -90,11 +98,23 @@ decoder_sources = \
 	dec/quant.c \
 	dec/state.c
 
+if COMPILER_visualstudio
+dec_arch_dir=dec/x86_vc
 decoder_x86_sources = \
-	dec/x86/mmxidct.c \
-	dec/x86/mmxfrag.c \
-	dec/x86/mmxstate.c \
-	dec/x86/x86state.c
+	$(dec_arch_dir)/mmxloopfilter.c \
+	$(dec_arch_dir)/mmxidct.c \
+	$(dec_arch_dir)/mmxfrag.c \
+	$(dec_arch_dir)/mmxstate.c \
+	$(dec_arch_dir)/x86state.c
+else
+dec_arch_dir=dec/x86
+decoder_x86_sources = \
+	$(dec_arch_dir)/mmxidct.c \
+	$(dec_arch_dir)/mmxfrag.c \
+	$(dec_arch_dir)/mmxstate.c \
+	$(dec_arch_dir)/x86state.c
+endif
+
 if CPU_x86_64
 decoder_arch_sources = $(decoder_x86_sources)
 else
@@ -134,7 +154,7 @@ libtheoradec_la_SOURCES = \
 	$(decoder_sources) \
   Version_script-dec
 libtheoradec_la_LDFLAGS = \
-  -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
+  -no-undefined -version-info @THDEC_LIB_CURRENT@:@THDEC_LIB_REVISION@:@THDEC_LIB_AGE@ \
   @THEORADEC_LDFLAGS@
 
 libtheoraenc_la_SOURCES = \
@@ -142,7 +162,8 @@ libtheoraenc_la_SOURCES = \
 	$(encoder_sources) \
   Version_script-enc
 libtheoraenc_la_LDFLAGS = \
-  -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
+  -no-undefined -version-info @THENC_LIB_CURRENT@:@THENC_LIB_REVISION@:@THENC_LIB_AGE@ \
+  $(top_builddir)/lib/libtheoradec.la \
   @THEORAENC_LDFLAGS@ $(OGG_LIBS)
 
 libtheora_la_SOURCES = \
@@ -152,7 +173,7 @@ libtheora_la_SOURCES = \
 	$(encoder_sources) \
   Version_script
 libtheora_la_LDFLAGS = \
-  -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
+  -no-undefined -version-info @TH_LIB_CURRENT@:@TH_LIB_REVISION@:@TH_LIB_AGE@ \
   @THEORA_LDFLAGS@ $(OGG_LIBS)
 
 debug:

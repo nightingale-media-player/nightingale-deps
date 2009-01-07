@@ -211,6 +211,17 @@ AM_CONDITIONAL([CPU_x86_64], [test x$cpu_x86_64 = xyes])
 AM_CONDITIONAL([CPU_x86_32], [test x$cpu_x86_32 = xyes])
 AM_CONDITIONAL(OC_X86ASM,[test x$ac_enable_asm = xyes])
 
+visualstudio=no
+
+case "$target_os" in
+  *cygwin*|*mingw*|*msvc*)
+    if test "$GCC" != "yes"; then
+      visualstudio=yes
+    fi
+  ;;
+esac
+AM_CONDITIONAL(COMPILER_visualstudio, [test x$visualstudio = xyes])
+
 # Test whenever ld supports -version-script
 AC_PROG_LD
 AC_PROG_LD_GNU

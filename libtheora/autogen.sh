@@ -116,8 +116,8 @@ echo "Generating configuration files for $package, please wait...."
 
 echo "  $ACLOCAL $ACLOCAL_FLAGS"
 $ACLOCAL $ACLOCAL_FLAGS || exit 1
-echo "  $LIBTOOLIZE --automake"
-$LIBTOOLIZE --automake || exit 1
+echo "  $LIBTOOLIZE --automake --copy --force"
+$LIBTOOLIZE --automake --copy --force || exit 1
 echo "  autoheader"
 autoheader || exit 1
 echo "  $AUTOMAKE --add-missing $AUTOMAKE_FLAGS"
@@ -126,4 +126,4 @@ echo "  autoconf"
 autoconf || exit 1
 
 cd $olddir
-$srcdir/configure --enable-maintainer-mode "$@" && echo
+#$srcdir/configure --enable-maintainer-mode "$@" && echo

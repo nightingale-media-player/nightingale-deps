@@ -17,8 +17,8 @@
 
 #include <stdlib.h>
 
-#include "codec_internal.h"
-#include "dsp.h"
+#include "../codec_internal.h"
+#include "../dsp.h"
 
 #if 0
 //These are to let me selectively enable the C versions, these are needed

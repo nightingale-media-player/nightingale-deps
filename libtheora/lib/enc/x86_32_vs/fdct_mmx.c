@@ -10,8 +10,8 @@
 ;//--------------------------------------------------------------------------
 
 #include "theora/theora.h"
-#include "codec_internal.h"
-#include "dsp.h"
+#include "../codec_internal.h"
+#include "../dsp.h"
 
 
 static const  ogg_int64_t xC1S7 = 0x0fb15fb15fb15fb15;
