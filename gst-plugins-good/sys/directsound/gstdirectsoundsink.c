@@ -701,22 +701,20 @@ gst_directsound_sink_delay (GstAudioSink * asink)
   /* get current buffer status */
   hRes = IDirectSoundBuffer_GetStatus (dsoundsink->pDSBSecondary, &dwStatus);
 
-  if (dwStatus & DSBSTATUS_PLAYING) {
-    /*evaluate the number of samples in queue in the circular buffer */
-    hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
-        &dwCurrentPlayCursor, NULL);
+  /*evaluate the number of samples in queue in the circular buffer */
+  hRes = IDirectSoundBuffer_GetCurrentPosition (dsoundsink->pDSBSecondary,
+      &dwCurrentPlayCursor, NULL);
 
-    if (hRes == S_OK) {
-      if (dwCurrentPlayCursor < dsoundsink->current_circular_offset)
-        dwBytesInQueue =
-            dsoundsink->current_circular_offset - dwCurrentPlayCursor;
-      else
-        dwBytesInQueue =
-            dsoundsink->current_circular_offset + (dsoundsink->buffer_size -
-            dwCurrentPlayCursor);
+  if (hRes == S_OK) {
+    if (dwCurrentPlayCursor < dsoundsink->current_circular_offset)
+      dwBytesInQueue =
+          dsoundsink->current_circular_offset - dwCurrentPlayCursor;
+    else
+      dwBytesInQueue =
+          dsoundsink->current_circular_offset + (dsoundsink->buffer_size -
+          dwCurrentPlayCursor);
 
-      nNbSamplesInQueue = dwBytesInQueue / dsoundsink->bytes_per_sample;
-    }
+    nNbSamplesInQueue = dwBytesInQueue / dsoundsink->bytes_per_sample;
   }
 
   return nNbSamplesInQueue;
