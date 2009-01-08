@@ -48,7 +48,7 @@
 
 #include <string.h>
 
-#include "qtwrapper.h"
+#include "qtvideowrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 #include "imagedescription.h"

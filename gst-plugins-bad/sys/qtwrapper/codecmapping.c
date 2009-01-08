@@ -42,7 +42,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "qtwrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 

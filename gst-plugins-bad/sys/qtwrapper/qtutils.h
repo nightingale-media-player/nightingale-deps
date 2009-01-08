@@ -48,7 +48,6 @@
 #include <Quicktime/ImageCodec.h>
 #endif
 #include <gst/gst.h>
-#include "qtwrapper.h"
 
 #ifndef __QTUTILS_H__
 #define __QTUTILS_H__

@@ -50,7 +50,7 @@
 #include <string.h>
 
 #include <gst/gst.h>
-#include "qtwrapper.h"
+#include "qtaudiowrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 

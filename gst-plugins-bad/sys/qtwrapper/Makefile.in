@@ -86,15 +86,25 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstqtwrapper_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libgstqtaudiowrapper_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_libgstqtwrapper_la_OBJECTS = libgstqtwrapper_la-qtwrapper.lo \
-	libgstqtwrapper_la-qtutils.lo \
-	libgstqtwrapper_la-codecmapping.lo \
-	libgstqtwrapper_la-audiodecoders.lo \
-	libgstqtwrapper_la-videodecoders.lo \
-	libgstqtwrapper_la-imagedescription.lo
-libgstqtwrapper_la_OBJECTS = $(am_libgstqtwrapper_la_OBJECTS)
+am_libgstqtaudiowrapper_la_OBJECTS =  \
+	libgstqtaudiowrapper_la-qtaudiowrapper.lo \
+	libgstqtaudiowrapper_la-qtutils.lo \
+	libgstqtaudiowrapper_la-codecmapping.lo \
+	libgstqtaudiowrapper_la-audiodecoders.lo
+libgstqtaudiowrapper_la_OBJECTS =  \
+	$(am_libgstqtaudiowrapper_la_OBJECTS)
+libgstqtvideowrapper_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_libgstqtvideowrapper_la_OBJECTS =  \
+	libgstqtvideowrapper_la-qtvideowrapper.lo \
+	libgstqtvideowrapper_la-qtutils.lo \
+	libgstqtvideowrapper_la-codecmapping.lo \
+	libgstqtvideowrapper_la-videodecoders.lo \
+	libgstqtvideowrapper_la-imagedescription.lo
+libgstqtvideowrapper_la_OBJECTS =  \
+	$(am_libgstqtvideowrapper_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -106,8 +116,10 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstqtwrapper_la_SOURCES)
-DIST_SOURCES = $(libgstqtwrapper_la_SOURCES)
+SOURCES = $(libgstqtaudiowrapper_la_SOURCES) \
+	$(libgstqtvideowrapper_la_SOURCES)
+DIST_SOURCES = $(libgstqtaudiowrapper_la_SOURCES) \
+	$(libgstqtvideowrapper_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -639,28 +651,40 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-plugin_LTLIBRARIES = libgstqtwrapper.la
+plugin_LTLIBRARIES = libgstqtaudiowrapper.la libgstqtvideowrapper.la
 
 # sources used to compile this plug-in
-libgstqtwrapper_la_SOURCES = \
-	qtwrapper.c		\
+libgstqtaudiowrapper_la_SOURCES = \
+	qtaudiowrapper.c		\
 	qtutils.c		\
 	codecmapping.c		\
-	audiodecoders.c		\
+	audiodecoders.c
+
+
+# flags used to compile this plugin
+# add other _CFLAGS and _LIBS as needed
+libgstqtaudiowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
+libgstqtaudiowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
+libgstqtaudiowrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
+libgstqtvideowrapper_la_SOURCES = \
+	qtvideowrapper.c		\
+	qtutils.c		\
+	codecmapping.c		\
 	videodecoders.c		\
 	imagedescription.c
 
 
 # flags used to compile this plugin
 # add other _CFLAGS and _LIBS as needed
-libgstqtwrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
-libgstqtwrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
-libgstqtwrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
+libgstqtvideowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
+libgstqtvideowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
+libgstqtvideowrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
 
 # headers we need but don't want installed
 noinst_HEADERS = \
 	codecmapping.h		\
-	qtwrapper.h		\
+	qtaudiowrapper.h		\
+	qtvideowrapper.h		\
 	qtutils.h		\
 	imagedescription.h
 
@@ -724,8 +748,10 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstqtwrapper.la: $(libgstqtwrapper_la_OBJECTS) $(libgstqtwrapper_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstqtwrapper_la_LDFLAGS) $(libgstqtwrapper_la_OBJECTS) $(libgstqtwrapper_la_LIBADD) $(LIBS)
+libgstqtaudiowrapper.la: $(libgstqtaudiowrapper_la_OBJECTS) $(libgstqtaudiowrapper_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstqtaudiowrapper_la_LDFLAGS) $(libgstqtaudiowrapper_la_OBJECTS) $(libgstqtaudiowrapper_la_LIBADD) $(LIBS)
+libgstqtvideowrapper.la: $(libgstqtvideowrapper_la_OBJECTS) $(libgstqtvideowrapper_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstqtvideowrapper_la_LDFLAGS) $(libgstqtvideowrapper_la_OBJECTS) $(libgstqtvideowrapper_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -733,12 +759,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-audiodecoders.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-codecmapping.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-imagedescription.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-qtutils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-qtwrapper.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtwrapper_la-videodecoders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtaudiowrapper_la-audiodecoders.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtaudiowrapper_la-codecmapping.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtaudiowrapper_la-qtaudiowrapper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtaudiowrapper_la-qtutils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtvideowrapper_la-codecmapping.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtvideowrapper_la-imagedescription.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtvideowrapper_la-qtutils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtvideowrapper_la-qtvideowrapper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstqtvideowrapper_la-videodecoders.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -761,47 +790,68 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libgstqtwrapper_la-qtwrapper.lo: qtwrapper.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-qtwrapper.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-qtwrapper.Tpo" -c -o libgstqtwrapper_la-qtwrapper.lo `test -f 'qtwrapper.c' || echo '$(srcdir)/'`qtwrapper.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-qtwrapper.Tpo" "$(DEPDIR)/libgstqtwrapper_la-qtwrapper.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-qtwrapper.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtwrapper.c' object='libgstqtwrapper_la-qtwrapper.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtaudiowrapper_la-qtaudiowrapper.lo: qtaudiowrapper.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtaudiowrapper_la-qtaudiowrapper.lo -MD -MP -MF "$(DEPDIR)/libgstqtaudiowrapper_la-qtaudiowrapper.Tpo" -c -o libgstqtaudiowrapper_la-qtaudiowrapper.lo `test -f 'qtaudiowrapper.c' || echo '$(srcdir)/'`qtaudiowrapper.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtaudiowrapper_la-qtaudiowrapper.Tpo" "$(DEPDIR)/libgstqtaudiowrapper_la-qtaudiowrapper.Plo"; else rm -f "$(DEPDIR)/libgstqtaudiowrapper_la-qtaudiowrapper.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtaudiowrapper.c' object='libgstqtaudiowrapper_la-qtaudiowrapper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-qtwrapper.lo `test -f 'qtwrapper.c' || echo '$(srcdir)/'`qtwrapper.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtaudiowrapper_la-qtaudiowrapper.lo `test -f 'qtaudiowrapper.c' || echo '$(srcdir)/'`qtaudiowrapper.c
 
-libgstqtwrapper_la-qtutils.lo: qtutils.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-qtutils.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-qtutils.Tpo" -c -o libgstqtwrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-qtutils.Tpo" "$(DEPDIR)/libgstqtwrapper_la-qtutils.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-qtutils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtutils.c' object='libgstqtwrapper_la-qtutils.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtaudiowrapper_la-qtutils.lo: qtutils.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtaudiowrapper_la-qtutils.lo -MD -MP -MF "$(DEPDIR)/libgstqtaudiowrapper_la-qtutils.Tpo" -c -o libgstqtaudiowrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtaudiowrapper_la-qtutils.Tpo" "$(DEPDIR)/libgstqtaudiowrapper_la-qtutils.Plo"; else rm -f "$(DEPDIR)/libgstqtaudiowrapper_la-qtutils.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtutils.c' object='libgstqtaudiowrapper_la-qtutils.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtaudiowrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c
 
-libgstqtwrapper_la-codecmapping.lo: codecmapping.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-codecmapping.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-codecmapping.Tpo" -c -o libgstqtwrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-codecmapping.Tpo" "$(DEPDIR)/libgstqtwrapper_la-codecmapping.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-codecmapping.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='codecmapping.c' object='libgstqtwrapper_la-codecmapping.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtaudiowrapper_la-codecmapping.lo: codecmapping.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtaudiowrapper_la-codecmapping.lo -MD -MP -MF "$(DEPDIR)/libgstqtaudiowrapper_la-codecmapping.Tpo" -c -o libgstqtaudiowrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtaudiowrapper_la-codecmapping.Tpo" "$(DEPDIR)/libgstqtaudiowrapper_la-codecmapping.Plo"; else rm -f "$(DEPDIR)/libgstqtaudiowrapper_la-codecmapping.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='codecmapping.c' object='libgstqtaudiowrapper_la-codecmapping.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtaudiowrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c
 
-libgstqtwrapper_la-audiodecoders.lo: audiodecoders.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-audiodecoders.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-audiodecoders.Tpo" -c -o libgstqtwrapper_la-audiodecoders.lo `test -f 'audiodecoders.c' || echo '$(srcdir)/'`audiodecoders.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-audiodecoders.Tpo" "$(DEPDIR)/libgstqtwrapper_la-audiodecoders.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-audiodecoders.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audiodecoders.c' object='libgstqtwrapper_la-audiodecoders.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtaudiowrapper_la-audiodecoders.lo: audiodecoders.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtaudiowrapper_la-audiodecoders.lo -MD -MP -MF "$(DEPDIR)/libgstqtaudiowrapper_la-audiodecoders.Tpo" -c -o libgstqtaudiowrapper_la-audiodecoders.lo `test -f 'audiodecoders.c' || echo '$(srcdir)/'`audiodecoders.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtaudiowrapper_la-audiodecoders.Tpo" "$(DEPDIR)/libgstqtaudiowrapper_la-audiodecoders.Plo"; else rm -f "$(DEPDIR)/libgstqtaudiowrapper_la-audiodecoders.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audiodecoders.c' object='libgstqtaudiowrapper_la-audiodecoders.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-audiodecoders.lo `test -f 'audiodecoders.c' || echo '$(srcdir)/'`audiodecoders.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtaudiowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtaudiowrapper_la-audiodecoders.lo `test -f 'audiodecoders.c' || echo '$(srcdir)/'`audiodecoders.c
 
-libgstqtwrapper_la-videodecoders.lo: videodecoders.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-videodecoders.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-videodecoders.Tpo" -c -o libgstqtwrapper_la-videodecoders.lo `test -f 'videodecoders.c' || echo '$(srcdir)/'`videodecoders.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-videodecoders.Tpo" "$(DEPDIR)/libgstqtwrapper_la-videodecoders.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-videodecoders.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='videodecoders.c' object='libgstqtwrapper_la-videodecoders.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtvideowrapper_la-qtvideowrapper.lo: qtvideowrapper.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtvideowrapper_la-qtvideowrapper.lo -MD -MP -MF "$(DEPDIR)/libgstqtvideowrapper_la-qtvideowrapper.Tpo" -c -o libgstqtvideowrapper_la-qtvideowrapper.lo `test -f 'qtvideowrapper.c' || echo '$(srcdir)/'`qtvideowrapper.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtvideowrapper_la-qtvideowrapper.Tpo" "$(DEPDIR)/libgstqtvideowrapper_la-qtvideowrapper.Plo"; else rm -f "$(DEPDIR)/libgstqtvideowrapper_la-qtvideowrapper.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtvideowrapper.c' object='libgstqtvideowrapper_la-qtvideowrapper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-videodecoders.lo `test -f 'videodecoders.c' || echo '$(srcdir)/'`videodecoders.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtvideowrapper_la-qtvideowrapper.lo `test -f 'qtvideowrapper.c' || echo '$(srcdir)/'`qtvideowrapper.c
 
-libgstqtwrapper_la-imagedescription.lo: imagedescription.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtwrapper_la-imagedescription.lo -MD -MP -MF "$(DEPDIR)/libgstqtwrapper_la-imagedescription.Tpo" -c -o libgstqtwrapper_la-imagedescription.lo `test -f 'imagedescription.c' || echo '$(srcdir)/'`imagedescription.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtwrapper_la-imagedescription.Tpo" "$(DEPDIR)/libgstqtwrapper_la-imagedescription.Plo"; else rm -f "$(DEPDIR)/libgstqtwrapper_la-imagedescription.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='imagedescription.c' object='libgstqtwrapper_la-imagedescription.lo' libtool=yes @AMDEPBACKSLASH@
+libgstqtvideowrapper_la-qtutils.lo: qtutils.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtvideowrapper_la-qtutils.lo -MD -MP -MF "$(DEPDIR)/libgstqtvideowrapper_la-qtutils.Tpo" -c -o libgstqtvideowrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtvideowrapper_la-qtutils.Tpo" "$(DEPDIR)/libgstqtvideowrapper_la-qtutils.Plo"; else rm -f "$(DEPDIR)/libgstqtvideowrapper_la-qtutils.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='qtutils.c' object='libgstqtvideowrapper_la-qtutils.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtwrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtwrapper_la-imagedescription.lo `test -f 'imagedescription.c' || echo '$(srcdir)/'`imagedescription.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtvideowrapper_la-qtutils.lo `test -f 'qtutils.c' || echo '$(srcdir)/'`qtutils.c
+
+libgstqtvideowrapper_la-codecmapping.lo: codecmapping.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtvideowrapper_la-codecmapping.lo -MD -MP -MF "$(DEPDIR)/libgstqtvideowrapper_la-codecmapping.Tpo" -c -o libgstqtvideowrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtvideowrapper_la-codecmapping.Tpo" "$(DEPDIR)/libgstqtvideowrapper_la-codecmapping.Plo"; else rm -f "$(DEPDIR)/libgstqtvideowrapper_la-codecmapping.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='codecmapping.c' object='libgstqtvideowrapper_la-codecmapping.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtvideowrapper_la-codecmapping.lo `test -f 'codecmapping.c' || echo '$(srcdir)/'`codecmapping.c
+
+libgstqtvideowrapper_la-videodecoders.lo: videodecoders.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtvideowrapper_la-videodecoders.lo -MD -MP -MF "$(DEPDIR)/libgstqtvideowrapper_la-videodecoders.Tpo" -c -o libgstqtvideowrapper_la-videodecoders.lo `test -f 'videodecoders.c' || echo '$(srcdir)/'`videodecoders.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtvideowrapper_la-videodecoders.Tpo" "$(DEPDIR)/libgstqtvideowrapper_la-videodecoders.Plo"; else rm -f "$(DEPDIR)/libgstqtvideowrapper_la-videodecoders.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='videodecoders.c' object='libgstqtvideowrapper_la-videodecoders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtvideowrapper_la-videodecoders.lo `test -f 'videodecoders.c' || echo '$(srcdir)/'`videodecoders.c
+
+libgstqtvideowrapper_la-imagedescription.lo: imagedescription.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -MT libgstqtvideowrapper_la-imagedescription.lo -MD -MP -MF "$(DEPDIR)/libgstqtvideowrapper_la-imagedescription.Tpo" -c -o libgstqtvideowrapper_la-imagedescription.lo `test -f 'imagedescription.c' || echo '$(srcdir)/'`imagedescription.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstqtvideowrapper_la-imagedescription.Tpo" "$(DEPDIR)/libgstqtvideowrapper_la-imagedescription.Plo"; else rm -f "$(DEPDIR)/libgstqtvideowrapper_la-imagedescription.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='imagedescription.c' object='libgstqtvideowrapper_la-imagedescription.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstqtvideowrapper_la_CFLAGS) $(CFLAGS) -c -o libgstqtvideowrapper_la-imagedescription.lo `test -f 'imagedescription.c' || echo '$(srcdir)/'`imagedescription.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
