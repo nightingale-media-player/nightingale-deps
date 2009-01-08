@@ -42,8 +42,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GST_QTWRAPPER_H__
-#define __GST_QTWRAPPER_H__
+#ifndef __GST_QTVIDEOWRAPPER_H__
+#define __GST_QTVIDEOWRAPPER_H__
 
 #include <gst/gst.h>
 #ifdef G_OS_WIN32
@@ -57,13 +57,12 @@
  * memory dumps */
 #define DEBUG_DUMP 0
 
-GST_DEBUG_CATEGORY_EXTERN (qtwrapper_debug);
-#define GST_CAT_DEFAULT qtwrapper_debug
+GST_DEBUG_CATEGORY_EXTERN (qtvideowrapper_debug);
+#define GST_CAT_DEFAULT qtvideowrapper_debug
 
 G_BEGIN_DECLS
 
 extern gboolean qtwrapper_video_decoders_register (GstPlugin *);
-extern gboolean qtwrapper_audio_decoders_register (GstPlugin *);
 
 G_END_DECLS
-#endif /* __GST_QTWRAPPER_H__ */
+#endif /* __GST_QTVIDEOWRAPPER_H__ */

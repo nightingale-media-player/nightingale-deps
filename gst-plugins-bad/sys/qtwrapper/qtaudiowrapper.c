@@ -46,10 +46,10 @@
 #  include <config.h>
 #endif
 
-#include "qtwrapper.h"
+#include "qtaudiowrapper.h"
 #include <stdio.h>
 
-GST_DEBUG_CATEGORY (qtwrapper_debug);
+GST_DEBUG_CATEGORY (qtaudiowrapper_debug);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -57,8 +57,8 @@ plugin_init (GstPlugin * plugin)
   gboolean res;
   OSErr status;
 
-  GST_DEBUG_CATEGORY_INIT (qtwrapper_debug, "qtwrapper",
-      0, "QuickTime codecs wrappers");
+  GST_DEBUG_CATEGORY_INIT (qtaudiowrapper_debug, "qtaudiowrapper",
+      0, "QuickTime audio codec wrappers");
 
   /* Initialize quicktime environment */
 #ifdef G_OS_WIN32
@@ -72,10 +72,6 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
   }
 
-#if 0
-  GST_INFO ("Registering video decoders");
-  res = qtwrapper_video_decoders_register (plugin);
-#endif
   GST_INFO ("Registering audio decoders");
   res = qtwrapper_audio_decoders_register (plugin);
 
@@ -84,6 +80,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "qtwrapper",
-    "QuickTime codecs wrapper",
+    "qtaudiowrapper",
+    "QuickTime audio codec wrapper",
     plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
