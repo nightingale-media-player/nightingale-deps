@@ -50,7 +50,7 @@ SB_PKG_CONFIG_PATH :=
 SB_DYLD_LIBRARY_PATH :=
 
 SB_VENDOR_TARGET_DEP_MODULES ?= \
-  liboil flac ogg vorbis \
+  liboil flac ogg theora vorbis \
   gstreamer gst-plugins-base
 
 #
@@ -442,6 +442,26 @@ ifneq (,$(call enable-sb-lib, ogg))
      ifeq (debug, $(SB_BUILD_TYPE))
        SB_LIBOGG_LIBS += -Wl,-Zi
      endif
+  endif
+endif
+
+#
+# libtheora
+#
+ifneq (,$(call enable-sb-lib, theora))
+   $(info Enabling Songbird vendor lib: theora)
+   SB_LIBTHEORA_DIR = $(call find-dep-dir, libtheora)
+   SB_THEORA_LIBS := -L$(SB_LIBTHEORA_DIR)/lib -ltheora
+   SB_THEORA_LIBS += $(SB_OGG_LIBS)
+   SB_THEORA_CFLAGS = -I$(SB_LIBTHEORA_DIR)/include
+   SB_THEORA_CFLAGS += $(SB_OGG_CFLAGS)
+   SB_PKG_CONFIG_PATH += $(SB_LIBTHEORA_DIR)/lib/pkgconfig
+
+   ifeq (Msys,$(SB_VENDOR_ARCH))
+      SB_PATH += $(SB_LIBTHEORA_DIR)/bin
+      ifeq (debug,$(SB_BUILD_TYPE))
+         SB_THEORA_LIBS += -Wl,-Zi
+      endif
   endif
 endif
 
