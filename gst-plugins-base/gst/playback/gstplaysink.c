@@ -633,6 +633,50 @@ gst_play_sink_find_property (GstPlaySink * playsink, GstElement * obj,
   return result;
 }
 
+static gint
+find_property_sink (GstElement * element, const gchar * name)
+{
+  gint res;
+  gboolean is_sink;
+
+  GST_OBJECT_LOCK (element);
+  is_sink = GST_OBJECT_FLAG_IS_SET (element, GST_ELEMENT_IS_SINK);
+  GST_OBJECT_UNLOCK (element);
+
+  if (is_sink && 
+      g_object_class_find_property (G_OBJECT_GET_CLASS (element), name)) {
+    res = 0;
+    GST_DEBUG_OBJECT (element, "found %s property", name);
+  } else {
+    GST_DEBUG_OBJECT (element, "did not find %s property", name);
+    res = 1;
+    gst_object_unref (element);
+  }
+  return res;
+}
+
+/* find an object in the hierarchy with a property named @name */
+static GstElement *
+gst_play_sink_find_property_sinks (GstPlaySink * playsink, GstElement * obj,
+    const gchar * name)
+{
+  GstElement *result = NULL;
+  GstIterator *it;
+
+  if (GST_IS_BIN (obj)) {
+    it = gst_bin_iterate_recurse (GST_BIN_CAST (obj));
+    result = gst_iterator_find_custom (it,
+        (GCompareFunc) find_property_sink, (gpointer) name);
+    gst_iterator_free (it);
+  } else {
+    if (g_object_class_find_property (G_OBJECT_GET_CLASS (obj), name)) {
+      result = obj;
+      gst_object_ref (obj);
+    }
+  }
+  return result;
+}
+
 /* make the element (bin) that contains the elements needed to perform
  * video display. 
  *
@@ -878,6 +922,7 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw, gboolean queue)
   GstBin *bin;
   gboolean res, have_volume;
   GstPad *pad;
+  GstElement *elem;
 
   chain = g_new0 (GstPlayAudioChain, 1);
   chain->chain.playsink = gst_object_ref (playsink);
@@ -909,20 +954,31 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw, gboolean queue)
   }
 
   /* check if the sink has the volume property, if it does we don't need to
-   * add a volume element. */
+   * add a volume element. 
+   *
+   * first, check if the sink is a bin, if so, recursively try and find 
+   * an element with the volume property */
+  elem = NULL;
   if (g_object_class_find_property (G_OBJECT_GET_CLASS (chain->sink), "volume")) {
+    elem = gst_object_ref (chain->sink);
+  } else if(GST_IS_BIN (chain->sink)) {
+    elem = gst_play_sink_find_property_sinks (playsink, chain->sink, "volume");
+  }
+
+  if (elem) {
     GST_DEBUG_OBJECT (playsink, "the sink as a volume property");
     have_volume = TRUE;
     /* take ref to sink to control the volume */
-    chain->volume = gst_object_ref (chain->sink);
-    g_object_set (G_OBJECT (chain->volume), "volume", playsink->volume, NULL);
+    chain->volume = gst_object_ref (elem);
+    g_object_set (G_OBJECT (elem), "volume", playsink->volume, NULL);
     /* if the sink also has a mute property we can use this as well. We'll only
      * use the mute property if there is a volume property. We can simulate the
      * mute with the volume otherwise. */
-    if (g_object_class_find_property (G_OBJECT_GET_CLASS (chain->sink), "mute")) {
+    if (g_object_class_find_property (G_OBJECT_GET_CLASS (elem), "mute")) {
       GST_DEBUG_OBJECT (playsink, "the sink as a mute property");
-      chain->mute = gst_object_ref (chain->sink);
+      chain->mute = gst_object_ref (elem);
     }
+    gst_object_unref (elem);
   } else {
     /* no volume, we need to add a volume element when we can */
     GST_DEBUG_OBJECT (playsink, "the sink as no volume property");
