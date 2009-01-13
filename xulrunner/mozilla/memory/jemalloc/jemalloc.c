@@ -6121,6 +6121,13 @@ _calloc_dbg(size_t n, size_t s, int r0, const char* r1, int r2)
 {
         return calloc(n, s);
 } 
+
+VISIBLE
+void *
+_realloc_dbg(void *userdata, size_t s, int b, const char* r1, int r2)
+{
+        return realloc(userdata, s);
+} 
  
 #endif
 
