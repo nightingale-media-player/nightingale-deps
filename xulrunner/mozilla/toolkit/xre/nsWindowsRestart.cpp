@@ -261,10 +261,10 @@ FreeAllocStrings(int argc, PRUnichar **argv)
  */
 
 BOOL
-WinLaunchChild(const PRUnichar *exePath, int argc, PRUnichar **argv, int needElevation);
+WinLaunchChild(const PRUnichar *exePath, int argc, PRUnichar **argv, int needElevation, BOOL async);
 
 BOOL
-WinLaunchChild(const PRUnichar *exePath, int argc, char **argv, int needElevation)
+WinLaunchChild(const PRUnichar *exePath, int argc, char **argv, int needElevation, BOOL async)
 {
   PRUnichar** argvConverted = new PRUnichar*[argc];
   if (!argvConverted)
@@ -277,13 +277,13 @@ WinLaunchChild(const PRUnichar *exePath, int argc, char **argv, int needElevatio
     }
   }
 
-  BOOL ok = WinLaunchChild(exePath, argc, argvConverted, needElevation);
+  BOOL ok = WinLaunchChild(exePath, argc, argvConverted, needElevation, async);
   FreeAllocStrings(argc, argvConverted);
   return ok;
 }
 
 BOOL
-WinLaunchChild(const PRUnichar *exePath, int argc, PRUnichar **argv, int needElevation)
+WinLaunchChild(const PRUnichar *exePath, int argc, PRUnichar **argv, int needElevation, BOOL async)
 {
   PRUnichar *cl;
   BOOL ok;
@@ -328,8 +328,12 @@ WinLaunchChild(const PRUnichar *exePath, int argc, PRUnichar **argv, int needEle
                         &pi);
 
     if (ok) {
-      CloseHandle(pi.hProcess);
-      CloseHandle(pi.hThread);
+      if (async) {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+      } else {
+        WaitForSingleObject(pi.hProcess, INFINITE);
+      }
     }
   }
 

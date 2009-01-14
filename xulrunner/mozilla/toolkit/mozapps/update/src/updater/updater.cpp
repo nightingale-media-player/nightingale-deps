@@ -1102,8 +1102,7 @@ LaunchWinPostProcess(const WCHAR *appExe)
     L"\0"
   };
 
-  WinLaunchChild(exefullpath, argc, argv, 0);
-  free(argv);
+  WinLaunchChild(exefullpath, argc, argv, 0, FALSE);
 }
 #endif
 
@@ -1121,7 +1120,7 @@ LaunchCallbackApp(const NS_tchar *workingDir, int argc, NS_tchar **argv)
 #elif defined(XP_MACOSX)
   LaunchChild(argc, argv);
 #elif defined(XP_WIN)
-  WinLaunchChild(argv[0], argc, argv, 0);
+  WinLaunchChild(argv[0], argc, argv, 0, TRUE);
 #else
 # warning "Need implementaton of LaunchCallbackApp"
 #endif

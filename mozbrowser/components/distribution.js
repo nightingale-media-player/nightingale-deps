@@ -41,6 +41,8 @@ const Cc = Components.classes;
 const Cr = Components.results;
 const Cu = Components.utils;
 
+const BOOKMARKS_ROOT = "SB:Bookmarks";
+
 function DistributionCustomizer() {
   this._distroDir = this._dirSvc.get("XCurProcD", Ci.nsIFile);
   this._distroDir.append("distribution");
@@ -63,25 +65,17 @@ DistributionCustomizer.prototype = {
   __bmSvc: null,
   get _bmSvc() {
     if (!this.__bmSvc)
-      this.__bmSvc = Cc["@mozilla.org/browser/nav-bookmarks-service;1"].
-                   getService(Ci.nsINavBookmarksService);
+      this.__bmSvc = Cc["@songbirdnest.com/servicepane/bookmarks;1"]
+                       .getService(Ci.sbIBookmarks);
     return this.__bmSvc;
   },
-
-  __annoSvc: null,
-  get _annoSvc() {
-    if (!this.__annoSvc)
-      this.__annoSvc = Cc["@mozilla.org/browser/annotation-service;1"].
-                   getService(Ci.nsIAnnotationService);
-    return this.__annoSvc;
-  },
-
-  __livemarkSvc: null,
-  get _livemarkSvc() {
-    if (!this.__livemarkSvc)
-      this.__livemarkSvc = Cc["@mozilla.org/browser/livemark-service;2"].
-                   getService(Ci.nsILivemarkService);
-    return this.__livemarkSvc;
+  
+  __spsSvc: null,
+  get _spsSvc() {
+    if (!this.__spsSvc)
+      this.__spsSvc = Cc["@songbirdnest.com/servicepane/service;1"]
+                       .getService(Ci.sbIServicePaneService);
+    return this.__spsSvc;
   },
 
   __dirSvc: null,
@@ -117,7 +111,15 @@ DistributionCustomizer.prototype = {
   _makeURI: function DIST__makeURI(spec) {
     return this._iosvc.newURI(spec, null, null);
   },
-  _parseBookmarksSection: function DIST_parseBookmarksSection(parentId, section) {
+  _parseBookmarksSection: function DIST_parseBookmarksSection(aParentNode, section) {
+    var parentNode = aParentNode;
+    if (!(parentNode instanceof Ci.sbIServicePaneNode)) {
+      parentNode = this._spsSvc.getNode(aParentNode);
+      if (!parentNode) {
+        throw "Failed to find parent node " + aParentNode;
+      }
+    }
+
     let keys = [];
     for (let i in enumerate(this._ini.getKeys(section)))
       keys.push(i);
@@ -126,10 +128,11 @@ DistributionCustomizer.prototype = {
     let defaultItemId = -1;
     let maxItemId = -1;
 
+    // read the items from the ini file
     for (let i = 0; i < keys.length; i++) {
       let m = /^item\.(\d+)\.(\w+)\.?(\w*)/.exec(keys[i]);
       if (m) {
-        let [foo, iid, iprop, ilocale] = m;
+        let [, iid, iprop, ilocale] = m;
 
         if (ilocale)
           continue;
@@ -143,9 +146,6 @@ DistributionCustomizer.prototype = {
           items[iid][iprop] = this._ini.getString(section, keys[i]);
         }
 
-        if (iprop == "type" && items[iid]["type"] == "default")
-          defaultItemId = iid;
-
         if (maxItemId < iid)
           maxItemId = iid;
       } else {
@@ -153,67 +153,65 @@ DistributionCustomizer.prototype = {
       }
     }
 
-    let prependIndex = 0;
+    // actually insert the items
     for (let iid = 0; iid <= maxItemId; iid++) {
       if (!items[iid])
         continue;
+      
+      if (!("title" in items[iid])) {
+        dump("Distribution.ini: missing title in '" + iid + "'\n");
+        continue;
+      }
 
-      let index = -1;
-      let newId;
+      let newNode;
 
-      switch (items[iid]["type"]) {
-      case "default":
-        break;
+      switch(items[iid]["type"]) {
+        case "folder":
+          if (!("folderId" in items[iid])) {
+            dump("Distribution.ini: missing folderId in '" + iid + "'\n");
+            continue;
+          }
+          newNode = this._bmSvc.addFolder(items[iid]["title"]);
+          this._parseBookmarksSection(newNode,
+                                      "BookmarksFolder-" + items[iid]["folderId"]);
+          break;
+        
+        default:
+          if ("type" in items[iid]) {
+            dump("Distribution.ini: unknown type '" + items[iid]["type"] +
+                 "' for '" + iid + "'\n");
+            continue;
+          }
+          // fall through to bookmarks when no type given
+        case "bookmark":
+          if (!("link" in items[iid])) {
+            dump("Distribution.ini: missing link in '" + iid + "'\n");
+            continue;
+          }
+          let icon = items[iid]["icon"];
+          if ("icon" in items[iid]) {
+            try {
+              // attempt to make sure this is a valid url; no need to keep it.
+              this._makeURI(items[iid]["icon"]);
+            } catch (e) {
+              dump("Distribution.ini: invalid icon URL '" + items[iid]["icon"] +
+                   "' for '" + iid + "'\n");
+              continue;
+            }
+          } else {
+            icon = null;
+          }
+          newNode = this._bmSvc.addBookmarkAt(items[iid]["link"],
+                                              items[iid]["title"],
+                                              icon,
+                                              parentNode,
+                                              null);
+          break;
+      }
 
-      case "folder":
-        if (iid < defaultItemId)
-          index = prependIndex++;
-
-        newId = this._bmSvc.createFolder(parentId, items[iid]["title"], index);
-
-        this._parseBookmarksSection(newId, "BookmarksFolder-" +
-                                    items[iid]["folderId"]);
-
-        if (items[iid]["description"])
-          this._annoSvc.setItemAnnotation(newId, "bookmarkProperties/description",
-                                          items[iid]["description"], 0,
-                                          this._annoSvc.EXPIRE_NEVER);
-
-        break;
-
-      case "separator":
-        if (iid < defaultItemId)
-          index = prependIndex++;
-        this._bmSvc.insertSeparator(parentId, index);
-        break;
-
-      case "livemark":
-        if (iid < defaultItemId)
-          index = prependIndex++;
-
-        newId = this._livemarkSvc.
-          createLivemark(parentId,
-                         items[iid]["title"],
-                         this._makeURI(items[iid]["siteLink"]),
-                         this._makeURI(items[iid]["feedLink"]),
-                         index);
-        break;
-
-      case "bookmark":
-      default:
-        if (iid < defaultItemId)
-          index = prependIndex++;
-
-        newId = this._bmSvc.insertBookmark(parentId,
-                                           this._makeURI(items[iid]["link"]),
-                                           index, items[iid]["title"]);
-
-        if (items[iid]["description"])
-          this._annoSvc.setItemAnnotation(newId, "bookmarkProperties/description",
-                                          items[iid]["description"], 0,
-                                          this._annoSvc.EXPIRE_NEVER);
-
-        break;
+      if ("weight" in items[iid]) {
+        // weight was given, sort it
+        this._spsSvc.sortNode(newNode);
       }
     }
   },
@@ -241,8 +239,8 @@ DistributionCustomizer.prototype = {
     let bmProcessedPref;
 
     try {
-        bmProcessedPref = this._ini.getString("Global",
-                                              "bookmarks.initialized.pref");
+      bmProcessedPref = this._ini.getString("Global",
+                                            "bookmarks.initialized.pref");
     } catch (e) {
       bmProcessedPref = "distribution." +
         this._ini.getString("Global", "id") + ".bookmarksProcessed";
@@ -253,12 +251,8 @@ DistributionCustomizer.prototype = {
     } catch (e) {}
 
     if (!bmProcessed) {
-      if (sections["BookmarksMenu"])
-        this._parseBookmarksSection(this._bmSvc.bookmarksMenuFolder,
-                                    "BookmarksMenu");
-      if (sections["BookmarksToolbar"])
-        this._parseBookmarksSection(this._bmSvc.toolbarFolder,
-                                    "BookmarksToolbar");
+      if (sections["Bookmarks"])
+        this._parseBookmarksSection(BOOKMARKS_ROOT, "Bookmarks");
       this._prefs.setBoolPref(bmProcessedPref, true);
     }
   },

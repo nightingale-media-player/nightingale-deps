@@ -731,7 +731,7 @@ nsXULAppInfo::LaunchAppHelperWithArgs(int aArgc, char **aArgv)
   rv = appHelper->GetPath(appHelperPath);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (!WinLaunchChild(appHelperPath.get(), aArgc, aArgv, 1))
+  if (!WinLaunchChild(appHelperPath.get(), aArgc, aArgv, 1, TRUE))
     return NS_ERROR_FAILURE;
   else
     return NS_OK;
@@ -1572,7 +1572,7 @@ static nsresult LaunchChild(nsINativeAppSupport* aNative,
   if (NS_FAILED(rv))
     return rv;
 
-  if (!WinLaunchChild(exePath.get(), gRestartArgc, gRestartArgv, 0))
+  if (!WinLaunchChild(exePath.get(), gRestartArgc, gRestartArgv, 0, TRUE))
     return NS_ERROR_FAILURE;
 
 #else

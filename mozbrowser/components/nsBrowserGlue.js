@@ -45,14 +45,9 @@ const Cr = Components.results;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-try {
-/* XXX An nsFastLoadFileUpdater and associated objects will leak whenever this
-   XXX fails
-  Cu.import("resource:///modules/distribution.js");
-   XXX */
-} catch (e if e.result == Components.results.NS_ERROR_FILE_NOT_FOUND) {
-  // XXX Songbird: allow not having a distribution file
-}
+// XXX Songbird: distribution file moved from its old location
+// Cu.import("resource:///modules/distribution.js");
+Cu.import("resource://app/jsmodules/Distribution.jsm");
 
 const PREF_EM_NEW_ADDONS_LIST = "extensions.newAddons";
 
