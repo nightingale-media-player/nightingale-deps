@@ -28,13 +28,15 @@
 
 #include "windows.h"
 
+#define WM_GRAPH_NOTIFY WM_APP + 1 /* Private message */
+
 static const GstElementDetails gst_dshowvideosink_details =
 GST_ELEMENT_DETAILS ("DirectShow video sink",
     "Sink/Video",
     "Display data using a DirectShow video renderer",
     "Pioneers of the Inevitable <songbird@songbirdnest.com>");
 
-GST_DEBUG_CATEGORY_STATIC (dshowvideosink_debug);
+GST_DEBUG_CATEGORY (dshowvideosink_debug);
 #define GST_CAT_DEFAULT dshowvideosink_debug
 
 static GstCaps * gst_directshow_media_type_to_caps (AM_MEDIA_TYPE *mediatype);
@@ -198,6 +200,7 @@ gst_dshowvideosink_clear (GstDshowVideoSink *sink)
   sink->renderersupport = NULL;
   sink->fakesrc = NULL;
   sink->filter_graph = NULL;
+  sink->filter_media_event = NULL;
 
   sink->keep_aspect_ratio = FALSE;
   sink->full_screen = FALSE;
@@ -396,6 +399,21 @@ gst_dshow_get_pin_from_filter (IBaseFilter *filter, PIN_DIRECTION pindir, IPin *
   return ret;
 }
 
+static void 
+gst_dshowvideosink_handle_event (GstDshowVideoSink *sink)
+{
+  if (sink->filter_media_event) {
+    long evCode;
+    LONG_PTR param1, param2;
+    HRESULT hr;
+    while (SUCCEEDED (sink->filter_media_event->GetEvent(&evCode, &param1, &param2, 0)))
+    {
+      GST_INFO_OBJECT (sink, "Received DirectShow graph event code 0x%x", evCode);
+      sink->filter_media_event->FreeEventParams(evCode, param1, param2);
+    }
+  }
+}
+
 /* WNDPROC for application-supplied windows */
 LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -405,6 +423,9 @@ LRESULT APIENTRY WndProcHook (HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
   GstDshowVideoSink *sink = (GstDshowVideoSink *)GetProp (hWnd, L"GstDShowVideoSink");
 
   switch (message) {
+    case WM_GRAPH_NOTIFY:
+      gst_dshowvideosink_handle_event (sink);
+      return 0;
     case WM_PAINT:
       sink->renderersupport->PaintWindow ();
       break;
@@ -436,9 +457,13 @@ WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return DefWindowProc (hWnd, message, wParam, lParam);
   }
 
-  GST_DEBUG_OBJECT (sink, "Got a window message for %x, %x", hWnd, message);
+  //GST_DEBUG_OBJECT (sink, "Got a window message for %x, %x", hWnd, message);
 
   switch (message) {
+    case WM_GRAPH_NOTIFY:
+      GST_LOG_OBJECT (sink, "GRAPH_NOTIFY WINDOW MESSAGE");
+      gst_dshowvideosink_handle_event (sink);
+      return 0;
     case WM_PAINT:
       sink->renderersupport->PaintWindow ();
       break;
@@ -537,6 +562,8 @@ gst_dshowvideosink_window_thread (GstDshowVideoSink * sink)
   }
 
   SetWindowLongPtr (video_window, GWLP_USERDATA, (LONG)sink);
+
+  sink->window_id = video_window;
 
   /* signal application we created a window */
   gst_x_overlay_got_xwindow_id (GST_X_OVERLAY (sink),
@@ -637,6 +664,8 @@ static void gst_dshowvideosink_set_window_for_renderer (GstDshowVideoSink *sink)
 static void
 gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
 {
+  HRESULT hres;
+
   /* Give the app a last chance to supply a window id */
   if (!sink->window_id) {
     gst_x_overlay_prepare_xwindow_id (GST_X_OVERLAY (sink));
@@ -649,6 +678,23 @@ gst_dshowvideosink_prepare_window (GstDshowVideoSink *sink)
   }
   else {
     gst_dshowvideosink_create_default_window (sink);
+  }
+
+  if (sink->filter_media_event) {
+    sink->filter_media_event->Release();
+    sink->filter_media_event = NULL;
+  }
+
+  hres = sink->filter_graph->QueryInterface(
+          IID_IMediaEventEx, (void **) &sink->filter_media_event);
+
+  if (FAILED (hres)) {
+    GST_WARNING_OBJECT (sink, "Failed to get IMediaEventEx");
+  }
+  else {
+    hres = sink->filter_media_event->SetNotifyWindow ((OAHWND)sink->window_id,
+            WM_GRAPH_NOTIFY, 0);
+    GST_DEBUG_OBJECT (sink, "SetNotifyWindow(%p) returned %x", sink->window_id, hres);
   }
 }
 
@@ -1223,6 +1269,11 @@ error:
     sink->filter_graph = NULL;
   }
 
+  if (sink->filter_media_event) {
+    sink->filter_media_event->Release();
+    sink->filter_media_event = NULL;
+  }
+
   if (comInit)
     CoUninitialize();
 
@@ -1256,10 +1307,12 @@ gst_dshowvideosink_set_caps (GstBaseSink * bsink, GstCaps * caps)
     return FALSE;
   }
 
+  GST_DEBUG_OBJECT (sink, "Configuring output pin media type");
   /* Now we have an AM_MEDIA_TYPE describing what we're going to send.
    * We set this on our DirectShow fakesrc's output pin. 
    */
   sink->fakesrc->GetOutputPin()->SetMediaType (&sink->mediatype);
+  GST_DEBUG_OBJECT (sink, "Configured output pin media type");
 
   return TRUE;
 }
@@ -1310,7 +1363,7 @@ gst_dshowvideosink_render (GstBaseSink *bsink, GstBuffer *buffer)
 
   GST_DEBUG_OBJECT (sink, "Pushing buffer through fakesrc->renderer");
   ret = sink->fakesrc->GetOutputPin()->PushBuffer (buffer);
-  GST_DEBUG_OBJECT (sink, "Done pushing buffer through fakesrc->renderer");
+  GST_DEBUG_OBJECT (sink, "Done pushing buffer through fakesrc->renderer: %s", gst_flow_get_name(ret));
 
   return ret;
 }
