@@ -45,7 +45,10 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 #define USE_PEER_BUFFERALLOC
 
@@ -636,7 +639,9 @@ gst_video_test_src_start (GstBaseSrc * basesrc)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   GST_DEBUG_CATEGORY_INIT (video_test_src_debug, "videotestsrc", 0,
       "Video Test Source");

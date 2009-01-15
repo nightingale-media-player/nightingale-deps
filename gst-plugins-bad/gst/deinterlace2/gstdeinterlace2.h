@@ -24,9 +24,12 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
 #include <liboil/liboilcpu.h>
 #include <liboil/liboilfunction.h>
+#endif
 
 #ifdef HAVE_GCC_ASM
 #if defined(HAVE_CPU_I386) || defined(HAVE_CPU_X86_64)

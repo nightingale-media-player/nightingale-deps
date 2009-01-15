@@ -48,7 +48,10 @@
 #include <gst/controller/gstcontroller.h>
 #include <gst/audio/audio.h>
 #include <gst/audio/gstaudiofilter.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 #include "gstvolume.h"
 
@@ -464,7 +467,15 @@ volume_process_double (GstVolume * this, gpointer bytes, guint n_bytes)
 
   gdouble vol = this->real_vol_f;
 
+#ifdef HAVE_LIBOIL
   oil_scalarmultiply_f64_ns (data, data, &vol, num_samples);
+#else
+  guint i;
+
+  for (i = 0; i < num_samples; i++) {
+    *data++ *= vol;
+  }
+#endif
 }
 
 static void
@@ -473,7 +484,9 @@ volume_process_float (GstVolume * this, gpointer bytes, guint n_bytes)
   gfloat *data = (gfloat *) bytes;
   guint num_samples = n_bytes / sizeof (gfloat);
 
-#if 0
+#ifdef HAVE_LIBOIL
+  oil_scalarmultiply_f32_ns (data, data, &this->real_vol_f, num_samples);
+#else
   guint i;
 
   for (i = 0; i < num_samples; i++) {
@@ -483,7 +496,6 @@ volume_process_float (GstVolume * this, gpointer bytes, guint n_bytes)
    * volume volume=1.5 ! fakesink" goes from 0m0.850s -> 0m0.717s with liboil
    */
 #endif
-  oil_scalarmultiply_f32_ns (data, data, &this->real_vol_f, num_samples);
 }
 
 static void
@@ -827,7 +839,9 @@ volume_get_property (GObject * object, guint prop_id, GValue * value,
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   /* initialize gst controller library */
   gst_controller_init (NULL, NULL);

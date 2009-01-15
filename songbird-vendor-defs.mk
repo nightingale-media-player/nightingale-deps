@@ -50,7 +50,7 @@ SB_PKG_CONFIG_PATH :=
 SB_DYLD_LIBRARY_PATH :=
 
 SB_VENDOR_TARGET_DEP_MODULES ?= \
-  liboil flac ogg theora vorbis \
+  flac ogg theora vorbis \
   gstreamer gst-plugins-base
 
 #
@@ -396,24 +396,6 @@ ifneq (,$(call enable-sb-lib, libtool))
   $(info Enabling Songbird vendor lib: libtool)
   SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
   ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
-endif
-
-#
-# liboil
-#
-ifneq (,$(call enable-sb-lib, liboil))
-  $(info Enabling Songbird vendor lib: liboil)
-  SB_LIBOIL_DIR = $(call find-dep-dir, liboil)
-  SB_LIBOIL_LIBS = -L$(SB_LIBOIL_DIR)/lib -loil-0.3
-  SB_LIBOIL_CFLAGS = -I$(SB_LIBOIL_DIR)/include/liboil-0.3
-  SB_PKG_CONFIG_PATH += $(SB_LIBOIL_DIR)/lib/pkgconfig
-
-  ifeq (Msys, $(SB_VENDOR_ARCH))
-     SB_PATH += $(SB_LIBOIL_DIR)/bin
-     ifeq (debug, $(SB_BUILD_TYPE))
-        SB_LIBOIL_LIBS += -Wl,-Zi
-     endif
-  endif
 endif
 
 #

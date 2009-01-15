@@ -241,11 +241,14 @@ dnl *** checks for dependency libraries ***
 dnl GLib is required
 AG_GST_GLIB_CHECK([2.12])
 
-dnl liboil is required
-PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
-if test "x$HAVE_LIBOIL" != "xyes"; then
-  AC_ERROR([liboil-0.3.14 or later is required])
-fi
+dnl liboil is optional, but must be > 0.3.14 if present and enabled
+translit(dnm, m, l) AM_CONDITIONAL(USE_LIBOIL, true)
+AG_GST_CHECK_FEATURE(LIBOIL, [liboil usage in some plugins],, [
+  PKG_CHECK_MODULES(LIBOIL, liboil-0.3 >= 0.3.14, HAVE_LIBOIL=yes, HAVE_LIBOIL=no)
+  if test "x$HAVE_LIBOIL" = "xyes"; then
+    AC_DEFINE_UNQUOTED(HAVE_LIBOIL, 1, [defined if liboil is present])
+  fi
+])
 
 dnl checks for gstreamer
 dnl uninstalled is selected preferentially -- see pkg-config(1)

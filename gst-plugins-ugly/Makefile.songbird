@@ -39,6 +39,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-examples \
         --disable-tests \
         --disable-gtk-doc \
+        --disable-liboil \
         --disable-dvdsub --disable-dvdlpcmdec --disable-realmedia \
         --disable-mpegstream --disable-iec958 \
         --disable-synaesthesia \

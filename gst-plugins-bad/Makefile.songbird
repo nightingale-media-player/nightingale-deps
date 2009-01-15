@@ -39,6 +39,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-examples \
         --disable-tests \
         --disable-gtk-doc \
+        --disable-liboil \
         --with-mozilla=$(MOZSDK_DIR) \
         --disable-app --disable-bayer --disable-cdxaparse  \
         --disable-deinterlace --disable-dvdspu --disable-festival \

@@ -25,7 +25,10 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
+
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
+#endif
 
 #include "gstdeinterlace2.h"
 #include "tvtime/plugins.h"
@@ -917,7 +920,9 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (deinterlace2_debug, "deinterlace2", 0,
       "Deinterlacer");
 
+#ifdef HAVE_LIBOIL
   oil_init ();
+#endif
 
   if (!gst_element_register (plugin, "deinterlace2", GST_RANK_NONE,
           GST_TYPE_DEINTERLACE2)) {

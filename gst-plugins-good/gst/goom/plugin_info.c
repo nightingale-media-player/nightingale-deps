@@ -25,9 +25,11 @@
 #include "mmx.h"
 #endif /* HAVE_MMX */
 
+#ifdef HAVE_LIBOIL
 #include <liboil/liboil.h>
 #include <liboil/liboilfunction.h>
 #include <liboil/liboilcpu.h>
+#endif
 
 GST_DEBUG_CATEGORY_EXTERN (goom_debug);
 #define GST_CAT_DEFAULT goom_debug
@@ -36,7 +38,10 @@ static void
 setOptimizedMethods (PluginInfo * p)
 {
 
-  unsigned int cpuFlavour = oil_cpu_get_flags ();
+  unsigned int cpuFlavour;
+#ifdef HAVE_LIBOIL
+  cpuFlavour = oil_cpu_get_flags ();
+#endif
 
   /* set default methods */
   p->methods.draw_line = draw_line;
@@ -48,6 +53,7 @@ setOptimizedMethods (PluginInfo * p)
 /* FIXME: what about HAVE_CPU_X86_64 ? */
 #ifdef HAVE_CPU_I386
 #ifdef HAVE_MMX
+#ifdef HAVE_LIBOIL
   GST_INFO ("have an x86");
   if (cpuFlavour & OIL_IMPL_FLAG_MMXEXT) {
     GST_INFO ("Extended MMX detected. Using the fastest methods!");
@@ -60,6 +66,7 @@ setOptimizedMethods (PluginInfo * p)
   } else {
     GST_INFO ("Too bad ! No SIMD optimization available for your CPU.");
   }
+#endif
 #endif
 #endif /* HAVE_CPU_I386 */
 
