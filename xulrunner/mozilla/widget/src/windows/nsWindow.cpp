@@ -79,6 +79,7 @@
 #include "nsWidgetAtoms.h"
 #include <windows.h>
 #include <process.h>
+#include <shellapi.h>
 #include "nsUnicharUtils.h"
 #include "prlog.h"
 
@@ -4900,6 +4901,16 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
       PRInt32 maxHeight = maxTrackHeight;
 
       PRInt32 left = -1, top = -1;
+      
+      PR_LOG(sWindowsLog, PR_LOG_DEBUG, (
+        "WM_GETMINMAXINFO: mIsChromeHidden(%s) mSizeMode(%s) mIsMaximizing(%s)",
+        (mIsChromeHidden ? "true" : "false"),
+        (mSizeMode == nsSizeMode_Normal ? "normal" :
+         mSizeMode == nsSizeMode_Minimized ? "minimized" :
+         mSizeMode == nsSizeMode_Maximized ? "maximized" :
+         "unknown"),
+        (mIsMaximizing ? "true" : "false")
+        ));
 
       // Restrict the window from covering the taskbar if chrome is hidden
       // (because the OS doesn't do this for us) and the size mode is set to
@@ -4932,6 +4943,50 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
             hasWorkArea = PR_TRUE;
           }
         }
+        
+        HMONITOR selfMon = ::MonitorFromWindow(mWnd, MONITOR_DEFAULTTONEAREST),
+                 targetMon;
+        
+        if (hasWorkArea) {
+          // adjust for the task bar
+          APPBARDATA appbarData = {sizeof(APPBARDATA)};
+          appbarData.hWnd = mWnd;
+          HWND wnd;
+
+          appbarData.uEdge = ABE_TOP;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.top += 1;
+            }
+          }
+          appbarData.uEdge = ABE_RIGHT;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.right -= 1;
+            }
+          }
+          appbarData.uEdge = ABE_BOTTOM;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.bottom -= 1;
+            }
+          }
+          appbarData.uEdge = ABE_LEFT;
+          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
+          if (wnd) {
+            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
+            if (targetMon == selfMon) {
+              workArea.left += 1;
+            }
+          }
+        }
+
         if (hasWorkArea) {
           PRInt32 workWidth = workArea.right - workArea.left;
           maxWidth = PR_MIN(workWidth, mSizeConstraints.maxWidth);
