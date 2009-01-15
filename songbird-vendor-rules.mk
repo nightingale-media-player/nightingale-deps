@@ -197,16 +197,28 @@ endif
 endif
 
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
+	@echo Gathering PDBs, EXEs, LIBs, and DLLs...
+	for f in $$($(FIND) $(SB_VENDOR_BUILD_DIR) \
+	            -false $(foreach ext,pdb exe dll,-o -iname '*.$(ext)')); do \
+	   a=$$(basename $$f); \
+	   a=$${a/%.???/.pdb}; \
+	   $(MKDIR) -v $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$$a; \
+	   $(CP) $$f $(SB_VENDOR_BREAKPAD_DIR)/; \
+        done
+endif
 	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
 	$(PYTHON) $(MOZSDK_SCRIPTS_DIR)/symbolstore.py \
-              $(DUMP_SYMS_ARGS) \
-              -s $(SB_CONFIGURE_PREFIX) \
-              $(DUMP_SYMS) \
-              $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) \
-              $(SB_VENDOR_BREAKPAD_STORE_PATH) \
-              > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_VENDOR_TARGET)-symbol-list.txt
+	   $(DUMP_SYMS_ARGS) \
+	   -s $(SB_CONFIGURE_PREFIX) \
+	   $(DUMP_SYMS) \
+	   $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) \
+	   $(SB_VENDOR_BREAKPAD_DIR) \
+	   $(SB_VENDOR_BREAKPAD_STORE_PATH) \
+	   > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_VENDOR_TARGET)-symbol-list.txt
 	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \
-         $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE) .
+	   $(ZIP) -r9D $(SB_VENDOR_BREAKPAD_ARCHIVE) .
 
 $(SB_VENDOR_BINARIES_DIR):
 	$(MKDIR) $(SB_VENDOR_BINARIES_DIR)
@@ -215,20 +227,16 @@ setup_environment: $(SB_VENDOR_BINARIES_DIR)
 	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(foreach tgt, \
-          $(SB_VENDOR_BINARIES_TARGETS), \
-          $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
-           echo exists), \
-          , \
-          $(CP) -dpr $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
-          $(SB_VENDOR_BINARIES_DIR); ))
+	  $(SB_VENDOR_BINARIES_TARGETS), \
+	  $(if $(wildcard $(SB_VENDOR_BINARIES_DIR)/$(tgt)),, \
+	       $(CP) -dpr $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
+	             $(SB_VENDOR_BINARIES_DIR); ))
 else
 	$(foreach tgt, \
-          $(SB_VENDOR_BINARIES_TARGETS), \
-          $(if $(shell test -e $(SB_VENDOR_BINARIES_DIR)/$(tgt) && \
-           echo exists), \
-          , \
-          $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
-          $(SB_VENDOR_BINARIES_DIR); ))
+	  $(SB_VENDOR_BINARIES_TARGETS), \
+	  $(if $(wildcard $(SB_VENDOR_BINARIES_DIR)/$(tgt)),, \
+	       $(LN) -sv $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
+	            $(SB_VENDOR_BINARIES_DIR); ))
 endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.svn && \

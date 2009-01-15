@@ -60,10 +60,9 @@ if __name__ == "__main__":
 		
 		if outname.endswith(".dll") or outname.endswith(".exe"):
 			cargs = []
+			linkerargs = os.getenv("LDFLAGS", "").split()
 			if outname.endswith(".exe"):
-				linkerargs = ["-link"]
-			else:
-				linkerargs = []
+				linkerargs.append("-link")
 			for i in range(len(fargs)):
 				if fargs[i].startswith("-L") and not fargs[i].startswith("-LIBPATH"):
 					libpath = fargs[i][2:]

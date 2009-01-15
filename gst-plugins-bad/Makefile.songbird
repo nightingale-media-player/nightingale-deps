@@ -80,6 +80,9 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
     --with-quicktime-sdk=$(QUICKTIME_SDK_ROOT) \
     --with-directshow-libs=$(DIRECTSHOW_LIBS_CONFIGURE_ARG)
 
+  # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
   SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
   SB_CXXFLAGS += $(SB_CFLAGS)
 endif

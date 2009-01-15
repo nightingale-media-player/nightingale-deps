@@ -49,6 +49,9 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-alloc-trace
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
+  # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
   SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
 endif
 

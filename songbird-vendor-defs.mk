@@ -147,6 +147,7 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
 else
 ifeq (Msys,$(SB_VENDOR_ARCH))
    DUMP_SYMS ?= $(MOZSDK_BIN_DIR)/dump_syms.exe
+   DUMP_SYMS_ARGS += --copy
    # Strip isn't needed/available on Win32; error out
    STRIP ?= echo strip called on Win32 && exit 1;
    INSTALL_NAME_TOOL ?= echo install_name_tool called on Win32 && exit 1;
@@ -209,16 +210,27 @@ ifneq (,$(CONFIGURE_TARGET))
   SB_CONFIGURE_OPTS += --build=$(CONFIGURE_TARGET)
 endif
 
+ifneq (,$(filter linux-i686 macosx-i686, $(SB_TARGET_ARCH)))
+  SB_CFLAGS += -g -gstabs+
+  SB_CXXFLAGS += -g -gstabs+
+endif
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_CFLAGS += -Zi 
+  SB_CXXFLAGS += -Zi
+  SB_LDFLAGS += -DEBUG
+endif
+
 ifeq (debug, $(SB_BUILD_TYPE))
   SB_CONFIGURE_OPTS += --enable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
-    SB_CFLAGS += -MTd -Zi
+    SB_CFLAGS += -MTd
   endif
 else
 ifeq (release, $(SB_BUILD_TYPE))
   SB_CONFIGURE_OPTS += --disable-debug
   ifeq (Msys, $(SB_VENDOR_ARCH))
-    SB_CFLAGS += -MT
+    SB_CFLAGS += -MT -UDEBUG -DNDEBUG
   endif
 else
   $(error Unknown SB_BUILD_TYPE: $(SB_BUILD_TYPE))
@@ -280,9 +292,12 @@ SB_VENDOR_TARGET_BINARY_DEPS_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TAR
 SB_VENDOR_BREAKPAD_DIR = $(SB_VENDOR_BUILD_ROOT)/build/$(SB_VENDOR_TARGET)/breakpad/$(SB_BUILD_TYPE)
 
 SB_VENDOR_BREAKPAD_SYMBOL_PATH = $(SB_VENDOR_BREAKPAD_DIR)/breakpad-symbols
-SB_VENDOR_BREAKPAD_ARCHIVE_PATH = $(SB_VENDOR_BREAKPAD_DIR)
 
-SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_VENDOR_BREAKPAD_DIR)
+else
+  SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
+endif
 
 # Generate syms by default; but make it easy to turn it off, if you're just
 # interested in building.

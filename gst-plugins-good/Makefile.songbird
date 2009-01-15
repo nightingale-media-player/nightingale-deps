@@ -85,6 +85,9 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   export DIRECTDRAW_CFLAGS = -I$(DIRECTX_SDK_ROOT)/Include
   export DIRECTDRAW_LDFLAGS = -L$(DIRECTX_SDK_ROOT)/Lib/x86
 
+  # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
   SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
 endif
 
