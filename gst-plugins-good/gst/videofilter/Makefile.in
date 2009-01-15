@@ -88,7 +88,8 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstgamma_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libgstgamma_la_OBJECTS = libgstgamma_la-gstgamma.lo
 libgstgamma_la_OBJECTS = $(am_libgstgamma_la_OBJECTS)
 libgstvideobalance_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -426,6 +427,8 @@ USE_LIBCACA_FALSE = @USE_LIBCACA_FALSE@
 USE_LIBCACA_TRUE = @USE_LIBCACA_TRUE@
 USE_LIBDV_FALSE = @USE_LIBDV_FALSE@
 USE_LIBDV_TRUE = @USE_LIBDV_TRUE@
+USE_LIBOIL_FALSE = @USE_LIBOIL_FALSE@
+USE_LIBOIL_TRUE = @USE_LIBOIL_TRUE@
 USE_LIBPNG_FALSE = @USE_LIBPNG_FALSE@
 USE_LIBPNG_TRUE = @USE_LIBPNG_TRUE@
 USE_NLS = @USE_NLS@
@@ -623,7 +626,7 @@ libgstvideoflip_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgstvideo-@GST_MAJORMINOR@
 libgstvideoflip_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstvideobalance_la_SOURCES = gstvideobalance.c
 libgstvideobalance_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-			    $(GST_PLUGINS_BASE_CFLAGS)
+			    $(GST_PLUGINS_BASE_CFLAGS) $(LIBOIL_CFLAGS)
 
 libgstvideobalance_la_LIBADD = \
 	$(GST_PLUGINS_BASE_LIBS) \
@@ -631,15 +634,15 @@ libgstvideobalance_la_LIBADD = \
 	-lgstinterfaces-@GST_MAJORMINOR@ \
 	$(GST_BASE_LIBS) \
 	$(GST_LIBS) \
-	$(LIBM)
+	$(LIBOIL_LIBS)
 
 libgstvideobalance_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstgamma_la_SOURCES = gstgamma.c
 libgstgamma_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
-			$(GST_PLUGINS_BASE_CFLAGS)
+			$(GST_PLUGINS_BASE_CFLAGS) $(LIBOIL_CFLAGS)
 
 libgstgamma_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgstvideo-@GST_MAJORMINOR@ \
-			$(GST_BASE_LIBS) $(GST_LIBS)
+			$(GST_BASE_LIBS) $(GST_LIBS) $(LIBOIL_LIBS)
 
 libgstgamma_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(LIBM)
 all: all-am
@@ -942,6 +945,7 @@ uninstall-am: uninstall-info-am uninstall-pluginLTLIBRARIES
 	tags uninstall uninstall-am uninstall-info-am \
 	uninstall-pluginLTLIBRARIES
 
+	$(LIBM)
 
 gstvideoexample.c: $(srcdir)/make_filter $(srcdir)/gstvideotemplate.c
 	$(srcdir)/make_filter Videoexample $(srcdir)/gstvideotemplate.c

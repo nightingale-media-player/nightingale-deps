@@ -986,6 +986,8 @@ GLIB_CFLAGS
 GLIB_LIBS
 LIBOIL_CFLAGS
 LIBOIL_LIBS
+USE_LIBOIL_TRUE
+USE_LIBOIL_FALSE
 GST_CFLAGS
 GST_LIBS
 GST_TOOLS_DIR
@@ -1978,6 +1980,7 @@ Optional Features:
   --disable-external           disable building of plug-ins with external deps
   --enable-experimental        enable building of experimental plug-ins
   --enable-gtk-doc        use gtk-doc to build documentation default=no
+  --disable-liboil             disable liboil usage in some plugins
   --disable-aiffparse     disable dependency-less aiffparse plugin
   --disable-app           disable dependency-less app plugin
   --disable-bayer         disable dependency-less bayer plugin
@@ -5437,13 +5440,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5440: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5443: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5443: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5446: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5446: output\"" >&5)
+  (eval echo "\"\$as_me:5449: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6041,7 +6044,7 @@ if test "${lt_cv_ar_interface+set}" = set; then
 else
   lt_cv_ar_interface="ar"
   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
-  (eval echo "\"\$as_me:6044: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:6047: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
   (eval "$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext" &>conftest.err)
@@ -6659,7 +6662,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6662 "configure"' > conftest.$ac_ext
+  echo '#line 6665 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8199,11 +8202,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8202: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8205: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8206: \$? = $ac_status" >&5
+   echo "$as_me:8209: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8523,11 +8526,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8526: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8529: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8530: \$? = $ac_status" >&5
+   echo "$as_me:8533: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8628,11 +8631,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8631: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8634: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8635: \$? = $ac_status" >&5
+   echo "$as_me:8638: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8683,11 +8686,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8686: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8689: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8690: \$? = $ac_status" >&5
+   echo "$as_me:8693: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11520,7 +11523,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11523 "configure"
+#line 11526 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11620,7 +11623,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11623 "configure"
+#line 11626 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18826,11 +18829,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18829: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18832: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18833: \$? = $ac_status" >&5
+   echo "$as_me:18836: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18925,11 +18928,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18928: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18931: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18932: \$? = $ac_status" >&5
+   echo "$as_me:18935: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18977,11 +18980,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18980: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18983: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18984: \$? = $ac_status" >&5
+   echo "$as_me:18987: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -24015,6 +24018,49 @@ echo "$as_me: error: This package requires GLib >= $GLIB_REQ to compile." >&2;}
 
 
 
+echo
+{ echo "$as_me:$LINENO: *** checking feature: liboil usage in some plugins ***" >&5
+echo "$as_me: *** checking feature: liboil usage in some plugins ***" >&6;}
+if test "x" != "x"
+then
+  { echo "$as_me:$LINENO: *** for plug-ins:  ***" >&5
+echo "$as_me: *** for plug-ins:  ***" >&6;}
+fi
+NOUSE=
+if test "x$USE_LIBOIL" = "xno"; then
+  NOUSE="yes"
+fi
+# Check whether --enable-liboil was given.
+if test "${enable_liboil+set}" = set; then
+  enableval=$enable_liboil;  case "${enableval}" in
+      yes) USE_LIBOIL=yes;;
+      no) USE_LIBOIL=no;;
+      *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-liboil" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-liboil" >&2;}
+   { (exit 1); exit 1; }; } ;;
+    esac
+else
+   USE_LIBOIL=yes
+fi
+
+if test "x$NOUSE" = "xyes"; then
+  USE_LIBOIL="no"
+  { echo "$as_me:$LINENO: WARNING: ***  pre-configured not to be built" >&5
+echo "$as_me: WARNING: ***  pre-configured not to be built" >&2;}
+fi
+NOUSE=
+
+
+if test x$USE_LIBOIL = xyes; then
+
+  gst_check_save_LIBS=$LIBS
+  gst_check_save_LDFLAGS=$LDFLAGS
+  gst_check_save_CFLAGS=$CFLAGS
+  gst_check_save_CPPFLAGS=$CPPFLAGS
+  gst_check_save_CXXFLAGS=$CXXFLAGS
+
+  HAVE_LIBOIL=no
+
 
 pkg_failed=no
 { echo "$as_me:$LINENO: checking for LIBOIL" >&5
@@ -24025,12 +24071,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBOIL_CFLAGS="$LIBOIL_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"liboil-0.3 >= 0.3.8\"") >&5
-  ($PKG_CONFIG --exists --print-errors "liboil-0.3 >= 0.3.8") 2>&5
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"liboil-0.3 >= 0.3.14\"") >&5
+  ($PKG_CONFIG --exists --print-errors "liboil-0.3 >= 0.3.14") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBOIL_CFLAGS=`$PKG_CONFIG --cflags "liboil-0.3 >= 0.3.8" 2>/dev/null`
+  pkg_cv_LIBOIL_CFLAGS=`$PKG_CONFIG --cflags "liboil-0.3 >= 0.3.14" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -24043,12 +24089,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBOIL_LIBS="$LIBOIL_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"liboil-0.3 >= 0.3.8\"") >&5
-  ($PKG_CONFIG --exists --print-errors "liboil-0.3 >= 0.3.8") 2>&5
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"liboil-0.3 >= 0.3.14\"") >&5
+  ($PKG_CONFIG --exists --print-errors "liboil-0.3 >= 0.3.14") 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBOIL_LIBS=`$PKG_CONFIG --libs "liboil-0.3 >= 0.3.8" 2>/dev/null`
+  pkg_cv_LIBOIL_LIBS=`$PKG_CONFIG --libs "liboil-0.3 >= 0.3.14" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -24058,7 +24104,7 @@ else
 fi
 
 if test $pkg_failed = yes; then
-	LIBOIL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "liboil-0.3 >= 0.3.8"`
+	LIBOIL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "liboil-0.3 >= 0.3.14"`
 	# Put the nasty error message in config.log where it belongs
 	echo "$LIBOIL_PKG_ERRORS" 1>&5
 
@@ -24072,11 +24118,55 @@ else
 echo "${ECHO_T}yes" >&6; }
 	HAVE_LIBOIL=yes
 fi
-if test "x$HAVE_LIBOIL" != "xyes"; then
-  { { echo "$as_me:$LINENO: error: liboil-0.3.8 or later is required" >&5
-echo "$as_me: error: liboil-0.3.8 or later is required" >&2;}
-   { (exit 1); exit 1; }; }
+  if test "x$HAVE_LIBOIL" = "xyes"; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBOIL 1
+_ACEOF
+
+  fi
+
+
+  LIBS=$gst_check_save_LIBS
+  LDFLAGS=$gst_check_save_LDFLAGS
+  CFLAGS=$gst_check_save_CFLAGS
+  CPPFLAGS=$gst_check_save_CPPFLAGS
+  CXXFLAGS=$gst_check_save_CXXFLAGS
+
+    if test x$HAVE_LIBOIL = xno; then
+    USE_LIBOIL=no
+  else
+    :
+  fi
 fi
+if test x$USE_LIBOIL = xyes; then
+  :
+  if test "x" != "x"; then
+    GST_PLUGINS_YES="\t\n$GST_PLUGINS_YES"
+  fi
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBOIL
+_ACEOF
+
+else
+  :
+  if test "x" != "x"; then
+    GST_PLUGINS_NO="\t\n$GST_PLUGINS_NO"
+  fi
+  :
+fi
+
+
+if test x$USE_LIBOIL = xyes; then
+  USE_LIBOIL_TRUE=
+  USE_LIBOIL_FALSE='#'
+else
+  USE_LIBOIL_TRUE='#'
+  USE_LIBOIL_FALSE=
+fi
+
+
 
 
 
@@ -43317,6 +43407,13 @@ echo "$as_me: error: conditional \"HAVE_GCC_ASM\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${USE_LIBOIL_TRUE}" && test -z "${USE_LIBOIL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_LIBOIL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_LIBOIL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_GST_CHECK_TRUE}" && test -z "${HAVE_GST_CHECK_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_GST_CHECK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -45564,6 +45661,8 @@ GLIB_CFLAGS!$GLIB_CFLAGS$ac_delim
 GLIB_LIBS!$GLIB_LIBS$ac_delim
 LIBOIL_CFLAGS!$LIBOIL_CFLAGS$ac_delim
 LIBOIL_LIBS!$LIBOIL_LIBS$ac_delim
+USE_LIBOIL_TRUE!$USE_LIBOIL_TRUE$ac_delim
+USE_LIBOIL_FALSE!$USE_LIBOIL_FALSE$ac_delim
 GST_CFLAGS!$GST_CFLAGS$ac_delim
 GST_LIBS!$GST_LIBS$ac_delim
 GST_TOOLS_DIR!$GST_TOOLS_DIR$ac_delim
@@ -45631,8 +45730,6 @@ USE_PLUGIN_H264PARSE_FALSE!$USE_PLUGIN_H264PARSE_FALSE$ac_delim
 USE_PLUGIN_LIBRFB_TRUE!$USE_PLUGIN_LIBRFB_TRUE$ac_delim
 USE_PLUGIN_LIBRFB_FALSE!$USE_PLUGIN_LIBRFB_FALSE$ac_delim
 USE_PLUGIN_MODPLUG_TRUE!$USE_PLUGIN_MODPLUG_TRUE$ac_delim
-USE_PLUGIN_MODPLUG_FALSE!$USE_PLUGIN_MODPLUG_FALSE$ac_delim
-USE_PLUGIN_MPEGTSPARSE_TRUE!$USE_PLUGIN_MPEGTSPARSE_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45674,6 +45771,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+USE_PLUGIN_MODPLUG_FALSE!$USE_PLUGIN_MODPLUG_FALSE$ac_delim
+USE_PLUGIN_MPEGTSPARSE_TRUE!$USE_PLUGIN_MPEGTSPARSE_TRUE$ac_delim
 USE_PLUGIN_MPEGTSPARSE_FALSE!$USE_PLUGIN_MPEGTSPARSE_FALSE$ac_delim
 USE_PLUGIN_MPEG4VIDEOPARSE_TRUE!$USE_PLUGIN_MPEG4VIDEOPARSE_TRUE$ac_delim
 USE_PLUGIN_MPEG4VIDEOPARSE_FALSE!$USE_PLUGIN_MPEG4VIDEOPARSE_FALSE$ac_delim
@@ -45769,8 +45868,6 @@ DVDNAV_CFLAGS!$DVDNAV_CFLAGS$ac_delim
 USE_DVDNAV_TRUE!$USE_DVDNAV_TRUE$ac_delim
 USE_DVDNAV_FALSE!$USE_DVDNAV_FALSE$ac_delim
 EXIF_CFLAGS!$EXIF_CFLAGS$ac_delim
-EXIF_LIBS!$EXIF_LIBS$ac_delim
-IPTC_CFLAGS!$IPTC_CFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45812,6 +45909,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+EXIF_LIBS!$EXIF_LIBS$ac_delim
+IPTC_CFLAGS!$IPTC_CFLAGS$ac_delim
 IPTC_LIBS!$IPTC_LIBS$ac_delim
 XMP_CFLAGS!$XMP_CFLAGS$ac_delim
 XMP_LIBS!$XMP_LIBS$ac_delim
@@ -45907,8 +46006,6 @@ USE_SDL_FALSE!$USE_SDL_FALSE$ac_delim
 SNDFILE_CFLAGS!$SNDFILE_CFLAGS$ac_delim
 SNDFILE_LIBS!$SNDFILE_LIBS$ac_delim
 USE_SNDFILE_TRUE!$USE_SNDFILE_TRUE$ac_delim
-USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
-SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -45950,6 +46047,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+USE_SNDFILE_FALSE!$USE_SNDFILE_FALSE$ac_delim
+SOUNDTOUCH_CFLAGS!$SOUNDTOUCH_CFLAGS$ac_delim
 SOUNDTOUCH_LIBS!$SOUNDTOUCH_LIBS$ac_delim
 USE_SOUNDTOUCH_TRUE!$USE_SOUNDTOUCH_TRUE$ac_delim
 USE_SOUNDTOUCH_FALSE!$USE_SOUNDTOUCH_FALSE$ac_delim
@@ -45995,7 +46094,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 43; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 45; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

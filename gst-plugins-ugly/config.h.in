@@ -135,6 +135,9 @@
 /* Define to enable lame mp3 encoder library (used by lame). */
 #undef HAVE_LAME
 
+/* Define to enable liboil usage in some plugins. */
+#undef HAVE_LIBOIL
+
 /* Define to enable mad mp3 decoder (used by mad). */
 #undef HAVE_MAD
 

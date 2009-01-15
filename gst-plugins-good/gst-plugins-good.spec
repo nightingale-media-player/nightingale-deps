@@ -133,7 +133,7 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/gstreamer-%{maj
 %{_libdir}/gstreamer-%{majorminor}/libgstgoom2k1.so
 
 # sys plugins
-#%{_libdir}/gstreamer-%{majorminor}/libgstvideo4linux2.so
+%{_libdir}/gstreamer-%{majorminor}/libgstvideo4linux2.so
 
 # gstreamer-plugins with external dependencies but in the main package
 %{_libdir}/gstreamer-%{majorminor}/libgstcacasink.so

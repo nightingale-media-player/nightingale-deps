@@ -182,6 +182,9 @@
 /* Define to enable mms protocol library (used by libmms). */
 #undef HAVE_LIBMMS
 
+/* Define to enable liboil usage in some plugins. */
+#undef HAVE_LIBOIL
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

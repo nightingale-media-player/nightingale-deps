@@ -170,6 +170,9 @@
 /* Define to enable libdv DV demuxer/decoder (used by dv). */
 #undef HAVE_LIBDV
 
+/* Define to enable liboil usage in some plugins. */
+#undef HAVE_LIBOIL
+
 /* Define to enable Portable Network Graphics library (used by png). */
 #undef HAVE_LIBPNG
 
