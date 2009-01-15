@@ -250,6 +250,8 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
     rv = ReflowError(renderingContext, aDesiredSize);
     aStatus = NS_FRAME_COMPLETE;
     NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
+    // Call DidReflow() for the child frames we successfully did reflow.
+    DidReflowChildren(mFrames.FirstChild(), childFrame);
     return rv;
   }
 

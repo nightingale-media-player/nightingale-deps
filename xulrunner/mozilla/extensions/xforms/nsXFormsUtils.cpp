@@ -1164,7 +1164,7 @@ nsXFormsUtils::DispatchEvent(nsIDOMNode* aTarget, nsXFormsEvent aEvent,
         nsCOMPtr<nsIXFormsControl> control = do_QueryInterface(aTarget);
         if (control) {
           PRBool acceptableEventTarget = PR_FALSE;
-          control->IsEventTarget(&acceptableEventTarget);
+          control->IsEventTarget((PRInt32)aEvent, &acceptableEventTarget);
           if (!acceptableEventTarget) {
             return NS_OK;
           }

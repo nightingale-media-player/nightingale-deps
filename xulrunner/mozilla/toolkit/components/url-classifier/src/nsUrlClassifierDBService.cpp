@@ -2487,7 +2487,7 @@ nsUrlClassifierDBServiceWorker::SubChunk(PRUint32 tableId,
                                          PRUint32 chunkNum,
                                          nsTArray<nsUrlClassifierEntry>& entries)
 {
-  nsresult rv = CacheChunkLists(tableId, PR_FALSE, PR_TRUE);
+  nsresult rv = CacheChunkLists(tableId, PR_TRUE, PR_TRUE);
 
   if (!InsertChunkId(mCachedSubChunks, chunkNum)) {
     LOG(("Ignoring duplicate sub chunk %d in table %d", chunkNum, tableId));
@@ -2504,12 +2504,19 @@ nsUrlClassifierDBServiceWorker::SubChunk(PRUint32 tableId,
 
     HandlePendingLookups();
 
+    // Check if we have the add chunk associated with the sub.
+    PRBool haveAdds = (mCachedAddChunks.BinaryIndexOf(thisEntry.mAddChunkId) !=
+                       mCachedAddChunks.NoIndex);
+
     if (i == 0 || lastKey != thisEntry.mKey) {
       existingEntries.Clear();
-      rv = mMainStore.ReadEntries(thisEntry.mKey, thisEntry.mTableId,
-                                  thisEntry.mAddChunkId, existingEntries);
-      NS_ENSURE_SUCCESS(rv, rv);
       lastKey = thisEntry.mKey;
+
+      if (haveAdds) {
+        rv = mMainStore.ReadEntries(thisEntry.mKey, thisEntry.mTableId,
+                                    thisEntry.mAddChunkId, existingEntries);
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
     }
 
     PRUint32 writeEntry = PR_TRUE;
@@ -2518,12 +2525,11 @@ nsUrlClassifierDBServiceWorker::SubChunk(PRUint32 tableId,
         rv = mMainStore.DeleteEntry(existingEntries[j]);
         NS_ENSURE_SUCCESS(rv, rv);
         existingEntries.RemoveElementAt(j);
-        writeEntry = PR_FALSE;
         break;
       }
     }
 
-    if (writeEntry) {
+    if (!haveAdds) {
       // Save this entry in the pending subtraction store.
       rv = mPendingSubStore.WriteEntry(thisEntry);
       NS_ENSURE_SUCCESS(rv, rv);

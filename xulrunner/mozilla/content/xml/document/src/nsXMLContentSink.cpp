@@ -412,6 +412,7 @@ nsXMLContentSink::OnTransformDone(nsresult aResult,
   if (NS_FAILED(aResult) && contentViewer) {
     // Transform failed.
     if (domDoc) {
+      aResultDocument->SetMayStartLayout(PR_FALSE);
       // We have an error document.
       contentViewer->SetDOMDocument(domDoc);
     }
@@ -497,7 +498,8 @@ nsXMLContentSink::SetParser(nsIParser* aParser)
 nsresult
 nsXMLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
                                 nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
-                                nsIContent** aResult, PRBool* aAppendContent)
+                                nsIContent** aResult, PRBool* aAppendContent,
+                                PRBool aFromParser)
 {
   NS_ASSERTION(aNodeInfo, "can't create element without nodeinfo");
 
@@ -507,7 +509,7 @@ nsXMLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
 
   nsCOMPtr<nsIContent> content;
   rv = NS_NewElement(getter_AddRefs(content), aNodeInfo->NamespaceID(),
-                     aNodeInfo, PR_TRUE);
+                     aNodeInfo, aFromParser);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (aNodeInfo->Equals(nsGkAtoms::script, kNameSpaceID_XHTML)
@@ -654,7 +656,7 @@ nsXMLContentSink::CloseElement(nsIContent* aContent)
   else if (nodeInfo->Equals(nsGkAtoms::base, kNameSpaceID_XHTML) &&
            !mHasProcessedBase) {
     // The first base wins
-    rv = ProcessBASETag(aContent);
+    ProcessBASETag(aContent);
     mHasProcessedBase = PR_TRUE;
   }
   else if (nodeInfo->Equals(nsGkAtoms::meta, kNameSpaceID_XHTML) &&
@@ -804,12 +806,10 @@ nsXMLContentSink::ProcessStyleLink(nsIContent* aElement,
   return rv;
 }
 
-nsresult
+void
 nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
 {
   NS_ASSERTION(aContent, "missing base-element");
-
-  nsresult rv = NS_OK;
 
   if (mDocument) {
     nsAutoString value;
@@ -820,7 +820,7 @@ nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
 
     if (aContent->GetAttr(kNameSpaceID_None, nsGkAtoms::href, value)) {
       nsCOMPtr<nsIURI> baseURI;
-      rv = NS_NewURI(getter_AddRefs(baseURI), value);
+      nsresult rv = NS_NewURI(getter_AddRefs(baseURI), value);
       if (NS_SUCCEEDED(rv)) {
         rv = mDocument->SetBaseURI(baseURI); // The document checks if it is legal to set this base
         if (NS_SUCCEEDED(rv)) {
@@ -829,8 +829,6 @@ nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
       }
     }
   }
-
-  return rv;
 }
 
 
@@ -1028,7 +1026,7 @@ nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
   NS_ENSURE_SUCCESS(result, result);
 
   result = CreateElement(aAtts, aAttsCount, nodeInfo, aLineNumber,
-                         getter_AddRefs(content), &appendContent);
+                         getter_AddRefs(content), &appendContent, PR_TRUE);
   NS_ENSURE_SUCCESS(result, result);
 
   // Have to do this before we push the new content on the stack... and have to

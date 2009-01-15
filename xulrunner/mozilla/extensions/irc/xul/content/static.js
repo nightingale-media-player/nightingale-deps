@@ -40,11 +40,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-const __cz_version   = "0.9.83";
+const __cz_version   = "0.9.84";
 const __cz_condition = "green";
 const __cz_suffix    = "";
 const __cz_guid      = "59c81df5-4b7a-477b-912d-4e0fdf64e5f2";
-const __cz_locale    = "0.9.83";
+const __cz_locale    = "0.9.84";
 
 var warn;
 var ASSERT;
@@ -104,9 +104,6 @@ client.SAFE_LIST_COUNT = 500;
  * around the limit without continously going on and off.
  */
 client.CONFERENCE_LOW_PASS = 10;
-
-// Namespaces we happen to need:
-const XHTML_NS = "http://www.w3.org/1999/xhtml";
 
 client.viewsArray = new Array();
 client.activityList = new Object();
@@ -238,9 +235,6 @@ function initStatic()
         dd("IO service failed to initialize: " + ex);
     }
     
-    // Need this for the userlist
-    client.atomSvc = getService("@mozilla.org/atom-service;1", "nsIAtomService");
-
     try
     {
         const nsISound = Components.interfaces.nsISound;
@@ -295,6 +289,18 @@ function initStatic()
 
     multilineInputMode(client.prefs["multiline"]);
     updateSpellcheck(client.prefs["inputSpellcheck"]);
+
+    // Initialize userlist stuff
+    // cache all the atoms to stop us crossing XPCOM boundaries *all the time*
+    client.atomCache = new Object();
+    var atomSvc = getService("@mozilla.org/atom-service;1", "nsIAtomService");
+    var atoms = ["founder-true", "founder-false", "admin-true", "admin-false",
+                 "op-true", "op-false", "halfop-true", "halfop-false",
+                 "voice-true", "voice-false", "away-true", "away-false",
+                 "unselected"];
+    for (var i = 0; i < atoms.length; i++)
+        client.atomCache[atoms[i]] = atomSvc.getAtom(atoms[i]);
+    
     if (client.prefs["showModeSymbols"])
         setListMode("symbol");
     else
@@ -306,57 +312,10 @@ function initStatic()
 
     setDebugMode(client.prefs["debugMode"]);
 
-    var ver = __cz_version + (__cz_suffix ? "-" + __cz_suffix : "");
-
-    var ua = navigator.userAgent;
-    var app = getService("@mozilla.org/xre/app-info;1", "nsIXULAppInfo");
-    if (app)
-    {
-        // Use the XUL host app info, and Gecko build ID.
-        if (app.ID == "{" + __cz_guid + "}")
-        {
-            // We ARE the app, in other words, we're running in XULRunner.
-            // Because of this, we must disregard app.(name|vendor|version).
-            // "XULRunner 1.7+/2005071506"
-            ua = "XULRunner " + app.platformVersion + "/" + app.platformBuildID;
-
-            // "XULRunner 1.7+/2005071506, Windows"
-            CIRCServer.prototype.HOST_RPLY = ua + ", " + client.platform;
-        }
-        else
-        {
-            // "Firefox 1.0+/2005071506"
-            ua = app.name + " " + app.version + "/";
-            if ("platformBuildID" in app) // 1.1 and up
-                ua += app.platformBuildID;
-            else if ("geckoBuildID" in app) // 1.0 - 1.1 trunk only
-                ua += app.geckoBuildID;
-            else // Uh oh!
-                ua += "??????????";
-
-            // "Mozilla Firefox 1.0+, Windows"
-            CIRCServer.prototype.HOST_RPLY = app.vendor + " " + app.name + " " +
-                                             app.version + ", " + client.platform;
-        }
-    }
-    else
-    {
-        // Extract the revision number, and Gecko build ID.
-        var ary = navigator.userAgent.match(/(rv:[^;)\s]+).*?Gecko\/(\d+)/);
-        if (ary)
-        {
-            if (navigator.vendor)
-                ua = navigator.vendor + " " + navigator.vendorSub; // FF 1.0
-            else
-                ua = client.entities.brandShortName + " " + ary[1]; // Suite
-            ua = ua + "/" + ary[2];
-        }
-        CIRCServer.prototype.HOST_RPLY = client.entities.brandShortName + ", " +
-                                         client.platform;
-    }
-
-    client.userAgent = getMsg(MSG_VERSION_REPLY, [ver, ua]);
+    var version = getVersionInfo();
+    client.userAgent = getMsg(MSG_VERSION_REPLY, [version.cz, version.ua]);
     CIRCServer.prototype.VERSION_RPLY = client.userAgent;
+    CIRCServer.prototype.HOST_RPLY = version.host;
     CIRCServer.prototype.SOURCE_RPLY = MSG_SOURCE_REPLY;
 
     client.statusBar = new Object();
@@ -423,6 +382,64 @@ function initStatic()
     client.defaultCompletion = client.COMMAND_CHAR + "help ";
 
     client.deck = document.getElementById('output-deck');
+}
+
+function getVersionInfo()
+{
+    var version = new Object();
+    version.cz = __cz_version + (__cz_suffix ? "-" + __cz_suffix : "");
+    version.ua = navigator.userAgent;
+    version.host = "Unknown";
+
+    var app = getService("@mozilla.org/xre/app-info;1", "nsIXULAppInfo");
+    if (app)
+    {
+        // Use the XUL host app info, and Gecko build ID.
+        if (app.ID == "{" + __cz_guid + "}")
+        {
+            /* We ARE the app, in other words, we're running in XULrunner.
+             * Because of this, we must disregard app.(name|vendor|version).
+             */
+
+            // "XULRunner 1.7+"
+            version.host = "XULRunner " + app.platformVersion;
+
+            // "XULRunner 1.7+/2005071506"
+            version.ua = version.host + "/" + app.platformBuildID;
+        }
+        else
+        {
+            // "Mozilla Firefox 1.0+"
+            version.host = app.vendor + " " + app.name + " " + app.version;
+
+            // "Firefox 1.0+/2005071506"
+            version.ua = app.name + " " + app.version + "/";
+            if ("platformBuildID" in app) // 1.1 and up
+                version.ua += app.platformBuildID;
+            else if ("geckoBuildID" in app) // 1.0 - 1.1 trunk only
+                version.ua += app.geckoBuildID;
+            else // Uh oh!
+                version.ua += "??????????";
+        }
+    }
+    else
+    {
+        // Extract the revision number, and Gecko build ID.
+        var ary = navigator.userAgent.match(/(rv:[^;)\s]+).*?Gecko\/(\d+)/);
+        if (ary)
+        {
+            if (navigator.vendor)
+                version.ua = navigator.vendor + " " + navigator.vendorSub; // FF 1.0
+            else
+                version.ua = client.entities.brandShortName + " " + ary[1]; // Suite
+            version.ua += "/" + ary[2];
+        }
+        version.host = client.entities.brandShortName;
+    }
+
+    version.host += ", " + client.platform;
+
+    return version;
 }
 
 function initApplicationCompatibility()
@@ -601,10 +618,44 @@ function initInstrumentation()
 
 function getFindData(e)
 {
+    // findNext() wrapper to add our findStart/findEnd events.
+    function _cz_findNext() {
+        // Send start notification.
+        var ev = new CEvent("find", "findStart", e.sourceObject, "onFindStart");
+        client.eventPump.routeEvent(ev);
+
+        // Call the original findNext() and keep the result for later.
+        var rv = this.__proto__.findNext();
+
+        // Send end notification with result code.
+        var ev = new CEvent("find", "findEnd", e.sourceObject, "onFindEnd");
+        ev.findResult = rv;
+        client.eventPump.routeEvent(ev);
+
+        // Return the original findNext()'s result to keep up appearances.
+        return rv;
+    };
+
+    // Getter for webBrowserFind property.
+    function _cz_webBrowserFind() {
+        return this._cz_wbf;
+    };
+
     var findData = new nsFindInstData();
     findData.browser = e.sourceObject.frame;
     findData.rootSearchWindow = getContentWindow(e.sourceObject.frame);
     findData.currentSearchWindow = getContentWindow(e.sourceObject.frame);
+
+    /* Wrap up the webBrowserFind object so we get called for findNext(). Use
+     * __proto__ so that everything else is exactly like the original object.
+     */
+    findData._cz_wbf = { findNext: _cz_findNext };
+    findData._cz_wbf.__proto__ = findData.webBrowserFind;
+
+    /* Replace the nsFindInstData getter for webBrowserFind to call our
+     * function which in turn returns our object (_cz_wbf).
+     */
+    findData.__defineGetter__("webBrowserFind", _cz_webBrowserFind);
 
     /* Yay, evil hacks! findData.init doesn't care about the findService, it
      * gets option settings from webBrowserFind. As we want the wrap option *on*
@@ -3294,7 +3345,7 @@ function ul_getrowprops(index, properties)
 
     // See bug 432482 - work around Gecko deficiency.
     if (!this.selection.isSelected(index))
-        properties.AppendElement(client.atomSvc.getAtom("unselected"));
+        properties.AppendElement(client.atomCache["unselected"]);
 }
 
 // Properties getter for user list tree view
@@ -3308,16 +3359,16 @@ function ul_getcellprops(index, column, properties)
 
     // See bug 432482 - work around Gecko deficiency.
     if (!this.selection.isSelected(index))
-        properties.AppendElement(client.atomSvc.getAtom("unselected"));
+        properties.AppendElement(client.atomCache["unselected"]);
 
     var userObj = this.childData.childData[index]._userObj;
 
-    properties.AppendElement(client.atomSvc.getAtom("voice-" + userObj.isVoice));
-    properties.AppendElement(client.atomSvc.getAtom("op-" + userObj.isOp));
-    properties.AppendElement(client.atomSvc.getAtom("halfop-" + userObj.isHalfOp));
-    properties.AppendElement(client.atomSvc.getAtom("admin-" + userObj.isAdmin));
-    properties.AppendElement(client.atomSvc.getAtom("founder-" + userObj.isFounder));
-    properties.AppendElement(client.atomSvc.getAtom("away-" + userObj.isAway));
+    properties.AppendElement(client.atomCache["voice-" + userObj.isVoice]);
+    properties.AppendElement(client.atomCache["op-" + userObj.isOp]);
+    properties.AppendElement(client.atomCache["halfop-" + userObj.isHalfOp]);
+    properties.AppendElement(client.atomCache["admin-" + userObj.isAdmin]);
+    properties.AppendElement(client.atomCache["founder-" + userObj.isFounder]);
+    properties.AppendElement(client.atomCache["away-" + userObj.isAway]);
 }
 
 var contentDropObserver = new Object();
@@ -3462,7 +3513,7 @@ function tabdnd_drop(aEvent, aXferData, aDragSession)
     // See comment above |var tabsDropObserver|.
     var url = transferUtils.retrieveURLFromData(aXferData.data,
                                                 aXferData.flavour.contentType);
-    if (!url || !url.match(/^ircs?:/))
+    if (!url || !(url.match(/^ircs?:/) || url.match(/^x-irc-dcc-(chat|file):/)))
         return;
 
     // Find the tab to insertBefore() the new one.
@@ -3494,7 +3545,8 @@ function tabdnd_drop(aEvent, aXferData, aDragSession)
     }
 
     // URL not found in tabs, so force it into life - this may connect/rejoin.
-    gotoIRCURL(url, { tabInsertBefore: dropTab });
+    if (url.substring(0, 3) == "irc")
+        gotoIRCURL(url, { tabInsertBefore: dropTab });
 }
 
 tabsDropObserver.getSupportedFlavours =
@@ -4230,13 +4282,14 @@ function __display(message, msgtype, sourceObj, destObj)
                 // ...or to us. Messages from someone else to channel or similar.
 
                 if ((typeof message == "string") && me)
-                {
                     isImportant = msgIsImportant(message, nick, o.network);
-                    if (isImportant)
-                    {
-                        this.defaultCompletion = nick +
-                            client.prefs["nickCompleteStr"] + " ";
-                    }
+                else if (message.hasAttribute("isImportant") && me)
+                    isImportant = true;
+
+                if (isImportant)
+                {
+                    this.defaultCompletion = nick +
+                        client.prefs["nickCompleteStr"] + " ";
                 }
             }
         }
@@ -4432,14 +4485,27 @@ function __display(message, msgtype, sourceObj, destObj)
     {
         if (importantId)
         {
-            var channel = this.unicodeName;
-            var cmd = "jump-to-anchor " + importantId + " " + channel;
-            var prefix = getMsg(MSG_JUMPTO_BUTTON, [channel, cmd]);
-            message = prefix + " " + message;
+            // Create the linked inline button
+            var msgspan = document.createElementNS(XHTML_NS, "html:span");
+            msgspan.setAttribute("isImportant", "true");
+
+            var cmd = "jump-to-anchor " + importantId + " " + this.unicodeName;
+            var prefix = getMsg(MSG_JUMPTO_BUTTON, [this.unicodeName, cmd]);
+
+            // Munge prefix as a button
+            client.munger.getRule(".inline-buttons").enabled = true;
+            client.munger.munge(prefix + " ", msgspan, o);
+
+            // Munge rest of message normally
+            client.munger.getRule(".inline-buttons").enabled = false;
+            client.munger.munge(message, msgspan, o);
+
+            o.network.displayHere(msgspan, msgtype, sourceObj, destObj);
         }
-        client.munger.getRule(".inline-buttons").enabled = true;
-        o.network.displayHere(message, msgtype, sourceObj, destObj);
-        client.munger.getRule(".inline-buttons").enabled = false;
+        else
+        {
+            o.network.displayHere(message, msgtype, sourceObj, destObj);
+        }
     }
 
     // Log file time!

@@ -707,9 +707,12 @@ function cmdDoCommand(e)
 {
     if (e.cmdName == "cmd_mozillaPrefs")
     {
-        goPreferences('navigator', 
-                      'chrome://communicator/content/pref/pref-navigator.xul', 
-                      'navigator');
+        // open Mozilla/SeaMonkey preferences
+        const PREF_URL = 'chrome://communicator/content/pref/pref-navigator.xul';
+        if (goPreferences.arity == 1) // SeaMonkey 2.x
+            goPreferences('navigator_pane');
+        else // Mozilla, SeaMonkey 1.x, etc.
+            goPreferences('navigator', PREF_URL, 'navigator');
     }
     else
     {

@@ -307,13 +307,13 @@ STDMETHODIMP nsAccessNodeWrap::get_computedStyle(
     /* [out] */ unsigned short __RPC_FAR *aNumStyleProperties)
 {
 __try{
-  nsCOMPtr<nsIDOMElement> domElement(do_QueryInterface(mDOMNode));
-  if (!domElement)
-    return E_FAIL;
-  
   *aNumStyleProperties = 0;
+
+  if (IsDefunct())
+    return E_FAIL;
+
   nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
-  GetComputedStyleDeclaration(EmptyString(), domElement, getter_AddRefs(cssDecl));
+  GetComputedStyleDeclaration(EmptyString(), mDOMNode, getter_AddRefs(cssDecl));
   NS_ENSURE_TRUE(cssDecl, E_FAIL);
 
   PRUint32 length;
@@ -344,12 +344,11 @@ STDMETHODIMP nsAccessNodeWrap::get_computedStyleForProperties(
     /* [length_is][size_is][out] */ BSTR __RPC_FAR *aStyleValues)
 {
 __try {
-  nsCOMPtr<nsIDOMElement> domElement(do_QueryInterface(mDOMNode));
-  if (!domElement)
+  if (IsDefunct())
     return E_FAIL;
  
   nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
-  GetComputedStyleDeclaration(EmptyString(), domElement, getter_AddRefs(cssDecl));
+  GetComputedStyleDeclaration(EmptyString(), mDOMNode, getter_AddRefs(cssDecl));
   NS_ENSURE_TRUE(cssDecl, E_FAIL);
 
   PRUint32 index;

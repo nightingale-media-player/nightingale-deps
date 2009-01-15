@@ -55,6 +55,11 @@ var gInstallationLocale = "@AB_CD@";
 function run_test() {
   do_test_pending();
   startAUS();
+  // Set the default value for general.useragent.locale before making any calls
+  // to AUS since the locale will be cached the first time it is read.
+  var defaults = gPrefs.QueryInterface(AUS_Ci.nsIPrefService)
+                   .getDefaultBranch(null);
+  defaults.setCharPref(PREF_GEN_USERAGENT_LOCALE, "bogus_locale");
   gAppInfo = AUS_Cc["@mozilla.org/xre/app-info;1"]
                .getService(AUS_Ci.nsIXULAppInfo)
                .QueryInterface(AUS_Ci.nsIXULRuntime);
@@ -154,9 +159,6 @@ function run_test_pt5() {
   var url = URL_PREFIX + "%LOCALE%/";
   dump("Testing: url constructed with %LOCALE% - " + url + "\n");
   gPrefs.setCharPref(PREF_APP_UPDATE_URL_OVERRIDE, url);
-  var defaults = gPrefs.QueryInterface(AUS_Ci.nsIPrefService)
-                   .getDefaultBranch(null);
-  defaults.setCharPref(PREF_GEN_USERAGENT_LOCALE, "bogus_locale");
   gUpdateChecker.checkForUpdates(updateCheckListener, true);
 }
 

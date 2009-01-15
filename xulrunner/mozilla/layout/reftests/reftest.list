@@ -91,3 +91,6 @@ include forms/reftest.list
 include mathml/reftest.list
 
 include ../xul/base/src/grid/reftests/reftest.list
+
+# reftest(s) to verify content bugfixes
+include ../../content/html/document/reftests/reftests.list

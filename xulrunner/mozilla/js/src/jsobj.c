@@ -299,8 +299,13 @@ js_SetProtoOrParent(JSContext *cx, JSObject *obj, uint32 slot, JSObject *pobj)
     JS_LOCK_GC(rt);
     ssr.next = rt->setSlotRequests;
     rt->setSlotRequests = &ssr;
-    js_GC(cx, GC_SET_SLOT_REQUEST);
-    JS_UNLOCK_GC(rt);
+    for (;;) {
+        js_GC(cx, GC_SET_SLOT_REQUEST);
+        JS_UNLOCK_GC(rt);
+        if (!rt->setSlotRequests)
+            break;
+        JS_LOCK_GC(rt);
+    }
 
     if (ssr.errnum != JSMSG_NOT_AN_ERROR) {
         if (ssr.errnum == JSMSG_OUT_OF_MEMORY) {
@@ -1140,8 +1145,10 @@ js_ComputeFilename(JSContext *cx, JSStackFrame *caller,
 {
     uint32 flags;
 
+    JS_ASSERT(principals || !cx->runtime->findObjectPrincipals);
     flags = JS_GetScriptFilenameFlags(caller->script);
     if ((flags & JSFILENAME_PROTECTED) &&
+        principals &&
         strcmp(principals->codebase, "[System Principal]")) {
         *linenop = 0;
         return principals->codebase;

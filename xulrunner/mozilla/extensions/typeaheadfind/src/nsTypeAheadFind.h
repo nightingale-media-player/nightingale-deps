@@ -120,6 +120,7 @@ public:
   // ----- nsIScrollPositionListener --------------------
   NS_IMETHOD ScrollPositionWillChange(nsIScrollableView *aView, 
                                       nscoord aX, nscoord aY);
+  virtual void ViewPositionDidChange(nsIScrollableView *aView) {}
   NS_IMETHOD ScrollPositionDidChange(nsIScrollableView *aView, 
                                      nscoord aX, nscoord aY);
 

@@ -266,8 +266,9 @@ nsXFormsControlStub::TryFocus(PRBool* aOK)
 }
   
 NS_IMETHODIMP
-nsXFormsControlStub::IsEventTarget(PRBool *aOK)
+nsXFormsControlStub::IsEventTarget(PRInt32 aEvent, PRBool *aOK)
 {
+  NS_ENSURE_ARG_POINTER(aOK);
   *aOK = PR_TRUE;
   return NS_OK;
 }

@@ -84,6 +84,7 @@
 #include "nsLayoutStatics.h"
 #include "nsDOMError.h"
 #include "nsIHTMLDocument.h"
+#include "nsIDOM3Document.h"
 #include "nsWhitespaceTokenizer.h"
 #include "nsIMultiPartChannel.h"
 #include "nsIScriptObjectPrincipal.h"
@@ -274,7 +275,8 @@ GetDocumentFromScriptContext(nsIScriptContext *aScriptContext)
 /////////////////////////////////////////////
 
 nsXMLHttpRequest::nsXMLHttpRequest()
-  : mState(XML_HTTP_REQUEST_UNINITIALIZED)
+  : mState(XML_HTTP_REQUEST_UNINITIALIZED),
+    mDenyResponseDataAccess(PR_FALSE)
 {
   nsLayoutStatics::AddRef();
 }
@@ -649,7 +651,8 @@ nsXMLHttpRequest::GetResponseXML(nsIDOMDocument **aResponseXML)
 {
   NS_ENSURE_ARG_POINTER(aResponseXML);
   *aResponseXML = nsnull;
-  if ((XML_HTTP_REQUEST_COMPLETED & mState) && mDocument) {
+  if (!mDenyResponseDataAccess &&
+      (XML_HTTP_REQUEST_COMPLETED & mState) && mDocument) {
     *aResponseXML = mDocument;
     NS_ADDREF(*aResponseXML);
   }
@@ -786,7 +789,8 @@ NS_IMETHODIMP nsXMLHttpRequest::GetResponseText(nsAString& aResponseText)
 
   aResponseText.Truncate();
 
-  if (mState & (XML_HTTP_REQUEST_COMPLETED |
+  if (!mDenyResponseDataAccess &&
+      mState & (XML_HTTP_REQUEST_COMPLETED |
                 XML_HTTP_REQUEST_INTERACTIVE)) {
     rv = ConvertBodyToText(aResponseText);
   }
@@ -875,6 +879,12 @@ nsXMLHttpRequest::GetAllResponseHeaders(char **_retval)
   NS_ENSURE_ARG_POINTER(_retval);
   *_retval = nsnull;
 
+  if (mDenyResponseDataAccess) {
+    *_retval = ToNewCString(EmptyCString());
+    
+    return NS_OK;
+  }
+
   nsCOMPtr<nsIHttpChannel> httpChannel = GetCurrentHttpChannel();
 
   if (httpChannel) {
@@ -905,7 +915,7 @@ nsXMLHttpRequest::GetResponseHeader(const nsACString& header,
 
   nsCOMPtr<nsIHttpChannel> httpChannel = GetCurrentHttpChannel();
 
-  if (httpChannel) {
+  if (!mDenyResponseDataAccess && httpChannel) {
     rv = httpChannel->GetResponseHeader(header, _retval);
   }
 
@@ -1005,10 +1015,6 @@ nsXMLHttpRequest::NotifyEventListeners(const nsCOMArray<nsIDOMEventListener>& aL
   nsCOMPtr<nsIJSContextStack> stack;
   JSContext *cx = nsnull;
 
-  if (NS_FAILED(CheckInnerWindowCorrectness())) {
-    return;
-  }
-
   if (mScriptContext) {
     stack = do_GetService("@mozilla.org/js/xpc/ContextStack;1");
 
@@ -1026,6 +1032,9 @@ nsXMLHttpRequest::NotifyEventListeners(const nsCOMArray<nsIDOMEventListener>& aL
     nsIDOMEventListener* listener = aListeners[index];
     
     if (listener) {
+      if (NS_FAILED(CheckInnerWindowCorrectness())) {
+        break;
+      }
       listener->HandleEvent(aEvent);
     }
   }
@@ -1215,6 +1224,8 @@ nsXMLHttpRequest::OpenRequest(const nsACString& method,
   rv = NS_NewChannel(getter_AddRefs(mChannel), uri, nsnull, loadGroup, nsnull,
                      loadFlags);
   if (NS_FAILED(rv)) return rv;
+
+  mDenyResponseDataAccess = PR_FALSE;
 
   // Check if we're doing a cross-origin request.
   if (IsSystemPrincipal(mPrincipal)) {
@@ -1770,9 +1781,15 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
           nsCOMPtr<nsIDOMSerializer> serializer(do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID, &rv));
           if (NS_FAILED(rv)) return rv;
 
-          nsCOMPtr<nsIDocument> baseDoc(do_QueryInterface(doc));
-          if (baseDoc) {
-            charset = baseDoc->GetDocumentCharacterSet();
+          nsCOMPtr<nsIDOM3Document> dom3doc(do_QueryInterface(doc));
+          if (dom3doc) {
+            nsAutoString inputEncoding;
+            dom3doc->GetInputEncoding(inputEncoding);
+            if (DOMStringIsNull(inputEncoding)) {
+              charset.AssignLiteral("UTF-8");
+            } else {
+              CopyUTF16toUTF8(inputEncoding, charset);
+            }
           }
 
           // Serialize to a stream so that the encoding used will
@@ -2261,7 +2278,11 @@ nsXMLHttpRequest::OnChannelRedirect(nsIChannel *aOldChannel,
 
     rv = nsContentUtils::GetSecurityManager()->
       CheckSameOriginURI(oldURI, newURI, PR_TRUE);
-    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (NS_FAILED(rv)) {
+      mDenyResponseDataAccess = PR_TRUE;
+      return rv;
+    }
   }
 
   if (mChannelEventSink) {

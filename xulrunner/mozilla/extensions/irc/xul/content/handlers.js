@@ -151,6 +151,8 @@ function onUnload()
     }
     if ("configWindow" in client)
         client.configWindow.close();
+    if ("aboutDialog" in client)
+        client.aboutDialog.close();
 
     // We don't trust anybody.
     client.hiddenDocument = null;
@@ -534,7 +536,7 @@ function onTabCompleteRequest (e)
 
 }
 
-function onWindowKeyPress (e)
+function onWindowKeyPress(e)
 {
     var code = Number(e.keyCode);
     var w;
@@ -542,59 +544,80 @@ function onWindowKeyPress (e)
     var userList = document.getElementById("user-list");
     var elemFocused = document.commandDispatcher.focusedElement;
 
+    const isMac     = client.platform == "Mac";
+    const isLinux   = client.platform == "Linux";
+    const isWindows = client.platform == "Windows";
+    const isOS2     = client.platform == "OS/2";
+    const isUnknown = !(isMac || isLinux || isWindows || isOS2);
+    const isSuite   = client.host == "Mozilla";
+
     switch (code)
     {
-        case 9: /* tab */
-            if (e.ctrlKey || e.metaKey)
+        case 9: /* Tab */
+            // Control-Tab => next tab (all platforms)
+            // Control-Shift-Tab => previous tab (all platforms)
+            if (e.ctrlKey && !e.altKey && !e.metaKey)
             {
                 cycleView(e.shiftKey ? -1: 1);
                 e.preventDefault();
             }
             break;
 
-        case 33: /* pgup */
-            if (e.ctrlKey)
+        case 33: /* Page Up */
+        case 34: /* Page Down */
+            // Control-Page Up => previous tab (all platforms)
+            // Control-Page Down => next tab (all platforms)
+            if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey)
             {
-                cycleView(-1);
+                cycleView(2 * code - 67);
                 e.preventDefault();
                 break;
             }
 
-            if (elemFocused == userList)
-                break;
-
-            w = client.currentFrame;
-            newOfs = w.pageYOffset - (w.innerHeight * 0.75);
-            if (newOfs > 0)
-                w.scrollTo (w.pageXOffset, newOfs);
-            else
-                w.scrollTo (w.pageXOffset, 0);
-            e.preventDefault();
+            if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey &&
+                (elemFocused != userList))
+            {
+                w = client.currentFrame;
+                newOfs = w.pageYOffset + (w.innerHeight * 0.75) *
+                                         (2 * code - 67);
+                if (newOfs > 0)
+                    w.scrollTo(w.pageXOffset, newOfs);
+                else
+                    w.scrollTo(w.pageXOffset, 0);
+                e.preventDefault();
+            }
             break;
 
-        case 34: /* pgdn */
-            if (e.ctrlKey)
+        case 37: /* Left Arrow */
+        case 39: /* Right Arrow */
+            // Command-Alt-Left Arrow => previous tab (Mac only)
+            // Command-Alt-Right Arrow => next tab (Mac only)
+            if (isMac && e.metaKey && e.altKey && !e.ctrlKey && !e.shiftKey)
             {
-                cycleView(1);
+                cycleView(code - 38);
                 e.preventDefault();
-                break;
             }
+            break;
 
-            if (elemFocused == userList)
-                break;
-
-            w = client.currentFrame;
-            newOfs = w.pageYOffset + (w.innerHeight * 0.75);
-            if (newOfs < (w.innerHeight + w.pageYOffset))
-                w.scrollTo (w.pageXOffset, newOfs);
-            else
-                w.scrollTo (w.pageXOffset, (w.innerHeight + w.pageYOffset));
-            e.preventDefault();
+        case 219: /* [ */
+        case 221: /* ] */
+            // Command-Shift-[ => previous tab (Mac only)
+            // Command-Shift-] => next tab (Mac only)
+            if (isMac && e.metaKey && e.shiftKey && !e.altKey && !e.ctrlKey)
+            {
+                cycleView(code - 220);
+                e.preventDefault();
+            }
             break;
 
         case 117: /* F6 */
-            advanceKeyboardFocus(e.shiftKey ? -1 : 1);
-            e.preventDefault();
+            // F6 => focus next (all platforms)
+            // Shift-F6 => focus previous (all platforms)
+            if (!e.altKey && !e.ctrlKey && !e.metaKey)
+            {
+                advanceKeyboardFocus(e.shiftKey ? -1 : 1);
+                e.preventDefault();
+            }
             break;
     }
 
@@ -621,13 +644,6 @@ function onWindowKeyPress (e)
       digit1 += 6;
 
     var idx = e.charCode - digit1;
-
-    const isMac     = client.platform == "Mac";
-    const isLinux   = client.platform == "Linux";
-    const isWindows = client.platform == "Windows";
-    const isOS2     = client.platform == "OS/2";
-    const isUnknown = !(isMac || isLinux || isWindows || isOS2);
-    const isSuite   = client.host == "Mozilla";
 
     if ((0 <= idx) && (idx <= 8))
     {
@@ -824,6 +840,17 @@ function onUserDoubleClick(event)
         return;
     var nickname = getNicknameForUserlistRow(currentIndex);
     dispatch("query", {nickname: nickname, source: "mouse"});
+}
+
+client.onFindEnd =
+CIRCNetwork.prototype.onFindEnd =
+CIRCChannel.prototype.onFindEnd =
+CIRCUser.prototype.onFindEnd =
+CIRCDCCChat.prototype.onFindEnd =
+CIRCDCCFileTransfer.prototype.onFindEnd =
+function this_onfindend(e)
+{
+    this.scrollToElement("selection", "inview");
 }
 
 CIRCChannel.prototype._updateConferenceMode =
@@ -1045,6 +1072,7 @@ CIRCNetwork.prototype.on254 = /* channels found (in params[2]) */
 CIRCNetwork.prototype.on255 = /* link info */
 CIRCNetwork.prototype.on265 = /* local user details */
 CIRCNetwork.prototype.on266 = /* global user details */
+CIRCNetwork.prototype.on290 = /* CAPAB Response */
 CIRCNetwork.prototype.on375 = /* start of MOTD */
 CIRCNetwork.prototype.on372 = /* MOTD line */
 CIRCNetwork.prototype.on376 = /* end of MOTD */
@@ -1107,14 +1135,7 @@ function my_showtonet (e)
             break;
 
         case "251": /* users */
-            var cmdary = this.prefs["autoperform"];
-            for (var i = 0; i < cmdary.length; ++i)
-            {
-                if (cmdary[i][0] == "/")
-                    this.dispatch(cmdary[i].substr(1));
-                else
-                    this.dispatch(cmdary[i]);
-            }
+            this.doAutoPerform();
 
             this.isIdleAway = client.isIdleAway;
             if (this.prefs["away"])
@@ -1177,6 +1198,10 @@ function my_showtonet (e)
         case "422": /* no MOTD */
             this.busy = false;
             updateProgress();
+            
+            /* Some servers (wrongly) dont send 251, so try
+               auto-perform after the MOTD as well */
+            this.doAutoPerform();
             /* no break */
 
         case "372":
@@ -1902,6 +1927,9 @@ function my_sconnect (e)
     }
 
     this.NICK_RETRIES = this.prefs["nicknameList"].length + 3;
+    
+    // When connection begins, autoperform has not been sent
+    this.autoPerformSent = false;
 }
 
 CIRCNetwork.prototype.onError =
@@ -2252,11 +2280,29 @@ function my_reclaimname()
         return false;
 
     this.pendingReclaimCheck = true;
+    this.INITIAL_NICK = this.preferredNick;
     this.primServ.changeNick(this.preferredNick);
 
     setTimeout(callback, this.RECLAIM_WAIT);
 
     return true;
+}
+
+CIRCNetwork.prototype.doAutoPerform =
+function net_autoperform()
+{
+    if (("autoPerformSent" in this) && (this.autoPerformSent == false))
+    {
+        var cmdary = this.prefs["autoperform"];
+        for (var i = 0; i < cmdary.length; ++i)
+        {
+            if (cmdary[i][0] == "/")
+                this.dispatch(cmdary[i].substr(1));
+            else
+                this.dispatch(cmdary[i]);
+        }
+        this.autoPerformSent = true;
+    }
 }
 
 

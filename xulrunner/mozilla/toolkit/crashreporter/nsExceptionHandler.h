@@ -54,12 +54,16 @@ nsresult SetExceptionHandler(nsILocalFile* aXREDirectory,
                              const char* aServerURL);
 nsresult SetMinidumpPath(const nsAString& aPath);
 nsresult UnsetExceptionHandler();
-nsresult AnnotateCrashReport(const nsACString &key, const nsACString &data);
-nsresult SetRestartArgs(int argc, char **argv);
+nsresult AnnotateCrashReport(const nsACString& key, const nsACString& data);
+nsresult AppendAppNotesToCrashReport(const nsACString& data);
+nsresult SetRestartArgs(int argc, char** argv);
 nsresult SetupExtraData(nsILocalFile* aAppDataDirectory,
                         const nsACString& aBuildID);
 #ifdef XP_WIN32
   nsresult WriteMinidumpForException(EXCEPTION_POINTERS* aExceptionInfo);
+#endif
+#ifdef XP_MACOSX
+  nsresult AppendObjCExceptionInfoToAppNotes(void *inException);
 #endif
 }
 

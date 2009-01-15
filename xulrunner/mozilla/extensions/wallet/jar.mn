@@ -22,7 +22,11 @@ comm.jar:
     content/communicator/wallet/WalletViewer.js         (editor/resources/content/WalletViewer.js)
 
 en-US.jar:
+#ifdef MOZ_XUL_APP
+% locale wallet en-US %locale/en-US/wallet/
+#else
 *   locale/en-US/wallet/contents.rdf                          (resources/locale/en-US/contents.rdf)
+#endif
     locale/en-US/wallet/walletNavigatorOverlay.dtd            (resources/locale/en-US/walletNavigatorOverlay.dtd)
     locale/en-US/wallet/walletTasksOverlay.dtd                (resources/locale/en-US/walletTasksOverlay.dtd)
     locale/en-US/wallet/walletPrefsOverlay.dtd                (resources/locale/en-US/walletPrefsOverlay.dtd)

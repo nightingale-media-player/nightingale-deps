@@ -77,6 +77,7 @@ protected:
 public:
   // nsIXFormsControl
   NS_IMETHOD TryFocus(PRBool *aOK);
+  NS_IMETHOD IsEventTarget(PRInt32 aEvent, PRBool *aOK);
 
 #ifdef DEBUG_smaug
   virtual const char* Name() { return "group"; }
@@ -122,6 +123,31 @@ nsXFormsGroupElement::TryFocus(PRBool* aOK)
   *aOK = PR_FALSE;
   if (GetRelevantState()) {
     *aOK = TryFocusChildControl(mElement);
+  }
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsGroupElement::IsEventTarget(PRInt32 aEvent, PRBool *aOK)
+{
+  NS_ENSURE_ARG_POINTER(aOK);
+  switch (aEvent) {
+    case eEvent_Focus:
+    case eEvent_DOMFocusIn:
+    case eEvent_DOMFocusOut:
+    case eEvent_Valid:
+    case eEvent_Invalid:
+    case eEvent_Readonly:
+    case eEvent_Readwrite:
+    case eEvent_Required:
+    case eEvent_Optional:
+    case eEvent_Enabled:
+    case eEvent_Disabled:
+      *aOK = PR_TRUE;
+      break;
+    default:
+      *aOK = PR_FALSE;
+      break;
   }
   return NS_OK;
 }

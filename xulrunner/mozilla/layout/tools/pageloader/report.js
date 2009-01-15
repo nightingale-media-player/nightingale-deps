@@ -82,6 +82,10 @@ function findCommonPrefixLength(strs) {
   return len;
 }
 
+function compareNumbers(a, b) {
+  return a - b;
+}
+
 // returns an object with the following properties:
 //   min  : min value of array elements
 //   max  : max value of array elements
@@ -109,7 +113,7 @@ function getArrayStats(ary) {
   // median
   if (ary.length > 1) {
       sorted_ary = ary.concat();
-      sorted_ary.sort();
+      sorted_ary.sort(compareNumbers);
       // remove longest run
       sorted_ary.pop();
       if (sorted_ary.length%2) {
@@ -119,7 +123,7 @@ function getArrayStats(ary) {
         if (n >= sorted_ary.length)
           r.median = sorted_ary[n];
         else
-          r.median = (sorted_ary[n] + sorted_ary[n + 1]) / 2;
+          r.median = (sorted_ary[n-1] + sorted_ary[n]) / 2;
       }
   }else{
     r.median = ary[0];

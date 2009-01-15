@@ -94,7 +94,7 @@ public:
   NS_IMETHOD GetOnDeferredBindList(PRBool *onList);
   NS_IMETHOD SetOnDeferredBindList(PRBool putOnList);
   NS_IMETHOD TryFocus(PRBool* aOK);
-  NS_IMETHOD IsEventTarget(PRBool *aOK);
+  NS_IMETHOD IsEventTarget(PRInt32 aEvent, PRBool *aOK);
   NS_IMETHOD GetUsesModelBinding(PRBool *aRes);
   NS_IMETHOD GetUsesSingleNodeBinding(PRBool *aRes);
   NS_IMETHOD GetDefaultIntrinsicState(PRInt32 *aRes);

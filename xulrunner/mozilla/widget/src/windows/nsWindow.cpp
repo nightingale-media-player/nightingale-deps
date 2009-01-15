@@ -462,6 +462,10 @@ static PRBool is_vk_down(int vk)
 
 #endif  // #ifndef APPCOMMAND_BROWSER_BACKWARD
 
+#define VERIFY_WINDOW_STYLE(s) \
+  NS_ASSERTION(((s) & (WS_CHILD | WS_POPUP)) != (WS_CHILD | WS_POPUP), \
+               "WS_POPUP and WS_CHILD are mutually exclusive")
+
 /* This object maintains a correlation between attention timers and the
    windows to which they belong. It's lighter than a hashtable (expected usage
    is really just one at a time) and allows nsWindow::GetNSWindowPtr
@@ -575,21 +579,21 @@ private:
 
 static nsAttentionTimerMonitor *gAttentionTimerMonitor = 0;
 
-HWND nsWindow::GetTopLevelHWND(HWND aWnd, PRBool aStopOnFirstTopLevel)
+HWND nsWindow::GetTopLevelHWND(HWND aWnd, PRBool aStopOnDialogOrPopup)
 {
   HWND curWnd = aWnd;
   HWND topWnd = NULL;
 
-  while (curWnd)
-  {
+  while (curWnd) {
     topWnd = curWnd;
 
 #ifndef WINCE
-    if (aStopOnFirstTopLevel)
-    {
+    if (aStopOnDialogOrPopup) {
       DWORD style = ::GetWindowLongW(curWnd, GWL_STYLE);
 
-      if (!(style & WS_CHILDWINDOW))    // first top-level window
+      VERIFY_WINDOW_STYLE(style);
+
+      if (!(style & WS_CHILD)) // first top-level window
         break;
     }
 #endif
@@ -1573,18 +1577,18 @@ NS_IMETHODIMP nsWindow::SetParent(nsIWidget *aNewParent)
 //-------------------------------------------------------------------------
 nsIWidget* nsWindow::GetParent(void)
 {
-  return GetParent(PR_TRUE);
+  return GetParentWindow();
 }
 
-// XXX does anyone pass false for aStopOnFirstTopLevel?
-nsWindow* nsWindow::GetParent(PRBool aStopOnFirstTopLevel)
+nsWindow* nsWindow::GetParentWindow()
 {
-  if (mIsTopWidgetWindow && aStopOnFirstTopLevel) {
+  if (mIsTopWidgetWindow) {
     // Must use a flag instead of mWindowType to tell if the window is the
     // owned by the topmost widget, because a child window can be embedded inside
     // a HWND which is not associated with a nsIWidget.
     return nsnull;
   }
+
   // If this widget has already been destroyed, pretend we have no parent.
   // This corresponds to code in Destroy which removes the destroyed
   // widget from its parent's child list.
@@ -2792,6 +2796,7 @@ NS_IMETHODIMP nsWindow::HideWindowChrome(PRBool aShouldHide)
     exStyle = mOldExStyle;
   }
 
+  VERIFY_WINDOW_STYLE(style);
   ::SetWindowLongW(hwnd, GWL_STYLE, style);
   ::SetWindowLongW(hwnd, GWL_EXSTYLE, exStyle);
   
@@ -5769,6 +5774,7 @@ DWORD nsWindow::WindowStyle()
     if (mBorderStyle == eBorderStyle_none || !(mBorderStyle & eBorderStyle_title)) {
       style &= ~WS_DLGFRAME;
       style |= WS_POPUP;
+      style &= ~WS_CHILD;
     }
 
     if (mBorderStyle == eBorderStyle_none || !(mBorderStyle & eBorderStyle_close))
@@ -5794,6 +5800,7 @@ DWORD nsWindow::WindowStyle()
       style &= ~WS_MAXIMIZEBOX;
   }
 #endif // WINCE
+  VERIFY_WINDOW_STYLE(style);
   return style;
 }
 
@@ -6182,7 +6189,7 @@ static PRBool IsTopLevelMouseExit(HWND aWnd)
   // GetTopLevelHWND will return a HWND for the window frame (which includes
   // the non-client area).  If the mouse has moved into the non-client area,
   // we should treat it as a top-level exit.
-  HWND mouseTopLevel = nsWindow::GetTopLevelHWND(mouseWnd, false);
+  HWND mouseTopLevel = nsWindow::GetTopLevelHWND(mouseWnd);
   if (mouseWnd == mouseTopLevel)
     return PR_TRUE;
 
@@ -6579,7 +6586,11 @@ PRBool ChildWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam, LPARA
 //-------------------------------------------------------------------------
 DWORD ChildWindow::WindowStyle()
 {
-  return WS_CHILD | WS_CLIPCHILDREN | nsWindow::WindowStyle();
+  DWORD style = WS_CLIPCHILDREN | nsWindow::WindowStyle();
+  if (!(style & WS_POPUP))
+    style |= WS_CHILD; // WS_POPUP and WS_CHILD are mutually exclusive.
+  VERIFY_WINDOW_STYLE(style);
+  return style;
 }
 
 NS_METHOD nsWindow::SetTitle(const nsAString& aTitle)
@@ -7464,7 +7475,7 @@ nsWindow::ResolveIMECaretPos(nsWindow* aClient,
                              nsRect&   aResult)
 {
   // RootView coordinates -> Screen coordinates
-  GetTopLevelWindow()->WidgetToScreen(aEventResult, aResult);
+  GetTopLevelWindow(PR_FALSE)->WidgetToScreen(aEventResult, aResult);
   // if aClient is nsnull, returns screen coordinates
   if (!aClient)
     return;
@@ -8267,18 +8278,25 @@ STDMETHODIMP_(LRESULT) nsWindow::LresultFromObject(REFIID riid, WPARAM wParam, L
 
 #ifdef MOZ_XUL
 
-nsWindow* nsWindow::GetTopLevelWindow()
+nsWindow* nsWindow::GetTopLevelWindow(PRBool aStopOnDialogOrPopup)
 {
   nsWindow* curWindow = this;
 
-  while (PR_TRUE)
-  {
-    nsWindow* parentWindow = curWindow->GetParent(PR_TRUE);
+  while (PR_TRUE) {
+    if (aStopOnDialogOrPopup) {
+      switch (curWindow->mWindowType) {
+        case eWindowType_dialog:
+        case eWindowType_popup:
+          return curWindow;
+      }
+    }
 
-    if (parentWindow)
-      curWindow = parentWindow;
-    else
+    nsWindow* parentWindow = curWindow->GetParentWindow();
+
+    if (!parentWindow)
       return curWindow;
+
+    curWindow = parentWindow;
   }
 }
 
@@ -8302,14 +8320,14 @@ void nsWindow::ResizeTranslucentWindow(PRInt32 aNewWidth, PRInt32 aNewHeight, PR
 
 NS_IMETHODIMP nsWindow::GetHasTransparentBackground(PRBool& aTransparent)
 {
-  aTransparent = GetTopLevelWindow()->GetWindowTranslucencyInner();
+  aTransparent = GetTopLevelWindow(PR_TRUE)->GetWindowTranslucencyInner();
 
   return NS_OK;
 }
 
 NS_IMETHODIMP nsWindow::SetHasTransparentBackground(PRBool aTransparent)
 {
-  nsresult rv = GetTopLevelWindow()->SetWindowTranslucencyInner(aTransparent);
+  nsresult rv = GetTopLevelWindow(PR_TRUE)->SetWindowTranslucencyInner(aTransparent);
 
   return rv;
 }
@@ -8343,6 +8361,7 @@ nsresult nsWindow::SetWindowTranslucencyInner(PRBool aTransparent)
     style = WindowStyle();
     exStyle = WindowExStyle();
   }
+  VERIFY_WINDOW_STYLE(style);
   ::SetWindowLongW(hWnd, GWL_STYLE, style);
   ::SetWindowLongW(hWnd, GWL_EXSTYLE, exStyle);
 

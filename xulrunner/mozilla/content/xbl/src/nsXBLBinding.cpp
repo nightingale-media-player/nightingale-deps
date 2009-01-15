@@ -206,6 +206,7 @@ XBLResolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
   // Now we either resolve or fail
   PRBool didInstall;
   nsresult rv = field->InstallField(context, origObj,
+                                    content->NodePrincipal(),
                                     protoBinding->DocURI(),
                                     &didInstall);
   if (NS_FAILED(rv)) {
@@ -1373,7 +1374,21 @@ nsXBLBinding::AllowScripts()
   PRBool canExecute;
   nsresult rv =
     mgr->CanExecuteScripts(cx, ourDocument->NodePrincipal(), &canExecute);
-  return NS_SUCCEEDED(rv) && canExecute;
+  if (NS_FAILED(rv) || !canExecute) {
+    return PR_FALSE;
+  }
+
+  // Now one last check: make sure that we're not allowing a privilege
+  // escalations here.
+  PRBool haveCert;
+  doc->NodePrincipal()->GetHasCertificate(&haveCert);
+  if (!haveCert) {
+    return PR_TRUE;
+  }
+
+  PRBool subsumes;
+  rv = ourDocument->NodePrincipal()->Subsumes(doc->NodePrincipal(), &subsumes);
+  return NS_SUCCEEDED(rv) && subsumes;
 }
 
 void

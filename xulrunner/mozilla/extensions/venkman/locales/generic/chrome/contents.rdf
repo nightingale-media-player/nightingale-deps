@@ -63,6 +63,6 @@
   <!-- Version Information.  State that we work only with major version of this
        package. -->
   <RDF:Description about="urn:mozilla:locale:en-US:venkman"
-#expand        chrome:localeVersion="__MOZILLA_LOCALE_VERSION__"/>
+                   chrome:localeVersion=""/>
 
 </RDF:RDF>

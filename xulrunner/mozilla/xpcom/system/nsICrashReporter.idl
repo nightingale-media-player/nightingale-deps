@@ -68,3 +68,26 @@ interface nsICrashReporter : nsISupports
     */
   [noscript] void WriteMinidumpForException(in voidPtr aExceptionInfo);
 };
+
+[scriptable, uuid(5d0c6cc1-e1e7-42ce-ae99-ff7b9466a909)]
+interface nsICrashReporter_MOZILLA_1_9_BRANCH : nsISupports
+{
+ /**
+   * Append some data to the "Notes" field, to be submitted with a crash report.
+   * Unlike annotateCrashReport, this method will append to existing data.
+   *
+   * @param data
+   *        Data to be added.
+   *
+   * @throw NS_ERROR_NOT_INITIALIZED if crash reporting not initialized
+   * @throw NS_ERROR_INVALID_ARG if or data contains invalid characters.
+   *                             The only invalid character is '\0'.
+   */
+  void appendAppNotesToCrashReport(in ACString data);
+
+  /**
+    * Append note containing an Obj-C exception's info.
+    * @param aException  NSException object to append note for
+    */
+  [noscript] void appendObjCExceptionInfoToAppNotes(in voidPtr aException);
+};

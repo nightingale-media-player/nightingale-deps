@@ -357,6 +357,39 @@ function testDuplicateAddChunks() {
   doTest([update], assertions);
 }
 
+function testPreventWholeSub()
+{
+  var subUrls = ["1:foo.com/a"];
+
+  var update = buildPhishingUpdate(
+        [  // empty add chunk should cause foo.com/a to not be saved
+          { "chunkNum" : 1,
+            "urls" : []
+          },
+          { "chunkNum" : 5,
+           "chunkType" : "s",
+           "urls" : subUrls
+          },
+          // and now adding chunk 1 again with foo.com/a should succeed,
+          // because the sub should have been expired with the empty
+          // add chunk.
+
+          // we need to expire this chunk to let us add chunk 1 again.
+          {
+            "chunkType" : "ad:1"
+          },
+          { "chunkNum" : 1,
+            "urls" : [ "foo.com/a" ]
+          }]);
+
+  var assertions = {
+    "tableData" : "test-phish-simple;a:1:s:5",
+    "urlsExist" : ["foo.com/a"]
+  };
+
+  doTest([update], assertions);
+}
+
 function run_test()
 {
   runTests([
@@ -372,7 +405,8 @@ function run_test()
     testSubPartiallyMatches2,
     testSubsDifferentChunks,
     testExpireLists,
-    testDuplicateAddChunks
+    testDuplicateAddChunks,
+    testPreventWholeSub
   ]);
 }
 

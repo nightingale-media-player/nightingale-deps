@@ -1598,11 +1598,20 @@ NS_IMETHODIMP nsXFormsModelElement::GetTypeForNode(nsIDOMNode     *aBoundNode,
   }
 
   if (validator.GetType(schemaTypeName, schemaTypeNamespace, aType))
-    rv = NS_OK;
-  else
-    rv = NS_ERROR_FAILURE;
+    return NS_OK;
+  
+  if (schemaTypeNamespace.IsVoid()) {
+    const PRUnichar *strings[] = { schemaTypeName.get() };
+    nsXFormsUtils::ReportError(NS_LITERAL_STRING("typeNotFoundError"),
+                               strings, 1, mElement, nsnull);
+  } else {
+    const PRUnichar *strings[] = { schemaTypeName.get(),
+                                   schemaTypeNamespace.get() };
+    nsXFormsUtils::ReportError(NS_LITERAL_STRING("typeNotFoundInNamespaceError"),
+                               strings, 2, mElement, nsnull);
+  }
 
-  return rv;
+  return NS_ERROR_FAILURE;
 }
 
 /* static */ nsresult
@@ -2021,6 +2030,13 @@ nsXFormsModelElement::GetTypeFromNode(nsIDOMNode *aInstanceData,
     domNode3 = do_QueryInterface(instanceNode, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = domNode3->LookupNamespaceURI(prefix, aNSUri);
+
+    if (aNSUri.IsVoid()) {
+      // if it's still not found, report the error (can't lookup the prefix)
+      const PRUnichar *strings[] = { prefix.get() };
+      nsXFormsUtils::ReportError(NS_LITERAL_STRING("warnNamespaceBinding"),
+                                 strings, 1, mElement, nsnull);
+    }
   }
 
   return rv;

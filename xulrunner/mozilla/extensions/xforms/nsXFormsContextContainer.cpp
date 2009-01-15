@@ -224,8 +224,9 @@ nsXFormsContextContainer::Bind(PRBool *aContextChanged)
 }
 
 NS_IMETHODIMP
-nsXFormsContextContainer::IsEventTarget(PRBool* aOK)
+nsXFormsContextContainer::IsEventTarget(PRInt32 aEvent, PRBool* aOK)
 {
+  NS_ENSURE_ARG_POINTER(aOK);
   *aOK = PR_FALSE;
   return NS_OK;
 }

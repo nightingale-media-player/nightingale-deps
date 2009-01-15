@@ -246,6 +246,8 @@ protected:
 
   PRUint32 mState;
 
+  PRPackedBool mDenyResponseDataAccess;
+
   // List of potentially dangerous headers explicitly set using
   // SetRequestHeader.
   nsTArray<nsCString> mExtraRequestHeaders;

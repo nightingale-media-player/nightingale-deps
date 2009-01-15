@@ -77,7 +77,10 @@ function doTest()
   catch (e) {
     works = false;
   }
-  todo(works, "columnHeader should not throw");
+  if (works)
+    ok(works, "columnHeader should not throw");
+  else
+    todo(works, "columnHeader should not throw");
 
   var columnDescription;
   works = true;

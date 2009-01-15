@@ -51,12 +51,12 @@
 			</Description>
 		</em:targetApplication>
 		
-		<!-- target: Songbird, version 0.5 to 0.7pre -->
+		<!-- target: Songbird, version 0.7 to 1.0 -->
 		<em:targetApplication>
 			<Description>
 				<em:id>songbird@songbirdnest.com</em:id>
-				<em:minVersion>0.5</em:minVersion>
-				<em:maxVersion>0.7pre</em:maxVersion>
+				<em:minVersion>0.7</em:minVersion>
+				<em:maxVersion>1.0</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
@@ -71,6 +71,7 @@
 		<em:contributor>Samuel Sieb</em:contributor>
 		<em:iconURL>chrome://chatzilla/skin/images/logo.png</em:iconURL>
 		<em:homepageURL>http://chatzilla.hacksrus.com/</em:homepageURL>
+		<em:aboutURL>chrome://chatzilla/content/about/about.xul</em:aboutURL>
 		<em:optionsURL>javascript:opener.openDialog('chrome://chatzilla/content/config.xul','','chrome,modal,resizable');window.close();</em:optionsURL>
 		
 		<!-- package files -->

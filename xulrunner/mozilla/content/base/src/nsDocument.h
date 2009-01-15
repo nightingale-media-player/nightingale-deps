@@ -797,6 +797,10 @@ protected:
 
   PRPackedBool mDelayFrameLoaderInitialization:1;
 
+  // If true, we have an input encoding.  If this is false, then the
+  // document was created entirely in memory
+  PRPackedBool mHaveInputEncoding:1;
+
   PRUint8 mXMLDeclarationBits;
 
   PRUint8 mDefaultElementType;

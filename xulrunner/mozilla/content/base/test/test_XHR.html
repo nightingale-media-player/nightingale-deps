@@ -53,7 +53,7 @@ for (i = 0; i < failFiles.length; ++i) {
   }
   if (!didthrow) {
     is(xhr.status, 301, "wrong status");
-    is(xhr.responseText, "redirect file\n", "wrong response");
+    is(xhr.responseText, "", "wrong response");
   }
   else {
     ok(1, "should have thrown or given incorrect result");

@@ -114,7 +114,7 @@ public:
                         nsIDOMNode **aContextNode,
                         PRInt32     *aContextPosition,
                         PRInt32     *aContextSize);
-  NS_IMETHOD IsEventTarget(PRBool *aOK);
+  NS_IMETHOD IsEventTarget(PRInt32 aEvent, PRBool *aOK);
 
   // nsIXFormsRepeatItemElement
   NS_DECL_NSIXFORMSREPEATITEMELEMENT

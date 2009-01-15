@@ -1199,6 +1199,9 @@ static
 #endif
 bool		malloc_init_hard(void);
 
+void		_malloc_prefork(void);
+void		_malloc_postfork(void);
+
 /*
  * End function prototypes.
  */
@@ -5494,6 +5497,11 @@ MALLOC_OUT:
 		atexit(malloc_print_stats);
 #endif
 	}
+
+#if (!defined(MOZ_MEMORY_WINDOWS) && !defined(MOZ_MEMORY_DARWIN))
+	/* Prevent potential deadlock on malloc locks after fork. */
+	pthread_atfork(_malloc_prefork, _malloc_postfork, _malloc_postfork);
+#endif
 
 	/* Set variables according to the value of opt_small_max_2pow. */
 	if (opt_small_max_2pow < opt_quantum_2pow)

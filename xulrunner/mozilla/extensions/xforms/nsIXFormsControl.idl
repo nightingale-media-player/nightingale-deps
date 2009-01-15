@@ -50,7 +50,7 @@ interface nsIDOMElement;
 /**
  * Interface implemented by all XForms form control classes.
  */
-[uuid(2dd97021-e7bd-46cb-b439-2affb8bbd482)]
+[uuid(8198c940-a6dd-11dd-ad8b-0800200c9a66)]
 interface nsIXFormsControl : nsIXFormsContextControl
 {
   /**
@@ -100,9 +100,12 @@ interface nsIXFormsControl : nsIXFormsContextControl
   /** According to sec 4.1 in the spec, only certain controls are allowed to
    *  be targets of the interaction and notification events.  The controls
    *  that inherit from nsXFormsControlStub that SHOULDN'T get these events
-   *  need to override IsEventTarget() and return PR_FALSE
+   *  need to override IsEventTarget() and return PR_FALSE if the event
+   *  shouldn't target it.
+   *
+   *  @param event    nsXFormsEvent value to evaluate
    */
-  boolean isEventTarget();
+  boolean isEventTarget(in long event);
 
   /**
    * Is true when the control is getting its instance data node binding from a

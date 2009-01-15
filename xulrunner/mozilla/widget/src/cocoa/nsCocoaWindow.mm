@@ -2240,7 +2240,10 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
 // NSWindow's own sendEvent: method.
 - (void)nsCocoaWindow_NSWindow_sendEvent:(NSEvent *)anEvent
 {
-  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+  // Since we've hooked a "system call" ([NSWindow sendEvent:]), we're always
+  // called from system code (not browser code).  So avoid crashing on any
+  // Objective-C exceptions that occur here.
+  NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
 
   nsCOMPtr<nsIDOMElement> oldFocusedElement;
   NSResponder *oldFirstResponder;
@@ -2279,7 +2282,7 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
     [oldFirstResponder release];
   }
 
-  NS_OBJC_END_TRY_ABORT_BLOCK;
+  NS_OBJC_END_TRY_LOGONLY_BLOCK;
 }
 
 @end

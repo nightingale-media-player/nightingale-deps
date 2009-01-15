@@ -101,17 +101,17 @@
 
       switch (gTreeInvalidatedCount) {
         case 1:
-          TreeInvalidatedHandlerHelper(aEvent, 0, 5, null, null,
-                                       "nsITreeBoxObject::rowCountChanged");
+// XXX see bug 454647          TreeInvalidatedHandlerHelper(aEvent, 0, 5, null, null,
+//                                       "nsITreeBoxObject::rowCountChanged");
           break;
         case 2:
-          TreeInvalidatedHandlerHelper(aEvent, null, null, 0, 0,
-                                       "nsITreeBoxObject::invalidateColumn");
+// XXX see bug 454647          TreeInvalidatedHandlerHelper(aEvent, null, null, 0, 0,
+//                                       "nsITreeBoxObject::invalidateColumn");
           gTreeColumnInvalidated = true;
           break;
         case 3:
-          TreeInvalidatedHandlerHelper(aEvent, 1, 1, null, null,
-                                       "nsITreeBoxObject::invalidateRow");
+// XXX see bug 454647          TreeInvalidatedHandlerHelper(aEvent, 1, 1, null, null,
+//                                       "nsITreeBoxObject::invalidateRow");
           gTreeRowInvalidated = true;
           break;
         }

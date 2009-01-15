@@ -2253,6 +2253,14 @@ nsAccessible::GetAttributesInternal(nsIPersistentProperties *aAttributes)
     startContent = parentDoc->FindContentForSubDocument(doc);      
   }
 
+  // Expose 'display' attribute.
+  nsAutoString displayValue;
+  nsresult rv = GetComputedStyleValue(EmptyString(),
+                                      NS_LITERAL_STRING("display"),
+                                      displayValue);
+  if (NS_SUCCEEDED(rv))
+    nsAccUtils::SetAccAttr(aAttributes, nsAccessibilityAtoms::display,
+                           displayValue);
   return NS_OK;
 }
 

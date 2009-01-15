@@ -354,7 +354,7 @@ public:
   NS_IMETHOD Bind(PRBool *aContextChanged);
   NS_IMETHOD Refresh();
   NS_IMETHOD TryFocus(PRBool* aOK);
-  NS_IMETHOD IsEventTarget(PRBool *aOK);
+  NS_IMETHOD IsEventTarget(PRInt32 aEvent, PRBool *aOK);
   NS_IMETHOD GetUsesSingleNodeBinding(PRBool *aUsesSNB);
 
   // nsIXFormsRepeatElement
@@ -1264,9 +1264,19 @@ nsXFormsRepeatElement::TryFocus(PRBool *aOK)
 }
 
 NS_IMETHODIMP
-nsXFormsRepeatElement::IsEventTarget(PRBool *aOK)
+nsXFormsRepeatElement::IsEventTarget(PRInt32 aEvent, PRBool *aOK)
 {
-  *aOK = PR_FALSE;
+  NS_ENSURE_ARG_POINTER(aOK);
+  switch (aEvent) {
+    case eEvent_Focus:
+    case eEvent_DOMFocusIn:
+    case eEvent_DOMFocusOut:
+      *aOK = PR_TRUE;
+      break;
+    default:
+      *aOK = PR_FALSE;
+      break;
+  }
   return NS_OK;
 }
 

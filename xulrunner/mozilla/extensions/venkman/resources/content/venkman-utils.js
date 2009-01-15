@@ -56,13 +56,6 @@ else
 {
     if (typeof dump == "function")
         dumpln = function (str) {dump (str + "\n");}
-    else if (jsenv.HAS_RHINO)
-    {
-        dumpln = function (str) {
-                     var out = java.lang.System.out;
-                     out.println(str); out.flush();
-                 }
-    }
     else
         dumpln = function () {} /* no suitable function */
 }
@@ -117,14 +110,6 @@ if (DEBUG) {
     dd = function (){};
 }
 
-var jsenv = new Object();
-jsenv.HAS_SECURITYMANAGER = ((typeof netscape == "object") &&
-                             (typeof netscape.security == "object"));
-jsenv.HAS_XPCOM = ((typeof Components == "object") &&
-                   (typeof Components.classes == "object"));
-jsenv.HAS_JAVA = (typeof java == "object");
-jsenv.HAS_RHINO = (typeof defineClass == "function");
-jsenv.HAS_DOCUMENT = (typeof document == "object");
 
 /* Dumps an object in tree format, recurse specifiec the the number of objects
  * to recurse, compress is a boolean that can uncompress (true) the output
@@ -762,9 +747,6 @@ function renameProperty (obj, oldname, newname)
 
 function newObject(contractID, iface)
 {
-    if (!jsenv.HAS_XPCOM)
-        return null;
-
     var obj = Components.classes[contractID].createInstance();
     var rv;
 
@@ -1026,10 +1008,6 @@ function randomRange (min, max)
 
 function getStackTrace ()
 {
-
-    if (!jsenv.HAS_XPCOM)
-        return "No stack trace available.";
-
     var frame = Components.stack.caller;
     var str = "<top>";
 
@@ -1046,9 +1024,6 @@ function getStackTrace ()
 
 function getInterfaces (cls)
 {
-    if (!jsenv.HAS_XPCOM)
-        return null;
-
     var rv = new Object();
     var e;
 
