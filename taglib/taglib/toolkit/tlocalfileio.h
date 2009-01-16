@@ -144,11 +144,6 @@ namespace TagLib {
      */
     static bool isReadable(FileName file);
 
-    /*!
-     * Returns true if \a file can be opened for writing.
-     */
-    static bool isWritable(FileName name);
-
   protected:
     /*!
      * Truncates the file to a \a length.

@@ -82,28 +82,40 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-LocalFileIO::LocalFileIO(FileName file)
+LocalFileIO::LocalFileIO(FileName name)
 {
-  d = new LocalFileIOPrivate(file);
+  d = new LocalFileIOPrivate(name);
 
-  d->readOnly = !isWritable(file);
+  // First try with read / write mode, if that fails, fall back to read only.
+  d->readOnly = true;
+
 #ifdef _WIN32
-  if(wcslen((const wchar_t *) file) > 0) {
-    d->file = _wfopen(file, d->readOnly ? L"rb" : L"rb+");
-  }
-#endif
-  if (!d->file)
-    d->file = fopen(file, d->readOnly ? "rb" : "rb+");
 
-  // On Mac, fopen for write can sometimes still fail even if isWritable is
-  // true (e.g., when file is on an SMB share).
-  if (!d->file && !d->readOnly && (errno == EACCES)) {
-    d->readOnly = true;
-    d->file = fopen(file, d->readOnly ? "rb" : "rb+");
+  if(wcslen((const wchar_t *) name) > 0) {
+
+    d->file = _wfopen(name, L"rb+");
+
+    if(d->file)
+      d->readOnly = false;
+    else
+      d->file = _wfopen(name, L"rb");
+
+    if(d->file)
+      return;
+
   }
+
+#endif
+
+  d->file = fopen(name, "rb+");
+
+  if(d->file)
+    d->readOnly = false;
+  else
+    d->file = fopen(name, "rb");
 
   if(!d->file)
-    debug("Could not open file " + String((const char *) file));
+    debug("Could not open file " + String((const char *) name));
 }
 
 LocalFileIO::~LocalFileIO()
@@ -359,16 +371,7 @@ long LocalFileIO::length()
 
 bool LocalFileIO::isWritable()
 {
-  return isWritable(name());
-}
-
-bool LocalFileIO::isWritable(FileName file)
-{
-#ifdef _MSC_VER
-  return _waccess(file, W_OK) == 0;
-#else
-  return access(file, W_OK) == 0;
-#endif
+  return !d->readOnly;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
