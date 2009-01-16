@@ -26,7 +26,6 @@
 #include <stdio.h>
 
 #include <fileref.h>
-#include "mp4itunestag.h"
 #include <tag.h>
 
 using namespace std;
@@ -47,23 +46,32 @@ int main(int argc, char *argv[])
     TagLib::FileRef f(argv[i]);
 
     if(!f.isNull() && f.tag()) {
-
       TagLib::Tag *tag = f.tag();
-      TagLib::MP4::Tag *mp4tag = static_cast<TagLib::MP4::Tag*>(f.tag());
 
       cout << "-- TAG --" << endl;
-      cout << "title   - \"" << tag->title()   << "\"" << endl;
-      cout << "artist  - \"" << tag->artist()  << "\"" << endl;
-      cout << "album   - \"" << tag->album()   << "\"" << endl;
-      cout << "year    - \"" << tag->year()    << "\"" << endl;
-      cout << "comment - \"" << tag->comment() << "\"" << endl;
-      cout << "track   - \"" << tag->track()   << "\"" << endl;
-      cout << "genre   - \"" << tag->genre()   << "\"" << endl;
+      cout << "artist      - \"" << tag->artist()      << "\"" << endl;
+      cout << "albumartist - \"" << tag->albumArtist() << "\"" << endl;
+      cout << "album       - \"" << tag->album()       << "\"" << endl;
+      cout << "comment     - \"" << tag->comment()     << "\"" << endl;
+      cout << "lyrics      - \"" << tag->lyrics()      << "\"" << endl;
+      cout << "genre       - \"" << tag->genre()       << "\"" << endl;
+      cout << "composer    - \"" << tag->composer()    << "\"" << endl;
+      cout << "conductor   - \"" << tag->conductor()   << "\"" << endl;
+      cout << "lyricist    - \"" << tag->lyricist()    << "\"" << endl;
+      cout << "recordLabel - \"" << tag->recordLabel() << "\"" << endl;
+      cout << "rating      - \"" << tag->rating()      << "\"" << endl;
+      cout << "language    - \"" << tag->language()    << "\"" << endl;
+      cout << "key         - \"" << tag->key()         << "\"" << endl;
+      cout << "license     - \"" << tag->license()     << "\"" << endl;
+      cout << "licenseUrl  - \"" << tag->licenseUrl()  << "\"" << endl;
 
-      cout << "grouping - \"" << mp4tag->grouping() << "\"" << endl;
-      cout << "composer - \"" << mp4tag->composer() << "\"" << endl;
-      cout << "disk     - \"" << mp4tag->disk()     << "\"" << endl;
-      cout << "bpm      - \"" << mp4tag->bpm()      << "\"" << endl;
+      cout << "year        - \"" << tag->year()        << "\"" << endl;
+      cout << "track       - \"" << tag->track()       << "\"" << endl;
+      cout << "totalTracks - \"" << tag->totalTracks() << "\"" << endl;
+      cout << "disc        - \"" << tag->disc()        << "\"" << endl;
+      cout << "totalDiscs  - \"" << tag->totalDiscs()  << "\"" << endl;
+      cout << "bpm         - \"" << tag->bpm()         << "\"" << endl;
+      cout << "isCompilation - \"" << tag->isCompilation() << "\"" << endl;
     }
 
     if(!f.isNull() && f.audioProperties()) {

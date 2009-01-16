@@ -107,21 +107,21 @@ Ogg::Page::ContainsPacketFlags Ogg::Page::containsPacket(int index) const
   if(index == lastPacketIndex)
     flags = ContainsPacketFlags(flags | EndsWithPacket);
 
-  // If there's only one page and it's complete:
 
-  if(packetCount() == 1 &&
-     !d->header.firstPacketContinued() &&
-     d->header.lastPacketCompleted())
-  {
-    flags = ContainsPacketFlags(flags | CompletePacket);
-  }
-
-  // Or if the page is (a) the first page and it's complete or (b) the last page
-  // and it's complete or (c) a page in the middle.
-
-  else if((flags & BeginsWithPacket && !d->header.firstPacketContinued()) ||
-          (flags & EndsWithPacket && d->header.lastPacketCompleted()) ||
-          (!(flags & BeginsWithPacket) && !(flags & EndsWithPacket)))
+  // If we have the beginning of the packet and the end, this is a complete packet.
+  if(
+      (
+        // The packet is either a) not the first
+        !(flags & BeginsWithPacket)
+        // b) the first and not a continuation from the previous page
+        || (flags & BeginsWithPacket && !d->header.firstPacketContinued())
+      ) 
+      &&
+      (  // and the end is a) not the last, or b) the last and complete
+       !(flags & EndsWithPacket)
+       || (flags & EndsWithPacket && d->header.lastPacketCompleted())
+      )
+     )
   {
     flags = ContainsPacketFlags(flags | CompletePacket);
   }
