@@ -50,9 +50,12 @@ XPIDL_MODULE = browsercompsbase.xpt
 XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
 SONGBIRD_COMPONENTS = \
-	$(srcdir)/nsBrowserGlue.js \
 	$(XPIDL_MODULE) \
 	$(NULL)
+
+SONGBIRD_PP_COMPONENTS = \
+	$(srcdir)/nsBrowserGlue.js \
+        $(NULL)
 
 GARBAGE = $(XPIDL_MODULE_TYPELIBS)
 
