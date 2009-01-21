@@ -202,6 +202,8 @@ acmmp3dec_teardown (ACMMP3Dec *dec)
     dec->output_caps = NULL;
   }
 
+  if (dec->header.fdwStatus & ACMSTREAMHEADER_STATUSF_PREPARED)
+    acmStreamUnprepareHeader (dec->stream, &dec->header, 0);
   if (dec->header.pbSrc)
     g_free (dec->header.pbSrc);
   if (dec->header.pbDst)
@@ -279,7 +281,8 @@ static GstFlowReturn acmmp3dec_chain (GstPad * pad, GstBuffer * buf)
 
   if (len > ACM_BUFFER_SIZE) {
     GST_WARNING_OBJECT (dec, "Impossibly large mp3 frame!");
-    return GST_FLOW_ERROR;
+    ret = GST_FLOW_ERROR;
+    goto done;
   }
 
   if (GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE &&
@@ -297,7 +300,8 @@ static GstFlowReturn acmmp3dec_chain (GstPad * pad, GstBuffer * buf)
           ACM_STREAMCONVERTF_BLOCKALIGN);
   if (res) {
     GST_WARNING_OBJECT (dec, "Failed to decode data");
-    return GST_FLOW_OK; /* Maybe it was just a corrupt frame */
+    ret = GST_FLOW_OK; /* Maybe it was just a corrupt frame */
+    goto done;
   }
 
   if (dec->header.cbSrcLengthUsed > 0)       
@@ -306,12 +310,17 @@ static GstFlowReturn acmmp3dec_chain (GstPad * pad, GstBuffer * buf)
       GST_WARNING_OBJECT (dec, "ACM decoder didn't consume all data!");
       /* We could handle this, but it shouldn't be possible, so don't try
        * for now */
-      return GST_FLOW_ERROR;
+      ret = GST_FLOW_ERROR;
+      goto done;
     }
 
     /* Write out any data produced */
     acmmp3dec_push_output (dec);
   }
+
+done:
+  gst_buffer_unref (buf);
+
   return ret;
 }
 
