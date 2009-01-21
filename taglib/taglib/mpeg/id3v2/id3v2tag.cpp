@@ -131,18 +131,13 @@ String ID3v2::Tag::album() const
 
 String ID3v2::Tag::comment() const
 {
-  const FrameList &comments = d->frameListMap["COMM"];
-
-  if(comments.isEmpty())
-    return String::null;
-
-  for(FrameList::ConstIterator it = comments.begin(); it != comments.end(); ++it)
-  {
-    if(static_cast<CommentsFrame *>(*it)->description().isEmpty())
-      return (*it)->toString();
+  CommentsFrame *f = CommentsFrame::findByDescription(this, "");
+  if (f) {
+    return f->toString();
   }
-
-  return comments.front()->toString();
+  else {
+    return String::null;
+  }
 }
 
 String ID3v2::Tag::lyrics() const
@@ -299,11 +294,12 @@ String ID3v2::Tag::recordLabel() const
 
 String ID3v2::Tag::rating() const
 {
-  /* TODO: SEE BUG 9084
-   * should use a TXXX field and a TextInformationFrame
-   * or Popularimeter (which is not implemented in TagLib and is insane)
-   */
-  
+  // find() isn't, but could be const.
+  UserTextIdentificationFrame* f = 
+    UserTextIdentificationFrame::find(const_cast<Tag*>(this), String("rating"));
+  if (f) {
+    return f->fieldList()[1]; // fieldList includes description as the first field.
+  }
   return String::null;
 }
 
@@ -492,52 +488,25 @@ void ID3v2::Tag::setAlbum(const String &s)
 
 void ID3v2::Tag::setComment(const String &s)
 {
-  const FrameList &comments = d->frameListMap["COMM"];
+  // This function ignores all COMM with descriptions.
+  // This could be considered an ITUNES_HACK as they use it to store things like replaygain.
+  CommentsFrame *f = NULL;
 
-  // If our input string is empty that means we need to remove the frames
-  // We have to remove only frames that have empty descriptions so we do not
-  // remove the special comments.
+  // Remove all comments on empty input string.
   if(s.isEmpty()) {
-    // We do it like this since removing frames in an iterator while your
-    // iterating is bad. So we hold a reference to the next frame before
-    // deleting the current frame.
-    std::list<TagLib::ID3v2::Frame*>::const_iterator iter = comments.begin();
-    while (iter != comments.end()) {
-      std::list<TagLib::ID3v2::Frame*>::const_iterator nextIter = iter;
-      nextIter++;
-      if(static_cast<CommentsFrame *>(*iter)->description().isEmpty()) {
-        // Remove and free the memory for this frame
-        removeFrame(*iter, true);
-      }
-      iter = nextIter;
-    }
+    while(f = CommentsFrame::findByDescription(this, ""))
+      removeFrame(f, true);
     return;
   }
-  
-  // We want to find a comment without a description, comments with a
-  // description usually indicate special data like:
-  //  Description = iTunes_CDDB_IDs
-  //  Text = 17+E99ED0AD8E6F7776AF6951394704F89C+603543
-  // We search for the first empty one since that is what the get function does
-  // as well, so this will sync them up. See ID3v2::Tag::comment()
-  CommentsFrame *foundFrame = NULL;
-  for(FrameList::ConstIterator it = comments.begin(); it != comments.end(); ++it) {
-    if(static_cast<CommentsFrame *>(*it)->description().isEmpty()) {
-      // Description is empty so use this frame
-      foundFrame = static_cast<CommentsFrame *>(*it);
-      break;
-    }
+
+  // Otherwise set the first comment with no description.
+  f = CommentsFrame::findByDescription(this, "");
+  if (!f) {
+    f = new CommentsFrame(d->factory->defaultTextEncoding());
+    addFrame(f);
   }
 
-  if(foundFrame) {
-    // Overwrite the text of the existing frame
-    foundFrame->setText(s);
-  } else {
-    // No comment frame found with an empty description so create one.
-    CommentsFrame *f = new CommentsFrame(d->factory->defaultTextEncoding());
-    addFrame(f);
-    f->setText(s);
-  }
+  f->setText(s);
 }
 
 void ID3v2::Tag::setLyrics(const String &s)
@@ -640,11 +609,16 @@ void ID3v2::Tag::setRecordLabel(const String &s)
 
 void ID3v2::Tag::setRating(const String &s)
 {
-  /* TODO: SEE BUG 9084
-   * should use a TXXX field and a TextInformationFrame
-   * or Popularimeter (which is not implemented in TagLib and is insane)
-   */
-  return;
+  // find() isn't, but could be const.
+  UserTextIdentificationFrame* f = 
+    UserTextIdentificationFrame::find(this, String("rating"));
+  if (!f) {
+    f = new UserTextIdentificationFrame(d->factory->defaultTextEncoding());
+    addFrame(f);
+    f->setDescription("rating");
+  }
+  
+  f->setText(s);
 }
 
 void ID3v2::Tag::setLanguage(const String &s)
