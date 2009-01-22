@@ -698,7 +698,14 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
           g_free(tag);
         }
       }
-      res = gst_pad_push_event (mp3parse->srcpad, event);
+      if (mp3parse->pending_segment) 
+      {
+        /* Cache tag events if we have a pending segment */
+        mp3parse->pending_events =
+            g_list_append (mp3parse->pending_events, event);
+      } else {
+        res = gst_pad_push_event (mp3parse->srcpad, event);
+      }
       break;
     }
     case GST_EVENT_FLUSH_STOP:
