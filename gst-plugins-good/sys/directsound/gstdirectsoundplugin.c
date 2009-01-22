@@ -31,6 +31,7 @@
 
 #include "gstdirectsoundsink.h"
 
+GST_DEBUG_CATEGORY (directsound_debug);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -38,6 +39,9 @@ plugin_init (GstPlugin * plugin)
   if (!gst_element_register (plugin, "directsoundsink", GST_RANK_PRIMARY,
           GST_TYPE_DIRECTSOUND_SINK))
     return FALSE;
+
+  GST_DEBUG_CATEGORY_INIT (directsound_debug, "directsound", 0,
+        "DirectSound Elements");
 
   return TRUE;
 }
