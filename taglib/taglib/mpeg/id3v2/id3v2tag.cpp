@@ -890,7 +890,7 @@ void ID3v2::Tag::parse(const ByteVector &origData)
 
     // Checks to make sure that frame parsed correctly.
 
-    if(frame->size() <= 0) {
+    if(frame->size() < 0) {
       delete frame;
       return;
     }
