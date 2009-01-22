@@ -348,6 +348,7 @@ diff -re crt/src/intel/mozcrt19d.def crtsp1/src/intel/mozcrt19d.def
     _calloc_crt
     _realloc_crt
     _calloc_dbg
+    _realloc_dbg
 .
 343,348d
 331d
