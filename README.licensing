@@ -1,0 +1,12 @@
+The Songbird vendor repository contains open source software which Songbird
+uses/depends on to run, and in many cases, ships in some form with our
+packages.
+
+The binaries Songbird ships may be found in the vendor-binaries Subversion tree:
+
+http://timeline.songbirdnest.com/vendor-binaries/browser/
+
+For further information, see our current summary of packages, licenses, 
+version information and source code modifications:
+
+http://wiki.songbirdnest.com/Build_Release/Vendor_Package_Bill_of_Materials
