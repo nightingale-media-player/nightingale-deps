@@ -112,12 +112,12 @@ all:
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) debug
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
 
-debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE)
+debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
-release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) strip_build
+release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols strip_build
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
@@ -196,10 +196,47 @@ ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 endif
 endif
 
+#
+# This heroic (but byzantine) shell loop handles copying the .pdb files, 
+# so it's obviously windows only.
+# 
+# It does this by finding all .pdb files in the breakpad directory, strips
+# off the directory name and the .pdb extension, and then looks at where
+# we installed the package for, in order, a file with .exe, .dll, or .lib
+# with the same name. If we find one, we copy the .pdb into that direcotry.
+# The ORDERING OF THE EXTENSIONS MATTERS (and was chosen purposefully); this
+# is because we only copy the .pdb ONCE, so if we find a .pdb with the same
+# name, we'll copy it into the directory with the .exe first.
+#
+
+copy_symbols:
+ifeq (Msys,$(SB_VENDOR_ARCH))
+	@echo Gathering PDBs to add to vendor-binary tree...
+	for dbug in $$($(FIND) $(SB_VENDOR_BREAKPAD_DIR) -type f \
+         -iname '*.pdb' \
+         -not -iregex 'vc.*.pdb'); do \
+           a=$$(basename $$dbug); \
+	   b=$${a/%.???/}; \
+           copied=0; \
+           for ext in exe dll lib; do \
+              for f in $$($(FIND) $(SB_CONFIGURE_PREFIX) -type f \
+               -name $$b.$$ext); do \
+                    $(CP) $$dbug $$(dirname $$f); \
+                    copied=1; \
+                    break; \
+              done; \
+              if test "$$copied" = "1"; then \
+                 break; \
+              fi; \
+           done; \
+        done
+endif
+
+
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
-	@echo Gathering PDBs, EXEs, LIBs, and DLLs...
+	@echo Gathering PDBs, EXEs, LIBs, and DLLs for Breakpad consumption...
 	for f in $$($(FIND) $(SB_VENDOR_BUILD_DIR) \
 	            -false $(foreach ext,pdb exe dll,-o -iname '*.$(ext)')); do \
 	   a=$$(basename $$f); \
@@ -336,4 +373,4 @@ clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BREAKPAD_DIR)
 	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
-.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build
+.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols
