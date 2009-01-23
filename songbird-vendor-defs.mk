@@ -118,6 +118,7 @@ LN ?= ln
 MKDIR ?= mkdir -p
 PYTHON ?= python
 SED ?= sed
+SYMBOL_UPLOADER ?= $(MOZSDK_SCRIPTS_DIR)/upload_symbols.sh
 TAR ?= tar
 ZIP ?= zip
 

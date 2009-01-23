@@ -232,6 +232,8 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
         done
 endif
 
+upload_symbols: $(SB_VENDOR_BREAKPAD_ARCHIVE)
+	$(SYMBOL_UPLOADER) $(SB_VENDOR_BREAKPAD_ARCHIVE)
 
 $(SB_VENDOR_BREAKPAD_ARCHIVE):
 ifeq (Msys,$(SB_VENDOR_ARCH))
@@ -373,4 +375,4 @@ clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BREAKPAD_DIR)
 	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
-.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols
+.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols upload_symbols
