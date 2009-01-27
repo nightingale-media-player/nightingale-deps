@@ -575,9 +575,9 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
 
           mp3parse->resyncing = FALSE;
           mp3parse->cur_offset = pos;
-          mp3parse->next_ts = seek->timestamp_start;
-          mp3parse->pending_ts = GST_CLOCK_TIME_NONE;
-          mp3parse->tracked_offset = 0;
+          mp3parse->next_ts = GST_CLOCK_TIME_NONE; 
+          mp3parse->pending_ts = seek->timestamp_start;
+          mp3parse->tracked_offset = seek->upstream_start;
 
           gst_event_parse_new_segment_full (event, &update, &rate,
               &applied_rate, &format, &start, &stop, &pos);
@@ -719,6 +719,26 @@ gst_mp3parse_sink_event (GstPad * pad, GstEvent * event)
       if (mp3parse->frame_count == 0) {
         GST_ELEMENT_ERROR (mp3parse, STREAM, WRONG_TYPE,
             ("No valid frames found before end of stream"), (NULL));
+      }
+
+      /* If we have a valid next_ts, and a valid segment end in time format,
+       * and they're too different, then create a new new-segment to reopen
+       * the output segment - our segment was probably based on bad xing data */
+      if (GST_CLOCK_TIME_IS_VALID (mp3parse->next_ts) && 
+          mp3parse->segment.format == GST_FORMAT_TIME && 
+          GST_CLOCK_TIME_IS_VALID (mp3parse->segment.stop) && 
+          ABS((gint64)mp3parse->next_ts - (gint64)mp3parse->segment.stop) > GST_SECOND)
+      {
+        GstEvent *newseg = gst_event_new_new_segment_full (TRUE, 
+                mp3parse->segment.rate, 
+                mp3parse->segment.applied_rate, 
+                mp3parse->segment.format, 
+                mp3parse->segment.start, 
+                GST_CLOCK_TIME_NONE,
+                mp3parse->segment.last_stop);
+        GST_INFO_OBJECT (mp3parse, "Sending update new-segment event to make"
+                "segment open-ended, wasn't the expected length");
+        res = gst_pad_push_event (mp3parse->srcpad, newseg);
       }
       /* fall through */
     default:
