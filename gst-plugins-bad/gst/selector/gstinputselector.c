@@ -128,6 +128,7 @@ struct _GstSelectorPad
   GstTagList *tags;             /* last tags received on the pad */
 
   gboolean segment_pending;
+  gboolean segment_pending_update;
 };
 
 struct _GstSelectorPadClass
@@ -313,6 +314,7 @@ gst_selector_pad_reset (GstSelectorPad * pad)
   pad->active = FALSE;
   pad->eos = FALSE;
   pad->segment_pending = FALSE;
+  pad->segment_pending_update = FALSE;
   gst_segment_init (&pad->segment, GST_FORMAT_UNDEFINED);
   GST_OBJECT_UNLOCK (pad);
 }
@@ -394,6 +396,7 @@ gst_selector_pad_event (GstPad * pad, GstEvent * event)
        * pending */
       forward = FALSE;
       selpad->segment_pending = TRUE;
+      selpad->segment_pending_update = update;
       GST_INPUT_SELECTOR_UNLOCK (sel);
 
       break;
@@ -582,17 +585,19 @@ gst_selector_pad_chain (GstPad * pad, GstBuffer * buf)
   }
   /* if we have a pending segment, push it out now */
   if (G_UNLIKELY (selpad->segment_pending)) {
+    gboolean update = selpad->segment_pending_update;
     GST_DEBUG_OBJECT (pad,
         "pushing NEWSEGMENT update %d, rate %lf, applied rate %lf, "
         "format %d, "
         "%" G_GINT64_FORMAT " -- %" G_GINT64_FORMAT ", time %"
-        G_GINT64_FORMAT, FALSE, seg->rate, seg->applied_rate, seg->format,
+        G_GINT64_FORMAT, update, seg->rate, seg->applied_rate, seg->format,
         seg->start, seg->stop, seg->time);
 
-    start_event = gst_event_new_new_segment_full (FALSE, seg->rate,
+    start_event = gst_event_new_new_segment_full (update, seg->rate,
         seg->applied_rate, seg->format, seg->start, seg->stop, seg->time);
 
     selpad->segment_pending = FALSE;
+    selpad->segment_pending_update = FALSE;
   }
   GST_INPUT_SELECTOR_UNLOCK (sel);
 
@@ -932,6 +937,7 @@ gst_input_selector_set_active_pad (GstInputSelector * self,
     /* schedule a new segment push */
     gst_segment_set_start (&new->segment, start_time);
     new->segment_pending = TRUE;
+    new->segment_pending_update = FALSE;
   }
 
   active_pad_p = &self->active_sinkpad;
