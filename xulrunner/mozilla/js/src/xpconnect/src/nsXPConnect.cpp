@@ -1287,7 +1287,7 @@ nsXPConnect::WrapJS(JSContext * aJSContext,
 
     nsresult rv;
     if(!XPCConvert::JSObject2NativeInterface(ccx, result, aJSObj,
-                                             &aIID, nsnull, PR_TRUE, &rv))
+                                             &aIID, nsnull, &rv))
         return rv;
     return NS_OK;
 }
@@ -1313,7 +1313,7 @@ nsXPConnect::WrapJSAggregatedToNative(nsISupports *aOuter,
 
     nsresult rv;
     if(!XPCConvert::JSObject2NativeInterface(ccx, result, aJSObj,
-                                             &aIID, aOuter, PR_TRUE, &rv))
+                                             &aIID, aOuter, &rv))
         return rv;
     return NS_OK;
 }
@@ -2323,30 +2323,6 @@ nsXPConnect::SetReportAllJSExceptions(PRBool newval)
     if (gReportAllJSExceptions != 1)
         gReportAllJSExceptions = newval ? 2 : 0;
 
-    return NS_OK;
-}
-
-/* void getNativeOfJSObject(in JSContextPtr aJSContext, in JSObjectPtr aJSObj, in nsIIDRef aIID, [iid_is(aIID),retval] out nsQIResult result); */
-NS_IMETHODIMP
-nsXPConnect::GetNativeOfJSObject(JSContext * aJSContext,
-                                 JSObject * aJSObj,
-                                 const nsIID & aIID,
-                                 void * *result)
-{
-    NS_ASSERTION(aJSContext, "bad param");
-    NS_ASSERTION(aJSObj, "bad param");
-    NS_ASSERTION(result, "bad param");
-
-    *result = nsnull;
-
-    XPCCallContext ccx(NATIVE_CALLER, aJSContext);
-    if(!ccx.IsValid())
-        return UnexpectedFailure(NS_ERROR_FAILURE);
-
-    nsresult rv;
-    if(!XPCConvert::JSObject2NativeInterface(ccx, result, aJSObj,
-                                             &aIID, nsnull, PR_FALSE, &rv))
-        return rv;
     return NS_OK;
 }
 
