@@ -2252,8 +2252,6 @@ SearchService.prototype = {
     engineUpdateService.init();
 
     this._addObservers();
-    
-    DO_LOG("Starting search engine enumeration...\n");
 
     var fileLocator = Cc["@mozilla.org/file/directory_service;1"].
                       getService(Ci.nsIProperties);
@@ -2264,7 +2262,6 @@ SearchService.prototype = {
       var location = locations.getNext().QueryInterface(Ci.nsIFile);
       this._loadEngines(location);
     }
-    DO_LOG("search engine enumeration done...\n");
 
     // Now that all engines are loaded, build the sorted engine list
     this._buildSortedEngineList();
@@ -2726,13 +2723,11 @@ SearchService.prototype = {
   },
 
   getEngineByAlias: function SRCH_SVC_getEngineByAlias(aAlias) {
-    LOG("Looking for search engine " + aAlias + "...\n");
     for (var engineName in this._engines) {
       var engine = this._engines[engineName];
       if (engine && engine.alias == aAlias)
         return engine;
     }
-    LOG("Not found\n");
     return null;
   },
 
