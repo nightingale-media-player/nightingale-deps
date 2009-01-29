@@ -325,8 +325,8 @@ gst_osx_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
     goto done;
   }
 
-  spec->segsize = 4096;
-  spec->segtotal = 16;
+  spec->segsize = (spec->latency_time * spec->rate / G_USEC_PER_SEC) * spec->bytes_per_sample;
+  spec->segtotal = spec->buffer_time / spec->latency_time;
 
   GST_DEBUG_OBJECT (osxbuf, "osx ring buffer acquired");
 
@@ -467,8 +467,8 @@ gst_osx_ring_buffer_start (GstRingBuffer * buf)
 
     osxbuf->io_proc_active = TRUE;
   }
-  else
-    osxbuf->io_proc_needs_deactivation = FALSE;
+
+  osxbuf->io_proc_needs_deactivation = FALSE;
 
   status = AudioOutputUnitStart (osxbuf->audiounit);
   if (status) {
