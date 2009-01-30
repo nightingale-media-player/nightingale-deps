@@ -99,6 +99,9 @@ GType gst_directsound_sink_get_type (void);
 struct _GstDirectSoundRingBuffer {
 	GstRingBuffer object;
 
+  /* sink element */
+  GstDirectSoundSink *dsoundsink;
+
   /* lock used to protect writes and resets */
   GMutex *dsound_lock;
 

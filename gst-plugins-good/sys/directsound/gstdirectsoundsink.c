@@ -370,6 +370,9 @@ gst_directsound_sink_create_ringbuffer (GstBaseAudioSink * sink)
   ringbuffer = g_object_new (GST_TYPE_DIRECTSOUND_RING_BUFFER, NULL);
   GST_DEBUG ("directsound sink 0x%p", dsoundsink);
 
+  /* set the sink element on the ringbuffer for error messages */
+  ringbuffer->dsoundsink = dsoundsink;
+
   /* set the ringbuffer on the sink */
   dsoundsink->dsoundbuffer = ringbuffer;
 
@@ -419,8 +422,7 @@ static void
 gst_directsound_ring_buffer_init (GstDirectSoundRingBuffer * ringbuffer,
     GstDirectSoundRingBufferClass * g_class)
 {
-  HRESULT hr;
-
+  ringbuffer->dsoundsink = NULL;
   ringbuffer->pDS8 = NULL;
   ringbuffer->pDSB8 = NULL;
 
@@ -443,16 +445,6 @@ gst_directsound_ring_buffer_init (GstDirectSoundRingBuffer * ringbuffer,
 
   ringbuffer->dsound_lock = g_mutex_new ();
 
-  if (FAILED (hr = DirectSoundCreate8 (NULL, &ringbuffer->pDS8, NULL))) {
-    GST_WARNING ("gst_directsound_sink_open: DirectSoundCreate8 , hr = %X", hr);
-    return;
-  }
-
-  if (FAILED (hr = IDirectSound8_SetCooperativeLevel (ringbuffer->pDS8,
-              GetDesktopWindow (), DSSCL_PRIORITY))) {
-    GST_WARNING ("gst_directsound_sink_open: IDirectSound8_SetCooperativeLevel , hr = %X", hr);    
-    return;
-  }
 }
 
 static void
@@ -470,21 +462,42 @@ gst_directsound_ring_buffer_finalize (GObject * object)
   g_mutex_free (dsoundbuffer->dsound_lock);
   dsoundbuffer->dsound_lock = NULL;
 
-  IDirectSound8_Release (dsoundbuffer->pDS8);
-  dsoundbuffer->pDS8 = NULL;
-
   G_OBJECT_CLASS (ring_parent_class)->finalize (object);
 }
 
 static gboolean
 gst_directsound_ring_buffer_open_device (GstRingBuffer * buf)
-{
+{  
+  HRESULT hr;
+  GstDirectSoundRingBuffer *dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
+
+  if (FAILED (hr = DirectSoundCreate8 (NULL, &dsoundbuffer->pDS8, NULL))) {
+    GST_ELEMENT_ERROR (dsoundbuffer->dsoundsink, RESOURCE, FAILED, 
+      ("%S.", DXGetErrorDescription9(hr)), 
+      ("Failed to create directsound device. (%X)", hr));
+    dsoundbuffer->pDS8 = NULL;
+    return FALSE;
+  }
+
+  if (FAILED (hr = IDirectSound8_SetCooperativeLevel (dsoundbuffer->pDS8,
+              GetDesktopWindow (), DSSCL_PRIORITY))) {
+    GST_WARNING ("gst_directsound_sink_open: IDirectSound8_SetCooperativeLevel , hr = %X", hr);    
+    return FALSE;
+  }
+
   return TRUE;
 }
 
 static gboolean
 gst_directsound_ring_buffer_close_device (GstRingBuffer * buf)
 {
+  GstDirectSoundRingBuffer *dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
+  
+  if (dsoundbuffer->pDS8) {
+    IDirectSound8_Release (dsoundbuffer->pDS8);
+    dsoundbuffer->pDS8 = NULL;
+  }
+
   return TRUE;
 }
 
@@ -496,6 +509,12 @@ gst_directsound_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * sp
   DSBUFFERDESC descSecondary;
   LPDIRECTSOUNDBUFFER pDSB;
   WAVEFORMATEX wfx;
+
+  /* sanity check, if no DirectSound device, bail out */
+  if (!dsoundbuffer->pDS8) {
+    GST_WARNING ("gst_directsound_ring_buffer_acquire: DirectSound 8 device is null!");
+    return FALSE;
+  }
 
   /*save number of bytes per sample */
   dsoundbuffer->bytes_per_sample = spec->bytes_per_sample;
