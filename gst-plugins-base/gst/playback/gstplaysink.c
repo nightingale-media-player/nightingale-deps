@@ -246,6 +246,16 @@ gst_play_sink_init (GstPlaySink * playsink)
 }
 
 static void
+free_chain (GstPlayChain * chain)
+{
+  if (chain) {
+    if (chain->bin)
+      gst_object_unref (chain->bin);
+    g_free (chain);
+  }
+}
+
+static void
 gst_play_sink_dispose (GObject * object)
 {
   GstPlaySink *playsink;
@@ -267,6 +277,36 @@ gst_play_sink_dispose (GObject * object)
     gst_object_unref (playsink->visualisation);
     playsink->visualisation = NULL;
   }
+
+  free_chain ((GstPlayChain *) playsink->videochain);
+  playsink->videochain = NULL;
+  free_chain ((GstPlayChain *) playsink->audiochain);
+  playsink->audiochain = NULL;
+  free_chain ((GstPlayChain *) playsink->vischain);
+  playsink->vischain = NULL;
+  free_chain ((GstPlayChain *) playsink->textchain);
+  playsink->textchain = NULL;
+
+
+  if (playsink->audio_tee_sink) {
+    gst_object_unref (playsink->audio_tee_sink);
+    playsink->audio_tee_sink = NULL;
+  }
+
+  if (playsink->audio_tee_vissrc) {
+    gst_element_release_request_pad (playsink->audio_tee,
+        playsink->audio_tee_vissrc);
+    gst_object_unref (playsink->audio_tee_vissrc);
+    playsink->audio_tee_vissrc = NULL;
+  }
+
+  if (playsink->audio_tee_asrc) {
+    gst_element_release_request_pad (playsink->audio_tee,
+        playsink->audio_tee_asrc);
+    gst_object_unref (playsink->audio_tee_asrc);
+    playsink->audio_tee_asrc = NULL;
+  }
+
   g_free (playsink->font_desc);
   playsink->font_desc = NULL;
 
@@ -554,15 +594,6 @@ post_missing_element_message (GstPlaySink * playsink, const gchar * name)
   gst_element_post_message (GST_ELEMENT_CAST (playsink), msg);
 }
 
-static void
-free_chain (GstPlayChain * chain)
-{
-  if (chain->bin)
-    gst_object_unref (chain->bin);
-  gst_object_unref (chain->playsink);
-  g_free (chain);
-}
-
 static gboolean
 add_chain (GstPlayChain * chain, gboolean add)
 {
@@ -698,7 +729,7 @@ gen_video_chain (GstPlaySink * playsink, gboolean raw, gboolean async)
   GstPad *pad;
 
   chain = g_new0 (GstPlayVideoChain, 1);
-  chain->chain.playsink = gst_object_ref (playsink);
+  chain->chain.playsink = playsink;
 
   GST_DEBUG_OBJECT (playsink, "making video chain %p", chain);
 
@@ -830,7 +861,7 @@ gen_text_chain (GstPlaySink * playsink)
   GstPad *pad;
 
   chain = g_new0 (GstPlayTextChain, 1);
-  chain->chain.playsink = gst_object_ref (playsink);
+  chain->chain.playsink = playsink;
 
   GST_DEBUG_OBJECT (playsink, "making text chain %p", chain);
 
@@ -925,7 +956,7 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw, gboolean queue)
   GstElement *elem;
 
   chain = g_new0 (GstPlayAudioChain, 1);
-  chain->chain.playsink = gst_object_ref (playsink);
+  chain->chain.playsink = playsink;
 
   GST_DEBUG_OBJECT (playsink, "making audio chain %p", chain);
 
@@ -968,15 +999,15 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw, gboolean queue)
   if (elem) {
     GST_DEBUG_OBJECT (playsink, "the sink as a volume property");
     have_volume = TRUE;
-    /* take ref to sink to control the volume */
-    chain->volume = gst_object_ref (elem);
+    /* use the sink to control the volume */
+    chain->volume = elem;
     g_object_set (G_OBJECT (elem), "volume", playsink->volume, NULL);
     /* if the sink also has a mute property we can use this as well. We'll only
      * use the mute property if there is a volume property. We can simulate the
      * mute with the volume otherwise. */
     if (g_object_class_find_property (G_OBJECT_GET_CLASS (elem), "mute")) {
       GST_DEBUG_OBJECT (playsink, "the sink as a mute property");
-      chain->mute = gst_object_ref (elem);
+      chain->mute = elem;
     }
     gst_object_unref (elem);
   } else {
@@ -1006,7 +1037,7 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw, gboolean queue)
       have_volume = TRUE;
 
       /* volume also has the mute property */
-      chain->mute = gst_object_ref (chain->volume);
+      chain->mute = chain->volume;
 
       /* configure with the latest volume and mute */
       g_object_set (G_OBJECT (chain->volume), "volume", playsink->volume, NULL);
@@ -1112,7 +1143,7 @@ gen_vis_chain (GstPlaySink * playsink)
   GstPad *pad;
 
   chain = g_new0 (GstPlayVisChain, 1);
-  chain->chain.playsink = gst_object_ref (playsink);
+  chain->chain.playsink = playsink;
 
   GST_DEBUG_OBJECT (playsink, "making vis chain %p", chain);
 

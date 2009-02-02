@@ -976,6 +976,7 @@ init_group (GstPlayBin * playbin, GstSourceGroup * group)
 static void
 free_group (GstPlayBin * playbin, GstSourceGroup * group)
 {
+  g_free (group->uri);
   g_ptr_array_free (group->video_channels, TRUE);
   g_ptr_array_free (group->audio_channels, TRUE);
   g_ptr_array_free (group->text_channels, TRUE);
@@ -1025,6 +1026,9 @@ gst_play_bin_finalize (GObject * object)
 
   free_group (playbin, &playbin->groups[0]);
   free_group (playbin, &playbin->groups[1]);
+
+  if (playbin->source)
+    gst_object_unref (playbin->source);
 
   g_value_array_free (playbin->elements);
   g_free (playbin->encoding);
@@ -1228,8 +1232,13 @@ get_current_stream_number (GstPlayBin *playbin,
     if ((selector = gst_pad_get_parent (pad))) {
       g_object_get (selector, "active-pad", &current, NULL);
 
-      if (pad == current)
+      if (pad == current) {
+        gst_object_unref (current);
         return i;
+      }
+
+      if(current)
+        gst_object_unref (current);
     }
   }
   
@@ -1789,6 +1798,8 @@ pad_added_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
           gst_play_bin_signals[signal], 0, NULL);
   }
 
+done:
+  gst_caps_unref (caps);
   return;
 
   /* ERRORS */
@@ -1796,14 +1807,14 @@ unknown_type:
   {
     GST_ERROR_OBJECT (playbin, "unknown type %s for pad %s:%s",
         name, GST_DEBUG_PAD_NAME (pad));
-    return;
+    goto done;
   }
 no_selector:
   {
     GST_ERROR_OBJECT (playbin, "could not create selector for pad %s:%s",
         GST_DEBUG_PAD_NAME (pad));
     GST_SOURCE_GROUP_UNLOCK (group);
-    return;
+    goto done;
   }
 link_failed:
   {
@@ -1811,7 +1822,7 @@ link_failed:
         "failed to link pad %s:%s to selector, reason %d",
         GST_DEBUG_PAD_NAME (pad), res);
     GST_SOURCE_GROUP_UNLOCK (group);
-    return;
+    goto done;
   }
 }
 
@@ -1847,12 +1858,15 @@ pad_removed_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
   /* get selector, this can be NULL when the element is removing the pads
    * because it's being disposed. */
   selector = GST_ELEMENT_CAST (gst_pad_get_parent (peer));
-  if (!selector)
+  if (!selector) {
+    gst_object_unref (peer);
     goto no_selector;
+  }
 
   /* release the pad to the selector, this will make the selector choose a new
    * pad. */
   gst_element_release_request_pad (selector, peer);
+  gst_object_unref (peer);
 
   gst_object_unref (selector);
   GST_SOURCE_GROUP_UNLOCK (group);
@@ -2138,13 +2152,13 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
   if (group->uridecodebin) {
     GST_DEBUG_OBJECT (playbin, "reusing existing uridecodebin");
     REMOVE_SIGNAL (group->uridecodebin, group->pad_added_id);
-    REMOVE_SIGNAL (group->uridecodebin, group->pad_removed_id);
     REMOVE_SIGNAL (group->uridecodebin, group->no_more_pads_id);
     REMOVE_SIGNAL (group->uridecodebin, group->notify_source_id);
     REMOVE_SIGNAL (group->uridecodebin, group->drained_id);
     REMOVE_SIGNAL (group->uridecodebin, group->autoplug_factories_id);
     REMOVE_SIGNAL (group->uridecodebin, group->autoplug_select_id);
     gst_element_set_state (group->uridecodebin, GST_STATE_NULL);
+    REMOVE_SIGNAL (group->uridecodebin, group->pad_removed_id);
     uridecodebin = group->uridecodebin;
   } else {
     GST_DEBUG_OBJECT (playbin, "making new uridecodebin");
@@ -2197,9 +2211,9 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
     if (group->suburidecodebin) {
       GST_DEBUG_OBJECT (playbin, "reusing existing suburidecodebin");
       REMOVE_SIGNAL (group->suburidecodebin, group->sub_pad_added_id);
-      REMOVE_SIGNAL (group->suburidecodebin, group->sub_pad_removed_id);
       REMOVE_SIGNAL (group->suburidecodebin, group->sub_no_more_pads_id);
       gst_element_set_state (group->suburidecodebin, GST_STATE_NULL);
+      REMOVE_SIGNAL (group->suburidecodebin, group->sub_pad_removed_id);
       suburidecodebin = group->suburidecodebin;
     } else {
       GST_DEBUG_OBJECT (playbin, "making new suburidecodebin");
