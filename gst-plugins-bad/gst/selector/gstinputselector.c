@@ -1167,6 +1167,7 @@ gst_input_selector_release_pad (GstElement * element, GstPad * pad)
   /* if the pad was the active pad, makes us select a new one */
   if (sel->active_sinkpad == pad) {
     GST_DEBUG_OBJECT (sel, "Deactivating pad %s:%s", GST_DEBUG_PAD_NAME (pad));
+    gst_object_unref (sel->active_sinkpad);
     sel->active_sinkpad = NULL;
   }
   sel->n_pads--;
