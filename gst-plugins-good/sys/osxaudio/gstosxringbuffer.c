@@ -222,7 +222,6 @@ gst_osx_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
   AudioStreamBasicDescription format;
   AudioChannelLayout *layout = NULL;
   OSStatus status;
-  UInt32 buffer_len;
   UInt32 propertySize;
   int layoutSize;
   int element;
@@ -338,6 +337,8 @@ gst_osx_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
 
   buf->data = gst_buffer_new_and_alloc (spec->segtotal * spec->segsize);
   memset (GST_BUFFER_DATA (buf->data), 0, GST_BUFFER_SIZE (buf->data));
+
+  osxbuf->segoffset = 0;
 
   status = AudioUnitInitialize(osxbuf->audiounit);
   if (status) {
