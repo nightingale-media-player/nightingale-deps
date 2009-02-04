@@ -149,7 +149,13 @@ gst_osx_ring_buffer_init (GstOsxRingBuffer * ringbuffer,
 static void
 gst_osx_ring_buffer_dispose (GObject * object)
 {
-  // TODO: free the audiounit 
+  GstOsxRingBuffer *osxbuf = GST_OSX_RING_BUFFER (object);
+
+  if (osxbuf->audiounit) {
+    CloseComponent (osxbuf->audiounit);
+    osxbuf->audiounit = NULL;
+  }
+
   G_OBJECT_CLASS (ring_parent_class)->dispose (object);
 }
 
@@ -336,7 +342,7 @@ gst_osx_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
   status = AudioUnitInitialize(osxbuf->audiounit);
   if (status) {
     GST_WARNING_OBJECT (osxbuf,
-        "Failed to initialise AudioUnit: %d", (int) status);
+        "Failed to initialise AudioUnit: %x", (int) status);
     goto done;
   }
 
@@ -352,8 +358,16 @@ done:
 static gboolean
 gst_osx_ring_buffer_release (GstRingBuffer * buf)
 {
-  /* stub, we need to deallocate ringbuffer memory */
   GstOsxRingBuffer *osxbuf;
+  OSStatus status;
+
+  if (osxbuf->audiounit) {
+    status = AudioUnitUninitialize(osxbuf->audiounit);
+    if (status) {
+      GST_WARNING_OBJECT (osxbuf,
+          "Failed to uninitialise AudioUnit: %x", (int) status);
+    }
+  }
 
   osxbuf = GST_OSX_RING_BUFFER (buf);
 
