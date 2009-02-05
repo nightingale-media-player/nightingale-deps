@@ -2535,23 +2535,47 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
  * BorderlessWindow would work, but causes the OS to make assumptions
  * about things like resizing and zooming.
  *
+ * In order to maintain compatibility with 10.4, each private AppKit class
+ * is implemented as a union of the 10.4 and later versions of the class.
+ * This ensures that the SongbirdThemeFrame class is sized correctly.
+ * Trying to access any particular fields will probably fail on both 10.4
+ * and 10.5.
+ *
  *************************************************************************/
 
 @class NSDocumentDragButton, NSButton, NSCell, NSImage, NSString;
 
 @interface NSFrameView : NSView
 {
-  unsigned int styleMask;
-  NSString *_title;
-  NSCell *titleCell;
-  NSButton *closeButton;
-  NSButton *zoomButton;
-  NSButton *minimizeButton;
-  char resizeByIncrement;
-  char frameNeedsDisplay;
-  unsigned char tabViewCount;
-  struct _NSSize resizeParameter;
-  int shadowState; 
+  union {
+    struct {
+      unsigned int styleMask;
+      NSString *_title;
+      NSCell *titleCell;
+      NSButton *closeButton;
+      NSButton *zoomButton;
+      NSButton *minimizeButton;
+      char resizeByIncrement;
+      char frameNeedsDisplay;
+      unsigned char tabViewCount;
+      struct _NSSize resizeParameter;
+      int shadowState; 
+    } nsFrameView;
+
+    struct {
+      unsigned int styleMask;
+      NSString *_title;
+      NSCell *titleCell;
+      NSButton *closeButton;
+      NSButton *zoomButton;
+      NSButton *minimizeButton;
+      BOOL resizeByIncrement;
+      BOOL unused;
+      unsigned char tabViewCount;
+      struct _NSSize resizeParameter;
+      int shadowState;
+    } nsFrameView_10_4;
+  } nsFrameView;
 }
 
 - (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
@@ -2561,9 +2585,19 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
 
 @interface NSTitledFrame : NSFrameView
 {
-  int resizeFlags;
-  id fileButton;    
-  struct _NSSize titleCellSize;
+  union {
+    struct {
+      int resizeFlags;
+      id fileButton;    
+      struct _NSSize titleCellSize;
+    } nsTitledFrame;
+
+    struct {
+      int resizeFlags;
+      NSDocumentDragButton *fileButton;
+      struct _NSSize titleCellSize;
+    } nsTitledFrame_10_4;
+  } nsTitledFrame;
 }
 
 - (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
@@ -2577,17 +2611,42 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
 
 @interface NSThemeFrame : NSTitledFrame
 {
-  NSButton *toolbarButton;
-  int toolbarVisibleStatus;
-  NSImage *showToolbarTransitionImage;
-  struct _NSSize showToolbarPreWindowSize;
-  NSButton *modeButton;
-  int leftGroupTrackingTagNum;
-  int rightGroupTrackingTagNum;
-  char mouseInsideLeftGroup;
-  char mouseInsideRightGroup;
-  int widgetState;
-  NSString *displayName; 
+  union {
+    struct {
+      NSButton *toolbarButton;
+      int toolbarVisibleStatus;
+      NSImage *showToolbarTransitionImage;
+      struct _NSSize showToolbarPreWindowSize;
+      NSButton *modeButton;
+      int leftGroupTrackingTagNum;
+      int rightGroupTrackingTagNum;
+      char mouseInsideLeftGroup;
+      char mouseInsideRightGroup;
+      int widgetState;
+      NSString *displayName; 
+    } nsThemeFrame;
+
+    struct {
+      NSButton *toolbarButton;
+      int toolbarVisibleStatus;
+      struct CGLayer *showToolbarTransitionLayer;
+      struct _NSSize showToolbarPreWindowSize;
+      NSButton *modeButton;
+      int leftGroupTrackingTagNum;
+      int rightGroupTrackingTagNum;
+      struct {
+          unsigned int mouseInsideLeftGroup:1;
+          unsigned int mouseInsideRightGroup:1;
+          unsigned int bottomCornerRounded:2;
+          unsigned int reserved:28;
+      } _tFlags;
+      int widgetState;
+      NSString *displayName;
+      NSButton *lockButton;
+      float topBorderThickness;
+      float bottomBorderThickness;
+    } nsThemeFrame_10_4;
+  } nsThemeFrame;
 }
 
 - (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
