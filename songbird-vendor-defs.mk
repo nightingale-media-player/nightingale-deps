@@ -300,15 +300,22 @@ else
   SB_VENDOR_BREAKPAD_STORE_PATH = $(SB_CONFIGURE_PREFIX)
 endif
 
-# Generate syms by default; but make it easy to turn it off, if you're just
-# interested in building.
-SB_VENDOR_GENERATE_SYMBOLS ?= 1
+# Turn on/off symbol generation; 'default' means "for release builds only,
+# for all non-x86_64 platforms, generate a symbol bundle."
+#
+# Setting explicitly to 1 or 0 forces generating symbols or not.
+
+SB_VENDOR_GENERATE_SYMBOLS ?= default
 
 # Symbols don't work on x86_64; don't even bother
-ifeq (1_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
-  SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/sb-vendor-symbols-$(SB_VENDOR_TARGET)-$(SB_VENDOR_TARGET_VERSION)-$(SB_TARGET_ARCH)-$(SB_BUILD_TYPE).zip
+ifeq (default_release_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(SB_VENDOR_BUILD_TYPE)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
+   SB_VENDOR_GENERATE_SYMBOLS = 1
+endif 
+
+ifeq (1,$(SB_VENDOR_GENERATE_SYMBOLS))
+   SB_VENDOR_BREAKPAD_ARCHIVE = $(SB_VENDOR_BREAKPAD_DIR)/sb-vendor-$(SB_VENDOR_TARGET)-$(SB_VENDOR_TARGET_VERSION)-$(SB_TARGET_ARCH)-$(SB_BUILD_TYPE)-symbols.zip
 else
-  SB_VENDOR_BREAKPAD_ARCHIVE = 
+   SB_VENDOR_BREAKPAD_ARCHIVE = 
 endif
 
 # TODO: explain this gloop
