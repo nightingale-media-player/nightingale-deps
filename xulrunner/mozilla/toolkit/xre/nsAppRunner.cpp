@@ -2700,6 +2700,14 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
     if (::GetCurrentProcess(&psn) == noErr)
       ::SetFrontProcess(&psn);
   }
+
+  // XXX Songbird -
+  // Setup the mac carbon event handlers now, rather than later in this block. 
+  // Starting up the event handlers now prevents any loss of URL events sent
+  // before the application has started up.
+  // See s.b.o 14875.
+  SetupMacCommandLine(gArgc, gArgv);
+
 #endif
 
   PR_SetEnv("MOZ_LAUNCHED_CHILD=");
@@ -3156,8 +3164,6 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
           // after we are sure that we're not restarting
           cmdLine = do_CreateInstance("@mozilla.org/toolkit/command-line;1");
           NS_ENSURE_TRUE(cmdLine, 1);
-
-          SetupMacCommandLine(gArgc, gArgv);
 
           rv = cmdLine->Init(gArgc, gArgv,
                              workingDir, nsICommandLine::STATE_INITIAL_LAUNCH);
