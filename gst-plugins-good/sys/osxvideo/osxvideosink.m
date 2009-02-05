@@ -1,7 +1,7 @@
 /* GStreamer
  * OSX video sink
  * Copyright (C) 2004-6 Zaheer Abbas Merali <zaheerabbas at merali dot org>
- * Copyright (C) 2007 Pioneers of the Inevitable <songbird@songbirdnest.com>
+ * Copyright (C) 2007,2008,2009 Pioneers of the Inevitable <songbird@songbirdnest.com>
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,24 +26,14 @@
 /**
  * SECTION:element-osxvideosink
  *
- * <refsect2>
- * <para>
  * The OSXVideoSink renders video frames to a MacOSX window. The video output
- * can be directed to a window embedded in an existing NSApp. This can be done
- * by setting the "embed" property to #TRUE. When the NSView to be embedded is
- * created an element #GstMessage with a name of 'have-ns-view' will be created
- * and posted on the bus. The pointer to the NSView to embed will be in the
- * 'nsview' field of that message. If no embedding is requested, the plugin will
- * create a standalone window.
- * </para>
- * <title>Examples</title>
- * <para>
- * Simple timeline to test the sink :
- * <programlisting>
- * gst-launch-0.10 -v videotestsrc ! osxvideosink
- * </programlisting>
- * </para>
- * </refsect2>
+ * must be directed to a window embedded in an existing NSApp.
+ *
+ * When the NSView to be embedded is created an element #GstMessage with a 
+ * name of 'have-ns-view' will be created and posted on the bus. 
+ * The pointer to the NSView to embed will be in the 'nsview' field of that 
+ * message. The application MUST handle this message and embed the view
+ * appropriately.
  */
 
 #include "config.h"
