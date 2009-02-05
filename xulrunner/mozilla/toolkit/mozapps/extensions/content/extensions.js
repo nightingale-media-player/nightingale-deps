@@ -498,6 +498,25 @@ function showView(aView) {
   updateGlobalCommands();
 }
 
+// Ensures a visible view is shown.  Does nothing if a visible view is already
+// being shown.
+function showVisibleView() {
+  // Do nothing if already showing a visible view.
+  var viewGroup = document.getElementById("viewGroup");
+  if (viewGroup.selectedItem && !viewGroup.selectedItem.hidden)
+    return;
+
+  // Show the first visible view.
+  var viewElemList = viewGroup.getElementsByTagNameNS(kXULNSURI, "radio");
+  for (var i = 0; i < viewElemList.length; i++) {
+    var viewElem = viewElemList[i];
+    if (!viewElem.hidden) {
+      viewElem.doCommand();
+      break;
+    }
+  }
+}
+
 // manages the last-selected attribute for the view buttons and richlistbox
 function updateLastSelected(aView) {
   var viewGroup = document.getElementById("viewGroup");
@@ -2134,6 +2153,9 @@ function updateOptionalViews() {
   document.getElementById("locales-view").hidden = !showLocales;
   document.getElementById("updates-view").hidden = !showUpdates;
   document.getElementById("installs-view").hidden = !showInstalls;
+
+  // Ensure a visible view is shown.
+  showVisibleView();
 }
 
 function updateGlobalCommands() {
