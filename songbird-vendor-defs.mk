@@ -105,6 +105,7 @@ endif
 #
 
 AWK ?= awk
+CHMOD ?= chmod
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
@@ -124,7 +125,7 @@ ZIP ?= zip
 
 SUBMAKE_CMD = $(MAKE)
 
-DUMP_SYMS_ARGS := --vcs-info
+DUMP_SYMS_ARGS := --vcs-info -V
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
    STRIP ?= strip -x -S
