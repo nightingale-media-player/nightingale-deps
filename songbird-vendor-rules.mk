@@ -122,18 +122,20 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
+# We strip .so's on Linux *and* Mac because libtool gets confused and on the
+# mac, generates some libraries with the .so extension.
 strip_build:
 ifneq (Msys,$(SB_VENDOR_ARCH))
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-	for d in $(SB_VENDOR_BUILD_DIR) $(SB_CONFIGURE_PREFIX); do \
+	for d in $(SB_CONFIGURE_PREFIX); do \
           $(FIND) $$d \
             -type f -name "*.dylib" \
             -exec $(STRIP) {} \; ; \
         done
 endif
-	for d in $(SB_VENDOR_BUILD_DIR) $(SB_CONFIGURE_PREFIX); do \
+	for d in $(SB_CONFIGURE_PREFIX); do \
           $(FIND) $$d \
-           -type f -name "*.so" \
+           -type f -name "*.so*" \
            -exec $(STRIP) {} \; ; \
         done
 endif
@@ -255,7 +257,7 @@ endif
 	   $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) \
 	   $(SB_VENDOR_BREAKPAD_DIR) \
 	   $(SB_VENDOR_BREAKPAD_STORE_PATH) \
-	   > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_VENDOR_TARGET)-$(SB_TARGET_ARCH)-$(SB_BUILD_TYPE)-symbol-list.txt
+	   > $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)/$(SB_VENDOR_TARGET)-$(SB_VENDOR_TARGET_VERSION)-$(SB_TARGET_ARCH)-$(SB_BUILD_TYPE)-symbol-list.txt
 	$(FIND) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) -type d -exec $(CHMOD) 0755 {} \; 
 	$(FIND) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) -type f -exec $(CHMOD) 0644 {} \; 
 	cd $(SB_VENDOR_BREAKPAD_SYMBOL_PATH) && \

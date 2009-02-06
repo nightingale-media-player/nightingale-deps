@@ -125,7 +125,9 @@ ZIP ?= zip
 
 SUBMAKE_CMD = $(MAKE)
 
-DUMP_SYMS_ARGS := --vcs-info -V
+# For when new XRs land... 
+# DUMP_SYMS_ARGS := --vcs-info -V
+DUMP_SYMS_ARGS := --vcs-info
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
    STRIP ?= strip -x -S
@@ -309,7 +311,7 @@ endif
 SB_VENDOR_GENERATE_SYMBOLS ?= default
 
 # Symbols don't work on x86_64; don't even bother
-ifeq (default_release_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(SB_VENDOR_BUILD_TYPE)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
+ifeq (default_release_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(SB_BUILD_TYPE)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
    SB_VENDOR_GENERATE_SYMBOLS = 1
 endif 
 
