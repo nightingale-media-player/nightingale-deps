@@ -62,6 +62,12 @@ from optparse import OptionParser
 
 # Utility classes
 
+VERBOSE = False
+
+def Mesg(msg=''):
+    if VERBOSE:
+        print >> sys.stderr, msg
+
 class VCSFileInfo:
     """ A base class for version-controlled file information. Ensures that the
         following attributes are generated only once (successfully):
@@ -392,6 +398,7 @@ class Dumper:
     def ProcessDir(self, dir):
         """Process all the valid files in this directory.  Valid files
         are determined by calling ShouldProcess."""
+        Mesg("Examining directory %s..." % (dir))
         result = True
         for root, dirs, files in os.walk(dir):
             for f in files:
@@ -404,6 +411,7 @@ class Dumper:
     def ProcessFile(self, file):
         """Dump symbols from this file into a symbol file, stored
         in the proper directory structure in  |symbol_path|."""
+        Mesg("Processing file %s..." % (file))
         result = False
         sourceFileStream = ''
         # tries to get cvsroot from the .mozconfig first - if it's not set
@@ -469,6 +477,9 @@ class Dumper:
                     result = True
             except StopIteration:
                 pass
+            except OSError, e:
+                print >> sys.stderr, "Error from %s: %s" % (self.dump_syms, e)
+                raise
             except:
                 print >> sys.stderr, "Unexpected error: ", sys.exc_info()[0]
                 raise
@@ -600,6 +611,8 @@ class Dumper_Mac(Dumper):
 
 # Entry point if called as a standalone program
 def main():
+    global VERBOSE
+
     parser = OptionParser(usage="usage: %prog [options] <dump_syms binary> <symbol store path> <debug info files>")
     parser.add_option("-c", "--copy",
                       action="store_true", dest="copy_debug", default=False,
@@ -616,6 +629,9 @@ def main():
     parser.add_option("-i", "--source-index",
                       action="store_true", dest="srcsrv", default=False,
                       help="Add source index information to debug files, making them suitable for use in a source server.")
+    parser.add_option("-V", "--verbose",
+                      action="store_true", dest="verbose", default=False,
+                      help="Report more information during symbol store processing.")
     (options, args) = parser.parse_args()
     
     #check to see if the pdbstr.exe exists
@@ -624,7 +640,10 @@ def main():
         if not os.path.exists(pdbstr):
             print >> sys.stderr, "Invalid path to pdbstr.exe - please set/check PDBSTR_PATH.\n"
             sys.exit(1)
-            
+
+    if options.verbose:
+       VERBOSE=True
+       
     if len(args) < 3:
         parser.error("not enough arguments")
         exit(1)
