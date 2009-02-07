@@ -214,7 +214,7 @@ endif
 copy_symbols:
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	@echo Gathering PDBs to add to vendor-binary tree...
-	for dbug in $$($(FIND) $(SB_VENDOR_BREAKPAD_DIR) -type f \
+	for dbug in $$($(FIND) $(SB_VENDOR_BUILD_DIR) -type f \
          -iname '*.pdb' \
          -not -iregex 'vc.*.pdb'); do \
            a=$$(basename $$dbug); \
