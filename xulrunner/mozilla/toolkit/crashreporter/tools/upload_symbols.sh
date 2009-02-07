@@ -54,7 +54,7 @@ SERVER_PATH=$2
 
 if test -z $SERVER_PATH; then
    SERVER_PATH=$SYMBOL_SERVER_PATH
-endif
+fi
 
 echo "Transferring symbol package ${1}..."
 ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
