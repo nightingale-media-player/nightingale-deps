@@ -5212,6 +5212,7 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
     break;
 
     case WM_SETTINGCHANGE:
+    {
 #ifdef WINCE
       if (wParam == SPI_SETWORKAREA)
       {
@@ -5229,7 +5230,29 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
       else
 #endif
         getWheelInfo = PR_TRUE;
+      const wchar_t kTraySettings[] = L"TraySettings";
+      if (wParam == 0 && lParam &&
+          !(wcsncmp(kTraySettings, (LPWSTR)lParam, NS_ARRAY_LENGTH(kTraySettings))))
+      {
+        if (mIsChromeHidden && mSizeMode == nsSizeMode_Maximized) {
+          // we need to handle WM_GETMINMAXINFO, but while the taskbar was changed
+          // Windows does not send a message.  Let's manually size the window.
+          MINMAXINFO mmi;
+          memset((void*)&mmi, -1, sizeof(MINMAXINFO));
+          mmi.ptMaxPosition.x = mmi.ptMaxPosition.y = LONG_MIN;
+          mmi.ptMaxSize.x = mmi.ptMaxSize.y = LONG_MAX;
+          LRESULT lr = ::SendMessage(mWnd, WM_GETMINMAXINFO, NULL, (LPARAM)&mmi);
+          if (!lr && !(mmi.ptMaxPosition.x == LONG_MIN && mmi.ptMaxPosition.y == LONG_MIN &&
+                       mmi.ptMaxSize.x == LONG_MAX && mmi.ptMaxSize.y == LONG_MAX))
+          {
+            // there was a size restriction, move it
+            ::MoveWindow(mWnd, mmi.ptMaxPosition.x, mmi.ptMaxPosition.y,
+                         mmi.ptMaxSize.x, mmi.ptMaxSize.y, TRUE);
+          }
+        }
+      }
       break;
+    }
 
     case WM_PALETTECHANGED:
       if ((HWND)wParam == mWnd) {
