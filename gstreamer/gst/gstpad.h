@@ -225,7 +225,7 @@ typedef gboolean		(*GstPadActivateModeFunction)	(GstPad *pad, gboolean active);
  * gst_buffer_unref() when the buffer is no longer needed.
  *
  * When a chain function detects an error in the data stream, it must post an
- * error on the buffer and return an appropriate #GstFlowReturn value.
+ * error on the bus and return an appropriate #GstFlowReturn value.
  *
  * Returns: #GST_FLOW_OK for success
  */
@@ -308,11 +308,28 @@ typedef gboolean		(*GstPadCheckGetRangeFunction)	(GstPad *pad);
  * The signature of the internal pad link function.
  *
  * Returns: a newly allocated #GList of pads that are linked to the given pad on
- *  the inside of the parent element.
- *  The caller must call g_list_free() on it after use.
+ * the inside of the parent element.
+ *
+ * The caller must call g_list_free() on it after use.
+ *
+ * Deprecated: use the threadsafe #GstPadIterIntLinkFunction instead.
  */
 typedef GList*			(*GstPadIntLinkFunction)	(GstPad *pad);
 
+/**
+ * GstPadIterIntLinkFunction:
+ * @pad: The #GstPad to query.
+ *
+ * The signature of the internal pad link iterator function.
+ *
+ * Returns: a new #GstIterator that will iterate over all pads that are
+ * linked to the given pad on the inside of the parent element.
+ *
+ * the caller must call gst_iterator_free() after usage.
+ *
+ * Since 0.10.21
+ */
+typedef GstIterator*           (*GstPadIterIntLinkFunction)    (GstPad *pad);
 
 /* generic query function */
 /**
@@ -420,13 +437,16 @@ typedef void			(*GstPadFixateCapsFunction)	(GstPad *pad, GstCaps *caps);
  * be processed by @pad. The function is mostly overridden by elements that can
  * provide a hardware buffer in order to avoid additional memcpy operations.
  *
- * The function can return a buffer that does not have @caps, in which case the
- * upstream element requests a format change. If a format change was requested,
- * the returned buffer will be one to hold the data of said new caps, so its
- * size might be different from @size.
+ * The function can return a buffer that has caps different from the requested
+ * @caps, in which case the upstream element requests a format change to this
+ * new caps.
+ * If a format change was requested, the returned buffer will be one to hold
+ * the data of said new caps, so its size might be different from the requested
+ * @size.
  *
  * When this function returns anything else than #GST_FLOW_OK, the buffer allocation
- * failed and @buf does not contain valid data.
+ * failed and @buf does not contain valid data. If the function returns #GST_FLOW_OK and
+ * the @buf is NULL, a #GstBuffer will be created with @caps, @offset and @size.
  *
  * By default this function returns a new buffer of @size and with @caps containing
  * purely malloced data. The buffer should be freed with gst_buffer_unref()
@@ -537,6 +557,7 @@ typedef struct _GstPadTemplate GstPadTemplate;
  * @bufferallocfunc: function to allocate a buffer for this pad
  * @do_buffer_signals: counter counting installed buffer signals
  * @do_event_signals: counter counting installed event signals
+ * @iterintlinkfunc: get the internal links iterator of this pad
  *
  * The #GstPad structure. Use the functions to update the variables.
  */
@@ -604,8 +625,12 @@ struct _GstPad {
   gint				 do_buffer_signals;
   gint				 do_event_signals;
 
+  /* ABI added */
+  /* iterate internal links */
+  GstPadIterIntLinkFunction     iterintlinkfunc;
+
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstPadClass {
@@ -642,6 +667,7 @@ struct _GstPadClass {
 #define GST_PAD_QUERYTYPEFUNC(pad)	(GST_PAD_CAST(pad)->querytypefunc)
 #define GST_PAD_QUERYFUNC(pad)		(GST_PAD_CAST(pad)->queryfunc)
 #define GST_PAD_INTLINKFUNC(pad)	(GST_PAD_CAST(pad)->intlinkfunc)
+#define GST_PAD_ITERINTLINKFUNC(pad)    (GST_PAD_CAST(pad)->iterintlinkfunc)
 
 #define GST_PAD_PEER(pad)		(GST_PAD_CAST(pad)->peer)
 #define GST_PAD_LINKFUNC(pad)		(GST_PAD_CAST(pad)->linkfunc)
@@ -861,6 +887,12 @@ gboolean		gst_pad_stop_task			(GstPad *pad);
 void			gst_pad_set_internal_link_function	(GstPad *pad, GstPadIntLinkFunction intlink);
 GList*			gst_pad_get_internal_links		(GstPad *pad);
 GList*			gst_pad_get_internal_links_default	(GstPad *pad);
+
+void                    gst_pad_set_iterate_internal_links_function (GstPad * pad,
+                                                                 GstPadIterIntLinkFunction iterintlink);
+GstIterator *           gst_pad_iterate_internal_links          (GstPad * pad);
+GstIterator *           gst_pad_iterate_internal_links_default  (GstPad * pad);
+
 
 /* generic query function */
 void			gst_pad_set_query_type_function		(GstPad *pad, GstPadQueryTypeFunction type_func);

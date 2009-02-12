@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -48,25 +48,40 @@
 #include &lt;gst/gst.h&gt;
 
                     <a class="link" href="GstGhostPad.html#GstGhostPad-struct" title="GstGhostPad">GstGhostPad</a>;
-<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new" title="gst_ghost_pad_new ()">gst_ghost_pad_new</a>                   (const gchar *name,
+<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new" title="gst_ghost_pad_new ()">gst_ghost_pad_new</a>                   (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *target);
-<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new-no-target" title="gst_ghost_pad_new_no_target ()">gst_ghost_pad_new_no_target</a>         (const gchar *name,
+<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new-no-target" title="gst_ghost_pad_new_no_target ()">gst_ghost_pad_new_no_target</a>         (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection">GstPadDirection</a> dir);
-<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new-from-template" title="gst_ghost_pad_new_from_template ()">gst_ghost_pad_new_from_template</a>     (const gchar *name,
+<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new-from-template" title="gst_ghost_pad_new_from_template ()">gst_ghost_pad_new_from_template</a>     (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *target,
                                                          <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ);
 <a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-new-no-target-from-template" title="gst_ghost_pad_new_no_target_from_template ()">gst_ghost_pad_new_no_target_from_template</a>
-                                                        (const gchar *name,
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ);
-gboolean            <a class="link" href="GstGhostPad.html#gst-ghost-pad-set-target" title="gst_ghost_pad_set_target ()">gst_ghost_pad_set_target</a>            (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstGhostPad.html#gst-ghost-pad-set-target" title="gst_ghost_pad_set_target ()">gst_ghost_pad_set_target</a>            (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *newtarget);
 <a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstGhostPad.html#gst-ghost-pad-get-target" title="gst_ghost_pad_get_target ()">gst_ghost_pad_get_target</a>            (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstGhostPad.html#gst-ghost-pad-construct" title="gst_ghost_pad_construct ()">gst_ghost_pad_construct</a>             (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstGhostPad.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----<a class="link" href="GstPad.html" title="GstPad">GstPad</a>
                +----GstProxyPad
@@ -112,7 +127,9 @@ Opaque <a class="link" href="GstGhostPad.html" title="GstGhostPad"><span class="
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-ghost-pad-new"></a><h3>gst_ghost_pad_new ()</h3>
-<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new                   (const gchar *name,
+<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new                   (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *target);</pre>
 <p>
 Create a new ghostpad with <em class="parameter"><code>target</code></em> as the target. The direction will be taken
@@ -147,7 +164,9 @@ Will ref the target.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-ghost-pad-new-no-target"></a><h3>gst_ghost_pad_new_no_target ()</h3>
-<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new_no_target         (const gchar *name,
+<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new_no_target         (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection">GstPadDirection</a> dir);</pre>
 <p>
 Create a new ghostpad without a target with the given direction.
@@ -183,7 +202,9 @@ The created ghostpad will not have a padtemplate.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-ghost-pad-new-from-template"></a><h3>gst_ghost_pad_new_from_template ()</h3>
-<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new_from_template     (const gchar *name,
+<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new_from_template     (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *target,
                                                          <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ);</pre>
 <p>
@@ -228,7 +249,9 @@ Will ref the target.</p>
 <div class="refsect2" lang="en">
 <a name="gst-ghost-pad-new-no-target-from-template"></a><h3>gst_ghost_pad_new_no_target_from_template ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_ghost_pad_new_no_target_from_template
-                                                        (const gchar *name,
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ);</pre>
 <p>
 Create a new ghostpad based on <em class="parameter"><code>templ</code></em>, without setting a target. The
@@ -263,11 +286,14 @@ direction will be taken from the <em class="parameter"><code>templ</code></em>.<
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-ghost-pad-set-target"></a><h3>gst_ghost_pad_set_target ()</h3>
-<pre class="programlisting">gboolean            gst_ghost_pad_set_target            (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_ghost_pad_set_target            (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *newtarget);</pre>
 <p>
 Set the new target of the ghostpad <em class="parameter"><code>gpad</code></em>. Any existing target
-is unlinked and links to the new target are established.</p>
+is unlinked and links to the new target are established. if <em class="parameter"><code>newtarget</code></em> is
+NULL the target will be cleared.</p>
 <p>
 
 </p>
@@ -318,6 +344,46 @@ has no target set. Unref target pad after usage.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-ghost-pad-construct"></a><h3>gst_ghost_pad_construct ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_ghost_pad_construct             (<a class="link" href="GstGhostPad.html" title="GstGhostPad">GstGhostPad</a> *gpad);</pre>
+<p>
+Finish initialization of a newly allocated ghost pad.
+</p>
+<p>
+This function is most useful in language bindings and when subclassing
+<a class="link" href="GstGhostPad.html" title="GstGhostPad"><span class="type">GstGhostPad</span></a>; plugin and application developers normally will not call this
+function. Call this function directly after a call to g_object_new
+(GST_TYPE_GHOST_PAD, "direction", <em class="parameter"><code>dir</code></em>, ..., NULL).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gpad</code></em> :</span></p></td>
+<td> the newly allocated ghost pad
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the construction succeeds, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
 </div>
 </div>
 <div class="refsect1" lang="en">

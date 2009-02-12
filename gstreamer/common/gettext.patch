@@ -10,14 +10,3 @@
  SHELL = /bin/sh
  @SET_MAKE@
  
-@@ -305,7 +308,9 @@
- update-gmo: Makefile $(GMOFILES)
- 	@:
- 
--Makefile: Makefile.in.in $(top_builddir)/config.status POTFILES.in
-+# thomas: add LINGUAS as a dependency so that the Makefile gets rebuilt
-+# properly when we add languages
-+Makefile: Makefile.in.in $(top_builddir)/config.status POTFILES.in LINGUAS
- 	cd $(top_builddir) \
- 	  && CONFIG_FILES=$(subdir)/$@.in CONFIG_HEADERS= \
- 	       $(SHELL) ./config.status

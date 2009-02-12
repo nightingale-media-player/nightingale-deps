@@ -22,11 +22,13 @@
     </sub>
   </chapters>
   <functions>
-    <function name="Element Information" link="gstreamer-plugins-capsfilter.html#id2604047"/>
+    <function name="Element Information" link="gstreamer-plugins-capsfilter.html#id2686623"/>
+    <function name="Element Pads" link="gstreamer-plugins-capsfilter.html#id2608747"/>
     <function name="GstCapsFilter" link="gstreamer-plugins-capsfilter.html#GstCapsFilter-struct"/>
     <function name="The &quot;caps&quot; property" link="gstreamer-plugins-capsfilter.html#GstCapsFilter--caps"/>
-    <function name="Example launch line" link="gstreamer-plugins-fakesrc.html#id2589505"/>
-    <function name="Element Information" link="gstreamer-plugins-fakesrc.html#id2589546"/>
+    <function name="Example launch line" link="gstreamer-plugins-fakesrc.html#id2694073"/>
+    <function name="Element Information" link="gstreamer-plugins-fakesrc.html#id2694098"/>
+    <function name="Element Pads" link="gstreamer-plugins-fakesrc.html#id2694160"/>
     <function name="GstFakeSrc" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-struct"/>
     <function name="enum GstFakeSrcDataType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcDataType"/>
     <function name="enum GstFakeSrcFillType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcFillType"/>
@@ -50,7 +52,8 @@
     <function name="The &quot;sync&quot; property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sync"/>
     <function name="The &quot;format&quot; property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--format"/>
     <function name="The &quot;handoff&quot; signal" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-handoff"/>
-    <function name="Element Information" link="gstreamer-plugins-fakesink.html#id2606417"/>
+    <function name="Element Information" link="gstreamer-plugins-fakesink.html#id2696821"/>
+    <function name="Element Pads" link="gstreamer-plugins-fakesink.html#id2656825"/>
     <function name="GstFakeSink" link="gstreamer-plugins-fakesink.html#GstFakeSink-struct"/>
     <function name="enum GstFakeSinkStateError" link="gstreamer-plugins-fakesink.html#GstFakeSinkStateError"/>
     <function name="The &quot;can-activate-pull&quot; property" link="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull"/>
@@ -63,13 +66,18 @@
     <function name="The &quot;num-buffers&quot; property" link="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers"/>
     <function name="The &quot;handoff&quot; signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-handoff"/>
     <function name="The &quot;preroll-handoff&quot; signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-preroll-handoff"/>
-    <function name="Element Information" link="gstreamer-plugins-fdsink.html#id2601336"/>
+    <function name="Element Information" link="gstreamer-plugins-fdsink.html#id2689471"/>
+    <function name="Element Pads" link="gstreamer-plugins-fdsink.html#id2689533"/>
     <function name="GstFdSink" link="gstreamer-plugins-fdsink.html#GstFdSink-struct"/>
     <function name="The &quot;fd&quot; property" link="gstreamer-plugins-fdsink.html#GstFdSink--fd"/>
-    <function name="Element Information" link="gstreamer-plugins-fdsrc.html#id2606573"/>
+    <function name="Example launch line" link="gstreamer-plugins-fdsrc.html#id2630983"/>
+    <function name="Element Information" link="gstreamer-plugins-fdsrc.html#id2690613"/>
+    <function name="Element Pads" link="gstreamer-plugins-fdsrc.html#id2690674"/>
     <function name="GstFdSrc" link="gstreamer-plugins-fdsrc.html#GstFdSrc-struct"/>
     <function name="The &quot;fd&quot; property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--fd"/>
-    <function name="Element Information" link="gstreamer-plugins-filesrc.html#id2527739"/>
+    <function name="The &quot;timeout&quot; property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout"/>
+    <function name="Element Information" link="gstreamer-plugins-filesrc.html#id2672823"/>
+    <function name="Element Pads" link="gstreamer-plugins-filesrc.html#id2682871"/>
     <function name="GstFileSrc" link="gstreamer-plugins-filesrc.html#GstFileSrc-struct"/>
     <function name="The &quot;fd&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--fd"/>
     <function name="The &quot;location&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--location"/>
@@ -77,12 +85,14 @@
     <function name="The &quot;touch&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--touch"/>
     <function name="The &quot;use-mmap&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap"/>
     <function name="The &quot;sequential&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--sequential"/>
-    <function name="Element Information" link="gstreamer-plugins-filesink.html#id2614203"/>
+    <function name="Element Information" link="gstreamer-plugins-filesink.html#id2702511"/>
+    <function name="Element Pads" link="gstreamer-plugins-filesink.html#id2702574"/>
     <function name="GstFileSink" link="gstreamer-plugins-filesink.html#GstFileSink-struct"/>
     <function name="The &quot;location&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--location"/>
     <function name="The &quot;buffer-mode&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode"/>
     <function name="The &quot;buffer-size&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-size"/>
-    <function name="Element Information" link="gstreamer-plugins-identity.html#id2622973"/>
+    <function name="Element Information" link="gstreamer-plugins-identity.html#id2697888"/>
+    <function name="Element Pads" link="gstreamer-plugins-identity.html#id2697949"/>
     <function name="GstIdentity" link="gstreamer-plugins-identity.html#GstIdentity-struct"/>
     <function name="The &quot;check-perfect&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--check-perfect"/>
     <function name="The &quot;datarate&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--datarate"/>
@@ -98,8 +108,9 @@
     <function name="The &quot;check-imperfect-timestamp&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp"/>
     <function name="The &quot;signal-handoffs&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs"/>
     <function name="The &quot;handoff&quot; signal" link="gstreamer-plugins-identity.html#GstIdentity-handoff"/>
-    <function name="" link="gstreamer-plugins-multiqueue.html#id2611810"/>
-    <function name="Element Information" link="gstreamer-plugins-multiqueue.html#id2618505"/>
+    <function name="" link="gstreamer-plugins-multiqueue.html#id2698270"/>
+    <function name="Element Information" link="gstreamer-plugins-multiqueue.html#id2698488"/>
+    <function name="Element Pads" link="gstreamer-plugins-multiqueue.html#id2698551"/>
     <function name="GstMultiQueue" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-struct"/>
     <function name="The &quot;extra-size-buffers&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-buffers"/>
     <function name="The &quot;extra-size-bytes&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-bytes"/>
@@ -109,7 +120,8 @@
     <function name="The &quot;max-size-time&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-time"/>
     <function name="The &quot;overrun&quot; signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-overrun"/>
     <function name="The &quot;underrun&quot; signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-underrun"/>
-    <function name="Element Information" link="gstreamer-plugins-queue.html#id2621523"/>
+    <function name="Element Information" link="gstreamer-plugins-queue.html#id2700161"/>
+    <function name="Element Pads" link="gstreamer-plugins-queue.html#id2700224"/>
     <function name="GstQueue" link="gstreamer-plugins-queue.html#GstQueue-struct"/>
     <function name="GstQueueSize" link="gstreamer-plugins-queue.html#GstQueueSize"/>
     <function name="The &quot;current-level-buffers&quot; property" link="gstreamer-plugins-queue.html#GstQueue--current-level-buffers"/>
@@ -126,7 +138,8 @@
     <function name="The &quot;running&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-running"/>
     <function name="The &quot;underrun&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-underrun"/>
     <function name="The &quot;pushing&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-pushing"/>
-    <function name="Element Information" link="gstreamer-plugins-tee.html#id2603278"/>
+    <function name="Element Information" link="gstreamer-plugins-tee.html#id2671450"/>
+    <function name="Element Pads" link="gstreamer-plugins-tee.html#id2668709"/>
     <function name="GstTee" link="gstreamer-plugins-tee.html#GstTee-struct"/>
     <function name="enum GstTeePullMode" link="gstreamer-plugins-tee.html#GstTeePullMode"/>
     <function name="The &quot;has-chain&quot; property" link="gstreamer-plugins-tee.html#GstTee--has-chain"/>
@@ -135,7 +148,8 @@
     <function name="The &quot;num-src-pads&quot; property" link="gstreamer-plugins-tee.html#GstTee--num-src-pads"/>
     <function name="The &quot;silent&quot; property" link="gstreamer-plugins-tee.html#GstTee--silent"/>
     <function name="The &quot;pull-mode&quot; property" link="gstreamer-plugins-tee.html#GstTee--pull-mode"/>
-    <function name="Element Information" link="gstreamer-plugins-typefind.html#id2578936"/>
+    <function name="Element Information" link="gstreamer-plugins-typefind.html#id2700450"/>
+    <function name="Element Pads" link="gstreamer-plugins-typefind.html#id2704788"/>
     <function name="GstTypeFindElement" link="gstreamer-plugins-typefind.html#GstTypeFindElement-struct"/>
     <function name="The &quot;caps&quot; property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--caps"/>
     <function name="The &quot;maximum&quot; property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--maximum"/>

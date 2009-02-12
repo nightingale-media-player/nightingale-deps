@@ -68,7 +68,9 @@
  * performed on it, the stream time is reset to 0. When the pipeline is
  * set from PLAYING to PAUSED, the current clock time is sampled and used to
  * configure the base time for the elements when the pipeline is set
- * to PLAYING again. This default behaviour can be changed with the
+ * to PLAYING again. The effect is that the stream time (as the difference
+ * between the clock time and the base time) will count how much time was spent
+ * in the PLAYING state. This default behaviour can be changed with the
  * gst_pipeline_set_new_stream_time() method.
  *
  * When sending a flushing seek event to a GstPipeline (see
@@ -505,16 +507,27 @@ gst_pipeline_change_state (GstElement * element, GstStateChange transition)
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
+    {
+      GstBus *bus;
+      gboolean auto_flush;
+
+      /* grab some stuff before we release the lock to flush out the bus */
       GST_OBJECT_LOCK (element);
-      if (element->bus) {
-        if (pipeline->priv->auto_flush_bus) {
-          gst_bus_set_flushing (element->bus, TRUE);
+      if ((bus = element->bus))
+        gst_object_ref (bus);
+      auto_flush = pipeline->priv->auto_flush_bus;
+      GST_OBJECT_UNLOCK (element);
+
+      if (bus) {
+        if (auto_flush) {
+          gst_bus_set_flushing (bus, TRUE);
         } else {
           GST_INFO_OBJECT (element, "not flushing bus, auto-flushing disabled");
         }
+        gst_object_unref (bus);
       }
-      GST_OBJECT_UNLOCK (element);
       break;
+    }
   }
   return result;
 
@@ -534,6 +547,12 @@ invalid_clock:
   }
 }
 
+/* intercept the bus messages from our children. We watch for the ASYNC_START
+ * message with is posted by the elements (sinks) that require a reset of the
+ * running_time after a flush. ASYNC_START also brings the pipeline back into
+ * the PAUSED, pending PAUSED state. When the ASYNC_DONE message is received the
+ * pipeline will redistribute the new base_time and will bring the elements back
+ * to the desired state of the pipeline. */
 static void
 gst_pipeline_handle_message (GstBin * bin, GstMessage * message)
 {
@@ -660,8 +679,8 @@ gst_pipeline_provide_clock_func (GstElement * element)
     GST_OBJECT_UNLOCK (pipeline);
     /* let the parent bin select a clock */
     clock =
-        GST_ELEMENT_CLASS (parent_class)->
-        provide_clock (GST_ELEMENT (pipeline));
+        GST_ELEMENT_CLASS (parent_class)->provide_clock (GST_ELEMENT
+        (pipeline));
     /* no clock, use a system clock */
     if (!clock) {
       clock = gst_system_clock_obtain ();

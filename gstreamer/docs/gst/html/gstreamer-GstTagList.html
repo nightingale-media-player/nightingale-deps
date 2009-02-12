@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -49,10 +49,18 @@ typedef             <a class="link" href="gstreamer-GstTagList.html#GstTagList" 
 enum                <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a>;
 enum                <a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a>;
 void                (<a class="link" href="gstreamer-GstTagList.html#GstTagForeachFunc" title="GstTagForeachFunc ()">*GstTagForeachFunc</a>)                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gpointer user_data);
-void                (<a class="link" href="gstreamer-GstTagList.html#GstTagMergeFunc" title="GstTagMergeFunc ()">*GstTagMergeFunc</a>)                  (GValue *dest,
-                                                         const GValue *src);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+void                (<a class="link" href="gstreamer-GstTagList.html#GstTagMergeFunc" title="GstTagMergeFunc ()">*GstTagMergeFunc</a>)                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-TITLE:CAPS" title="GST_TAG_TITLE">GST_TAG_TITLE</a>
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-TITLE-SORTNAME:CAPS" title="GST_TAG_TITLE_SORTNAME">GST_TAG_TITLE_SORTNAME</a>
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-ARTIST:CAPS" title="GST_TAG_ARTIST">GST_TAG_ARTIST</a>
@@ -98,26 +106,76 @@ void                (<a class="link" href="gstreamer-GstTagList.html#GstTagMerge
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-LANGUAGE-CODE:CAPS" title="GST_TAG_LANGUAGE_CODE">GST_TAG_LANGUAGE_CODE</a>
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-IMAGE:CAPS" title="GST_TAG_IMAGE">GST_TAG_IMAGE</a>
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-PREVIEW-IMAGE:CAPS" title="GST_TAG_PREVIEW_IMAGE">GST_TAG_PREVIEW_IMAGE</a>
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-ATTACHMENT:CAPS" title="GST_TAG_ATTACHMENT">GST_TAG_ATTACHMENT</a>
 #define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-BEATS-PER-MINUTE:CAPS" title="GST_TAG_BEATS_PER_MINUTE">GST_TAG_BEATS_PER_MINUTE</a>
-void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-register" title="gst_tag_register ()">gst_tag_register</a>                    (const gchar *name,
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-KEYWORDS:CAPS" title="GST_TAG_KEYWORDS">GST_TAG_KEYWORDS</a>
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-NAME:CAPS" title="GST_TAG_GEO_LOCATION_NAME">GST_TAG_GEO_LOCATION_NAME</a>
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-LATITUDE:CAPS" title="GST_TAG_GEO_LOCATION_LATITUDE">GST_TAG_GEO_LOCATION_LATITUDE</a>
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-LONGITUDE:CAPS" title="GST_TAG_GEO_LOCATION_LONGITUDE">GST_TAG_GEO_LOCATION_LONGITUDE</a>
+#define             <a class="link" href="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-ELEVATION:CAPS" title="GST_TAG_GEO_LOCATION_ELEVATION">GST_TAG_GEO_LOCATION_ELEVATION</a>
+void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-register" title="gst_tag_register ()">gst_tag_register</a>                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a> flag,
-                                                         GType type,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *nick,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *blurb,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeFunc" title="GstTagMergeFunc ()">GstTagMergeFunc</a> func);
-void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-merge-use-first" title="gst_tag_merge_use_first ()">gst_tag_merge_use_first</a>             (GValue *dest,
-                                                         const GValue *src);
-void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-merge-strings-with-comma" title="gst_tag_merge_strings_with_comma ()">gst_tag_merge_strings_with_comma</a>    (GValue *dest,
-                                                         const GValue *src);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-exists" title="gst_tag_exists ()">gst_tag_exists</a>                      (const gchar *tag);
-GType               <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-type" title="gst_tag_get_type ()">gst_tag_get_type</a>                    (const gchar *tag);
-const gchar*        <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-nick" title="gst_tag_get_nick ()">gst_tag_get_nick</a>                    (const gchar *tag);
-const gchar*        <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-description" title="gst_tag_get_description ()">gst_tag_get_description</a>             (const gchar *tag);
-<a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a>          <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-flag" title="gst_tag_get_flag ()">gst_tag_get_flag</a>                    (const gchar *tag);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-is-fixed" title="gst_tag_is_fixed ()">gst_tag_is_fixed</a>                    (const gchar *tag);
+void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-merge-use-first" title="gst_tag_merge_use_first ()">gst_tag_merge_use_first</a>             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);
+void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-merge-strings-with-comma" title="gst_tag_merge_strings_with_comma ()">gst_tag_merge_strings_with_comma</a>    (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-exists" title="gst_tag_exists ()">gst_tag_exists</a>                      (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a>               <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-type" title="gst_tag_get_type ()">gst_tag_get_type</a>                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-nick" title="gst_tag_get_nick ()">gst_tag_get_nick</a>                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-description" title="gst_tag_get_description ()">gst_tag_get_description</a>             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+<a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a>          <a class="link" href="gstreamer-GstTagList.html#gst-tag-get-flag" title="gst_tag_get_flag ()">gst_tag_get_flag</a>                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-is-fixed" title="gst_tag_is_fixed ()">gst_tag_is_fixed</a>                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
 <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a>*         <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-new" title="gst_tag_list_new ()">gst_tag_list_new</a>                    (void);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-is-tag-list" title="gst_is_tag_list ()">gst_is_tag_list</a>                     (gconstpointer p);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-is-empty" title="gst_tag_list_is_empty ()">gst_tag_list_is_empty</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-is-tag-list" title="gst_is_tag_list ()">gst_is_tag_list</a>                     (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> p);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-is-empty" title="gst_tag_list_is_empty ()">gst_tag_list_is_empty</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);
 <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a>*         <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-copy" title="gst_tag_list_copy ()">gst_tag_list_copy</a>                   (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-insert" title="gst_tag_list_insert ()">gst_tag_list_insert</a>                 (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *into,
                                                          const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *from,
@@ -126,133 +184,357 @@ void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list
                                                          const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list2,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-free" title="gst_tag_list_free ()">gst_tag_list_free</a>                   (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);
-guint               <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-tag-size" title="gst_tag_list_get_tag_size ()">gst_tag_list_get_tag_size</a>           (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-tag-size" title="gst_tag_list_get_tag_size ()">gst_tag_list_get_tag_size</a>           (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-add" title="gst_tag_list_add ()">gst_tag_list_add</a>                    (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          ...);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-add-values" title="gst_tag_list_add_values ()">gst_tag_list_add_values</a>             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          ...);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-add-valist" title="gst_tag_list_add_valist ()">gst_tag_list_add_valist</a>             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          va_list var_args);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-add-valist-values" title="gst_tag_list_add_valist_values ()">gst_tag_list_add_valist_values</a>      (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          va_list var_args);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-remove-tag" title="gst_tag_list_remove_tag ()">gst_tag_list_remove_tag</a>             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
 void                <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-foreach" title="gst_tag_list_foreach ()">gst_tag_list_foreach</a>                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagForeachFunc" title="GstTagForeachFunc ()">GstTagForeachFunc</a> func,
-                                                         gpointer user_data);
-const GValue*       <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-value-index" title="gst_tag_list_get_value_index ()">gst_tag_list_get_value_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-copy-value" title="gst_tag_list_copy_value ()">gst_tag_list_copy_value</a>             (GValue *dest,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-value-index" title="gst_tag_list_get_value_index ()">gst_tag_list_get_value_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-copy-value" title="gst_tag_list_copy_value ()">gst_tag_list_copy_value</a>             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
                                                          const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-char" title="gst_tag_list_get_char ()">gst_tag_list_get_char</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gchar *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-char-index" title="gst_tag_list_get_char_index ()">gst_tag_list_get_char_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gchar *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uchar" title="gst_tag_list_get_uchar ()">gst_tag_list_get_uchar</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guchar *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uchar-index" title="gst_tag_list_get_uchar_index ()">gst_tag_list_get_uchar_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guchar *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-boolean" title="gst_tag_list_get_boolean ()">gst_tag_list_get_boolean</a>            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gboolean *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-boolean-index" title="gst_tag_list_get_boolean_index ()">gst_tag_list_get_boolean_index</a>      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gboolean *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int" title="gst_tag_list_get_int ()">gst_tag_list_get_int</a>                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gint *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int-index" title="gst_tag_list_get_int_index ()">gst_tag_list_get_int_index</a>          (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gint *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint" title="gst_tag_list_get_uint ()">gst_tag_list_get_uint</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint-index" title="gst_tag_list_get_uint_index ()">gst_tag_list_get_uint_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guint *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-long" title="gst_tag_list_get_long ()">gst_tag_list_get_long</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         glong *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-long-index" title="gst_tag_list_get_long_index ()">gst_tag_list_get_long_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         glong *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-ulong" title="gst_tag_list_get_ulong ()">gst_tag_list_get_ulong</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gulong *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-ulong-index" title="gst_tag_list_get_ulong_index ()">gst_tag_list_get_ulong_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gulong *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int64" title="gst_tag_list_get_int64 ()">gst_tag_list_get_int64</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gint64 *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int64-index" title="gst_tag_list_get_int64_index ()">gst_tag_list_get_int64_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gint64 *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint64" title="gst_tag_list_get_uint64 ()">gst_tag_list_get_uint64</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint64 *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint64-index" title="gst_tag_list_get_uint64_index ()">gst_tag_list_get_uint64_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guint64 *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-float" title="gst_tag_list_get_float ()">gst_tag_list_get_float</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gfloat *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-float-index" title="gst_tag_list_get_float_index ()">gst_tag_list_get_float_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gfloat *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-double" title="gst_tag_list_get_double ()">gst_tag_list_get_double</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gdouble *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-double-index" title="gst_tag_list_get_double_index ()">gst_tag_list_get_double_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gdouble *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-string" title="gst_tag_list_get_string ()">gst_tag_list_get_string</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gchar **value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-string-index" title="gst_tag_list_get_string_index ()">gst_tag_list_get_string_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gchar **value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-pointer" title="gst_tag_list_get_pointer ()">gst_tag_list_get_pointer</a>            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gpointer *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-pointer-index" title="gst_tag_list_get_pointer_index ()">gst_tag_list_get_pointer_index</a>      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gpointer *value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-date" title="gst_tag_list_get_date ()">gst_tag_list_get_date</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         GDate **value);
-gboolean            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-date-index" title="gst_tag_list_get_date_index ()">gst_tag_list_get_date_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         GDate **value);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-char" title="gst_tag_list_get_char ()">gst_tag_list_get_char</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-char-index" title="gst_tag_list_get_char_index ()">gst_tag_list_get_char_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uchar" title="gst_tag_list_get_uchar ()">gst_tag_list_get_uchar</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guchar"
+>guchar</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uchar-index" title="gst_tag_list_get_uchar_index ()">gst_tag_list_get_uchar_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guchar"
+>guchar</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-boolean" title="gst_tag_list_get_boolean ()">gst_tag_list_get_boolean</a>            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-boolean-index" title="gst_tag_list_get_boolean_index ()">gst_tag_list_get_boolean_index</a>      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int" title="gst_tag_list_get_int ()">gst_tag_list_get_int</a>                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int-index" title="gst_tag_list_get_int_index ()">gst_tag_list_get_int_index</a>          (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint" title="gst_tag_list_get_uint ()">gst_tag_list_get_uint</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint-index" title="gst_tag_list_get_uint_index ()">gst_tag_list_get_uint_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-long" title="gst_tag_list_get_long ()">gst_tag_list_get_long</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
+>glong</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-long-index" title="gst_tag_list_get_long_index ()">gst_tag_list_get_long_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
+>glong</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-ulong" title="gst_tag_list_get_ulong ()">gst_tag_list_get_ulong</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-ulong-index" title="gst_tag_list_get_ulong_index ()">gst_tag_list_get_ulong_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int64" title="gst_tag_list_get_int64 ()">gst_tag_list_get_int64</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-int64-index" title="gst_tag_list_get_int64_index ()">gst_tag_list_get_int64_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint64" title="gst_tag_list_get_uint64 ()">gst_tag_list_get_uint64</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-uint64-index" title="gst_tag_list_get_uint64_index ()">gst_tag_list_get_uint64_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-float" title="gst_tag_list_get_float ()">gst_tag_list_get_float</a>              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-float-index" title="gst_tag_list_get_float_index ()">gst_tag_list_get_float_index</a>        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-double" title="gst_tag_list_get_double ()">gst_tag_list_get_double</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-double-index" title="gst_tag_list_get_double_index ()">gst_tag_list_get_double_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-string" title="gst_tag_list_get_string ()">gst_tag_list_get_string</a>             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-string-index" title="gst_tag_list_get_string_index ()">gst_tag_list_get_string_index</a>       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-pointer" title="gst_tag_list_get_pointer ()">gst_tag_list_get_pointer</a>            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-pointer-index" title="gst_tag_list_get_pointer_index ()">gst_tag_list_get_pointer_index</a>      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-date" title="gst_tag_list_get_date ()">gst_tag_list_get_date</a>               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> **value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-get-date-index" title="gst_tag_list_get_date_index ()">gst_tag_list_get_date_index</a>         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> **value);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -295,16 +577,17 @@ Opaque <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTag
 </pre>
 <p>
 The different tag merging modes are basically replace, overwrite and append,
-but they can be seen from two directions.  Given two taglists: (A) the tags
-already in the element and (B) the ones that are supplied to
-<a class="link" href="GstTagSetter.html#gst-tag-setter-merge-tags" title="gst_tag_setter_merge_tags ()"><code class="function">gst_tag_setter_merge_tags()</code></a> or <a class="link" href="GstTagSetter.html#gst-tag-setter-add-tags" title="gst_tag_setter_add_tags ()"><code class="function">gst_tag_setter_add_tags()</code></a>, how are these tags
-merged? In the table below this is shown for the cases that a tag exists in
-the list (A) or does not exists (!A) and combinations thereof.
+but they can be seen from two directions. Given two taglists: (A) the tags
+already in the element and (B) the ones that are supplied to the element (
+e.g. via <a class="link" href="GstTagSetter.html#gst-tag-setter-merge-tags" title="gst_tag_setter_merge_tags ()"><code class="function">gst_tag_setter_merge_tags()</code></a> / <a class="link" href="GstTagSetter.html#gst-tag-setter-add-tags" title="gst_tag_setter_add_tags ()"><code class="function">gst_tag_setter_add_tags()</code></a> or a
+<a class="link" href="gstreamer-GstEvent.html#GST-EVENT-TAG:CAPS"><code class="literal">GST_EVENT_TAG</code></a>), how are these tags merged?
+In the table below this is shown for the cases that a tag exists in the list
+(A) or does not exists (!A) and combinations thereof.
 </p>
 <p>
 </p>
 <div class="table">
-<a name="id2886370"></a><p class="title"><b>Table 1. merge mode</b></p>
+<a name="id3076363"></a><p class="title"><b>Table 1. merge mode</b></p>
 <div class="table-contents"><table summary="merge mode" border="1">
 <colgroup>
 <col>
@@ -467,8 +750,12 @@ Extra tag flags used when registering tags.</p>
 <div class="refsect2" lang="en">
 <a name="GstTagForeachFunc"></a><h3>GstTagForeachFunc ()</h3>
 <pre class="programlisting">void                (*GstTagForeachFunc)                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gpointer user_data);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 A function that will be called in <a class="link" href="gstreamer-GstTagList.html#gst-tag-list-foreach" title="gst_tag_list_foreach ()"><code class="function">gst_tag_list_foreach()</code></a>. The function may
 not modify the tag list.</p>
@@ -499,8 +786,12 @@ not modify the tag list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTagMergeFunc"></a><h3>GstTagMergeFunc ()</h3>
-<pre class="programlisting">void                (*GstTagMergeFunc)                  (GValue *dest,
-                                                         const GValue *src);</pre>
+<pre class="programlisting">void                (*GstTagMergeFunc)                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);</pre>
 <p>
 A function for merging multiple values of a tag used when registering
 tags.</p>
@@ -512,12 +803,16 @@ tags.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> the destination <span class="type">GValue</span>
+<td> the destination <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
-<td> the source <span class="type">GValue</span>
+<td> the source <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 </tbody>
@@ -621,7 +916,9 @@ The album name as it should be sorted, e.g. 'Jazz Guitar, The'</p>
 <pre class="programlisting">#define GST_TAG_DATE                   "date"
 </pre>
 <p>
-date the data was created (<span class="type">GDate</span> structure)</p>
+date the data was created (<a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+><span class="type">GDate</span></a> structure)</p>
 <p>
 
 </p>
@@ -720,7 +1017,8 @@ count of discs inside collection this disc belongs to (unsigned integer)</p>
 <pre class="programlisting">#define GST_TAG_LOCATION               "location"
 </pre>
 <p>
-original location of file as a URI (string)</p>
+Origin of media as a URI (location, where the original of the file or stream
+is hosted) (string)</p>
 <p>
 
 </p>
@@ -1073,6 +1371,21 @@ image that is meant for preview purposes, e.g. small icon-sized version
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="GST-TAG-ATTACHMENT:CAPS"></a><h3>GST_TAG_ATTACHMENT</h3>
+<pre class="programlisting">#define GST_TAG_ATTACHMENT             "attachment"
+</pre>
+<p>
+generic file attachment (buffer) (buffer caps should specify the content
+type and if possible set "filename" to the file name of the
+attachment)</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="GST-TAG-BEATS-PER-MINUTE:CAPS"></a><h3>GST_TAG_BEATS_PER_MINUTE</h3>
 <pre class="programlisting">#define GST_TAG_BEATS_PER_MINUTE       "beats-per-minute"
 </pre>
@@ -1086,12 +1399,91 @@ number of beats per minute in audio (double)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="GST-TAG-KEYWORDS:CAPS"></a><h3>GST_TAG_KEYWORDS</h3>
+<pre class="programlisting">#define GST_TAG_KEYWORDS               "keywords"
+</pre>
+<p>
+comma separated keywords describing the content (string).</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-TAG-GEO-LOCATION-NAME:CAPS"></a><h3>GST_TAG_GEO_LOCATION_NAME</h3>
+<pre class="programlisting">#define GST_TAG_GEO_LOCATION_NAME               "geo-location-name"
+</pre>
+<p>
+human readable descriptive location of where the media has been recorded or
+produced. (string).</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-TAG-GEO-LOCATION-LATITUDE:CAPS"></a><h3>GST_TAG_GEO_LOCATION_LATITUDE</h3>
+<pre class="programlisting">#define GST_TAG_GEO_LOCATION_LATITUDE               "geo-location-latitude"
+</pre>
+<p>
+geo latitude location of where the media has been recorded or produced in
+degrees according to WGS84 (zero at the equator, negative values for southern
+latitudes) (double).</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-TAG-GEO-LOCATION-LONGITUDE:CAPS"></a><h3>GST_TAG_GEO_LOCATION_LONGITUDE</h3>
+<pre class="programlisting">#define GST_TAG_GEO_LOCATION_LONGITUDE               "geo-location-longitude"
+</pre>
+<p>
+geo longitude location of where the media has been recorded or produced in
+degrees according to WGS84 (zero at the prime meridian in Greenwich/UK,
+negative values for western longitudes). (double).</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-TAG-GEO-LOCATION-ELEVATION:CAPS"></a><h3>GST_TAG_GEO_LOCATION_ELEVATION</h3>
+<pre class="programlisting">#define GST_TAG_GEO_LOCATION_ELEVATION               "geo-location-elevation"
+</pre>
+<p>
+geo elevation of where the media has been recorded or produced in meters
+according to WGS84 (zero is average sea level) (double).</p>
+<p>
+
+</p>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-tag-register"></a><h3>gst_tag_register ()</h3>
-<pre class="programlisting">void                gst_tag_register                    (const gchar *name,
+<pre class="programlisting">void                gst_tag_register                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a> flag,
-                                                         GType type,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *nick,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *blurb,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeFunc" title="GstTagMergeFunc ()">GstTagMergeFunc</a> func);</pre>
 <p>
 Registers a new tag type for the use with GStreamer's type system. If a type
@@ -1160,8 +1552,12 @@ Two default merge functions are provided: <a class="link" href="gstreamer-GstTag
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-merge-use-first"></a><h3>gst_tag_merge_use_first ()</h3>
-<pre class="programlisting">void                gst_tag_merge_use_first             (GValue *dest,
-                                                         const GValue *src);</pre>
+<pre class="programlisting">void                gst_tag_merge_use_first             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);</pre>
 <p>
 This is a convenience function for the func argument of <a class="link" href="gstreamer-GstTagList.html#gst-tag-register" title="gst_tag_register ()"><code class="function">gst_tag_register()</code></a>.
 It creates a copy of the first value from the list.</p>
@@ -1187,8 +1583,12 @@ It creates a copy of the first value from the list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-merge-strings-with-comma"></a><h3>gst_tag_merge_strings_with_comma ()</h3>
-<pre class="programlisting">void                gst_tag_merge_strings_with_comma    (GValue *dest,
-                                                         const GValue *src);</pre>
+<pre class="programlisting">void                gst_tag_merge_strings_with_comma    (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);</pre>
 <p>
 This is a convenience function for the func argument of <a class="link" href="gstreamer-GstTagList.html#gst-tag-register" title="gst_tag_register ()"><code class="function">gst_tag_register()</code></a>.
 It concatenates all given strings using a comma. The tag must be registered
@@ -1215,7 +1615,11 @@ as a G_TYPE_STRING or this function will fail.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-exists"></a><h3>gst_tag_exists ()</h3>
-<pre class="programlisting">gboolean            gst_tag_exists                      (const gchar *tag);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_exists                      (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Checks if the given type is already registered.</p>
 <p>
@@ -1240,9 +1644,15 @@ Checks if the given type is already registered.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-get-type"></a><h3>gst_tag_get_type ()</h3>
-<pre class="programlisting">GType               gst_tag_get_type                    (const gchar *tag);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a>               gst_tag_get_type                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
-Gets the <span class="type">GType</span> used for this tag.</p>
+Gets the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> used for this tag.</p>
 <p>
 
 </p>
@@ -1256,7 +1666,9 @@ Gets the <span class="type">GType</span> used for this tag.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of this tag
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of this tag
 </td>
 </tr>
 </tbody>
@@ -1265,7 +1677,11 @@ Gets the <span class="type">GType</span> used for this tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-get-nick"></a><h3>gst_tag_get_nick ()</h3>
-<pre class="programlisting">const gchar*        gst_tag_get_nick                    (const gchar *tag);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_tag_get_nick                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Returns the human-readable name of this tag, You must not change or free
 this string.</p>
@@ -1291,7 +1707,11 @@ this string.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-get-description"></a><h3>gst_tag_get_description ()</h3>
-<pre class="programlisting">const gchar*        gst_tag_get_description             (const gchar *tag);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_tag_get_description             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Returns the human-readable description of this tag, You must not change or
 free this string.</p>
@@ -1317,7 +1737,9 @@ free this string.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-get-flag"></a><h3>gst_tag_get_flag ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a>          gst_tag_get_flag                    (const gchar *tag);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstTagList.html#GstTagFlag" title="enum GstTagFlag">GstTagFlag</a>          gst_tag_get_flag                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Gets the flag of <em class="parameter"><code>tag</code></em>.</p>
 <p>
@@ -1342,7 +1764,11 @@ Gets the flag of <em class="parameter"><code>tag</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-is-fixed"></a><h3>gst_tag_is_fixed ()</h3>
-<pre class="programlisting">gboolean            gst_tag_is_fixed                    (const gchar *tag);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_is_fixed                    (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Checks if the given tag is fixed. A fixed tag can only contain one value.
 Unfixed tags can contain lists of values.</p>
@@ -1386,7 +1812,11 @@ Creates a new empty GstTagList.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-is-tag-list"></a><h3>gst_is_tag_list ()</h3>
-<pre class="programlisting">gboolean            gst_is_tag_list                     (gconstpointer p);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_is_tag_list                     (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> p);</pre>
 <p>
 Checks if the given pointer is a taglist.</p>
 <p>
@@ -1411,7 +1841,9 @@ Checks if the given pointer is a taglist.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-is-empty"></a><h3>gst_tag_list_is_empty ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_is_empty               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_is_empty               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list);</pre>
 <p>
 Checks if the given taglist is empty.</p>
 <p>
@@ -1468,7 +1900,7 @@ Copies a given <a class="link" href="gstreamer-GstTagList.html#GstTagList" title
                                                          const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *from,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode);</pre>
 <p>
-Inserts the tags of the second list into the first list using the given mode.</p>
+Inserts the tags of the <em class="parameter"><code>from</code></em> list into the first list using the given mode.</p>
 <p>
 
 </p>
@@ -1552,8 +1984,12 @@ Frees the given list and all associated values.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-tag-size"></a><h3>gst_tag_list_get_tag_size ()</h3>
-<pre class="programlisting">guint               gst_tag_list_get_tag_size           (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_tag_list_get_tag_size           (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Checks how many value are stored in this tag list for the given tag.</p>
 <p>
@@ -1585,7 +2021,9 @@ Checks how many value are stored in this tag list for the given tag.</p>
 <a name="gst-tag-list-add"></a><h3>gst_tag_list_add ()</h3>
 <pre class="programlisting">void                gst_tag_list_add                    (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          ...);</pre>
 <p>
 Sets the values for the given tags using the specified mode.</p>
@@ -1623,7 +2061,9 @@ Sets the values for the given tags using the specified mode.</p>
 <a name="gst-tag-list-add-values"></a><h3>gst_tag_list_add_values ()</h3>
 <pre class="programlisting">void                gst_tag_list_add_values             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          ...);</pre>
 <p>
 Sets the GValues for the given tags using the specified mode.</p>
@@ -1661,7 +2101,9 @@ Sets the GValues for the given tags using the specified mode.</p>
 <a name="gst-tag-list-add-valist"></a><h3>gst_tag_list_add_valist ()</h3>
 <pre class="programlisting">void                gst_tag_list_add_valist             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          va_list var_args);</pre>
 <p>
 Sets the values for the given tags using the specified mode.</p>
@@ -1699,7 +2141,9 @@ Sets the values for the given tags using the specified mode.</p>
 <a name="gst-tag-list-add-valist-values"></a><h3>gst_tag_list_add_valist_values ()</h3>
 <pre class="programlisting">void                gst_tag_list_add_valist_values      (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode">GstTagMergeMode</a> mode,
-                                                         const gchar *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
                                                          va_list var_args);</pre>
 <p>
 Sets the GValues for the given tags using the specified mode.</p>
@@ -1736,7 +2180,9 @@ Sets the GValues for the given tags using the specified mode.</p>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-remove-tag"></a><h3>gst_tag_list_remove_tag ()</h3>
 <pre class="programlisting">void                gst_tag_list_remove_tag             (<a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Removes the given tag from the taglist.</p>
 <p>
@@ -1763,7 +2209,9 @@ Removes the given tag from the taglist.</p>
 <a name="gst-tag-list-foreach"></a><h3>gst_tag_list_foreach ()</h3>
 <pre class="programlisting">void                gst_tag_list_foreach                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagForeachFunc" title="GstTagForeachFunc ()">GstTagForeachFunc</a> func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Calls the given function for each tag inside the tag list. Note that if there
 is no tag, the function won't be called at all.</p>
@@ -1794,9 +2242,15 @@ is no tag, the function won't be called at all.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-value-index"></a><h3>gst_tag_list_get_value_index ()</h3>
-<pre class="programlisting">const GValue*       gst_tag_list_get_value_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_tag_list_get_value_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -1833,14 +2287,22 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-copy-value"></a><h3>gst_tag_list_copy_value ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_copy_value             (GValue *dest,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_copy_value             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
                                                          const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Copies the contents for the given tag into the value,
 merging multiple values into one if multiple values are associated
 with the tag.
-You must <code class="function">g_value_unset()</code> the value after use.</p>
+You must <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#g-value-unset"
+><code class="function">g_value_unset()</code></a> the value after use.</p>
 <p>
 
 </p>
@@ -1849,7 +2311,9 @@ You must <code class="function">g_value_unset()</code> the value after use.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> uninitialized <span class="type">GValue</span> to copy into
+<td> uninitialized <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to copy into
 </td>
 </tr>
 <tr>
@@ -1874,9 +2338,15 @@ You must <code class="function">g_value_unset()</code> the value after use.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-char"></a><h3>gst_tag_list_get_char ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_char               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gchar *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_char               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -1913,10 +2383,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-char-index"></a><h3>gst_tag_list_get_char_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_char_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gchar *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_char_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -1958,9 +2436,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uchar"></a><h3>gst_tag_list_get_uchar ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uchar              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guchar *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uchar              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guchar"
+>guchar</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -1997,10 +2481,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uchar-index"></a><h3>gst_tag_list_get_uchar_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uchar_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guchar *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uchar_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guchar"
+>guchar</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2042,9 +2534,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-boolean"></a><h3>gst_tag_list_get_boolean ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_boolean            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gboolean *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_boolean            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2081,10 +2579,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-boolean-index"></a><h3>gst_tag_list_get_boolean_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_boolean_index      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gboolean *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_boolean_index      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2126,9 +2632,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-int"></a><h3>gst_tag_list_get_int ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_int                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gint *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_int                (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2165,10 +2677,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-int-index"></a><h3>gst_tag_list_get_int_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_int_index          (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gint *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_int_index          (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2210,9 +2730,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uint"></a><h3>gst_tag_list_get_uint ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uint               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uint               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2249,10 +2775,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uint-index"></a><h3>gst_tag_list_get_uint_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uint_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guint *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uint_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2294,9 +2828,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-long"></a><h3>gst_tag_list_get_long ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_long               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         glong *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_long               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
+>glong</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2333,10 +2873,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-long-index"></a><h3>gst_tag_list_get_long_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_long_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         glong *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_long_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
+>glong</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2378,9 +2926,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-ulong"></a><h3>gst_tag_list_get_ulong ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_ulong              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gulong *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_ulong              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2417,10 +2971,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-ulong-index"></a><h3>gst_tag_list_get_ulong_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_ulong_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gulong *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_ulong_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2462,9 +3024,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-int64"></a><h3>gst_tag_list_get_int64 ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_int64              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gint64 *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_int64              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2501,10 +3069,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-int64-index"></a><h3>gst_tag_list_get_int64_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_int64_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gint64 *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_int64_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2546,9 +3122,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uint64"></a><h3>gst_tag_list_get_uint64 ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uint64             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint64 *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uint64             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2585,10 +3167,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-uint64-index"></a><h3>gst_tag_list_get_uint64_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_uint64_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         guint64 *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_uint64_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2630,9 +3220,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-float"></a><h3>gst_tag_list_get_float ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_float              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gfloat *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_float              (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2669,10 +3265,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-float-index"></a><h3>gst_tag_list_get_float_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_float_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gfloat *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_float_index        (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2714,9 +3318,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-double"></a><h3>gst_tag_list_get_double ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_double             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gdouble *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_double             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2753,10 +3363,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-double-index"></a><h3>gst_tag_list_get_double_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_double_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gdouble *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_double_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2798,9 +3416,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-string"></a><h3>gst_tag_list_get_string ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_string             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gchar **value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_string             (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value);</pre>
 <p>
 Copies the contents for the given tag into the value, possibly merging
 multiple values into one if multiple values are associated with the tag.
@@ -2845,10 +3469,18 @@ freed by the caller using g_free when no longer needed.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-string-index"></a><h3>gst_tag_list_get_string_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_string_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gchar **value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_string_index       (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.
@@ -2894,9 +3526,15 @@ freed by the caller using g_free when no longer needed.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-pointer"></a><h3>gst_tag_list_get_pointer ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_pointer            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         gpointer *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_pointer            (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -2933,10 +3571,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-pointer-index"></a><h3>gst_tag_list_get_pointer_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_pointer_index      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         gpointer *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_pointer_index      (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -2978,9 +3624,15 @@ list.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-date"></a><h3>gst_tag_list_get_date ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_date               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         GDate **value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_date               (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> **value);</pre>
 <p>
 Copies the contents for the given tag into the value, merging multiple values
 into one if multiple values are associated with the tag.</p>
@@ -3008,7 +3660,9 @@ into one if multiple values are associated with the tag.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE, if a value was copied, FALSE if the tag didn't exist in the
-             given list or if it was <span class="type">NULL</span>.
+             given list or if it was <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>.
 </td>
 </tr>
 </tbody>
@@ -3017,10 +3671,18 @@ into one if multiple values are associated with the tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-list-get-date-index"></a><h3>gst_tag_list_get_date_index ()</h3>
-<pre class="programlisting">gboolean            gst_tag_list_get_date_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
-                                                         const gchar *tag,
-                                                         guint index,
-                                                         GDate **value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_list_get_date_index         (const <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> **value);</pre>
 <p>
 Gets the value that is at the given index for the given tag in the given
 list.</p>
@@ -3053,7 +3715,9 @@ list.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE, if a value was copied, FALSE if the tag didn't exist in the
-             given list or if it was <span class="type">NULL</span>.
+             given list or if it was <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>.
 </td>
 </tr>
 </tbody>

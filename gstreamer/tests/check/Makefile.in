@@ -50,8 +50,9 @@ check_PROGRAMS = gst/gstabi$(EXEEXT) gst/gstbuffer$(EXEEXT) \
 	gst/gsttask$(EXEEXT) gst/gstvalue$(EXEEXT) $(am__EXEEXT_1) \
 	generic/states$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	libs/libsabi$(EXEEXT) libs/gdp$(EXEEXT) libs/adapter$(EXEEXT) \
+	libs/bitreader$(EXEEXT) libs/bytereader$(EXEEXT) \
 	libs/gstnetclientclock$(EXEEXT) \
-	libs/gstnettimeprovider$(EXEEXT)
+	libs/gstnettimeprovider$(EXEEXT) libs/transform1$(EXEEXT)
 noinst_PROGRAMS = gst/gstpipeline$(EXEEXT) libs/collectpads$(EXEEXT) \
 	elements/queue$(EXEEXT)
 subdir = tests/check
@@ -82,6 +83,7 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/iconv.m4 \
+	$(top_srcdir)/common/m4/intlmacosx.m4 \
 	$(top_srcdir)/common/m4/lib-ld.m4 \
 	$(top_srcdir)/common/m4/lib-link.m4 \
 	$(top_srcdir)/common/m4/lib-prefix.m4 \
@@ -90,11 +92,12 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/ltsugar.m4 \
 	$(top_srcdir)/common/m4/ltversion.m4 \
 	$(top_srcdir)/common/m4/lt~obsolete.m4 \
-	$(top_srcdir)/common/m4/pkg.m4 \
+	$(top_srcdir)/common/m4/nls.m4 $(top_srcdir)/common/m4/pkg.m4 \
+	$(top_srcdir)/common/m4/po.m4 \
 	$(top_srcdir)/common/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @GST_DISABLE_LOADSAVE_FALSE@am__EXEEXT_1 = gst/gstxml$(EXEEXT)
@@ -117,6 +120,7 @@ CONFIG_CLEAN_FILES =
 @GST_DISABLE_REGISTRY_FALSE@	gst/gsturi$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstutils$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	generic/sinks$(EXEEXT) \
+@GST_DISABLE_REGISTRY_FALSE@	elements/capsfilter$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	elements/fakesink$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	elements/fakesrc$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	elements/fdsrc$(EXEEXT) \
@@ -130,13 +134,18 @@ CONFIG_CLEAN_FILES =
 @GST_DISABLE_REGISTRY_FALSE@	libs/typefindhelper$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	pipelines/stress$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
+elements_capsfilter_SOURCES = elements/capsfilter.c
+elements_capsfilter_OBJECTS = capsfilter.$(OBJEXT)
+elements_capsfilter_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+elements_capsfilter_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__dirstamp = $(am__leading_dot)dirstamp
 elements_fakesink_SOURCES = elements/fakesink.c
 elements_fakesink_OBJECTS = fakesink.$(OBJEXT)
 elements_fakesink_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
 elements_fakesink_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__dirstamp = $(am__leading_dot)dirstamp
 elements_fakesrc_SOURCES = elements/fakesrc.c
 elements_fakesrc_OBJECTS = fakesrc.$(OBJEXT)
 elements_fakesrc_LDADD = $(LDADD)
@@ -369,6 +378,16 @@ libs_basesrc_OBJECTS = basesrc.$(OBJEXT)
 libs_basesrc_DEPENDENCIES =  \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_2)
+libs_bitreader_SOURCES = libs/bitreader.c
+libs_bitreader_OBJECTS = bitreader.$(OBJEXT)
+libs_bitreader_DEPENDENCIES =  \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_2)
+libs_bytereader_SOURCES = libs/bytereader.c
+libs_bytereader_OBJECTS = bytereader.$(OBJEXT)
+libs_bytereader_DEPENDENCIES =  \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_2)
 libs_collectpads_SOURCES = libs/collectpads.c
 libs_collectpads_OBJECTS = collectpads.$(OBJEXT)
 libs_collectpads_DEPENDENCIES =  \
@@ -397,6 +416,11 @@ libs_libsabi_OBJECTS = libsabi.$(OBJEXT)
 libs_libsabi_LDADD = $(LDADD)
 libs_libsabi_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+libs_transform1_SOURCES = libs/transform1.c
+libs_transform1_OBJECTS = transform1.$(OBJEXT)
+libs_transform1_DEPENDENCIES =  \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_2)
 libs_typefindhelper_SOURCES = libs/typefindhelper.c
 libs_typefindhelper_OBJECTS = typefindhelper.$(OBJEXT)
 libs_typefindhelper_DEPENDENCIES =  \
@@ -439,43 +463,45 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = elements/fakesink.c elements/fakesrc.c elements/fdsrc.c \
-	elements/filesink.c elements/filesrc.c elements/identity.c \
-	elements/multiqueue.c elements/queue.c elements/tee.c \
-	generic/sinks.c generic/states.c gst/gst.c gst/gstabi.c \
-	gst/gstbin.c gst/gstbuffer.c gst/gstbus.c gst/gstcaps.c \
-	gst/gstelement.c gst/gstevent.c gst/gstghostpad.c \
-	gst/gstindex.c gst/gstinfo.c gst/gstinterface.c \
-	gst/gstiterator.c gst/gstmessage.c gst/gstminiobject.c \
-	gst/gstobject.c gst/gstpad.c gst/gstparamspecs.c \
-	gst/gstpipeline.c gst/gstplugin.c gst/gstpoll.c \
-	gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
+SOURCES = elements/capsfilter.c elements/fakesink.c elements/fakesrc.c \
+	elements/fdsrc.c elements/filesink.c elements/filesrc.c \
+	elements/identity.c elements/multiqueue.c elements/queue.c \
+	elements/tee.c generic/sinks.c generic/states.c gst/gst.c \
+	gst/gstabi.c gst/gstbin.c gst/gstbuffer.c gst/gstbus.c \
+	gst/gstcaps.c gst/gstelement.c gst/gstevent.c \
+	gst/gstghostpad.c gst/gstindex.c gst/gstinfo.c \
+	gst/gstinterface.c gst/gstiterator.c gst/gstmessage.c \
+	gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
+	gst/gstparamspecs.c gst/gstpipeline.c gst/gstplugin.c \
+	gst/gstpoll.c gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
 	gst/gstsegment.c gst/gststructure.c gst/gstsystemclock.c \
 	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c \
 	gst/gstutils.c gst/gstvalue.c gst/gstxml.c libs/adapter.c \
-	libs/basesrc.c libs/collectpads.c libs/controller.c \
-	$(libs_gdp_SOURCES) libs/gstnetclientclock.c \
-	libs/gstnettimeprovider.c libs/libsabi.c libs/typefindhelper.c \
+	libs/basesrc.c libs/bitreader.c libs/bytereader.c \
+	libs/collectpads.c libs/controller.c $(libs_gdp_SOURCES) \
+	libs/gstnetclientclock.c libs/gstnettimeprovider.c \
+	libs/libsabi.c libs/transform1.c libs/typefindhelper.c \
 	pipelines/cleanup.c pipelines/parse-disabled.c \
 	pipelines/parse-launch.c pipelines/simple-launch-lines.c \
 	pipelines/stress.c
-DIST_SOURCES = elements/fakesink.c elements/fakesrc.c elements/fdsrc.c \
-	elements/filesink.c elements/filesrc.c elements/identity.c \
-	elements/multiqueue.c elements/queue.c elements/tee.c \
-	generic/sinks.c generic/states.c gst/gst.c gst/gstabi.c \
-	gst/gstbin.c gst/gstbuffer.c gst/gstbus.c gst/gstcaps.c \
-	gst/gstelement.c gst/gstevent.c gst/gstghostpad.c \
-	gst/gstindex.c gst/gstinfo.c gst/gstinterface.c \
-	gst/gstiterator.c gst/gstmessage.c gst/gstminiobject.c \
-	gst/gstobject.c gst/gstpad.c gst/gstparamspecs.c \
-	gst/gstpipeline.c gst/gstplugin.c gst/gstpoll.c \
-	gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
+DIST_SOURCES = elements/capsfilter.c elements/fakesink.c \
+	elements/fakesrc.c elements/fdsrc.c elements/filesink.c \
+	elements/filesrc.c elements/identity.c elements/multiqueue.c \
+	elements/queue.c elements/tee.c generic/sinks.c \
+	generic/states.c gst/gst.c gst/gstabi.c gst/gstbin.c \
+	gst/gstbuffer.c gst/gstbus.c gst/gstcaps.c gst/gstelement.c \
+	gst/gstevent.c gst/gstghostpad.c gst/gstindex.c gst/gstinfo.c \
+	gst/gstinterface.c gst/gstiterator.c gst/gstmessage.c \
+	gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
+	gst/gstparamspecs.c gst/gstpipeline.c gst/gstplugin.c \
+	gst/gstpoll.c gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
 	gst/gstsegment.c gst/gststructure.c gst/gstsystemclock.c \
 	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsturi.c \
 	gst/gstutils.c gst/gstvalue.c gst/gstxml.c libs/adapter.c \
-	libs/basesrc.c libs/collectpads.c libs/controller.c \
-	$(libs_gdp_SOURCES) libs/gstnetclientclock.c \
-	libs/gstnettimeprovider.c libs/libsabi.c libs/typefindhelper.c \
+	libs/basesrc.c libs/bitreader.c libs/bytereader.c \
+	libs/collectpads.c libs/controller.c $(libs_gdp_SOURCES) \
+	libs/gstnetclientclock.c libs/gstnettimeprovider.c \
+	libs/libsabi.c libs/transform1.c libs/typefindhelper.c \
 	pipelines/cleanup.c pipelines/parse-disabled.c \
 	pipelines/parse-launch.c pipelines/simple-launch-lines.c \
 	pipelines/stress.c
@@ -549,6 +575,7 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -557,6 +584,7 @@ GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
 GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
@@ -567,15 +595,9 @@ GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_ALLOC_TRACE_FALSE = @GST_DISABLE_ALLOC_TRACE_FALSE@
 GST_DISABLE_ALLOC_TRACE_TRUE = @GST_DISABLE_ALLOC_TRACE_TRUE@
-GST_DISABLE_ENUMTYPES_DEFINE = @GST_DISABLE_ENUMTYPES_DEFINE@
-GST_DISABLE_ENUMTYPES_FALSE = @GST_DISABLE_ENUMTYPES_FALSE@
-GST_DISABLE_ENUMTYPES_TRUE = @GST_DISABLE_ENUMTYPES_TRUE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
 GST_DISABLE_GST_DEBUG_FALSE = @GST_DISABLE_GST_DEBUG_FALSE@
 GST_DISABLE_GST_DEBUG_TRUE = @GST_DISABLE_GST_DEBUG_TRUE@
-GST_DISABLE_INDEX_DEFINE = @GST_DISABLE_INDEX_DEFINE@
-GST_DISABLE_INDEX_FALSE = @GST_DISABLE_INDEX_FALSE@
-GST_DISABLE_INDEX_TRUE = @GST_DISABLE_INDEX_TRUE@
 GST_DISABLE_LOADSAVE_DEFINE = @GST_DISABLE_LOADSAVE_DEFINE@
 GST_DISABLE_LOADSAVE_FALSE = @GST_DISABLE_LOADSAVE_FALSE@
 GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
@@ -597,9 +619,6 @@ GST_DISABLE_REGISTRY_TRUE = @GST_DISABLE_REGISTRY_TRUE@
 GST_DISABLE_TRACE_DEFINE = @GST_DISABLE_TRACE_DEFINE@
 GST_DISABLE_TRACE_FALSE = @GST_DISABLE_TRACE_FALSE@
 GST_DISABLE_TRACE_TRUE = @GST_DISABLE_TRACE_TRUE@
-GST_DISABLE_URI_DEFINE = @GST_DISABLE_URI_DEFINE@
-GST_DISABLE_URI_FALSE = @GST_DISABLE_URI_FALSE@
-GST_DISABLE_URI_TRUE = @GST_DISABLE_URI_TRUE@
 GST_DISABLE_XML_DEFINE = @GST_DISABLE_XML_DEFINE@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
@@ -611,7 +630,6 @@ GST_HAVE_POSIX_TIMERS_DEFINE = @GST_HAVE_POSIX_TIMERS_DEFINE@
 GST_HAVE_POSIX_TIMERS_FALSE = @GST_HAVE_POSIX_TIMERS_FALSE@
 GST_HAVE_POSIX_TIMERS_TRUE = @GST_HAVE_POSIX_TIMERS_TRUE@
 GST_HAVE_UNALIGNED_ACCESS_DEFINE = @GST_HAVE_UNALIGNED_ACCESS_DEFINE@
-GST_INDEX_DOC_TYPES = @GST_INDEX_DOC_TYPES@
 GST_LEVEL_DEFAULT = @GST_LEVEL_DEFAULT@
 GST_LIBVERSION = @GST_LIBVERSION@
 GST_LIB_LDFLAGS = @GST_LIB_LDFLAGS@
@@ -631,6 +649,7 @@ GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE = @GST_PRINTF_EXTENSION_SEGMENT_FORMA
 GST_REGISTRY_DOC_TYPES = @GST_REGISTRY_DOC_TYPES@
 GST_REVISION = @GST_REVISION@
 GST_USING_PRINTF_EXTENSION_DEFINE = @GST_USING_PRINTF_EXTENSION_DEFINE@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_CHECK_FALSE = @HAVE_CHECK_FALSE@
@@ -691,6 +710,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDIR = @LIBDIR@
@@ -711,8 +731,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -754,6 +774,8 @@ VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XML_CATALOG = @XML_CATALOG@
 XML_CFLAGS = @XML_CFLAGS@
 XML_LIBS = @XML_LIBS@
@@ -849,6 +871,7 @@ SUPPRESSIONS = $(top_srcdir)/common/gst.supp
 @GST_DISABLE_REGISTRY_FALSE@	gst/gsturi  				\
 @GST_DISABLE_REGISTRY_FALSE@	gst/gstutils				\
 @GST_DISABLE_REGISTRY_FALSE@	generic/sinks				\
+@GST_DISABLE_REGISTRY_FALSE@	elements/capsfilter			\
 @GST_DISABLE_REGISTRY_FALSE@	elements/fakesink			\
 @GST_DISABLE_REGISTRY_FALSE@	elements/fakesrc			\
 @GST_DISABLE_REGISTRY_FALSE@	elements/fdsrc			  	\
@@ -876,12 +899,17 @@ noinst_HEADERS = \
 	gst/struct_hppa.h \
 	gst/struct_ppc32.h \
 	gst/struct_ppc64.h \
+	gst/struct_sparc.h \
 	gst/struct_x86_64.h \
 	libs/struct_i386.h \
 	libs/struct_hppa.h \
 	libs/struct_ppc32.h \
 	libs/struct_ppc64.h \
+	libs/struct_sparc.h \
 	libs/struct_x86_64.h
+
+EXTRA_DIST = \
+	libs/test_transform.c
 
 AM_CFLAGS = $(GST_OBJ_CFLAGS) $(CHECK_CFLAGS)
 LDADD = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
@@ -899,6 +927,14 @@ libs_gdp_LDADD = \
 elements_fdsrc_CFLAGS = $(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
 elements_filesrc_CFLAGS = $(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_srcdir)/configure.ac\"
 libs_basesrc_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
+
+libs_bitreader_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
+
+libs_bytereader_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(LDADD)
 
@@ -923,6 +959,10 @@ libs_gstnettimeprovider_LDADD = \
 	$(LDADD)
 
 libs_typefindhelper_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
+
+libs_transform1_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(LDADD)
 
@@ -1013,6 +1053,9 @@ clean-noinstPROGRAMS:
 elements/$(am__dirstamp):
 	@$(mkdir_p) elements
 	@: > elements/$(am__dirstamp)
+elements/capsfilter$(EXEEXT): $(elements_capsfilter_OBJECTS) $(elements_capsfilter_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/capsfilter$(EXEEXT)
+	$(LINK) $(elements_capsfilter_LDFLAGS) $(elements_capsfilter_OBJECTS) $(elements_capsfilter_LDADD) $(LIBS)
 elements/fakesink$(EXEEXT): $(elements_fakesink_OBJECTS) $(elements_fakesink_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/fakesink$(EXEEXT)
 	$(LINK) $(elements_fakesink_LDFLAGS) $(elements_fakesink_OBJECTS) $(elements_fakesink_LDADD) $(LIBS)
@@ -1163,6 +1206,12 @@ libs/adapter$(EXEEXT): $(libs_adapter_OBJECTS) $(libs_adapter_DEPENDENCIES) libs
 libs/basesrc$(EXEEXT): $(libs_basesrc_OBJECTS) $(libs_basesrc_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/basesrc$(EXEEXT)
 	$(LINK) $(libs_basesrc_LDFLAGS) $(libs_basesrc_OBJECTS) $(libs_basesrc_LDADD) $(LIBS)
+libs/bitreader$(EXEEXT): $(libs_bitreader_OBJECTS) $(libs_bitreader_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bitreader$(EXEEXT)
+	$(LINK) $(libs_bitreader_LDFLAGS) $(libs_bitreader_OBJECTS) $(libs_bitreader_LDADD) $(LIBS)
+libs/bytereader$(EXEEXT): $(libs_bytereader_OBJECTS) $(libs_bytereader_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bytereader$(EXEEXT)
+	$(LINK) $(libs_bytereader_LDFLAGS) $(libs_bytereader_OBJECTS) $(libs_bytereader_LDADD) $(LIBS)
 libs/collectpads$(EXEEXT): $(libs_collectpads_OBJECTS) $(libs_collectpads_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/collectpads$(EXEEXT)
 	$(LINK) $(libs_collectpads_LDFLAGS) $(libs_collectpads_OBJECTS) $(libs_collectpads_LDADD) $(LIBS)
@@ -1181,6 +1230,9 @@ libs/gstnettimeprovider$(EXEEXT): $(libs_gstnettimeprovider_OBJECTS) $(libs_gstn
 libs/libsabi$(EXEEXT): $(libs_libsabi_OBJECTS) $(libs_libsabi_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/libsabi$(EXEEXT)
 	$(LINK) $(libs_libsabi_LDFLAGS) $(libs_libsabi_OBJECTS) $(libs_libsabi_LDADD) $(LIBS)
+libs/transform1$(EXEEXT): $(libs_transform1_OBJECTS) $(libs_transform1_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/transform1$(EXEEXT)
+	$(LINK) $(libs_transform1_LDFLAGS) $(libs_transform1_OBJECTS) $(libs_transform1_LDADD) $(LIBS)
 libs/typefindhelper$(EXEEXT): $(libs_typefindhelper_OBJECTS) $(libs_typefindhelper_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/typefindhelper$(EXEEXT)
 	$(LINK) $(libs_typefindhelper_LDFLAGS) $(libs_typefindhelper_OBJECTS) $(libs_typefindhelper_LDADD) $(LIBS)
@@ -1211,6 +1263,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adapter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basesrc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitreader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bytereader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/capsfilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cleanup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collectpads.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controller.Po@am__quote@
@@ -1267,6 +1322,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/states.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tee.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transform1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/typefindhelper.Po@am__quote@
 
 .c.o:
@@ -1289,6 +1345,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+capsfilter.o: elements/capsfilter.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT capsfilter.o -MD -MP -MF "$(DEPDIR)/capsfilter.Tpo" -c -o capsfilter.o `test -f 'elements/capsfilter.c' || echo '$(srcdir)/'`elements/capsfilter.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/capsfilter.Tpo" "$(DEPDIR)/capsfilter.Po"; else rm -f "$(DEPDIR)/capsfilter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/capsfilter.c' object='capsfilter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o capsfilter.o `test -f 'elements/capsfilter.c' || echo '$(srcdir)/'`elements/capsfilter.c
+
+capsfilter.obj: elements/capsfilter.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT capsfilter.obj -MD -MP -MF "$(DEPDIR)/capsfilter.Tpo" -c -o capsfilter.obj `if test -f 'elements/capsfilter.c'; then $(CYGPATH_W) 'elements/capsfilter.c'; else $(CYGPATH_W) '$(srcdir)/elements/capsfilter.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/capsfilter.Tpo" "$(DEPDIR)/capsfilter.Po"; else rm -f "$(DEPDIR)/capsfilter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/capsfilter.c' object='capsfilter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o capsfilter.obj `if test -f 'elements/capsfilter.c'; then $(CYGPATH_W) 'elements/capsfilter.c'; else $(CYGPATH_W) '$(srcdir)/elements/capsfilter.c'; fi`
 
 fakesink.o: elements/fakesink.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fakesink.o -MD -MP -MF "$(DEPDIR)/fakesink.Tpo" -c -o fakesink.o `test -f 'elements/fakesink.c' || echo '$(srcdir)/'`elements/fakesink.c; \
@@ -1948,6 +2018,34 @@ basesrc.obj: libs/basesrc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o basesrc.obj `if test -f 'libs/basesrc.c'; then $(CYGPATH_W) 'libs/basesrc.c'; else $(CYGPATH_W) '$(srcdir)/libs/basesrc.c'; fi`
 
+bitreader.o: libs/bitreader.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bitreader.o -MD -MP -MF "$(DEPDIR)/bitreader.Tpo" -c -o bitreader.o `test -f 'libs/bitreader.c' || echo '$(srcdir)/'`libs/bitreader.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bitreader.Tpo" "$(DEPDIR)/bitreader.Po"; else rm -f "$(DEPDIR)/bitreader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/bitreader.c' object='bitreader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bitreader.o `test -f 'libs/bitreader.c' || echo '$(srcdir)/'`libs/bitreader.c
+
+bitreader.obj: libs/bitreader.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bitreader.obj -MD -MP -MF "$(DEPDIR)/bitreader.Tpo" -c -o bitreader.obj `if test -f 'libs/bitreader.c'; then $(CYGPATH_W) 'libs/bitreader.c'; else $(CYGPATH_W) '$(srcdir)/libs/bitreader.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bitreader.Tpo" "$(DEPDIR)/bitreader.Po"; else rm -f "$(DEPDIR)/bitreader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/bitreader.c' object='bitreader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bitreader.obj `if test -f 'libs/bitreader.c'; then $(CYGPATH_W) 'libs/bitreader.c'; else $(CYGPATH_W) '$(srcdir)/libs/bitreader.c'; fi`
+
+bytereader.o: libs/bytereader.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bytereader.o -MD -MP -MF "$(DEPDIR)/bytereader.Tpo" -c -o bytereader.o `test -f 'libs/bytereader.c' || echo '$(srcdir)/'`libs/bytereader.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bytereader.Tpo" "$(DEPDIR)/bytereader.Po"; else rm -f "$(DEPDIR)/bytereader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/bytereader.c' object='bytereader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bytereader.o `test -f 'libs/bytereader.c' || echo '$(srcdir)/'`libs/bytereader.c
+
+bytereader.obj: libs/bytereader.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT bytereader.obj -MD -MP -MF "$(DEPDIR)/bytereader.Tpo" -c -o bytereader.obj `if test -f 'libs/bytereader.c'; then $(CYGPATH_W) 'libs/bytereader.c'; else $(CYGPATH_W) '$(srcdir)/libs/bytereader.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bytereader.Tpo" "$(DEPDIR)/bytereader.Po"; else rm -f "$(DEPDIR)/bytereader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/bytereader.c' object='bytereader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bytereader.obj `if test -f 'libs/bytereader.c'; then $(CYGPATH_W) 'libs/bytereader.c'; else $(CYGPATH_W) '$(srcdir)/libs/bytereader.c'; fi`
+
 collectpads.o: libs/collectpads.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT collectpads.o -MD -MP -MF "$(DEPDIR)/collectpads.Tpo" -c -o collectpads.o `test -f 'libs/collectpads.c' || echo '$(srcdir)/'`libs/collectpads.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/collectpads.Tpo" "$(DEPDIR)/collectpads.Po"; else rm -f "$(DEPDIR)/collectpads.Tpo"; exit 1; fi
@@ -2031,6 +2129,20 @@ libsabi.obj: libs/libsabi.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/libsabi.c' object='libsabi.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libsabi.obj `if test -f 'libs/libsabi.c'; then $(CYGPATH_W) 'libs/libsabi.c'; else $(CYGPATH_W) '$(srcdir)/libs/libsabi.c'; fi`
+
+transform1.o: libs/transform1.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT transform1.o -MD -MP -MF "$(DEPDIR)/transform1.Tpo" -c -o transform1.o `test -f 'libs/transform1.c' || echo '$(srcdir)/'`libs/transform1.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/transform1.Tpo" "$(DEPDIR)/transform1.Po"; else rm -f "$(DEPDIR)/transform1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/transform1.c' object='transform1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o transform1.o `test -f 'libs/transform1.c' || echo '$(srcdir)/'`libs/transform1.c
+
+transform1.obj: libs/transform1.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT transform1.obj -MD -MP -MF "$(DEPDIR)/transform1.Tpo" -c -o transform1.obj `if test -f 'libs/transform1.c'; then $(CYGPATH_W) 'libs/transform1.c'; else $(CYGPATH_W) '$(srcdir)/libs/transform1.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/transform1.Tpo" "$(DEPDIR)/transform1.Po"; else rm -f "$(DEPDIR)/transform1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libs/transform1.c' object='transform1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o transform1.obj `if test -f 'libs/transform1.c'; then $(CYGPATH_W) 'libs/transform1.c'; else $(CYGPATH_W) '$(srcdir)/libs/transform1.c'; fi`
 
 typefindhelper.o: libs/typefindhelper.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT typefindhelper.o -MD -MP -MF "$(DEPDIR)/typefindhelper.Tpo" -c -o typefindhelper.o `test -f 'libs/typefindhelper.c' || echo '$(srcdir)/'`libs/typefindhelper.c; \

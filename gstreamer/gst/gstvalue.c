@@ -148,20 +148,25 @@ gst_value_transform_any_list_string (const GValue * src_value,
  * there. Do not export, since it doesn't work for types where the content
  * decides the fixedness (e.g. GST_TYPE_ARRAY).
  */
-
 static gboolean
 gst_type_is_fixed (GType type)
 {
-  if (type == GST_TYPE_INT_RANGE || type == GST_TYPE_DOUBLE_RANGE ||
-      type == GST_TYPE_LIST) {
-    return FALSE;
-  }
-  if (G_TYPE_FUNDAMENTAL (type) <=
-      G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
+  /* the basic int, string, double types */
+  if (type <= G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
     return TRUE;
   }
-  if (type == GST_TYPE_BUFFER || type == GST_TYPE_FOURCC
-      || type == GST_TYPE_ARRAY || type == GST_TYPE_FRACTION) {
+  /* our fundamental types that are certainly not fixed */
+  if (type == GST_TYPE_INT_RANGE || type == GST_TYPE_DOUBLE_RANGE ||
+      type == GST_TYPE_LIST || type == GST_TYPE_FRACTION_RANGE) {
+    return FALSE;
+  }
+  /* other (boxed) types that are fixed */
+  if (type == GST_TYPE_BUFFER) {
+    return TRUE;
+  }
+  /* heavy checks */
+  if (G_TYPE_IS_FUNDAMENTAL (type) || G_TYPE_FUNDAMENTAL (type) <=
+      G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
     return TRUE;
   }
 
@@ -894,7 +899,7 @@ gst_value_set_double_range (GValue * value, gdouble start, gdouble end)
  *
  * Gets the minimum of the range specified by @value.
  *
- * Returns: the minumum of the range
+ * Returns: the minimum of the range
  */
 gdouble
 gst_value_get_double_range_min (const GValue * value)
@@ -1127,7 +1132,7 @@ gst_value_set_fraction_range_full (GValue * value,
  *
  * Gets the minimum of the range specified by @value.
  *
- * Returns: the minumum of the range
+ * Returns: the minimum of the range
  */
 const GValue *
 gst_value_get_fraction_range_min (const GValue * value)
@@ -1759,13 +1764,17 @@ gst_value_deserialize_float (GValue * dest, const gchar * s)
 static gint
 gst_value_compare_string (const GValue * value1, const GValue * value2)
 {
-  int x = strcmp (value1->data[0].v_pointer, value2->data[0].v_pointer);
+  if (!value1->data[0].v_pointer || !value2->data[0].v_pointer) {
+    return GST_VALUE_UNORDERED;
+  } else {
+    int x = strcmp (value1->data[0].v_pointer, value2->data[0].v_pointer);
 
-  if (x < 0)
-    return GST_VALUE_LESS_THAN;
-  if (x > 0)
-    return GST_VALUE_GREATER_THAN;
-  return GST_VALUE_EQUAL;
+    if (x < 0)
+      return GST_VALUE_LESS_THAN;
+    if (x > 0)
+      return GST_VALUE_GREATER_THAN;
+    return GST_VALUE_EQUAL;
+  }
 }
 
 /* keep in sync with gststructure.c */
@@ -2346,8 +2355,8 @@ gst_value_intersect_fraction_fraction_range (GValue * dest, const GValue * src1,
 }
 
 static gboolean
-    gst_value_intersect_fraction_range_fraction_range
-    (GValue * dest, const GValue * src1, const GValue * src2)
+gst_value_intersect_fraction_range_fraction_range (GValue * dest,
+    const GValue * src1, const GValue * src2)
 {
   GValue *min;
   GValue *max;
@@ -2795,15 +2804,22 @@ gst_value_get_compare_func (const GValue * value1)
   GstValueTable *table, *best = NULL;
   guint i;
 
+  /* this is a fast check */
   for (i = 0; i < gst_value_table->len; i++) {
     table = &g_array_index (gst_value_table, GstValueTable, i);
     if (table->type == G_VALUE_TYPE (value1) && table->compare != NULL) {
       best = table;
       break;
     }
-    if (g_type_is_a (G_VALUE_TYPE (value1), table->type)) {
-      if (!best || g_type_is_a (table->type, best->type))
-        best = table;
+  }
+  /* slower checks */
+  if (!best) {
+    for (i = 0; i < gst_value_table->len; i++) {
+      table = &g_array_index (gst_value_table, GstValueTable, i);
+      if (g_type_is_a (G_VALUE_TYPE (value1), table->type)) {
+        if (!best || g_type_is_a (table->type, best->type))
+          best = table;
+      }
     }
   }
   if (best) {
@@ -3329,6 +3345,11 @@ gst_value_is_fixed (const GValue * value)
 {
   GType type = G_VALUE_TYPE (value);
 
+  /* the most common types are just basic plain glib types */
+  if (type <= G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
+    return TRUE;
+  }
+
   if (type == GST_TYPE_ARRAY) {
     gint size, n;
     const GValue *kid;
@@ -3342,7 +3363,6 @@ gst_value_is_fixed (const GValue * value)
     }
     return TRUE;
   }
-
   return gst_type_is_fixed (type);
 }
 

@@ -37,7 +37,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-plugins-filesrc.top_of_page"></a>filesrc</span></h2>
-<p>filesrc — read from arbitrary point in a file</p>
+<p>filesrc — Read from arbitrary point in a file</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -50,7 +50,9 @@
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -66,28 +68,42 @@ GstFileSrc implements
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--fd" title='The "fd" property'>fd</a>"                       gint                  : Read
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--mmapsize" title='The "mmapsize" property'>mmapsize</a>"                 gulong                : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--touch" title='The "touch" property'>touch</a>"                    gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap" title='The "use-mmap" property'>use-mmap</a>"                 gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--sequential" title='The "sequential" property'>sequential</a>"               gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--fd" title='The "fd" property'>fd</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--location" title='The "location" property'>location</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--mmapsize" title='The "mmapsize" property'>mmapsize</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>                : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--touch" title='The "touch" property'>touch</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap" title='The "use-mmap" property'>use-mmap</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc--sequential" title='The "sequential" property'>sequential</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesrc.description"></a><h2>Description</h2>
 <p>
 Read data from a file in the local file system.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2527739"></a><h3>Element Information</h3>
+<a name="id2672823"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
-        </td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -99,6 +115,10 @@ Read data from a file in the local file system.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2682871"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -121,6 +141,7 @@ Read data from a file in the local file system.</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -141,7 +162,9 @@ Opaque <a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span cl
 <a name="gstreamer-plugins-filesrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
-<pre class="programlisting">  "fd"                       gint                  : Read</pre>
+<pre class="programlisting">  "fd"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
 <p>File-descriptor for the file being mmap()d.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -149,27 +172,35 @@ Opaque <a class="link" href="gstreamer-plugins-filesrc.html#GstFileSrc"><span cl
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "location"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Location of the file to read.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--mmapsize"></a><h3>The <code class="literal">"mmapsize"</code> property</h3>
-<pre class="programlisting">  "mmapsize"                 gulong                : Read / Write</pre>
+<pre class="programlisting">  "mmapsize"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>                : Read / Write</pre>
 <p>Size in bytes of mmap()d regions.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--touch"></a><h3>The <code class="literal">"touch"</code> property</h3>
-<pre class="programlisting">  "touch"                    gboolean              : Read / Write</pre>
+<pre class="programlisting">  "touch"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Touch mmapped data regions to force them to be read from disk.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--use-mmap"></a><h3>The <code class="literal">"use-mmap"</code> property</h3>
-<pre class="programlisting">  "use-mmap"                 gboolean              : Read / Write</pre>
+<pre class="programlisting">  "use-mmap"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
 Whether to use <code class="function">mmap()</code>. Set to TRUE to force use of <code class="function">mmap()</code> instead of
 <code class="function">read()</code> for reading data.
@@ -193,7 +224,9 @@ otherwise damaged.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSrc--sequential"></a><h3>The <code class="literal">"sequential"</code> property</h3>
-<pre class="programlisting">  "sequential"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "sequential"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to use madvise to hint to the kernel that access to mmap pages will be sequential.</p>
 <p>Default value: FALSE</p>
 </div>

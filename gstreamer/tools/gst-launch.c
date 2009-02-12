@@ -388,10 +388,14 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
     /* check if we need to dump messages to the console */
     if (messages) {
       const GstStructure *s;
+      guint32 seqnum;
+
+      seqnum = gst_message_get_seqnum (message);
 
       s = gst_message_get_structure (message);
 
-      g_print (_("Got Message from element \"%s\" (%s): "),
+      g_print (_("Got Message #%" G_GUINT32_FORMAT
+              " from element \"%s\" (%s): "), seqnum,
           GST_STR_NULL (GST_ELEMENT_NAME (GST_MESSAGE_SRC (message))),
           gst_message_type_get_name (GST_MESSAGE_TYPE (message)));
       if (s) {
@@ -518,7 +522,7 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
         gint percent;
 
         gst_message_parse_buffering (message, &percent);
-        fprintf (stderr, _("buffering... %d  \r"), percent);
+        fprintf (stderr, "%s %d%%  \r", _("buffering..."), percent);
 
         /* no state management needed for live pipelines */
         if (is_live)
@@ -543,6 +547,12 @@ event_loop (GstElement * pipeline, gboolean blocking, GstState target_state)
           }
           buffering = TRUE;
         }
+        break;
+      }
+      case GST_MESSAGE_LATENCY:
+      {
+        fprintf (stderr, _("Redistribute latency...\n"));
+        gst_bin_recalculate_latency (GST_BIN (pipeline));
         break;
       }
       case GST_MESSAGE_APPLICATION:{

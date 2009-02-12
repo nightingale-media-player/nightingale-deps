@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32
-#include <io.h>      /* lseek, open, close, read */
+#include <io.h>                 /* lseek, open, close, read */
 /* On win32, stat* default to 32 bit; we need the 64-bit
  * variants, so explicitly define it that way. */
 #define stat __stat64
@@ -88,20 +88,17 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
  * use the 'file descriptor' opened in glib (and returned from this function)
  * in this library, as they may have unrelated C runtimes. */
 int
-gst_open (const gchar *filename,
-    int          flags,
-    int          mode)
+gst_open (const gchar * filename, int flags, int mode)
 {
 #ifdef G_OS_WIN32
   wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
   int retval;
   int save_errno;
 
-  if (wfilename == NULL)
-    {
-      errno = EINVAL;
-      return -1;
-    }
+  if (wfilename == NULL) {
+    errno = EINVAL;
+    return -1;
+  }
 
   retval = _wopen (wfilename, flags, mode);
   save_errno = errno;
@@ -114,7 +111,6 @@ gst_open (const gchar *filename,
   return open (filename, flags, mode);
 #endif
 }
-
 
 /**********************************************************************
  * GStreamer Default File Source
@@ -196,6 +192,7 @@ static gboolean gst_file_src_is_seekable (GstBaseSrc * src);
 static gboolean gst_file_src_get_size (GstBaseSrc * src, guint64 * size);
 static GstFlowReturn gst_file_src_create (GstBaseSrc * src, guint64 offset,
     guint length, GstBuffer ** buffer);
+static gboolean gst_file_src_query (GstBaseSrc * src, GstQuery * query);
 
 static void gst_file_src_uri_handler_init (gpointer g_iface,
     gpointer iface_data);
@@ -296,6 +293,7 @@ gst_file_src_class_init (GstFileSrcClass * klass)
   gstbasesrc_class->is_seekable = GST_DEBUG_FUNCPTR (gst_file_src_is_seekable);
   gstbasesrc_class->get_size = GST_DEBUG_FUNCPTR (gst_file_src_get_size);
   gstbasesrc_class->create = GST_DEBUG_FUNCPTR (gst_file_src_create);
+  gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_file_src_query);
 
   if (sizeof (off_t) < 8) {
     GST_LOG ("No large file support, sizeof (off_t) = %" G_GSIZE_FORMAT "!",
@@ -568,8 +566,8 @@ gst_mmap_buffer_finalize (GstMmapBuffer * mmap_buffer)
   GST_LOG ("unmapped region %08lx+%08lx at %p",
       (gulong) offset, (gulong) size, data);
 
-  GST_MINI_OBJECT_CLASS (mmap_buffer_parent_class)->
-      finalize (GST_MINI_OBJECT (mmap_buffer));
+  GST_MINI_OBJECT_CLASS (mmap_buffer_parent_class)->finalize (GST_MINI_OBJECT
+      (mmap_buffer));
 }
 
 static GstBuffer *
@@ -825,7 +823,11 @@ gst_file_src_create_read (GstFileSrc * src, guint64 offset, guint length,
     src->read_position = offset;
   }
 
-  buf = gst_buffer_new_and_alloc (length);
+  buf = gst_buffer_try_new_and_alloc (length);
+  if (G_UNLIKELY (buf == NULL && length > 0)) {
+    GST_ERROR_OBJECT (src, "Failed to allocate %u bytes", length);
+    return GST_FLOW_ERROR;
+  }
 
   GST_LOG_OBJECT (src, "Reading %d bytes", length);
   ret = read (src->fd, GST_BUFFER_DATA (buf), length);
@@ -897,6 +899,28 @@ gst_file_src_create (GstBaseSrc * basesrc, guint64 offset, guint length,
 #else
   ret = gst_file_src_create_read (src, offset, length, buffer);
 #endif
+
+  return ret;
+}
+
+static gboolean
+gst_file_src_query (GstBaseSrc * basesrc, GstQuery * query)
+{
+  gboolean ret = FALSE;
+  GstFileSrc *src = GST_FILE_SRC (basesrc);
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_URI:
+      gst_query_set_uri (query, src->uri);
+      ret = TRUE;
+      break;
+    default:
+      ret = FALSE;
+      break;
+  }
+
+  if (!ret)
+    ret = GST_BASE_SRC_CLASS (parent_class)->query (basesrc, query);
 
   return ret;
 }
@@ -1079,6 +1103,7 @@ gst_file_src_uri_get_type (void)
 {
   return GST_URI_SRC;
 }
+
 static gchar **
 gst_file_src_uri_get_protocols (void)
 {
@@ -1086,6 +1111,7 @@ gst_file_src_uri_get_protocols (void)
 
   return protocols;
 }
+
 static const gchar *
 gst_file_src_uri_get_uri (GstURIHandler * handler)
 {
@@ -1097,17 +1123,30 @@ gst_file_src_uri_get_uri (GstURIHandler * handler)
 static gboolean
 gst_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 {
-  gchar *location;
-  gboolean ret;
+  gchar *location, *hostname = NULL;
+  gboolean ret = FALSE;
   GstFileSrc *src = GST_FILE_SRC (handler);
 
-  location = g_filename_from_uri (uri, NULL, NULL);
+  if (strcmp (uri, "file://") == 0) {
+    /* Special case for "file://" as this is used by some applications
+     *  to test with gst_element_make_from_uri if there's an element
+     *  that supports the URI protocol. */
+    gst_file_src_set_location (src, NULL);
+    return TRUE;
+  }
+
+  location = g_filename_from_uri (uri, &hostname, NULL);
 
   if (!location) {
     GST_WARNING_OBJECT (src, "Invalid URI '%s' for filesrc", uri);
-    return FALSE;
+    goto beach;
   }
 
+  if ((hostname) && (strcmp (hostname, "localhost"))) {
+    /* Only 'localhost' is permitted */
+    GST_WARNING_OBJECT (src, "Invalid hostname '%s' for filesrc", hostname);
+    goto beach;
+  }
 #ifdef G_OS_WIN32
   /* Unfortunately, g_filename_from_uri() doesn't handle some UNC paths
    * correctly on windows, it leaves them with an extra backslash
@@ -1115,11 +1154,16 @@ gst_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
    * form. Correct this.
    */
   if (location[0] == '\\' && location[1] == '\\' && location[2] == '\\')
-    g_memmove (location, location+1, strlen(location+1)+1);
+    g_memmove (location, location + 1, strlen (location + 1) + 1);
 #endif
 
   ret = gst_file_src_set_location (src, location);
-  g_free (location);
+
+beach:
+  if (location)
+    g_free (location);
+  if (hostname)
+    g_free (hostname);
 
   return ret;
 }

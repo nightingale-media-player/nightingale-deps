@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -51,40 +51,84 @@
                     <a class="link" href="GstElementFactory.html#GstElementDetails" title="GstElementDetails">GstElementDetails</a>;
 #define             <a class="link" href="GstElementFactory.html#GST-ELEMENT-DETAILS:CAPS" title="GST_ELEMENT_DETAILS()">GST_ELEMENT_DETAILS</a>                 (longname,klass,description,author)
 #define             <a class="link" href="GstElementFactory.html#GST-IS-ELEMENT-DETAILS:CAPS" title="GST_IS_ELEMENT_DETAILS()">GST_IS_ELEMENT_DETAILS</a>              (details)
-gboolean            <a class="link" href="GstElementFactory.html#gst-element-register" title="gst_element_register ()">gst_element_register</a>                (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
-                                                         const gchar *name,
-                                                         guint rank,
-                                                         GType type);
-<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>*  <a class="link" href="GstElementFactory.html#gst-element-factory-find" title="gst_element_factory_find ()">gst_element_factory_find</a>            (const gchar *name);
-GType               <a class="link" href="GstElementFactory.html#gst-element-factory-get-element-type" title="gst_element_factory_get_element_type ()">gst_element_factory_get_element_type</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstElementFactory.html#gst-element-register" title="gst_element_register ()">gst_element_register</a>                (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> rank,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
+<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>*  <a class="link" href="GstElementFactory.html#gst-element-factory-find" title="gst_element_factory_find ()">gst_element_factory_find</a>            (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a>               <a class="link" href="GstElementFactory.html#gst-element-factory-get-element-type" title="gst_element_factory_get_element_type ()">gst_element_factory_get_element_type</a>
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-const gchar*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-longname" title="gst_element_factory_get_longname ()">gst_element_factory_get_longname</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-const gchar*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-klass" title="gst_element_factory_get_klass ()">gst_element_factory_get_klass</a>       (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-const gchar*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-description" title="gst_element_factory_get_description ()">gst_element_factory_get_description</a> (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-const gchar*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-author" title="gst_element_factory_get_author ()">gst_element_factory_get_author</a>      (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-guint               <a class="link" href="GstElementFactory.html#gst-element-factory-get-num-pad-templates" title="gst_element_factory_get_num_pad_templates ()">gst_element_factory_get_num_pad_templates</a>
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-longname" title="gst_element_factory_get_longname ()">gst_element_factory_get_longname</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-klass" title="gst_element_factory_get_klass ()">gst_element_factory_get_klass</a>       (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-description" title="gst_element_factory_get_description ()">gst_element_factory_get_description</a> (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-author" title="gst_element_factory_get_author ()">gst_element_factory_get_author</a>      (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="GstElementFactory.html#gst-element-factory-get-num-pad-templates" title="gst_element_factory_get_num_pad_templates ()">gst_element_factory_get_num_pad_templates</a>
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-gint                <a class="link" href="GstElementFactory.html#gst-element-factory-get-uri-type" title="gst_element_factory_get_uri_type ()">gst_element_factory_get_uri_type</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-gchar**             <a class="link" href="GstElementFactory.html#gst-element-factory-get-uri-protocols" title="gst_element_factory_get_uri_protocols ()">gst_element_factory_get_uri_protocols</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="GstElementFactory.html#gst-element-factory-get-uri-type" title="gst_element_factory_get_uri_type ()">gst_element_factory_get_uri_type</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             <a class="link" href="GstElementFactory.html#gst-element-factory-get-uri-protocols" title="gst_element_factory_get_uri_protocols ()">gst_element_factory_get_uri_protocols</a>
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
-gboolean            <a class="link" href="GstElementFactory.html#gst-element-factory-has-interface" title="gst_element_factory_has_interface ()">gst_element_factory_has_interface</a>   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
-                                                         const gchar *interfacename);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstElementFactory.html#gst-element-factory-has-interface" title="gst_element_factory_has_interface ()">gst_element_factory_has_interface</a>   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *interfacename);
 <a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         <a class="link" href="GstElementFactory.html#gst-element-factory-create" title="gst_element_factory_create ()">gst_element_factory_create</a>          (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
-                                                         const gchar *name);
-<a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         <a class="link" href="GstElementFactory.html#gst-element-factory-make" title="gst_element_factory_make ()">gst_element_factory_make</a>            (const gchar *factoryname,
-                                                         const gchar *name);
-gboolean            <a class="link" href="GstElementFactory.html#gst-element-factory-can-sink-caps" title="gst_element_factory_can_sink_caps ()">gst_element_factory_can_sink_caps</a>   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+<a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         <a class="link" href="GstElementFactory.html#gst-element-factory-make" title="gst_element_factory_make ()">gst_element_factory_make</a>            (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factoryname,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstElementFactory.html#gst-element-factory-can-sink-caps" title="gst_element_factory_can_sink_caps ()">gst_element_factory_can_sink_caps</a>   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="GstElementFactory.html#gst-element-factory-can-src-caps" title="gst_element_factory_can_src_caps ()">gst_element_factory_can_src_caps</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstElementFactory.html#gst-element-factory-can-src-caps" title="gst_element_factory_can_src_caps ()">gst_element_factory_can_src_caps</a>    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-const GList*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-static-pad-templates" title="gst_element_factory_get_static_pad_templates ()">gst_element_factory_get_static_pad_templates</a>
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*        <a class="link" href="GstElementFactory.html#gst-element-factory-get-static-pad-templates" title="gst_element_factory_get_static_pad_templates ()">gst_element_factory_get_static_pad_templates</a>
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstElementFactory.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----<a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
                +----GstElementFactory
@@ -108,7 +152,7 @@ The following code example shows you how to create a GstFileSrc element.
 <p>
 </p>
 <div class="example">
-<a name="id2673888"></a><p class="title"><b>Example 6. Using an element factory</b></p>
+<a name="id2832774"></a><p class="title"><b>Example 6. Using an element factory</b></p>
 <div class="example-contents"><pre class="programlisting">
   #include &lt;gst/gst.h&gt;
   GstElement *src;
@@ -164,24 +208,32 @@ on functionality.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>longname</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>longname</code></em>;</span></p></td>
 <td> long, english name
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>klass</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>klass</code></em>;</span></p></td>
 <td> string describing the type of element, as an unordered list
 separated with slashes ('/'). See draft-klass.txt of the design docs
 for more details and common types
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>description</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>description</code></em>;</span></p></td>
 <td> what the element is about
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>author</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>author</code></em>;</span></p></td>
 <td> who wrote this thing?
 </td>
 </tr>
@@ -246,10 +298,18 @@ Tests if element details are initialized.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-register"></a><h3>gst_element_register ()</h3>
-<pre class="programlisting">gboolean            gst_element_register                (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
-                                                         const gchar *name,
-                                                         guint rank,
-                                                         GType type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_element_register                (<a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> rank,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
 Create a new elementfactory capable of instantiating objects of the
 <em class="parameter"><code>type</code></em> and add the factory to <em class="parameter"><code>plugin</code></em>.</p>
@@ -291,7 +351,9 @@ element (note that passing NULL only works in GStreamer 0.10.13 and later)
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-find"></a><h3>gst_element_factory_find ()</h3>
-<pre class="programlisting"><a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>*  gst_element_factory_find            (const gchar *name);</pre>
+<pre class="programlisting"><a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>*  gst_element_factory_find            (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Search for an element factory of the given name. Refs the returned
 element factory; caller is responsible for unreffing.</p>
@@ -317,10 +379,14 @@ element factory; caller is responsible for unreffing.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-element-type"></a><h3>gst_element_factory_get_element_type ()</h3>
-<pre class="programlisting">GType               gst_element_factory_get_element_type
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a>               gst_element_factory_get_element_type
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
-Get the <span class="type">GType</span> for elements managed by this factory. The type can
+Get the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> for elements managed by this factory. The type can
 only be retrieved if the element factory is loaded, which can be
 assured with <a class="link" href="GstPluginFeature.html#gst-plugin-feature-load" title="gst_plugin_feature_load ()"><code class="function">gst_plugin_feature_load()</code></a>.</p>
 <p>
@@ -331,12 +397,16 @@ assured with <a class="link" href="GstPluginFeature.html#gst-plugin-feature-load
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>factory</code></em> :</span></p></td>
-<td> factory to get managed <span class="type">GType</span> from
+<td> factory to get managed <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> from
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> for elements managed by this factory or 0 if
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> for elements managed by this factory or 0 if
 the factory is not loaded.
 </td>
 </tr>
@@ -346,7 +416,9 @@ the factory is not loaded.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-longname"></a><h3>gst_element_factory_get_longname ()</h3>
-<pre class="programlisting">const gchar*        gst_element_factory_get_longname    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_element_factory_get_longname    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the longname for this factory</p>
 <p>
@@ -371,7 +443,9 @@ Gets the longname for this factory</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-klass"></a><h3>gst_element_factory_get_klass ()</h3>
-<pre class="programlisting">const gchar*        gst_element_factory_get_klass       (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_element_factory_get_klass       (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the class for this factory.</p>
 <p>
@@ -396,7 +470,9 @@ Gets the class for this factory.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-description"></a><h3>gst_element_factory_get_description ()</h3>
-<pre class="programlisting">const gchar*        gst_element_factory_get_description (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_element_factory_get_description (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the description for this factory.</p>
 <p>
@@ -421,7 +497,9 @@ Gets the description for this factory.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-author"></a><h3>gst_element_factory_get_author ()</h3>
-<pre class="programlisting">const gchar*        gst_element_factory_get_author      (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_element_factory_get_author      (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the author for this factory.</p>
 <p>
@@ -446,7 +524,9 @@ Gets the author for this factory.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-num-pad-templates"></a><h3>gst_element_factory_get_num_pad_templates ()</h3>
-<pre class="programlisting">guint               gst_element_factory_get_num_pad_templates
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_element_factory_get_num_pad_templates
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the number of pad_templates in this factory.</p>
@@ -472,7 +552,9 @@ Gets the number of pad_templates in this factory.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-uri-type"></a><h3>gst_element_factory_get_uri_type ()</h3>
-<pre class="programlisting">gint                gst_element_factory_get_uri_type    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_element_factory_get_uri_type    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets the type of URIs the element supports or <a class="link" href="gstreamer-GstUriHandler.html#GST-URI-UNKNOWN:CAPS"><span class="type">GST_URI_UNKNOWN</span></a> if none.</p>
 <p>
@@ -497,12 +579,16 @@ Gets the type of URIs the element supports or <a class="link" href="gstreamer-Gs
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-uri-protocols"></a><h3>gst_element_factory_get_uri_protocols ()</h3>
-<pre class="programlisting">gchar**             gst_element_factory_get_uri_protocols
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             gst_element_factory_get_uri_protocols
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
 Gets a NULL-terminated array of protocols this element supports or NULL if
 no protocols are supported. You may not change the contents of the returned
-array, as it is still owned by the element factory. Use <code class="function">g_strdupv()</code> to
+array, as it is still owned by the element factory. Use <a
+href="/usr/share/gtk-doc/html/glib/glib-String-Utility-Functions.html#g-strdupv"
+><code class="function">g_strdupv()</code></a> to
 make a copy of the protocol string array if you need to.</p>
 <p>
 
@@ -526,8 +612,12 @@ make a copy of the protocol string array if you need to.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-has-interface"></a><h3>gst_element_factory_has_interface ()</h3>
-<pre class="programlisting">gboolean            gst_element_factory_has_interface   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
-                                                         const gchar *interfacename);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_element_factory_has_interface   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *interfacename);</pre>
 <p>
 Check if <em class="parameter"><code>factory</code></em> implements the interface with name <em class="parameter"><code>interfacename</code></em>.</p>
 <p>
@@ -548,7 +638,9 @@ Check if <em class="parameter"><code>factory</code></em> implements the interfac
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> when <em class="parameter"><code>factory</code></em> implement the interface.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> when <em class="parameter"><code>factory</code></em> implement the interface.
 
 </td>
 </tr>
@@ -561,7 +653,9 @@ Check if <em class="parameter"><code>factory</code></em> implements the interfac
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-create"></a><h3>gst_element_factory_create ()</h3>
 <pre class="programlisting"><a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         gst_element_factory_create          (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
-                                                         const gchar *name);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Create a new element of the type defined by the given elementfactory.
 It will be given the name supplied, since all elements require a name as
@@ -593,8 +687,12 @@ their first argument.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-make"></a><h3>gst_element_factory_make ()</h3>
-<pre class="programlisting"><a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         gst_element_factory_make            (const gchar *factoryname,
-                                                         const gchar *name);</pre>
+<pre class="programlisting"><a class="link" href="GstElement.html" title="GstElement">GstElement</a>*         gst_element_factory_make            (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factoryname,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Create a new element of the type defined by the given element factory.
 If name is NULL, then the element will receive a guaranteed unique name,
@@ -627,7 +725,9 @@ If name is given, it will be given the name supplied.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-can-sink-caps"></a><h3>gst_element_factory_can_sink_caps ()</h3>
-<pre class="programlisting">gboolean            gst_element_factory_can_sink_caps   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_element_factory_can_sink_caps   (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Checks if the factory can sink the given capability.</p>
@@ -658,7 +758,9 @@ Checks if the factory can sink the given capability.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-can-src-caps"></a><h3>gst_element_factory_can_src_caps ()</h3>
-<pre class="programlisting">gboolean            gst_element_factory_can_src_caps    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_element_factory_can_src_caps    (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Checks if the factory can source the given capability.</p>
@@ -689,10 +791,14 @@ Checks if the factory can source the given capability.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-factory-get-static-pad-templates"></a><h3>gst_element_factory_get_static_pad_templates ()</h3>
-<pre class="programlisting">const GList*        gst_element_factory_get_static_pad_templates
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*        gst_element_factory_get_static_pad_templates
                                                         (<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a> *factory);</pre>
 <p>
-Gets the <span class="type">GList</span> of <a class="link" href="GstPadTemplate.html#GstStaticPadTemplate" title="GstStaticPadTemplate"><span class="type">GstStaticPadTemplate</span></a> for this factory.</p>
+Gets the <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPadTemplate.html#GstStaticPadTemplate" title="GstStaticPadTemplate"><span class="type">GstStaticPadTemplate</span></a> for this factory.</p>
 <p>
 
 </p>

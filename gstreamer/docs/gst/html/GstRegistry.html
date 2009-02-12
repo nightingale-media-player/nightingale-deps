@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -51,56 +51,114 @@
 
                     <a class="link" href="GstRegistry.html#GstRegistry-struct" title="GstRegistry">GstRegistry</a>;
 <a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a>*        <a class="link" href="GstRegistry.html#gst-registry-get-default" title="gst_registry_get_default ()">gst_registry_get_default</a>            (void);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-get-feature-list" title="gst_registry_get_feature_list ()">gst_registry_get_feature_list</a>       (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         GType type);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-get-feature-list-by-plugin" title="gst_registry_get_feature_list_by_plugin ()">gst_registry_get_feature_list_by_plugin</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-get-feature-list" title="gst_registry_get_feature_list ()">gst_registry_get_feature_list</a>       (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-get-feature-list-by-plugin" title="gst_registry_get_feature_list_by_plugin ()">gst_registry_get_feature_list_by_plugin</a>
                                                         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-get-path-list" title="gst_registry_get_path_list ()">gst_registry_get_path_list</a>          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-get-plugin-list" title="gst_registry_get_plugin_list ()">gst_registry_get_plugin_list</a>        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-add-plugin" title="gst_registry_add_plugin ()">gst_registry_add_plugin</a>             (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-get-path-list" title="gst_registry_get_path_list ()">gst_registry_get_path_list</a>          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-get-plugin-list" title="gst_registry_get_plugin_list ()">gst_registry_get_plugin_list</a>        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-add-plugin" title="gst_registry_add_plugin ()">gst_registry_add_plugin</a>             (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin);
 void                <a class="link" href="GstRegistry.html#gst-registry-remove-plugin" title="gst_registry_remove_plugin ()">gst_registry_remove_plugin</a>          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-plugin-filter" title="gst_registry_plugin_filter ()">gst_registry_plugin_filter</a>          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-plugin-filter" title="gst_registry_plugin_filter ()">gst_registry_plugin_filter</a>          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPlugin.html#GstPluginFilter" title="GstPluginFilter ()">GstPluginFilter</a> filter,
-                                                         gboolean first,
-                                                         gpointer user_data);
-GList*              <a class="link" href="GstRegistry.html#gst-registry-feature-filter" title="gst_registry_feature_filter ()">gst_registry_feature_filter</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> first,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstRegistry.html#gst-registry-feature-filter" title="gst_registry_feature_filter ()">gst_registry_feature_filter</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPluginFeature.html#GstPluginFeatureFilter" title="GstPluginFeatureFilter ()">GstPluginFeatureFilter</a> filter,
-                                                         gboolean first,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> first,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a>*          <a class="link" href="GstRegistry.html#gst-registry-find-plugin" title="gst_registry_find_plugin ()">gst_registry_find_plugin</a>            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
 <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>*   <a class="link" href="GstRegistry.html#gst-registry-find-feature" title="gst_registry_find_feature ()">gst_registry_find_feature</a>           (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name,
-                                                         GType type);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
 <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>*   <a class="link" href="GstRegistry.html#gst-registry-lookup-feature" title="gst_registry_lookup_feature ()">gst_registry_lookup_feature</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *name);
 void                <a class="link" href="GstRegistry.html#gst-registry-add-path" title="gst_registry_add_path ()">gst_registry_add_path</a>               (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *path);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-scan-path" title="gst_registry_scan_path ()">gst_registry_scan_path</a>              (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *path);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-binary-read-cache" title="gst_registry_binary_read_cache ()">gst_registry_binary_read_cache</a>      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *path);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-scan-path" title="gst_registry_scan_path ()">gst_registry_scan_path</a>              (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *path);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-binary-read-cache" title="gst_registry_binary_read_cache ()">gst_registry_binary_read_cache</a>      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-binary-write-cache" title="gst_registry_binary_write_cache ()">gst_registry_binary_write_cache</a>     (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-binary-write-cache" title="gst_registry_binary_write_cache ()">gst_registry_binary_write_cache</a>     (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-xml-read-cache" title="gst_registry_xml_read_cache ()">gst_registry_xml_read_cache</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-xml-read-cache" title="gst_registry_xml_read_cache ()">gst_registry_xml_read_cache</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-xml-write-cache" title="gst_registry_xml_write_cache ()">gst_registry_xml_write_cache</a>        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-xml-write-cache" title="gst_registry_xml_write_cache ()">gst_registry_xml_write_cache</a>        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);
 <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a>*          <a class="link" href="GstRegistry.html#gst-registry-lookup" title="gst_registry_lookup ()">gst_registry_lookup</a>                 (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *filename);
 void                <a class="link" href="GstRegistry.html#gst-registry-remove-feature" title="gst_registry_remove_feature ()">gst_registry_remove_feature</a>         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a> *feature);
-gboolean            <a class="link" href="GstRegistry.html#gst-registry-add-feature" title="gst_registry_add_feature ()">gst_registry_add_feature</a>            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-registry-add-feature" title="gst_registry_add_feature ()">gst_registry_add_feature</a>            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a> *feature);
 
-gboolean            <a class="link" href="GstRegistry.html#gst-default-registry-check-feature-version" title="gst_default_registry_check_feature_version ()">gst_default_registry_check_feature_version</a>
-                                                        (const gchar *feature_name,
-                                                         guint min_major,
-                                                         guint min_minor,
-                                                         guint min_micro);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstRegistry.html#gst-default-registry-check-feature-version" title="gst_default_registry_check_feature_version ()">gst_default_registry_check_feature_version</a>
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *feature_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_major,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_minor,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_micro);
 #define             <a class="link" href="GstRegistry.html#gst-default-registry-get-path-list" title="gst_default_registry_get_path_list()">gst_default_registry_get_path_list</a>  ()
 #define             <a class="link" href="GstRegistry.html#gst-default-registry-add-plugin" title="gst_default_registry_add_plugin()">gst_default_registry_add_plugin</a>     (plugin)
 #define             <a class="link" href="GstRegistry.html#gst-default-registry-add-path" title="gst_default_registry_add_path()">gst_default_registry_add_path</a>       (path)
@@ -113,7 +171,9 @@ gboolean            <a class="link" href="GstRegistry.html#gst-default-registry-
 <div class="refsect1" lang="en">
 <a name="GstRegistry.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----GstRegistry
 </pre>
@@ -129,7 +189,6 @@ gboolean            <a class="link" href="GstRegistry.html#gst-default-registry-
 <a name="GstRegistry.description"></a><h2>Description</h2>
 <p>
 One registry holds the metadata of a set of plugins.
-All registries build the <span class="type">GstRegistryPool</span>.
 </p>
 <p>
 <span class="bold"><strong>Design:</strong></span>
@@ -230,10 +289,16 @@ registry, as it is alive as long as GStreamer is initialized.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-get-feature-list"></a><h3>gst_registry_get_feature_list ()</h3>
-<pre class="programlisting">GList*              gst_registry_get_feature_list       (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         GType type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_get_feature_list       (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
-Retrieves a <span class="type">GList</span> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> of <em class="parameter"><code>type</code></em>.</p>
+Retrieves a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> of <em class="parameter"><code>type</code></em>.</p>
 <p>
 
 </p>
@@ -247,12 +312,16 @@ Retrieves a <span class="type">GList</span> of <a class="link" href="GstPluginFe
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> a <span class="type">GType</span>.
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GList</span> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> of <em class="parameter"><code>type</code></em>. Use
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> of <em class="parameter"><code>type</code></em>. Use
 <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()"><code class="function">gst_plugin_feature_list_free()</code></a> after usage.
 
 MT safe.
@@ -264,11 +333,17 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-get-feature-list-by-plugin"></a><h3>gst_registry_get_feature_list_by_plugin ()</h3>
-<pre class="programlisting">GList*              gst_registry_get_feature_list_by_plugin
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_get_feature_list_by_plugin
                                                         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
-Retrieves a <span class="type">GList</span> of features of the plugin with name <em class="parameter"><code>name</code></em>.</p>
+Retrieves a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of features of the plugin with name <em class="parameter"><code>name</code></em>.</p>
 <p>
 
 </p>
@@ -287,7 +362,9 @@ Retrieves a <span class="type">GList</span> of features of the plugin with name 
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GList</span> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>. Use <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()"><code class="function">gst_plugin_feature_list_free()</code></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>. Use <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()"><code class="function">gst_plugin_feature_list_free()</code></a>
 after usage.
 </td>
 </tr>
@@ -297,7 +374,9 @@ after usage.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-get-path-list"></a><h3>gst_registry_get_path_list ()</h3>
-<pre class="programlisting">GList*              gst_registry_get_path_list          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_get_path_list          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre>
 <p>
 Get the list of paths for the given registry.</p>
 <p>
@@ -324,7 +403,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-get-plugin-list"></a><h3>gst_registry_get_plugin_list ()</h3>
-<pre class="programlisting">GList*              gst_registry_get_plugin_list        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_get_plugin_list        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre>
 <p>
 Get a copy of all plugins registered in the given registry. The refcount
 of each element in the list in incremented.</p>
@@ -341,7 +422,9 @@ of each element in the list in incremented.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GList</span> of <a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a>. Use <a class="link" href="GstPlugin.html#gst-plugin-list-free" title="gst_plugin_list_free ()"><code class="function">gst_plugin_list_free()</code></a> after usage.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a>. Use <a class="link" href="GstPlugin.html#gst-plugin-list-free" title="gst_plugin_list_free ()"><code class="function">gst_plugin_list_free()</code></a> after usage.
 
 MT safe.
 </td>
@@ -352,7 +435,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-add-plugin"></a><h3>gst_registry_add_plugin ()</h3>
-<pre class="programlisting">gboolean            gst_registry_add_plugin             (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_add_plugin             (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a> *plugin);</pre>
 <p>
 Add the plugin to the registry. The plugin-added signal will be emitted.
@@ -415,12 +500,20 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-plugin-filter"></a><h3>gst_registry_plugin_filter ()</h3>
-<pre class="programlisting">GList*              gst_registry_plugin_filter          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_plugin_filter          (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPlugin.html#GstPluginFilter" title="GstPluginFilter ()">GstPluginFilter</a> filter,
-                                                         gboolean first,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> first,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
-Runs a filter against all plugins in the registry and returns a <span class="type">GList</span> with
+Runs a filter against all plugins in the registry and returns a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> with
 the results. If the first flag is set, only the first match is
 returned (as a list with a single object).
 Every plugin is reffed; use <a class="link" href="GstPlugin.html#gst-plugin-list-free" title="gst_plugin_list_free ()"><code class="function">gst_plugin_list_free()</code></a> after use, which
@@ -453,7 +546,9 @@ will unref again.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GList</span> of <a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a>. Use <a class="link" href="GstPlugin.html#gst-plugin-list-free" title="gst_plugin_list_free ()"><code class="function">gst_plugin_list_free()</code></a> after usage.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a>. Use <a class="link" href="GstPlugin.html#gst-plugin-list-free" title="gst_plugin_list_free ()"><code class="function">gst_plugin_list_free()</code></a> after usage.
 
 MT safe.
 </td>
@@ -464,10 +559,16 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-feature-filter"></a><h3>gst_registry_feature_filter ()</h3>
-<pre class="programlisting">GList*              gst_registry_feature_filter         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_registry_feature_filter         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPluginFeature.html#GstPluginFeatureFilter" title="GstPluginFeatureFilter ()">GstPluginFeatureFilter</a> filter,
-                                                         gboolean first,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> first,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Runs a filter against all features of the plugins in the registry
 and returns a GList with the results.
@@ -501,7 +602,9 @@ returned (as a list with a single object).</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GList</span> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>. Use <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()"><code class="function">gst_plugin_feature_list_free()</code></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>. Use <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()"><code class="function">gst_plugin_feature_list_free()</code></a>
 after usage.
 
 MT safe.
@@ -514,7 +617,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-registry-find-plugin"></a><h3>gst_registry_find_plugin ()</h3>
 <pre class="programlisting"><a class="link" href="GstPlugin.html" title="GstPlugin">GstPlugin</a>*          gst_registry_find_plugin            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Find the plugin with the given name in the registry.
 The plugin will be reffed; caller is responsible for unreffing.</p>
@@ -549,8 +654,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-registry-find-feature"></a><h3>gst_registry_find_feature ()</h3>
 <pre class="programlisting"><a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>*   gst_registry_find_feature           (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *name,
-                                                         GType type);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
 Find the pluginfeature with the given name and type in the registry.</p>
 <p>
@@ -623,7 +732,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-registry-add-path"></a><h3>gst_registry_add_path ()</h3>
 <pre class="programlisting">void                gst_registry_add_path               (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *path);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *path);</pre>
 <p>
 Add the given path to the registry. The syntax of the
 path is specific to the registry. If the path has already been
@@ -650,8 +761,12 @@ added, do nothing.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-scan-path"></a><h3>gst_registry_scan_path ()</h3>
-<pre class="programlisting">gboolean            gst_registry_scan_path              (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                         const gchar *path);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_scan_path              (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *path);</pre>
 <p>
 Add the given path to the registry. The syntax of the
 path is specific to the registry. If the path has already been
@@ -674,7 +789,9 @@ added, do nothing.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if registry changed
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if registry changed
 </td>
 </tr>
 </tbody>
@@ -683,7 +800,9 @@ added, do nothing.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-binary-read-cache"></a><h3>gst_registry_binary_read_cache ()</h3>
-<pre class="programlisting">gboolean            gst_registry_binary_read_cache      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_binary_read_cache      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);</pre>
 <p>
 Read the contents of the binary cache file at <em class="parameter"><code>location</code></em> into <em class="parameter"><code>registry</code></em>.</p>
@@ -705,7 +824,9 @@ Read the contents of the binary cache file at <em class="parameter"><code>locati
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> on success.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> on success.
 </td>
 </tr>
 </tbody>
@@ -714,7 +835,9 @@ Read the contents of the binary cache file at <em class="parameter"><code>locati
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-binary-write-cache"></a><h3>gst_registry_binary_write_cache ()</h3>
-<pre class="programlisting">gboolean            gst_registry_binary_write_cache     (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_binary_write_cache     (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);</pre>
 <p>
 Write the <em class="parameter"><code>registry</code></em> to a cache to file at given <em class="parameter"><code>location</code></em>.</p>
@@ -736,7 +859,9 @@ Write the <em class="parameter"><code>registry</code></em> to a cache to file at
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> on success.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> on success.
 </td>
 </tr>
 </tbody>
@@ -745,7 +870,9 @@ Write the <em class="parameter"><code>registry</code></em> to a cache to file at
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-xml-read-cache"></a><h3>gst_registry_xml_read_cache ()</h3>
-<pre class="programlisting">gboolean            gst_registry_xml_read_cache         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_xml_read_cache         (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);</pre>
 <p>
 Read the contents of the XML cache file at <em class="parameter"><code>location</code></em> into <em class="parameter"><code>registry</code></em>.</p>
@@ -767,7 +894,9 @@ Read the contents of the XML cache file at <em class="parameter"><code>location<
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> on success.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> on success.
 </td>
 </tr>
 </tbody>
@@ -776,7 +905,9 @@ Read the contents of the XML cache file at <em class="parameter"><code>location<
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-xml-write-cache"></a><h3>gst_registry_xml_write_cache ()</h3>
-<pre class="programlisting">gboolean            gst_registry_xml_write_cache        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_xml_write_cache        (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          const char *location);</pre>
 <p>
 Write <em class="parameter"><code>registry</code></em> in an XML format at the location given by
@@ -870,7 +1001,9 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-registry-add-feature"></a><h3>gst_registry_add_feature ()</h3>
-<pre class="programlisting">gboolean            gst_registry_add_feature            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_registry_add_feature            (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
                                                          <a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a> *feature);</pre>
 <p>
 Add the feature to the registry. The feature-added signal will be emitted.
@@ -904,11 +1037,21 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-default-registry-check-feature-version"></a><h3>gst_default_registry_check_feature_version ()</h3>
-<pre class="programlisting">gboolean            gst_default_registry_check_feature_version
-                                                        (const gchar *feature_name,
-                                                         guint min_major,
-                                                         guint min_minor,
-                                                         guint min_micro);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_default_registry_check_feature_version
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *feature_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_major,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_minor,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> min_micro);</pre>
 <p>
 Checks whether a plugin feature by the given name exists in the
 default registry and whether its version is at least the
@@ -941,8 +1084,12 @@ version required.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if the feature could be found and the version is
-the same as the required version or newer, and <span class="type">FALSE</span> otherwise.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if the feature could be found and the version is
+the same as the required version or newer, and <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><span class="type">FALSE</span></a> otherwise.
 </td>
 </tr>
 </tbody>
@@ -1106,8 +1253,12 @@ returned (as a list with a single object).</p>
 <div class="refsect2" lang="en">
 <a name="GstRegistry-feature-added"></a><h3>The <code class="literal">"feature-added"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                        gpointer     feature,
-                                                        gpointer     user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     feature,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
 <p>
 Signals that a feature has been added to the registry (possibly
 replacing a previously-added one by the same name)</p>
@@ -1138,8 +1289,12 @@ replacing a previously-added one by the same name)</p>
 <div class="refsect2" lang="en">
 <a name="GstRegistry-plugin-added"></a><h3>The <code class="literal">"plugin-added"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
-                                                        gpointer     plugin,
-                                                        gpointer     user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     plugin,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
 <p>
 Signals that a plugin has been added to the registry (possibly
 replacing a previously-added one by the same name)</p>

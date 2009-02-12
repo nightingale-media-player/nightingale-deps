@@ -58,6 +58,7 @@ REGISTRY_CHECKS =				\
 	gst/gsturi  				\
 	gst/gstutils				\
 	generic/sinks				\
+	elements/capsfilter			\
 	elements/fakesink			\
 	elements/fakesrc			\
 	elements/fdsrc			  	\
@@ -99,8 +100,11 @@ check_PROGRAMS =				\
 	libs/libsabi				\
 	libs/gdp				\
 	libs/adapter				\
+	libs/bitreader				\
+	libs/bytereader				\
 	libs/gstnetclientclock			\
-	libs/gstnettimeprovider
+	libs/gstnettimeprovider			\
+	libs/transform1				
 
 # failing tests
 # queue : tests is unstable (race conditions)
@@ -120,12 +124,17 @@ noinst_HEADERS = \
 	gst/struct_hppa.h \
 	gst/struct_ppc32.h \
 	gst/struct_ppc64.h \
+	gst/struct_sparc.h \
 	gst/struct_x86_64.h \
 	libs/struct_i386.h \
 	libs/struct_hppa.h \
 	libs/struct_ppc32.h \
 	libs/struct_ppc64.h \
+	libs/struct_sparc.h \
 	libs/struct_x86_64.h
+
+EXTRA_DIST = \
+	libs/test_transform.c
 
 AM_CFLAGS = $(GST_OBJ_CFLAGS) $(CHECK_CFLAGS)
 LDADD = $(top_builddir)/libs/gst/check/libgstcheck-@GST_MAJORMINOR@.la \
@@ -145,6 +154,12 @@ elements_filesrc_CFLAGS=$(GST_OBJ_CFLAGS) $(CHECK_CFLAGS) -DTESTFILE=\"$(top_src
 libs_basesrc_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(LDADD)
+libs_bitreader_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
+libs_bytereader_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
 libs_adapter_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(LDADD)
@@ -161,6 +176,9 @@ libs_gstnettimeprovider_LDADD = \
 	$(top_builddir)/libs/gst/net/libgstnet-@GST_MAJORMINOR@.la \
 	$(LDADD)
 libs_typefindhelper_LDADD = \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
+	$(LDADD)
+libs_transform1_LDADD = \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_MAJORMINOR@.la \
 	$(LDADD)
 

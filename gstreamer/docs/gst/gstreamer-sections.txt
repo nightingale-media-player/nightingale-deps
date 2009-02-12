@@ -56,6 +56,8 @@ gst_bin_iterate_sorted
 gst_bin_iterate_sources
 gst_bin_iterate_all_by_interface
 
+gst_bin_recalculate_latency
+
 <SUBSECTION>
 gst_bin_add_many
 gst_bin_remove_many
@@ -145,6 +147,7 @@ GST_BUFFER_FLAG_UNSET
 
 GST_BUFFER_DATA
 GST_BUFFER_MALLOCDATA
+GST_BUFFER_FREE_FUNC
 GST_BUFFER_SIZE
 GST_BUFFER_TIMESTAMP
 GST_BUFFER_DURATION
@@ -358,7 +361,6 @@ gst_clock_id_unschedule
 gst_clock_id_compare_func
 gst_clock_id_ref
 gst_clock_id_unref
-GST_TYPE_CLOCK_TIME
 <SUBSECTION Standard>
 GST_CLOCK
 GST_IS_CLOCK
@@ -396,10 +398,7 @@ GST_DISABLE_PARSE
 GST_DISABLE_TRACE
 GST_DISABLE_ALLOC_TRACE
 GST_DISABLE_REGISTRY
-GST_DISABLE_ENUMTYPES
-GST_DISABLE_INDEX
 GST_DISABLE_PLUGIN
-GST_DISABLE_URI
 GST_DISABLE_XML
 <SUBSECTION Private>
 GST_DISABLE_LOADSAVE_REGISTRY
@@ -668,6 +667,9 @@ gst_event_new_custom
 gst_event_get_structure
 gst_event_has_name
 
+gst_event_get_seqnum
+gst_event_set_seqnum
+
 gst_event_new_flush_start
 gst_event_new_flush_stop
 
@@ -760,6 +762,7 @@ gst_ghost_pad_new_from_template
 gst_ghost_pad_new_no_target_from_template
 gst_ghost_pad_set_target
 gst_ghost_pad_get_target
+gst_ghost_pad_construct
 <SUBSECTION Standard>
 GstGhostPadClass
 GST_GHOST_PAD
@@ -769,6 +772,16 @@ GST_IS_GHOST_PAD_CLASS
 GST_TYPE_GHOST_PAD
 GST_GHOST_PAD_CAST
 <SUBSECTION Private>
+GST_IS_PROXY_PAD
+GST_IS_PROXY_PAD_CLASS
+GST_PROXY_PAD
+GST_PROXY_PAD_CLASS
+GST_TYPE_PROXY_PAD
+GstGhostPadPrivate
+GstProxyPad
+GstProxyPadClass
+GstProxyPadPrivate
+gst_proxy_pad_get_type
 gst_ghost_pad_get_type
 </SECTION>
 
@@ -951,7 +964,6 @@ GstDebugMessage
 gst_debug_color_flags_get_type
 gst_debug_level_get_type
 gst_debug_graph_details_get_type
-IMPORT_SYMBOL
 M_PI
 </SECTION>
 
@@ -1024,6 +1036,7 @@ gst_iterator_result_get_type
 <TITLE>GstMessage</TITLE>
 GstMessage
 GstMessageType
+GstStructureChangeType
 GST_MESSAGE_SRC
 GST_MESSAGE_TIMESTAMP
 GST_MESSAGE_TYPE
@@ -1036,6 +1049,8 @@ gst_message_unref
 gst_message_copy
 gst_message_get_structure
 gst_message_make_writable
+gst_message_get_seqnum
+gst_message_set_seqnum
 
 gst_message_new_eos
 gst_message_new_error
@@ -1072,7 +1087,8 @@ gst_message_new_latency
 gst_message_new_async_start
 gst_message_parse_async_start
 gst_message_new_async_done
-
+gst_message_new_structure_change
+gst_message_parse_structure_change
 <SUBSECTION Standard>
 GstMessageClass
 GST_MESSAGE
@@ -1083,9 +1099,11 @@ GST_MESSAGE_CLASS
 GST_IS_MESSAGE_CLASS
 GST_MESSAGE_GET_CLASS
 GST_TYPE_MESSAGE_TYPE
+GST_TYPE_STRUCTURE_CHANGE_TYPE
 <SUBSECTION Private>
 gst_message_get_type
 gst_message_type_get_type
+gst_structure_change_type_get_type
 GST_MESSAGE_COND
 GST_MESSAGE_GET_LOCK
 GST_MESSAGE_LOCK
@@ -1343,10 +1361,16 @@ GstPadQueryTypeFunction
 gst_pad_get_query_types
 gst_pad_get_query_types_default
 
+gst_pad_set_iterate_internal_links_function
+GstPadIterIntLinkFunction
+gst_pad_iterate_internal_links
+gst_pad_iterate_internal_links_default
+
 gst_pad_set_internal_link_function
 GstPadIntLinkFunction
 gst_pad_get_internal_links
 gst_pad_get_internal_links_default
+
 gst_pad_load_and_link
 
 gst_pad_dispatcher
@@ -1438,6 +1462,7 @@ GST_PAD_FIXATECAPSFUNC
 GST_PAD_GETCAPSFUNC
 GST_PAD_GETRANGEFUNC
 GST_PAD_INTLINKFUNC
+GST_PAD_ITERINTLINKFUNC
 GST_PAD_IS_FLUSHING
 GST_PAD_LINKFUNC
 GST_PAD_QUERYFUNC
@@ -1501,6 +1526,8 @@ gst_static_caps_get_type
 <TITLE>GstParamSpec</TITLE>
 
 GST_PARAM_CONTROLLABLE
+GST_PARAM_USER_EDITABLE
+GST_PARAM_NOT_PRESETABLE
 GST_PARAM_USER_SHIFT
 
 <SUBSECTION paramspecfraction>
@@ -1614,6 +1641,10 @@ gst_plugin_load
 gst_plugin_load_by_name
 gst_plugin_list_free
 gst_plugin_register_static
+<SUBSECTION>
+GstPluginDependencyFlags
+gst_plugin_add_dependency
+gst_plugin_add_dependency_simple
 <SUBSECTION Standard>
 GstPluginClass
 GST_PLUGIN
@@ -1626,6 +1657,9 @@ GST_IS_PLUGIN
 GST_IS_PLUGIN_CLASS
 GstPluginFlags
 GST_TYPE_PLUGIN_FLAGS
+GST_TYPE_PLUGIN_DEPENDENCY_FLAGS
+GstPluginPrivate
+gst_plugin_dependency_flags_get_type
 <SUBSECTION Private>
 gst_plugin_get_type
 <SUBSECTION Private>
@@ -1695,6 +1729,7 @@ gst_poll_wait
 <FILE>gstpreset</FILE>
 <TITLE>GstPreset</TITLE>
 GstPreset
+GstPresetInterface
 gst_preset_get_preset_names
 gst_preset_get_property_names
 gst_preset_load_preset
@@ -1704,7 +1739,6 @@ gst_preset_delete_preset
 gst_preset_set_meta
 gst_preset_get_meta
 <SUBSECTION Standard>
-GstPresetInterface
 GST_PRESET
 GST_IS_PRESET
 GST_TYPE_PRESET
@@ -1717,7 +1751,6 @@ gst_preset_get_type
 <TITLE>GstQuery</TITLE>
 GstQuery
 GstQueryType
-GST_QUERY_TYPE
 GST_QUERY_TYPE_NAME
 GstQueryTypeDefinition
 
@@ -1776,6 +1809,9 @@ gst_query_parse_buffering_stats
 gst_query_set_buffering_range
 gst_query_parse_buffering_range
 
+gst_query_new_uri
+gst_query_parse_uri
+gst_query_set_uri
 <SUBSECTION Standard>
 GstQueryClass
 GST_QUERY
@@ -2000,7 +2036,13 @@ GST_TAG_REFERENCE_LEVEL
 GST_TAG_LANGUAGE_CODE
 GST_TAG_IMAGE
 GST_TAG_PREVIEW_IMAGE
+GST_TAG_ATTACHMENT
 GST_TAG_BEATS_PER_MINUTE
+GST_TAG_KEYWORDS
+GST_TAG_GEO_LOCATION_NAME
+GST_TAG_GEO_LOCATION_LATITUDE
+GST_TAG_GEO_LOCATION_LONGITUDE
+GST_TAG_GEO_LOCATION_ELEVATION
 
 gst_tag_register
 gst_tag_merge_use_first
@@ -2075,6 +2117,7 @@ gst_tag_merge_mode_get_type
 <TITLE>GstTagSetter</TITLE>
 GstTagSetter
 GstTagSetterIFace
+gst_tag_setter_reset_tags
 gst_tag_setter_merge_tags
 gst_tag_setter_add_tags
 gst_tag_setter_add_tag_values
@@ -2230,7 +2273,6 @@ gst_uri_handler_get_uri
 gst_uri_handler_set_uri
 gst_uri_handler_new_uri
 <SUBSECTION Standard>
-GstURIHandlerInterface
 GST_URI_HANDLER
 GST_IS_URI_HANDLER
 GST_URI_HANDLER_CLASS
@@ -2251,20 +2293,42 @@ GST_BOILERPLATE_FULL
 GST_BOILERPLATE
 GST_CALL_PARENT
 GST_CALL_PARENT_WITH_DEFAULT
+GDOUBLE_FROM_BE
+GDOUBLE_FROM_LE
+GDOUBLE_TO_BE
+GDOUBLE_TO_LE
+GDOUBLE_SWAP_LE_BE
+GFLOAT_FROM_BE
+GFLOAT_FROM_LE
+GFLOAT_TO_BE
+GFLOAT_TO_LE
+GFLOAT_SWAP_LE_BE
 GST_READ_UINT8
 GST_READ_UINT16_LE
 GST_READ_UINT16_BE
+GST_READ_UINT24_LE
+GST_READ_UINT24_BE
 GST_READ_UINT32_LE
 GST_READ_UINT32_BE
 GST_READ_UINT64_LE
 GST_READ_UINT64_BE
+GST_READ_FLOAT_LE
+GST_READ_FLOAT_BE
+GST_READ_DOUBLE_LE
+GST_READ_DOUBLE_BE
 GST_WRITE_UINT8
 GST_WRITE_UINT16_LE
 GST_WRITE_UINT16_BE
+GST_WRITE_UINT24_LE
+GST_WRITE_UINT24_BE
 GST_WRITE_UINT32_LE
 GST_WRITE_UINT32_BE
 GST_WRITE_UINT64_LE
 GST_WRITE_UINT64_BE
+GST_WRITE_FLOAT_LE
+GST_WRITE_FLOAT_BE
+GST_WRITE_DOUBLE_LE
+GST_WRITE_DOUBLE_BE
 GST_ROUND_UP_2
 GST_ROUND_UP_4
 GST_ROUND_UP_8
@@ -2289,6 +2353,8 @@ gst_type_register_static_full
 gst_util_dump_mem
 gst_util_uint64_scale
 gst_util_uint64_scale_int
+gst_util_seqnum_next
+gst_util_seqnum_compare
 gst_util_set_object_arg
 gst_util_set_value_from_string
 gst_util_get_timestamp

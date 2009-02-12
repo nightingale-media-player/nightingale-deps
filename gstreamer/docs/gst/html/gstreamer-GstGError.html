@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -54,8 +54,14 @@ enum                <a class="link" href="gstreamer-GstGError.html#GstStreamErro
 #define             <a class="link" href="gstreamer-GstGError.html#GST-RESOURCE-ERROR:CAPS" title="GST_RESOURCE_ERROR">GST_RESOURCE_ERROR</a>
 #define             <a class="link" href="gstreamer-GstGError.html#GST-STREAM-ERROR:CAPS" title="GST_STREAM_ERROR">GST_STREAM_ERROR</a>
 #define             <a class="link" href="gstreamer-GstGError.html#GST-ERROR-SYSTEM:CAPS" title="GST_ERROR_SYSTEM">GST_ERROR_SYSTEM</a>
-gchar*              <a class="link" href="gstreamer-GstGError.html#gst-error-get-message" title="gst_error_get_message ()">gst_error_get_message</a>               (GQuark domain,
-                                                         gint code);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gstreamer-GstGError.html#gst-error-get-message" title="gst_error_get_message ()">gst_error_get_message</a>               (<a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a> domain,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> code);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -72,8 +78,12 @@ to mean both (non-fatal) warnings and (fatal) errors; they are treated
 similarly.
 </p>
 <p>
-Errors from elements are the combination of a <span class="type">GError</span> and a debug string.
-The <span class="type">GError</span> contains:
+Errors from elements are the combination of a <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> and a debug string.
+The <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> contains:
 - a domain type: CORE, LIBRARY, RESOURCE or STREAM
 - a code: an enum value specific to the domain
 - a translated, human-readable message
@@ -116,7 +126,7 @@ Elements throw errors using the <a class="link" href="GstElement.html#GST-ELEMEN
 <p>
 </p>
 <div class="example">
-<a name="id2678995"></a><p class="title"><b>Example 7. Throwing an error</b></p>
+<a name="id2943318"></a><p class="title"><b>Example 7. Throwing an error</b></p>
 <div class="example-contents"><pre class="programlisting">
     GST_ELEMENT_ERROR (src, RESOURCE, NOT_FOUND,
       (_("No file name specified for reading.")), (NULL));
@@ -564,7 +574,9 @@ can't be decrypted because no suitable key is available. (Since: 0.10.20)
 <p>
 Error domain for core system. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstCoreError" title="enum GstCoreError"><span class="type">GstCoreError</span></a> enumeration.
-See <span class="type">GError</span> for information on error domains.</p>
+See <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> for information on error domains.</p>
 <p>
 
 </p>
@@ -577,7 +589,9 @@ See <span class="type">GError</span> for information on error domains.</p>
 <p>
 Error domain for library loading. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstLibraryError" title="enum GstLibraryError"><span class="type">GstLibraryError</span></a> enumeration.
-See <span class="type">GError</span> for information on error domains.</p>
+See <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> for information on error domains.</p>
 <p>
 
 </p>
@@ -590,7 +604,9 @@ See <span class="type">GError</span> for information on error domains.</p>
 <p>
 Error domain for resource handling. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstResourceError" title="enum GstResourceError"><span class="type">GstResourceError</span></a> enumeration.
-See <span class="type">GError</span> for information on error domains.</p>
+See <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> for information on error domains.</p>
 <p>
 
 </p>
@@ -603,7 +619,9 @@ See <span class="type">GError</span> for information on error domains.</p>
 <p>
 Error domain for media stream processing. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstStreamError" title="enum GstStreamError"><span class="type">GstStreamError</span></a> enumeration.
-See <span class="type">GError</span> for information on error domains.</p>
+See <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> for information on error domains.</p>
 <p>
 
 </p>
@@ -623,8 +641,14 @@ call.  To be used as the debug argument in <a class="link" href="GstElement.html
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-error-get-message"></a><h3>gst_error_get_message ()</h3>
-<pre class="programlisting">gchar*              gst_error_get_message               (GQuark domain,
-                                                         gint code);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_error_get_message               (<a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a> domain,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> code);</pre>
 <p>
 Get a string describing the error message in the current locale.</p>
 <p>

@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -50,16 +50,38 @@ to GStreamer</p>
 #define             <a class="link" href="gstreamer-GstParamSpec.html#GST-PARAM-USER-SHIFT:CAPS" title="GST_PARAM_USER_SHIFT">GST_PARAM_USER_SHIFT</a>
 
                     <a class="link" href="gstreamer-GstParamSpec.html#GstParamSpecFraction" title="GstParamSpecFraction">GstParamSpecFraction</a>;
-GParamSpec*         <a class="link" href="gstreamer-GstParamSpec.html#gst-param-spec-fraction" title="gst_param_spec_fraction ()">gst_param_spec_fraction</a>             (const gchar *name,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
-                                                         gint min_num,
-                                                         gint min_denom,
-                                                         gint max_num,
-                                                         gint max_denom,
-                                                         gint default_num,
-                                                         gint default_denom,
-                                                         GParamFlags flags);
+<a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a>*         <a class="link" href="gstreamer-GstParamSpec.html#gst-param-spec-fraction" title="gst_param_spec_fraction ()">gst_param_spec_fraction</a>             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *nick,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *blurb,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> min_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> min_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> max_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> max_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> default_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> default_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamFlags"
+>GParamFlags</a> flags);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -118,37 +140,51 @@ properties.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GParamSpec <em class="structfield"><code>parent_instance</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> <em class="structfield"><code>parent_instance</code></em>;</span></p></td>
 <td> super class
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>min_num</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>min_num</code></em>;</span></p></td>
 <td> minimal numerator
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>min_den</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>min_den</code></em>;</span></p></td>
 <td> minimal denominator
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>max_num</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>max_num</code></em>;</span></p></td>
 <td> maximal numerator
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>max_den</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>max_den</code></em>;</span></p></td>
 <td> maximal denominator
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>def_num</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>def_num</code></em>;</span></p></td>
 <td> default numerator
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>def_den</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>def_den</code></em>;</span></p></td>
 <td> default denominator
 </td>
 </tr>
@@ -158,20 +194,44 @@ properties.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-param-spec-fraction"></a><h3>gst_param_spec_fraction ()</h3>
-<pre class="programlisting">GParamSpec*         gst_param_spec_fraction             (const gchar *name,
-                                                         const gchar *nick,
-                                                         const gchar *blurb,
-                                                         gint min_num,
-                                                         gint min_denom,
-                                                         gint max_num,
-                                                         gint max_denom,
-                                                         gint default_num,
-                                                         gint default_denom,
-                                                         GParamFlags flags);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a>*         gst_param_spec_fraction             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *nick,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *blurb,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> min_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> min_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> max_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> max_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> default_num,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> default_denom,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamFlags"
+>GParamFlags</a> flags);</pre>
 <p>
 This function creates a fraction GParamSpec for use by objects/elements
 that want to expose properties of fraction type. This function is typically
-used in connection with <code class="function">g_object_class_install_property()</code> in a GObjects's
+used in connection with <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#g-object-class-install-property"
+><code class="function">g_object_class_install_property()</code></a> in a GObjects's
 instance_init function.</p>
 <p>
 

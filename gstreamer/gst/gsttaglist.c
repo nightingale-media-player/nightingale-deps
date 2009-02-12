@@ -62,7 +62,9 @@ GstTagInfo;
 
 #define TAGLIST "taglist"
 static GQuark gst_tag_list_quark;
+
 static GMutex *__tag_mutex;
+
 static GHashTable *__tags;
 
 #define TAG_LOCK g_mutex_lock (__tag_mutex)
@@ -151,18 +153,15 @@ _gst_tag_initialize (void)
   gst_tag_register (GST_TAG_LOCATION, GST_TAG_FLAG_META,
       G_TYPE_STRING,
       _("location"),
-      _("original location of file as a URI"),
+      _
+      ("Origin of media as a URI (location, where the original of the file or stream is hosted)"),
       gst_tag_merge_strings_with_comma);
-  gst_tag_register (GST_TAG_DESCRIPTION, GST_TAG_FLAG_META,
-      G_TYPE_STRING,
-      _("description"),
-      _("short text describing the content of the data"),
+  gst_tag_register (GST_TAG_DESCRIPTION, GST_TAG_FLAG_META, G_TYPE_STRING,
+      _("description"), _("short text describing the content of the data"),
       gst_tag_merge_strings_with_comma);
-  gst_tag_register (GST_TAG_VERSION, GST_TAG_FLAG_META,
-      G_TYPE_STRING, _("version"), _("version of this data"), NULL);
-  gst_tag_register (GST_TAG_ISRC, GST_TAG_FLAG_META,
-      G_TYPE_STRING,
-      _("ISRC"),
+  gst_tag_register (GST_TAG_VERSION, GST_TAG_FLAG_META, G_TYPE_STRING,
+      _("version"), _("version of this data"), NULL);
+  gst_tag_register (GST_TAG_ISRC, GST_TAG_FLAG_META, G_TYPE_STRING, _("ISRC"),
       _
       ("International Standard Recording Code - see http://www.ifpi.org/isrc/"),
       NULL);
@@ -238,9 +237,34 @@ _gst_tag_initialize (void)
       _("image"), _("image related to this stream"), gst_tag_merge_use_first);
   gst_tag_register (GST_TAG_PREVIEW_IMAGE, GST_TAG_FLAG_META, GST_TYPE_BUFFER,
       _("preview image"), _("preview image related to this stream"), NULL);
+  gst_tag_register (GST_TAG_ATTACHMENT, GST_TAG_FLAG_META, GST_TYPE_BUFFER,
+      _("attachment"), _("file attached to this stream"),
+      gst_tag_merge_use_first);
   gst_tag_register (GST_TAG_BEATS_PER_MINUTE, GST_TAG_FLAG_META, G_TYPE_DOUBLE,
       _("beats per minute"), _("number of beats per minute in audio"), NULL);
-
+  gst_tag_register (GST_TAG_KEYWORDS, GST_TAG_FLAG_META, G_TYPE_STRING,
+      _("keywords"), _("comma separated keywords describing the content"),
+      gst_tag_merge_strings_with_comma);
+  gst_tag_register (GST_TAG_GEO_LOCATION_NAME, GST_TAG_FLAG_META, G_TYPE_STRING,
+      _("geo location name"),
+      _
+      ("human readable descriptive location or where the media has been recorded or produced"),
+      NULL);
+  gst_tag_register (GST_TAG_GEO_LOCATION_LATITUDE, GST_TAG_FLAG_META,
+      G_TYPE_DOUBLE, _("geo location latitude"),
+      _
+      ("geo latitude location of where the media has been recorded or produced in degrees according to WGS84 (zero at the equator, negative values for southern latitudes)"),
+      NULL);
+  gst_tag_register (GST_TAG_GEO_LOCATION_LONGITUDE, GST_TAG_FLAG_META,
+      G_TYPE_DOUBLE, _("geo location longitude"),
+      _
+      ("geo longitude location of where the media has been recorded or produced in degrees according to WGS84 (zero at the prime meridian in Greenwich/UK,  negative values for western longitudes)"),
+      NULL);
+  gst_tag_register (GST_TAG_GEO_LOCATION_ELEVATION, GST_TAG_FLAG_META,
+      G_TYPE_DOUBLE, _("geo location elevation"),
+      _
+      ("geo elevation of where the media has been recorded or produced in meters according to WGS84 (zero is average sea level)"),
+      NULL);
 }
 
 /**
@@ -273,6 +297,7 @@ void
 gst_tag_merge_strings_with_comma (GValue * dest, const GValue * src)
 {
   GString *str;
+
   gint i, count;
 
   count = gst_value_list_get_size (src);
@@ -289,6 +314,7 @@ gst_tag_merge_strings_with_comma (GValue * dest, const GValue * src)
   g_value_take_string (dest, str->str);
   g_string_free (str, FALSE);
 }
+
 static GstTagInfo *
 gst_tag_lookup (GQuark entry)
 {
@@ -337,6 +363,7 @@ gst_tag_register (const gchar * name, GstTagFlag flag, GType type,
     const gchar * nick, const gchar * blurb, GstTagMergeFunc func)
 {
   GQuark key;
+
   GstTagInfo *info;
 
   g_return_if_fail (name != NULL);
@@ -532,17 +559,20 @@ gst_is_tag_list (gconstpointer p)
 
   return (GST_IS_STRUCTURE (s) && s->name == gst_tag_list_quark);
 }
+
 typedef struct
 {
   GstStructure *list;
   GstTagMergeMode mode;
 }
 GstTagCopyData;
+
 static void
 gst_tag_list_add_value_internal (GstStructure * list, GstTagMergeMode mode,
     GQuark tag, const GValue * value)
 {
   GstTagInfo *info = gst_tag_lookup (tag);
+
   const GValue *value2;
 
   g_assert (info != NULL);
@@ -593,6 +623,7 @@ gst_tag_list_add_value_internal (GstStructure * list, GstTagMergeMode mode,
     }
   }
 }
+
 static gboolean
 gst_tag_list_copy_foreach (GQuark tag, const GValue * value, gpointer user_data)
 {
@@ -609,7 +640,7 @@ gst_tag_list_copy_foreach (GQuark tag, const GValue * value, gpointer user_data)
  * @from: list to merge from
  * @mode: the mode to use
  *
- * Inserts the tags of the second list into the first list using the given mode.
+ * Inserts the tags of the @from list into the first list using the given mode.
  */
 void
 gst_tag_list_insert (GstTagList * into, const GstTagList * from,
@@ -661,23 +692,28 @@ GstTagList *
 gst_tag_list_merge (const GstTagList * list1, const GstTagList * list2,
     GstTagMergeMode mode)
 {
+  GstTagList *list1_cp;
+  const GstTagList *list2_cp;
+
   g_return_val_if_fail (list1 == NULL || GST_IS_TAG_LIST (list1), NULL);
   g_return_val_if_fail (list2 == NULL || GST_IS_TAG_LIST (list2), NULL);
   g_return_val_if_fail (GST_TAG_MODE_IS_VALID (mode), NULL);
 
+  /* nothing to merge */
   if (!list1 && !list2) {
     return NULL;
-  } else if (!list1) {
-    return gst_tag_list_copy (list2);
-  } else if (!list2) {
-    return gst_tag_list_copy (list1);
-  } else {
-    GstTagList *ret;
-
-    ret = gst_tag_list_copy (list1);
-    gst_tag_list_insert (ret, list2, mode);
-    return ret;
   }
+
+  /* create empty list, we need to do this to correctly handling merge modes */
+  list1_cp = (list1) ? gst_tag_list_copy (list1) : gst_tag_list_new ();
+  list2_cp = (list2) ? list2 : gst_tag_list_new ();
+
+  gst_tag_list_insert (list1_cp, list2_cp, mode);
+
+  if (!list2)
+    gst_tag_list_free ((GstTagList *) list2_cp);
+
+  return list1_cp;
 }
 
 /**
@@ -787,6 +823,10 @@ gst_tag_list_add_valist (GstTagList * list, GstTagMergeMode mode,
   g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
   g_return_if_fail (tag != NULL);
 
+  if (mode == GST_TAG_MERGE_REPLACE_ALL) {
+    gst_structure_remove_all_fields (list);
+  }
+
   while (tag != NULL) {
     GValue value = { 0, };
 
@@ -856,6 +896,7 @@ gst_tag_list_remove_tag (GstTagList * list, const gchar * tag)
 
   gst_structure_remove_field ((GstStructure *) list, tag);
 }
+
 typedef struct
 {
   GstTagForeachFunc func;
@@ -863,6 +904,7 @@ typedef struct
   gpointer data;
 }
 TagForeachData;
+
 static int
 structure_foreach_wrapper (GQuark field_id, const GValue * value,
     gpointer user_data)

@@ -22,7 +22,6 @@
 
 /**
  * SECTION:element-fdsink
- * @short_description: write to a unix file descriptor
  * @see_also: #GstFdSrc
  *
  * Write data to a unix file descriptor.
@@ -201,6 +200,10 @@ gst_fd_sink_query (GstPad * pad, GstQuery * query)
 
     case GST_QUERY_FORMATS:
       gst_query_set_formats (query, 2, GST_FORMAT_DEFAULT, GST_FORMAT_BYTES);
+      return TRUE;
+
+    case GST_QUERY_URI:
+      gst_query_set_uri (query, fdsink->uri);
       return TRUE;
 
     default:
@@ -496,6 +499,7 @@ gst_fd_sink_uri_get_type (void)
 {
   return GST_URI_SINK;
 }
+
 static gchar **
 gst_fd_sink_uri_get_protocols (void)
 {
@@ -503,6 +507,7 @@ gst_fd_sink_uri_get_protocols (void)
 
   return protocols;
 }
+
 static const gchar *
 gst_fd_sink_uri_get_uri (GstURIHandler * handler)
 {

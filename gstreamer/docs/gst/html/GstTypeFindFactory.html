@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -48,8 +48,12 @@
 #include &lt;gst/gst.h&gt;
 
                     <a class="link" href="GstTypeFindFactory.html#GstTypeFindFactory-struct" title="GstTypeFindFactory">GstTypeFindFactory</a>;
-GList*              <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-get-list" title="gst_type_find_factory_get_list ()">gst_type_find_factory_get_list</a>      (void);
-gchar**             <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-get-extensions" title="gst_type_find_factory_get_extensions ()">gst_type_find_factory_get_extensions</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-get-list" title="gst_type_find_factory_get_list ()">gst_type_find_factory_get_list</a>      (void);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-get-extensions" title="gst_type_find_factory_get_extensions ()">gst_type_find_factory_get_extensions</a>
                                                         (<a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a> *factory);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-get-caps" title="gst_type_find_factory_get_caps ()">gst_type_find_factory_get_caps</a>      (<a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a> *factory);
 void                <a class="link" href="GstTypeFindFactory.html#gst-type-find-factory-call-function" title="gst_type_find_factory_call_function ()">gst_type_find_factory_call_function</a> (<a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a> *factory,
@@ -59,7 +63,9 @@ void                <a class="link" href="GstTypeFindFactory.html#gst-type-find-
 <div class="refsect1" lang="en">
 <a name="GstTypeFindFactory.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----<a class="link" href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>
                +----GstTypeFindFactory
@@ -76,7 +82,7 @@ the section
 <p>
 </p>
 <div class="example">
-<a name="id2918011"></a><p class="title"><b>Example 14. how to write a simple typefinder</b></p>
+<a name="id2913036"></a><p class="title"><b>Example 14. how to write a simple typefinder</b></p>
 <div class="example-contents"><pre class="programlisting">
   typedef struct {
     guint8 *data;
@@ -146,7 +152,9 @@ Object that stores information about a typefind function.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-factory-get-list"></a><h3>gst_type_find_factory_get_list ()</h3>
-<pre class="programlisting">GList*              gst_type_find_factory_get_list      (void);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_type_find_factory_get_list      (void);</pre>
 <p>
 Gets the list of all registered typefind factories. You must free the
 list using gst_plugin_feature_list_free.</p>
@@ -165,7 +173,9 @@ list using gst_plugin_feature_list_free.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-type-find-factory-get-extensions"></a><h3>gst_type_find_factory_get_extensions ()</h3>
-<pre class="programlisting">gchar**             gst_type_find_factory_get_extensions
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             gst_type_find_factory_get_extensions
                                                         (<a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a> *factory);</pre>
 <p>
 Gets the extensions associated with a <a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory"><span class="type">GstTypeFindFactory</span></a>. The returned

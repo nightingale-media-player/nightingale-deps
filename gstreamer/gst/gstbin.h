@@ -151,7 +151,11 @@ struct _GstBinClass {
   void		(*handle_message)	(GstBin *bin, GstMessage *message);
 
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  /* signal added 0.10.22 */
+  gboolean	(*do_latency)           (GstBin *bin);
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING-1];
 };
 
 GType		gst_bin_get_type		(void);
@@ -174,6 +178,10 @@ GstIterator*    gst_bin_iterate_recurse		 (GstBin *bin);
 GstIterator*	gst_bin_iterate_sinks		 (GstBin *bin);
 GstIterator*	gst_bin_iterate_sources		 (GstBin *bin);
 GstIterator*	gst_bin_iterate_all_by_interface (GstBin *bin, GType iface);
+
+/* latency */
+gboolean        gst_bin_recalculate_latency      (GstBin * bin);
+
 
 G_END_DECLS
 

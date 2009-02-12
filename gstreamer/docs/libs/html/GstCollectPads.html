@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
-<link rel="prev" href="GstAdapter.html" title="GstAdapter">
+<link rel="prev" href="gstreamer-libs-GstByteReader.html" title="GstByteReader">
 <link rel="next" href="gstreamer-libs-GstTypeFindHelper.html" title="GstTypeFindHelper">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -16,14 +16,14 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="GstAdapter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gstreamer-libs-GstByteReader.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
@@ -53,55 +53,91 @@
                     <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a>;
                     <a class="link" href="GstCollectPads.html#GstCollectPads-struct" title="GstCollectPads">GstCollectPads</a>;
 GstFlowReturn       (<a class="link" href="GstCollectPads.html#GstCollectPadsFunction" title="GstCollectPadsFunction ()">*GstCollectPadsFunction</a>)           (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 void                (<a class="link" href="GstCollectPads.html#GstCollectDataDestroyNotify" title="GstCollectDataDestroyNotify ()">*GstCollectDataDestroyNotify</a>)      (<a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data);
 <a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a>*     <a class="link" href="GstCollectPads.html#gst-collect-pads-new" title="gst_collect_pads_new ()">gst_collect_pads_new</a>                (void);
 void                <a class="link" href="GstCollectPads.html#gst-collect-pads-set-function" title="gst_collect_pads_set_function ()">gst_collect_pads_set_function</a>       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectPadsFunction" title="GstCollectPadsFunction ()">GstCollectPadsFunction</a> func,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a>*     <a class="link" href="GstCollectPads.html#gst-collect-pads-add-pad" title="gst_collect_pads_add_pad ()">gst_collect_pads_add_pad</a>            (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad,
-                                                         guint size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
 <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a>*     <a class="link" href="GstCollectPads.html#gst-collect-pads-add-pad-full" title="gst_collect_pads_add_pad_full ()">gst_collect_pads_add_pad_full</a>       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="GstCollectPads.html#GstCollectDataDestroyNotify" title="GstCollectDataDestroyNotify ()">GstCollectDataDestroyNotify</a> destroy_notify);
-gboolean            <a class="link" href="GstCollectPads.html#gst-collect-pads-remove-pad" title="gst_collect_pads_remove_pad ()">gst_collect_pads_remove_pad</a>         (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstCollectPads.html#gst-collect-pads-remove-pad" title="gst_collect_pads_remove_pad ()">gst_collect_pads_remove_pad</a>         (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad);
-gboolean            <a class="link" href="GstCollectPads.html#gst-collect-pads-is-active" title="gst_collect_pads_is_active ()">gst_collect_pads_is_active</a>          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstCollectPads.html#gst-collect-pads-is-active" title="gst_collect_pads_is_active ()">gst_collect_pads_is_active</a>          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad);
 GstFlowReturn       <a class="link" href="GstCollectPads.html#gst-collect-pads-collect" title="gst_collect_pads_collect ()">gst_collect_pads_collect</a>            (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);
 GstFlowReturn       <a class="link" href="GstCollectPads.html#gst-collect-pads-collect-range" title="gst_collect_pads_collect_range ()">gst_collect_pads_collect_range</a>      (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         guint64 offset,
-                                                         guint length);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> length);
 void                <a class="link" href="GstCollectPads.html#gst-collect-pads-start" title="gst_collect_pads_start ()">gst_collect_pads_start</a>              (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);
 void                <a class="link" href="GstCollectPads.html#gst-collect-pads-stop" title="gst_collect_pads_stop ()">gst_collect_pads_stop</a>               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);
 void                <a class="link" href="GstCollectPads.html#gst-collect-pads-set-flushing" title="gst_collect_pads_set_flushing ()">gst_collect_pads_set_flushing</a>       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         gboolean flushing);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flushing);
 GstBuffer*          <a class="link" href="GstCollectPads.html#gst-collect-pads-peek" title="gst_collect_pads_peek ()">gst_collect_pads_peek</a>               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data);
 GstBuffer*          <a class="link" href="GstCollectPads.html#gst-collect-pads-pop" title="gst_collect_pads_pop ()">gst_collect_pads_pop</a>                (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data);
-guint               <a class="link" href="GstCollectPads.html#gst-collect-pads-available" title="gst_collect_pads_available ()">gst_collect_pads_available</a>          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);
-guint               <a class="link" href="GstCollectPads.html#gst-collect-pads-read" title="gst_collect_pads_read ()">gst_collect_pads_read</a>               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="GstCollectPads.html#gst-collect-pads-available" title="gst_collect_pads_available ()">gst_collect_pads_available</a>          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="GstCollectPads.html#gst-collect-pads-read" title="gst_collect_pads_read ()">gst_collect_pads_read</a>               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint8 **bytes,
-                                                         guint size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **bytes,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
 GstBuffer*          <a class="link" href="GstCollectPads.html#gst-collect-pads-read-buffer" title="gst_collect_pads_read_buffer ()">gst_collect_pads_read_buffer</a>        (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
 GstBuffer*          <a class="link" href="GstCollectPads.html#gst-collect-pads-take-buffer" title="gst_collect_pads_take_buffer ()">gst_collect_pads_take_buffer</a>        (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);
-guint               <a class="link" href="GstCollectPads.html#gst-collect-pads-flush" title="gst_collect_pads_flush ()">gst_collect_pads_flush</a>              (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="GstCollectPads.html#gst-collect-pads-flush" title="gst_collect_pads_flush ()">gst_collect_pads_flush</a>              (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstCollectPads.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstCollectPads
 </pre>
@@ -200,7 +236,9 @@ Structure used by the collect_pads.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint <em class="structfield"><code>pos</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>pos</code></em>;</span></p></td>
 <td> position in the buffer
 </td>
 </tr>
@@ -227,8 +265,12 @@ Collectpads object.</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><p><span class="term">GSList *<em class="structfield"><code>data</code></em>;</span></p></td>
-<td> <span class="type">GList</span> of <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData"><span class="type">GstCollectData</span></a> managed by this <a class="link" href="GstCollectPads.html" title="GstCollectPads"><span class="type">GstCollectPads</span></a>.
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *<em class="structfield"><code>data</code></em>;</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData"><span class="type">GstCollectData</span></a> managed by this <a class="link" href="GstCollectPads.html" title="GstCollectPads"><span class="type">GstCollectPads</span></a>.
 </td>
 </tr></tbody>
 </table></div>
@@ -237,7 +279,9 @@ Collectpads object.</p>
 <div class="refsect2" lang="en">
 <a name="GstCollectPadsFunction"></a><h3>GstCollectPadsFunction ()</h3>
 <pre class="programlisting">GstFlowReturn       (*GstCollectPadsFunction)           (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 A function that will be called when all pads have received data.</p>
 <p>
@@ -311,7 +355,9 @@ MT safe.
 <a name="gst-collect-pads-set-function"></a><h3>gst_collect_pads_set_function ()</h3>
 <pre class="programlisting">void                gst_collect_pads_set_function       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectPadsFunction" title="GstCollectPadsFunction ()">GstCollectPadsFunction</a> func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Set the callback function and user data that will be called when
 all the pads added to the collection have buffers queued.
@@ -347,7 +393,9 @@ MT safe.</p>
 <a name="gst-collect-pads-add-pad"></a><h3>gst_collect_pads_add_pad ()</h3>
 <pre class="programlisting"><a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a>*     gst_collect_pads_add_pad            (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Add a pad to the collection of collect pads. The pad has to be
 a sinkpad. The refcount of the pad is incremented. Use
@@ -402,7 +450,9 @@ MT safe.
 <a name="gst-collect-pads-add-pad-full"></a><h3>gst_collect_pads_add_pad_full ()</h3>
 <pre class="programlisting"><a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a>*     gst_collect_pads_add_pad_full       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="GstCollectPads.html#GstCollectDataDestroyNotify" title="GstCollectDataDestroyNotify ()">GstCollectDataDestroyNotify</a> destroy_notify);</pre>
 <p>
 Add a pad to the collection of collect pads. The pad has to be
@@ -467,7 +517,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-remove-pad"></a><h3>gst_collect_pads_remove_pad ()</h3>
-<pre class="programlisting">gboolean            gst_collect_pads_remove_pad         (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_collect_pads_remove_pad         (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad);</pre>
 <p>
 Remove a pad from the collection of collect pads. This function will also
@@ -494,7 +546,9 @@ The pad will be deactivated automatically when <em class="parameter"><code>pads<
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the pad could be removed.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the pad could be removed.
 
 MT safe.
 </td>
@@ -505,7 +559,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-is-active"></a><h3>gst_collect_pads_is_active ()</h3>
-<pre class="programlisting">gboolean            gst_collect_pads_is_active          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_collect_pads_is_active          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          GstPad *pad);</pre>
 <p>
 Check if a pad is active.
@@ -530,7 +586,9 @@ This function is currently not implemented.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the pad is active.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the pad is active.
 
 MT safe.
 </td>
@@ -573,8 +631,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-collect-range"></a><h3>gst_collect_pads_collect_range ()</h3>
 <pre class="programlisting">GstFlowReturn       gst_collect_pads_collect_range      (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         guint64 offset,
-                                                         guint length);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> length);</pre>
 <p>
 Collect data with <em class="parameter"><code>offset</code></em> and <em class="parameter"><code>length</code></em> on all pads. This function
 is typically called in the getrange function of an element. 
@@ -659,11 +721,17 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-set-flushing"></a><h3>gst_collect_pads_set_flushing ()</h3>
 <pre class="programlisting">void                gst_collect_pads_set_flushing       (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
-                                                         gboolean flushing);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flushing);</pre>
 <p>
 Change the flushing state of all the pads in the collection. No pad
-is able to accept anymore data when <em class="parameter"><code>flushing</code></em> is <code class="literal">TRUE</code>. Calling this
-function with <em class="parameter"><code>flushing</code></em> <code class="literal">FALSE</code> makes <em class="parameter"><code>pads</code></em> accept data again.
+is able to accept anymore data when <em class="parameter"><code>flushing</code></em> is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>. Calling this
+function with <em class="parameter"><code>flushing</code></em> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> makes <em class="parameter"><code>pads</code></em> accept data again.
 </p>
 <p>
 MT safe.</p>
@@ -763,7 +831,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-available"></a><h3>gst_collect_pads_available ()</h3>
-<pre class="programlisting">guint               gst_collect_pads_available          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_collect_pads_available          (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads);</pre>
 <p>
 Query how much bytes can be read from each queued buffer. This means
 that the result of this call is the maximum number of bytes that can
@@ -797,10 +867,16 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-read"></a><h3>gst_collect_pads_read ()</h3>
-<pre class="programlisting">guint               gst_collect_pads_read               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_collect_pads_read               (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint8 **bytes,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **bytes,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Get a pointer in <em class="parameter"><code>bytes</code></em> where <em class="parameter"><code>size</code></em> bytes can be read from the
 given pad <em class="parameter"><code>data</code></em>.
@@ -851,7 +927,9 @@ MT safe.
 <a name="gst-collect-pads-read-buffer"></a><h3>gst_collect_pads_read_buffer ()</h3>
 <pre class="programlisting">GstBuffer*          gst_collect_pads_read_buffer        (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Get a subbuffer of <em class="parameter"><code>size</code></em> bytes from the given pad <em class="parameter"><code>data</code></em>.
 </p>
@@ -898,7 +976,9 @@ MT safe.
 <a name="gst-collect-pads-take-buffer"></a><h3>gst_collect_pads_take_buffer ()</h3>
 <pre class="programlisting">GstBuffer*          gst_collect_pads_take_buffer        (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Get a subbuffer of <em class="parameter"><code>size</code></em> bytes from the given pad <em class="parameter"><code>data</code></em>. Flushes the amount
 of read bytes.
@@ -944,9 +1024,13 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-collect-pads-flush"></a><h3>gst_collect_pads_flush ()</h3>
-<pre class="programlisting">guint               gst_collect_pads_flush              (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_collect_pads_flush              (<a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a> *pads,
                                                          <a class="link" href="GstCollectPads.html#GstCollectData" title="GstCollectData">GstCollectData</a> *data,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Flush <em class="parameter"><code>size</code></em> bytes from the pad <em class="parameter"><code>data</code></em>.
 </p>

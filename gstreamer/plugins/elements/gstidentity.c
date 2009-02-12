@@ -22,9 +22,8 @@
  */
 /**
  * SECTION:element-identity
- * @short_description: pass data through without modification
  *
- * Dummy element that passes incomming data through unmodified. I has some
+ * Dummy element that passes incomming data through unmodified. It has some
  * useful diagnostic functions, such as offset and timestamp checking.
  */
 
@@ -348,7 +347,7 @@ gst_identity_event (GstBaseTransform * trans, GstEvent * event)
     identity->prev_offset = identity->prev_offset_end = GST_BUFFER_OFFSET_NONE;
   }
 
-  GST_BASE_TRANSFORM_CLASS (parent_class)->event (trans, event);
+  ret = parent_class->event (trans, event);
 
   if (identity->single_segment
       && (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT)) {
@@ -411,7 +410,9 @@ gst_identity_check_perfect (GstIdentity * identity, GstBuffer * buf)
       }
 
       offset = GST_BUFFER_OFFSET (buf);
-      if (identity->prev_offset_end != offset) {
+      if (identity->prev_offset_end != offset &&
+          identity->prev_offset_end != GST_BUFFER_OFFSET_NONE &&
+          offset != GST_BUFFER_OFFSET_NONE) {
         GST_WARNING_OBJECT (identity,
             "Buffer not data-contiguous with previous one: "
             "prev offset_end %" G_GINT64_FORMAT ", new offset %"

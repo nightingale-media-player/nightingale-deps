@@ -16,9 +16,9 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -56,25 +56,46 @@
                     <a class="link" href="GstBaseSrc.html#GstBaseSrcClass" title="GstBaseSrcClass">GstBaseSrcClass</a>;
 enum                <a class="link" href="GstBaseSrc.html#GstBaseSrcFlags" title="enum GstBaseSrcFlags">GstBaseSrcFlags</a>;
 GstFlowReturn       <a class="link" href="GstBaseSrc.html#gst-base-src-wait-playing" title="gst_base_src_wait_playing ()">gst_base_src_wait_playing</a>           (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
-gboolean            <a class="link" href="GstBaseSrc.html#gst-base-src-is-live" title="gst_base_src_is_live ()">gst_base_src_is_live</a>                (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseSrc.html#gst-base-src-is-live" title="gst_base_src_is_live ()">gst_base_src_is_live</a>                (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
 void                <a class="link" href="GstBaseSrc.html#gst-base-src-set-live" title="gst_base_src_set_live ()">gst_base_src_set_live</a>               (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean live);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> live);
 void                <a class="link" href="GstBaseSrc.html#gst-base-src-set-format" title="gst_base_src_set_format ()">gst_base_src_set_format</a>             (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
                                                          GstFormat format);
-gboolean            <a class="link" href="GstBaseSrc.html#gst-base-src-query-latency" title="gst_base_src_query_latency ()">gst_base_src_query_latency</a>          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean *live,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseSrc.html#gst-base-src-query-latency" title="gst_base_src_query_latency ()">gst_base_src_query_latency</a>          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *live,
                                                          GstClockTime *min_latency,
                                                          GstClockTime *max_latency);
-gboolean            <a class="link" href="GstBaseSrc.html#gst-base-src-get-do-timestamp" title="gst_base_src_get_do_timestamp ()">gst_base_src_get_do_timestamp</a>       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstBaseSrc.html#gst-base-src-get-blocksize" title="gst_base_src_get_blocksize ()">gst_base_src_get_blocksize</a>          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
+void                <a class="link" href="GstBaseSrc.html#gst-base-src-set-blocksize" title="gst_base_src_set_blocksize ()">gst_base_src_set_blocksize</a>          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> blocksize);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseSrc.html#gst-base-src-get-do-timestamp" title="gst_base_src_get_do_timestamp ()">gst_base_src_get_do_timestamp</a>       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);
 void                <a class="link" href="GstBaseSrc.html#gst-base-src-set-do-timestamp" title="gst_base_src_set_do_timestamp ()">gst_base_src_set_do_timestamp</a>       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean timestamp);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> timestamp);
 #define             <a class="link" href="GstBaseSrc.html#GST-BASE-SRC-PAD:CAPS" title="GST_BASE_SRC_PAD()">GST_BASE_SRC_PAD</a>                    (obj)
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstBaseSrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -84,10 +105,18 @@ void                <a class="link" href="GstBaseSrc.html#gst-base-src-set-do-ti
 <div class="refsect1" lang="en">
 <a name="GstBaseSrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--blocksize" title='The "blocksize" property'>blocksize</a>"                gulong                : Read / Write
-  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--do-timestamp" title='The "do-timestamp" property'>do-timestamp</a>"             gboolean              : Read / Write
-  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--num-buffers" title='The "num-buffers" property'>num-buffers</a>"              gint                  : Read / Write
-  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--typefind" title='The "typefind" property'>typefind</a>"                 gboolean              : Read / Write
+  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--blocksize" title='The "blocksize" property'>blocksize</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>                : Read / Write
+  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--do-timestamp" title='The "do-timestamp" property'>do-timestamp</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--num-buffers" title='The "num-buffers" property'>num-buffers</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="GstBaseSrc.html#GstBaseSrc--typefind" title='The "typefind" property'>typefind</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -104,10 +133,6 @@ types of sources are supported:
 <p>
 </p>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2576476"></a><h3>Controlled shutdown of live sources in applications</h3>
-<p>
 The source can be configured to operate in any <span class="type">GstFormat</span> with the
 <a class="link" href="GstBaseSrc.html#gst-base-src-set-format" title="gst_base_src_set_format ()"><code class="function">gst_base_src_set_format()</code></a> method. The currently set format determines 
 the format of the internal <span class="type">GstSegment</span> and any <span class="type">GST_EVENT_NEWSEGMENT</span> 
@@ -119,13 +144,17 @@ conditions are met, it also supports pull mode scheduling:
 </p>
 <div class="itemizedlist"><ul type="disc">
 <li><p>The format is set to <span class="type">GST_FORMAT_BYTES</span> (default).</p></li>
-<li><p><span class="type">"is_seekable"</span> returns <code class="literal">TRUE</code>.</p></li>
+<li><p><span class="type">"is_seekable"</span> returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>.</p></li>
 </ul></div>
 <p>
 </p>
 <p>
 Since 0.10.9, any <a class="link" href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a> can enable pull based scheduling at any 
-time by overriding <span class="type">"check_get_range"</span> so that it returns <code class="literal">TRUE</code>. 
+time by overriding <span class="type">"check_get_range"</span> so that it returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>. 
 </p>
 <p>
 If all the conditions are met for operating in pull mode, <a class="link" href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a> is
@@ -135,14 +164,18 @@ be met to make the element seekable in push mode when the format is not
 </p>
 <div class="itemizedlist"><ul type="disc">
 <li><p>
-    <span class="type">"is_seekable"</span> returns <code class="literal">TRUE</code>.
+    <span class="type">"is_seekable"</span> returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>.
   </p></li>
 <li><p>
     <span class="type">"query"</span> can convert all supported seek formats to the
     internal format as set with <a class="link" href="GstBaseSrc.html#gst-base-src-set-format" title="gst_base_src_set_format ()"><code class="function">gst_base_src_set_format()</code></a>.
   </p></li>
 <li><p>
-    <span class="type">"do_seek"</span> is implemented, performs the seek and returns <code class="literal">TRUE</code>.
+    <span class="type">"do_seek"</span> is implemented, performs the seek and returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>.
   </p></li>
 </ul></div>
 <p>
@@ -202,8 +235,6 @@ There is only support in <a class="link" href="GstBaseSrc.html" title="GstBaseSr
 should be named "src". A source implementation (subclass of <a class="link" href="GstBaseSrc.html" title="GstBaseSrc"><span class="type">GstBaseSrc</span></a>) 
 should install a pad template in its class_init function, like so:
 </p>
-<p>
-</p>
 <pre class="programlisting">
 static void
 my_element_class_init (GstMyElementClass *klass)
@@ -219,6 +250,10 @@ my_element_class_init (GstMyElementClass *klass)
 </pre>
 <p>
 </p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2778934"></a><h3>Controlled shutdown of live sources in applications</h3>
 <p>
 Applications that record from a live source may want to stop recording
 in a controlled way, so that the recording is stopped, but the data
@@ -531,7 +566,9 @@ continue. Any other return value should be returned from the create vmethod.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-src-is-live"></a><h3>gst_base_src_is_live ()</h3>
-<pre class="programlisting">gboolean            gst_base_src_is_live                (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_src_is_live                (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);</pre>
 <p>
 Check if an element is in live mode.</p>
 <p>
@@ -547,7 +584,9 @@ Check if an element is in live mode.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if element is in live mode.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if element is in live mode.
 </td>
 </tr>
 </tbody>
@@ -557,10 +596,14 @@ Check if an element is in live mode.</p>
 <div class="refsect2" lang="en">
 <a name="gst-base-src-set-live"></a><h3>gst_base_src_set_live ()</h3>
 <pre class="programlisting">void                gst_base_src_set_live               (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean live);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> live);</pre>
 <p>
 If the element listens to a live source, <em class="parameter"><code>live</code></em> should
-be set to <code class="literal">TRUE</code>. 
+be set to <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>. 
 </p>
 <p>
 A live source will not produce data in the PAUSED state and
@@ -623,8 +666,12 @@ operate in pull mode if the <span class="type">"is_seekable"</span> returns TRUE
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-src-query-latency"></a><h3>gst_base_src_query_latency ()</h3>
-<pre class="programlisting">gboolean            gst_base_src_query_latency          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean *live,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_src_query_latency          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *live,
                                                          GstClockTime *min_latency,
                                                          GstClockTime *max_latency);</pre>
 <p>
@@ -674,8 +721,71 @@ This function is mostly used by subclasses.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="gst-base-src-get-blocksize"></a><h3>gst_base_src_get_blocksize ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_base_src_get_blocksize          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);</pre>
+<p>
+Get the number of bytes that <em class="parameter"><code>src</code></em> will push out with each buffer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> the source
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> the number of bytes pushed with each buffer.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-base-src-set-blocksize"></a><h3>gst_base_src_set_blocksize ()</h3>
+<pre class="programlisting">void                gst_base_src_set_blocksize          (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> blocksize);</pre>
+<p>
+Set the number of bytes that <em class="parameter"><code>src</code></em> will push out with each buffer. When
+<em class="parameter"><code>blocksize</code></em> is set to -1, a default length will be used.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> the source
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>blocksize</code></em> :</span></p></td>
+<td> the new blocksize in bytes
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-base-src-get-do-timestamp"></a><h3>gst_base_src_get_do_timestamp ()</h3>
-<pre class="programlisting">gboolean            gst_base_src_get_do_timestamp       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_src_get_do_timestamp       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src);</pre>
 <p>
 Query if <em class="parameter"><code>src</code></em> timestamps outgoing buffers based on the current running_time.</p>
 <p>
@@ -691,7 +801,9 @@ Query if <em class="parameter"><code>src</code></em> timestamps outgoing buffers
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the base class will automatically timestamp outgoing buffers.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the base class will automatically timestamp outgoing buffers.
 
 </td>
 </tr>
@@ -704,7 +816,9 @@ Query if <em class="parameter"><code>src</code></em> timestamps outgoing buffers
 <div class="refsect2" lang="en">
 <a name="gst-base-src-set-do-timestamp"></a><h3>gst_base_src_set_do_timestamp ()</h3>
 <pre class="programlisting">void                gst_base_src_set_do_timestamp       (<a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a> *src,
-                                                         gboolean timestamp);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> timestamp);</pre>
 <p>
 Configure <em class="parameter"><code>src</code></em> to automatically timestamp outgoing buffers based on the
 current running_time of the pipeline. This property is mostly useful for live
@@ -754,28 +868,36 @@ Gives the pointer to the <span class="type">GstPad</span> object of the element.
 <a name="GstBaseSrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstBaseSrc--blocksize"></a><h3>The <code class="literal">"blocksize"</code> property</h3>
-<pre class="programlisting">  "blocksize"                gulong                : Read / Write</pre>
-<p>Size in bytes to read per buffer (0 = default).</p>
+<pre class="programlisting">  "blocksize"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>                : Read / Write</pre>
+<p>Size in bytes to read per buffer (-1 = default).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSrc--do-timestamp"></a><h3>The <code class="literal">"do-timestamp"</code> property</h3>
-<pre class="programlisting">  "do-timestamp"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "do-timestamp"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Apply current stream time to buffers.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSrc--num-buffers"></a><h3>The <code class="literal">"num-buffers"</code> property</h3>
-<pre class="programlisting">  "num-buffers"              gint                  : Read / Write</pre>
-<p>Number of buffers to output before sending EOS.</p>
+<pre class="programlisting">  "num-buffers"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Number of buffers to output before sending EOS (-1 = unlimited).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseSrc--typefind"></a><h3>The <code class="literal">"typefind"</code> property</h3>
-<pre class="programlisting">  "typefind"                 gboolean              : Read / Write</pre>
+<pre class="programlisting">  "typefind"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Run typefind before negotiating.</p>
 <p>Default value: FALSE</p>
 </div>

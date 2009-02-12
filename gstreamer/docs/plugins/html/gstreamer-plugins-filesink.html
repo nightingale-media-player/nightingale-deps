@@ -37,7 +37,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-plugins-filesink.top_of_page"></a>filesink</span></h2>
-<p>filesink — write stream to a file</p>
+<p>filesink — Write stream to a file</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -50,7 +50,9 @@
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -66,25 +68,31 @@ GstFileSink implements
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--location" title='The "location" property'>location</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
   "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode" title='The "buffer-mode" property'>buffer-mode</a>"              GstFileSinkBufferMode  : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              guint                 : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-filesink.description"></a><h2>Description</h2>
 <p>
 Write incoming data to a file in the local file system.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2614203"></a><h3>Element Information</h3>
+<a name="id2702511"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
-        </td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -96,6 +104,10 @@ Write incoming data to a file in the local file system.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2702574"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -118,6 +130,7 @@ Write incoming data to a file in the local file system.</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -138,7 +151,9 @@ Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span 
 <a name="gstreamer-plugins-filesink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstFileSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "location"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Location of the file to write.</p>
 <p>Default value: NULL</p>
 </div>
@@ -152,7 +167,9 @@ Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span 
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFileSink--buffer-size"></a><h3>The <code class="literal">"buffer-size"</code> property</h3>
-<pre class="programlisting">  "buffer-size"              guint                 : Read / Write</pre>
+<pre class="programlisting">  "buffer-size"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Size of buffer in number of bytes for line or full buffer-mode.</p>
 <p>Default value: 65536</p>
 </div>

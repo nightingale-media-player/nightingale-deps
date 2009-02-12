@@ -1,0 +1,2874 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstByteReader</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
+<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="prev" href="gstreamer-libs-GstBitReader.html" title="GstBitReader">
+<link rel="next" href="GstCollectPads.html" title="GstCollectPads">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
+<link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
+<link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
+<link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
+<link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gstreamer-libs-GstBitReader.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
+<td><a accesskey="n" href="GstCollectPads.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gstreamer-libs-GstByteReader.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gstreamer-libs-GstByteReader.description" class="shortcut">Description</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gstreamer-libs-GstByteReader"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-libs-GstByteReader.top_of_page"></a>GstByteReader</span></h2>
+<p>GstByteReader — Reads different integer and floating point types from a memory buffer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gstreamer-libs-GstByteReader.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gst/base/gstbytereader.h&gt;
+
+                    <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a>;
+#define             <a class="link" href="gstreamer-libs-GstByteReader.html#GST-BYTE-READER-INIT:CAPS" title="GST_BYTE_READER_INIT()">GST_BYTE_READER_INIT</a>                (data, size)
+#define             <a class="link" href="gstreamer-libs-GstByteReader.html#GST-BYTE-READER-INIT-FROM-BUFFER:CAPS" title="GST_BYTE_READER_INIT_FROM_BUFFER()">GST_BYTE_READER_INIT_FROM_BUFFER</a>    (buffer)
+<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a>*      <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-new" title="gst_byte_reader_new ()">gst_byte_reader_new</a>                 (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a>*      <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-new-from-buffer" title="gst_byte_reader_new_from_buffer ()">gst_byte_reader_new_from_buffer</a>     (const GstBuffer *buffer);
+void                <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-free" title="gst_byte_reader_free ()">gst_byte_reader_free</a>                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);
+void                <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-init" title="gst_byte_reader_init ()">gst_byte_reader_init</a>                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+void                <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-init-from-buffer" title="gst_byte_reader_init_from_buffer ()">gst_byte_reader_init_from_buffer</a>    (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         const GstBuffer *buffer);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-pos" title="gst_byte_reader_get_pos ()">gst_byte_reader_get_pos</a>             (const <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-remaining" title="gst_byte_reader_get_remaining ()">gst_byte_reader_get_remaining</a>       (const <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-set-pos" title="gst_byte_reader_set_pos ()">gst_byte_reader_set_pos</a>             (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> pos);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-skip" title="gst_byte_reader_skip ()">gst_byte_reader_skip</a>                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> nbytes);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int8" title="gst_byte_reader_get_int8 ()">gst_byte_reader_get_int8</a>            (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+>gint8</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-be" title="gst_byte_reader_get_int16_be ()">gst_byte_reader_get_int16_be</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int16-le" title="gst_byte_reader_get_int16_le ()">gst_byte_reader_get_int16_le</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-be" title="gst_byte_reader_get_int24_be ()">gst_byte_reader_get_int24_be</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int24-le" title="gst_byte_reader_get_int24_le ()">gst_byte_reader_get_int24_le</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-be" title="gst_byte_reader_get_int32_be ()">gst_byte_reader_get_int32_be</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int32-le" title="gst_byte_reader_get_int32_le ()">gst_byte_reader_get_int32_le</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-be" title="gst_byte_reader_get_int64_be ()">gst_byte_reader_get_int64_be</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-int64-le" title="gst_byte_reader_get_int64_le ()">gst_byte_reader_get_int64_le</a>        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint8" title="gst_byte_reader_get_uint8 ()">gst_byte_reader_get_uint8</a>           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-be" title="gst_byte_reader_get_uint16_be ()">gst_byte_reader_get_uint16_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint16-le" title="gst_byte_reader_get_uint16_le ()">gst_byte_reader_get_uint16_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-be" title="gst_byte_reader_get_uint24_be ()">gst_byte_reader_get_uint24_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint24-le" title="gst_byte_reader_get_uint24_le ()">gst_byte_reader_get_uint24_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-be" title="gst_byte_reader_get_uint32_be ()">gst_byte_reader_get_uint32_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint32-le" title="gst_byte_reader_get_uint32_le ()">gst_byte_reader_get_uint32_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-be" title="gst_byte_reader_get_uint64_be ()">gst_byte_reader_get_uint64_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-uint64-le" title="gst_byte_reader_get_uint64_le ()">gst_byte_reader_get_uint64_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int8" title="gst_byte_reader_peek_int8 ()">gst_byte_reader_peek_int8</a>           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+>gint8</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-be" title="gst_byte_reader_peek_int16_be ()">gst_byte_reader_peek_int16_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int16-le" title="gst_byte_reader_peek_int16_le ()">gst_byte_reader_peek_int16_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-be" title="gst_byte_reader_peek_int24_be ()">gst_byte_reader_peek_int24_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int24-le" title="gst_byte_reader_peek_int24_le ()">gst_byte_reader_peek_int24_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-be" title="gst_byte_reader_peek_int32_be ()">gst_byte_reader_peek_int32_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int32-le" title="gst_byte_reader_peek_int32_le ()">gst_byte_reader_peek_int32_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-be" title="gst_byte_reader_peek_int64_be ()">gst_byte_reader_peek_int64_be</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-int64-le" title="gst_byte_reader_peek_int64_le ()">gst_byte_reader_peek_int64_le</a>       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint8" title="gst_byte_reader_peek_uint8 ()">gst_byte_reader_peek_uint8</a>          (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-be" title="gst_byte_reader_peek_uint16_be ()">gst_byte_reader_peek_uint16_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint16-le" title="gst_byte_reader_peek_uint16_le ()">gst_byte_reader_peek_uint16_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-be" title="gst_byte_reader_peek_uint24_be ()">gst_byte_reader_peek_uint24_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint24-le" title="gst_byte_reader_peek_uint24_le ()">gst_byte_reader_peek_uint24_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-be" title="gst_byte_reader_peek_uint32_be ()">gst_byte_reader_peek_uint32_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint32-le" title="gst_byte_reader_peek_uint32_le ()">gst_byte_reader_peek_uint32_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-be" title="gst_byte_reader_peek_uint64_be ()">gst_byte_reader_peek_uint64_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-uint64-le" title="gst_byte_reader_peek_uint64_le ()">gst_byte_reader_peek_uint64_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-le" title="gst_byte_reader_get_float32_le ()">gst_byte_reader_get_float32_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float32-be" title="gst_byte_reader_get_float32_be ()">gst_byte_reader_get_float32_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-le" title="gst_byte_reader_get_float64_le ()">gst_byte_reader_get_float64_le</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-float64-be" title="gst_byte_reader_get_float64_be ()">gst_byte_reader_get_float64_be</a>      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-le" title="gst_byte_reader_peek_float32_le ()">gst_byte_reader_peek_float32_le</a>     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float32-be" title="gst_byte_reader_peek_float32_be ()">gst_byte_reader_peek_float32_be</a>     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-le" title="gst_byte_reader_peek_float64_le ()">gst_byte_reader_peek_float64_le</a>     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-float64-be" title="gst_byte_reader_peek_float64_be ()">gst_byte_reader_peek_float64_be</a>     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-get-data" title="gst_byte_reader_get_data ()">gst_byte_reader_get_data</a>            (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-peek-data" title="gst_byte_reader_peek_data ()">gst_byte_reader_peek_data</a>           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **val);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gstreamer-libs-GstByteReader.description"></a><h2>Description</h2>
+<p>
+<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> provides a byte reader that can read different integer and
+floating point types from a memory buffer. It provides functions for reading
+signed/unsigned, little/big endian integers of 8, 16, 24, 32 and 64 bits
+and functions for reading little/big endian floating points numbers of
+32 and 64 bits.</p>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gstreamer-libs-GstByteReader.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstByteReader"></a><h3>GstByteReader</h3>
+<pre class="programlisting">typedef struct {
+  const guint8 *data;
+  guint size;
+
+  guint byte;  /* Byte position */
+} GstByteReader;
+</pre>
+<p>
+A byte reader instance.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *<em class="structfield"><code>data</code></em>;</span></p></td>
+<td> Data from which the bit reader will read
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>size</code></em>;</span></p></td>
+<td> Size of <em class="parameter"><code>data</code></em> in bytes
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>byte</code></em>;</span></p></td>
+<td> Current byte position
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-BYTE-READER-INIT:CAPS"></a><h3>GST_BYTE_READER_INIT()</h3>
+<pre class="programlisting">#define GST_BYTE_READER_INIT(data, size) {data, size, 0}
+</pre>
+<p>
+A <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> must be initialized with this macro, before it can be
+used. This macro can used be to initialize a variable, but it cannot
+be assigned to a variable. In that case you have to use
+<a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-init" title="gst_byte_reader_init ()"><code class="function">gst_byte_reader_init()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td> Data from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> Size of <em class="parameter"><code>data</code></em> in bytes
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-BYTE-READER-INIT-FROM-BUFFER:CAPS"></a><h3>GST_BYTE_READER_INIT_FROM_BUFFER()</h3>
+<pre class="programlisting">#define GST_BYTE_READER_INIT_FROM_BUFFER(buffer) {GST_BUFFER_DATA (buffer), GST_BUFFER_SIZE (buffer), 0}
+</pre>
+<p>
+A <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> must be initialized with this macro, before it can be
+used. This macro can used be to initialize a variable, but it cannot
+be assigned to a variable. In that case you have to use
+<a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-init" title="gst_byte_reader_init ()"><code class="function">gst_byte_reader_init()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
+<td> Buffer from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-new"></a><h3>gst_byte_reader_new ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a>*      gst_byte_reader_new                 (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
+<p>
+Create a new <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance, which will read from <em class="parameter"><code>data</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td> Data from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> Size of <em class="parameter"><code>data</code></em> in bytes
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-new-from-buffer"></a><h3>gst_byte_reader_new_from_buffer ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a>*      gst_byte_reader_new_from_buffer     (const GstBuffer *buffer);</pre>
+<p>
+Create a new <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance, which will read from the
+<span class="type">GstBuffer</span> <em class="parameter"><code>buffer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
+<td> Buffer from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-free"></a><h3>gst_byte_reader_free ()</h3>
+<pre class="programlisting">void                gst_byte_reader_free                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);</pre>
+<p>
+Frees a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance, which was previously allocated by
+<a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-new" title="gst_byte_reader_new ()"><code class="function">gst_byte_reader_new()</code></a> or <a class="link" href="gstreamer-libs-GstByteReader.html#gst-byte-reader-new-from-buffer" title="gst_byte_reader_new_from_buffer ()"><code class="function">gst_byte_reader_new_from_buffer()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-init"></a><h3>gst_byte_reader_init ()</h3>
+<pre class="programlisting">void                gst_byte_reader_init                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
+<p>
+Initializes a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance to read from <em class="parameter"><code>data</code></em>. This function
+can be called on already initialized instances.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td> Data from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> Size of <em class="parameter"><code>data</code></em> in bytes
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-init-from-buffer"></a><h3>gst_byte_reader_init_from_buffer ()</h3>
+<pre class="programlisting">void                gst_byte_reader_init_from_buffer    (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         const GstBuffer *buffer);</pre>
+<p>
+Initializes a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance to read from <em class="parameter"><code>buffer</code></em>. This function
+can be called on already initialized instances.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
+<td> Buffer from which the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> should read
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-pos"></a><h3>gst_byte_reader_get_pos ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_byte_reader_get_pos             (const <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);</pre>
+<p>
+Returns the current position of a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance in bytes.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The current position of <em class="parameter"><code>reader</code></em> in bytes.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-remaining"></a><h3>gst_byte_reader_get_remaining ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_byte_reader_get_remaining       (const <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader);</pre>
+<p>
+Returns the remaining number of bytes of a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The remaining number of bytes of <em class="parameter"><code>reader</code></em> instance.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-set-pos"></a><h3>gst_byte_reader_set_pos ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_set_pos             (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> pos);</pre>
+<p>
+Sets the new position of a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance to <em class="parameter"><code>pos</code></em> in bytes.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pos</code></em> :</span></p></td>
+<td> The new position in bytes
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the position could be set successfully, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>
+otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-skip"></a><h3>gst_byte_reader_skip ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_skip                (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> nbytes);</pre>
+<p>
+Skips <em class="parameter"><code>nbytes</code></em> bytes of the <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>nbytes</code></em> :</span></p></td>
+<td> the number of bytes to skip
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>nbytes</code></em> bytes could be skipped, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int8"></a><h3>gst_byte_reader_get_int8 ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int8            (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+>gint8</a> *val);</pre>
+<p>
+Read a signed 8 bit integer into <em class="parameter"><code>val</code></em> and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+><span class="type">gint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int16-be"></a><h3>gst_byte_reader_get_int16_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int16_be        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);</pre>
+<p>
+Read a signed 16 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+><span class="type">gint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int16-le"></a><h3>gst_byte_reader_get_int16_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int16_le        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);</pre>
+<p>
+Read a signed 16 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+><span class="type">gint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int24-be"></a><h3>gst_byte_reader_get_int24_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int24_be        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 24 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int24-le"></a><h3>gst_byte_reader_get_int24_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int24_le        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 24 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int32-be"></a><h3>gst_byte_reader_get_int32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int32_be        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int32-le"></a><h3>gst_byte_reader_get_int32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int32_le        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int64-be"></a><h3>gst_byte_reader_get_int64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int64_be        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);</pre>
+<p>
+Read a signed 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+><span class="type">gint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-int64-le"></a><h3>gst_byte_reader_get_int64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_int64_le        (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);</pre>
+<p>
+Read a signed 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+><span class="type">gint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint8"></a><h3>gst_byte_reader_get_uint8 ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint8           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *val);</pre>
+<p>
+Read an unsigned 8 bit integer into <em class="parameter"><code>val</code></em> and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+><span class="type">guint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint16-be"></a><h3>gst_byte_reader_get_uint16_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint16_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);</pre>
+<p>
+Read an unsigned 16 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+><span class="type">guint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint16-le"></a><h3>gst_byte_reader_get_uint16_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint16_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);</pre>
+<p>
+Read an unsigned 16 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+><span class="type">guint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint24-be"></a><h3>gst_byte_reader_get_uint24_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint24_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read an unsigned 24 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint24-le"></a><h3>gst_byte_reader_get_uint24_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint24_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read an unsigned 24 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint32-be"></a><h3>gst_byte_reader_get_uint32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint32_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read an unsigned 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint32-le"></a><h3>gst_byte_reader_get_uint32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint32_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read an unsigned 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint64-be"></a><h3>gst_byte_reader_get_uint64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint64_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);</pre>
+<p>
+Read an unsigned 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-uint64-le"></a><h3>gst_byte_reader_get_uint64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_uint64_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);</pre>
+<p>
+Read an unsigned 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int8"></a><h3>gst_byte_reader_peek_int8 ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int8           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+>gint8</a> *val);</pre>
+<p>
+Read a signed 8 bit integer into <em class="parameter"><code>val</code></em> but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint8"
+><span class="type">gint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int16-be"></a><h3>gst_byte_reader_peek_int16_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int16_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);</pre>
+<p>
+Read a signed 16 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+><span class="type">gint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int16-le"></a><h3>gst_byte_reader_peek_int16_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int16_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+>gint16</a> *val);</pre>
+<p>
+Read a signed 16 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"
+><span class="type">gint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int24-be"></a><h3>gst_byte_reader_peek_int24_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int24_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 24 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int24-le"></a><h3>gst_byte_reader_peek_int24_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int24_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 24 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int32-be"></a><h3>gst_byte_reader_peek_int32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int32_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int32-le"></a><h3>gst_byte_reader_peek_int32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int32_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+>gint32</a> *val);</pre>
+<p>
+Read a signed 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint32"
+><span class="type">gint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int64-be"></a><h3>gst_byte_reader_peek_int64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int64_be       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);</pre>
+<p>
+Read a signed 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+><span class="type">gint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-int64-le"></a><h3>gst_byte_reader_peek_int64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_int64_le       (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *val);</pre>
+<p>
+Read a signed 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+><span class="type">gint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint8"></a><h3>gst_byte_reader_peek_uint8 ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint8          (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *val);</pre>
+<p>
+Read a signed 8 bit integer into <em class="parameter"><code>val</code></em> but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+><span class="type">guint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint16-be"></a><h3>gst_byte_reader_peek_uint16_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint16_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);</pre>
+<p>
+Read a signed 16 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+><span class="type">guint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint16-le"></a><h3>gst_byte_reader_peek_uint16_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint16_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *val);</pre>
+<p>
+Read a signed 16 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+><span class="type">guint16</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint24-be"></a><h3>gst_byte_reader_peek_uint24_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint24_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read a signed 24 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint24-le"></a><h3>gst_byte_reader_peek_uint24_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint24_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read a signed 24 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint32-be"></a><h3>gst_byte_reader_peek_uint32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint32_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read a signed 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint32-le"></a><h3>gst_byte_reader_peek_uint32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint32_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *val);</pre>
+<p>
+Read a signed 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint64-be"></a><h3>gst_byte_reader_peek_uint64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint64_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);</pre>
+<p>
+Read a signed 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-uint64-le"></a><h3>gst_byte_reader_peek_uint64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_uint64_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *val);</pre>
+<p>
+Read a signed 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-float32-le"></a><h3>gst_byte_reader_get_float32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_float32_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);</pre>
+<p>
+Read a 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-float32-be"></a><h3>gst_byte_reader_get_float32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_float32_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);</pre>
+<p>
+Read a 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-float64-le"></a><h3>gst_byte_reader_get_float64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_float64_le      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);</pre>
+<p>
+Read a 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-float64-be"></a><h3>gst_byte_reader_get_float64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_float64_be      (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);</pre>
+<p>
+Read a 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+and update the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-float32-le"></a><h3>gst_byte_reader_peek_float32_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_float32_le     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);</pre>
+<p>
+Read a 32 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-float32-be"></a><h3>gst_byte_reader_peek_float32_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_float32_be     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> *val);</pre>
+<p>
+Read a 32 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-float64-le"></a><h3>gst_byte_reader_peek_float64_le ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_float64_le     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);</pre>
+<p>
+Read a 64 bit little endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-float64-be"></a><h3>gst_byte_reader_peek_float64_be ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_float64_be     (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *val);</pre>
+<p>
+Read a 64 bit big endian integer into <em class="parameter"><code>val</code></em>
+but keep the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-get-data"></a><h3>gst_byte_reader_get_data ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_get_data            (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **val);</pre>
+<p>
+Returns a constant pointer to the current data
+position if at least <em class="parameter"><code>size</code></em> bytes are left and
+updates the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> Size in bytes
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+><span class="type">guint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-byte-reader-peek-data"></a><h3>gst_byte_reader_peek_data ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_byte_reader_peek_data           (<a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader">GstByteReader</a> *reader,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **val);</pre>
+<p>
+Returns a constant pointer to the current data
+position if at least <em class="parameter"><code>size</code></em> bytes are left and
+keeps the current position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-libs-GstByteReader.html#GstByteReader" title="GstByteReader"><span class="type">GstByteReader</span></a> instance
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> Size in bytes
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td> Pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+><span class="type">guint8</span></a> to store the result
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if successful, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

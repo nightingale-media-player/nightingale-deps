@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -68,7 +68,9 @@ enum                <a class="link" href="gstreamer-GstCaps.html#GstCapsFlags" t
                                                          va_list var_args);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-copy" title="gst_caps_copy ()">gst_caps_copy</a>                       (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-copy-nth" title="gst_caps_copy_nth ()">gst_caps_copy_nth</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint nth);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> nth);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-static-caps-get" title="gst_static_caps_get ()">gst_static_caps_get</a>                 (<a class="link" href="gstreamer-GstCaps.html#GstStaticCaps" title="GstStaticCaps">GstStaticCaps</a> *static_caps);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-append" title="gst_caps_append ()">gst_caps_append</a>                     (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
@@ -77,42 +79,68 @@ void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-merge"
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-append-structure" title="gst_caps_append_structure ()">gst_caps_append_structure</a>           (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-remove-structure" title="gst_caps_remove_structure ()">gst_caps_remove_structure</a>           (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint idx);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> idx);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-merge-structure" title="gst_caps_merge_structure ()">gst_caps_merge_structure</a>            (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
-guint               <a class="link" href="gstreamer-GstCaps.html#gst-caps-get-size" title="gst_caps_get_size ()">gst_caps_get_size</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-GstCaps.html#gst-caps-get-size" title="gst_caps_get_size ()">gst_caps_get_size</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>*       <a class="link" href="gstreamer-GstCaps.html#gst-caps-get-structure" title="gst_caps_get_structure ()">gst_caps_get_structure</a>              (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint index);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-set-simple" title="gst_caps_set_simple ()">gst_caps_set_simple</a>                 (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          const char *field,
                                                          ...);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-set-simple-valist" title="gst_caps_set_simple_valist ()">gst_caps_set_simple_valist</a>          (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          const char *field,
                                                          va_list varargs);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-any" title="gst_caps_is_any ()">gst_caps_is_any</a>                     (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-empty" title="gst_caps_is_empty ()">gst_caps_is_empty</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-fixed" title="gst_caps_is_fixed ()">gst_caps_is_fixed</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-equal" title="gst_caps_is_equal ()">gst_caps_is_equal</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-any" title="gst_caps_is_any ()">gst_caps_is_any</a>                     (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-empty" title="gst_caps_is_empty ()">gst_caps_is_empty</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-fixed" title="gst_caps_is_fixed ()">gst_caps_is_fixed</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-equal" title="gst_caps_is_equal ()">gst_caps_is_equal</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-equal-fixed" title="gst_caps_is_equal_fixed ()">gst_caps_is_equal_fixed</a>             (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-equal-fixed" title="gst_caps_is_equal_fixed ()">gst_caps_is_equal_fixed</a>             (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-always-compatible" title="gst_caps_is_always_compatible ()">gst_caps_is_always_compatible</a>       (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-always-compatible" title="gst_caps_is_always_compatible ()">gst_caps_is_always_compatible</a>       (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-subset" title="gst_caps_is_subset ()">gst_caps_is_subset</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *subset,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-is-subset" title="gst_caps_is_subset ()">gst_caps_is_subset</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *subset,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *superset);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-intersect" title="gst_caps_intersect ()">gst_caps_intersect</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-union" title="gst_caps_union ()">gst_caps_union</a>                      (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-normalize" title="gst_caps_normalize ()">gst_caps_normalize</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="gstreamer-GstCaps.html#gst-caps-do-simplify" title="gst_caps_do_simplify ()">gst_caps_do_simplify</a>                (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstCaps.html#gst-caps-do-simplify" title="gst_caps_do_simplify ()">gst_caps_do_simplify</a>                (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 xmlNodePtr          <a class="link" href="gstreamer-GstCaps.html#gst-caps-save-thyself" title="gst_caps_save_thyself ()">gst_caps_save_thyself</a>               (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          xmlNodePtr parent);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-load-thyself" title="gst_caps_load_thyself ()">gst_caps_load_thyself</a>               (xmlNodePtr parent);
 void                <a class="link" href="gstreamer-GstCaps.html#gst-caps-replace" title="gst_caps_replace ()">gst_caps_replace</a>                    (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> **caps,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *newcaps);
-gchar*              <a class="link" href="gstreamer-GstCaps.html#gst-caps-to-string" title="gst_caps_to_string ()">gst_caps_to_string</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-from-string" title="gst_caps_from_string ()">gst_caps_from_string</a>                (const gchar *string);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gstreamer-GstCaps.html#gst-caps-to-string" title="gst_caps_to_string ()">gst_caps_to_string</a>                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
+<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-from-string" title="gst_caps_from_string ()">gst_caps_from_string</a>                (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *string);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-subtract" title="gst_caps_subtract ()">gst_caps_subtract</a>                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *minuend,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *subtrahend);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstCaps.html#gst-caps-make-writable" title="gst_caps_make_writable ()">gst_caps_make_writable</a>              (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
@@ -148,7 +176,7 @@ A <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span cl
 <p>
 </p>
 <div class="example">
-<a name="id2609555"></a><p class="title"><b>Example 4. Creating caps</b></p>
+<a name="id2916784"></a><p class="title"><b>Example 4. Creating caps</b></p>
 <div class="example-contents"><pre class="programlisting">
  GstCaps *caps;
  caps = gst_caps_new_simple ("video/x-raw-yuv",
@@ -199,12 +227,16 @@ Object describing media types.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GType <em class="structfield"><code>type</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> <em class="structfield"><code>type</code></em>;</span></p></td>
 <td> GType of the caps
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>refcount</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>refcount</code></em>;</span></p></td>
 <td> the atomic refcount value
 </td>
 </tr>
@@ -606,7 +638,9 @@ When you are finished with the caps, call <a class="link" href="gstreamer-GstCap
 <div class="refsect2" lang="en">
 <a name="gst-caps-copy-nth"></a><h3>gst_caps_copy_nth ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            gst_caps_copy_nth                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint nth);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> nth);</pre>
 <p>
 Creates a new <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> and appends a copy of the nth structure
 contained in <em class="parameter"><code>caps</code></em>.</p>
@@ -751,7 +785,9 @@ becomes the owner of <em class="parameter"><code>structure</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-caps-remove-structure"></a><h3>gst_caps_remove_structure ()</h3>
 <pre class="programlisting">void                gst_caps_remove_structure           (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint idx);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> idx);</pre>
 <p>
 removes the stucture with the given index from the list of structures
 contained in <em class="parameter"><code>caps</code></em>.</p>
@@ -804,7 +840,9 @@ structure is not copied; <em class="parameter"><code>caps</code></em> becomes th
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-get-size"></a><h3>gst_caps_get_size ()</h3>
-<pre class="programlisting">guint               gst_caps_get_size                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_caps_get_size                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Gets the number of structures contained in <em class="parameter"><code>caps</code></em>.</p>
 <p>
@@ -830,7 +868,9 @@ Gets the number of structures contained in <em class="parameter"><code>caps</cod
 <div class="refsect2" lang="en">
 <a name="gst-caps-get-structure"></a><h3>gst_caps_get_structure ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>*       gst_caps_get_structure              (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
-                                                         guint index);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);</pre>
 <p>
 Finds the structure in <em class="parameter"><code>caps</code></em> that has the index <em class="parameter"><code>index</code></em>, and
 returns it.
@@ -935,7 +975,9 @@ manner as <a class="link" href="gstreamer-GstStructure.html#gst-structure-set" t
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-any"></a><h3>gst_caps_is_any ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_any                     (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_any                     (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Determines if <em class="parameter"><code>caps</code></em> represents any media format.</p>
 <p>
@@ -960,7 +1002,9 @@ Determines if <em class="parameter"><code>caps</code></em> represents any media 
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-empty"></a><h3>gst_caps_is_empty ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_empty                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_empty                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Determines if <em class="parameter"><code>caps</code></em> represents no media formats.</p>
 <p>
@@ -985,7 +1029,9 @@ Determines if <em class="parameter"><code>caps</code></em> represents no media f
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-fixed"></a><h3>gst_caps_is_fixed ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_fixed                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_fixed                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Fixed <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> describe exactly one format, that is, they have exactly
 one structure, and each field in the structure describes a fixed type.
@@ -1012,7 +1058,9 @@ Examples of non-fixed types are GST_TYPE_INT_RANGE and GST_TYPE_LIST.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-equal"></a><h3>gst_caps_is_equal ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_equal                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_equal                   (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);</pre>
 <p>
 Checks if the given caps represent the same set of caps.
@@ -1051,7 +1099,9 @@ This function deals correctly with passing NULL for any of the caps.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-equal-fixed"></a><h3>gst_caps_is_equal_fixed ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_equal_fixed             (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_equal_fixed             (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);</pre>
 <p>
 Tests if two <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> are equal.  This function only works on fixed
@@ -1083,7 +1133,9 @@ Tests if two <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCap
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-always-compatible"></a><h3>gst_caps_is_always_compatible ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_always_compatible       (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_always_compatible       (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps1,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps2);</pre>
 <p>
 A given <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> structure is always compatible with another if
@@ -1116,7 +1168,9 @@ second.  That is, <em class="parameter"><code>caps1</code></em> is a subset of <
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-is-subset"></a><h3>gst_caps_is_subset ()</h3>
-<pre class="programlisting">gboolean            gst_caps_is_subset                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *subset,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_is_subset                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *subset,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *superset);</pre>
 <p>
 Checks if all caps represented by <em class="parameter"><code>subset</code></em> are also represented by <em class="parameter"><code>superset</code></em>.
@@ -1142,7 +1196,9 @@ are included on one caps and omitted on the other.</div>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if <em class="parameter"><code>subset</code></em> is a subset of <em class="parameter"><code>superset</code></em>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>subset</code></em> is a subset of <em class="parameter"><code>superset</code></em>
 </td>
 </tr>
 </tbody>
@@ -1242,7 +1298,9 @@ Creates a new <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCa
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-do-simplify"></a><h3>gst_caps_do_simplify ()</h3>
-<pre class="programlisting">gboolean            gst_caps_do_simplify                (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_caps_do_simplify                (<a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Modifies the given <em class="parameter"><code>caps</code></em> inplace into a representation that represents the
 same set of formats, but in a simpler form.  Component structures that are
@@ -1358,7 +1416,9 @@ the object owning <em class="parameter"><code>caps</code></em> pointer.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-to-string"></a><h3>gst_caps_to_string ()</h3>
-<pre class="programlisting">gchar*              gst_caps_to_string                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_caps_to_string                  (const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Converts <em class="parameter"><code>caps</code></em> to a string representation.  This string representation
 can be converted back to a <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps"><span class="type">GstCaps</span></a> by <a class="link" href="gstreamer-GstCaps.html#gst-caps-from-string" title="gst_caps_from_string ()"><code class="function">gst_caps_from_string()</code></a>.
@@ -1393,7 +1453,9 @@ This prints the caps in human readble form.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-caps-from-string"></a><h3>gst_caps_from_string ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            gst_caps_from_string                (const gchar *string);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            gst_caps_from_string                (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *string);</pre>
 <p>
 Converts <em class="parameter"><code>caps</code></em> from a string representation.</p>
 <p>

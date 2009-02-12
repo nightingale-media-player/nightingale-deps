@@ -88,6 +88,7 @@
 <ANCHOR id="GstFdSrc-struct" href="gstreamer-plugins-0.10/gstreamer-plugins-fdsrc.html#GstFdSrc-struct">
 <ANCHOR id="gstreamer-plugins-fdsrc.property-details" href="gstreamer-plugins-0.10/gstreamer-plugins-fdsrc.html#gstreamer-plugins-fdsrc.property-details">
 <ANCHOR id="GstFdSrc--fd" href="gstreamer-plugins-0.10/gstreamer-plugins-fdsrc.html#GstFdSrc--fd">
+<ANCHOR id="GstFdSrc--timeout" href="gstreamer-plugins-0.10/gstreamer-plugins-fdsrc.html#GstFdSrc--timeout">
 <ANCHOR id="gstreamer-plugins-fdsrc.see-also" href="gstreamer-plugins-0.10/gstreamer-plugins-fdsrc.html#gstreamer-plugins-fdsrc.see-also">
 <ANCHOR id="gstreamer-plugins-filesrc" href="gstreamer-plugins-0.10/gstreamer-plugins-filesrc.html">
 <ANCHOR id="gstreamer-plugins-filesrc.synopsis" href="gstreamer-plugins-0.10/gstreamer-plugins-filesrc.html#gstreamer-plugins-filesrc.synopsis">

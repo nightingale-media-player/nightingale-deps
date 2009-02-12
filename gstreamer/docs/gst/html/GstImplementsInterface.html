@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -51,12 +51,28 @@ allows runtime querying of interface availabillity</p>
 #include &lt;gst/gst.h&gt;
 
                     <a class="link" href="GstImplementsInterface.html#GstImplementsInterface-struct" title="GstImplementsInterface">GstImplementsInterface</a>;
-gboolean            <a class="link" href="GstImplementsInterface.html#gst-element-implements-interface" title="gst_element_implements_interface ()">gst_element_implements_interface</a>    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
-                                                         GType iface_type);
-gpointer            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-cast" title="gst_implements_interface_cast ()">gst_implements_interface_cast</a>       (gpointer from,
-                                                         GType type);
-gboolean            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-check" title="gst_implements_interface_check ()">gst_implements_interface_check</a>      (gpointer from,
-                                                         GType type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstImplementsInterface.html#gst-element-implements-interface" title="gst_element_implements_interface ()">gst_element_implements_interface</a>    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> iface_type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-cast" title="gst_implements_interface_cast ()">gst_implements_interface_cast</a>       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> from,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstImplementsInterface.html#gst-implements-interface-check" title="gst_implements_interface_check ()">gst_implements_interface_check</a>      (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> from,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -95,8 +111,12 @@ Opaque <a class="link" href="GstImplementsInterface.html" title="GstImplementsIn
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-element-implements-interface"></a><h3>gst_element_implements_interface ()</h3>
-<pre class="programlisting">gboolean            gst_element_implements_interface    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
-                                                         GType iface_type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_element_implements_interface    (<a class="link" href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> iface_type);</pre>
 <p>
 Test whether the given element implements a certain interface of type
 iface_type, and test whether it is supported for this specific instance.</p>
@@ -127,8 +147,14 @@ iface_type, and test whether it is supported for this specific instance.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-implements-interface-cast"></a><h3>gst_implements_interface_cast ()</h3>
-<pre class="programlisting">gpointer            gst_implements_interface_cast       (gpointer from,
-                                                         GType type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            gst_implements_interface_cast       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> from,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
 cast a given object to an interface type, and check whether this
 interface is supported for this specific instance.</p>
@@ -159,8 +185,14 @@ interface is supported for this specific instance.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-implements-interface-check"></a><h3>gst_implements_interface_check ()</h3>
-<pre class="programlisting">gboolean            gst_implements_interface_check      (gpointer from,
-                                                         GType type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_implements_interface_check      (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> from,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
 check a given object for an interface implementation, and check
 whether this interface is supported for this specific instance.</p>

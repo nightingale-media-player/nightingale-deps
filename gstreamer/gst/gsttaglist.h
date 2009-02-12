@@ -40,11 +40,12 @@ G_BEGIN_DECLS
  * @GST_TAG_MERGE_COUNT: the number of merge modes
  *
  * The different tag merging modes are basically replace, overwrite and append,
- * but they can be seen from two directions.  Given two taglists: (A) the tags
- * already in the element and (B) the ones that are supplied to
- * gst_tag_setter_merge_tags() or gst_tag_setter_add_tags(), how are these tags
- * merged? In the table below this is shown for the cases that a tag exists in
- * the list (A) or does not exists (!A) and combinations thereof.
+ * but they can be seen from two directions. Given two taglists: (A) the tags
+ * already in the element and (B) the ones that are supplied to the element (
+ * e.g. via gst_tag_setter_merge_tags() / gst_tag_setter_add_tags() or a
+ * %GST_EVENT_TAG), how are these tags merged?
+ * In the table below this is shown for the cases that a tag exists in the list
+ * (A) or does not exists (!A) and combinations thereof.
  *
  * <table frame="all" colsep="1" rowsep="1">
  *   <title>merge mode</title>
@@ -464,7 +465,8 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
 /**
  * GST_TAG_LOCATION:
  *
- * original location of file as a URI (string)
+ * Origin of media as a URI (location, where the original of the file or stream
+ * is hosted) (string)
  */
 #define GST_TAG_LOCATION               "location"
 /**
@@ -653,6 +655,18 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
  * Since: 0.10.7
  */
 #define GST_TAG_PREVIEW_IMAGE          "preview-image"
+
+/**
+ * GST_TAG_ATTACHMENT:
+ *
+ * generic file attachment (buffer) (buffer caps should specify the content
+ * type and if possible set "filename" to the file name of the
+ * attachment)
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_ATTACHMENT             "attachment"
+
 /**
  * GST_TAG_BEATS_PER_MINUTE:
  *
@@ -661,6 +675,57 @@ gboolean     gst_tag_list_get_date_index    (const GstTagList * list,
  * Since: 0.10.12
  */
 #define GST_TAG_BEATS_PER_MINUTE       "beats-per-minute"
+
+/**
+ * GST_TAG_KEYWORDS:
+ *
+ * comma separated keywords describing the content (string).
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_KEYWORDS               "keywords"
+
+/**
+ * GST_TAG_GEO_LOCATION_NAME:
+ *
+ * human readable descriptive location of where the media has been recorded or
+ * produced. (string).
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_GEO_LOCATION_NAME               "geo-location-name"
+
+/**
+ * GST_TAG_GEO_LOCATION_LATITUDE:
+ *
+ * geo latitude location of where the media has been recorded or produced in
+ * degrees according to WGS84 (zero at the equator, negative values for southern
+ * latitudes) (double).
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_GEO_LOCATION_LATITUDE               "geo-location-latitude"
+
+/**
+ * GST_TAG_GEO_LOCATION_LONGITUDE:
+ *
+ * geo longitude location of where the media has been recorded or produced in
+ * degrees according to WGS84 (zero at the prime meridian in Greenwich/UK,
+ * negative values for western longitudes). (double).
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_GEO_LOCATION_LONGITUDE               "geo-location-longitude"
+
+/**
+ * GST_TAG_GEO_LOCATION_ELEVATION:
+ *
+ * geo elevation of where the media has been recorded or produced in meters
+ * according to WGS84 (zero is average sea level) (double).
+ *
+ * Since: 0.10.21
+ */
+#define GST_TAG_GEO_LOCATION_ELEVATION               "geo-location-elevation"
 
 G_END_DECLS
 

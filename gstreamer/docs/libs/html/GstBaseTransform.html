@@ -16,9 +16,9 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -54,21 +54,43 @@
 
                     <a class="link" href="GstBaseTransform.html#GstBaseTransform-struct" title="GstBaseTransform">GstBaseTransform</a>;
                     <a class="link" href="GstBaseTransform.html#GstBaseTransformClass" title="GstBaseTransformClass">GstBaseTransformClass</a>;
-gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-passthrough" title="gst_base_transform_is_passthrough ()">gst_base_transform_is_passthrough</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-passthrough" title="gst_base_transform_is_passthrough ()">gst_base_transform_is_passthrough</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
 void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-passthrough" title="gst_base_transform_set_passthrough ()">gst_base_transform_set_passthrough</a>  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean passthrough);
-gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-in-place" title="gst_base_transform_is_in_place ()">gst_base_transform_is_in_place</a>      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> passthrough);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-in-place" title="gst_base_transform_is_in_place ()">gst_base_transform_is_in_place</a>      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
 void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-in-place" title="gst_base_transform_set_in_place ()">gst_base_transform_set_in_place</a>     (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean in_place);
-gboolean            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-qos-enabled" title="gst_base_transform_is_qos_enabled ()">gst_base_transform_is_qos_enabled</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> in_place);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstBaseTransform.html#gst-base-transform-is-qos-enabled" title="gst_base_transform_is_qos_enabled ()">gst_base_transform_is_qos_enabled</a>   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
 void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-qos-enabled" title="gst_base_transform_set_qos_enabled ()">gst_base_transform_set_qos_enabled</a>  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean enabled);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> enabled);
 void                <a class="link" href="GstBaseTransform.html#gst-base-transform-update-qos" title="gst_base_transform_update_qos ()">gst_base_transform_update_qos</a>       (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gdouble proportion,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> proportion,
                                                          GstClockTimeDiff diff,
                                                          GstClockTime timestamp);
 void                <a class="link" href="GstBaseTransform.html#gst-base-transform-set-gap-aware" title="gst_base_transform_set_gap_aware ()">gst_base_transform_set_gap_aware</a>    (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean gap_aware);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> gap_aware);
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-suggest" title="gst_base_transform_suggest ()">gst_base_transform_suggest</a>          (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+                                                         GstCaps *caps,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+void                <a class="link" href="GstBaseTransform.html#gst-base-transform-reconfigure" title="gst_base_transform_reconfigure ()">gst_base_transform_reconfigure</a>      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);
 #define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-NAME:CAPS" title="GST_BASE_TRANSFORM_SINK_NAME">GST_BASE_TRANSFORM_SINK_NAME</a>
 #define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SRC-NAME:CAPS" title="GST_BASE_TRANSFORM_SRC_NAME">GST_BASE_TRANSFORM_SRC_NAME</a>
 #define             <a class="link" href="GstBaseTransform.html#GST-BASE-TRANSFORM-SINK-PAD:CAPS" title="GST_BASE_TRANSFORM_SINK_PAD()">GST_BASE_TRANSFORM_SINK_PAD</a>         (obj)
@@ -81,7 +103,9 @@ void                <a class="link" href="GstBaseTransform.html#gst-base-transfo
 <div class="refsect1" lang="en">
 <a name="GstBaseTransform.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseTransform
@@ -90,7 +114,9 @@ void                <a class="link" href="GstBaseTransform.html#gst-base-transfo
 <div class="refsect1" lang="en">
 <a name="GstBaseTransform.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="GstBaseTransform.html#GstBaseTransform--qos" title='The "qos" property'>qos</a>"                      gboolean              : Read / Write
+  "<a class="link" href="GstBaseTransform.html#GstBaseTransform--qos" title='The "qos" property'>qos</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -118,7 +144,10 @@ It provides for:
 <p>
 </p>
 <p>
-Use Cases:
+</p>
+<div class="refsect2" lang="en">
+<a name="id2851110"></a><h3>Use Cases</h3>
+<p>
 </p>
 <div class="orderedlist"><ol type="1">
 <li>
@@ -252,11 +281,15 @@ Use Cases:
 </ol></div>
 <p>
 </p>
+</div>
 <p>
 </p>
-<div class="itemizedlist">
-<p class="title"><b>Sub-class settable flags on GstBaseTransform</b></p>
-<ul type="disc">
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2857464"></a><h3>Sub-class settable flags on GstBaseTransform</h3>
+<p>
+</p>
+<div class="itemizedlist"><ul type="disc">
 <li>
 <p>
   </p>
@@ -298,7 +331,9 @@ Use Cases:
 <p>
 </p>
 </li>
-</ul>
+</ul></div>
+<p>
+</p>
 </div>
 <p>
 
@@ -363,6 +398,8 @@ The opaque <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"
 
   /* src event */
   gboolean      (*src_event)      (GstBaseTransform *trans, GstEvent *event);
+
+  void          (*before_transform)  (GstBaseTransform *trans, GstBuffer *buffer);
 } GstBaseTransformClass;
 </pre>
 <p>
@@ -450,7 +487,9 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gboolean <em class="structfield"><code>passthrough_on_same_caps</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>passthrough_on_same_caps</code></em>;</span></p></td>
 <td> If set to TRUE, passthrough mode will be
                            automatically enabled if the caps are the same.
 </td>
@@ -471,13 +510,23 @@ same type and quantity) it should provide <em class="parameter"><code>transform_
                  Event handler on the source pad.
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>before_transform</code></em> ()</span></p></td>
+<td> Optional. Since 0.10.22
+                   This method is called right before the base class will
+                   start processing. Dynamic properties or other delayed
+                   configuration could be performed in this method.
+</td>
+</tr>
 </tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-is-passthrough"></a><h3>gst_base_transform_is_passthrough ()</h3>
-<pre class="programlisting">gboolean            gst_base_transform_is_passthrough   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_transform_is_passthrough   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 See if <em class="parameter"><code>trans</code></em> is configured as a passthrough transform.</p>
 <p>
@@ -505,7 +554,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-set-passthrough"></a><h3>gst_base_transform_set_passthrough ()</h3>
 <pre class="programlisting">void                gst_base_transform_set_passthrough  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean passthrough);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> passthrough);</pre>
 <p>
 Set passthrough mode for this filter by default. This is mostly
 useful for filters that do not care about negotiation.
@@ -538,7 +589,9 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-is-in-place"></a><h3>gst_base_transform_is_in_place ()</h3>
-<pre class="programlisting">gboolean            gst_base_transform_is_in_place      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_transform_is_in_place      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 See if <em class="parameter"><code>trans</code></em> is configured as a in_place transform.</p>
 <p>
@@ -566,7 +619,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-set-in-place"></a><h3>gst_base_transform_set_in_place ()</h3>
 <pre class="programlisting">void                gst_base_transform_set_in_place     (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean in_place);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> in_place);</pre>
 <p>
 Determines whether a non-writable buffer will be copied before passing
 to the transform_ip function.
@@ -602,7 +657,9 @@ on in_place buffers.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-is-qos-enabled"></a><h3>gst_base_transform_is_qos_enabled ()</h3>
-<pre class="programlisting">gboolean            gst_base_transform_is_qos_enabled   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_base_transform_is_qos_enabled   (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
 <p>
 Queries if the transform will handle QoS.</p>
 <p>
@@ -620,22 +677,27 @@ Queries if the transform will handle QoS.</p>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> TRUE if QoS is enabled.
 
+MT safe.
+
 </td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since  0.10.5
-
-MT safe.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-set-qos-enabled"></a><h3>gst_base_transform_set_qos_enabled ()</h3>
 <pre class="programlisting">void                gst_base_transform_set_qos_enabled  (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean enabled);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> enabled);</pre>
 <p>
-Enable or disable QoS handling in the transform.</p>
+Enable or disable QoS handling in the transform.
+</p>
+<p>
+MT safe.</p>
 <p>
 
 </p>
@@ -655,19 +717,24 @@ Enable or disable QoS handling in the transform.</p>
 </tbody>
 </table></div>
 <p class="since">Since  0.10.5
-
-MT safe.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-update-qos"></a><h3>gst_base_transform_update_qos ()</h3>
 <pre class="programlisting">void                gst_base_transform_update_qos       (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gdouble proportion,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> proportion,
                                                          GstClockTimeDiff diff,
                                                          GstClockTime timestamp);</pre>
 <p>
-Set the QoS parameters in the transform.</p>
+Set the QoS parameters in the transform. This function is called internally
+when a QOS event is received but subclasses can provide custom information
+when needed.
+</p>
+<p>
+MT safe.</p>
 <p>
 
 </p>
@@ -691,29 +758,37 @@ Set the QoS parameters in the transform.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timestamp</code></em> :</span></p></td>
-<td> the timestamp of the buffer generating the QoS
+<td> the timestamp of the buffer generating the QoS expressed in
+running_time.
 </td>
 </tr>
 </tbody>
 </table></div>
 <p class="since">Since  0.10.5
-
-MT safe.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-base-transform-set-gap-aware"></a><h3>gst_base_transform_set_gap_aware ()</h3>
 <pre class="programlisting">void                gst_base_transform_set_gap_aware    (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
-                                                         gboolean gap_aware);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> gap_aware);</pre>
 <p>
-If <em class="parameter"><code>gap_aware</code></em> is <code class="literal">FALSE</code> (the default), output buffers will have the
+If <em class="parameter"><code>gap_aware</code></em> is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> (the default), output buffers will have the
 <code class="literal">GST_BUFFER_FLAG_GAP</code> flag unset.
 </p>
 <p>
-If set to <code class="literal">TRUE</code>, the element must handle output buffers with this flag set
+If set to <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the element must handle output buffers with this flag set
 correctly, i.e. it can assume that the buffer contains neutral data but must
-unset the flag if the output is no neutral data.</p>
+unset the flag if the output is no neutral data.
+</p>
+<p>
+MT safe.</p>
 <p>
 
 </p>
@@ -733,8 +808,65 @@ unset the flag if the output is no neutral data.</p>
 </tbody>
 </table></div>
 <p class="since">Since  0.10.16
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-base-transform-suggest"></a><h3>gst_base_transform_suggest ()</h3>
+<pre class="programlisting">void                gst_base_transform_suggest          (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans,
+                                                         GstCaps *caps,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
+<p>
+Instructs <em class="parameter"><code>trans</code></em> to suggest new <em class="parameter"><code>caps</code></em> upstream. A copy of <em class="parameter"><code>caps</code></em> will be
+taken.</p>
+<p>
 
-MT safe.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
+<td> caps to suggest
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td> buffer size to suggest
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-base-transform-reconfigure"></a><h3>gst_base_transform_reconfigure ()</h3>
+<pre class="programlisting">void                gst_base_transform_reconfigure      (<a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a> *trans);</pre>
+<p>
+Instructs <em class="parameter"><code>trans</code></em> to renegotiate a new downstream transform on the next
+buffer. This function is typically called after properties on the transform
+were set that influence the output format.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>trans</code></em> :</span></p></td>
+<td> a <a class="link" href="GstBaseTransform.html" title="GstBaseTransform"><span class="type">GstBaseTransform</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.21
 </p>
 </div>
 <hr>
@@ -862,7 +994,9 @@ Release the lock that protects the transform function from concurrent access.</p
 <a name="GstBaseTransform.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstBaseTransform--qos"></a><h3>The <code class="literal">"qos"</code> property</h3>
-<pre class="programlisting">  "qos"                      gboolean              : Read / Write</pre>
+<pre class="programlisting">  "qos"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Handle Quality-of-Service events.</p>
 <p>Default value: FALSE</p>
 </div>

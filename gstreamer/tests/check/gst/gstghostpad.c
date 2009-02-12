@@ -26,7 +26,9 @@
 GST_START_TEST (test_remove1)
 {
   GstElement *b1, *b2, *src, *sink;
+
   GstPad *srcpad, *sinkpad;
+
   GstPadLinkReturn ret;
 
   b1 = gst_element_factory_make ("pipeline", NULL);
@@ -78,7 +80,9 @@ GST_END_TEST;
 GST_START_TEST (test_remove2)
 {
   GstElement *b1, *b2, *src, *sink;
+
   GstPad *srcpad, *sinkpad;
+
   GstPadLinkReturn ret;
 
   b1 = gst_element_factory_make ("pipeline", NULL);
@@ -151,10 +155,15 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_notarget)
 {
   GstElement *b1, *b2, *sink;
+
   GstPad *srcpad, *sinkpad, *peer;
+
   GstPadLinkReturn ret;
+
   gboolean bret;
+
   GstBus *bus;
+
   GstCaps *caps;
 
   b1 = gst_element_factory_make ("pipeline", NULL);
@@ -214,7 +223,9 @@ GST_END_TEST;
 GST_START_TEST (test_link)
 {
   GstElement *b1, *b2, *src, *sink;
+
   GstPad *srcpad, *sinkpad, *gpad;
+
   GstPadLinkReturn ret;
 
   b1 = gst_element_factory_make ("pipeline", NULL);
@@ -269,7 +280,9 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads)
 {
   GstElement *b1, *b2, *src, *i1, *sink;
+
   GstPad *gsink, *gsrc, *gisrc, *gisink, *isink, *isrc, *fsrc, *fsink;
+
   GstStateChangeReturn ret;
 
   b1 = gst_element_factory_make ("pipeline", NULL);
@@ -373,11 +386,17 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_bin)
 {
   GstBin *pipeline;
+
   GstBin *srcbin;
+
   GstBin *sinkbin;
+
   GstElement *src;
+
   GstElement *sink;
+
   GstPad *srcpad, *srcghost, *target;
+
   GstPad *sinkpad, *sinkghost;
 
   pipeline = GST_BIN (gst_pipeline_new ("pipe"));
@@ -443,10 +462,15 @@ block_callback (GstPad * pad, gboolean blocked, gpointer user_data)
 GST_START_TEST (test_ghost_pads_block)
 {
   GstBin *pipeline;
+
   GstBin *srcbin;
+
   GstElement *src;
+
   GstPad *srcpad;
+
   GstPad *srcghost;
+
   BlockData block_data;
 
   pipeline = GST_BIN (gst_pipeline_new ("pipeline"));
@@ -484,10 +508,15 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_probes)
 {
   GstBin *pipeline;
+
   GstBin *srcbin;
+
   GstElement *src;
+
   GstPad *srcpad;
+
   GstPad *srcghost;
+
   BlockData block_data;
 
   pipeline = GST_BIN (gst_pipeline_new ("pipeline"));
@@ -525,19 +554,30 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_new_from_template)
 {
   GstPad *sinkpad, *ghostpad;
+
   GstPadTemplate *padtempl, *ghosttempl;
+
   GstCaps *padcaps, *ghostcaps, *newcaps;
+  GstCaps *copypadcaps;
 
   padcaps = gst_caps_from_string ("some/caps");
   fail_unless (padcaps != NULL);
   ghostcaps = gst_caps_from_string ("some/caps;some/other-caps");
   fail_unless (ghostcaps != NULL);
 
+  copypadcaps = gst_caps_copy (padcaps);
   padtempl = gst_pad_template_new ("padtempl", GST_PAD_SINK,
-      GST_PAD_ALWAYS, padcaps);
+      GST_PAD_ALWAYS, copypadcaps);
   fail_unless (padtempl != NULL);
   ghosttempl = gst_pad_template_new ("ghosttempl", GST_PAD_SINK,
       GST_PAD_ALWAYS, ghostcaps);
+
+  /* FIXME : We should not have to unref those caps, but due to 
+   * a bug in gst_pad_template_new() not stealing the refcount of
+   * the given caps we have to. */
+  gst_caps_unref (ghostcaps);
+  gst_caps_unref (copypadcaps);
+
 
   sinkpad = gst_pad_new_from_template (padtempl, "sinkpad");
   fail_unless (sinkpad != NULL);
@@ -554,6 +594,12 @@ GST_START_TEST (test_ghost_pads_new_from_template)
   fail_unless (gst_caps_is_equal (newcaps, padcaps));
   gst_caps_unref (newcaps);
   gst_caps_unref (padcaps);
+
+  gst_object_unref (sinkpad);
+  gst_object_unref (ghostpad);
+
+  gst_object_unref (padtempl);
+  gst_object_unref (ghosttempl);
 }
 
 GST_END_TEST;
@@ -561,19 +607,31 @@ GST_END_TEST;
 GST_START_TEST (test_ghost_pads_new_no_target_from_template)
 {
   GstPad *sinkpad, *ghostpad;
+
   GstPadTemplate *padtempl, *ghosttempl;
+
   GstCaps *padcaps, *ghostcaps, *newcaps;
+  GstCaps *copypadcaps, *copyghostcaps;
 
   padcaps = gst_caps_from_string ("some/caps");
   fail_unless (padcaps != NULL);
   ghostcaps = gst_caps_from_string ("some/caps;some/other-caps");
   fail_unless (ghostcaps != NULL);
 
+  copypadcaps = gst_caps_copy (padcaps);
+  copyghostcaps = gst_caps_copy (ghostcaps);
+
   padtempl = gst_pad_template_new ("padtempl", GST_PAD_SINK,
-      GST_PAD_ALWAYS, padcaps);
+      GST_PAD_ALWAYS, copypadcaps);
   fail_unless (padtempl != NULL);
   ghosttempl = gst_pad_template_new ("ghosttempl", GST_PAD_SINK,
-      GST_PAD_ALWAYS, ghostcaps);
+      GST_PAD_ALWAYS, copyghostcaps);
+
+  /* FIXME : We should not have to unref those caps, but due to 
+   * a bug in gst_pad_template_new() not stealing the refcount of
+   * the given caps we have to. */
+  gst_caps_unref (copyghostcaps);
+  gst_caps_unref (copypadcaps);
 
   sinkpad = gst_pad_new_from_template (padtempl, "sinkpad");
   fail_unless (sinkpad != NULL);
@@ -598,6 +656,116 @@ GST_START_TEST (test_ghost_pads_new_no_target_from_template)
   fail_unless (gst_caps_is_equal (newcaps, padcaps));
   gst_caps_unref (newcaps);
 
+  gst_object_unref (sinkpad);
+  gst_object_unref (ghostpad);
+
+  gst_object_unref (padtempl);
+  gst_object_unref (ghosttempl);
+
+  gst_caps_unref (padcaps);
+  gst_caps_unref (ghostcaps);
+}
+
+GST_END_TEST;
+
+static void
+ghost_notify_caps (GObject * object, GParamSpec * pspec, gpointer * user_data)
+{
+  GST_DEBUG ("caps notify called");
+  (*(gint *) user_data)++;
+}
+
+GST_START_TEST (test_ghost_pads_forward_setcaps)
+{
+  GstCaps *templ_caps, *caps1, *caps2;
+  GstPadTemplate *src_template, *sink_template;
+  GstPad *src, *ghost, *sink;
+  gint notify_counter = 0;
+
+  templ_caps = gst_caps_from_string ("meh; muh");
+  src_template = gst_pad_template_new ("src", GST_PAD_SRC,
+      GST_PAD_ALWAYS, templ_caps);
+  sink_template = gst_pad_template_new ("sink", GST_PAD_SINK,
+      GST_PAD_ALWAYS, templ_caps);
+  gst_caps_unref (templ_caps);
+
+  src = gst_pad_new_from_template (src_template, "src");
+  sink = gst_pad_new_from_template (sink_template, "sink");
+
+  /* ghost source pad, setting caps on the source influences the caps of the
+   * ghostpad. */
+  ghost = gst_ghost_pad_new ("ghostsrc", src);
+  g_signal_connect (ghost, "notify::caps",
+      G_CALLBACK (ghost_notify_caps), &notify_counter);
+  fail_unless (gst_pad_link (ghost, sink) == GST_PAD_LINK_OK);
+
+  caps1 = gst_caps_from_string ("meh");
+  fail_unless (gst_pad_set_caps (src, caps1));
+  caps2 = GST_PAD_CAPS (ghost);
+  fail_unless (gst_caps_is_equal (caps1, caps2));
+  fail_unless_equals_int (notify_counter, 1);
+
+  gst_object_unref (ghost);
+  gst_caps_unref (caps1);
+
+  fail_unless (gst_pad_set_caps (src, NULL));
+
+  /* source 2, setting the caps on the ghostpad does not influence the caps of
+   * the target */
+  notify_counter = 0;
+  ghost = gst_ghost_pad_new ("ghostsrc", src);
+  g_signal_connect (ghost, "notify::caps",
+      G_CALLBACK (ghost_notify_caps), &notify_counter);
+  fail_unless (gst_pad_link (ghost, sink) == GST_PAD_LINK_OK);
+
+  caps1 = gst_caps_from_string ("meh");
+  fail_unless (gst_pad_set_caps (ghost, caps1));
+  caps2 = GST_PAD_CAPS (src);
+  fail_unless (caps2 == NULL);
+  fail_unless_equals_int (notify_counter, 1);
+
+  gst_object_unref (ghost);
+  gst_caps_unref (caps1);
+
+
+  /* ghost sink pad. Setting caps on the ghostpad will also set those caps on
+   * the target pad. */
+  notify_counter = 0;
+  ghost = gst_ghost_pad_new ("ghostsink", sink);
+  g_signal_connect (ghost, "notify::caps",
+      G_CALLBACK (ghost_notify_caps), &notify_counter);
+  fail_unless (gst_pad_link (src, ghost) == GST_PAD_LINK_OK);
+
+  caps1 = gst_caps_from_string ("muh");
+  fail_unless (gst_pad_set_caps (ghost, caps1));
+  caps2 = GST_PAD_CAPS (sink);
+  fail_unless (gst_caps_is_equal (caps1, caps2));
+  fail_unless_equals_int (notify_counter, 1);
+
+  gst_object_unref (ghost);
+  gst_caps_unref (caps1);
+
+  /* sink pad 2, setting caps just on the target pad should not influence the caps
+   * on the ghostpad. */
+  notify_counter = 0;
+  ghost = gst_ghost_pad_new ("ghostsink", sink);
+  g_signal_connect (ghost, "notify::caps",
+      G_CALLBACK (ghost_notify_caps), &notify_counter);
+  fail_unless (gst_pad_link (src, ghost) == GST_PAD_LINK_OK);
+
+  caps1 = gst_caps_from_string ("muh");
+  fail_unless (gst_pad_set_caps (sink, caps1));
+  caps2 = GST_PAD_CAPS (ghost);
+  fail_unless (caps2 == NULL);
+  fail_unless_equals_int (notify_counter, 0);
+
+  gst_object_unref (ghost);
+  gst_caps_unref (caps1);
+
+  gst_object_unref (src);
+  gst_object_unref (sink);
+  gst_object_unref (src_template);
+  gst_object_unref (sink_template);
 }
 
 GST_END_TEST;
@@ -606,6 +774,7 @@ static Suite *
 gst_ghost_pad_suite (void)
 {
   Suite *s = suite_create ("GstGhostPad");
+
   TCase *tc_chain = tcase_create ("ghost pad tests");
 
   suite_add_tcase (s, tc_chain);
@@ -619,6 +788,7 @@ gst_ghost_pad_suite (void)
   tcase_add_test (tc_chain, test_ghost_pads_probes);
   tcase_add_test (tc_chain, test_ghost_pads_new_from_template);
   tcase_add_test (tc_chain, test_ghost_pads_new_no_target_from_template);
+  tcase_add_test (tc_chain, test_ghost_pads_forward_setcaps);
 
   return s;
 }

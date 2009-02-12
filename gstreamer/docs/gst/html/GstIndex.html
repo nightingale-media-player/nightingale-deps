@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -67,91 +67,167 @@ enum                <a class="link" href="GstIndex.html#GstAssocFlags" title="en
 #define             <a class="link" href="GstIndex.html#GST-INDEX-FORMAT-KEY:CAPS" title="GST_INDEX_FORMAT_KEY()">GST_INDEX_FORMAT_KEY</a>                (entry)
 #define             <a class="link" href="GstIndex.html#GST-INDEX-ID-INVALID:CAPS" title="GST_INDEX_ID_INVALID">GST_INDEX_ID_INVALID</a>
 #define             <a class="link" href="GstIndex.html#GST-INDEX-ID-DESCRIPTION:CAPS" title="GST_INDEX_ID_DESCRIPTION()">GST_INDEX_ID_DESCRIPTION</a>            (entry)
-gboolean            (<a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">*GstIndexFilter</a>)                   (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">*GstIndexFilter</a>)                   (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 enum                <a class="link" href="GstIndex.html#GstIndexResolverMethod" title="enum GstIndexResolverMethod">GstIndexResolverMethod</a>;
-gboolean            (<a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">*GstIndexResolver</a>)                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">*GstIndexResolver</a>)                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> *writer,
-                                                         gchar **writer_string,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **writer_string,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 enum                <a class="link" href="GstIndex.html#GstIndexFlags" title="enum GstIndexFlags">GstIndexFlags</a>;
 #define             <a class="link" href="GstIndex.html#GST-INDEX-IS-READABLE:CAPS" title="GST_INDEX_IS_READABLE()">GST_INDEX_IS_READABLE</a>               (obj)
 #define             <a class="link" href="GstIndex.html#GST-INDEX-IS-WRITABLE:CAPS" title="GST_INDEX_IS_WRITABLE()">GST_INDEX_IS_WRITABLE</a>               (obj)
 <a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>*           <a class="link" href="GstIndex.html#gst-index-new" title="gst_index_new ()">gst_index_new</a>                       (void);
 void                <a class="link" href="GstIndex.html#gst-index-commit" title="gst_index_commit ()">gst_index_commit</a>                    (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id);
-gint                <a class="link" href="GstIndex.html#gst-index-get-group" title="gst_index_get_group ()">gst_index_get_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
-gint                <a class="link" href="GstIndex.html#gst-index-new-group" title="gst_index_new_group ()">gst_index_new_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
-gboolean            <a class="link" href="GstIndex.html#gst-index-set-group" title="gst_index_set_group ()">gst_index_set_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint groupnum);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="GstIndex.html#gst-index-get-group" title="gst_index_get_group ()">gst_index_get_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="GstIndex.html#gst-index-new-group" title="gst_index_new_group ()">gst_index_new_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstIndex.html#gst-index-set-group" title="gst_index_set_group ()">gst_index_set_group</a>                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> groupnum);
 void                <a class="link" href="GstIndex.html#gst-index-set-certainty" title="gst_index_set_certainty ()">gst_index_set_certainty</a>             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexCertainty" title="enum GstIndexCertainty">GstIndexCertainty</a> certainty);
 <a class="link" href="GstIndex.html#GstIndexCertainty" title="enum GstIndexCertainty">GstIndexCertainty</a>   <a class="link" href="GstIndex.html#gst-index-get-certainty" title="gst_index_get_certainty ()">gst_index_get_certainty</a>             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);
 void                <a class="link" href="GstIndex.html#gst-index-set-filter" title="gst_index_set_filter ()">gst_index_set_filter</a>                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">GstIndexFilter</a> filter,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 void                <a class="link" href="GstIndex.html#gst-index-set-filter-full" title="gst_index_set_filter_full ()">gst_index_set_filter_full</a>           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">GstIndexFilter</a> filter,
-                                                         gpointer user_data,
-                                                         GDestroyNotify user_data_destroy);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> user_data_destroy);
 void                <a class="link" href="GstIndex.html#gst-index-set-resolver" title="gst_index_set_resolver ()">gst_index_set_resolver</a>              (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">GstIndexResolver</a> resolver,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 void                <a class="link" href="GstIndex.html#gst-index-set-resolver-full" title="gst_index_set_resolver_full ()">gst_index_set_resolver_full</a>         (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">GstIndexResolver</a> resolver,
-                                                         gpointer user_data,
-                                                         GDestroyNotify user_data_destroy);
-gboolean            <a class="link" href="GstIndex.html#gst-index-get-writer-id" title="gst_index_get_writer_id ()">gst_index_get_writer_id</a>             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> user_data_destroy);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstIndex.html#gst-index-get-writer-id" title="gst_index_get_writer_id ()">gst_index_get_writer_id</a>             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> *writer,
-                                                         gint *id);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *id);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-add-format" title="gst_index_add_format ()">gst_index_add_format</a>                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-add-association" title="gst_index_add_association ()">gst_index_add_association</a>           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value,
                                                          ...);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-add-associationv" title="gst_index_add_associationv ()">gst_index_add_associationv</a>          (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
-                                                         gint n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> n,
                                                          const <a class="link" href="GstIndex.html#GstIndexAssociation" title="GstIndexAssociation">GstIndexAssociation</a> *list);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-add-object" title="gst_index_add_object ()">gst_index_add_object</a>                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
-                                                         gchar *key,
-                                                         GType type,
-                                                         gpointer object);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> object);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-add-id" title="gst_index_add_id ()">gst_index_add_id</a>                    (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
-                                                         gchar *description);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *description);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-get-assoc-entry" title="gst_index_get_assoc_entry ()">gst_index_get_assoc_entry</a>           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstIndexLookupMethod" title="enum GstIndexLookupMethod">GstIndexLookupMethod</a> method,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-get-assoc-entry-full" title="gst_index_get_assoc_entry_full ()">gst_index_get_assoc_entry_full</a>      (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstIndexLookupMethod" title="enum GstIndexLookupMethod">GstIndexLookupMethod</a> method,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value,
-                                                         GCompareDataFunc func,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareDataFunc"
+>GCompareDataFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      <a class="link" href="GstIndex.html#gst-index-entry-copy" title="gst_index_entry_copy ()">gst_index_entry_copy</a>                (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry);
 void                <a class="link" href="GstIndex.html#gst-index-entry-free" title="gst_index_entry_free ()">gst_index_entry_free</a>                (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry);
-gboolean            <a class="link" href="GstIndex.html#gst-index-entry-assoc-map" title="gst_index_entry_assoc_map ()">gst_index_entry_assoc_map</a>           (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstIndex.html#gst-index-entry-assoc-map" title="gst_index_entry_assoc_map ()">gst_index_entry_assoc_map</a>           (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 *value);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstIndex.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----GstIndex
 </pre>
@@ -435,7 +511,9 @@ An association in an entry.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint64 <em class="structfield"><code>value</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> <em class="structfield"><code>value</code></em>;</span></p></td>
 <td> the value of the association
 </td>
 </tr>
@@ -558,9 +636,13 @@ Get the description of the id entry</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstIndexFilter"></a><h3>GstIndexFilter ()</h3>
-<pre class="programlisting">gboolean            (*GstIndexFilter)                   (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstIndexFilter)                   (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Function to filter out entries in the index.</p>
 <p>
@@ -586,8 +668,12 @@ Function to filter out entries in the index.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> This function should return <code class="literal">TRUE</code> if the entry is to be added
-to the index, <code class="literal">FALSE</code> otherwise.
+<td> This function should return <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the entry is to be added
+to the index, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
 
 </td>
 </tr>
@@ -632,10 +718,16 @@ The method used to resolve index writers</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstIndexResolver"></a><h3>GstIndexResolver ()</h3>
-<pre class="programlisting">gboolean            (*GstIndexResolver)                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstIndexResolver)                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> *writer,
-                                                         gchar **writer_string,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **writer_string,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Function to resolve ids to writer descriptions.</p>
 <p>
@@ -666,7 +758,9 @@ Function to resolve ids to writer descriptions.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if an id could be assigned to the writer.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if an id could be assigned to the writer.
 </td>
 </tr>
 </tbody>
@@ -768,7 +862,9 @@ Create a new tileindex object</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-commit"></a><h3>gst_index_commit ()</h3>
 <pre class="programlisting">void                gst_index_commit                    (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id);</pre>
 <p>
 Tell the index that the writer with the given id is done
 with this index and is not going to write any more entries
@@ -795,7 +891,9 @@ to it.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-index-get-group"></a><h3>gst_index_get_group ()</h3>
-<pre class="programlisting">gint                gst_index_get_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_index_get_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
 <p>
 Get the id of the current group.</p>
 <p>
@@ -820,7 +918,9 @@ Get the id of the current group.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-index-new-group"></a><h3>gst_index_new_group ()</h3>
-<pre class="programlisting">gint                gst_index_new_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_index_new_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre>
 <p>
 Create a new group for the given index. It will be
 set as the current group.</p>
@@ -846,8 +946,12 @@ set as the current group.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-index-set-group"></a><h3>gst_index_set_group ()</h3>
-<pre class="programlisting">gboolean            gst_index_set_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint groupnum);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_index_set_group                 (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> groupnum);</pre>
 <p>
 Set the current groupnumber to the given argument.</p>
 <p>
@@ -931,7 +1035,9 @@ Get the certainty of the given index.</p>
 <a name="gst-index-set-filter"></a><h3>gst_index_set_filter ()</h3>
 <pre class="programlisting">void                gst_index_set_filter                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">GstIndexFilter</a> filter,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Lets the app register a custom filter function so that
 it can select what entries should be stored in the index.</p>
@@ -964,8 +1070,12 @@ it can select what entries should be stored in the index.</p>
 <a name="gst-index-set-filter-full"></a><h3>gst_index_set_filter_full ()</h3>
 <pre class="programlisting">void                gst_index_set_filter_full           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexFilter" title="GstIndexFilter ()">GstIndexFilter</a> filter,
-                                                         gpointer user_data,
-                                                         GDestroyNotify user_data_destroy);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> user_data_destroy);</pre>
 <p>
 Lets the app register a custom filter function so that
 it can select what entries should be stored in the index.</p>
@@ -1003,7 +1113,9 @@ it can select what entries should be stored in the index.</p>
 <a name="gst-index-set-resolver"></a><h3>gst_index_set_resolver ()</h3>
 <pre class="programlisting">void                gst_index_set_resolver              (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">GstIndexResolver</a> resolver,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Lets the app register a custom function to map index
 ids to writer descriptions.</p>
@@ -1036,8 +1148,12 @@ ids to writer descriptions.</p>
 <a name="gst-index-set-resolver-full"></a><h3>gst_index_set_resolver_full ()</h3>
 <pre class="programlisting">void                gst_index_set_resolver_full         (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstIndex.html#GstIndexResolver" title="GstIndexResolver ()">GstIndexResolver</a> resolver,
-                                                         gpointer user_data,
-                                                         GDestroyNotify user_data_destroy);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> user_data_destroy);</pre>
 <p>
 Lets the app register a custom function to map index
 ids to writer descriptions.</p>
@@ -1075,9 +1191,13 @@ ids to writer descriptions.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-index-get-writer-id"></a><h3>gst_index_get_writer_id ()</h3>
-<pre class="programlisting">gboolean            gst_index_get_writer_id             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_index_get_writer_id             (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> *writer,
-                                                         gint *id);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *id);</pre>
 <p>
 Before entries can be added to the index, a writer
 should obtain a unique id. The methods to add new entries
@@ -1120,7 +1240,9 @@ in the index.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-add-format"></a><h3>gst_index_add_format ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_add_format                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format);</pre>
 <p>
 Adds a format entry into the index. This function is
@@ -1159,10 +1281,14 @@ format key.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-add-association"></a><h3>gst_index_add_association ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_add_association           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value,
                                                          ...);</pre>
 <p>
 Associate given format/value pairs with each other.
@@ -1216,9 +1342,13 @@ you might want to use a gint64 cast to be sure.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-add-associationv"></a><h3>gst_index_add_associationv ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_add_associationv          (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
-                                                         gint n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> n,
                                                          const <a class="link" href="GstIndex.html#GstIndexAssociation" title="GstIndexAssociation">GstIndexAssociation</a> *list);</pre>
 <p>
 Associate given format/value pairs with each other.</p>
@@ -1265,10 +1395,18 @@ Associate given format/value pairs with each other.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-add-object"></a><h3>gst_index_add_object ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_add_object                (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
-                                                         gchar *key,
-                                                         GType type,
-                                                         gpointer object);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> object);</pre>
 <p>
 Add the given object to the index with the given key.
 </p>
@@ -1317,8 +1455,12 @@ This function is not yet implemented.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-add-id"></a><h3>gst_index_add_id ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_add_id                    (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
-                                                         gchar *description);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *description);</pre>
 <p>
 Add an id entry into the index.</p>
 <p>
@@ -1354,11 +1496,15 @@ Add an id entry into the index.</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-get-assoc-entry"></a><h3>gst_index_get_assoc_entry ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_get_assoc_entry           (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstIndexLookupMethod" title="enum GstIndexLookupMethod">GstIndexLookupMethod</a> method,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value);</pre>
 <p>
 Finds the given format/value in the index</p>
 <p>
@@ -1410,13 +1556,21 @@ Finds the given format/value in the index</p>
 <div class="refsect2" lang="en">
 <a name="gst-index-get-assoc-entry-full"></a><h3>gst_index_get_assoc_entry_full ()</h3>
 <pre class="programlisting"><a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a>*      gst_index_get_assoc_entry_full      (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a> *index,
-                                                         gint id,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> id,
                                                          <a class="link" href="GstIndex.html#GstIndexLookupMethod" title="enum GstIndexLookupMethod">GstIndexLookupMethod</a> method,
                                                          <a class="link" href="GstIndex.html#GstAssocFlags" title="enum GstAssocFlags">GstAssocFlags</a> flags,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 value,
-                                                         GCompareDataFunc func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareDataFunc"
+>GCompareDataFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Finds the given format/value in the index with the given
 compare function and user_data.</p>
@@ -1521,9 +1675,13 @@ Free the memory used by the given entry.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-index-entry-assoc-map"></a><h3>gst_index_entry_assoc_map ()</h3>
-<pre class="programlisting">gboolean            gst_index_entry_assoc_map           (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_index_entry_assoc_map           (<a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *entry,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 *value);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *value);</pre>
 <p>
 Gets alternative formats associated with the indexentry.</p>
 <p>
@@ -1572,7 +1730,9 @@ format.
 <a name="GstIndex-entry-added"></a><h3>The <code class="literal">"entry-added"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstIndex.html" title="GstIndex">GstIndex</a>      *gstindex,
                                                         <a class="link" href="GstIndex.html#GstIndexEntry" title="GstIndexEntry">GstIndexEntry</a> *arg1,
-                                                        gpointer       user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
 <p>
 Is emitted when a new entry is added to the index.</p>
 <p>

@@ -24,30 +24,26 @@
  * @short_description: Element interface that allows setting and retrieval
  *                     of media metadata
  *
- * <refsect2>
- * <para>
  * Element interface that allows setting of media metadata.
- * </para>
- * <para>
+ *
  * Elements that support changing a stream's metadata will implement this
  * interface. Examples of such elements are 'vorbisenc', 'theoraenc' and
  * 'id3v2mux'.
- * </para>
- * <para>
+ * 
  * If you just want to retrieve metadata in your application then all you
  * need to do is watch for tag messages on your pipeline's bus. This
  * interface is only for setting metadata, not for extracting it. To set tags
  * from the application, find tagsetter elements and set tags using e.g.
- * gst_tag_setter_merge_tags() or gst_tag_setter_add_tags(). The application
- * should do that before the element goes to %GST_STATE_PAUSED.
- * </para>
- * <para>
+ * gst_tag_setter_merge_tags() or gst_tag_setter_add_tags(). Also consider
+ * setting the #GstTagMergeMode that is used for tag events that arrive at the
+ * tagsetter element (default mode is to keep existing tags).
+ * The application should do that before the element goes to %GST_STATE_PAUSED.
+ * 
  * Elements implementing the #GstTagSetter interface often have to merge
  * any tags received from upstream and the tags set by the application via
  * the interface. This can be done like this:
- * </para>
- * <para>
- * <programlisting>
+ *
+ * |[
  * GstTagMergeMode merge_mode;
  * const GstTagList *application_tags;
  * const GstTagList *event_tags;
@@ -57,7 +53,7 @@
  * tagsetter = GST_TAG_SETTER (element);
  *  
  * merge_mode = gst_tag_setter_get_tag_merge_mode (tagsetter);
- * tagsetter_tags = gst_tag_setter_get_tag_list (tagsetter);
+ * application_tags = gst_tag_setter_get_tag_list (tagsetter);
  * event_tags = (const GstTagList *) element->event_tags;
  *  
  * GST_LOG_OBJECT (tagsetter, "merging tags, merge mode = %d", merge_mode);
@@ -67,12 +63,9 @@
  * result = gst_tag_list_merge (application_tags, event_tags, merge_mode);
  *  
  * GST_LOG_OBJECT (tagsetter, "final tags: %" GST_PTR_FORMAT, result);
- * </programlisting>
- * </para>
- * <para>
+ * ]|
+ * 
  * Last reviewed on 2006-05-18 (0.10.6)
- * </para>
- * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -93,8 +86,7 @@ typedef struct
 {
   GstTagMergeMode mode;
   GstTagList *list;
-}
-GstTagData;
+} GstTagData;
 
 GType
 gst_tag_setter_get_type (void)
@@ -127,6 +119,7 @@ gst_tag_setter_get_type (void)
 
   return tag_setter_type;
 }
+
 static void
 gst_tag_data_free (gpointer p)
 {
@@ -137,6 +130,7 @@ gst_tag_data_free (gpointer p)
 
   g_free (data);
 }
+
 static GstTagData *
 gst_tag_setter_get_data (GstTagSetter * setter)
 {
@@ -152,6 +146,29 @@ gst_tag_setter_get_data (GstTagSetter * setter)
   }
 
   return data;
+}
+
+/**
+ * gst_tag_setter_reset_tags:
+ * @setter: a #GstTagSetter
+ *
+ * Reset the internal taglist. Elements should call this from within the
+ * state-change handler.
+ *
+ * Since: 0.10.22
+ */
+void
+gst_tag_setter_reset_tags (GstTagSetter * setter)
+{
+  GstTagData *data;
+
+  g_return_if_fail (GST_IS_TAG_SETTER (setter));
+
+  data = gst_tag_setter_get_data (setter);
+  if (data->list) {
+    gst_tag_list_free (data->list);
+    data->list = NULL;
+  }
 }
 
 /**

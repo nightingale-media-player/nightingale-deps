@@ -22,11 +22,13 @@
     </sub>
   </chapters>
   <functions>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-capsfilter.html#id2604047"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-capsfilter.html#id2686623"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-capsfilter.html#id2608747"/>
     <keyword type="struct" name="GstCapsFilter" link="gstreamer-plugins-capsfilter.html#GstCapsFilter-struct"/>
     <keyword type="" name="The &quot;caps&quot; property" link="gstreamer-plugins-capsfilter.html#GstCapsFilter--caps"/>
-    <keyword type="" name="Example launch line" link="gstreamer-plugins-fakesrc.html#id2589505"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesrc.html#id2589546"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-fakesrc.html#id2694073"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesrc.html#id2694098"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fakesrc.html#id2694160"/>
     <keyword type="struct" name="GstFakeSrc" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-struct"/>
     <keyword type="enum" name="enum GstFakeSrcDataType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcDataType"/>
     <keyword type="enum" name="enum GstFakeSrcFillType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcFillType"/>
@@ -50,7 +52,8 @@
     <keyword type="" name="The &quot;sync&quot; property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sync"/>
     <keyword type="" name="The &quot;format&quot; property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--format"/>
     <keyword type="" name="The &quot;handoff&quot; signal" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-handoff"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesink.html#id2606417"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesink.html#id2696821"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fakesink.html#id2656825"/>
     <keyword type="struct" name="GstFakeSink" link="gstreamer-plugins-fakesink.html#GstFakeSink-struct"/>
     <keyword type="enum" name="enum GstFakeSinkStateError" link="gstreamer-plugins-fakesink.html#GstFakeSinkStateError"/>
     <keyword type="" name="The &quot;can-activate-pull&quot; property" link="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull"/>
@@ -63,13 +66,18 @@
     <keyword type="" name="The &quot;num-buffers&quot; property" link="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers"/>
     <keyword type="" name="The &quot;handoff&quot; signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-handoff"/>
     <keyword type="" name="The &quot;preroll-handoff&quot; signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-preroll-handoff"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsink.html#id2601336"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsink.html#id2689471"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fdsink.html#id2689533"/>
     <keyword type="struct" name="GstFdSink" link="gstreamer-plugins-fdsink.html#GstFdSink-struct"/>
     <keyword type="" name="The &quot;fd&quot; property" link="gstreamer-plugins-fdsink.html#GstFdSink--fd"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsrc.html#id2606573"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-fdsrc.html#id2630983"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsrc.html#id2690613"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fdsrc.html#id2690674"/>
     <keyword type="struct" name="GstFdSrc" link="gstreamer-plugins-fdsrc.html#GstFdSrc-struct"/>
     <keyword type="" name="The &quot;fd&quot; property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--fd"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-filesrc.html#id2527739"/>
+    <keyword type="" name="The &quot;timeout&quot; property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-filesrc.html#id2672823"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-filesrc.html#id2682871"/>
     <keyword type="struct" name="GstFileSrc" link="gstreamer-plugins-filesrc.html#GstFileSrc-struct"/>
     <keyword type="" name="The &quot;fd&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--fd"/>
     <keyword type="" name="The &quot;location&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--location"/>
@@ -77,12 +85,14 @@
     <keyword type="" name="The &quot;touch&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--touch"/>
     <keyword type="" name="The &quot;use-mmap&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--use-mmap"/>
     <keyword type="" name="The &quot;sequential&quot; property" link="gstreamer-plugins-filesrc.html#GstFileSrc--sequential"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-filesink.html#id2614203"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-filesink.html#id2702511"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-filesink.html#id2702574"/>
     <keyword type="struct" name="GstFileSink" link="gstreamer-plugins-filesink.html#GstFileSink-struct"/>
     <keyword type="" name="The &quot;location&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--location"/>
     <keyword type="" name="The &quot;buffer-mode&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode"/>
     <keyword type="" name="The &quot;buffer-size&quot; property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-size"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-identity.html#id2622973"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-identity.html#id2697888"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-identity.html#id2697949"/>
     <keyword type="struct" name="GstIdentity" link="gstreamer-plugins-identity.html#GstIdentity-struct"/>
     <keyword type="" name="The &quot;check-perfect&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--check-perfect"/>
     <keyword type="" name="The &quot;datarate&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--datarate"/>
@@ -98,8 +108,9 @@
     <keyword type="" name="The &quot;check-imperfect-timestamp&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp"/>
     <keyword type="" name="The &quot;signal-handoffs&quot; property" link="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs"/>
     <keyword type="" name="The &quot;handoff&quot; signal" link="gstreamer-plugins-identity.html#GstIdentity-handoff"/>
-    <keyword type="" name="" link="gstreamer-plugins-multiqueue.html#id2611810"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-multiqueue.html#id2618505"/>
+    <keyword type="" name="" link="gstreamer-plugins-multiqueue.html#id2698270"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-multiqueue.html#id2698488"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-multiqueue.html#id2698551"/>
     <keyword type="struct" name="GstMultiQueue" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-struct"/>
     <keyword type="" name="The &quot;extra-size-buffers&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-buffers"/>
     <keyword type="" name="The &quot;extra-size-bytes&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-bytes"/>
@@ -109,7 +120,8 @@
     <keyword type="" name="The &quot;max-size-time&quot; property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-time"/>
     <keyword type="" name="The &quot;overrun&quot; signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-overrun"/>
     <keyword type="" name="The &quot;underrun&quot; signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-underrun"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-queue.html#id2621523"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-queue.html#id2700161"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-queue.html#id2700224"/>
     <keyword type="struct" name="GstQueue" link="gstreamer-plugins-queue.html#GstQueue-struct"/>
     <keyword type="struct" name="GstQueueSize" link="gstreamer-plugins-queue.html#GstQueueSize"/>
     <keyword type="" name="The &quot;current-level-buffers&quot; property" link="gstreamer-plugins-queue.html#GstQueue--current-level-buffers"/>
@@ -126,7 +138,8 @@
     <keyword type="" name="The &quot;running&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-running"/>
     <keyword type="" name="The &quot;underrun&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-underrun"/>
     <keyword type="" name="The &quot;pushing&quot; signal" link="gstreamer-plugins-queue.html#GstQueue-pushing"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-tee.html#id2603278"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-tee.html#id2671450"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-tee.html#id2668709"/>
     <keyword type="struct" name="GstTee" link="gstreamer-plugins-tee.html#GstTee-struct"/>
     <keyword type="enum" name="enum GstTeePullMode" link="gstreamer-plugins-tee.html#GstTeePullMode"/>
     <keyword type="" name="The &quot;has-chain&quot; property" link="gstreamer-plugins-tee.html#GstTee--has-chain"/>
@@ -135,7 +148,8 @@
     <keyword type="" name="The &quot;num-src-pads&quot; property" link="gstreamer-plugins-tee.html#GstTee--num-src-pads"/>
     <keyword type="" name="The &quot;silent&quot; property" link="gstreamer-plugins-tee.html#GstTee--silent"/>
     <keyword type="" name="The &quot;pull-mode&quot; property" link="gstreamer-plugins-tee.html#GstTee--pull-mode"/>
-    <keyword type="" name="Element Information" link="gstreamer-plugins-typefind.html#id2578936"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-typefind.html#id2700450"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-typefind.html#id2704788"/>
     <keyword type="struct" name="GstTypeFindElement" link="gstreamer-plugins-typefind.html#GstTypeFindElement-struct"/>
     <keyword type="" name="The &quot;caps&quot; property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--caps"/>
     <keyword type="" name="The &quot;maximum&quot; property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--maximum"/>

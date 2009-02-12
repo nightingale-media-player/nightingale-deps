@@ -18,6 +18,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION:element-typefind
+ *
+ * Determines the media-type of a stream. It applies typefind functions in the
+ * order of their rank. One the type has been deteted it sets its src pad caps
+ * to the found media type.
+ *
+ * Plugins can register custom typefinders by using #GstTypeFindFactory.
+ */
 
 /* FIXME: need a better solution for non-seekable streams */
 
@@ -274,13 +283,14 @@ gst_type_find_element_dispose (GObject * object)
 {
   GstTypeFindElement *typefind = GST_TYPE_FIND_ELEMENT (object);
 
-  G_OBJECT_CLASS (parent_class)->dispose (object);
-
   if (typefind->store) {
     gst_buffer_unref (typefind->store);
     typefind->store = NULL;
   }
+
+  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
+
 static void
 gst_type_find_element_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)

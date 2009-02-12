@@ -60,6 +60,8 @@
 #include "gstquark.h"
 
 
+#define GST_MESSAGE_SEQNUM(e) ((GstMessage*)e)->abidata.ABI.seqnum
+
 static void gst_message_init (GTypeInstance * instance, gpointer g_class);
 static void gst_message_class_init (gpointer g_class, gpointer class_data);
 static void gst_message_finalize (GstMessage * message);
@@ -247,6 +249,7 @@ _gst_message_copy (GstMessage * message)
   GST_MESSAGE_COND (copy) = GST_MESSAGE_COND (message);
   GST_MESSAGE_TYPE (copy) = GST_MESSAGE_TYPE (message);
   GST_MESSAGE_TIMESTAMP (copy) = GST_MESSAGE_TIMESTAMP (message);
+  GST_MESSAGE_SEQNUM (copy) = GST_MESSAGE_SEQNUM (message);
 
   if (GST_MESSAGE_SRC (message)) {
     GST_MESSAGE_SRC (copy) = gst_object_ref (GST_MESSAGE_SRC (message));
@@ -300,7 +303,63 @@ gst_message_new_custom (GstMessageType type, GstObject * src,
   }
   message->structure = structure;
 
+  GST_MESSAGE_SEQNUM (message) = gst_util_seqnum_next ();
+
   return message;
+}
+
+/**
+ * gst_message_get_seqnum:
+ * @message: A #GstMessage.
+ *
+ * Retrieve the sequence number of a message.
+ *
+ * Messages have ever-incrementing sequence numbers, which may also be set
+ * explicitly via gst_message_set_seqnum(). Sequence numbers are typically used
+ * to indicate that a message corresponds to some other set of messages or
+ * events, for example a SEGMENT_DONE message corresponding to a SEEK event. It
+ * is considered good practice to make this correspondence when possible, though
+ * it is not required.
+ *
+ * Note that events and messages share the same sequence number incrementor;
+ * two events or messages will never not have the same sequence number unless
+ * that correspondence was made explicitly.
+ *
+ * Returns: The message's sequence number.
+ *
+ * Since: 0.10.22
+ *
+ * MT safe.
+ */
+guint32
+gst_message_get_seqnum (GstMessage * message)
+{
+  g_return_val_if_fail (GST_IS_MESSAGE (message), -1);
+
+  return GST_MESSAGE_SEQNUM (message);
+}
+
+/**
+ * gst_message_set_seqnum:
+ * @message: A #GstMessage.
+ * @seqnum: A sequence number.
+ *
+ * Set the sequence number of a message.
+ *
+ * This function might be called by the creator of a message to indicate that
+ * the message relates to other messages or events. See gst_message_get_seqnum()
+ * for more information.
+ *
+ * Since: 0.10.22
+ *
+ * MT safe.
+ */
+void
+gst_message_set_seqnum (GstMessage * message, guint32 seqnum)
+{
+  g_return_if_fail (GST_IS_MESSAGE (message));
+
+  GST_MESSAGE_SEQNUM (message) = seqnum;
 }
 
 /**
@@ -329,7 +388,7 @@ gst_message_new_eos (GstObject * src)
  * gst_message_new_error:
  * @src: The object originating the message.
  * @error: The GError for this message.
- * @debug: A debugging string for something or other.
+ * @debug: A debugging string.
  *
  * Create a new error message. The message will copy @error and
  * @debug. This message is posted by element when a fatal event
@@ -359,7 +418,7 @@ gst_message_new_error (GstObject * src, GError * error, const gchar * debug)
  * gst_message_new_warning:
  * @src: The object originating the message.
  * @error: The GError for this message.
- * @debug: A debugging string for something or other.
+ * @debug: A debugging string.
  *
  * Create a new warning message. The message will make copies of @error and
  * @debug.
@@ -387,7 +446,7 @@ gst_message_new_warning (GstObject * src, GError * error, const gchar * debug)
  * gst_message_new_info:
  * @src: The object originating the message.
  * @error: The GError for this message.
- * @debug: A debugging string for something or other.
+ * @debug: A debugging string.
  *
  * Create a new info message. The message will make copies of @error and
  * @debug.
@@ -618,6 +677,48 @@ gst_message_new_new_clock (GstObject * src, GstClock * clock)
   gst_structure_id_set (structure,
       GST_QUARK (CLOCK), GST_TYPE_CLOCK, clock, NULL);
   message = gst_message_new_custom (GST_MESSAGE_NEW_CLOCK, src, structure);
+
+  return message;
+}
+
+/**
+ * gst_message_new_structure_change:
+ * @src: The object originating the message.
+ * @type: The change type.
+ * @owner: The owner element of @src.
+ * @busy: Whether the structure change is busy.
+ *
+ * Create a new structure change message. This message is posted when the
+ * structure of a pipeline is in the process of being changed, for example
+ * when pads are linked or unlinked.
+ *
+ * @src should be the srcpad that unlinked or linked.
+ *
+ * Returns: The new structure change message.
+ *
+ * MT safe.
+ *
+ * Since: 0.10.22.
+ */
+GstMessage *
+gst_message_new_structure_change (GstObject * src, GstStructureChangeType type,
+    GstElement * owner, gboolean busy)
+{
+  GstMessage *message;
+  GstStructure *structure;
+
+  g_return_val_if_fail (GST_IS_PAD (src), NULL);
+  g_return_val_if_fail (GST_PAD_DIRECTION (src) == GST_PAD_SRC, NULL);
+  g_return_val_if_fail (GST_IS_ELEMENT (owner), NULL);
+
+  structure = gst_structure_empty_new ("GstMessageStructureChange");
+  gst_structure_id_set (structure,
+      GST_QUARK (TYPE), GST_TYPE_STRUCTURE_CHANGE_TYPE, type,
+      GST_QUARK (OWNER), GST_TYPE_ELEMENT, owner,
+      GST_QUARK (BUSY), G_TYPE_BOOLEAN, busy, NULL);
+
+  message = gst_message_new_custom (GST_MESSAGE_STRUCTURE_CHANGE, src,
+      structure);
 
   return message;
 }
@@ -1069,6 +1170,45 @@ gst_message_parse_new_clock (GstMessage * message, GstClock ** clock)
 
   if (clock)
     *clock = (GstClock *) g_value_get_object (clock_gvalue);
+}
+
+/**
+ * gst_message_parse_structure_change:
+ * @message: A valid #GstMessage of type GST_MESSAGE_STRUCTURE_CHANGE.
+ * @type: A pointer to hold the change type
+ * @owner: The owner element of the message source
+ * @busy: A pointer to hold whether the change is in progress or has been
+ * completed
+ *
+ * Extracts the change type and completion status from the GstMessage.
+ *
+ * MT safe.
+ *
+ * Since: 0.10.22
+ */
+void
+gst_message_parse_structure_change (GstMessage * message,
+    GstStructureChangeType * type, GstElement ** owner, gboolean * busy)
+{
+  const GValue *owner_gvalue;
+
+  g_return_if_fail (GST_IS_MESSAGE (message));
+  g_return_if_fail (GST_MESSAGE_TYPE (message) == GST_MESSAGE_STRUCTURE_CHANGE);
+
+  owner_gvalue =
+      gst_structure_id_get_value (message->structure, GST_QUARK (OWNER));
+  g_return_if_fail (owner_gvalue != NULL);
+  g_return_if_fail (G_VALUE_TYPE (owner_gvalue) == GST_TYPE_ELEMENT);
+
+  if (type)
+    *type = g_value_get_enum (gst_structure_id_get_value (message->structure,
+            GST_QUARK (TYPE)));
+  if (owner)
+    *owner = (GstElement *) g_value_get_object (owner_gvalue);
+  if (busy)
+    *busy =
+        g_value_get_boolean (gst_structure_id_get_value (message->structure,
+            GST_QUARK (BUSY)));
 }
 
 /**

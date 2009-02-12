@@ -3,7 +3,7 @@
  *                    2000 Wim Taymans <wtay@chello.be>
  *                    2002 Thomas Vander Stichele <thomas@apestaart.org>
  *
- * gstutils.c: Utility functions: gtk_get_property stuff, etc.
+ * gstutils.c: Utility functions
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -575,6 +575,49 @@ overflow:
   }
 }
 
+/**
+ * gst_util_seqnum_next:
+ *
+ * Return a constantly incrementing sequence number.
+ *
+ * This function is used internally to GStreamer to be able to determine which
+ * events and messages are "the same". For example, elements may set the seqnum
+ * on a segment-done message to be the same as that of the last seek event, to
+ * indicate that event and the message correspond to the same segment.
+ *
+ * Returns: A constantly incrementing 32-bit unsigned integer, which might
+ * overflow back to 0 at some point. Use gst_util_seqnum_compare() to make sure
+ * you handle wraparound correctly.
+ *
+ * Since: 0.10.22
+ */
+guint32
+gst_util_seqnum_next (void)
+{
+  static gint counter = 0;
+  return g_atomic_int_exchange_and_add (&counter, 1);
+}
+
+/**
+ * gst_util_seqnum_compare:
+ * @s1: A sequence number.
+ * @s2: Another sequence number.
+ *
+ * Compare two sequence numbers, handling wraparound.
+ * 
+ * The current implementation just returns (gint32)(@s1 - @s2).
+ *
+ * Returns: A negative number if @s1 is before @s2, 0 if they are equal, or a
+ * positive number if @s1 is after @s2.
+ *
+ * Since: 0.10.22
+ */
+gint32
+gst_util_seqnum_compare (guint32 s1, guint32 s2)
+{
+  return (gint32) (s1 - s2);
+}
+
 /* -----------------------------------------------------
  *
  *  The following code will be moved out of the main
@@ -898,8 +941,6 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
   GstPad *foundpad = NULL;
   gboolean done;
 
-  /* FIXME check for caps compatibility */
-
   g_return_val_if_fail (GST_IS_ELEMENT (element), NULL);
   g_return_val_if_fail (GST_IS_PAD (pad), NULL);
 
@@ -929,21 +970,41 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
         peer = gst_pad_get_peer (current);
 
         if (peer == NULL && gst_pad_can_link (pad, current)) {
+          GstCaps *temp, *temp2, *intersection;
 
-          GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
-              "found existing unlinked pad %s:%s",
-              GST_DEBUG_PAD_NAME (current));
+          /* Now check if the two pads' caps are compatible */
+          temp = gst_pad_get_caps (pad);
+          if (caps) {
+            intersection = gst_caps_intersect (temp, caps);
+            gst_caps_unref (temp);
+          } else {
+            intersection = temp;
+          }
 
-          gst_iterator_free (pads);
+          temp = gst_pad_get_caps (current);
+          temp2 = gst_caps_intersect (temp, intersection);
+          gst_caps_unref (temp);
+          gst_caps_unref (intersection);
 
-          return current;
-        } else {
-          GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "unreffing pads");
+          intersection = temp2;
 
-          gst_object_unref (current);
-          if (peer)
-            gst_object_unref (peer);
+          if (!gst_caps_is_empty (intersection)) {
+            gst_caps_unref (intersection);
+
+            GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS,
+                "found existing unlinked compatible pad %s:%s",
+                GST_DEBUG_PAD_NAME (current));
+            gst_iterator_free (pads);
+
+            return current;
+          }
+          gst_caps_unref (intersection);
         }
+        GST_CAT_DEBUG (GST_CAT_ELEMENT_PADS, "unreffing pads");
+
+        gst_object_unref (current);
+        if (peer)
+          gst_object_unref (peer);
         break;
       }
       case GST_ITERATOR_DONE:
@@ -965,10 +1026,17 @@ gst_element_get_compatible_pad (GstElement * element, GstPad * pad,
 
   /* try to create a new one */
   /* requesting is a little crazy, we need a template. Let's create one */
+  /* FIXME: why not gst_pad_get_pad_template (pad); */
   templcaps = gst_pad_get_caps (pad);
 
   templ = gst_pad_template_new ((gchar *) GST_PAD_NAME (pad),
       GST_PAD_DIRECTION (pad), GST_PAD_ALWAYS, templcaps);
+
+  /* FIXME : Because of a bug in gst_pad_template_new() by which is does not
+   * properly steal the refcount of the given caps, we have to unref these caps
+   * REVERT THIS WHEN FIXED !*/
+  gst_caps_unref (templcaps);
+
   foundpad = gst_element_request_compatible_pad (element, templ);
   gst_object_unref (templ);
 
@@ -1095,8 +1163,8 @@ gst_element_factory_can_src_caps (GstElementFactory * factory,
     GstStaticPadTemplate *template = (GstStaticPadTemplate *) templates->data;
 
     if (template->direction == GST_PAD_SRC) {
-      if (gst_caps_is_always_compatible (gst_static_caps_get (&template->
-                  static_caps), caps))
+      if (gst_caps_is_always_compatible (gst_static_caps_get
+              (&template->static_caps), caps))
         return TRUE;
     }
     templates = g_list_next (templates);
@@ -2420,6 +2488,11 @@ gst_buffer_merge (GstBuffer * buf1, GstBuffer * buf2)
  * If the buffers point to contiguous areas of memory, the buffer
  * is created without copying the data.
  *
+ * This is a convenience function for C programmers. See also 
+ * gst_buffer_merge(), which does the same thing without 
+ * unreffing the input parameters. Language bindings without 
+ * explicit reference counting should not wrap this function.
+ *
  * Returns: the new #GstBuffer which is the concatenation of the source buffers.
  */
 GstBuffer *
@@ -2460,6 +2533,7 @@ gst_buffer_stamp (GstBuffer * dest, const GstBuffer * src)
 static gboolean
 intersect_caps_func (GstPad * pad, GValue * ret, GstPad * orig)
 {
+  /* skip the pad, the request came from */
   if (pad != orig) {
     GstCaps *peercaps, *existing;
 
@@ -2499,7 +2573,8 @@ gst_pad_proxy_getcaps (GstPad * pad)
 
   g_return_val_if_fail (GST_IS_PAD (pad), NULL);
 
-  GST_DEBUG ("proxying getcaps for %s:%s", GST_DEBUG_PAD_NAME (pad));
+  GST_CAT_DEBUG (GST_CAT_PADS, "proxying getcaps for %s:%s",
+      GST_DEBUG_PAD_NAME (pad));
 
   element = gst_pad_get_parent_element (pad);
   if (element == NULL)
@@ -2603,7 +2678,8 @@ gst_pad_proxy_setcaps (GstPad * pad, GstCaps * caps)
   g_return_val_if_fail (GST_IS_PAD (pad), FALSE);
   g_return_val_if_fail (caps != NULL, FALSE);
 
-  GST_DEBUG ("proxying pad link for %s:%s", GST_DEBUG_PAD_NAME (pad));
+  GST_CAT_DEBUG (GST_CAT_PADS, "proxying pad link for %s:%s",
+      GST_DEBUG_PAD_NAME (pad));
 
   element = gst_pad_get_parent_element (pad);
   if (element == NULL)
@@ -2783,7 +2859,6 @@ gst_pad_query_convert (GstPad * pad, GstFormat src_format, gint64 src_val,
   gboolean ret;
 
   g_return_val_if_fail (GST_IS_PAD (pad), FALSE);
-  g_return_val_if_fail (src_val >= 0, FALSE);
   g_return_val_if_fail (dest_format != NULL, FALSE);
   g_return_val_if_fail (dest_val != NULL, FALSE);
 
@@ -2947,8 +3022,8 @@ gst_pad_add_data_probe_full (GstPad * pad, GCallback handler,
 
   GST_PAD_DO_EVENT_SIGNALS (pad)++;
   GST_PAD_DO_BUFFER_SIGNALS (pad)++;
-  GST_DEBUG ("adding data probe to pad %s:%s, now %d data, %d event probes",
-      GST_DEBUG_PAD_NAME (pad),
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+      "adding data probe, now %d data, %d event probes",
       GST_PAD_DO_BUFFER_SIGNALS (pad), GST_PAD_DO_EVENT_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 
@@ -3005,8 +3080,8 @@ gst_pad_add_event_probe_full (GstPad * pad, GCallback handler,
       (GClosureNotify) notify, 0);
 
   GST_PAD_DO_EVENT_SIGNALS (pad)++;
-  GST_DEBUG ("adding event probe to pad %s:%s, now %d probes",
-      GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_EVENT_SIGNALS (pad));
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "adding event probe, now %d probes",
+      GST_PAD_DO_EVENT_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 
   return sigid;
@@ -3062,8 +3137,8 @@ gst_pad_add_buffer_probe_full (GstPad * pad, GCallback handler,
       (GClosureNotify) notify, 0);
 
   GST_PAD_DO_BUFFER_SIGNALS (pad)++;
-  GST_DEBUG ("adding buffer probe to pad %s:%s, now %d probes",
-      GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_BUFFER_SIGNALS (pad));
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "adding buffer probe, now %d probes",
+      GST_PAD_DO_BUFFER_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 
   return sigid;
@@ -3086,10 +3161,9 @@ gst_pad_remove_data_probe (GstPad * pad, guint handler_id)
   g_signal_handler_disconnect (pad, handler_id);
   GST_PAD_DO_BUFFER_SIGNALS (pad)--;
   GST_PAD_DO_EVENT_SIGNALS (pad)--;
-  GST_DEBUG
-      ("removed data probe from pad %s:%s, now %d event, %d buffer probes",
-      GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_EVENT_SIGNALS (pad),
-      GST_PAD_DO_BUFFER_SIGNALS (pad));
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+      "removed data probe, now %d event, %d buffer probes",
+      GST_PAD_DO_EVENT_SIGNALS (pad), GST_PAD_DO_BUFFER_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 
 }
@@ -3110,8 +3184,9 @@ gst_pad_remove_event_probe (GstPad * pad, guint handler_id)
   GST_OBJECT_LOCK (pad);
   g_signal_handler_disconnect (pad, handler_id);
   GST_PAD_DO_EVENT_SIGNALS (pad)--;
-  GST_DEBUG ("removed event probe from pad %s:%s, now %d event probes",
-      GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_EVENT_SIGNALS (pad));
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+      "removed event probe, now %d event probes",
+      GST_PAD_DO_EVENT_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 }
 
@@ -3131,8 +3206,9 @@ gst_pad_remove_buffer_probe (GstPad * pad, guint handler_id)
   GST_OBJECT_LOCK (pad);
   g_signal_handler_disconnect (pad, handler_id);
   GST_PAD_DO_BUFFER_SIGNALS (pad)--;
-  GST_DEBUG ("removed buffer probe from pad %s:%s, now %d buffer probes",
-      GST_DEBUG_PAD_NAME (pad), GST_PAD_DO_BUFFER_SIGNALS (pad));
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad,
+      "removed buffer probe, now %d buffer probes",
+      GST_PAD_DO_BUFFER_SIGNALS (pad));
   GST_OBJECT_UNLOCK (pad);
 
 }
@@ -3158,6 +3234,9 @@ gst_element_found_tags_for_pad (GstElement * element,
   g_return_if_fail (list != NULL);
 
   gst_pad_push_event (pad, gst_event_new_tag (gst_tag_list_copy (list)));
+  /* FIXME 0.11: Set the pad as source to make it possible to detect for
+   * which pad the tags are actually found.
+   */
   gst_element_post_message (element,
       gst_message_new_tag (GST_OBJECT (element), list));
 }

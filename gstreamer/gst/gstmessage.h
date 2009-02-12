@@ -58,8 +58,8 @@ typedef struct _GstMessageClass GstMessageClass;
  *                          unusable. The pipeline will select a new clock on
  *                          the next PLAYING state change.
  * @GST_MESSAGE_NEW_CLOCK: a new clock was selected in the pipeline.
- * @GST_MESSAGE_STRUCTURE_CHANGE: the structure of the pipeline changed. Not
- * implemented yet.
+ * @GST_MESSAGE_STRUCTURE_CHANGE: the structure of the pipeline changed. This
+ * message is used internally and never forwarded to the application.
  * @GST_MESSAGE_STREAM_STATUS: status about a stream, emitted when it starts,
  *                             stops, errors, etc.. Not implemented yet.
  * @GST_MESSAGE_APPLICATION: message posted by the application, possibly
@@ -180,6 +180,20 @@ typedef enum
 #define GST_MESSAGE_SRC(message)	(GST_MESSAGE(message)->src)
 
 /**
+ * GstStructureChangeType:
+ * @GST_STRUCTURE_CHANGE_TYPE_PAD_LINK: Pad linking is starting or done.
+ * @GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK: Pad unlinking is starting or done.
+ *
+ * The type of a #GstMessageStructureChange.
+ *
+ * Since: 0.10.22
+ */
+typedef enum {
+  GST_STRUCTURE_CHANGE_TYPE_PAD_LINK   = 0,
+  GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK = 1
+} GstStructureChangeType;
+
+/**
  * GstMessage:
  * @mini_object: the parent structure
  * @type: the #GstMessageType of the message
@@ -205,7 +219,13 @@ struct _GstMessage
   GstStructure *structure;
 
   /*< private > */
-  gpointer _gst_reserved[GST_PADDING];
+  union {
+    struct {
+      guint32 seqnum;
+    } ABI;
+    /* + 0 to mark ABI change for future greppage */
+    gpointer _gst_reserved[GST_PADDING + 0];
+  } abidata;
 };
 
 struct _GstMessageClass {
@@ -269,6 +289,10 @@ gst_message_ref (GstMessage * msg)
  * MT safe
  */
 #define         gst_message_make_writable(msg)	GST_MESSAGE (gst_mini_object_make_writable (GST_MINI_OBJECT (msg)))
+
+/* identifiers for events and messages */
+guint32         gst_message_get_seqnum          (GstMessage *message);
+void            gst_message_set_seqnum          (GstMessage *message, guint32 seqnum);
 
 /* EOS */
 GstMessage *	gst_message_new_eos		(GstObject * src);
@@ -352,6 +376,12 @@ void		gst_message_parse_async_start	(GstMessage *message, gboolean *new_base_tim
 
 /* ASYNC_DONE */
 GstMessage *	gst_message_new_async_done	(GstObject * src);
+
+/* STRUCTURE CHANGE */
+GstMessage *	gst_message_new_structure_change   (GstObject * src, GstStructureChangeType type,
+                                                    GstElement *owner, gboolean busy);
+void		gst_message_parse_structure_change (GstMessage *message, GstStructureChangeType *type,
+                                                    GstElement **owner, gboolean *busy);
 
 /* custom messages */
 GstMessage *	gst_message_new_custom		(GstMessageType type,

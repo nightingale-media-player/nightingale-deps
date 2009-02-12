@@ -52,42 +52,21 @@
 
 #define GST_CAT_DEFAULT GST_CAT_PADS
 
-#define GST_TYPE_PROXY_PAD              (gst_proxy_pad_get_type ())
-#define GST_IS_PROXY_PAD(obj)           (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_PROXY_PAD))
-#define GST_IS_PROXY_PAD_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_PROXY_PAD))
-#define GST_PROXY_PAD(obj)              (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_PROXY_PAD, GstProxyPad))
-#define GST_PROXY_PAD_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_PROXY_PAD, GstProxyPadClass))
 #define GST_PROXY_PAD_CAST(obj)         ((GstProxyPad *)obj)
-
-#define GST_PROXY_PAD_TARGET(pad)       (GST_PROXY_PAD_CAST (pad)->target)
-#define GST_PROXY_PAD_INTERNAL(pad)     (GST_PROXY_PAD_CAST (pad)->internal)
-
-typedef struct _GstProxyPad GstProxyPad;
-typedef struct _GstProxyPadClass GstProxyPadClass;
-
-#define GST_PROXY_GET_LOCK(pad) (GST_PROXY_PAD_CAST (pad)->proxy_lock)
+#define GST_PROXY_PAD_PRIVATE(obj)      (GST_PROXY_PAD_CAST (obj)->priv)
+#define GST_PROXY_PAD_TARGET(pad)       (GST_PROXY_PAD_PRIVATE (pad)->target)
+#define GST_PROXY_PAD_INTERNAL(pad)     (GST_PROXY_PAD_PRIVATE (pad)->internal)
+#define GST_PROXY_GET_LOCK(pad) (GST_PROXY_PAD_PRIVATE (pad)->proxy_lock)
 #define GST_PROXY_LOCK(pad)     (g_mutex_lock (GST_PROXY_GET_LOCK (pad)))
 #define GST_PROXY_UNLOCK(pad)   (g_mutex_unlock (GST_PROXY_GET_LOCK (pad)))
 
-struct _GstProxyPad
+struct _GstProxyPadPrivate
 {
-  GstPad pad;
-
   /* with PROXY_LOCK */
   GMutex *proxy_lock;
   GstPad *target;
   GstPad *internal;
 };
-
-struct _GstProxyPadClass
-{
-  GstPadClass parent_class;
-
-  /*< private > */
-  gpointer _gst_reserved[1];
-};
-
-static GType gst_proxy_pad_get_type (void);
 
 G_DEFINE_TYPE (GstProxyPad, gst_proxy_pad, GST_TYPE_PAD);
 
@@ -101,11 +80,16 @@ static xmlNodePtr gst_proxy_pad_save_thyself (GstObject * object,
     xmlNodePtr parent);
 #endif
 
+static void on_src_target_notify (GstPad * target,
+    GParamSpec * unused, GstGhostPad * pad);
+
 
 static void
 gst_proxy_pad_class_init (GstProxyPadClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+
+  g_type_class_add_private (klass, sizeof (GstProxyPadPrivate));
 
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_proxy_pad_dispose);
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_proxy_pad_finalize);
@@ -166,6 +150,20 @@ gst_proxy_pad_do_internal_link (GstPad * pad)
 
   if (target) {
     res = gst_pad_get_internal_links (target);
+    gst_object_unref (target);
+  }
+
+  return res;
+}
+
+static GstIterator *
+gst_proxy_pad_do_iterate_internal_links (GstPad * pad)
+{
+  GstIterator *res = NULL;
+  GstPad *target = gst_proxy_pad_get_target (pad);
+
+  if (target) {
+    res = gst_pad_iterate_internal_links (target);
     gst_object_unref (target);
   }
 
@@ -327,9 +325,9 @@ gst_proxy_pad_set_target_unlocked (GstPad * pad, GstPad * target)
     GST_LOG_OBJECT (pad, "clearing target");
 
   /* clear old target */
-  if ((oldtarget = GST_PROXY_PAD_TARGET (pad))) {
+  if ((oldtarget = GST_PROXY_PAD_TARGET (pad)))
     gst_object_unref (oldtarget);
-  }
+
   /* set and ref new target if any */
   if (target)
     GST_PROXY_PAD_TARGET (pad) = gst_object_ref (target);
@@ -396,8 +394,8 @@ gst_proxy_pad_finalize (GObject * object)
 {
   GstProxyPad *pad = GST_PROXY_PAD (object);
 
-  g_mutex_free (pad->proxy_lock);
-  pad->proxy_lock = NULL;
+  g_mutex_free (GST_PROXY_GET_LOCK (pad));
+  GST_PROXY_GET_LOCK (pad) = NULL;
 
   G_OBJECT_CLASS (gst_proxy_pad_parent_class)->finalize (object);
 }
@@ -407,7 +405,9 @@ gst_proxy_pad_init (GstProxyPad * ppad)
 {
   GstPad *pad = (GstPad *) ppad;
 
-  ppad->proxy_lock = g_mutex_new ();
+  GST_PROXY_PAD_PRIVATE (ppad) = G_TYPE_INSTANCE_GET_PRIVATE (ppad,
+      GST_TYPE_PROXY_PAD, GstProxyPadPrivate);
+  GST_PROXY_GET_LOCK (pad) = g_mutex_new ();
 
   gst_pad_set_query_type_function (pad,
       GST_DEBUG_FUNCPTR (gst_proxy_pad_do_query_type));
@@ -415,6 +415,8 @@ gst_proxy_pad_init (GstProxyPad * ppad)
   gst_pad_set_query_function (pad, GST_DEBUG_FUNCPTR (gst_proxy_pad_do_query));
   gst_pad_set_internal_link_function (pad,
       GST_DEBUG_FUNCPTR (gst_proxy_pad_do_internal_link));
+  gst_pad_set_iterate_internal_links_function (pad,
+      GST_DEBUG_FUNCPTR (gst_proxy_pad_do_iterate_internal_links));
 
   gst_pad_set_getcaps_function (pad,
       GST_DEBUG_FUNCPTR (gst_proxy_pad_do_getcaps));
@@ -486,25 +488,15 @@ gst_proxy_pad_save_thyself (GstObject * object, xmlNodePtr parent)
  */
 
 
-struct _GstGhostPad
-{
-  GstProxyPad pad;
+#define GST_GHOST_PAD_PRIVATE(obj)	(GST_GHOST_PAD_CAST (obj)->priv)
 
+struct _GstGhostPadPrivate
+{
   /* with PROXY_LOCK */
   gulong notify_id;
 
-  /*< private > */
-  gpointer _gst_reserved[GST_PADDING];
+  gboolean constructed;
 };
-
-struct _GstGhostPadClass
-{
-  GstProxyPadClass parent_class;
-
-  /*< private > */
-  gpointer _gst_reserved[GST_PADDING];
-};
-
 
 G_DEFINE_TYPE (GstGhostPad, gst_ghost_pad, GST_TYPE_PROXY_PAD);
 
@@ -514,6 +506,8 @@ static void
 gst_ghost_pad_class_init (GstGhostPadClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+
+  g_type_class_add_private (klass, sizeof (GstGhostPadPrivate));
 
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_ghost_pad_dispose);
 }
@@ -694,8 +688,39 @@ on_int_notify (GstPad * internal, GParamSpec * unused, GstGhostPad * pad)
 }
 
 static void
+on_src_target_notify (GstPad * target, GParamSpec * unused, GstGhostPad * pad)
+{
+  GstCaps *caps;
+
+  g_object_get (target, "caps", &caps, NULL);
+
+  GST_OBJECT_LOCK (pad);
+  gst_caps_replace (&(GST_PAD_CAPS (pad)), caps);
+  GST_OBJECT_UNLOCK (pad);
+
+  g_object_notify (G_OBJECT (pad), "caps");
+  if (caps)
+    gst_caps_unref (caps);
+
+}
+
+static gboolean
+gst_ghost_pad_do_setcaps (GstPad * pad, GstCaps * caps)
+{
+  if (GST_PAD_DIRECTION (pad) == GST_PAD_SRC)
+    return TRUE;
+
+  return gst_proxy_pad_do_setcaps (pad, caps);
+}
+
+static void
 gst_ghost_pad_init (GstGhostPad * pad)
 {
+  GST_GHOST_PAD_PRIVATE (pad) = G_TYPE_INSTANCE_GET_PRIVATE (pad,
+      GST_TYPE_GHOST_PAD, GstGhostPadPrivate);
+
+  gst_pad_set_setcaps_function (GST_PAD_CAST (pad),
+      GST_DEBUG_FUNCPTR (gst_ghost_pad_do_setcaps));
   gst_pad_set_activatepull_function (GST_PAD_CAST (pad),
       GST_DEBUG_FUNCPTR (gst_ghost_pad_do_activate_pull));
   gst_pad_set_activatepush_function (GST_PAD_CAST (pad),
@@ -707,11 +732,25 @@ gst_ghost_pad_dispose (GObject * object)
 {
   GstPad *pad;
   GstPad *internal;
-  GstPad *intpeer;
+  GstPad *peer;
 
   pad = GST_PAD (object);
 
   GST_DEBUG_OBJECT (pad, "dispose");
+
+  gst_ghost_pad_set_target (GST_GHOST_PAD (pad), NULL);
+
+  /* Unlink here so that gst_pad_dispose doesn't. That would lead to a call to
+   * gst_ghost_pad_do_unlink when the ghost pad is in an inconsistent state */
+  peer = gst_pad_get_peer (pad);
+  if (peer) {
+    if (GST_PAD_IS_SRC (pad))
+      gst_pad_unlink (pad, peer);
+    else
+      gst_pad_unlink (peer, pad);
+
+    gst_object_unref (peer);
+  }
 
   GST_PROXY_LOCK (pad);
   internal = GST_PROXY_PAD_INTERNAL (pad);
@@ -719,64 +758,67 @@ gst_ghost_pad_dispose (GObject * object)
   gst_pad_set_activatepull_function (internal, NULL);
   gst_pad_set_activatepush_function (internal, NULL);
 
-  g_signal_handler_disconnect (internal, GST_GHOST_PAD_CAST (pad)->notify_id);
-
-  intpeer = gst_pad_get_peer (internal);
-  if (intpeer) {
-    if (GST_PAD_IS_SRC (internal))
-      gst_pad_unlink (internal, intpeer);
-    else
-      gst_pad_unlink (intpeer, internal);
-
-    gst_object_unref (intpeer);
-  }
-
-  GST_PROXY_PAD_INTERNAL (internal) = NULL;
+  g_signal_handler_disconnect (internal,
+      GST_GHOST_PAD_PRIVATE (pad)->notify_id);
 
   /* disposes of the internal pad, since the ghostpad is the only possible object
    * that has a refcount on the internal pad. */
   gst_object_unparent (GST_OBJECT_CAST (internal));
+  GST_PROXY_PAD_INTERNAL (pad) = NULL;
 
   GST_PROXY_UNLOCK (pad);
 
   G_OBJECT_CLASS (gst_ghost_pad_parent_class)->dispose (object);
 }
 
-static GstPad *
-gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
-    GstPadTemplate * templ)
+/**
+ * gst_ghost_pad_construct:
+ * @gpad: the newly allocated ghost pad
+ *
+ * Finish initialization of a newly allocated ghost pad.
+ *
+ * This function is most useful in language bindings and when subclassing
+ * #GstGhostPad; plugin and application developers normally will not call this
+ * function. Call this function directly after a call to g_object_new
+ * (GST_TYPE_GHOST_PAD, "direction", @dir, ..., NULL).
+ *
+ * Returns: %TRUE if the construction succeeds, %FALSE otherwise.
+ *
+ * Since: 0.10.22
+ */
+gboolean
+gst_ghost_pad_construct (GstGhostPad * gpad)
 {
-  GstPad *ret;
-  GstPad *internal;
-  GstPadDirection otherdir;
+  GstPadDirection dir, otherdir;
+  GstPadTemplate *templ;
+  GstPad *pad, *internal;
 
-  g_return_val_if_fail (dir != GST_PAD_UNKNOWN, NULL);
+  g_return_val_if_fail (GST_IS_GHOST_PAD (gpad), FALSE);
+  g_return_val_if_fail (GST_GHOST_PAD_PRIVATE (gpad)->constructed == FALSE,
+      FALSE);
 
-  /* OBJECT CREATION */
-  if (templ) {
-    ret = g_object_new (GST_TYPE_GHOST_PAD, "name", name,
-        "direction", dir, "template", templ, NULL);
-  } else {
-    ret = g_object_new (GST_TYPE_GHOST_PAD, "name", name,
-        "direction", dir, NULL);
-  }
+  g_object_get (gpad, "direction", &dir, "template", &templ, NULL);
+
+  g_return_val_if_fail (dir != GST_PAD_UNKNOWN, FALSE);
+
+  pad = GST_PAD (gpad);
 
   /* Set directional padfunctions for ghostpad */
   if (dir == GST_PAD_SINK) {
-    gst_pad_set_bufferalloc_function (ret,
+    gst_pad_set_bufferalloc_function (pad,
         GST_DEBUG_FUNCPTR (gst_proxy_pad_do_bufferalloc));
-    gst_pad_set_chain_function (ret,
+    gst_pad_set_chain_function (pad,
         GST_DEBUG_FUNCPTR (gst_proxy_pad_do_chain));
   } else {
-    gst_pad_set_getrange_function (ret,
+    gst_pad_set_getrange_function (pad,
         GST_DEBUG_FUNCPTR (gst_proxy_pad_do_getrange));
-    gst_pad_set_checkgetrange_function (ret,
+    gst_pad_set_checkgetrange_function (pad,
         GST_DEBUG_FUNCPTR (gst_proxy_pad_do_checkgetrange));
   }
 
   /* link/unlink functions */
-  gst_pad_set_link_function (ret, GST_DEBUG_FUNCPTR (gst_ghost_pad_do_link));
-  gst_pad_set_unlink_function (ret,
+  gst_pad_set_link_function (pad, GST_DEBUG_FUNCPTR (gst_ghost_pad_do_link));
+  gst_pad_set_unlink_function (pad,
       GST_DEBUG_FUNCPTR (gst_ghost_pad_do_unlink));
 
 
@@ -786,6 +828,8 @@ gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
     internal =
         g_object_new (GST_TYPE_PROXY_PAD, "name", NULL,
         "direction", otherdir, "template", templ, NULL);
+    /* release ref obtained via g_object_get */
+    gst_object_unref (templ);
   } else {
     internal =
         g_object_new (GST_TYPE_PROXY_PAD, "name", NULL,
@@ -806,11 +850,11 @@ gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
         GST_DEBUG_FUNCPTR (gst_proxy_pad_do_checkgetrange));
   }
 
-  GST_PROXY_LOCK (ret);
+  GST_PROXY_LOCK (pad);
 
   /* now make the ghostpad a parent of the internal pad */
   if (!gst_object_set_parent (GST_OBJECT_CAST (internal),
-          GST_OBJECT_CAST (ret)))
+          GST_OBJECT_CAST (pad)))
     goto parent_failed;
 
   /* The ghostpad is the parent of the internal pad and is the only object that
@@ -821,17 +865,17 @@ gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
    * it's refcount on the internal pad in the dispose method by un-parenting it.
    * This is why we don't take extra refcounts in the assignments below
    */
-  GST_PROXY_PAD_INTERNAL (ret) = internal;
-  GST_PROXY_PAD_INTERNAL (internal) = ret;
+  GST_PROXY_PAD_INTERNAL (pad) = internal;
+  GST_PROXY_PAD_INTERNAL (internal) = pad;
 
   /* could be more general here, iterating over all writable properties...
    * taking the short road for now tho */
-  GST_GHOST_PAD_CAST (ret)->notify_id =
+  GST_GHOST_PAD_PRIVATE (pad)->notify_id =
       g_signal_connect (internal, "notify::caps", G_CALLBACK (on_int_notify),
-      ret);
+      pad);
 
   /* call function to init values of the pad caps */
-  on_int_notify (internal, NULL, GST_GHOST_PAD_CAST (ret));
+  on_int_notify (internal, NULL, GST_GHOST_PAD_CAST (pad));
 
   /* special activation functions for the internal pad */
   gst_pad_set_activatepull_function (internal,
@@ -839,22 +883,50 @@ gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
   gst_pad_set_activatepush_function (internal,
       GST_DEBUG_FUNCPTR (gst_ghost_pad_internal_do_activate_push));
 
-  GST_PROXY_UNLOCK (ret);
+  GST_PROXY_UNLOCK (pad);
 
-  return ret;
+  GST_GHOST_PAD_PRIVATE (gpad)->constructed = TRUE;
+  return TRUE;
 
   /* ERRORS */
 parent_failed:
   {
-    GST_WARNING_OBJECT (ret, "Could not set internal pad %s:%s",
+    GST_WARNING_OBJECT (gpad, "Could not set internal pad %s:%s",
         GST_DEBUG_PAD_NAME (internal));
     g_critical ("Could not set internal pad %s:%s",
         GST_DEBUG_PAD_NAME (internal));
-    GST_PROXY_UNLOCK (ret);
-    gst_object_unref (ret);
+    GST_PROXY_UNLOCK (pad);
     gst_object_unref (internal);
-    return NULL;
+    return FALSE;
   }
+}
+
+static GstPad *
+gst_ghost_pad_new_full (const gchar * name, GstPadDirection dir,
+    GstPadTemplate * templ)
+{
+  GstGhostPad *ret;
+
+  g_return_val_if_fail (dir != GST_PAD_UNKNOWN, NULL);
+
+  /* OBJECT CREATION */
+  if (templ) {
+    ret = g_object_new (GST_TYPE_GHOST_PAD, "name", name,
+        "direction", dir, "template", templ, NULL);
+  } else {
+    ret = g_object_new (GST_TYPE_GHOST_PAD, "name", name,
+        "direction", dir, NULL);
+  }
+
+  if (!gst_ghost_pad_construct (ret))
+    goto construct_failed;
+
+  return GST_PAD (ret);
+
+construct_failed:
+  /* already logged */
+  gst_object_unref (ret);
+  return NULL;
 }
 
 /**
@@ -1025,7 +1097,8 @@ gst_ghost_pad_get_target (GstGhostPad * gpad)
  * @newtarget: the new pad target
  *
  * Set the new target of the ghostpad @gpad. Any existing target
- * is unlinked and links to the new target are established.
+ * is unlinked and links to the new target are established. if @newtarget is
+ * NULL the target will be cleared.
  *
  * Returns: TRUE if the new target could be set. This function can return FALSE
  * when the internal pads could not be linked.
@@ -1043,10 +1116,18 @@ gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
   GST_PROXY_LOCK (gpad);
   internal = GST_PROXY_PAD_INTERNAL (gpad);
 
-  GST_DEBUG_OBJECT (gpad, "set target %s:%s", GST_DEBUG_PAD_NAME (newtarget));
+  if (newtarget)
+    GST_DEBUG_OBJECT (gpad, "set target %s:%s", GST_DEBUG_PAD_NAME (newtarget));
+  else
+    GST_DEBUG_OBJECT (gpad, "clearing target");
 
   /* clear old target */
   if ((oldtarget = GST_PROXY_PAD_TARGET (gpad))) {
+    if (GST_PAD_IS_SRC (oldtarget)) {
+      g_signal_handlers_disconnect_by_func (oldtarget,
+          on_src_target_notify, gpad);
+    }
+
     /* if we have an internal pad, unlink */
     if (internal) {
       if (GST_PAD_IS_SRC (internal))
@@ -1059,6 +1140,11 @@ gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
   result = gst_proxy_pad_set_target_unlocked (GST_PAD_CAST (gpad), newtarget);
 
   if (result && newtarget) {
+    if (GST_PAD_IS_SRC (newtarget)) {
+      g_signal_connect (newtarget, "notify::caps",
+          G_CALLBACK (on_src_target_notify), gpad);
+    }
+
     /* and link to internal pad */
     GST_DEBUG_OBJECT (gpad, "connecting internal pad to target");
 

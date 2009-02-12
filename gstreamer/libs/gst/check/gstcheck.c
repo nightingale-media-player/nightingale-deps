@@ -28,10 +28,6 @@
  * inside the 'check' directories of various GStreamer packages.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "gstcheck.h"
 
 GST_DEBUG_CATEGORY (check_debug);
@@ -86,88 +82,6 @@ static void gst_check_log_critical_func
     _gst_check_raised_warning = TRUE;
 }
 
-#if defined(G_OS_UNIX) && defined(HAVE_EXECINFO_H)
-#include <signal.h>
-#include <execinfo.h>
-#include <unistd.h>
-
-static struct sigaction oldaction_segv;
-static struct sigaction oldaction_ill;
-static struct sigaction oldaction_bus;
-static struct sigaction oldaction_abrt;
-static gboolean _gst_check_fault_handler_is_setup;      /* FALSE */
-
-static void
-_gst_check_fault_handler_restore (void)
-{
-  if (!_gst_check_fault_handler_is_setup)
-    return;
-
-  _gst_check_fault_handler_is_setup = FALSE;
-
-  sigaction (SIGSEGV, &oldaction_segv, NULL);
-  sigaction (SIGILL, &oldaction_ill, NULL);
-  sigaction (SIGBUS, &oldaction_bus, NULL);
-  sigaction (SIGABRT, &oldaction_abrt, NULL);
-}
-
-static void
-_gst_check_fault_handler_sighandler (int signum)
-{
-  void *bt_arr[100];
-  int num;
-  char *signame;
-
-  /* We need to restore the fault handler or we'll keep getting it */
-  _gst_check_fault_handler_restore ();
-
-  switch (signum) {
-    case SIGSEGV:
-      signame = "SIGSEGV";
-      break;
-    case SIGILL:
-      signame = "SIGILL";
-      break;
-    case SIGBUS:
-      signame = "SIGBUS";
-      break;
-    case SIGABRT:
-      signame = "SIGABRT";
-      break;
-    default:
-      signame = "Unknown Signal";
-      break;
-  }
-
-  fprintf (stderr, "\nERROR: Caught signal '%s' while running test.\n",
-      signame);
-
-  fprintf (stderr, "Backtrace:\n");
-
-  if ((num = backtrace ((void **) bt_arr, G_N_ELEMENTS (bt_arr))))
-    backtrace_symbols_fd (bt_arr, num, STDERR_FILENO);
-}
-
-static void
-_gst_check_fault_handler_setup (void)
-{
-  struct sigaction action;
-
-  if (_gst_check_fault_handler_is_setup)
-    return;
-
-  _gst_check_fault_handler_is_setup = TRUE;
-
-  memset (&action, 0, sizeof (action));
-  action.sa_handler = _gst_check_fault_handler_sighandler;
-
-  sigaction (SIGSEGV, &action, &oldaction_segv);
-  sigaction (SIGILL, &action, &oldaction_ill);
-  sigaction (SIGBUS, &action, &oldaction_bus);
-  sigaction (SIGABRT, &action, &oldaction_abrt);
-}
-#endif /* G_OS_UNIX && HAVE_EXECINFO_H */
-
 /* initialize GStreamer testing */
 void
 gst_check_init (int *argc, char **argv[])
@@ -192,10 +106,6 @@ gst_check_init (int *argc, char **argv[])
 
   check_cond = g_cond_new ();
   check_mutex = g_mutex_new ();
-
-#if defined(G_OS_UNIX) && defined(HAVE_EXECINFO_H)
-  _gst_check_fault_handler_setup ();
-#endif
 }
 
 /* message checking */
@@ -262,6 +172,18 @@ GstPad *
 gst_check_setup_src_pad (GstElement * element,
     GstStaticPadTemplate * template, GstCaps * caps)
 {
+  GstPad *srcpad;
+
+  srcpad = gst_check_setup_src_pad_by_name (element, template, "sink");
+  if (caps)
+    fail_unless (gst_pad_set_caps (srcpad, caps), "could not set caps on pad");
+  return srcpad;
+}
+
+GstPad *
+gst_check_setup_src_pad_by_name (GstElement * element,
+    GstStaticPadTemplate * template, gchar * name)
+{
   GstPad *srcpad, *sinkpad;
 
   /* sending pad */
@@ -270,12 +192,12 @@ gst_check_setup_src_pad (GstElement * element,
   fail_if (srcpad == NULL, "Could not create a srcpad");
   ASSERT_OBJECT_REFCOUNT (srcpad, "srcpad", 1);
 
-  sinkpad = gst_element_get_static_pad (element, "sink");
+  sinkpad = gst_element_get_static_pad (element, name);
+  if (sinkpad == NULL)
+    sinkpad = gst_element_get_request_pad (element, name);
   fail_if (sinkpad == NULL, "Could not get sink pad from %s",
       GST_ELEMENT_NAME (element));
   ASSERT_OBJECT_REFCOUNT (sinkpad, "sinkpad", 2);
-  if (caps)
-    fail_unless (gst_pad_set_caps (srcpad, caps), "could not set caps on pad");
   fail_unless (gst_pad_link (srcpad, sinkpad) == GST_PAD_LINK_OK,
       "Could not link source and %s sink pads", GST_ELEMENT_NAME (element));
   gst_object_unref (sinkpad);   /* because we got it higher up */
@@ -285,29 +207,38 @@ gst_check_setup_src_pad (GstElement * element,
 }
 
 void
-gst_check_teardown_src_pad (GstElement * element)
+gst_check_teardown_pad_by_name (GstElement * element, gchar * name)
 {
-  GstPad *srcpad, *sinkpad;
+  GstPad *pad_peer, *pad_element;
 
   /* clean up floating src pad */
-  sinkpad = gst_element_get_static_pad (element, "sink");
-  ASSERT_OBJECT_REFCOUNT (sinkpad, "sinkpad", 2);
-  srcpad = gst_pad_get_peer (sinkpad);
+  pad_element = gst_element_get_static_pad (element, name);
+  ASSERT_OBJECT_REFCOUNT (pad_element, "pad", 2);
+  pad_peer = gst_pad_get_peer (pad_element);
 
-  gst_pad_unlink (srcpad, sinkpad);
+  if (gst_pad_get_direction (pad_element) == GST_PAD_SINK)
+    gst_pad_unlink (pad_peer, pad_element);
+  else
+    gst_pad_unlink (pad_element, pad_peer);
 
   /* caps could have been set, make sure they get unset */
-  gst_pad_set_caps (srcpad, NULL);
+  gst_pad_set_caps (pad_peer, NULL);
 
   /* pad refs held by both creator and this function (through _get) */
-  ASSERT_OBJECT_REFCOUNT (sinkpad, "element sinkpad", 2);
-  gst_object_unref (sinkpad);
+  ASSERT_OBJECT_REFCOUNT (pad_element, "element pad_element", 2);
+  gst_object_unref (pad_element);
   /* one more ref is held by element itself */
 
   /* pad refs held by both creator and this function (through _get_peer) */
-  ASSERT_OBJECT_REFCOUNT (srcpad, "check srcpad", 2);
-  gst_object_unref (srcpad);
-  gst_object_unref (srcpad);
+  ASSERT_OBJECT_REFCOUNT (pad_peer, "check pad_peer", 2);
+  gst_object_unref (pad_peer);
+  gst_object_unref (pad_peer);
+}
+
+void
+gst_check_teardown_src_pad (GstElement * element)
+{
+  gst_check_teardown_pad_by_name (element, "sink");
 }
 
 /* FIXME: set_caps isn't that useful; might want to check if fixed,
@@ -316,6 +247,18 @@ GstPad *
 gst_check_setup_sink_pad (GstElement * element, GstStaticPadTemplate * template,
     GstCaps * caps)
 {
+  GstPad *sinkpad;
+
+  sinkpad = gst_check_setup_sink_pad_by_name (element, template, "src");
+  if (caps)
+    fail_unless (gst_pad_set_caps (sinkpad, caps), "Could not set pad caps");
+  return sinkpad;
+}
+
+GstPad *
+gst_check_setup_sink_pad_by_name (GstElement * element,
+    GstStaticPadTemplate * template, gchar * name)
+{
   GstPad *srcpad, *sinkpad;
 
   /* receiving pad */
@@ -323,11 +266,11 @@ gst_check_setup_sink_pad (GstElement * element, GstStaticPadTemplate * template,
   GST_DEBUG_OBJECT (element, "setting up receiving pad %p", sinkpad);
   fail_if (sinkpad == NULL, "Could not create a sinkpad");
 
-  srcpad = gst_element_get_static_pad (element, "src");
+  srcpad = gst_element_get_static_pad (element, name);
+  if (srcpad == NULL)
+    srcpad = gst_element_get_request_pad (element, name);
   fail_if (srcpad == NULL, "Could not get source pad from %s",
       GST_ELEMENT_NAME (element));
-  if (caps)
-    fail_unless (gst_pad_set_caps (sinkpad, caps), "Could not set pad caps");
   gst_pad_set_chain_function (sinkpad, gst_check_chain_func);
 
   GST_DEBUG_OBJECT (element, "Linking element src pad and receiving sink pad");
@@ -343,23 +286,7 @@ gst_check_setup_sink_pad (GstElement * element, GstStaticPadTemplate * template,
 void
 gst_check_teardown_sink_pad (GstElement * element)
 {
-  GstPad *srcpad, *sinkpad;
-
-  /* clean up floating sink pad */
-  srcpad = gst_element_get_static_pad (element, "src");
-  sinkpad = gst_pad_get_peer (srcpad);
-
-  gst_pad_unlink (srcpad, sinkpad);
-
-  /* pad refs held by both creator and this function (through _get_pad) */
-  ASSERT_OBJECT_REFCOUNT (srcpad, "element srcpad", 2);
-  gst_object_unref (srcpad);
-  /* one more ref is held by element itself */
-
-  /* pad refs held by both creator and this function (through _get_peer) */
-  ASSERT_OBJECT_REFCOUNT (sinkpad, "check sinkpad", 2);
-  gst_object_unref (sinkpad);
-  gst_object_unref (sinkpad);
+  gst_check_teardown_pad_by_name (element, "src");
 }
 
 /**

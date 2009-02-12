@@ -23,7 +23,7 @@
       <itemizedlist>
         <listitem>
           <para>
-            Run a GLib/Gtk+ main loop (or iterate the defauly GLib main
+            Run a GLib/Gtk+ main loop (or iterate the default GLib main
             context yourself regularly) and attach some kind of watch to the
             bus. This way the GLib main loop will check the bus for new
             messages and notify you whenever there are messages.
@@ -127,7 +127,7 @@ main (gint   argc,
   /* clean up */
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
-  g_main_loop_unref (loop)
+  g_main_loop_unref (loop);
 
   return 0;
 }

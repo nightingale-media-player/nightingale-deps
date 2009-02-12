@@ -49,7 +49,9 @@ enum                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullM
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-tee.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstTee
@@ -58,11 +60,21 @@ enum                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullM
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-tee.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-chain" title='The "has-chain" property'>has-chain</a>"                gboolean              : Read / Write / Construct
-  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-sink-loop" title='The "has-sink-loop" property'>has-sink-loop</a>"            gboolean              : Read / Write / Construct
-  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--last-message" title='The "last-message" property'>last-message</a>"             gchar*                : Read
-  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--num-src-pads" title='The "num-src-pads" property'>num-src-pads</a>"             gint                  : Read
-  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write / Construct
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-chain" title='The "has-chain" property'>has-chain</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--has-sink-loop" title='The "has-sink-loop" property'>has-sink-loop</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--last-message" title='The "last-message" property'>last-message</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--num-src-pads" title='The "num-src-pads" property'>num-src-pads</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  "<a class="link" href="gstreamer-plugins-tee.html#GstTee--silent" title='The "silent" property'>silent</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
   "<a class="link" href="gstreamer-plugins-tee.html#GstTee--pull-mode" title='The "pull-mode" property'>pull-mode</a>"                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullMode" title="enum GstTeePullMode">GstTeePullMode</a>        : Read / Write / Construct
 </pre>
 </div>
@@ -70,16 +82,18 @@ enum                <a class="link" href="gstreamer-plugins-tee.html#GstTeePullM
 <a name="gstreamer-plugins-tee.description"></a><h2>Description</h2>
 <p>
 Split data to multiple pads.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2603278"></a><h3>Element Information</h3>
+<a name="id2671450"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
-        </td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -88,6 +102,31 @@ Split data to multiple pads.</p>
 <tr>
 <td><p><span class="term">class</span></p></td>
 <td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2668709"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
 </tr>
 </tbody>
 </table></div>
@@ -112,27 +151,7 @@ Split data to multiple pads.</p>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src%d</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>request</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+</div>
 </div>
 <p>
 
@@ -184,28 +203,36 @@ disables pull mode.</p>
 <a name="gstreamer-plugins-tee.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstTee--has-chain"></a><h3>The <code class="literal">"has-chain"</code> property</h3>
-<pre class="programlisting">  "has-chain"                gboolean              : Read / Write / Construct</pre>
+<pre class="programlisting">  "has-chain"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
 <p>If the element can operate in push mode.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTee--has-sink-loop"></a><h3>The <code class="literal">"has-sink-loop"</code> property</h3>
-<pre class="programlisting">  "has-sink-loop"            gboolean              : Read / Write / Construct</pre>
+<pre class="programlisting">  "has-sink-loop"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
 <p>If the element should spawn a thread (unimplemented and deprecated).</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTee--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
-<pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<pre class="programlisting">  "last-message"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
 <p>The message describing current status.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTee--num-src-pads"></a><h3>The <code class="literal">"num-src-pads"</code> property</h3>
-<pre class="programlisting">  "num-src-pads"             gint                  : Read</pre>
+<pre class="programlisting">  "num-src-pads"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
 <p>The number of source pads.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -213,7 +240,9 @@ disables pull mode.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTee--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
-<pre class="programlisting">  "silent"                   gboolean              : Read / Write / Construct</pre>
+<pre class="programlisting">  "silent"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
 <p>Don't produce last_message events.</p>
 <p>Default value: TRUE</p>
 </div>

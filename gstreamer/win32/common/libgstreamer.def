@@ -71,6 +71,7 @@ EXPORTS
 	gst_bin_iterate_sorted
 	gst_bin_iterate_sources
 	gst_bin_new
+	gst_bin_recalculate_latency
 	gst_bin_remove
 	gst_bin_remove_many
 	gst_buffer_copy_flags_get_type
@@ -315,6 +316,7 @@ EXPORTS
 	gst_element_unlink_many
 	gst_element_unlink_pads
 	gst_error_get_message
+	gst_event_get_seqnum
 	gst_event_get_structure
 	gst_event_get_type
 	gst_event_has_name
@@ -337,6 +339,7 @@ EXPORTS
 	gst_event_parse_qos
 	gst_event_parse_seek
 	gst_event_parse_tag
+	gst_event_set_seqnum
 	gst_event_type_flags_get_type
 	gst_event_type_get_flags
 	gst_event_type_get_name
@@ -358,6 +361,7 @@ EXPORTS
 	gst_fraction_get_type
 	gst_fraction_range_get_type
 	gst_g_error_get_type
+	gst_ghost_pad_construct
 	gst_ghost_pad_get_target
 	gst_ghost_pad_get_type
 	gst_ghost_pad_new
@@ -438,6 +442,7 @@ EXPORTS
 	gst_marshal_VOID__OBJECT_STRING
 	gst_marshal_VOID__POINTER_OBJECT
 	gst_marshal_VOID__UINT_BOXED
+	gst_message_get_seqnum
 	gst_message_get_structure
 	gst_message_get_type
 	gst_message_new_application
@@ -458,6 +463,7 @@ EXPORTS
 	gst_message_new_segment_start
 	gst_message_new_state_changed
 	gst_message_new_state_dirty
+	gst_message_new_structure_change
 	gst_message_new_tag
 	gst_message_new_warning
 	gst_message_parse_async_start
@@ -472,9 +478,11 @@ EXPORTS
 	gst_message_parse_segment_done
 	gst_message_parse_segment_start
 	gst_message_parse_state_changed
+	gst_message_parse_structure_change
 	gst_message_parse_tag
 	gst_message_parse_warning
 	gst_message_set_buffering_stats
+	gst_message_set_seqnum
 	gst_message_type_get_name
 	gst_message_type_get_type
 	gst_message_type_to_quark
@@ -546,6 +554,8 @@ EXPORTS
 	gst_pad_is_blocked
 	gst_pad_is_blocking
 	gst_pad_is_linked
+	gst_pad_iterate_internal_links
+	gst_pad_iterate_internal_links_default
 	gst_pad_link
 	gst_pad_link_return_get_type
 	gst_pad_load_and_link
@@ -591,6 +601,7 @@ EXPORTS
 	gst_pad_set_getcaps_function
 	gst_pad_set_getrange_function
 	gst_pad_set_internal_link_function
+	gst_pad_set_iterate_internal_links_function
 	gst_pad_set_link_function
 	gst_pad_set_query_function
 	gst_pad_set_query_type_function
@@ -635,6 +646,9 @@ EXPORTS
 	gst_pipeline_set_delay
 	gst_pipeline_set_new_stream_time
 	gst_pipeline_use_clock
+	gst_plugin_add_dependency
+	gst_plugin_add_dependency_simple
+	gst_plugin_dependency_flags_get_type
 	gst_plugin_error_get_type
 	gst_plugin_error_quark
 	gst_plugin_feature_check_version
@@ -691,6 +705,7 @@ EXPORTS
 	gst_preset_set_meta
 	gst_print_element_args
 	gst_print_pad_caps
+	gst_proxy_pad_get_type
 	gst_query_get_structure
 	gst_query_get_type
 	gst_query_new_application
@@ -702,6 +717,7 @@ EXPORTS
 	gst_query_new_position
 	gst_query_new_seeking
 	gst_query_new_segment
+	gst_query_new_uri
 	gst_query_parse_buffering_percent
 	gst_query_parse_buffering_range
 	gst_query_parse_buffering_stats
@@ -713,6 +729,7 @@ EXPORTS
 	gst_query_parse_position
 	gst_query_parse_seeking
 	gst_query_parse_segment
+	gst_query_parse_uri
 	gst_query_set_buffering_percent
 	gst_query_set_buffering_range
 	gst_query_set_buffering_stats
@@ -724,6 +741,7 @@ EXPORTS
 	gst_query_set_position
 	gst_query_set_seeking
 	gst_query_set_segment
+	gst_query_set_uri
 	gst_query_type_get_by_nick
 	gst_query_type_get_details
 	gst_query_type_get_name
@@ -786,6 +804,7 @@ EXPORTS
 	gst_static_pad_template_get_type
 	gst_stream_error_get_type
 	gst_stream_error_quark
+	gst_structure_change_type_get_type
 	gst_structure_copy
 	gst_structure_empty_new
 	gst_structure_fixate_field_boolean
@@ -898,6 +917,7 @@ EXPORTS
 	gst_tag_setter_get_tag_merge_mode
 	gst_tag_setter_get_type
 	gst_tag_setter_merge_tags
+	gst_tag_setter_reset_tags
 	gst_tag_setter_set_tag_merge_mode
 	gst_task_cleanup_all
 	gst_task_create
@@ -947,6 +967,8 @@ EXPORTS
 	gst_util_gdouble_to_guint64
 	gst_util_get_timestamp
 	gst_util_guint64_to_gdouble
+	gst_util_seqnum_compare
+	gst_util_seqnum_next
 	gst_util_set_object_arg
 	gst_util_set_value_from_string
 	gst_util_uint64_scale

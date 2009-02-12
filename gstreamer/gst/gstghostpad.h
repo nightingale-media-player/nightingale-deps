@@ -31,6 +31,35 @@
 
 G_BEGIN_DECLS
 
+#define GST_TYPE_PROXY_PAD              (gst_proxy_pad_get_type ())
+#define GST_IS_PROXY_PAD(obj)           (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_PROXY_PAD))
+#define GST_IS_PROXY_PAD_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_PROXY_PAD))
+#define GST_PROXY_PAD(obj)              (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_PROXY_PAD, GstProxyPad))
+#define GST_PROXY_PAD_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_PROXY_PAD, GstProxyPadClass))
+
+typedef struct _GstProxyPad GstProxyPad;
+typedef struct _GstProxyPadPrivate GstProxyPadPrivate;
+typedef struct _GstProxyPadClass GstProxyPadClass;
+
+struct _GstProxyPad
+{
+  GstPad pad;
+
+  /*< private > */
+  GstProxyPadPrivate *priv;
+};
+
+struct _GstProxyPadClass
+{
+  GstPadClass parent_class;
+
+  /*< private > */
+  gpointer _gst_reserved[1];
+};
+
+GType gst_proxy_pad_get_type (void);
+
+
 #define GST_TYPE_GHOST_PAD		(gst_ghost_pad_get_type ())
 #define GST_IS_GHOST_PAD(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_GHOST_PAD))
 #define GST_IS_GHOST_PAD_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_GHOST_PAD))
@@ -44,7 +73,25 @@ G_BEGIN_DECLS
  * Opaque #GstGhostPad structure.
  */
 typedef struct _GstGhostPad GstGhostPad;
+typedef struct _GstGhostPadPrivate GstGhostPadPrivate;
 typedef struct _GstGhostPadClass GstGhostPadClass;
+
+struct _GstGhostPad
+{
+  GstProxyPad pad;
+
+  /*< private > */
+  GstGhostPadPrivate *priv;
+};
+
+struct _GstGhostPadClass
+{
+  GstProxyPadClass parent_class;
+
+  /*< private > */
+  gpointer _gst_reserved[GST_PADDING];
+};
+
 
 GType		 gst_ghost_pad_get_type 	(void);
 
@@ -56,6 +103,8 @@ GstPad*		 gst_ghost_pad_new_no_target_from_template (const gchar *name, GstPadTe
 
 GstPad*		 gst_ghost_pad_get_target	(GstGhostPad *gpad);
 gboolean	 gst_ghost_pad_set_target	(GstGhostPad *gpad, GstPad *newtarget);
+
+gboolean	 gst_ghost_pad_construct	(GstGhostPad *gpad);
 
 G_END_DECLS
 

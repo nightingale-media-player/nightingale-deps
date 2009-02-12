@@ -289,6 +289,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstFdSrc::timeout</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Timeout</NICK>
+<BLURB>Post a message after timeout microseconds (0 = disabled).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstFileSrc::fd</NAME>
 <TYPE>gint</TYPE>
 <RANGE>>= 0</RANGE>

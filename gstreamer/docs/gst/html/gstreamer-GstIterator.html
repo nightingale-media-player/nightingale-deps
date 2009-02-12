@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -49,54 +49,106 @@ way.</p>
                     <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>;
 enum                <a class="link" href="gstreamer-GstIterator.html#GstIteratorItem" title="enum GstIteratorItem">GstIteratorItem</a>;
 enum                <a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>;
-void                (<a class="link" href="gstreamer-GstIterator.html#GstIteratorDisposeFunction" title="GstIteratorDisposeFunction ()">*GstIteratorDisposeFunction</a>)       (gpointer owner);
+void                (<a class="link" href="gstreamer-GstIterator.html#GstIteratorDisposeFunction" title="GstIteratorDisposeFunction ()">*GstIteratorDisposeFunction</a>)       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> owner);
 <a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   (<a class="link" href="gstreamer-GstIterator.html#GstIteratorNextFunction" title="GstIteratorNextFunction ()">*GstIteratorNextFunction</a>)          (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer *result);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *result);
 <a class="link" href="gstreamer-GstIterator.html#GstIteratorItem" title="enum GstIteratorItem">GstIteratorItem</a>     (<a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()">*GstIteratorItemFunction</a>)          (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer item);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> item);
 void                (<a class="link" href="gstreamer-GstIterator.html#GstIteratorResyncFunction" title="GstIteratorResyncFunction ()">*GstIteratorResyncFunction</a>)        (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it);
 void                (<a class="link" href="gstreamer-GstIterator.html#GstIteratorFreeFunction" title="GstIteratorFreeFunction ()">*GstIteratorFreeFunction</a>)          (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it);
-gboolean            (<a class="link" href="gstreamer-GstIterator.html#GstIteratorFoldFunction" title="GstIteratorFoldFunction ()">*GstIteratorFoldFunction</a>)          (gpointer item,
-                                                         GValue *ret,
-                                                         gpointer user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-GstIterator.html#GstIteratorFoldFunction" title="GstIteratorFoldFunction ()">*GstIteratorFoldFunction</a>)          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> item,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *ret,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 #define             <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR:CAPS" title="GST_ITERATOR()">GST_ITERATOR</a>                        (it)
 #define             <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-LOCK:CAPS" title="GST_ITERATOR_LOCK()">GST_ITERATOR_LOCK</a>                   (it)
 #define             <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-COOKIE:CAPS" title="GST_ITERATOR_COOKIE()">GST_ITERATOR_COOKIE</a>                 (it)
 #define             <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-ORIG-COOKIE:CAPS" title="GST_ITERATOR_ORIG_COOKIE()">GST_ITERATOR_ORIG_COOKIE</a>            (it)
-<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstIterator.html#gst-iterator-new" title="gst_iterator_new ()">gst_iterator_new</a>                    (guint size,
-                                                         GType type,
-                                                         GMutex *lock,
-                                                         guint32 *master_cookie,
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstIterator.html#gst-iterator-new" title="gst_iterator_new ()">gst_iterator_new</a>                    (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+>GMutex</a> *lock,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *master_cookie,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorNextFunction" title="GstIteratorNextFunction ()">GstIteratorNextFunction</a> next,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()">GstIteratorItemFunction</a> item,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorResyncFunction" title="GstIteratorResyncFunction ()">GstIteratorResyncFunction</a> resync,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorFreeFunction" title="GstIteratorFreeFunction ()">GstIteratorFreeFunction</a> free);
-<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstIterator.html#gst-iterator-new-list" title="gst_iterator_new_list ()">gst_iterator_new_list</a>               (GType type,
-                                                         GMutex *lock,
-                                                         guint32 *master_cookie,
-                                                         GList **list,
-                                                         gpointer owner,
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstIterator.html#gst-iterator-new-list" title="gst_iterator_new_list ()">gst_iterator_new_list</a>               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+>GMutex</a> *lock,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *master_cookie,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> **list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> owner,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()">GstIteratorItemFunction</a> item,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorDisposeFunction" title="GstIteratorDisposeFunction ()">GstIteratorDisposeFunction</a> free);
 <a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   <a class="link" href="gstreamer-GstIterator.html#gst-iterator-next" title="gst_iterator_next ()">gst_iterator_next</a>                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer *elem);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *elem);
 void                <a class="link" href="gstreamer-GstIterator.html#gst-iterator-resync" title="gst_iterator_resync ()">gst_iterator_resync</a>                 (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it);
 void                <a class="link" href="gstreamer-GstIterator.html#gst-iterator-free" title="gst_iterator_free ()">gst_iterator_free</a>                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it);
 void                <a class="link" href="gstreamer-GstIterator.html#gst-iterator-push" title="gst_iterator_push ()">gst_iterator_push</a>                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *other);
 <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="gstreamer-GstIterator.html#gst-iterator-filter" title="gst_iterator_filter ()">gst_iterator_filter</a>                 (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GCompareFunc func,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareFunc"
+>GCompareFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 <a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   <a class="link" href="gstreamer-GstIterator.html#gst-iterator-fold" title="gst_iterator_fold ()">gst_iterator_fold</a>                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorFoldFunction" title="GstIteratorFoldFunction ()">GstIteratorFoldFunction</a> func,
-                                                         GValue *ret,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *ret,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 <a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   <a class="link" href="gstreamer-GstIterator.html#gst-iterator-foreach" title="gst_iterator_foreach ()">gst_iterator_foreach</a>                (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GFunc func,
-                                                         gpointer user_data);
-gpointer            <a class="link" href="gstreamer-GstIterator.html#gst-iterator-find-custom" title="gst_iterator_find_custom ()">gst_iterator_find_custom</a>            (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GCompareFunc func,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GFunc"
+>GFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            <a class="link" href="gstreamer-GstIterator.html#gst-iterator-find-custom" title="gst_iterator_find_custom ()">gst_iterator_find_custom</a>            (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareFunc"
+>GCompareFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -115,7 +167,7 @@ The basic use pattern of an iterator is as follows:
 <p>
 </p>
 <div class="example">
-<a name="id2718322"></a><p class="title"><b>Example 10. Using an iterator</b></p>
+<a name="id2890883"></a><p class="title"><b>Example 10. Using an iterator</b></p>
 <div class="example-contents"><pre class="programlisting">
    it = _get_iterator(object);
    done = FALSE;
@@ -144,7 +196,7 @@ The basic use pattern of an iterator is as follows:
 <p><br class="example-break">
 </p>
 <p>
-Last reviewed on 2005-11-09 (0.9.4)</p>
+Last reviewed on 2008-08-29 (0.10.21)</p>
 <p>
 
 </p>
@@ -157,7 +209,7 @@ Last reviewed on 2005-11-09 (0.9.4)</p>
 } GstIterator;
 </pre>
 <p>
-GstIterator base structure. The values of this structure are 
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a> base structure. The values of this structure are 
 protected for subclasses, use the methods to use the <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a>.</p>
 <p>
 
@@ -177,7 +229,7 @@ protected for subclasses, use the methods to use the <a class="link" href="gstre
 } GstIteratorItem;
 </pre>
 <p>
-The result of a GstIteratorItemFunction.</p>
+The result of a <a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()"><span class="type">GstIteratorItemFunction</span></a>.</p>
 <p>
 
 </p>
@@ -246,10 +298,16 @@ The result of <a class="link" href="gstreamer-GstIterator.html#gst-iterator-next
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstIteratorDisposeFunction"></a><h3>GstIteratorDisposeFunction ()</h3>
-<pre class="programlisting">void                (*GstIteratorDisposeFunction)       (gpointer owner);</pre>
+<pre class="programlisting">void                (*GstIteratorDisposeFunction)       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> owner);</pre>
 <p>
-The function that will be called when a GList iterator is freed. The
-owner of the GList iterator can then clean up its resources.</p>
+The function that will be called when a <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> iterator is freed. The
+owner of the <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> iterator can then clean up its resources.</p>
 <p>
 
 </p>
@@ -266,7 +324,9 @@ owner of the GList iterator can then clean up its resources.</p>
 <div class="refsect2" lang="en">
 <a name="GstIteratorNextFunction"></a><h3>GstIteratorNextFunction ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   (*GstIteratorNextFunction)          (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer *result);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *result);</pre>
 <p>
 The function that will be called when the next element of the iterator
 should be retrieved. 
@@ -303,7 +363,9 @@ The function will be called with the iterator lock held.</p>
 <div class="refsect2" lang="en">
 <a name="GstIteratorItemFunction"></a><h3>GstIteratorItemFunction ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIteratorItem" title="enum GstIteratorItem">GstIteratorItem</a>     (*GstIteratorItemFunction)          (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer item);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> item);</pre>
 <p>
 The function that will be called after the next item of the iterator
 has been retrieved. This function will typically increase the refcount
@@ -389,9 +451,17 @@ The function will be called with the iterator lock held.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstIteratorFoldFunction"></a><h3>GstIteratorFoldFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstIteratorFoldFunction)          (gpointer item,
-                                                         GValue *ret,
-                                                         gpointer user_data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstIteratorFoldFunction)          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> item,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *ret,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 A function to be passed to <a class="link" href="gstreamer-GstIterator.html#gst-iterator-fold" title="gst_iterator_fold ()"><code class="function">gst_iterator_fold()</code></a>.</p>
 <p>
@@ -407,7 +477,9 @@ A function to be passed to <a class="link" href="gstreamer-GstIterator.html#gst-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ret</code></em> :</span></p></td>
-<td> a GValue collecting the result
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> collecting the result
 </td>
 </tr>
 <tr>
@@ -509,10 +581,18 @@ whenever the datastructure changes.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-iterator-new"></a><h3>gst_iterator_new ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_iterator_new                    (guint size,
-                                                         GType type,
-                                                         GMutex *lock,
-                                                         guint32 *master_cookie,
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_iterator_new                    (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+>GMutex</a> *lock,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *master_cookie,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorNextFunction" title="GstIteratorNextFunction ()">GstIteratorNextFunction</a> next,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()">GstIteratorItemFunction</a> item,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorResyncFunction" title="GstIteratorResyncFunction ()">GstIteratorResyncFunction</a> resync,
@@ -537,17 +617,22 @@ held. The <em class="parameter"><code>free</code></em> function is called when t
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> <span class="type">GType</span> of children
+<td> <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of children
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lock</code></em> :</span></p></td>
-<td> pointer to a <span class="type">GMutex</span>.
+<td> pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+><span class="type">GMutex</span></a>.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>master_cookie</code></em> :</span></p></td>
-<td> pointer to a guint32 to protect the iterated object.
+<td> pointer to a guint32 that is changed when the items in the
+   iterator changed.
 </td>
 </tr>
 <tr>
@@ -583,15 +668,48 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-iterator-new-list"></a><h3>gst_iterator_new_list ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_iterator_new_list               (GType type,
-                                                         GMutex *lock,
-                                                         guint32 *master_cookie,
-                                                         GList **list,
-                                                         gpointer owner,
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_iterator_new_list               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+>GMutex</a> *lock,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *master_cookie,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> **list,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> owner,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorItemFunction" title="GstIteratorItemFunction ()">GstIteratorItemFunction</a> item,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorDisposeFunction" title="GstIteratorDisposeFunction ()">GstIteratorDisposeFunction</a> free);</pre>
 <p>
-Create a new iterator designed for iterating <em class="parameter"><code>list</code></em>.</p>
+Create a new iterator designed for iterating <em class="parameter"><code>list</code></em>.
+</p>
+<p>
+The list you iterate is usually part of a data structure <em class="parameter"><code>owner</code></em> and is
+protected with <em class="parameter"><code>lock</code></em>. 
+</p>
+<p>
+The iterator will use <em class="parameter"><code>lock</code></em> to retrieve the next item of the list and it
+will then call the <em class="parameter"><code>item</code></em> function before releasing <em class="parameter"><code>lock</code></em> again.
+</p>
+<p>
+The <em class="parameter"><code>item</code></em> function usualy makes sure that the item remains alive while
+<em class="parameter"><code>lock</code></em> is released and the application is using the item. The application is
+responsible for freeing/unreffing the item after usage as explained in
+<a class="link" href="gstreamer-GstIterator.html#gst-iterator-next" title="gst_iterator_next ()"><code class="function">gst_iterator_next()</code></a>.
+</p>
+<p>
+When a concurrent update to the list is performed, usually by <em class="parameter"><code>owner</code></em> while
+holding <em class="parameter"><code>lock</code></em>, <em class="parameter"><code>master_cookie</code></em> will be updated. The iterator implementation
+will notice the update of the cookie and will return <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-RESYNC:CAPS"><span class="type">GST_ITERATOR_RESYNC</span></a> to
+the user of the iterator in the next call to <a class="link" href="gstreamer-GstIterator.html#gst-iterator-next" title="gst_iterator_next ()"><code class="function">gst_iterator_next()</code></a>.
+</p>
+<p>
+<em class="parameter"><code>owner</code></em> will be passed to the <em class="parameter"><code>free</code></em> function when the iterator is freed.</p>
 <p>
 
 </p>
@@ -600,17 +718,22 @@ Create a new iterator designed for iterating <em class="parameter"><code>list</c
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> <span class="type">GType</span> of elements
+<td> <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of elements
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lock</code></em> :</span></p></td>
-<td> pointer to a <span class="type">GMutex</span> protecting the list.
+<td> pointer to a <a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+><span class="type">GMutex</span></a> protecting the list.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>master_cookie</code></em> :</span></p></td>
-<td> pointer to a guint32 to protect the list.
+<td> pointer to a guint32 that is incremented when the list
+    is changed.
 </td>
 </tr>
 <tr>
@@ -647,11 +770,29 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-iterator-next"></a><h3>gst_iterator_next ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   gst_iterator_next                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         gpointer *elem);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> *elem);</pre>
 <p>
-Get the next item from the iterator. For iterators that return
-refcounted objects, the returned object will have its refcount
-increased and should therefore be unreffed after usage.</p>
+Get the next item from the iterator in <em class="parameter"><code>elem</code></em>. 
+</p>
+<p>
+Only when this function returns <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-OK:CAPS"><code class="literal">GST_ITERATOR_OK</code></a>, <em class="parameter"><code>elem</code></em> will contain a valid
+value. For iterators that return refcounted objects, the returned object
+will have its refcount increased and should therefore be unreffed after
+usage.
+</p>
+<p>
+When this function returns <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-DONE:CAPS"><code class="literal">GST_ITERATOR_DONE</code></a>, no more elements can be
+retrieved from <em class="parameter"><code>it</code></em>.
+</p>
+<p>
+A return value of <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-RESYNC:CAPS"><code class="literal">GST_ITERATOR_RESYNC</code></a> indicates that the element list was
+concurrently updated. The user of <em class="parameter"><code>it</code></em> should call <a class="link" href="gstreamer-GstIterator.html#gst-iterator-resync" title="gst_iterator_resync ()"><code class="function">gst_iterator_resync()</code></a> to
+get the newly updated list. 
+</p>
+<p>
+A return value of <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-ERROR:CAPS"><code class="literal">GST_ITERATOR_ERROR</code></a> indicates an unrecoverable fatal error.</p>
 <p>
 
 </p>
@@ -670,8 +811,8 @@ increased and should therefore be unreffed after usage.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The result of the iteration. Unref after usage if this is
-a refcounted object.
+<td> The result of the iteration. Unref <em class="parameter"><code>elem</code></em> after usage if this
+is a refcounted object.
 
 MT safe.
 </td>
@@ -686,6 +827,10 @@ MT safe.
 <p>
 Resync the iterator. this function is mostly called
 after <a class="link" href="gstreamer-GstIterator.html#gst-iterator-next" title="gst_iterator_next ()"><code class="function">gst_iterator_next()</code></a> returned <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-RESYNC:CAPS"><code class="literal">GST_ITERATOR_RESYNC</code></a>.
+</p>
+<p>
+When an iterator was pushed on <em class="parameter"><code>it</code></em>, it will automatically be popped again
+with this function.
 </p>
 <p>
 MT safe.</p>
@@ -729,12 +874,16 @@ MT safe.</p>
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *other);</pre>
 <p>
 Pushes <em class="parameter"><code>other</code></em> iterator onto <em class="parameter"><code>it</code></em>. All calls performed on <em class="parameter"><code>it</code></em> are
-forwarded tot <em class="parameter"><code>other</code></em>. If <em class="parameter"><code>other</code></em> returns <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-DONE:CAPS"><span class="type">GST_ITERATOR_DONE</span></a>, it is
+forwarded to <em class="parameter"><code>other</code></em>. If <em class="parameter"><code>other</code></em> returns <a class="link" href="gstreamer-GstIterator.html#GST-ITERATOR-DONE:CAPS"><span class="type">GST_ITERATOR_DONE</span></a>, it is
 popped again and calls are handled by <em class="parameter"><code>it</code></em> again.
 </p>
 <p>
 This function is mainly used by objects implementing the iterator
 next function to recurse into substructures.
+</p>
+<p>
+When <a class="link" href="gstreamer-GstIterator.html#gst-iterator-resync" title="gst_iterator_resync ()"><code class="function">gst_iterator_resync()</code></a> is called on <em class="parameter"><code>it</code></em>, <em class="parameter"><code>other</code></em> will automatically be
+popped.
 </p>
 <p>
 MT safe.</p>
@@ -761,8 +910,12 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-iterator-filter"></a><h3>gst_iterator_filter ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_iterator_filter                 (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GCompareFunc func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareFunc"
+>GCompareFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Create a new iterator from an existing iterator. The new iterator
 will only return those elements that match the given compare function <em class="parameter"><code>func</code></em>.
@@ -807,11 +960,15 @@ MT safe.
 <a name="gst-iterator-fold"></a><h3>gst_iterator_fold ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   gst_iterator_fold                   (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
                                                          <a class="link" href="gstreamer-GstIterator.html#GstIteratorFoldFunction" title="GstIteratorFoldFunction ()">GstIteratorFoldFunction</a> func,
-                                                         GValue *ret,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *ret,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
-Folds <em class="parameter"><code>func</code></em> over the elements of <em class="parameter"><code>iter</code></em>. That is to say, <em class="parameter"><code>proc</code></em> will be called
-as <em class="parameter"><code>proc</code></em> (object, <em class="parameter"><code>ret</code></em>, <em class="parameter"><code>user_data</code></em>) for each object in <em class="parameter"><code>iter</code></em>. The normal use
+Folds <em class="parameter"><code>func</code></em> over the elements of <em class="parameter"><code>iter</code></em>. That is to say, <em class="parameter"><code>func</code></em> will be called
+as <em class="parameter"><code>func</code></em> (object, <em class="parameter"><code>ret</code></em>, <em class="parameter"><code>user_data</code></em>) for each object in <em class="parameter"><code>it</code></em>. The normal use
 of this procedure is to accumulate the results of operating on the objects in
 <em class="parameter"><code>ret</code></em>.
 </p>
@@ -868,8 +1025,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-iterator-foreach"></a><h3>gst_iterator_foreach ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIteratorResult" title="enum GstIteratorResult">GstIteratorResult</a>   gst_iterator_foreach                (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GFunc func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GFunc"
+>GFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Iterate over all element of <em class="parameter"><code>it</code></em> and call the given function <em class="parameter"><code>func</code></em> for
 each element.</p>
@@ -908,9 +1069,15 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-iterator-find-custom"></a><h3>gst_iterator_find_custom ()</h3>
-<pre class="programlisting">gpointer            gst_iterator_find_custom            (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
-                                                         GCompareFunc func,
-                                                         gpointer user_data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            gst_iterator_find_custom            (<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a> *it,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GCompareFunc"
+>GCompareFunc</a> func,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Find the first element in <em class="parameter"><code>it</code></em> that matches the compare function <em class="parameter"><code>func</code></em>.
 <em class="parameter"><code>func</code></em> should return 0 when the element is found.

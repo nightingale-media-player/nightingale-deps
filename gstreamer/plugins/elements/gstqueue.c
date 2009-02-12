@@ -24,7 +24,6 @@
 
 /**
  * SECTION:element-queue
- * @short_description: Simple asynchronous data queue.
  *
  * Data is queued until one of the limits specified by the
  * #GstQueue:max-size-buffers, #GstQueue:max-size-bytes and/or
@@ -197,6 +196,7 @@ static gboolean gst_queue_handle_sink_event (GstPad * pad, GstEvent * event);
 static gboolean gst_queue_handle_src_event (GstPad * pad, GstEvent * event);
 static gboolean gst_queue_handle_src_query (GstPad * pad, GstQuery * query);
 
+static gboolean gst_queue_acceptcaps (GstPad * pad, GstCaps * caps);
 static GstCaps *gst_queue_getcaps (GstPad * pad);
 static GstPadLinkReturn gst_queue_link_sink (GstPad * pad, GstPad * peer);
 static GstPadLinkReturn gst_queue_link_src (GstPad * pad, GstPad * peer);
@@ -375,6 +375,8 @@ gst_queue_init (GstQueue * queue, GstQueueClass * g_class)
       GST_DEBUG_FUNCPTR (gst_queue_link_sink));
   gst_pad_set_getcaps_function (queue->sinkpad,
       GST_DEBUG_FUNCPTR (gst_queue_getcaps));
+  gst_pad_set_acceptcaps_function (queue->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_queue_acceptcaps));
   gst_pad_set_bufferalloc_function (queue->sinkpad,
       GST_DEBUG_FUNCPTR (gst_queue_bufferalloc));
   gst_element_add_pad (GST_ELEMENT (queue), queue->sinkpad);
@@ -385,6 +387,8 @@ gst_queue_init (GstQueue * queue, GstQueueClass * g_class)
       GST_DEBUG_FUNCPTR (gst_queue_src_activate_push));
   gst_pad_set_link_function (queue->srcpad,
       GST_DEBUG_FUNCPTR (gst_queue_link_src));
+  gst_pad_set_acceptcaps_function (queue->srcpad,
+      GST_DEBUG_FUNCPTR (gst_queue_acceptcaps));
   gst_pad_set_getcaps_function (queue->srcpad,
       GST_DEBUG_FUNCPTR (gst_queue_getcaps));
   gst_pad_set_event_function (queue->srcpad,
@@ -434,6 +438,21 @@ gst_queue_finalize (GObject * object)
   g_cond_free (queue->item_del);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static gboolean
+gst_queue_acceptcaps (GstPad * pad, GstCaps * caps)
+{
+  gboolean result;
+  GstQueue *queue;
+  GstPad *otherpad;
+
+  queue = GST_QUEUE (GST_PAD_PARENT (pad));
+
+  otherpad = (pad == queue->srcpad ? queue->sinkpad : queue->srcpad);
+  result = gst_pad_peer_accept_caps (otherpad, caps);
+
+  return result;
 }
 
 static GstCaps *
@@ -1197,9 +1216,9 @@ gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
           peer_pos -= queue->cur_level.time;
           break;
         default:
-          GST_WARNING_OBJECT (queue, "dropping query in %s format, don't "
+          GST_DEBUG_OBJECT (queue, "Can't adjust query in %s format, don't "
               "know how to adjust value", gst_format_get_name (format));
-          return FALSE;
+          return TRUE;
       }
       /* set updated position */
       gst_query_set_position (query, format, peer_pos);

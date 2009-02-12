@@ -88,10 +88,14 @@
 /* the poll/select call is also performed on a control socket, that way
  * we can send special commands to control it
  */
+/* FIXME: Shouldn't we check or return the return value
+ * of write()?
+ */
 #define SEND_COMMAND(set, command)                   \
 G_STMT_START {                                       \
   unsigned char c = command;                         \
-  write (set->control_write_fd.fd, &c, 1);           \
+  ssize_t res;                                       \
+  res = write (set->control_write_fd.fd, &c, 1);     \
 } G_STMT_END
 
 #define READ_COMMAND(set, command, res)              \
@@ -691,7 +695,8 @@ gst_poll_fd_ctl_write (GstPoll * set, GstPollFD * fd, gboolean active)
     else
       pfd->events &= ~POLLOUT;
 #else
-    gst_poll_update_winsock_event_mask (set, idx, FD_WRITE, active);
+    gst_poll_update_winsock_event_mask (set, idx, FD_WRITE | FD_CONNECT,
+        active);
 #endif
   }
 
@@ -869,7 +874,8 @@ gst_poll_fd_has_error (const GstPoll * set, GstPollFD * fd)
     res = (wfd->events.iErrorCode[FD_CLOSE_BIT] != 0) ||
         (wfd->events.iErrorCode[FD_READ_BIT] != 0) ||
         (wfd->events.iErrorCode[FD_WRITE_BIT] != 0) ||
-        (wfd->events.iErrorCode[FD_ACCEPT_BIT] != 0);
+        (wfd->events.iErrorCode[FD_ACCEPT_BIT] != 0) ||
+        (wfd->events.iErrorCode[FD_CONNECT_BIT] != 0);
 #endif
   }
 
@@ -1034,11 +1040,11 @@ gst_poll_wait (GstPoll * set, GstClockTime timeout)
   g_mutex_lock (set->lock);
 
   /* we cannot wait from multiple threads */
-  if (set->waiting)
+  if (G_UNLIKELY (set->waiting))
     goto already_waiting;
 
   /* flushing, exit immediatly */
-  if (set->flushing)
+  if (G_UNLIKELY (set->flushing))
     goto flushing;
 
   set->waiting = TRUE;
@@ -1204,18 +1210,19 @@ gst_poll_wait (GstPoll * set, GstClockTime timeout)
 
     g_mutex_lock (set->lock);
 
+    /* FIXME, can we only do this check when (res > 0)? */
     gst_poll_check_ctrl_commands (set, res, &restarting);
 
     /* update the controllable state if needed */
     set->controllable = set->new_controllable;
 
-    if (set->flushing) {
+    if (G_UNLIKELY (set->flushing)) {
       /* we got woken up and we are flushing, we need to stop */
       errno = EBUSY;
       res = -1;
       break;
     }
-  } while (restarting);
+  } while (G_UNLIKELY (restarting));
 
   set->waiting = FALSE;
 

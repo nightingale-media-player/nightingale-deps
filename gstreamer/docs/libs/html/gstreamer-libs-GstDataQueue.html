@@ -16,9 +16,9 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -50,25 +50,51 @@
 
                     <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a>;
                     <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueSize" title="GstDataQueueSize">GstDataQueueSize</a>;
-gboolean            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueCheckFullFunction" title="GstDataQueueCheckFullFunction ()">*GstDataQueueCheckFullFunction</a>)    (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         guint visible,
-                                                         guint bytes,
-                                                         guint64 time,
-                                                         gpointer checkdata);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueCheckFullFunction" title="GstDataQueueCheckFullFunction ()">*GstDataQueueCheckFullFunction</a>)    (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> visible,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> bytes,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> time,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> checkdata);
                     <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem">GstDataQueueItem</a>;
 <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a>*       <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-new" title="gst_data_queue_new ()">gst_data_queue_new</a>                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueCheckFullFunction" title="GstDataQueueCheckFullFunction ()">GstDataQueueCheckFullFunction</a> checkfull,
-                                                         gpointer checkdata);
-gboolean            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-push" title="gst_data_queue_push ()">gst_data_queue_push</a>                 (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> checkdata);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-push" title="gst_data_queue_push ()">gst_data_queue_push</a>                 (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
                                                          <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem">GstDataQueueItem</a> *item);
-gboolean            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-pop" title="gst_data_queue_pop ()">gst_data_queue_pop</a>                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-pop" title="gst_data_queue_pop ()">gst_data_queue_pop</a>                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
                                                          <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem">GstDataQueueItem</a> **item);
 void                <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-flush" title="gst_data_queue_flush ()">gst_data_queue_flush</a>                (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
 void                <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-set-flushing" title="gst_data_queue_set_flushing ()">gst_data_queue_set_flushing</a>         (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         gboolean flushing);
-gboolean            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-drop-head" title="gst_data_queue_drop_head ()">gst_data_queue_drop_head</a>            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         GType type);
-gboolean            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-full" title="gst_data_queue_is_full ()">gst_data_queue_is_full</a>              (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
-gboolean            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-empty" title="gst_data_queue_is_empty ()">gst_data_queue_is_empty</a>             (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flushing);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-drop-head" title="gst_data_queue_drop_head ()">gst_data_queue_drop_head</a>            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-full" title="gst_data_queue_is_full ()">gst_data_queue_is_full</a>              (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-is-empty" title="gst_data_queue_is_empty ()">gst_data_queue_is_empty</a>             (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
 void                <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-get-level" title="gst_data_queue_get_level ()">gst_data_queue_get_level</a>            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
                                                          <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueSize" title="GstDataQueueSize">GstDataQueueSize</a> *level);
 void                <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-limits-changed" title="gst_data_queue_limits_changed ()">gst_data_queue_limits_changed</a>       (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);
@@ -116,17 +142,23 @@ Structure describing the size of a queue.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">guint <em class="structfield"><code>visible</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>visible</code></em>;</span></p></td>
 <td> number of buffers
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint <em class="structfield"><code>bytes</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>bytes</code></em>;</span></p></td>
 <td> number of bytes
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint64 <em class="structfield"><code>time</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> <em class="structfield"><code>time</code></em>;</span></p></td>
 <td> amount of time
 </td>
 </tr>
@@ -136,11 +168,21 @@ Structure describing the size of a queue.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDataQueueCheckFullFunction"></a><h3>GstDataQueueCheckFullFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstDataQueueCheckFullFunction)    (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         guint visible,
-                                                         guint bytes,
-                                                         guint64 time,
-                                                         gpointer checkdata);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstDataQueueCheckFullFunction)    (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> visible,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> bytes,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> time,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> checkdata);</pre>
 <p>
 The prototype of the function used to inform the queue that it should be
 considered as full.</p>
@@ -172,12 +214,16 @@ considered as full.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>checkdata</code></em> :</span></p></td>
-<td> The <span class="type">gpointer</span> registered when the <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue"><span class="type">GstDataQueue</span></a> was created.
+<td> The <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> registered when the <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue"><span class="type">GstDataQueue</span></a> was created.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if the queue should be considered full.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if the queue should be considered full.
 </td>
 </tr>
 </tbody>
@@ -211,24 +257,36 @@ long as the top of the structure is identical to this structure.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint <em class="structfield"><code>size</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>size</code></em>;</span></p></td>
 <td> the size in bytes of the miniobject.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint64 <em class="structfield"><code>duration</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> <em class="structfield"><code>duration</code></em>;</span></p></td>
 <td> the duration in <span class="type">GstClockTime</span> of the miniobject. Can not be
 <span class="type">GST_CLOCK_TIME_NONE</span>.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gboolean <em class="structfield"><code>visible</code></em>;</span></p></td>
-<td> <span class="type">TRUE</span> if <em class="parameter"><code>object</code></em> should be considered as a visible object.
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> <em class="structfield"><code>visible</code></em>;</span></p></td>
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if <em class="parameter"><code>object</code></em> should be considered as a visible object.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GDestroyNotify <em class="structfield"><code>destroy</code></em>;</span></p></td>
-<td> The <span class="type">GDestroyNotify</span> function to use to free the <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>.
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> <em class="structfield"><code>destroy</code></em>;</span></p></td>
+<td> The <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+><span class="type">GDestroyNotify</span></a> function to use to free the <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>.
 This function should also drop the reference to <em class="parameter"><code>object</code></em> the owner of the
 <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem"><span class="type">GstDataQueueItem</span></a> is assumed to hold.
 </td>
@@ -240,7 +298,9 @@ This function should also drop the reference to <em class="parameter"><code>obje
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-new"></a><h3>gst_data_queue_new ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a>*       gst_data_queue_new                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueCheckFullFunction" title="GstDataQueueCheckFullFunction ()">GstDataQueueCheckFullFunction</a> checkfull,
-                                                         gpointer checkdata);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> checkdata);</pre>
 <p>
 </p>
 <p>
@@ -257,7 +317,9 @@ or not.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>checkdata</code></em> :</span></p></td>
-<td> a <span class="type">gpointer</span> that will be given in the <em class="parameter"><code>checkfull</code></em> callback.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> that will be given in the <em class="parameter"><code>checkfull</code></em> callback.
 </td>
 </tr>
 <tr>
@@ -271,7 +333,9 @@ or not.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-push"></a><h3>gst_data_queue_push ()</h3>
-<pre class="programlisting">gboolean            gst_data_queue_push                 (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_data_queue_push                 (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
                                                          <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem">GstDataQueueItem</a> *item);</pre>
 <p>
 Pushes a <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem"><span class="type">GstDataQueueItem</span></a> (or a structure that begins with the same fields)
@@ -302,7 +366,9 @@ is returned, the caller is responsible for freeing <em class="parameter"><code>i
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if the <em class="parameter"><code>item</code></em> was successfully pushed on the <em class="parameter"><code>queue</code></em>.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if the <em class="parameter"><code>item</code></em> was successfully pushed on the <em class="parameter"><code>queue</code></em>.
 </td>
 </tr>
 </tbody>
@@ -311,7 +377,9 @@ is returned, the caller is responsible for freeing <em class="parameter"><code>i
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-pop"></a><h3>gst_data_queue_pop ()</h3>
-<pre class="programlisting">gboolean            gst_data_queue_pop                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_data_queue_pop                  (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
                                                          <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="GstDataQueueItem">GstDataQueueItem</a> **item);</pre>
 <p>
 Retrieves the first <em class="parameter"><code>item</code></em> available on the <em class="parameter"><code>queue</code></em>. If the queue is currently
@@ -336,7 +404,9 @@ MT safe.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if an <em class="parameter"><code>item</code></em> was successfully retrieved from the <em class="parameter"><code>queue</code></em>.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if an <em class="parameter"><code>item</code></em> was successfully retrieved from the <em class="parameter"><code>queue</code></em>.
 </td>
 </tr>
 </tbody>
@@ -366,13 +436,21 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-set-flushing"></a><h3>gst_data_queue_set_flushing ()</h3>
 <pre class="programlisting">void                gst_data_queue_set_flushing         (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         gboolean flushing);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flushing);</pre>
 <p>
-Sets the queue to flushing state if <em class="parameter"><code>flushing</code></em> is <span class="type">TRUE</span>. If set to flushing
+Sets the queue to flushing state if <em class="parameter"><code>flushing</code></em> is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a>. If set to flushing
 state, any incoming data on the <em class="parameter"><code>queue</code></em> will be discarded. Any call currently
 blocking on <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-push" title="gst_data_queue_push ()"><span class="type">gst_data_queue_push</span></a> or <a class="link" href="gstreamer-libs-GstDataQueue.html#gst-data-queue-pop" title="gst_data_queue_pop ()"><span class="type">gst_data_queue_pop</span></a> will return straight
-away with a return value of <span class="type">FALSE</span>. While the <em class="parameter"><code>queue</code></em> is in flushing state, 
-all calls to those two functions will return <span class="type">FALSE</span>.
+away with a return value of <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><span class="type">FALSE</span></a>. While the <em class="parameter"><code>queue</code></em> is in flushing state, 
+all calls to those two functions will return <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><span class="type">FALSE</span></a>.
 </p>
 <p>
 MT Safe.</p>
@@ -389,7 +467,9 @@ MT Safe.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>flushing</code></em> :</span></p></td>
-<td> a <span class="type">gboolean</span> stating if the queue will be flushing or not.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+><span class="type">gboolean</span></a> stating if the queue will be flushing or not.
 </td>
 </tr>
 </tbody>
@@ -398,10 +478,16 @@ MT Safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-drop-head"></a><h3>gst_data_queue_drop_head ()</h3>
-<pre class="programlisting">gboolean            gst_data_queue_drop_head            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
-                                                         GType type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_data_queue_drop_head            (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type);</pre>
 <p>
-Pop and unref the head-most <span class="type">GstMiniObject</span> with the given <span class="type">GType</span>.</p>
+Pop and unref the head-most <span class="type">GstMiniObject</span> with the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a>.</p>
 <p>
 
 </p>
@@ -415,7 +501,9 @@ Pop and unref the head-most <span class="type">GstMiniObject</span> with the giv
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
-<td> The <span class="type">GType</span> of the item to drop.
+<td> The <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of the item to drop.
 </td>
 </tr>
 <tr>
@@ -429,7 +517,9 @@ Pop and unref the head-most <span class="type">GstMiniObject</span> with the giv
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-is-full"></a><h3>gst_data_queue_is_full ()</h3>
-<pre class="programlisting">gboolean            gst_data_queue_is_full              (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_data_queue_is_full              (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);</pre>
 <p>
 Queries if <em class="parameter"><code>queue</code></em> is full. This check will be done using the
 <span class="type">GstDataQueueCheckFullCallback</span> registered with <em class="parameter"><code>queue</code></em>.
@@ -447,7 +537,9 @@ MT safe.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if <em class="parameter"><code>queue</code></em> is full.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if <em class="parameter"><code>queue</code></em> is full.
 </td>
 </tr>
 </tbody>
@@ -456,7 +548,9 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-data-queue-is-empty"></a><h3>gst_data_queue_is_empty ()</h3>
-<pre class="programlisting">gboolean            gst_data_queue_is_empty             (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_data_queue_is_empty             (<a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueue" title="GstDataQueue">GstDataQueue</a> *queue);</pre>
 <p>
 Queries if there are any items in the <em class="parameter"><code>queue</code></em>.
 MT safe.</p>
@@ -473,7 +567,9 @@ MT safe.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if <em class="parameter"><code>queue</code></em> is empty.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if <em class="parameter"><code>queue</code></em> is empty.
 </td>
 </tr>
 </tbody>

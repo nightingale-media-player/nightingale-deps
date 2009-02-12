@@ -41,12 +41,38 @@ extern const char             g_log_domain_gstreamer[];
 #include "gstregistry.h"
 #include "gststructure.h"
 
+/* we need this in pretty much all files */
+#include "gstinfo.h"
+
+/* for the flags in the GstPluginDep structure below */
+#include "gstplugin.h"
+
 G_BEGIN_DECLS
 
 /* used by gstparse.c and grammar.y */
 struct _GstParseContext {
   GList * missing_elements;
 };
+
+/* used by gstplugin.c and gstregistrybinary.c */
+typedef struct {
+  /* details registered via gst_plugin_add_dependency() */
+  GstPluginDependencyFlags  flags;
+  gchar **env_vars;
+  gchar **paths;
+  gchar **names;
+
+  /* information saved from the last time the plugin was loaded (-1 = unset) */
+  guint   env_hash;  /* hash of content of environment variables in env_vars */
+  guint   stat_hash; /* hash of stat() on all relevant files and directories */
+} GstPluginDep;
+
+struct _GstPluginPrivate {
+  GList *deps;    /* list of GstPluginDep structures */
+};
+
+gboolean _priv_plugin_deps_env_vars_changed (GstPlugin * plugin);
+gboolean _priv_plugin_deps_files_changed (GstPlugin * plugin);
 
 gboolean _priv_gst_in_valgrind (void);
 
@@ -92,8 +118,6 @@ gboolean 		gst_registry_xml_write_cache 	(GstRegistry * registry, const char *lo
 /*** debugging categories *****************************************************/
 
 #ifndef GST_DISABLE_GST_DEBUG
-
-#include <gst/gstinfo.h>
 
 GST_EXPORT GstDebugCategory *GST_CAT_GST_INIT;
 GST_EXPORT GstDebugCategory *GST_CAT_AUTOPLUG;

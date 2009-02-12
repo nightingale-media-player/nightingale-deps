@@ -22,7 +22,6 @@
  */
 /**
  * SECTION:element-filesink
- * @short_description: write stream to a file
  * @see_also: #GstFileSrc
  *
  * Write incoming data to a file in the local file system.
@@ -141,7 +140,8 @@ gst_file_sink_base_init (gpointer g_class)
 
   gst_element_class_set_details_simple (gstelement_class,
       "File Sink",
-      "Sink/File", "Write stream to a file", "Thomas <thomas@apestaart.org>");
+      "Sink/File", "Write stream to a file",
+      "Thomas Vander Stichele <thomas at apestaart dot org>");
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&sinktemplate));
 }
@@ -247,6 +247,7 @@ was_open:
     return FALSE;
   }
 }
+
 static void
 gst_file_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
@@ -407,6 +408,10 @@ gst_file_sink_query (GstPad * pad, GstQuery * query)
 
     case GST_QUERY_FORMATS:
       gst_query_set_formats (query, 2, GST_FORMAT_DEFAULT, GST_FORMAT_BYTES);
+      return TRUE;
+
+    case GST_QUERY_URI:
+      gst_query_set_uri (query, self->uri);
       return TRUE;
 
     default:
@@ -613,6 +618,7 @@ gst_file_sink_uri_get_type (void)
 {
   return GST_URI_SINK;
 }
+
 static gchar **
 gst_file_sink_uri_get_protocols (void)
 {
@@ -620,6 +626,7 @@ gst_file_sink_uri_get_protocols (void)
 
   return protocols;
 }
+
 static const gchar *
 gst_file_sink_uri_get_uri (GstURIHandler * handler)
 {

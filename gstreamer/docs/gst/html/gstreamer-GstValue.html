@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -52,83 +52,213 @@ to GStreamer</p>
 #define             <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS" title="GST_FOURCC_FORMAT">GST_FOURCC_FORMAT</a>
 #define             <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS" title="GST_FOURCC_ARGS()">GST_FOURCC_ARGS</a>                     (fourcc)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC">GST_TYPE_FOURCC</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fourcc" title="gst_value_set_fourcc ()">gst_value_set_fourcc</a>                (GValue *value,
-                                                         guint32 fourcc);
-guint32             <a class="link" href="gstreamer-GstValue.html#gst-value-get-fourcc" title="gst_value_get_fourcc ()">gst_value_get_fourcc</a>                (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fourcc" title="gst_value_set_fourcc ()">gst_value_set_fourcc</a>                (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> fourcc);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             <a class="link" href="gstreamer-GstValue.html#gst-value-get-fourcc" title="gst_value_get_fourcc ()">gst_value_get_fourcc</a>                (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-INT-RANGE:CAPS" title="GST_VALUE_HOLDS_INT_RANGE()">GST_VALUE_HOLDS_INT_RANGE</a>           (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS" title="GST_TYPE_INT_RANGE">GST_TYPE_INT_RANGE</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-int-range" title="gst_value_set_int_range ()">gst_value_set_int_range</a>             (GValue *value,
-                                                         gint start,
-                                                         gint end);
-gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-min" title="gst_value_get_int_range_min ()">gst_value_get_int_range_min</a>         (const GValue *value);
-gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-max" title="gst_value_get_int_range_max ()">gst_value_get_int_range_max</a>         (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-int-range" title="gst_value_set_int_range ()">gst_value_set_int_range</a>             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> end);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-min" title="gst_value_get_int_range_min ()">gst_value_get_int_range_min</a>         (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-GstValue.html#gst-value-get-int-range-max" title="gst_value_get_int_range_max ()">gst_value_get_int_range_max</a>         (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DOUBLE-RANGE:CAPS" title="GST_VALUE_HOLDS_DOUBLE_RANGE()">GST_VALUE_HOLDS_DOUBLE_RANGE</a>        (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS" title="GST_TYPE_DOUBLE_RANGE">GST_TYPE_DOUBLE_RANGE</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-double-range" title="gst_value_set_double_range ()">gst_value_set_double_range</a>          (GValue *value,
-                                                         gdouble start,
-                                                         gdouble end);
-gdouble             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-min" title="gst_value_get_double_range_min ()">gst_value_get_double_range_min</a>      (const GValue *value);
-gdouble             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-max" title="gst_value_get_double_range_max ()">gst_value_get_double_range_max</a>      (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-double-range" title="gst_value_set_double_range ()">gst_value_set_double_range</a>          (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> end);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-min" title="gst_value_get_double_range_min ()">gst_value_get_double_range_min</a>      (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a class="link" href="gstreamer-GstValue.html#gst-value-get-double-range-max" title="gst_value_get_double_range_max ()">gst_value_get_double_range_max</a>      (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-LIST:CAPS" title="GST_VALUE_HOLDS_LIST()">GST_VALUE_HOLDS_LIST</a>                (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST">GST_TYPE_LIST</a>
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-ARRAY:CAPS" title="GST_VALUE_HOLDS_ARRAY()">GST_VALUE_HOLDS_ARRAY</a>               (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY">GST_TYPE_ARRAY</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-append-value" title="gst_value_list_append_value ()">gst_value_list_append_value</a>         (GValue *value,
-                                                         const GValue *append_value);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-prepend-value" title="gst_value_list_prepend_value ()">gst_value_list_prepend_value</a>        (GValue *value,
-                                                         const GValue *prepend_value);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-concat" title="gst_value_list_concat ()">gst_value_list_concat</a>               (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);
-guint               <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-size" title="gst_value_list_get_size ()">gst_value_list_get_size</a>             (const GValue *value);
-const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-value" title="gst_value_list_get_value ()">gst_value_list_get_value</a>            (const GValue *value,
-                                                         guint index);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-append-value" title="gst_value_list_append_value ()">gst_value_list_append_value</a>         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *append_value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-prepend-value" title="gst_value_list_prepend_value ()">gst_value_list_prepend_value</a>        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *prepend_value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-list-concat" title="gst_value_list_concat ()">gst_value_list_concat</a>               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-size" title="gst_value_list_get_size ()">gst_value_list_get_size</a>             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gstreamer-GstValue.html#gst-value-list-get-value" title="gst_value_list_get_value ()">gst_value_list_get_value</a>            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION:CAPS" title="GST_VALUE_HOLDS_FRACTION()">GST_VALUE_HOLDS_FRACTION</a>            (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION">GST_TYPE_FRACTION</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction" title="gst_value_set_fraction ()">gst_value_set_fraction</a>              (GValue *value,
-                                                         gint numerator,
-                                                         gint denominator);
-gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-numerator" title="gst_value_get_fraction_numerator ()">gst_value_get_fraction_numerator</a>    (const GValue *value);
-gint                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-denominator" title="gst_value_get_fraction_denominator ()">gst_value_get_fraction_denominator</a>  (const GValue *value);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-multiply" title="gst_value_fraction_multiply ()">gst_value_fraction_multiply</a>         (GValue *product,
-                                                         const GValue *factor1,
-                                                         const GValue *factor2);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-subtract" title="gst_value_fraction_subtract ()">gst_value_fraction_subtract</a>         (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction" title="gst_value_set_fraction ()">gst_value_set_fraction</a>              (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-numerator" title="gst_value_get_fraction_numerator ()">gst_value_get_fraction_numerator</a>    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-denominator" title="gst_value_get_fraction_denominator ()">gst_value_get_fraction_denominator</a>  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-multiply" title="gst_value_fraction_multiply ()">gst_value_fraction_multiply</a>         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *product,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *factor1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *factor2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-fraction-subtract" title="gst_value_fraction_subtract ()">gst_value_fraction_subtract</a>         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-FRACTION-RANGE:CAPS" title="GST_VALUE_HOLDS_FRACTION_RANGE()">GST_VALUE_HOLDS_FRACTION_RANGE</a>      (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS" title="GST_TYPE_FRACTION_RANGE">GST_TYPE_FRACTION_RANGE</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range" title="gst_value_set_fraction_range ()">gst_value_set_fraction_range</a>        (GValue *value,
-                                                         const GValue *start,
-                                                         const GValue *end);
-const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-min" title="gst_value_get_fraction_range_min ()">gst_value_get_fraction_range_min</a>    (const GValue *value);
-const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-max" title="gst_value_get_fraction_range_max ()">gst_value_get_fraction_range_max</a>    (const GValue *value);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range-full" title="gst_value_set_fraction_range_full ()">gst_value_set_fraction_range_full</a>   (GValue *value,
-                                                         gint numerator_start,
-                                                         gint denominator_start,
-                                                         gint numerator_end,
-                                                         gint denominator_end);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range" title="gst_value_set_fraction_range ()">gst_value_set_fraction_range</a>        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *start,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *end);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-min" title="gst_value_get_fraction_range_min ()">gst_value_get_fraction_range_min</a>    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gstreamer-GstValue.html#gst-value-get-fraction-range-max" title="gst_value_get_fraction_range_max ()">gst_value_get_fraction_range_max</a>    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-fraction-range-full" title="gst_value_set_fraction_range_full ()">gst_value_set_fraction_range_full</a>   (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator_start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator_start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator_end,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator_end);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-DATE:CAPS" title="GST_VALUE_HOLDS_DATE()">GST_VALUE_HOLDS_DATE</a>                (x)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS" title="GST_TYPE_DATE">GST_TYPE_DATE</a>
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-date" title="gst_value_set_date ()">gst_value_set_date</a>                  (GValue *value,
-                                                         const GDate *date);
-const GDate*        <a class="link" href="gstreamer-GstValue.html#gst-value-get-date" title="gst_value_get_date ()">gst_value_get_date</a>                  (const GValue *value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-date" title="gst_value_set_date ()">gst_value_set_date</a>                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> *date);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a>*        <a class="link" href="gstreamer-GstValue.html#gst-value-get-date" title="gst_value_get_date ()">gst_value_get_date</a>                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-CAPS:CAPS" title="GST_VALUE_HOLDS_CAPS()">GST_VALUE_HOLDS_CAPS</a>                (x)
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-caps" title="gst_value_set_caps ()">gst_value_set_caps</a>                  (GValue *value,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-caps" title="gst_value_set_caps ()">gst_value_set_caps</a>                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      <a class="link" href="gstreamer-GstValue.html#gst-value-get-caps" title="gst_value_get_caps ()">gst_value_get_caps</a>                  (const GValue *value);
+const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      <a class="link" href="gstreamer-GstValue.html#gst-value-get-caps" title="gst_value_get_caps ()">gst_value_get_caps</a>                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-STRUCTURE:CAPS" title="GST_VALUE_HOLDS_STRUCTURE()">GST_VALUE_HOLDS_STRUCTURE</a>           (x)
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-structure" title="gst_value_set_structure ()">gst_value_set_structure</a>             (GValue *value,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-set-structure" title="gst_value_set_structure ()">gst_value_set_structure</a>             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
                                                          const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
-const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* <a class="link" href="gstreamer-GstValue.html#gst-value-get-structure" title="gst_value_get_structure ()">gst_value_get_structure</a>             (const GValue *value);
+const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* <a class="link" href="gstreamer-GstValue.html#gst-value-get-structure" title="gst_value_get_structure ()">gst_value_get_structure</a>             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-MINI-OBJECT:CAPS" title="GST_VALUE_HOLDS_MINI_OBJECT()">GST_VALUE_HOLDS_MINI_OBJECT</a>         (value)
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-HOLDS-BUFFER:CAPS" title="GST_VALUE_HOLDS_BUFFER()">GST_VALUE_HOLDS_BUFFER</a>              (x)
@@ -140,63 +270,205 @@ const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="Gst
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-EQUAL:CAPS" title="GST_VALUE_EQUAL">GST_VALUE_EQUAL</a>
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-GREATER-THAN:CAPS" title="GST_VALUE_GREATER_THAN">GST_VALUE_GREATER_THAN</a>
 #define             <a class="link" href="gstreamer-GstValue.html#GST-VALUE-UNORDERED:CAPS" title="GST_VALUE_UNORDERED">GST_VALUE_UNORDERED</a>
-gint                (<a class="link" href="gstreamer-GstValue.html#GstValueCompareFunc" title="GstValueCompareFunc ()">*GstValueCompareFunc</a>)              (const GValue *value1,
-                                                         const GValue *value2);
-gchar*              (<a class="link" href="gstreamer-GstValue.html#GstValueSerializeFunc" title="GstValueSerializeFunc ()">*GstValueSerializeFunc</a>)            (const GValue *value1);
-gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueDeserializeFunc" title="GstValueDeserializeFunc ()">*GstValueDeserializeFunc</a>)          (GValue *dest,
-                                                         const gchar *s);
-gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">*GstValueUnionFunc</a>)                (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);
-gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">*GstValueIntersectFunc</a>)            (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);
-gboolean            (<a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">*GstValueSubtractFunc</a>)             (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                (<a class="link" href="gstreamer-GstValue.html#GstValueCompareFunc" title="GstValueCompareFunc ()">*GstValueCompareFunc</a>)              (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              (<a class="link" href="gstreamer-GstValue.html#GstValueSerializeFunc" title="GstValueSerializeFunc ()">*GstValueSerializeFunc</a>)            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-GstValue.html#GstValueDeserializeFunc" title="GstValueDeserializeFunc ()">*GstValueDeserializeFunc</a>)          (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *s);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">*GstValueUnionFunc</a>)                (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">*GstValueIntersectFunc</a>)            (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">*GstValueSubtractFunc</a>)             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);
                     <a class="link" href="gstreamer-GstValue.html#GstValueTable" title="GstValueTable">GstValueTable</a>;
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-is-fixed" title="gst_value_is_fixed ()">gst_value_is_fixed</a>                  (const GValue *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-is-fixed" title="gst_value_is_fixed ()">gst_value_is_fixed</a>                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
 void                <a class="link" href="gstreamer-GstValue.html#gst-value-register" title="gst_value_register ()">gst_value_register</a>                  (const <a class="link" href="gstreamer-GstValue.html#GstValueTable" title="GstValueTable">GstValueTable</a> *table);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-init-and-copy" title="gst_value_init_and_copy ()">gst_value_init_and_copy</a>             (GValue *dest,
-                                                         const GValue *src);
-gchar*              <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()">gst_value_serialize</a>                 (const GValue *value);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()">gst_value_deserialize</a>               (GValue *dest,
-                                                         const gchar *src);
-gint                <a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()">gst_value_compare</a>                   (const GValue *value1,
-                                                         const GValue *value2);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-compare" title="gst_value_can_compare ()">gst_value_can_compare</a>               (const GValue *value1,
-                                                         const GValue *value2);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()">gst_value_union</a>                     (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-union" title="gst_value_can_union ()">gst_value_can_union</a>                 (const GValue *value1,
-                                                         const GValue *value2);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()">gst_value_register_union_func</a>       (GType type1,
-                                                         GType type2,
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-init-and-copy" title="gst_value_init_and_copy ()">gst_value_init_and_copy</a>             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()">gst_value_serialize</a>                 (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()">gst_value_deserialize</a>               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *src);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()">gst_value_compare</a>                   (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-can-compare" title="gst_value_can_compare ()">gst_value_can_compare</a>               (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()">gst_value_union</a>                     (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-can-union" title="gst_value_can_union ()">gst_value_can_union</a>                 (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()">gst_value_register_union_func</a>       (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type1,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type2,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">GstValueUnionFunc</a> func);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()">gst_value_subtract</a>                  (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-subtract" title="gst_value_can_subtract ()">gst_value_can_subtract</a>              (const GValue *minuend,
-                                                         const GValue *subtrahend);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()">gst_value_register_subtract_func</a>    (GType minuend_type,
-                                                         GType subtrahend_type,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()">gst_value_subtract</a>                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-can-subtract" title="gst_value_can_subtract ()">gst_value_can_subtract</a>              (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()">gst_value_register_subtract_func</a>    (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> minuend_type,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> subtrahend_type,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">GstValueSubtractFunc</a> func);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()">gst_value_intersect</a>                 (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);
-gboolean            <a class="link" href="gstreamer-GstValue.html#gst-value-can-intersect" title="gst_value_can_intersect ()">gst_value_can_intersect</a>             (const GValue *value1,
-                                                         const GValue *value2);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-intersect-func" title="gst_value_register_intersect_func ()">gst_value_register_intersect_func</a>   (GType type1,
-                                                         GType type2,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()">gst_value_intersect</a>                 (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstValue.html#gst-value-can-intersect" title="gst_value_can_intersect ()">gst_value_can_intersect</a>             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-register-intersect-func" title="gst_value_register_intersect_func ()">gst_value_register_intersect_func</a>   (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type1,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type2,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">GstValueIntersectFunc</a> func);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-append-value" title="gst_value_array_append_value ()">gst_value_array_append_value</a>        (GValue *value,
-                                                         const GValue *append_value);
-guint               <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-size" title="gst_value_array_get_size ()">gst_value_array_get_size</a>            (const GValue *value);
-const GValue*       <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-value" title="gst_value_array_get_value ()">gst_value_array_get_value</a>           (const GValue *value,
-                                                         guint index);
-void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-prepend-value" title="gst_value_array_prepend_value ()">gst_value_array_prepend_value</a>       (GValue *value,
-                                                         const GValue *prepend_value);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-append-value" title="gst_value_array_append_value ()">gst_value_array_append_value</a>        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *append_value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-size" title="gst_value_array_get_size ()">gst_value_array_get_size</a>            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gstreamer-GstValue.html#gst-value-array-get-value" title="gst_value_array_get_value ()">gst_value_array_get_value</a>           (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);
+void                <a class="link" href="gstreamer-GstValue.html#gst-value-array-prepend-value" title="gst_value_array_prepend_value ()">gst_value_array_prepend_value</a>       (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *prepend_value);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -221,7 +493,9 @@ Last reviewed on 2008-03-11 (0.10.18)</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_FOURCC(x)       (G_VALUE_HOLDS(x, gst_fourcc_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC"><span class="type">GST_TYPE_FOURCC</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FOURCC:CAPS" title="GST_TYPE_FOURCC"><span class="type">GST_TYPE_FOURCC</span></a> value.</p>
 <p>
 
 </p>
@@ -229,7 +503,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -240,7 +516,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_MAKE_FOURCC(a,b,c,d)        (guint32)((a)|(b)&lt;&lt;8|(c)&lt;&lt;16|(d)&lt;&lt;24)
 </pre>
 <p>
-Transform four characters into a <span class="type">guint32</span> fourcc value with host
+Transform four characters into a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc value with host
 endianness.
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -281,7 +559,9 @@ guint32 fourcc = GST_MAKE_FOURCC ('M', 'J', 'P', 'G');
 <pre class="programlisting">#define GST_STR_FOURCC(f)               (guint32)(((f)[0])|((f)[1]&lt;&lt;8)|((f)[2]&lt;&lt;16)|((f)[3]&lt;&lt;24))
 </pre>
 <p>
-Transform an input string into a <span class="type">guint32</span> fourcc value with host
+Transform an input string into a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc value with host
 endianness.
 Caller is responsible for ensuring the input string consists of at least
 four characters.
@@ -308,7 +588,9 @@ guint32 fourcc = GST_STR_FOURCC ("MJPG");
 </pre>
 <p>
 Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-ARGS:CAPS" title="GST_FOURCC_ARGS()"><span class="type">GST_FOURCC_ARGS</span></a> to properly output a
-<span class="type">guint32</span> fourcc value in a <code class="function">printf()</code>-style text message.
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc value in a <code class="function">printf()</code>-style text message.
 </p>
 <div class="informalexample"><pre class="programlisting">
 printf ("fourcc: %" GST_FOURCC_FORMAT "\n", GST_FOURCC_ARGS (fcc));
@@ -323,7 +605,9 @@ printf ("fourcc: %" GST_FOURCC_FORMAT "\n", GST_FOURCC_ARGS (fcc));
 <pre class="programlisting">#define             GST_FOURCC_ARGS(fourcc)</pre>
 <p>
 Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOURCC-FORMAT:CAPS" title="GST_FOURCC_FORMAT"><span class="type">GST_FOURCC_FORMAT</span></a> to properly output a
-<span class="type">guint32</span> fourcc value in a <code class="function">printf()</code>-style text message.</p>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc value in a <code class="function">printf()</code>-style text message.</p>
 <p>
 
 </p>
@@ -331,7 +615,9 @@ Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOUR
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
-<td> a <span class="type">guint32</span> fourcc value to output
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc value to output
 </td>
 </tr></tbody>
 </table></div>
@@ -342,7 +628,9 @@ Can be used together with <a class="link" href="gstreamer-GstValue.html#GST-FOUR
 <pre class="programlisting">#define GST_TYPE_FOURCC                  gst_fourcc_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents 4 byte identifier (e.g. used for codecs)</p>
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents 4 byte identifier (e.g. used for codecs)</p>
 <p>
 
 </p>
@@ -350,7 +638,9 @@ a <span class="type">GValue</span> type that represents 4 byte identifier (e.g. 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstFourcc
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstFourcc
 </td>
 </tr></tbody>
 </table></div>
@@ -358,8 +648,12 @@ a <span class="type">GValue</span> type that represents 4 byte identifier (e.g. 
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-fourcc"></a><h3>gst_value_set_fourcc ()</h3>
-<pre class="programlisting">void                gst_value_set_fourcc                (GValue *value,
-                                                         guint32 fourcc);</pre>
+<pre class="programlisting">void                gst_value_set_fourcc                (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> fourcc);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><code>fourcc</code></em>.</p>
 <p>
@@ -375,7 +669,9 @@ Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><cod
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fourcc</code></em> :</span></p></td>
-<td> the <span class="type">guint32</span> fourcc to set
+<td> the <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc to set
 </td>
 </tr>
 </tbody>
@@ -384,9 +680,15 @@ Sets <em class="parameter"><code>value</code></em> to <em class="parameter"><cod
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-fourcc"></a><h3>gst_value_get_fourcc ()</h3>
-<pre class="programlisting">guint32             gst_value_get_fourcc                (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             gst_value_get_fourcc                (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
-Gets the <span class="type">guint32</span> fourcc contained in <em class="parameter"><code>value</code></em>.</p>
+Gets the <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
 
 </p>
@@ -400,7 +702,9 @@ Gets the <span class="type">guint32</span> fourcc contained in <em class="parame
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">guint32</span> fourcc contained in <em class="parameter"><code>value</code></em>.
+<td> the <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+><span class="type">guint32</span></a> fourcc contained in <em class="parameter"><code>value</code></em>.
 </td>
 </tr>
 </tbody>
@@ -412,7 +716,9 @@ Gets the <span class="type">guint32</span> fourcc contained in <em class="parame
 <pre class="programlisting">#define GST_VALUE_HOLDS_INT_RANGE(x)    (G_VALUE_HOLDS(x, gst_int_range_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS" title="GST_TYPE_INT_RANGE"><span class="type">GST_TYPE_INT_RANGE</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-INT-RANGE:CAPS" title="GST_TYPE_INT_RANGE"><span class="type">GST_TYPE_INT_RANGE</span></a> value.</p>
 <p>
 
 </p>
@@ -420,7 +726,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -431,7 +739,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_INT_RANGE               gst_int_range_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents an integer range</p>
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents an integer range</p>
 <p>
 
 </p>
@@ -439,7 +749,9 @@ a <span class="type">GValue</span> type that represents an integer range</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstIntRange
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstIntRange
 </td>
 </tr></tbody>
 </table></div>
@@ -447,9 +759,15 @@ a <span class="type">GValue</span> type that represents an integer range</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-int-range"></a><h3>gst_value_set_int_range ()</h3>
-<pre class="programlisting">void                gst_value_set_int_range             (GValue *value,
-                                                         gint start,
-                                                         gint end);</pre>
+<pre class="programlisting">void                gst_value_set_int_range             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> end);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to the range specified by <em class="parameter"><code>start</code></em> and <em class="parameter"><code>end</code></em>.</p>
 <p>
@@ -479,7 +797,11 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-int-range-min"></a><h3>gst_value_get_int_range_min ()</h3>
-<pre class="programlisting">gint                gst_value_get_int_range_min         (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_value_get_int_range_min         (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -504,7 +826,11 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-int-range-max"></a><h3>gst_value_get_int_range_max ()</h3>
-<pre class="programlisting">gint                gst_value_get_int_range_max         (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_value_get_int_range_max         (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -532,7 +858,9 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <pre class="programlisting">#define GST_VALUE_HOLDS_DOUBLE_RANGE(x) (G_VALUE_HOLDS(x, gst_double_range_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS" title="GST_TYPE_DOUBLE_RANGE"><span class="type">GST_TYPE_DOUBLE_RANGE</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DOUBLE-RANGE:CAPS" title="GST_TYPE_DOUBLE_RANGE"><span class="type">GST_TYPE_DOUBLE_RANGE</span></a> value.</p>
 <p>
 
 </p>
@@ -540,7 +868,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -551,7 +881,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_DOUBLE_RANGE            gst_double_range_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents a floating point range with double precission</p>
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents a floating point range with double precission</p>
 <p>
 
 </p>
@@ -559,7 +891,9 @@ a <span class="type">GValue</span> type that represents a floating point range w
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstIntRange
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstIntRange
 </td>
 </tr></tbody>
 </table></div>
@@ -567,9 +901,15 @@ a <span class="type">GValue</span> type that represents a floating point range w
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-double-range"></a><h3>gst_value_set_double_range ()</h3>
-<pre class="programlisting">void                gst_value_set_double_range          (GValue *value,
-                                                         gdouble start,
-                                                         gdouble end);</pre>
+<pre class="programlisting">void                gst_value_set_double_range          (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> end);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to the range specified by <em class="parameter"><code>start</code></em> and <em class="parameter"><code>end</code></em>.</p>
 <p>
@@ -599,7 +939,11 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-double-range-min"></a><h3>gst_value_get_double_range_min ()</h3>
-<pre class="programlisting">gdouble             gst_value_get_double_range_min      (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gst_value_get_double_range_min      (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -615,7 +959,7 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the minumum of the range
+<td> the minimum of the range
 </td>
 </tr>
 </tbody>
@@ -624,7 +968,11 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-double-range-max"></a><h3>gst_value_get_double_range_max ()</h3>
-<pre class="programlisting">gdouble             gst_value_get_double_range_max      (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gst_value_get_double_range_max      (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -652,7 +1000,9 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <pre class="programlisting">#define GST_VALUE_HOLDS_LIST(x)		(G_VALUE_HOLDS(x, gst_value_list_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a> value.</p>
 <p>
 
 </p>
@@ -660,7 +1010,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -671,7 +1023,11 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_LIST                    gst_value_list_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents an unordered list of <span class="type">GValue</span> values. This
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents an unordered list of <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> values. This
 is used for example to express a list of possible values for a field in
 a caps structure, like a list of possible sample rates, of which only one
 will be chosen in the end. This means that all values in the list are
@@ -683,7 +1039,9 @@ meaningful on their own.</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstValueList (which is not explicitly typed)
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstValueList (which is not explicitly typed)
 </td>
 </tr></tbody>
 </table></div>
@@ -694,7 +1052,9 @@ meaningful on their own.</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_ARRAY(x)	(G_VALUE_HOLDS(x, gst_value_array_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a> value.</p>
 <p>
 
 </p>
@@ -702,7 +1062,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -713,7 +1075,11 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_ARRAY			 gst_value_array_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents an ordered list of <span class="type">GValue</span> values. This is
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents an ordered list of <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> values. This is
 used to express a set of values that is meaningful only in their specific
 combination and order of values. Each value on its own is not particularly
 meaningful, only the ordered array in its entirety is meaningful. This is
@@ -726,7 +1092,9 @@ each channel needs to be mapped to a position in the room.</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstArrayList (which is not explicitly typed)
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstArrayList (which is not explicitly typed)
 </td>
 </tr></tbody>
 </table></div>
@@ -734,8 +1102,12 @@ each channel needs to be mapped to a position in the room.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-list-append-value"></a><h3>gst_value_list_append_value ()</h3>
-<pre class="programlisting">void                gst_value_list_append_value         (GValue *value,
-                                                         const GValue *append_value);</pre>
+<pre class="programlisting">void                gst_value_list_append_value         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *append_value);</pre>
 <p>
 Appends <em class="parameter"><code>append_value</code></em> to the GstValueList in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -746,7 +1118,9 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueList
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
@@ -760,8 +1134,12 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueList
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-list-prepend-value"></a><h3>gst_value_list_prepend_value ()</h3>
-<pre class="programlisting">void                gst_value_list_prepend_value        (GValue *value,
-                                                         const GValue *prepend_value);</pre>
+<pre class="programlisting">void                gst_value_list_prepend_value        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *prepend_value);</pre>
 <p>
 Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueList in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -772,7 +1150,9 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueLi
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
@@ -786,9 +1166,15 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueLi
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-list-concat"></a><h3>gst_value_list_concat ()</h3>
-<pre class="programlisting">void                gst_value_list_concat               (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting">void                gst_value_list_concat               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Concatenates copies of <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> into a list.  Values that are not
 of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a> are treated as if they were lists of length 1.
@@ -801,17 +1187,23 @@ of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title=
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> an uninitialized <span class="type">GValue</span> to take the result
+<td> an uninitialized <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to take the result
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 </tbody>
@@ -820,7 +1212,11 @@ of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title=
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-list-get-size"></a><h3>gst_value_list_get_size ()</h3>
-<pre class="programlisting">guint               gst_value_list_get_size             (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_value_list_get_size             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the number of values contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -831,7 +1227,9 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
@@ -845,8 +1243,14 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-list-get-value"></a><h3>gst_value_list_get_value ()</h3>
-<pre class="programlisting">const GValue*       gst_value_list_get_value            (const GValue *value,
-                                                         guint index);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_value_list_get_value            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);</pre>
 <p>
 Gets the value that is a member of the list contained in <em class="parameter"><code>value</code></em> and
 has the index <em class="parameter"><code>index</code></em>.</p>
@@ -858,7 +1262,9 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><span class="type">GST_TYPE_LIST</span></a>
 </td>
 </tr>
 <tr>
@@ -880,7 +1286,9 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION(x)	(G_VALUE_HOLDS(x, gst_fraction_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION:CAPS" title="GST_TYPE_FRACTION"><span class="type">GST_TYPE_FRACTION</span></a> value.</p>
 <p>
 
 </p>
@@ -888,7 +1296,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -899,7 +1309,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_FRACTION                gst_fraction_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents a fraction of an integer numerator over
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents a fraction of an integer numerator over
 an integer denominator</p>
 <p>
 
@@ -908,7 +1320,9 @@ an integer denominator</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstFraction (which is not explicitly typed)
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstFraction (which is not explicitly typed)
 </td>
 </tr></tbody>
 </table></div>
@@ -916,9 +1330,15 @@ an integer denominator</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-fraction"></a><h3>gst_value_set_fraction ()</h3>
-<pre class="programlisting">void                gst_value_set_fraction              (GValue *value,
-                                                         gint numerator,
-                                                         gint denominator);</pre>
+<pre class="programlisting">void                gst_value_set_fraction              (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to the fraction specified by <em class="parameter"><code>numerator</code></em> over <em class="parameter"><code>denominator</code></em>.
 The fraction gets reduced to the smallest numerator and denominator,
@@ -950,7 +1370,11 @@ and if necessary the sign is moved to the numerator.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-fraction-numerator"></a><h3>gst_value_get_fraction_numerator ()</h3>
-<pre class="programlisting">gint                gst_value_get_fraction_numerator    (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_value_get_fraction_numerator    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the numerator of the fraction specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -975,7 +1399,11 @@ Gets the numerator of the fraction specified by <em class="parameter"><code>valu
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-fraction-denominator"></a><h3>gst_value_get_fraction_denominator ()</h3>
-<pre class="programlisting">gint                gst_value_get_fraction_denominator  (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_value_get_fraction_denominator  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the denominator of the fraction specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1000,9 +1428,17 @@ Gets the denominator of the fraction specified by <em class="parameter"><code>va
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-fraction-multiply"></a><h3>gst_value_fraction_multiply ()</h3>
-<pre class="programlisting">gboolean            gst_value_fraction_multiply         (GValue *product,
-                                                         const GValue *factor1,
-                                                         const GValue *factor2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_fraction_multiply         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *product,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *factor1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *factor2);</pre>
 <p>
 Multiplies the two GValues containing a GstFraction and sets <em class="parameter"><code>product</code></em>
 to the product of the two fractions.</p>
@@ -1038,9 +1474,17 @@ to the product of the two fractions.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-fraction-subtract"></a><h3>gst_value_fraction_subtract ()</h3>
-<pre class="programlisting">gboolean            gst_value_fraction_subtract         (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_fraction_subtract         (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);</pre>
 <p>
 Subtracts the <em class="parameter"><code>subtrahend</code></em> from the <em class="parameter"><code>minuend</code></em> and sets <em class="parameter"><code>dest</code></em> to the result.</p>
 <p>
@@ -1078,7 +1522,9 @@ Subtracts the <em class="parameter"><code>subtrahend</code></em> from the <em cl
 <pre class="programlisting">#define GST_VALUE_HOLDS_FRACTION_RANGE(x)    (G_VALUE_HOLDS(x, gst_fraction_range_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS" title="GST_TYPE_FRACTION_RANGE"><span class="type">GST_TYPE_FRACTION_RANGE</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-FRACTION-RANGE:CAPS" title="GST_TYPE_FRACTION_RANGE"><span class="type">GST_TYPE_FRACTION_RANGE</span></a> value.</p>
 <p>
 
 </p>
@@ -1086,7 +1532,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1097,7 +1545,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_FRACTION_RANGE            gst_fraction_range_get_type ()
 </pre>
 <p>
-a <span class="type">GValue</span> type that represents a GstFraction range</p>
+a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type that represents a GstFraction range</p>
 <p>
 
 </p>
@@ -1105,7 +1555,9 @@ a <span class="type">GValue</span> type that represents a GstFraction range</p>
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstFractionRange
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstFractionRange
 </td>
 </tr></tbody>
 </table></div>
@@ -1113,9 +1565,15 @@ a <span class="type">GValue</span> type that represents a GstFraction range</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-fraction-range"></a><h3>gst_value_set_fraction_range ()</h3>
-<pre class="programlisting">void                gst_value_set_fraction_range        (GValue *value,
-                                                         const GValue *start,
-                                                         const GValue *end);</pre>
+<pre class="programlisting">void                gst_value_set_fraction_range        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *start,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *end);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to the range specified by <em class="parameter"><code>start</code></em> and <em class="parameter"><code>end</code></em>.</p>
 <p>
@@ -1145,7 +1603,11 @@ Sets <em class="parameter"><code>value</code></em> to the range specified by <em
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-fraction-range-min"></a><h3>gst_value_get_fraction_range_min ()</h3>
-<pre class="programlisting">const GValue*       gst_value_get_fraction_range_min    (const GValue *value);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_value_get_fraction_range_min    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the minimum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1161,7 +1623,7 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the minumum of the range
+<td> the minimum of the range
 </td>
 </tr>
 </tbody>
@@ -1170,7 +1632,11 @@ Gets the minimum of the range specified by <em class="parameter"><code>value</co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-fraction-range-max"></a><h3>gst_value_get_fraction_range_max ()</h3>
-<pre class="programlisting">const GValue*       gst_value_get_fraction_range_max    (const GValue *value);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_value_get_fraction_range_max    (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the maximum of the range specified by <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1195,11 +1661,21 @@ Gets the maximum of the range specified by <em class="parameter"><code>value</co
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-fraction-range-full"></a><h3>gst_value_set_fraction_range_full ()</h3>
-<pre class="programlisting">void                gst_value_set_fraction_range_full   (GValue *value,
-                                                         gint numerator_start,
-                                                         gint denominator_start,
-                                                         gint numerator_end,
-                                                         gint denominator_end);</pre>
+<pre class="programlisting">void                gst_value_set_fraction_range_full   (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator_start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator_start,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> numerator_end,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> denominator_end);</pre>
 <p>
 Sets <em class="parameter"><code>value</code></em> to the range specified by <em class="parameter"><code>numerator_start</code></em>/<em class="parameter"><code>denominator_start</code></em>
 and <em class="parameter"><code>numerator_end</code></em>/<em class="parameter"><code>denominator_end</code></em>.</p>
@@ -1243,7 +1719,9 @@ and <em class="parameter"><code>numerator_end</code></em>/<em class="parameter">
 <pre class="programlisting">#define GST_VALUE_HOLDS_DATE(x)         (G_VALUE_HOLDS(x, gst_date_get_type ()))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS" title="GST_TYPE_DATE"><span class="type">GST_TYPE_DATE</span></a> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-DATE:CAPS" title="GST_TYPE_DATE"><span class="type">GST_TYPE_DATE</span></a> value.</p>
 <p>
 
 </p>
@@ -1251,7 +1729,9 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1262,7 +1742,11 @@ Checks if the given <span class="type">GValue</span> contains a <a class="link" 
 <pre class="programlisting">#define GST_TYPE_DATE                    gst_date_get_type ()
 </pre>
 <p>
-a boxed <span class="type">GValue</span> type for <span class="type">GDate</span> that represents a date.</p>
+a boxed <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> type for <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+><span class="type">GDate</span></a> that represents a date.</p>
 <p>
 
 </p>
@@ -1270,7 +1754,9 @@ a boxed <span class="type">GValue</span> type for <span class="type">GDate</span
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <span class="type">GType</span> of GstDate
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a> of GstDate
 </td>
 </tr></tbody>
 </table></div>
@@ -1278,11 +1764,17 @@ a boxed <span class="type">GValue</span> type for <span class="type">GDate</span
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-date"></a><h3>gst_value_set_date ()</h3>
-<pre class="programlisting">void                gst_value_set_date                  (GValue *value,
-                                                         const GDate *date);</pre>
+<pre class="programlisting">void                gst_value_set_date                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a> *date);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to coorespond to <em class="parameter"><code>date</code></em>.  The actual
-<span class="type">GDate</span> structure is copied before it is used.</p>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+><span class="type">GDate</span></a> structure is copied before it is used.</p>
 <p>
 
 </p>
@@ -1305,7 +1797,11 @@ Sets the contents of <em class="parameter"><code>value</code></em> to coorespond
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-date"></a><h3>gst_value_get_date ()</h3>
-<pre class="programlisting">const GDate*        gst_value_get_date                  (const GValue *value);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GDate"
+>GDate</a>*        gst_value_get_date                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1333,7 +1829,9 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_CAPS(x)		(G_VALUE_HOLDS(x, GST_TYPE_CAPS))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_CAPS</span> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <span class="type">GST_TYPE_CAPS</span> value.</p>
 <p>
 
 </p>
@@ -1341,7 +1839,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1349,7 +1849,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-caps"></a><h3>gst_value_set_caps ()</h3>
-<pre class="programlisting">void                gst_value_set_caps                  (GValue *value,
+<pre class="programlisting">void                gst_value_set_caps                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
                                                          const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to <em class="parameter"><code>caps</code></em>.  The actual
@@ -1376,7 +1878,9 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-caps"></a><h3>gst_value_get_caps ()</h3>
-<pre class="programlisting">const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      gst_value_get_caps                  (const GValue *value);</pre>
+<pre class="programlisting">const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      gst_value_get_caps                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1404,7 +1908,9 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_STRUCTURE(x)		(G_VALUE_HOLDS(x, GST_TYPE_STRUCTURE))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_STRUCTURE</span> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <span class="type">GST_TYPE_STRUCTURE</span> value.</p>
 <p>
 
 </p>
@@ -1412,7 +1918,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1422,7 +1930,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-set-structure"></a><h3>gst_value_set_structure ()</h3>
-<pre class="programlisting">void                gst_value_set_structure             (GValue *value,
+<pre class="programlisting">void                gst_value_set_structure             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
                                                          const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);</pre>
 <p>
 Sets the contents of <em class="parameter"><code>value</code></em> to <em class="parameter"><code>structure</code></em>.  The actual</p>
@@ -1450,7 +1960,9 @@ Sets the contents of <em class="parameter"><code>value</code></em> to <em class=
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-get-structure"></a><h3>gst_value_get_structure ()</h3>
-<pre class="programlisting">const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* gst_value_get_structure             (const GValue *value);</pre>
+<pre class="programlisting">const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* gst_value_get_structure             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -1481,7 +1993,9 @@ Gets the contents of <em class="parameter"><code>value</code></em>.</p>
 <pre class="programlisting">#define GST_VALUE_HOLDS_MINI_OBJECT(value)  (G_VALUE_HOLDS(value, GST_TYPE_MINI_OBJECT))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_MINI_OBJECT</span> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <span class="type">GST_TYPE_MINI_OBJECT</span> value.</p>
 <p>
 
 </p>
@@ -1489,7 +2003,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1500,7 +2016,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <pre class="programlisting">#define GST_VALUE_HOLDS_BUFFER(x)       (G_VALUE_HOLDS(x, GST_TYPE_BUFFER))
 </pre>
 <p>
-Checks if the given <span class="type">GValue</span> contains a <span class="type">GST_TYPE_BUFFER</span> value.</p>
+Checks if the given <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> contains a <span class="type">GST_TYPE_BUFFER</span> value.</p>
 <p>
 
 </p>
@@ -1508,7 +2026,9 @@ Checks if the given <span class="type">GValue</span> contains a <span class="typ
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr></tbody>
 </table></div>
@@ -1637,8 +2157,14 @@ determine a order for the two provided values.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueCompareFunc"></a><h3>GstValueCompareFunc ()</h3>
-<pre class="programlisting">gint                (*GstValueCompareFunc)              (const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                (*GstValueCompareFunc)              (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Used together with <a class="link" href="gstreamer-GstValue.html#gst-value-compare" title="gst_value_compare ()"><code class="function">gst_value_compare()</code></a> to compare <span class="type">GValues</span>.</p>
 <p>
@@ -1669,9 +2195,15 @@ or GST_VALUE_UNORDERED
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueSerializeFunc"></a><h3>GstValueSerializeFunc ()</h3>
-<pre class="programlisting">gchar*              (*GstValueSerializeFunc)            (const GValue *value1);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              (*GstValueSerializeFunc)            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1);</pre>
 <p>
-Used by <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()"><code class="function">gst_value_serialize()</code></a> to obtain a non-binary form of the <span class="type">GValue</span>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title="gst_value_serialize ()"><code class="function">gst_value_serialize()</code></a> to obtain a non-binary form of the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>.</p>
 <p>
 
 </p>
@@ -1680,7 +2212,9 @@ Used by <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 <tr>
@@ -1694,10 +2228,18 @@ Used by <a class="link" href="gstreamer-GstValue.html#gst-value-serialize" title
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueDeserializeFunc"></a><h3>GstValueDeserializeFunc ()</h3>
-<pre class="programlisting">gboolean            (*GstValueDeserializeFunc)          (GValue *dest,
-                                                         const gchar *s);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstValueDeserializeFunc)          (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *s);</pre>
 <p>
-Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()"><code class="function">gst_value_deserialize()</code></a> to parse a non-binary form into the <span class="type">GValue</span>.</p>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()"><code class="function">gst_value_deserialize()</code></a> to parse a non-binary form into the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>.</p>
 <p>
 
 </p>
@@ -1706,7 +2248,9 @@ Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" tit
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 </td>
 </tr>
 <tr>
@@ -1716,7 +2260,9 @@ Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" tit
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> for success
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> for success
 </td>
 </tr>
 </tbody>
@@ -1725,11 +2271,21 @@ Used by <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" tit
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueUnionFunc"></a><h3>GstValueUnionFunc ()</h3>
-<pre class="programlisting">gboolean            (*GstValueUnionFunc)                (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstValueUnionFunc)                (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
-Used by <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()"><code class="function">gst_value_union()</code></a> to perform unification for a specific <span class="type">GValue</span>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-union" title="gst_value_union ()"><code class="function">gst_value_union()</code></a> to perform unification for a specific <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 type. Register a new implementation with <a class="link" href="gstreamer-GstValue.html#gst-value-register-union-func" title="gst_value_register_union_func ()"><code class="function">gst_value_register_union_func()</code></a>.</p>
 <p>
 
@@ -1739,22 +2295,30 @@ type. Register a new implementation with <a class="link" href="gstreamer-GstValu
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> for the result
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> for the result
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if a union was successful
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if a union was successful
 </td>
 </tr>
 </tbody>
@@ -1763,11 +2327,21 @@ type. Register a new implementation with <a class="link" href="gstreamer-GstValu
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueIntersectFunc"></a><h3>GstValueIntersectFunc ()</h3>
-<pre class="programlisting">gboolean            (*GstValueIntersectFunc)            (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstValueIntersectFunc)            (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
-Used by <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()"><code class="function">gst_value_intersect()</code></a> to perform intersection for a specific <span class="type">GValue</span>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-intersect" title="gst_value_intersect ()"><code class="function">gst_value_intersect()</code></a> to perform intersection for a specific <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 type. If the intersection is non-empty, the result is
 placed in <em class="parameter"><code>dest</code></em> and TRUE is returned.  If the intersection is
 empty, <em class="parameter"><code>dest</code></em> is unmodified and FALSE is returned.
@@ -1780,22 +2354,30 @@ Register a new implementation with <code class="function">gst_value_register_int
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> for the result
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> for the result
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value1</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value2</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the values can intersect
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the values can intersect
 </td>
 </tr>
 </tbody>
@@ -1804,11 +2386,21 @@ Register a new implementation with <code class="function">gst_value_register_int
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstValueSubtractFunc"></a><h3>GstValueSubtractFunc ()</h3>
-<pre class="programlisting">gboolean            (*GstValueSubtractFunc)             (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstValueSubtractFunc)             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);</pre>
 <p>
-Used by <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()"><code class="function">gst_value_subtract()</code></a> to perform subtraction for a specific <span class="type">GValue</span>
+Used by <a class="link" href="gstreamer-GstValue.html#gst-value-subtract" title="gst_value_subtract ()"><code class="function">gst_value_subtract()</code></a> to perform subtraction for a specific <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a>
 type. Register a new implementation with <a class="link" href="gstreamer-GstValue.html#gst-value-register-subtract-func" title="gst_value_register_subtract_func ()"><code class="function">gst_value_register_subtract_func()</code></a>.</p>
 <p>
 
@@ -1818,22 +2410,30 @@ type. Register a new implementation with <a class="link" href="gstreamer-GstValu
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> for the result
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> for the result
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>minuend</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>subtrahend</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> operand
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> operand
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the subtraction is not empty
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the subtraction is not empty
 </td>
 </tr>
 </tbody>
@@ -1850,7 +2450,9 @@ type. Register a new implementation with <a class="link" href="gstreamer-GstValu
 } GstValueTable;
 </pre>
 <p>
-VTable for the <span class="type">GValue</span> <em class="parameter"><code>type</code></em>.</p>
+VTable for the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> <em class="parameter"><code>type</code></em>.</p>
 <p>
 
 </p>
@@ -1858,8 +2460,12 @@ VTable for the <span class="type">GValue</span> <em class="parameter"><code>type
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GType <em class="structfield"><code>type</code></em>;</span></p></td>
-<td> a <span class="type">GType</span>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> <em class="structfield"><code>type</code></em>;</span></p></td>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+><span class="type">GType</span></a>
 </td>
 </tr>
 <tr>
@@ -1883,7 +2489,11 @@ VTable for the <span class="type">GValue</span> <em class="parameter"><code>type
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-is-fixed"></a><h3>gst_value_is_fixed ()</h3>
-<pre class="programlisting">gboolean            gst_value_is_fixed                  (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_is_fixed                  (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Tests if the given GValue, if available in a GstStructure (or any other
 container) contains a "fixed" (which means: one value) or an "unfixed"
@@ -1897,7 +2507,9 @@ ranges) value.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> the <span class="type">GValue</span> to check
+<td> the <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to check
 </td>
 </tr>
 <tr>
@@ -1930,8 +2542,12 @@ type.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-init-and-copy"></a><h3>gst_value_init_and_copy ()</h3>
-<pre class="programlisting">void                gst_value_init_and_copy             (GValue *dest,
-                                                         const GValue *src);</pre>
+<pre class="programlisting">void                gst_value_init_and_copy             (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *src);</pre>
 <p>
 Initialises the target value to be of the same type as source and then copies
 the contents from source to target.</p>
@@ -1957,7 +2573,11 @@ the contents from source to target.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-serialize"></a><h3>gst_value_serialize ()</h3>
-<pre class="programlisting">gchar*              gst_value_serialize                 (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_value_serialize                 (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 tries to transform the given <em class="parameter"><code>value</code></em> into a string representation that allows
 getting back this string later on using <a class="link" href="gstreamer-GstValue.html#gst-value-deserialize" title="gst_value_deserialize ()"><code class="function">gst_value_deserialize()</code></a>.</p>
@@ -1969,7 +2589,9 @@ getting back this string later on using <a class="link" href="gstreamer-GstValue
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> to serialize
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to serialize
 </td>
 </tr>
 <tr>
@@ -1983,8 +2605,14 @@ getting back this string later on using <a class="link" href="gstreamer-GstValue
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-deserialize"></a><h3>gst_value_deserialize ()</h3>
-<pre class="programlisting">gboolean            gst_value_deserialize               (GValue *dest,
-                                                         const gchar *src);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_deserialize               (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *src);</pre>
 <p>
 Tries to deserialize a string into the type specified by the given GValue.
 If the operation succeeds, TRUE is returned, FALSE otherwise.</p>
@@ -1996,7 +2624,9 @@ If the operation succeeds, TRUE is returned, FALSE otherwise.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> <span class="type">GValue</span> to fill with contents of deserialization
+<td> <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> to fill with contents of deserialization
 </td>
 </tr>
 <tr>
@@ -2015,8 +2645,14 @@ If the operation succeeds, TRUE is returned, FALSE otherwise.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-compare"></a><h3>gst_value_compare ()</h3>
-<pre class="programlisting">gint                gst_value_compare                   (const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_value_compare                   (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Compares <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em>.  If <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> cannot be
 compared, the function returns GST_VALUE_UNORDERED.  Otherwise,
@@ -2050,8 +2686,14 @@ If the values are equal, GST_VALUE_EQUAL is returned.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-can-compare"></a><h3>gst_value_can_compare ()</h3>
-<pre class="programlisting">gboolean            gst_value_can_compare               (const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_can_compare               (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Determines if <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> can be compared.</p>
 <p>
@@ -2081,9 +2723,17 @@ Determines if <em class="parameter"><code>value1</code></em> and <em class="para
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-union"></a><h3>gst_value_union ()</h3>
-<pre class="programlisting">gboolean            gst_value_union                     (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_union                     (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Creates a GValue cooresponding to the union of <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em>.</p>
 <p>
@@ -2109,7 +2759,9 @@ Creates a GValue cooresponding to the union of <em class="parameter"><code>value
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> always returns <code class="literal">TRUE</code>
+<td> always returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>
 </td>
 </tr>
 </tbody>
@@ -2118,8 +2770,14 @@ Creates a GValue cooresponding to the union of <em class="parameter"><code>value
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-can-union"></a><h3>gst_value_can_union ()</h3>
-<pre class="programlisting">gboolean            gst_value_can_union                 (const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_can_union                 (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Determines if <em class="parameter"><code>value1</code></em> and <em class="parameter"><code>value2</code></em> can be non-trivially unioned.
 Any two values can be trivially unioned by adding both of them
@@ -2156,8 +2814,12 @@ be unioned.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-register-union-func"></a><h3>gst_value_register_union_func ()</h3>
-<pre class="programlisting">void                gst_value_register_union_func       (GType type1,
-                                                         GType type2,
+<pre class="programlisting">void                gst_value_register_union_func       (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type1,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type2,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueUnionFunc" title="GstValueUnionFunc ()">GstValueUnionFunc</a> func);</pre>
 <p>
 Registers a union function that can create a union between GValues
@@ -2194,9 +2856,17 @@ be used at the same time as <a class="link" href="gstreamer-GstValue.html#gst-va
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-subtract"></a><h3>gst_value_subtract ()</h3>
-<pre class="programlisting">gboolean            gst_value_subtract                  (GValue *dest,
-                                                         const GValue *minuend,
-                                                         const GValue *subtrahend);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_subtract                  (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);</pre>
 <p>
 Subtracts <em class="parameter"><code>subtrahend</code></em> from <em class="parameter"><code>minuend</code></em> and stores the result in <em class="parameter"><code>dest</code></em>.
 Note that this means subtraction as in sets, not as in mathematics.</p>
@@ -2223,7 +2893,9 @@ Note that this means subtraction as in sets, not as in mathematics.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the subtraction is not empty
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the subtraction is not empty
 </td>
 </tr>
 </tbody>
@@ -2232,8 +2904,14 @@ Note that this means subtraction as in sets, not as in mathematics.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-can-subtract"></a><h3>gst_value_can_subtract ()</h3>
-<pre class="programlisting">gboolean            gst_value_can_subtract              (const GValue *minuend,
-                                                         const GValue *subtrahend);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_can_subtract              (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *minuend,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *subtrahend);</pre>
 <p>
 Checks if it's possible to subtract <em class="parameter"><code>subtrahend</code></em> from <em class="parameter"><code>minuend</code></em>.</p>
 <p>
@@ -2263,8 +2941,12 @@ Checks if it's possible to subtract <em class="parameter"><code>subtrahend</code
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-register-subtract-func"></a><h3>gst_value_register_subtract_func ()</h3>
-<pre class="programlisting">void                gst_value_register_subtract_func    (GType minuend_type,
-                                                         GType subtrahend_type,
+<pre class="programlisting">void                gst_value_register_subtract_func    (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> minuend_type,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> subtrahend_type,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueSubtractFunc" title="GstValueSubtractFunc ()">GstValueSubtractFunc</a> func);</pre>
 <p>
 Registers <em class="parameter"><code>func</code></em> as a function capable of subtracting the values of
@@ -2301,9 +2983,17 @@ cannot be used at the same time as <a class="link" href="gstreamer-GstValue.html
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-intersect"></a><h3>gst_value_intersect ()</h3>
-<pre class="programlisting">gboolean            gst_value_intersect                 (GValue *dest,
-                                                         const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_intersect                 (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *dest,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Calculates the intersection of two values.  If the values have
 a non-empty intersection, the value representing the intersection
@@ -2317,7 +3007,9 @@ not modified.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dest</code></em> :</span></p></td>
-<td> a uninitialized <span class="type">GValue</span> that will hold the calculated
+<td> a uninitialized <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> that will hold the calculated
 intersection value
 </td>
 </tr>
@@ -2342,8 +3034,14 @@ intersection value
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-can-intersect"></a><h3>gst_value_can_intersect ()</h3>
-<pre class="programlisting">gboolean            gst_value_can_intersect             (const GValue *value1,
-                                                         const GValue *value2);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_value_can_intersect             (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value1,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value2);</pre>
 <p>
 Determines if intersecting two values will produce a valid result.
 Two values will produce a valid intersection if they have the same
@@ -2376,8 +3074,12 @@ type, or if there is a method (registered by
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-register-intersect-func"></a><h3>gst_value_register_intersect_func ()</h3>
-<pre class="programlisting">void                gst_value_register_intersect_func   (GType type1,
-                                                         GType type2,
+<pre class="programlisting">void                gst_value_register_intersect_func   (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type1,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Type-Information.html#GType"
+>GType</a> type2,
                                                          <a class="link" href="gstreamer-GstValue.html#GstValueIntersectFunc" title="GstValueIntersectFunc ()">GstValueIntersectFunc</a> func);</pre>
 <p>
 Registers a function that is called to calculate the intersection
@@ -2415,8 +3117,12 @@ cannot be used at the same time as <a class="link" href="gstreamer-GstValue.html
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-array-append-value"></a><h3>gst_value_array_append_value ()</h3>
-<pre class="programlisting">void                gst_value_array_append_value        (GValue *value,
-                                                         const GValue *append_value);</pre>
+<pre class="programlisting">void                gst_value_array_append_value        (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *append_value);</pre>
 <p>
 Appends <em class="parameter"><code>append_value</code></em> to the GstValueArray in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -2427,7 +3133,9 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueArra
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
@@ -2441,7 +3149,11 @@ Appends <em class="parameter"><code>append_value</code></em> to the GstValueArra
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-array-get-size"></a><h3>gst_value_array_get_size ()</h3>
-<pre class="programlisting">guint               gst_value_array_get_size            (const GValue *value);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>               gst_value_array_get_size            (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Gets the number of values contained in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -2452,7 +3164,9 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
@@ -2466,8 +3180,14 @@ Gets the number of values contained in <em class="parameter"><code>value</code><
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-array-get-value"></a><h3>gst_value_array_get_value ()</h3>
-<pre class="programlisting">const GValue*       gst_value_array_get_value           (const GValue *value,
-                                                         guint index);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_value_array_get_value           (const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> index);</pre>
 <p>
 Gets the value that is a member of the array contained in <em class="parameter"><code>value</code></em> and
 has the index <em class="parameter"><code>index</code></em>.</p>
@@ -2479,7 +3199,9 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>
@@ -2498,8 +3220,12 @@ has the index <em class="parameter"><code>index</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-value-array-prepend-value"></a><h3>gst_value_array_prepend_value ()</h3>
-<pre class="programlisting">void                gst_value_array_prepend_value       (GValue *value,
-                                                         const GValue *prepend_value);</pre>
+<pre class="programlisting">void                gst_value_array_prepend_value       (<a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value,
+                                                         const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *prepend_value);</pre>
 <p>
 Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueArray in <em class="parameter"><code>value</code></em>.</p>
 <p>
@@ -2510,7 +3236,9 @@ Prepends <em class="parameter"><code>prepend_value</code></em> to the GstValueAr
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> a <span class="type">GValue</span> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> of type <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><span class="type">GST_TYPE_ARRAY</span></a>
 </td>
 </tr>
 <tr>

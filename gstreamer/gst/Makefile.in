@@ -68,6 +68,7 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/iconv.m4 \
+	$(top_srcdir)/common/m4/intlmacosx.m4 \
 	$(top_srcdir)/common/m4/lib-ld.m4 \
 	$(top_srcdir)/common/m4/lib-link.m4 \
 	$(top_srcdir)/common/m4/lib-prefix.m4 \
@@ -76,11 +77,12 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/ltsugar.m4 \
 	$(top_srcdir)/common/m4/ltversion.m4 \
 	$(top_srcdir)/common/m4/lt~obsolete.m4 \
-	$(top_srcdir)/common/m4/pkg.m4 \
+	$(top_srcdir)/common/m4/nls.m4 $(top_srcdir)/common/m4/pkg.m4 \
+	$(top_srcdir)/common/m4/po.m4 \
 	$(top_srcdir)/common/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = gstconfig.h gstversion.h
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -111,13 +113,10 @@ am__libgstreamer_@GST_MAJORMINOR@_la_SOURCES_DIST = gst.c gstobject.c \
 	gsttaglist.c gsttagsetter.c gsttask.c gsttrace.c gsttypefind.c \
 	gsttypefindfactory.c gsturi.c gstutils.c gstvalue.c gstparse.c \
 	gstregistryxml.c gstregistrybinary.c gstxml.c
-@GST_DISABLE_INDEX_FALSE@am__objects_1 = libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo \
-@GST_DISABLE_INDEX_FALSE@	libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo
-@GST_DISABLE_TRACE_FALSE@am__objects_2 = libgstreamer_@GST_MAJORMINOR@_la-gsttrace.lo
-@GST_DISABLE_URI_FALSE@am__objects_3 = libgstreamer_@GST_MAJORMINOR@_la-gsturi.lo
-@GST_DISABLE_REGISTRY_FALSE@@USE_BINARY_REGISTRY_FALSE@am__objects_4 = libgstreamer_@GST_MAJORMINOR@_la-gstregistryxml.lo
-@GST_DISABLE_REGISTRY_FALSE@@USE_BINARY_REGISTRY_TRUE@am__objects_4 = libgstreamer_@GST_MAJORMINOR@_la-gstregistrybinary.lo
-@GST_DISABLE_LOADSAVE_FALSE@am__objects_5 = libgstreamer_@GST_MAJORMINOR@_la-gstxml.lo
+@GST_DISABLE_TRACE_FALSE@am__objects_1 = libgstreamer_@GST_MAJORMINOR@_la-gsttrace.lo
+@GST_DISABLE_REGISTRY_FALSE@@USE_BINARY_REGISTRY_FALSE@am__objects_2 = libgstreamer_@GST_MAJORMINOR@_la-gstregistryxml.lo
+@GST_DISABLE_REGISTRY_FALSE@@USE_BINARY_REGISTRY_TRUE@am__objects_2 = libgstreamer_@GST_MAJORMINOR@_la-gstregistrybinary.lo
+@GST_DISABLE_LOADSAVE_FALSE@am__objects_3 = libgstreamer_@GST_MAJORMINOR@_la-gstxml.lo
 am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstreamer_@GST_MAJORMINOR@_la-gst.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstobject.lo \
@@ -135,7 +134,9 @@ am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstformat.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.lo \
-	$(am__objects_1) libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstinterface.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstiterator.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstmessage.lo \
@@ -156,17 +157,17 @@ am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstreamer_@GST_MAJORMINOR@_la-gstsystemclock.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gsttaglist.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gsttagsetter.lo \
-	libgstreamer_@GST_MAJORMINOR@_la-gsttask.lo $(am__objects_2) \
+	libgstreamer_@GST_MAJORMINOR@_la-gsttask.lo $(am__objects_1) \
 	libgstreamer_@GST_MAJORMINOR@_la-gsttypefind.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gsttypefindfactory.lo \
-	$(am__objects_3) libgstreamer_@GST_MAJORMINOR@_la-gstutils.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gsturi.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstutils.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstvalue.lo \
-	libgstreamer_@GST_MAJORMINOR@_la-gstparse.lo $(am__objects_4) \
-	$(am__objects_5)
-@GST_DISABLE_ENUMTYPES_FALSE@am__objects_6 = libgstreamer_@GST_MAJORMINOR@_la-gstenumtypes.lo
-am__objects_7 = $(am__objects_6) \
+	libgstreamer_@GST_MAJORMINOR@_la-gstparse.lo $(am__objects_2) \
+	$(am__objects_3)
+am__objects_4 = libgstreamer_@GST_MAJORMINOR@_la-gstenumtypes.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstmarshal.lo
-nodist_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS = $(am__objects_7)
+nodist_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS = $(am__objects_4)
 libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	$(am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS) \
 	$(nodist_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS)
@@ -266,6 +267,7 @@ FLEX_PATH = @FLEX_PATH@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -274,6 +276,7 @@ GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
 GST_AGE = @GST_AGE@
 GST_ALL_CFLAGS = @GST_ALL_CFLAGS@
@@ -284,15 +287,9 @@ GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_ALLOC_TRACE_FALSE = @GST_DISABLE_ALLOC_TRACE_FALSE@
 GST_DISABLE_ALLOC_TRACE_TRUE = @GST_DISABLE_ALLOC_TRACE_TRUE@
-GST_DISABLE_ENUMTYPES_DEFINE = @GST_DISABLE_ENUMTYPES_DEFINE@
-GST_DISABLE_ENUMTYPES_FALSE = @GST_DISABLE_ENUMTYPES_FALSE@
-GST_DISABLE_ENUMTYPES_TRUE = @GST_DISABLE_ENUMTYPES_TRUE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
 GST_DISABLE_GST_DEBUG_FALSE = @GST_DISABLE_GST_DEBUG_FALSE@
 GST_DISABLE_GST_DEBUG_TRUE = @GST_DISABLE_GST_DEBUG_TRUE@
-GST_DISABLE_INDEX_DEFINE = @GST_DISABLE_INDEX_DEFINE@
-GST_DISABLE_INDEX_FALSE = @GST_DISABLE_INDEX_FALSE@
-GST_DISABLE_INDEX_TRUE = @GST_DISABLE_INDEX_TRUE@
 GST_DISABLE_LOADSAVE_DEFINE = @GST_DISABLE_LOADSAVE_DEFINE@
 GST_DISABLE_LOADSAVE_FALSE = @GST_DISABLE_LOADSAVE_FALSE@
 GST_DISABLE_LOADSAVE_TRUE = @GST_DISABLE_LOADSAVE_TRUE@
@@ -314,9 +311,6 @@ GST_DISABLE_REGISTRY_TRUE = @GST_DISABLE_REGISTRY_TRUE@
 GST_DISABLE_TRACE_DEFINE = @GST_DISABLE_TRACE_DEFINE@
 GST_DISABLE_TRACE_FALSE = @GST_DISABLE_TRACE_FALSE@
 GST_DISABLE_TRACE_TRUE = @GST_DISABLE_TRACE_TRUE@
-GST_DISABLE_URI_DEFINE = @GST_DISABLE_URI_DEFINE@
-GST_DISABLE_URI_FALSE = @GST_DISABLE_URI_FALSE@
-GST_DISABLE_URI_TRUE = @GST_DISABLE_URI_TRUE@
 GST_DISABLE_XML_DEFINE = @GST_DISABLE_XML_DEFINE@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
@@ -328,7 +322,6 @@ GST_HAVE_POSIX_TIMERS_DEFINE = @GST_HAVE_POSIX_TIMERS_DEFINE@
 GST_HAVE_POSIX_TIMERS_FALSE = @GST_HAVE_POSIX_TIMERS_FALSE@
 GST_HAVE_POSIX_TIMERS_TRUE = @GST_HAVE_POSIX_TIMERS_TRUE@
 GST_HAVE_UNALIGNED_ACCESS_DEFINE = @GST_HAVE_UNALIGNED_ACCESS_DEFINE@
-GST_INDEX_DOC_TYPES = @GST_INDEX_DOC_TYPES@
 GST_LEVEL_DEFAULT = @GST_LEVEL_DEFAULT@
 GST_LIBVERSION = @GST_LIBVERSION@
 GST_LIB_LDFLAGS = @GST_LIB_LDFLAGS@
@@ -348,6 +341,7 @@ GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE = @GST_PRINTF_EXTENSION_SEGMENT_FORMA
 GST_REGISTRY_DOC_TYPES = @GST_REGISTRY_DOC_TYPES@
 GST_REVISION = @GST_REVISION@
 GST_USING_PRINTF_EXTENSION_DEFINE = @GST_USING_PRINTF_EXTENSION_DEFINE@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 HAVE_CHECK_FALSE = @HAVE_CHECK_FALSE@
@@ -408,6 +402,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBDIR = @LIBDIR@
@@ -428,8 +423,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -471,6 +466,8 @@ VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XML_CATALOG = @XML_CATALOG@
 XML_CFLAGS = @XML_CFLAGS@
 XML_LIBS = @XML_LIBS@
@@ -539,14 +536,8 @@ lib_LTLIBRARIES = libgstreamer-@GST_MAJORMINOR@.la
 @GST_DISABLE_PARSE_TRUE@GST_PARSE_LA = 
 @GST_DISABLE_TRACE_FALSE@GST_TRACE_SRC = gsttrace.c
 @GST_DISABLE_TRACE_TRUE@GST_TRACE_SRC = 
-@GST_DISABLE_ENUMTYPES_FALSE@GST_ENUMTYPES_SRC = gstenumtypes.c
-@GST_DISABLE_ENUMTYPES_TRUE@GST_ENUMTYPES_SRC = 
-@GST_DISABLE_INDEX_FALSE@GST_INDEX_SRC = gstindex.c gstindexfactory.c
-@GST_DISABLE_INDEX_TRUE@GST_INDEX_SRC = 
 @GST_DISABLE_PLUGIN_FALSE@GST_PLUGIN_SRC = gstplugin.c
 @GST_DISABLE_PLUGIN_TRUE@GST_PLUGIN_SRC = 
-@GST_DISABLE_URI_FALSE@GST_URI_SRC = gsturi.c
-@GST_DISABLE_URI_TRUE@GST_URI_SRC = 
 SUBDIRS = $(SUBDIRS_PARSE)
 DIST_SUBDIRS = parse
 
@@ -554,7 +545,7 @@ DIST_SUBDIRS = parse
 # distinction clear
 built_header_configure = gstconfig.h gstversion.h
 built_header_make = gstenumtypes.h gstmarshal.h
-built_source_make = $(GST_ENUMTYPES_SRC) gstmarshal.c
+built_source_make = gstenumtypes.c gstmarshal.c
 EXTRA_libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstmarshal.list gsttrace.c gstxml.c \
 	gstregistryxml.c gstregistrybinary.c
@@ -579,7 +570,8 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstfilter.c		\
 	gstformat.c		\
 	gstghostpad.c		\
-	$(GST_INDEX_SRC)	\
+	gstindex.c 		\
+	gstindexfactory.c 	\
 	gstinfo.c		\
 	gstinterface.c		\
 	gstiterator.c		\
@@ -605,7 +597,7 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	$(GST_TRACE_SRC)	\
 	gsttypefind.c		\
 	gsttypefindfactory.c	\
-	$(GST_URI_SRC)		\
+	gsturi.c		\
 	gstutils.c		\
 	gstvalue.c		\
 	gstparse.c		\
@@ -628,7 +620,7 @@ CLEANFILES = $(built_header_make) $(built_source_make) $(as_dll_cleanfiles) *.gc
 DISTCLEANFILES = $(built_header_configure)
 libgstreamer_@GST_MAJORMINOR@_la_CFLAGS = \
 	-D_GNU_SOURCE					\
-	-DGST_EXPORTS                   \
+	-DGST_EXPORTS					\
 	-DG_LOG_DOMAIN=g_log_domain_gstreamer 		\
 	-DGST_MAJORMINOR=\""$(GST_MAJORMINOR)"\" 	\
 	-DGST_DISABLE_DEPRECATED			\
@@ -638,7 +630,7 @@ libgstreamer_@GST_MAJORMINOR@_la_CFLAGS = \
 libgstreamer_@GST_MAJORMINOR@_la_LIBADD = \
 	$(GST_PARSE_LA)					\
 	$(GST_ALL_LIBS)					\
-	$(WIN32_LIBS)                   \
+	$(WIN32_LIBS)					\
 	$(XML_LIBS)
 
 libgstreamer_@GST_MAJORMINOR@_la_LDFLAGS = \

@@ -370,13 +370,11 @@ load_feature (xmlTextReaderPtr reader)
             g_free (s);
           }
         }
-#ifndef GST_DISABLE_INDEX
       } else if (GST_IS_INDEX_FACTORY (feature)) {
         GstIndexFactory *factory = GST_INDEX_FACTORY (feature);
 
         if (g_str_equal (tag, "longdesc"))
           read_string (reader, &factory->longdesc, TRUE);
-#endif
       }
     }
   }
@@ -516,9 +514,7 @@ gst_registry_xml_read_cache (GstRegistry * registry, const char *location)
   /* make sure these types exist */
   GST_TYPE_ELEMENT_FACTORY;
   GST_TYPE_TYPE_FIND_FACTORY;
-#ifndef GST_DISABLE_INDEX
   GST_TYPE_INDEX_FACTORY;
-#endif
 
   timer = g_timer_new ();
 
@@ -774,12 +770,10 @@ gst_registry_xml_save_feature (GstRegistry * registry,
         i++;
       }
     }
-#ifndef GST_DISABLE_INDEX
   } else if (GST_IS_INDEX_FACTORY (feature)) {
     if (!gst_registry_save_escaped (registry, "  ", "longdesc",
             GST_INDEX_FACTORY (feature)->longdesc))
       return FALSE;
-#endif
   }
   return TRUE;
 }
@@ -790,6 +784,10 @@ gst_registry_xml_save_plugin (GstRegistry * registry, GstPlugin * plugin)
   GList *list;
   GList *walk;
   char s[100];
+
+  if (plugin->priv->deps != NULL) {
+    GST_WARNING ("XML registry does not support external plugin dependencies");
+  }
 
   if (!gst_registry_save_escaped (registry, " ", "name", plugin->desc.name))
     return FALSE;
@@ -927,7 +925,7 @@ gst_registry_xml_write_cache (GstRegistry * registry, const char *location)
 
   if (g_file_test (tmp_location, G_FILE_TEST_EXISTS)) {
 #ifdef WIN32
-    g_remove (location);
+    g_unlink (location);
 #endif
     if (g_rename (tmp_location, location) < 0)
       goto rename_failed;
@@ -947,7 +945,7 @@ fail:
   }
 fail_after_close:
   {
-    g_remove (tmp_location);
+    g_unlink (tmp_location);
     g_free (tmp_location);
     return FALSE;
   }

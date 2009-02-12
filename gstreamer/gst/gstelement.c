@@ -528,7 +528,6 @@ gst_element_get_base_time (GstElement * element)
   return result;
 }
 
-#ifndef GST_DISABLE_INDEX
 /**
  * gst_element_is_indexable:
  * @element: a #GstElement.
@@ -601,7 +600,6 @@ gst_element_get_index (GstElement * element)
 
   return result;
 }
-#endif
 
 /**
  * gst_element_add_pad:
@@ -1643,7 +1641,7 @@ void gst_element_message_full
   GstMessage *message = NULL;
 
   /* checks */
-  GST_DEBUG_OBJECT (element, "start");
+  GST_CAT_DEBUG_OBJECT (GST_CAT_MESSAGE, element, "start");
   g_return_if_fail (GST_IS_ELEMENT (element));
   g_return_if_fail ((type == GST_MESSAGE_ERROR) ||
       (type == GST_MESSAGE_WARNING) || (type == GST_MESSAGE_INFO));
@@ -1842,6 +1840,7 @@ failed:
     GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
         "syncing state failed (%s)",
         gst_element_state_change_return_get_name (ret));
+    gst_object_unref (parent);
     return FALSE;
   }
 }
@@ -2611,17 +2610,20 @@ gst_element_pads_activate (GstElement * element, gboolean active)
   /* ERRORS */
 src_failed:
   {
-    GST_DEBUG_OBJECT (element, "source pads_activate failed");
+    GST_CAT_DEBUG_OBJECT (GST_CAT_ELEMENT_PADS, element,
+        "source pads_activate failed");
     return FALSE;
   }
 sink_failed:
   {
-    GST_DEBUG_OBJECT (element, "sink pads_activate failed");
+    GST_CAT_DEBUG_OBJECT (GST_CAT_ELEMENT_PADS, element,
+        "sink pads_activate failed");
     return FALSE;
   }
 caps_failed:
   {
-    GST_DEBUG_OBJECT (element, "failed to clear caps on pads");
+    GST_CAT_DEBUG_OBJECT (GST_CAT_ELEMENT_PADS, element,
+        "failed to clear caps on pads");
     return FALSE;
   }
 }

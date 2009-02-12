@@ -141,6 +141,19 @@ typedef struct _GstBufferClass GstBufferClass;
  * (i.e. when its refcount becomes zero).
  */
 #define GST_BUFFER_MALLOCDATA(buf)		(GST_BUFFER_CAST(buf)->malloc_data)
+/**
+ * GST_BUFFER_FREE_FUNC:
+ * @buf: a #GstBuffer.
+ *
+ * A pointer to a function that will be called on the buffer's malloc_data when
+ * this buffer is finalized. Defaults to g_free().
+ *
+ * Note that the free function only affects the buffer's malloc_data; if the
+ * buffer's malloc_data is %NULL, the function will not be called.
+ *
+ * Since: 0.10.22
+ */
+#define GST_BUFFER_FREE_FUNC(buf)		(GST_BUFFER_CAST(buf)->free_func)
 
 /**
  * GST_BUFFER_OFFSET_NONE:
@@ -234,7 +247,9 @@ typedef enum {
  * @offset_end: the last offset contained in this buffer. It has the same 
  *     format as @offset.
  * @malloc_data: a pointer to the allocated memory associated with this buffer.
- *     When the buffer is freed, this data will freed with g_free().
+ *     When the buffer is freed, this data will freed with @free_func.
+ * @free_func: a custom function that will be called with @malloc_data, defaults
+ *     to g_free(). Since 0.10.22.
  *
  * The structure of a #GstBuffer. Use the associated macros to access the public
  * variables.
@@ -260,8 +275,10 @@ struct _GstBuffer {
 
   guint8                *malloc_data;
 
+  GFreeFunc              free_func;
+
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstBufferClass {

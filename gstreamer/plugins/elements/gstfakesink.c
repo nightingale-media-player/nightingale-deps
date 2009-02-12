@@ -21,7 +21,6 @@
  */
 /**
  * SECTION:element-fakesink
- * @short_description: black hole for data
  * @see_also: #GstFakeSrc
  *
  * Dummy sink that swallows everything.
@@ -371,7 +370,11 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
     g_object_notify (G_OBJECT (sink), "last_message");
   }
 
-  return TRUE;
+  if (GST_BASE_SINK_CLASS (parent_class)->event) {
+    return GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
+  } else {
+    return TRUE;
+  }
 }
 
 static GstFlowReturn

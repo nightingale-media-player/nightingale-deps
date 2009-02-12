@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -54,6 +54,7 @@ enum                <a class="link" href="gstreamer-GstBuffer.html#GstBufferCopy
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-FLAG-UNSET:CAPS" title="GST_BUFFER_FLAG_UNSET()">GST_BUFFER_FLAG_UNSET</a>               (buf,flag)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-DATA:CAPS" title="GST_BUFFER_DATA()">GST_BUFFER_DATA</a>                     (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-MALLOCDATA:CAPS" title="GST_BUFFER_MALLOCDATA()">GST_BUFFER_MALLOCDATA</a>               (buf)
+#define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-FREE-FUNC:CAPS" title="GST_BUFFER_FREE_FUNC()">GST_BUFFER_FREE_FUNC</a>                (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-SIZE:CAPS" title="GST_BUFFER_SIZE()">GST_BUFFER_SIZE</a>                     (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-TIMESTAMP:CAPS" title="GST_BUFFER_TIMESTAMP()">GST_BUFFER_TIMESTAMP</a>                (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-DURATION:CAPS" title="GST_BUFFER_DURATION()">GST_BUFFER_DURATION</a>                 (buf)
@@ -68,8 +69,12 @@ enum                <a class="link" href="gstreamer-GstBuffer.html#GstBufferCopy
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-IS-DISCONT:CAPS" title="GST_BUFFER_IS_DISCONT()">GST_BUFFER_IS_DISCONT</a>               (buffer)
 #define             <a class="link" href="gstreamer-GstBuffer.html#GST-BUFFER-TRACE-NAME:CAPS" title="GST_BUFFER_TRACE_NAME">GST_BUFFER_TRACE_NAME</a>
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-new" title="gst_buffer_new ()">gst_buffer_new</a>                      (void);
-<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-new-and-alloc" title="gst_buffer_new_and_alloc ()">gst_buffer_new_and_alloc</a>            (guint size);
-<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-try-new-and-alloc" title="gst_buffer_try_new_and_alloc ()">gst_buffer_try_new_and_alloc</a>        (guint size);
+<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-new-and-alloc" title="gst_buffer_new_and_alloc ()">gst_buffer_new_and_alloc</a>            (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-try-new-and-alloc" title="gst_buffer_try_new_and_alloc ()">gst_buffer_try_new_and_alloc</a>        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-ref" title="gst_buffer_ref ()">gst_buffer_ref</a>                      (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);
 #define             <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-unref" title="gst_buffer_unref()">gst_buffer_unref</a>                    (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-set-data" title="gst_buffer_set_data()">gst_buffer_set_data</a>                 (buf, data, size)
@@ -80,21 +85,33 @@ void                <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-co
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBufferCopyFlags" title="enum GstBufferCopyFlags">GstBufferCopyFlags</a> flags);
 #define             <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-is-writable" title="gst_buffer_is_writable()">gst_buffer_is_writable</a>              (buf)
 #define             <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-make-writable" title="gst_buffer_make_writable()">gst_buffer_make_writable</a>            (buf)
-gboolean            <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-is-metadata-writable" title="gst_buffer_is_metadata_writable ()">gst_buffer_is_metadata_writable</a>     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-is-metadata-writable" title="gst_buffer_is_metadata_writable ()">gst_buffer_is_metadata_writable</a>     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-make-metadata-writable" title="gst_buffer_make_metadata_writable ()">gst_buffer_make_metadata_writable</a>   (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);
 #define             <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-replace" title="gst_buffer_replace()">gst_buffer_replace</a>                  (obuf,nbuf)
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-get-caps" title="gst_buffer_get_caps ()">gst_buffer_get_caps</a>                 (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buffer);
 void                <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-set-caps" title="gst_buffer_set_caps ()">gst_buffer_set_caps</a>                 (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buffer,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-create-sub" title="gst_buffer_create_sub ()">gst_buffer_create_sub</a>               (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *parent,
-                                                         guint offset,
-                                                         guint size);
-gboolean            <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-is-span-fast" title="gst_buffer_is_span_fast ()">gst_buffer_is_span_fast</a>             (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-is-span-fast" title="gst_buffer_is_span_fast ()">gst_buffer_is_span_fast</a>             (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf2);
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-span" title="gst_buffer_span ()">gst_buffer_span</a>                     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
-                                                         guint32 offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> offset,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf2,
-                                                         guint32 len);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> len);
 void                <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-stamp" title="gst_buffer_stamp ()">gst_buffer_stamp</a>                    (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *dest,
                                                          const <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *src);
 <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-join" title="gst_buffer_join ()">gst_buffer_join</a>                     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
@@ -119,7 +136,7 @@ buffer data.  The following example creates a buffer that can hold a given
 video frame with a given width, height and bits per plane.
 </p>
 <div class="example">
-<a name="id2588529"></a><p class="title"><b>Example 3. Creating a buffer for a video frame</b></p>
+<a name="id2910517"></a><p class="title"><b>Example 3. Creating a buffer for a video frame</b></p>
 <div class="example-contents"><pre class="programlisting">
   GstBuffer *buffer;
   gint size, width, height, bpp;
@@ -238,6 +255,8 @@ Last reviewed on August 11th, 2006 (0.10.10)</p>
   guint64		 offset_end;
 
   guint8                *malloc_data;
+
+  GFreeFunc              free_func;
 } GstBuffer;
 </pre>
 <p>
@@ -255,12 +274,16 @@ variables.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint8 *<em class="structfield"><code>data</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *<em class="structfield"><code>data</code></em>;</span></p></td>
 <td> pointer to the buffer data
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint <em class="structfield"><code>size</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> <em class="structfield"><code>size</code></em>;</span></p></td>
 <td> size of buffer data
 </td>
 </tr>
@@ -282,7 +305,9 @@ variables.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint64 <em class="structfield"><code>offset</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> <em class="structfield"><code>offset</code></em>;</span></p></td>
 <td> a media specific offset for the buffer data. 
     For video frames, this is the frame number of this buffer.
     For audio samples, this is the offset of the first sample in this buffer.
@@ -291,15 +316,29 @@ variables.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint64 <em class="structfield"><code>offset_end</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> <em class="structfield"><code>offset_end</code></em>;</span></p></td>
 <td> the last offset contained in this buffer. It has the same 
     format as <em class="parameter"><code>offset</code></em>.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint8 *<em class="structfield"><code>malloc_data</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *<em class="structfield"><code>malloc_data</code></em>;</span></p></td>
 <td> a pointer to the allocated memory associated with this buffer.
-    When the buffer is freed, this data will freed with <code class="function">g_free()</code>.
+    When the buffer is freed, this data will freed with <em class="parameter"><code>free_func</code></em>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Miscellaneous-Utility-Functions.html#GFreeFunc"
+>GFreeFunc</a> <em class="structfield"><code>free_func</code></em>;</span></p></td>
+<td> a custom function that will be called with <em class="parameter"><code>malloc_data</code></em>, defaults
+    to <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a>. Since 0.10.22.
 </td>
 </tr>
 </tbody>
@@ -532,7 +571,9 @@ A pointer to the data element of this buffer.</p>
 <pre class="programlisting">#define GST_BUFFER_MALLOCDATA(buf)		(GST_BUFFER_CAST(buf)-&gt;malloc_data)
 </pre>
 <p>
-A pointer to any data allocated for this buffer using <code class="function">g_malloc()</code>. If this is 
+A pointer to any data allocated for this buffer using <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-malloc"
+><code class="function">g_malloc()</code></a>. If this is 
 non-NULL, this memory will be freed at the end of the buffer's lifecycle 
 (i.e. when its refcount becomes zero).</p>
 <p>
@@ -546,6 +587,36 @@ non-NULL, this memory will be freed at the end of the buffer's lifecycle
 </td>
 </tr></tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GST-BUFFER-FREE-FUNC:CAPS"></a><h3>GST_BUFFER_FREE_FUNC()</h3>
+<pre class="programlisting">#define GST_BUFFER_FREE_FUNC(buf)		(GST_BUFFER_CAST(buf)-&gt;free_func)
+</pre>
+<p>
+A pointer to a function that will be called on the buffer's malloc_data when
+this buffer is finalized. Defaults to <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a>.
+</p>
+<p>
+Note that the free function only affects the buffer's malloc_data; if the
+buffer's malloc_data is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, the function will not be called.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>buf</code></em> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>.
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -806,7 +877,9 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-buffer-new-and-alloc"></a><h3>gst_buffer_new_and_alloc ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_new_and_alloc            (guint size);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_new_and_alloc            (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Creates a newly allocated buffer with data of the given size.
 The buffer memory is not cleared. If the requested amount of
@@ -842,7 +915,9 @@ MT safe.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-buffer-try-new-and-alloc"></a><h3>gst_buffer_try_new_and_alloc ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_try_new_and_alloc        (guint size);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_try_new_and_alloc        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Tries to create a newly allocated buffer with data of the given size. If
 the requested amount of memory can't be allocated, NULL will be returned.
@@ -954,12 +1029,16 @@ No checks are done on the data or size arguments passed.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> The data (a <span class="type">guint8</span> *) to set on the buffer.
+<td> The data (a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+><span class="type">guint8</span></a> *) to set on the buffer.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td> The size (in bytes, as a <span class="type">guint</span>) of the data being set.
+<td> The size (in bytes, as a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+><span class="type">guint</span></a>) of the data being set.
 </td>
 </tr>
 </tbody>
@@ -1088,7 +1167,9 @@ otherwise be made using <a class="link" href="gstreamer-GstBuffer.html#gst-buffe
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-buffer-is-metadata-writable"></a><h3>gst_buffer_is_metadata_writable ()</h3>
-<pre class="programlisting">gboolean            gst_buffer_is_metadata_writable     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_buffer_is_metadata_writable     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf);</pre>
 <p>
 Similar to gst_buffer_is_writable, but this only ensures that the
 refcount of the buffer is 1, indicating that the caller is the sole
@@ -1235,8 +1316,12 @@ unreffed.</p>
 <div class="refsect2" lang="en">
 <a name="gst-buffer-create-sub"></a><h3>gst_buffer_create_sub ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_create_sub               (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *parent,
-                                                         guint offset,
-                                                         guint size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size);</pre>
 <p>
 Creates a sub-buffer from <em class="parameter"><code>parent</code></em> at <em class="parameter"><code>offset</code></em> and <em class="parameter"><code>size</code></em>.
 This sub-buffer uses the actual memory space of the parent buffer.
@@ -1283,7 +1368,9 @@ Returns NULL if the arguments were invalid.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-buffer-is-span-fast"></a><h3>gst_buffer_is_span_fast ()</h3>
-<pre class="programlisting">gboolean            gst_buffer_is_span_fast             (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_buffer_is_span_fast             (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf2);</pre>
 <p>
 Determines whether a <a class="link" href="gstreamer-GstBuffer.html#gst-buffer-span" title="gst_buffer_span ()"><code class="function">gst_buffer_span()</code></a> can be done without copying
@@ -1321,9 +1408,13 @@ FALSE if a copy would be required.
 <div class="refsect2" lang="en">
 <a name="gst-buffer-span"></a><h3>gst_buffer_span ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a>*          gst_buffer_span                     (<a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf1,
-                                                         guint32 offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> offset,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buf2,
-                                                         guint32 len);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> len);</pre>
 <p>
 Creates a new buffer that consists of part of buf1 and buf2.
 Logically, buf1 and buf2 are concatenated into a single larger
@@ -1421,7 +1512,13 @@ buffers, and unrefs the original source buffers.
 </p>
 <p>
 If the buffers point to contiguous areas of memory, the buffer
-is created without copying the data.</p>
+is created without copying the data.
+</p>
+<p>
+This is a convenience function for C programmers. See also 
+<a class="link" href="gstreamer-GstBuffer.html#gst-buffer-merge" title="gst_buffer_merge ()"><code class="function">gst_buffer_merge()</code></a>, which does the same thing without 
+unreffing the input parameters. Language bindings without 
+explicit reference counting should not wrap this function.</p>
 <p>
 
 </p>

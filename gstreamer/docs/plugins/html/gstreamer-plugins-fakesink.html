@@ -37,7 +37,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-plugins-fakesink.top_of_page"></a>fakesink</span></h2>
-<p>fakesink — black hole for data</p>
+<p>fakesink — Black hole for data</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -51,7 +51,9 @@ enum                <a class="link" href="gstreamer-plugins-fakesink.html#GstFak
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-fakesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -61,14 +63,28 @@ enum                <a class="link" href="gstreamer-plugins-fakesink.html#GstFak
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-fakesink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull" title='The "can-activate-pull" property'>can-activate-pull</a>"        gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-push" title='The "can-activate-push" property'>can-activate-push</a>"        gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--dump" title='The "dump" property'>dump</a>"                     gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--last-message" title='The "last-message" property'>last-message</a>"             gchar*                : Read
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          gboolean              : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull" title='The "can-activate-pull" property'>can-activate-pull</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-push" title='The "can-activate-push" property'>can-activate-push</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--dump" title='The "dump" property'>dump</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--last-message" title='The "last-message" property'>last-message</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--signal-handoffs" title='The "signal-handoffs" property'>signal-handoffs</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--silent" title='The "silent" property'>silent</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
   "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--state-error" title='The "state-error" property'>state-error</a>"              <a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSinkStateError" title="enum GstFakeSinkStateError">GstFakeSinkStateError</a>  : Read / Write
-  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers" title='The "num-buffers" property'>num-buffers</a>"              gint                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers" title='The "num-buffers" property'>num-buffers</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -82,16 +98,18 @@ enum                <a class="link" href="gstreamer-plugins-fakesink.html#GstFak
 <a name="gstreamer-plugins-fakesink.description"></a><h2>Description</h2>
 <p>
 Dummy sink that swallows everything.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2606417"></a><h3>Element Information</h3>
+<a name="id2696821"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
-        </td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -103,6 +121,10 @@ Dummy sink that swallows everything.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2656825"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -124,6 +146,7 @@ Dummy sink that swallows everything.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
@@ -204,42 +227,54 @@ Possible state change errors for the state-error property.</p>
 <a name="gstreamer-plugins-fakesink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--can-activate-pull"></a><h3>The <code class="literal">"can-activate-pull"</code> property</h3>
-<pre class="programlisting">  "can-activate-pull"        gboolean              : Read / Write</pre>
+<pre class="programlisting">  "can-activate-pull"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Can activate in pull mode.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--can-activate-push"></a><h3>The <code class="literal">"can-activate-push"</code> property</h3>
-<pre class="programlisting">  "can-activate-push"        gboolean              : Read / Write</pre>
+<pre class="programlisting">  "can-activate-push"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Can activate in push mode.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--dump"></a><h3>The <code class="literal">"dump"</code> property</h3>
-<pre class="programlisting">  "dump"                     gboolean              : Read / Write</pre>
+<pre class="programlisting">  "dump"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Dump buffer contents to stdout.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
-<pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<pre class="programlisting">  "last-message"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
 <p>The message describing current status.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--signal-handoffs"></a><h3>The <code class="literal">"signal-handoffs"</code> property</h3>
-<pre class="programlisting">  "signal-handoffs"          gboolean              : Read / Write</pre>
+<pre class="programlisting">  "signal-handoffs"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Send a signal before unreffing the buffer.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
-<pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<pre class="programlisting">  "silent"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Don't produce last_message events.</p>
 <p>Default value: FALSE</p>
 </div>
@@ -253,7 +288,9 @@ Possible state change errors for the state-error property.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstFakeSink--num-buffers"></a><h3>The <code class="literal">"num-buffers"</code> property</h3>
-<pre class="programlisting">  "num-buffers"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "num-buffers"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Number of buffers to accept going EOS.</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
@@ -266,7 +303,9 @@ Possible state change errors for the state-error property.</p>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
                                                         GstBuffer   *buffer,
                                                         GstPad      *pad,
-                                                        gpointer     user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
 <p>
 This signal gets emitted before unreffing the buffer.</p>
 <p>
@@ -303,7 +342,9 @@ This signal gets emitted before unreffing the buffer.</p>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gstreamer-plugins-fakesink.html#GstFakeSink">GstFakeSink</a> *fakesink,
                                                         GstBuffer   *buffer,
                                                         GstPad      *pad,
-                                                        gpointer     user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
 <p>
 This signal gets emitted before unreffing the buffer.</p>
 <p>

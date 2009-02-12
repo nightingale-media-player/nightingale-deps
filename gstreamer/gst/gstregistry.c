@@ -27,7 +27,6 @@
  * @see_also: #GstPlugin, #GstPluginFeature
  *
  * One registry holds the metadata of a set of plugins.
- * All registries build the #GstRegistryPool.
  *
  * <emphasis role="bold">Design:</emphasis>
  *
@@ -101,6 +100,8 @@
 #include <stdio.h>
 #include <string.h>
 
+/* For g_stat () */
+#include <glib/gstdio.h>
 
 #include "gstinfo.h"
 #include "gstregistry.h"
@@ -809,9 +810,17 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
     return FALSE;
 
   while ((dirent = g_dir_read_name (dir))) {
-    filename = g_strjoin ("/", path, dirent, NULL);
+    struct stat file_status;
 
-    if (g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+    filename = g_strjoin ("/", path, dirent, NULL);
+    if (g_stat (filename, &file_status) < 0) {
+      /* Plugin will be removed from cache after the scan completes if it
+       * is still marked 'cached' */
+      g_free (filename);
+      continue;
+    }
+
+    if (file_status.st_mode & S_IFDIR) {
       /* skip the .debug directory, these contain elf files that are not
        * useful or worse, can crash dlopen () */
       if (g_str_equal (dirent, ".debug")) {
@@ -832,7 +841,7 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
       g_free (filename);
       continue;
     }
-    if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
+    if (!(file_status.st_mode & S_IFREG)) {
       GST_LOG_OBJECT (registry, "%s is not a regular file, ignoring", filename);
       g_free (filename);
       continue;
@@ -854,15 +863,8 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
      * was already seen by the registry, we ignore it */
     plugin = gst_registry_lookup (registry, filename);
     if (plugin) {
-      struct stat file_status;
+      gboolean env_vars_changed, deps_changed = FALSE;
 
-      if (stat (filename, &file_status)) {
-        /* Plugin will be removed from cache after the scan completes if it
-         * is still marked 'cached' */
-        g_free (filename);
-        gst_object_unref (plugin);
-        continue;
-      }
       if (plugin->registered) {
         GST_DEBUG_OBJECT (registry,
             "plugin already registered from path \"%s\"",
@@ -871,8 +873,12 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
         gst_object_unref (plugin);
         continue;
       }
+
+      env_vars_changed = _priv_plugin_deps_env_vars_changed (plugin);
+
       if (plugin->file_mtime == file_status.st_mtime &&
-          plugin->file_size == file_status.st_size) {
+          plugin->file_size == file_status.st_size && !env_vars_changed &&
+          !(deps_changed = _priv_plugin_deps_files_changed (plugin))) {
         GST_LOG_OBJECT (registry, "file %s cached", filename);
         plugin->flags &= ~GST_PLUGIN_FLAG_CACHED;
         GST_LOG_OBJECT (registry, "marking plugin %p as registered as %s",
@@ -888,9 +894,11 @@ gst_registry_scan_path_level (GstRegistry * registry, const gchar * path,
       } else {
         GST_INFO_OBJECT (registry, "cached info for %s is stale", filename);
         GST_DEBUG_OBJECT (registry, "mtime %ld != %ld or size %"
-            G_GINT64_FORMAT " != %"
-            G_GINT64_FORMAT, plugin->file_mtime, file_status.st_mtime,
-            (gint64) plugin->file_size, (gint64) file_status.st_size);
+            G_GINT64_FORMAT " != %" G_GINT64_FORMAT " or external dependency "
+            "env_vars changed: %d or external dependencies changed: %d",
+            plugin->file_mtime, file_status.st_mtime,
+            (gint64) plugin->file_size, (gint64) file_status.st_size,
+            env_vars_changed, deps_changed);
         gst_registry_remove_plugin (gst_registry_get_default (), plugin);
         /* We don't use a GError here because a failure to load some shared 
          * objects as plugins is normal (particularly in the uninstalled case)

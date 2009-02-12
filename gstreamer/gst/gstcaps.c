@@ -91,6 +91,12 @@
 #define IS_WRITABLE(caps) \
   (g_atomic_int_get (&(caps)->refcount) == 1)
 
+/* quick way to get a caps structure at an index without doing a type or array
+ * length check */
+#define gst_caps_get_structure_unchecked(caps, index) \
+     ((GstStructure *)g_ptr_array_index ((caps)->structs, (index)))
+
+
 /* lock to protect multiple invocations of static caps to caps conversion */
 G_LOCK_DEFINE_STATIC (static_caps_lock);
 
@@ -272,7 +278,7 @@ gst_caps_copy (const GstCaps * caps)
   newcaps->flags = caps->flags;
 
   for (i = 0; i < caps->structs->len; i++) {
-    structure = gst_caps_get_structure (caps, i);
+    structure = gst_caps_get_structure_unchecked (caps, i);
     gst_caps_append_structure (newcaps, gst_structure_copy (structure));
   }
 
@@ -289,7 +295,7 @@ _gst_caps_free (GstCaps * caps)
    * don't bother testing. */
 
   for (i = 0; i < caps->structs->len; i++) {
-    structure = (GstStructure *) gst_caps_get_structure (caps, i);
+    structure = (GstStructure *) gst_caps_get_structure_unchecked (caps, i);
     gst_structure_set_parent_refcount (structure, NULL);
     gst_structure_free (structure);
   }
@@ -518,37 +524,43 @@ gst_caps_structure_is_subset_field (GQuark field_id, const GValue * value,
   GstStructure *subtract_from = user_data;
   GValue subtraction = { 0, };
   const GValue *other;
-  gint res;
 
-  other = gst_structure_id_get_value (subtract_from, field_id);
-  if (!other) {
+  if (!(other = gst_structure_id_get_value (subtract_from, field_id)))
     /* field is missing in one set */
     return FALSE;
-  }
-  /*
-   * [1,2] - 1 = 2
-   * 1 - [1,2] = ???
-   */
-  if (!gst_value_subtract (&subtraction, other, value)) {
-    /* empty result -> values are the same, or first was a value and
-     * second was a list
-     * verify that result is empty by swapping args */
-    if (!gst_value_subtract (&subtraction, value, other)) {
-      return TRUE;
-    }
-    g_value_unset (&subtraction);
-    return FALSE;
-  }
 
-  res = gst_value_compare (&subtraction, other);
-  g_value_unset (&subtraction);
-
-  if (res == GST_VALUE_EQUAL) {
-    /* value was empty ? */
-    return FALSE;
-  } else {
+  /* equal values are subset */
+  if (gst_value_compare (other, value) == GST_VALUE_EQUAL)
     return TRUE;
+
+  /*
+   * 1 - [1,2] = empty
+   * -> !subset
+   *
+   * [1,2] - 1 = 2
+   *  -> 1 - [1,2] = empty
+   *  -> subset
+   *
+   * [1,3] - [1,2] = 3
+   * -> [1,2] - [1,3] = empty
+   * -> subset
+   *
+   * {1,2} - {1,3} = 2
+   * -> {1,3} - {1,2} = 3
+   * -> !subset
+   *
+   *  First caps subtraction needs to return a non-empty set, second
+   *  subtractions needs to give en empty set.
+   */
+  if (gst_value_subtract (&subtraction, other, value)) {
+    g_value_unset (&subtraction);
+    /* !empty result, swapping must be empty */
+    if (!gst_value_subtract (&subtraction, value, other))
+      return TRUE;
+
+    g_value_unset (&subtraction);
   }
+  return FALSE;
 }
 
 static gboolean
@@ -737,7 +749,7 @@ gst_caps_merge_structure (GstCaps * caps, GstStructure * structure)
 #endif
     /* check each structure */
     for (i = caps->structs->len - 1; i >= 0; i--) {
-      structure1 = gst_caps_get_structure (caps, i);
+      structure1 = gst_caps_get_structure_unchecked (caps, i);
       /* if structure is a subset of structure1, then skip it */
       if (gst_caps_structure_is_subset (structure1, structure)) {
         unique = FALSE;
@@ -791,7 +803,7 @@ gst_caps_get_structure (const GstCaps * caps, guint index)
   g_return_val_if_fail (GST_IS_CAPS (caps), NULL);
   g_return_val_if_fail (index < caps->structs->len, NULL);
 
-  return g_ptr_array_index (caps->structs, index);
+  return gst_caps_get_structure_unchecked (caps, index);
 }
 
 /**
@@ -816,7 +828,7 @@ gst_caps_copy_nth (const GstCaps * caps, guint nth)
   newcaps->flags = caps->flags;
 
   if (caps->structs->len > nth) {
-    structure = gst_caps_get_structure (caps, nth);
+    structure = gst_caps_get_structure_unchecked (caps, nth);
     gst_caps_append_structure (newcaps, gst_structure_copy (structure));
   }
 
@@ -864,7 +876,7 @@ gst_caps_set_simple (GstCaps * caps, const char *field, ...)
   g_return_if_fail (caps->structs->len == 1);
   g_return_if_fail (IS_WRITABLE (caps));
 
-  structure = gst_caps_get_structure (caps, 0);
+  structure = gst_caps_get_structure_unchecked (caps, 0);
 
   va_start (var_args, field);
   gst_structure_set_valist (structure, field, var_args);
@@ -890,7 +902,7 @@ gst_caps_set_simple_valist (GstCaps * caps, const char *field, va_list varargs)
   g_return_if_fail (caps->structs->len == 1);
   g_return_if_fail (IS_WRITABLE (caps));
 
-  structure = gst_caps_get_structure (caps, 0);
+  structure = gst_caps_get_structure_unchecked (caps, 0);
 
   gst_structure_set_valist (structure, field, varargs);
 }
@@ -959,7 +971,7 @@ gst_caps_is_fixed (const GstCaps * caps)
   if (caps->structs->len != 1)
     return FALSE;
 
-  structure = gst_caps_get_structure (caps, 0);
+  structure = gst_caps_get_structure_unchecked (caps, 0);
 
   return gst_structure_foreach (structure, gst_caps_is_fixed_foreach, NULL);
 }
@@ -982,8 +994,8 @@ gst_caps_is_equal_fixed (const GstCaps * caps1, const GstCaps * caps2)
   g_return_val_if_fail (gst_caps_is_fixed (caps1), FALSE);
   g_return_val_if_fail (gst_caps_is_fixed (caps2), FALSE);
 
-  struct1 = gst_caps_get_structure (caps1, 0);
-  struct2 = gst_caps_get_structure (caps2, 0);
+  struct1 = gst_caps_get_structure_unchecked (caps1, 0);
+  struct2 = gst_caps_get_structure_unchecked (caps2, 0);
 
   if (struct1->name != struct2->name) {
     return FALSE;
@@ -1063,6 +1075,9 @@ gst_caps_is_subset (const GstCaps * subset, const GstCaps * superset)
 gboolean
 gst_caps_is_equal (const GstCaps * caps1, const GstCaps * caps2)
 {
+  /* FIXME 0.11: NULL pointers are no valid Caps but indicate an error
+   * So there should be an assertion that caps1 and caps2 != NULL */
+
   /* NULL <-> NULL is allowed here */
   if (caps1 == caps2)
     return TRUE;
@@ -1248,8 +1263,8 @@ gst_caps_intersect (const GstCaps * caps1, const GstCaps * caps2)
     /* now run the diagonal line, end condition is the left or bottom
      * border */
     while (k < caps2->structs->len) {
-      struct1 = gst_caps_get_structure (caps1, j);
-      struct2 = gst_caps_get_structure (caps2, k);
+      struct1 = gst_caps_get_structure_unchecked (caps1, j);
+      struct2 = gst_caps_get_structure_unchecked (caps2, k);
 
       istruct = gst_caps_structure_intersect (struct1, struct2);
 
@@ -1362,14 +1377,14 @@ gst_caps_subtract (const GstCaps * minuend, const GstCaps * subtrahend)
 
   src = gst_caps_copy (minuend);
   for (i = 0; i < subtrahend->structs->len; i++) {
-    sub = gst_caps_get_structure (subtrahend, i);
+    sub = gst_caps_get_structure_unchecked (subtrahend, i);
     if (dest) {
       gst_caps_unref (src);
       src = dest;
     }
     dest = gst_caps_new_empty ();
     for (j = 0; j < src->structs->len; j++) {
-      min = gst_caps_get_structure (src, j);
+      min = gst_caps_get_structure_unchecked (src, j);
       if (gst_structure_get_name_id (min) == gst_structure_get_name_id (sub)) {
         GSList *list;
 
@@ -1413,6 +1428,16 @@ gst_caps_union (const GstCaps * caps1, const GstCaps * caps2)
 {
   GstCaps *dest1;
   GstCaps *dest2;
+
+  /* NULL pointers are no correct GstCaps */
+  g_return_val_if_fail (caps1 != NULL, NULL);
+  g_return_val_if_fail (caps2 != NULL, NULL);
+
+  if (gst_caps_is_empty (caps1))
+    return gst_caps_copy (caps2);
+
+  if (gst_caps_is_empty (caps2))
+    return gst_caps_copy (caps1);
 
   if (gst_caps_is_any (caps1) || gst_caps_is_any (caps2))
     return gst_caps_new_any ();
@@ -1480,7 +1505,7 @@ gst_caps_normalize (const GstCaps * caps)
   nf.caps = newcaps;
 
   for (i = 0; i < newcaps->structs->len; i++) {
-    nf.structure = gst_caps_get_structure (newcaps, i);
+    nf.structure = gst_caps_get_structure_unchecked (newcaps, i);
 
     while (!gst_structure_foreach (nf.structure,
             gst_caps_normalize_foreach, &nf));
@@ -1641,14 +1666,15 @@ gst_caps_do_simplify (GstCaps * caps)
 
   start = caps->structs->len - 1;
   for (i = caps->structs->len - 1; i >= 0; i--) {
-    simplify = gst_caps_get_structure (caps, i);
+    simplify = gst_caps_get_structure_unchecked (caps, i);
     if (gst_structure_get_name_id (simplify) !=
-        gst_structure_get_name_id (gst_caps_get_structure (caps, start)))
+        gst_structure_get_name_id (gst_caps_get_structure_unchecked (caps,
+                start)))
       start = i;
     for (j = start; j >= 0; j--) {
       if (j == i)
         continue;
-      compare = gst_caps_get_structure (caps, j);
+      compare = gst_caps_get_structure_unchecked (caps, j);
       if (gst_structure_get_name_id (simplify) !=
           gst_structure_get_name_id (compare)) {
         break;
@@ -1787,7 +1813,9 @@ gst_caps_to_string (const GstCaps * caps)
   /* estimate a rough string length to avoid unnecessary reallocs in GString */
   slen = 0;
   for (i = 0; i < caps->structs->len; i++) {
-    slen += STRUCTURE_ESTIMATED_STRING_LEN (gst_caps_get_structure (caps, i));
+    slen +=
+        STRUCTURE_ESTIMATED_STRING_LEN (gst_caps_get_structure_unchecked (caps,
+            i));
   }
 
   s = g_string_sized_new (slen);
@@ -1799,7 +1827,7 @@ gst_caps_to_string (const GstCaps * caps)
       g_string_append_c (s, ' ');
     }
 
-    structure = gst_caps_get_structure (caps, i);
+    structure = gst_caps_get_structure_unchecked (caps, i);
     priv_gst_structure_append_to_gstring (structure, s);
   }
   if (s->len && s->str[s->len - 1] == ';') {

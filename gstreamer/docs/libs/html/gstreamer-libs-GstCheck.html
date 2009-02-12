@@ -16,9 +16,9 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -72,31 +72,65 @@ void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check
                                                          char **argv[]);
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-message-error" title="gst_check_message_error ()">gst_check_message_error</a>             (GstMessage *message,
                                                          GstMessageType type,
-                                                         GQuark domain,
-                                                         gint code);
-GstElement*         <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-element" title="gst_check_setup_element ()">gst_check_setup_element</a>             (const gchar *factory);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a> domain,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> code);
+GstElement*         <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-element" title="gst_check_setup_element ()">gst_check_setup_element</a>             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factory);
 GstPad*             <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-sink-pad" title="gst_check_setup_sink_pad ()">gst_check_setup_sink_pad</a>            (GstElement *element,
                                                          GstStaticPadTemplate *template,
                                                          GstCaps *caps);
 GstPad*             <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-src-pad" title="gst_check_setup_src_pad ()">gst_check_setup_src_pad</a>             (GstElement *element,
                                                          GstStaticPadTemplate *template,
                                                          GstCaps *caps);
+GstPad*             <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-sink-pad-by-name" title="gst_check_setup_sink_pad_by_name ()">gst_check_setup_sink_pad_by_name</a>    (GstElement *element,
+                                                         GstStaticPadTemplate *template,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+GstPad*             <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-setup-src-pad-by-name" title="gst_check_setup_src_pad_by_name ()">gst_check_setup_src_pad_by_name</a>     (GstElement *element,
+                                                         GstStaticPadTemplate *template,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-teardown-pad-by-name" title="gst_check_teardown_pad_by_name ()">gst_check_teardown_pad_by_name</a>      (GstElement *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-teardown-element" title="gst_check_teardown_element ()">gst_check_teardown_element</a>          (GstElement *element);
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-teardown-sink-pad" title="gst_check_teardown_sink_pad ()">gst_check_teardown_sink_pad</a>         (GstElement *element);
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-teardown-src-pad" title="gst_check_teardown_src_pad ()">gst_check_teardown_src_pad</a>          (GstElement *element);
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-drop-buffers" title="gst_check_drop_buffers ()">gst_check_drop_buffers</a>              ();
 void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-caps-equal" title="gst_check_caps_equal ()">gst_check_caps_equal</a>                (GstCaps *caps1,
                                                          GstCaps *caps2);
-void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer-list" title="gst_check_element_push_buffer_list ()">gst_check_element_push_buffer_list</a>  (const gchar *element_name,
-                                                         GList *buffer_in,
-                                                         GList *buffer_out,
+void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer-list" title="gst_check_element_push_buffer_list ()">gst_check_element_push_buffer_list</a>  (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *element_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *buffer_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *buffer_out,
                                                          GstFlowReturn last_flow_return);
-void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer" title="gst_check_element_push_buffer ()">gst_check_element_push_buffer</a>       (const gchar *element_name,
+void                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-element-push-buffer" title="gst_check_element_push_buffer ()">gst_check_element_push_buffer</a>       (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *element_name,
                                                          GstBuffer *buffer_in,
                                                          GstBuffer *buffer_out);
-gint                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-run-suite" title="gst_check_run_suite ()">gst_check_run_suite</a>                 (Suite *suite,
-                                                         const gchar *name,
-                                                         const gchar *fname);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="gstreamer-libs-GstCheck.html#gst-check-run-suite" title="gst_check_run_suite ()">gst_check_run_suite</a>                 (Suite *suite,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fname);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -374,12 +408,16 @@ macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">gint</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+><span class="type">gint</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">gint</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+><span class="type">gint</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -401,12 +439,20 @@ to. This macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">gdouble</span> or <span class="type">gfloat</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> or <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">gdouble</span> or <span class="type">gfloat</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> or <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -457,12 +503,16 @@ macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">guint64</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">guint64</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -515,12 +565,16 @@ macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">gint</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+><span class="type">gint</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">gint</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+><span class="type">gint</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -543,12 +597,20 @@ to. This macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">gdouble</span> or <span class="type">gfloat</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> or <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">gdouble</span> or <span class="type">gfloat</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> or <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+><span class="type">gfloat</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -601,12 +663,16 @@ macro is for use in unit tests.</p>
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
-<td> a <span class="type">guint64</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> value or expression
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
-<td> a <span class="type">guint64</span> value or expression
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+><span class="type">guint64</span></a> value or expression
 </td>
 </tr>
 </tbody>
@@ -674,8 +740,12 @@ macro is for use in unit tests.</p>
 <a name="gst-check-message-error"></a><h3>gst_check_message_error ()</h3>
 <pre class="programlisting">void                gst_check_message_error             (GstMessage *message,
                                                          GstMessageType type,
-                                                         GQuark domain,
-                                                         gint code);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a> domain,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> code);</pre>
 <p>
 
 </p>
@@ -710,7 +780,9 @@ macro is for use in unit tests.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-check-setup-element"></a><h3>gst_check_setup_element ()</h3>
-<pre class="programlisting">GstElement*         gst_check_setup_element             (const gchar *factory);</pre>
+<pre class="programlisting">GstElement*         gst_check_setup_element             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factory);</pre>
 <p>
 
 </p>
@@ -798,6 +870,112 @@ macro is for use in unit tests.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-check-setup-sink-pad-by-name"></a><h3>gst_check_setup_sink_pad_by_name ()</h3>
+<pre class="programlisting">GstPad*             gst_check_setup_sink_pad_by_name    (GstElement *element,
+                                                         GstStaticPadTemplate *template,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>template</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-check-setup-src-pad-by-name"></a><h3>gst_check_setup_src_pad_by_name ()</h3>
+<pre class="programlisting">GstPad*             gst_check_setup_src_pad_by_name     (GstElement *element,
+                                                         GstStaticPadTemplate *template,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>template</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-check-teardown-pad-by-name"></a><h3>gst_check_teardown_pad_by_name ()</h3>
+<pre class="programlisting">void                gst_check_teardown_pad_by_name      (GstElement *element,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>element</code></em> :</span></p></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
 <td>
 
 
@@ -905,9 +1083,15 @@ equal.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-check-element-push-buffer-list"></a><h3>gst_check_element_push_buffer_list ()</h3>
-<pre class="programlisting">void                gst_check_element_push_buffer_list  (const gchar *element_name,
-                                                         GList *buffer_in,
-                                                         GList *buffer_out,
+<pre class="programlisting">void                gst_check_element_push_buffer_list  (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *element_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *buffer_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *buffer_out,
                                                          GstFlowReturn last_flow_return);</pre>
 <p>
 
@@ -943,7 +1127,9 @@ equal.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-check-element-push-buffer"></a><h3>gst_check_element_push_buffer ()</h3>
-<pre class="programlisting">void                gst_check_element_push_buffer       (const gchar *element_name,
+<pre class="programlisting">void                gst_check_element_push_buffer       (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *element_name,
                                                          GstBuffer *buffer_in,
                                                          GstBuffer *buffer_out);</pre>
 <p>
@@ -980,9 +1166,15 @@ and the data of the buffers. This function unrefs the buffers.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-check-run-suite"></a><h3>gst_check_run_suite ()</h3>
-<pre class="programlisting">gint                gst_check_run_suite                 (Suite *suite,
-                                                         const gchar *name,
-                                                         const gchar *fname);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_check_run_suite                 (Suite *suite,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fname);</pre>
 <p>
 
 </p>

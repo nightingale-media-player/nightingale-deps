@@ -16,9 +16,9 @@
 <link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
 <link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
 <link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -54,31 +54,49 @@
 enum                <a class="link" href="GstInterpolationControlSource.html#GstInterpolateMode" title="enum GstInterpolateMode">GstInterpolateMode</a>;
 <a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a>* <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-new" title="gst_interpolation_control_source_new ()">gst_interpolation_control_source_new</a>
                                                         (void);
-gboolean            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set" title="gst_interpolation_control_source_set ()">gst_interpolation_control_source_set</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set" title="gst_interpolation_control_source_set ()">gst_interpolation_control_source_set</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          GstClockTime timestamp,
-                                                         GValue *value);
-gboolean            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set-from-list" title="gst_interpolation_control_source_set_from_list ()">gst_interpolation_control_source_set_from_list</a>
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set-from-list" title="gst_interpolation_control_source_set_from_list ()">gst_interpolation_control_source_set_from_list</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
-                                                         GSList *timedvalues);
-gboolean            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set-interpolation-mode" title="gst_interpolation_control_source_set_interpolation_mode ()">gst_interpolation_control_source_set_interpolation_mode</a>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *timedvalues);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set-interpolation-mode" title="gst_interpolation_control_source_set_interpolation_mode ()">gst_interpolation_control_source_set_interpolation_mode</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          <a class="link" href="GstInterpolationControlSource.html#GstInterpolateMode" title="enum GstInterpolateMode">GstInterpolateMode</a> mode);
-GList*              <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-get-all" title="gst_interpolation_control_source_get_all ()">gst_interpolation_control_source_get_all</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-get-all" title="gst_interpolation_control_source_get_all ()">gst_interpolation_control_source_get_all</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self);
-gboolean            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-unset" title="gst_interpolation_control_source_unset ()">gst_interpolation_control_source_unset</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-unset" title="gst_interpolation_control_source_unset ()">gst_interpolation_control_source_unset</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          GstClockTime timestamp);
 void                <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-unset-all" title="gst_interpolation_control_source_unset_all ()">gst_interpolation_control_source_unset_all</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self);
-gint                <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-get-count" title="gst_interpolation_control_source_get_count ()">gst_interpolation_control_source_get_count</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-get-count" title="gst_interpolation_control_source_get_count ()">gst_interpolation_control_source_get_count</a>
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstInterpolationControlSource.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a>
          +----GstInterpolationControlSource
 </pre>
@@ -91,7 +109,9 @@ control points. It supports several interpolation modes and property types.
 </p>
 <p>
 To use <a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource"><span class="type">GstInterpolationControlSource</span></a> get a new instance by calling
-<a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-new" title="gst_interpolation_control_source_new ()"><code class="function">gst_interpolation_control_source_new()</code></a>, bind it to a <span class="type">GParamSpec</span>, select a interpolation mode with
+<a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-new" title="gst_interpolation_control_source_new ()"><code class="function">gst_interpolation_control_source_new()</code></a>, bind it to a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>, select a interpolation mode with
 <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set-interpolation-mode" title="gst_interpolation_control_source_set_interpolation_mode ()"><code class="function">gst_interpolation_control_source_set_interpolation_mode()</code></a> and set some control points by calling
 <a class="link" href="GstInterpolationControlSource.html#gst-interpolation-control-source-set" title="gst_interpolation_control_source_set ()"><code class="function">gst_interpolation_control_source_set()</code></a>.
 </p>
@@ -189,10 +209,14 @@ This returns a new, unbound <a class="link" href="GstInterpolationControlSource.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-set"></a><h3>gst_interpolation_control_source_set ()</h3>
-<pre class="programlisting">gboolean            gst_interpolation_control_source_set
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_interpolation_control_source_set
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          GstClockTime timestamp,
-                                                         GValue *value);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *value);</pre>
 <p>
 Set the value of given controller-handled property at a certain time.</p>
 <p>
@@ -227,9 +251,13 @@ Set the value of given controller-handled property at a certain time.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-set-from-list"></a><h3>gst_interpolation_control_source_set_from_list ()</h3>
-<pre class="programlisting">gboolean            gst_interpolation_control_source_set_from_list
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_interpolation_control_source_set_from_list
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
-                                                         GSList *timedvalues);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *timedvalues);</pre>
 <p>
 Sets multiple timed values at once.</p>
 <p>
@@ -259,7 +287,9 @@ Sets multiple timed values at once.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-set-interpolation-mode"></a><h3>gst_interpolation_control_source_set_interpolation_mode ()</h3>
-<pre class="programlisting">gboolean            gst_interpolation_control_source_set_interpolation_mode
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_interpolation_control_source_set_interpolation_mode
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          <a class="link" href="GstInterpolationControlSource.html#GstInterpolateMode" title="enum GstInterpolateMode">GstInterpolateMode</a> mode);</pre>
 <p>
@@ -290,7 +320,11 @@ is deprecated and maps to cubic interpolation.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the interpolation mode could be set, <code class="literal">FALSE</code> otherwise
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the interpolation mode could be set, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise
 </td>
 </tr>
 </tbody>
@@ -299,7 +333,9 @@ is deprecated and maps to cubic interpolation.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-get-all"></a><h3>gst_interpolation_control_source_get_all ()</h3>
-<pre class="programlisting">GList*              gst_interpolation_control_source_get_all
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_interpolation_control_source_get_all
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self);</pre>
 <p>
 Returns a read-only copy of the list of <a class="link" href="GstControlSource.html#GstTimedValue" title="GstTimedValue"><span class="type">GstTimedValue</span></a> for the given property.
@@ -317,7 +353,9 @@ Free the list after done with it.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a copy of the list, or <code class="literal">NULL</code> if the property isn't handled by the controller
+<td> a copy of the list, or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the property isn't handled by the controller
 </td>
 </tr>
 </tbody>
@@ -326,7 +364,9 @@ Free the list after done with it.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-unset"></a><h3>gst_interpolation_control_source_unset ()</h3>
-<pre class="programlisting">gboolean            gst_interpolation_control_source_unset
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_interpolation_control_source_unset
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self,
                                                          GstClockTime timestamp);</pre>
 <p>
@@ -378,7 +418,9 @@ Used to remove all time-stamped values of given controller-handled property</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-interpolation-control-source-get-count"></a><h3>gst_interpolation_control_source_get_count ()</h3>
-<pre class="programlisting">gint                gst_interpolation_control_source_get_count
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                gst_interpolation_control_source_get_count
                                                         (<a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a> *self);</pre>
 <p>
 Returns the number of control points that are set.</p>

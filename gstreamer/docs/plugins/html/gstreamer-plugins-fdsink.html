@@ -37,7 +37,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-plugins-fdsink.top_of_page"></a>fdsink</span></h2>
-<p>fdsink — write to a unix file descriptor</p>
+<p>fdsink — Write data to a file descriptor</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -50,7 +50,9 @@
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-fdsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -66,7 +68,9 @@ GstFdSink implements
 <div class="refsect1" lang="en">
 <a name="gstreamer-plugins-fdsink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink--fd" title='The "fd" property'>fd</a>"                       gint                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink--fd" title='The "fd" property'>fd</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -81,16 +85,18 @@ socket. For file descriptors where this does not make sense (files, ...) the
 </p>
 <p>
 Last reviewed on 2006-04-28 (0.10.6)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2601336"></a><h3>Element Information</h3>
+<a name="id2689471"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
-        </td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -102,6 +108,10 @@ Last reviewed on 2006-04-28 (0.10.6)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2689533"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -124,6 +134,7 @@ Last reviewed on 2006-04-28 (0.10.6)</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -144,7 +155,9 @@ The opaque <a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink"><span 
 <a name="gstreamer-plugins-fdsink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstFdSink--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
-<pre class="programlisting">  "fd"                       gint                  : Read / Write</pre>
+<pre class="programlisting">  "fd"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>An open file descriptor to write to.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 1</p>

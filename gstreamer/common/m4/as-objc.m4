@@ -47,6 +47,8 @@ EOF
   fi
   rm -f conftest.m a.out a.exe
   AC_MSG_RESULT([$result])
+else
+  _AM_DEPENDENCIES(OBJC)
 fi
 
 ])

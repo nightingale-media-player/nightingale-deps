@@ -347,6 +347,9 @@ gst_pad_init (GstPad * pad)
   GST_PAD_QUERYFUNC (pad) = GST_DEBUG_FUNCPTR (gst_pad_query_default);
   GST_PAD_INTLINKFUNC (pad) =
       GST_DEBUG_FUNCPTR (gst_pad_get_internal_links_default);
+  GST_PAD_ITERINTLINKFUNC (pad) =
+      GST_DEBUG_FUNCPTR (gst_pad_iterate_internal_links_default);
+
   GST_PAD_ACCEPTCAPSFUNC (pad) = GST_DEBUG_FUNCPTR (gst_pad_acceptcaps_default);
 
   pad->do_buffer_signals = 0;
@@ -556,9 +559,7 @@ gst_pad_get_direction (GstPad * pad)
    * error return value */
   g_return_val_if_fail (GST_IS_PAD (pad), GST_PAD_UNKNOWN);
 
-  GST_OBJECT_LOCK (pad);
   result = GST_PAD_DIRECTION (pad);
-  GST_OBJECT_UNLOCK (pad);
 
   return result;
 }
@@ -1182,7 +1183,7 @@ void
 gst_pad_set_chain_function (GstPad * pad, GstPadChainFunction chain)
 {
   g_return_if_fail (GST_IS_PAD (pad));
-  g_return_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SINK);
+  g_return_if_fail (GST_PAD_IS_SINK (pad));
 
   GST_PAD_CHAINFUNC (pad) = chain;
   GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "chainfunc set to %s",
@@ -1202,7 +1203,7 @@ void
 gst_pad_set_getrange_function (GstPad * pad, GstPadGetRangeFunction get)
 {
   g_return_if_fail (GST_IS_PAD (pad));
-  g_return_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SRC);
+  g_return_if_fail (GST_PAD_IS_SRC (pad));
 
   GST_PAD_GETRANGEFUNC (pad) = get;
 
@@ -1223,7 +1224,7 @@ gst_pad_set_checkgetrange_function (GstPad * pad,
     GstPadCheckGetRangeFunction check)
 {
   g_return_if_fail (GST_IS_PAD (pad));
-  g_return_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SRC);
+  g_return_if_fail (GST_PAD_IS_SRC (pad));
 
   GST_PAD_CHECKGETRANGEFUNC (pad) = check;
 
@@ -1345,12 +1346,35 @@ gst_pad_get_query_types_default (GstPad * pad)
 }
 
 /**
+ * gst_pad_set_iterate_internal_links_function:
+ * @pad: a #GstPad of either direction.
+ * @iterintlink: the #GstPadIterIntLinkFunction to set.
+ *
+ * Sets the given internal link iterator function for the pad.
+ *
+ * Since: 0.10.21
+ */
+void
+gst_pad_set_iterate_internal_links_function (GstPad * pad,
+    GstPadIterIntLinkFunction iterintlink)
+{
+  g_return_if_fail (GST_IS_PAD (pad));
+
+  GST_PAD_ITERINTLINKFUNC (pad) = iterintlink;
+  GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "internal link iterator set to %s",
+      GST_DEBUG_FUNCPTR_NAME (iterintlink));
+}
+
+/**
  * gst_pad_set_internal_link_function:
  * @pad: a #GstPad of either direction.
  * @intlink: the #GstPadIntLinkFunction to set.
  *
  * Sets the given internal link function for the pad.
+ *
+ * Deprecated: Use the thread-safe gst_pad_set_iterate_internal_links_function()
  */
+#ifndef GST_REMOVE_DEPRECATED
 void
 gst_pad_set_internal_link_function (GstPad * pad, GstPadIntLinkFunction intlink)
 {
@@ -1360,6 +1384,7 @@ gst_pad_set_internal_link_function (GstPad * pad, GstPadIntLinkFunction intlink)
   GST_CAT_DEBUG_OBJECT (GST_CAT_PADS, pad, "internal link set to %s",
       GST_DEBUG_FUNCPTR_NAME (intlink));
 }
+#endif /* GST_REMOVE_DEPRECATED */
 
 /**
  * gst_pad_set_link_function:
@@ -1540,22 +1565,35 @@ gst_pad_set_bufferalloc_function (GstPad * pad,
 gboolean
 gst_pad_unlink (GstPad * srcpad, GstPad * sinkpad)
 {
+  gboolean result = FALSE;
+  GstElement *parent = NULL;
+
   g_return_val_if_fail (GST_IS_PAD (srcpad), FALSE);
+  g_return_val_if_fail (GST_PAD_IS_SRC (srcpad), FALSE);
   g_return_val_if_fail (GST_IS_PAD (sinkpad), FALSE);
+  g_return_val_if_fail (GST_PAD_IS_SINK (sinkpad), FALSE);
 
   GST_CAT_INFO (GST_CAT_ELEMENT_PADS, "unlinking %s:%s(%p) and %s:%s(%p)",
       GST_DEBUG_PAD_NAME (srcpad), srcpad,
       GST_DEBUG_PAD_NAME (sinkpad), sinkpad);
 
+  /* We need to notify the parent before taking any pad locks as the bin in
+   * question might be waiting for a lock on the pad while holding its lock
+   * that our message will try to take. */
+  if ((parent = GST_ELEMENT_CAST (gst_pad_get_parent (srcpad)))) {
+    if (GST_IS_ELEMENT (parent)) {
+      gst_element_post_message (parent,
+          gst_message_new_structure_change (GST_OBJECT_CAST (srcpad),
+              GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK, parent, TRUE));
+    } else {
+      gst_object_unref (parent);
+      parent = NULL;
+    }
+  }
+
   GST_OBJECT_LOCK (srcpad);
 
-  if (G_UNLIKELY (GST_PAD_DIRECTION (srcpad) != GST_PAD_SRC))
-    goto not_srcpad;
-
   GST_OBJECT_LOCK (sinkpad);
-
-  if (G_UNLIKELY (GST_PAD_DIRECTION (sinkpad) != GST_PAD_SINK))
-    goto not_sinkpad;
 
   if (G_UNLIKELY (GST_PAD_PEER (srcpad) != sinkpad))
     goto not_linked_together;
@@ -1582,28 +1620,25 @@ gst_pad_unlink (GstPad * srcpad, GstPad * sinkpad)
   GST_CAT_INFO (GST_CAT_ELEMENT_PADS, "unlinked %s:%s and %s:%s",
       GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
 
-  return TRUE;
+  result = TRUE;
 
-not_srcpad:
-  {
-    g_critical ("pad %s is not a source pad", GST_PAD_NAME (srcpad));
-    GST_OBJECT_UNLOCK (srcpad);
-    return FALSE;
+done:
+  if (parent != NULL) {
+    gst_element_post_message (parent,
+        gst_message_new_structure_change (GST_OBJECT_CAST (srcpad),
+            GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK, parent, FALSE));
+    gst_object_unref (parent);
   }
-not_sinkpad:
-  {
-    g_critical ("pad %s is not a sink pad", GST_PAD_NAME (sinkpad));
-    GST_OBJECT_UNLOCK (sinkpad);
-    GST_OBJECT_UNLOCK (srcpad);
-    return FALSE;
-  }
+  return result;
+
+  /* ERRORS */
 not_linked_together:
   {
     /* we do not emit a warning in this case because unlinking cannot
      * be made MT safe.*/
     GST_OBJECT_UNLOCK (sinkpad);
     GST_OBJECT_UNLOCK (srcpad);
-    return FALSE;
+    goto done;
   }
 }
 
@@ -1652,8 +1687,13 @@ gst_pad_link_check_compatible_unlocked (GstPad * src, GstPad * sink)
 
   /* if we have caps on both pads we can check the intersection. If one
    * of the caps is NULL, we return TRUE. */
-  if (srccaps == NULL || sinkcaps == NULL)
+  if (srccaps == NULL || sinkcaps == NULL) {
+    if (srccaps)
+      gst_caps_unref (srccaps);
+    if (sinkcaps)
+      gst_caps_unref (sinkcaps);
     goto done;
+  }
 
   icaps = gst_caps_intersect (srccaps, sinkcaps);
   gst_caps_unref (srccaps);
@@ -1761,25 +1801,15 @@ wrong_grandparents:
 static GstPadLinkReturn
 gst_pad_link_prepare (GstPad * srcpad, GstPad * sinkpad)
 {
-  /* generic checks */
-  g_return_val_if_fail (GST_IS_PAD (srcpad), GST_PAD_LINK_REFUSED);
-  g_return_val_if_fail (GST_IS_PAD (sinkpad), GST_PAD_LINK_REFUSED);
-
   GST_CAT_INFO (GST_CAT_PADS, "trying to link %s:%s and %s:%s",
       GST_DEBUG_PAD_NAME (srcpad), GST_DEBUG_PAD_NAME (sinkpad));
 
   GST_OBJECT_LOCK (srcpad);
 
-  if (G_UNLIKELY (GST_PAD_DIRECTION (srcpad) != GST_PAD_SRC))
-    goto not_srcpad;
-
   if (G_UNLIKELY (GST_PAD_PEER (srcpad) != NULL))
     goto src_was_linked;
 
   GST_OBJECT_LOCK (sinkpad);
-
-  if (G_UNLIKELY (GST_PAD_DIRECTION (sinkpad) != GST_PAD_SINK))
-    goto not_sinkpad;
 
   if (G_UNLIKELY (GST_PAD_PEER (sinkpad) != NULL))
     goto sink_was_linked;
@@ -1797,12 +1827,6 @@ gst_pad_link_prepare (GstPad * srcpad, GstPad * sinkpad)
 
   return GST_PAD_LINK_OK;
 
-not_srcpad:
-  {
-    g_critical ("pad %s is not a source pad", GST_PAD_NAME (srcpad));
-    GST_OBJECT_UNLOCK (srcpad);
-    return GST_PAD_LINK_WRONG_DIRECTION;
-  }
 src_was_linked:
   {
     GST_CAT_INFO (GST_CAT_PADS, "src %s:%s was already linked to %s:%s",
@@ -1812,13 +1836,6 @@ src_was_linked:
      * be made MT safe.*/
     GST_OBJECT_UNLOCK (srcpad);
     return GST_PAD_LINK_WAS_LINKED;
-  }
-not_sinkpad:
-  {
-    g_critical ("pad %s is not a sink pad", GST_PAD_NAME (sinkpad));
-    GST_OBJECT_UNLOCK (sinkpad);
-    GST_OBJECT_UNLOCK (srcpad);
-    return GST_PAD_LINK_WRONG_DIRECTION;
   }
 sink_was_linked:
   {
@@ -1863,12 +1880,31 @@ GstPadLinkReturn
 gst_pad_link (GstPad * srcpad, GstPad * sinkpad)
 {
   GstPadLinkReturn result;
+  GstElement *parent;
+
+  g_return_val_if_fail (GST_IS_PAD (srcpad), GST_PAD_LINK_REFUSED);
+  g_return_val_if_fail (GST_PAD_IS_SRC (srcpad), GST_PAD_LINK_WRONG_DIRECTION);
+  g_return_val_if_fail (GST_IS_PAD (sinkpad), GST_PAD_LINK_REFUSED);
+  g_return_val_if_fail (GST_PAD_IS_SINK (sinkpad),
+      GST_PAD_LINK_WRONG_DIRECTION);
+
+  /* Notify the parent early. See gst_pad_unlink for details. */
+  if ((parent = GST_ELEMENT_CAST (gst_pad_get_parent (srcpad)))) {
+    if (GST_IS_ELEMENT (parent)) {
+      gst_element_post_message (parent,
+          gst_message_new_structure_change (GST_OBJECT_CAST (srcpad),
+              GST_STRUCTURE_CHANGE_TYPE_PAD_LINK, parent, TRUE));
+    } else {
+      gst_object_unref (parent);
+      parent = NULL;
+    }
+  }
 
   /* prepare will also lock the two pads */
   result = gst_pad_link_prepare (srcpad, sinkpad);
 
   if (result != GST_PAD_LINK_OK)
-    goto prepare_failed;
+    goto done;
 
   /* must set peers before calling the link function */
   GST_PAD_PEER (srcpad) = sinkpad;
@@ -1914,12 +1950,16 @@ gst_pad_link (GstPad * srcpad, GstPad * sinkpad)
     GST_OBJECT_UNLOCK (sinkpad);
     GST_OBJECT_UNLOCK (srcpad);
   }
-  return result;
 
-prepare_failed:
-  {
-    return result;
+done:
+  if (parent) {
+    gst_element_post_message (parent,
+        gst_message_new_structure_change (GST_OBJECT_CAST (srcpad),
+            GST_STRUCTURE_CHANGE_TYPE_PAD_LINK, parent, FALSE));
+    gst_object_unref (parent);
   }
+
+  return result;
 }
 
 static void
@@ -2233,8 +2273,6 @@ gst_pad_acceptcaps_default (GstPad * pad, GstCaps * caps)
   GST_DEBUG_OBJECT (pad, "intersection %" GST_PTR_FORMAT, intersect);
 
   result = !gst_caps_is_empty (intersect);
-  if (!result)
-    GST_DEBUG_OBJECT (pad, "intersection gave empty caps");
 
   gst_caps_unref (allowed);
   gst_caps_unref (intersect);
@@ -2273,13 +2311,13 @@ gst_pad_accept_caps (GstPad * pad, GstCaps * caps)
 
   /* lock for checking the existing caps */
   GST_OBJECT_LOCK (pad);
-  acceptfunc = GST_PAD_ACCEPTCAPSFUNC (pad);
   GST_CAT_DEBUG_OBJECT (GST_CAT_CAPS, pad, "accept caps of %p", caps);
   /* The current caps on a pad are trivially acceptable */
   if (G_LIKELY ((existing = GST_PAD_CAPS (pad)))) {
     if (caps == existing || gst_caps_is_equal (caps, existing))
       goto is_same_caps;
   }
+  acceptfunc = GST_PAD_ACCEPTCAPSFUNC (pad);
   GST_OBJECT_UNLOCK (pad);
 
   if (G_LIKELY (acceptfunc)) {
@@ -2459,15 +2497,15 @@ gst_pad_configure_src (GstPad * pad, GstCaps * caps, gboolean dosetcaps)
 {
   gboolean res;
 
-  /* See if pad accepts the caps */
-  if (!gst_pad_accept_caps (pad, caps))
-    goto not_accepted;
+  if (dosetcaps) {
+    /* See if pad accepts the caps */
+    if (!gst_pad_accept_caps (pad, caps))
+      goto not_accepted;
 
-  if (dosetcaps)
     res = gst_pad_set_caps (pad, caps);
-  else
+  } else {
     res = TRUE;
-
+  }
   return res;
 
 not_accepted:
@@ -2725,6 +2763,7 @@ gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
 {
   GstPad *peer;
   GstFlowReturn ret;
+  GstCaps *newcaps;
   gboolean caps_changed;
 
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
@@ -2732,7 +2771,8 @@ gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
   g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
   g_return_val_if_fail (size >= 0, GST_FLOW_ERROR);
 
-  GST_DEBUG_OBJECT (pad, "offset %" G_GUINT64_FORMAT ", size %d", offset, size);
+  GST_DEBUG_OBJECT (pad, "offset %" G_GUINT64_FORMAT ", size %d, caps %"
+      GST_PTR_FORMAT, offset, size, caps);
 
   GST_OBJECT_LOCK (pad);
   while (G_UNLIKELY (GST_PAD_IS_BLOCKED (pad)))
@@ -2752,28 +2792,28 @@ gst_pad_alloc_buffer_full (GstPad * pad, guint64 offset, gint size,
     goto peer_error;
 
   /* FIXME, move capnego this into a base class? */
-  caps = GST_BUFFER_CAPS (*buf);
+  newcaps = GST_BUFFER_CAPS (*buf);
 
   /* Lock for checking caps, pretty pointless as the _pad_push() function might
    * change it concurrently, one of the problems with automatic caps setting in
    * pad_alloc_and_set_caps. Worst case, if does a check too much, but only
    * when there is heavy renegotiation going on in both directions. */
   GST_OBJECT_LOCK (pad);
-  caps_changed = caps && caps != GST_PAD_CAPS (pad);
+  caps_changed = newcaps && newcaps != GST_PAD_CAPS (pad);
   GST_OBJECT_UNLOCK (pad);
 
   /* we got a new datatype on the pad, see if it can handle it */
   if (G_UNLIKELY (caps_changed)) {
     GST_DEBUG_OBJECT (pad,
         "caps changed from %" GST_PTR_FORMAT " to %p %" GST_PTR_FORMAT,
-        GST_PAD_CAPS (pad), caps, caps);
-    if (G_UNLIKELY (!gst_pad_configure_src (pad, caps, setcaps)))
+        GST_PAD_CAPS (pad), newcaps, newcaps);
+    if (G_UNLIKELY (!gst_pad_configure_src (pad, newcaps, setcaps)))
       goto not_negotiated;
-  } else {
-    /* sanity check (only if caps haven't changed) */
-    if (G_UNLIKELY (GST_BUFFER_SIZE (*buf) < size))
-      goto wrong_size_fallback;
   }
+
+  /* sanity check (only if caps are the same) */
+  if (G_LIKELY (newcaps == caps) && G_UNLIKELY (GST_BUFFER_SIZE (*buf) < size))
+    goto wrong_size_fallback;
 
   return ret;
 
@@ -2838,7 +2878,9 @@ wrong_size_fallback:
  *
  * A new, empty #GstBuffer will be put in the @buf argument.
  * You need to check the caps of the buffer after performing this
- * function and renegotiate to the format if needed.
+ * function and renegotiate to the format if needed. If the caps changed, it is
+ * possible that the buffer returned in @buf is not of the right size for the
+ * new format, @buf needs to be unreffed and reallocated if this is the case.
  *
  * Returns: a result code indicating success of the operation. Any
  * result code other than #GST_FLOW_OK is an error and @buf should
@@ -2869,6 +2911,10 @@ gst_pad_alloc_buffer (GstPad * pad, guint64 offset, gint size, GstCaps * caps,
  * automatically calls gst_pad_set_caps() when the caps of the
  * newly allocated buffer are different from the @pad caps.
  *
+ * After a renegotiation, the size of the new buffer returned in @buf could
+ * be of the wrong size for the new format and must be unreffed an reallocated
+ * in that case.
+ *
  * Returns: a result code indicating success of the operation. Any
  * result code other than #GST_FLOW_OK is an error and @buf should
  * not be used.
@@ -2886,6 +2932,162 @@ gst_pad_alloc_buffer_and_set_caps (GstPad * pad, guint64 offset, gint size,
   return gst_pad_alloc_buffer_full (pad, offset, size, caps, buf, TRUE);
 }
 
+
+#ifndef GST_REMOVE_DEPRECATED
+typedef struct
+{
+  GList *list;
+  guint32 cookie;
+} IntLinkIterData;
+
+static void
+int_link_iter_data_free (IntLinkIterData * data)
+{
+  g_list_free (data->list);
+  g_free (data);
+}
+#endif
+
+static GstIteratorItem
+iterate_pad (GstIterator * it, GstPad * pad)
+{
+  gst_object_ref (pad);
+  return GST_ITERATOR_ITEM_PASS;
+}
+
+/**
+ * gst_pad_iterate_internal_links_default:
+ * @pad: the #GstPad to get the internal links of.
+ *
+ * Iterate the list of pads to which the given pad is linked to inside of
+ * the parent element.
+ * This is the default handler, and thus returns an iterator of all of the
+ * pads inside the parent element with opposite direction.
+ *
+ * The caller must free this iterator after use with gst_iterator_free().
+ *
+ * Returns: a #GstIterator of #GstPad, or NULL if @pad has no parent. Unref each
+ * returned pad with gst_object_unref().
+ *
+ * Since: 0.10.21
+ */
+GstIterator *
+gst_pad_iterate_internal_links_default (GstPad * pad)
+{
+  GstIterator *res;
+  GList **padlist;
+  guint32 *cookie;
+  GMutex *lock;
+  gpointer owner;
+  GstIteratorDisposeFunction dispose;
+
+  g_return_val_if_fail (GST_IS_PAD (pad), NULL);
+
+#ifndef GST_REMOVE_DEPRECATED
+  /* when we get here, the default handler for the iterate links is called,
+   * which means that the user has not installed a custom one. We first check if
+   * there is maybe a custom legacy function we can call. */
+  if (GST_PAD_INTLINKFUNC (pad) &&
+      GST_PAD_INTLINKFUNC (pad) != gst_pad_get_internal_links_default) {
+    IntLinkIterData *data;
+
+    /* make an iterator for the list. We can't protect the list with a
+     * cookie. If we would take the cookie of the parent element, we need to
+     * have a parent, which is not required for GST_PAD_INTLINKFUNC(). We could
+     * cache the per-pad list and invalidate the list when a new call to
+     * INTLINKFUNC() returned a different list but then this would only work if
+     * two concurrent iterators were used and the last iterator would still be
+     * thread-unsafe. Just don't use this method anymore. */
+    data = g_new0 (IntLinkIterData, 1);
+    data->list = GST_PAD_INTLINKFUNC (pad) (pad);
+    data->cookie = 0;
+
+    GST_WARNING_OBJECT (pad, "Making unsafe iterator");
+
+    cookie = &data->cookie;
+    padlist = &data->list;
+    owner = data;
+    dispose = (GstIteratorDisposeFunction) int_link_iter_data_free;
+    /* reuse the pad lock, it's all we have here */
+    lock = GST_OBJECT_GET_LOCK (pad);
+  } else
+#endif
+  {
+    GstElement *parent;
+
+    GST_OBJECT_LOCK (pad);
+    parent = GST_PAD_PARENT (pad);
+    if (!parent || !GST_IS_ELEMENT (parent))
+      goto no_parent;
+
+    gst_object_ref (parent);
+    GST_OBJECT_UNLOCK (pad);
+
+    if (pad->direction == GST_PAD_SRC)
+      padlist = &parent->sinkpads;
+    else
+      padlist = &parent->srcpads;
+
+    GST_DEBUG_OBJECT (pad, "Making iterator");
+
+    cookie = &parent->pads_cookie;
+    owner = parent;
+    dispose = (GstIteratorDisposeFunction) gst_object_unref;
+    lock = GST_OBJECT_GET_LOCK (parent);
+  }
+
+  res = gst_iterator_new_list (GST_TYPE_PAD,
+      lock, cookie, padlist, owner, (GstIteratorItemFunction) iterate_pad,
+      dispose);
+
+  return res;
+
+  /* ERRORS */
+no_parent:
+  {
+    GST_OBJECT_UNLOCK (pad);
+    GST_DEBUG_OBJECT (pad, "no parent element");
+    return NULL;
+  }
+}
+
+/**
+ * gst_pad_iterate_internal_links:
+ * @pad: the GstPad to get the internal links of.
+ *
+ * Gets an iterator for the pads to which the given pad is linked to inside
+ * of the parent element.
+ *
+ * Each #GstPad element yielded by the iterator will have its refcount increased,
+ * so unref after use.
+ *
+ * Returns: a new #GstIterator of #GstPad or %NULL when the pad does not have an
+ * iterator function configured. Use gst_iterator_free() after usage.
+ *
+ * Since: 0.10.21
+ */
+GstIterator *
+gst_pad_iterate_internal_links (GstPad * pad)
+{
+  GstIterator *res = NULL;
+
+  g_return_val_if_fail (GST_IS_PAD (pad), NULL);
+
+  if (GST_PAD_ITERINTLINKFUNC (pad))
+    res = GST_PAD_ITERINTLINKFUNC (pad) (pad);
+
+  return res;
+}
+
+#ifndef GST_REMOVE_DEPRECATED
+static void
+add_unref_pad_to_list (GstPad * pad, GList * list)
+{
+  list = g_list_prepend (list, pad);
+  gst_object_unref (pad);
+}
+#endif
+
 /**
  * gst_pad_get_internal_links_default:
  * @pad: the #GstPad to get the internal links of.
@@ -2894,48 +3096,95 @@ gst_pad_alloc_buffer_and_set_caps (GstPad * pad, guint64 offset, gint size,
  * inside of the parent element.
  * This is the default handler, and thus returns a list of all of the
  * pads inside the parent element with opposite direction.
- * The caller must free this list after use.
+ *
+ * The caller must free this list after use with g_list_free().
  *
  * Returns: a newly allocated #GList of pads, or NULL if the pad has no parent.
  *
  * Not MT safe.
+ *
+ * Deprecated: This function does not ref the pads in the list so that they
+ * could become invalid by the time the application accesses them. It's also
+ * possible that the list changes while handling the pads, which the caller of
+ * this function is unable to know. Use the thread-safe 
+ * gst_pad_iterate_internal_links_default() instead.
  */
+#ifndef GST_REMOVE_DEPRECATED
 GList *
 gst_pad_get_internal_links_default (GstPad * pad)
 {
   GList *res = NULL;
   GstElement *parent;
-  GList *parent_pads;
-  GstPadDirection direction;
 
   g_return_val_if_fail (GST_IS_PAD (pad), NULL);
 
-  direction = pad->direction;
+  GST_WARNING_OBJECT (pad, "Unsafe internal links used");
 
-  parent = GST_PAD_PARENT (pad);
-  if (!parent)
-    goto no_parent;
+  /* when we get here, the default handler for get_internal_links is called,
+   * which means that the user has not installed a custom one. We first check if
+   * there is maybe a custom iterate function we can call. */
+  if (GST_PAD_ITERINTLINKFUNC (pad) &&
+      GST_PAD_ITERINTLINKFUNC (pad) != gst_pad_iterate_internal_links_default) {
+    GstIterator *it;
+    GstIteratorResult ires;
+    gboolean done = FALSE;
 
-  parent_pads = parent->pads;
+    it = gst_pad_iterate_internal_links (pad);
+    /* loop over the iterator and put all elements into a list, we also
+     * immediatly unref them, which is bad. */
+    do {
+      ires = gst_iterator_foreach (it, (GFunc) add_unref_pad_to_list, res);
+      switch (ires) {
+        case GST_ITERATOR_OK:
+        case GST_ITERATOR_DONE:
+        case GST_ITERATOR_ERROR:
+          done = TRUE;
+          break;
+        case GST_ITERATOR_RESYNC:
+          /* restart, discard previous list */
+          gst_iterator_resync (it);
+          g_list_free (res);
+          res = NULL;
+          break;
+      }
+    } while (!done);
 
-  while (parent_pads) {
-    GstPad *parent_pad = GST_PAD_CAST (parent_pads->data);
+    gst_iterator_free (it);
+  } else {
+    /* lock pad, check and ref parent */
+    GST_OBJECT_LOCK (pad);
+    parent = GST_PAD_PARENT (pad);
+    if (!parent || !GST_IS_ELEMENT (parent))
+      goto no_parent;
 
-    if (parent_pad->direction != direction) {
-      GST_DEBUG_OBJECT (pad, "adding pad %s:%s",
-          GST_DEBUG_PAD_NAME (parent_pad));
-      res = g_list_prepend (res, parent_pad);
-    }
-    parent_pads = g_list_next (parent_pads);
+    parent = gst_object_ref (parent);
+    GST_OBJECT_UNLOCK (pad);
+
+    /* now lock the parent while we copy the pads */
+    GST_OBJECT_LOCK (parent);
+    if (pad->direction == GST_PAD_SRC)
+      res = g_list_copy (parent->sinkpads);
+    else
+      res = g_list_copy (parent->srcpads);
+    GST_OBJECT_UNLOCK (parent);
+
+    gst_object_unref (parent);
   }
+
+  /* At this point pads can be changed and unreffed. Nothing we can do about it
+   * because for compatibility reasons this function cannot ref the pads or
+   * notify the app that the list changed. */
+
   return res;
 
 no_parent:
   {
     GST_DEBUG_OBJECT (pad, "no parent");
+    GST_OBJECT_UNLOCK (pad);
     return NULL;
   }
 }
+#endif /* GST_REMOVE_DEPRECATED */
 
 /**
  * gst_pad_get_internal_links:
@@ -2945,10 +3194,17 @@ no_parent:
  * inside of the parent element.
  * The caller must free this list after use.
  *
- * Returns: a newly allocated #GList of pads.
+ * Returns: a newly allocated #GList of pads, free with g_list_free().
  *
  * Not MT safe.
+ * 
+ * Deprecated: This function does not ref the pads in the list so that they
+ * could become invalid by the time the application accesses them. It's also
+ * possible that the list changes while handling the pads, which the caller of
+ * this function is unable to know. Use the thread-safe 
+ * gst_pad_iterate_internal_links() instead.
  */
+#ifndef GST_REMOVE_DEPRECATED
 GList *
 gst_pad_get_internal_links (GstPad * pad)
 {
@@ -2956,62 +3212,98 @@ gst_pad_get_internal_links (GstPad * pad)
 
   g_return_val_if_fail (GST_IS_PAD (pad), NULL);
 
+  GST_WARNING_OBJECT (pad, "Calling unsafe internal links");
+
   if (GST_PAD_INTLINKFUNC (pad))
     res = GST_PAD_INTLINKFUNC (pad) (pad);
 
   return res;
 }
-
+#endif /* GST_REMOVE_DEPRECATED */
 
 static gboolean
 gst_pad_event_default_dispatch (GstPad * pad, GstEvent * event)
 {
-  GList *orig, *pads;
-  gboolean result;
+  gboolean result = FALSE;
+  GstIterator *iter;
+  gboolean done = FALSE;
+  gpointer item;
+  GstPad *eventpad;
+  GList *pushed_pads = NULL;
 
   GST_INFO_OBJECT (pad, "Sending event %p (%s) to all internally linked pads",
       event, GST_EVENT_TYPE_NAME (event));
 
-  orig = pads = gst_pad_get_internal_links (pad);
+  iter = gst_pad_iterate_internal_links (pad);
 
-  if (!pads) {
-    /* If this is a sinkpad and we don't have pads to send the event to, we
-     * return TRUE. This is so that when using the default handler on a sink
-     * element, we don't fail to push it. */
-    result = (GST_PAD_DIRECTION (pad) == GST_PAD_SINK);
-  } else {
-    /* we have pads, the result will be TRUE if one of the pads handled the
-     * event in the code below. */
-    result = FALSE;
-  }
+  if (!iter)
+    goto no_iter;
 
-  while (pads) {
-    GstPad *eventpad = GST_PAD_CAST (pads->data);
+  while (!done) {
+    switch (gst_iterator_next (iter, &item)) {
+      case GST_ITERATOR_OK:
+        eventpad = GST_PAD (item);
 
-    pads = g_list_next (pads);
+        /* if already pushed,  skip */
+        if (g_list_find (pushed_pads, eventpad)) {
+          gst_object_unref (item);
+          break;
+        }
 
-    if (GST_PAD_DIRECTION (eventpad) == GST_PAD_SRC) {
-      /* for each pad we send to, we should ref the event; it's up
-       * to downstream to unref again when handled. */
-      GST_LOG_OBJECT (pad, "Reffing and sending event %p (%s) to %s:%s",
-          event, GST_EVENT_TYPE_NAME (event), GST_DEBUG_PAD_NAME (eventpad));
-      gst_event_ref (event);
-      result |= gst_pad_push_event (eventpad, event);
-    } else {
-      /* we only send the event on one pad, multi-sinkpad elements
-       * should implement a handler */
-      GST_LOG_OBJECT (pad, "sending event %p (%s) to one sink pad %s:%s",
-          event, GST_EVENT_TYPE_NAME (event), GST_DEBUG_PAD_NAME (eventpad));
-      result = gst_pad_push_event (eventpad, event);
-      goto done;
+        if (GST_PAD_IS_SRC (eventpad)) {
+          /* for each pad we send to, we should ref the event; it's up
+           * to downstream to unref again when handled. */
+          GST_LOG_OBJECT (pad, "Reffing and sending event %p (%s) to %s:%s",
+              event, GST_EVENT_TYPE_NAME (event),
+              GST_DEBUG_PAD_NAME (eventpad));
+          gst_event_ref (event);
+          result |= gst_pad_push_event (eventpad, event);
+        } else {
+          /* we only send the event on one pad, multi-sinkpad elements
+           * should implement a handler */
+          GST_LOG_OBJECT (pad, "sending event %p (%s) to one sink pad %s:%s",
+              event, GST_EVENT_TYPE_NAME (event),
+              GST_DEBUG_PAD_NAME (eventpad));
+          result = gst_pad_push_event (eventpad, event);
+          done = TRUE;
+          event = NULL;
+        }
+
+        pushed_pads = g_list_prepend (pushed_pads, eventpad);
+
+        gst_object_unref (item);
+        break;
+      case GST_ITERATOR_RESYNC:
+        /* FIXME, if we want to reset the result value we need to remember which
+         * pads pushed with which result */
+        gst_iterator_resync (iter);
+        break;
+      case GST_ITERATOR_ERROR:
+        GST_ERROR_OBJECT (pad, "Could not iterate over internally linked pads");
+        done = TRUE;
+        break;
+      case GST_ITERATOR_DONE:
+        done = TRUE;
+        break;
     }
   }
-  /* we handled the incoming event so we unref once */
-  GST_LOG_OBJECT (pad, "handled event %p, unreffing", event);
-  gst_event_unref (event);
+  gst_iterator_free (iter);
 
-done:
-  g_list_free (orig);
+no_iter:
+
+  /* If this is a sinkpad and we don't have pads to send the event to, we
+   * return TRUE. This is so that when using the default handler on a sink
+   * element, we don't fail to push it. */
+  if (!pushed_pads)
+    result = GST_PAD_IS_SINK (pad);
+
+  g_list_free (pushed_pads);
+
+  /* we handled the incoming event so we unref once */
+  if (event) {
+    GST_LOG_OBJECT (pad, "handled event %p, unreffing", event);
+    gst_event_unref (event);
+  }
 
   return result;
 }
@@ -3067,31 +3359,53 @@ gst_pad_dispatcher (GstPad * pad, GstPadDispatcherFunction dispatch,
     gpointer data)
 {
   gboolean res = FALSE;
-  GList *int_pads, *orig;
+  GstIterator *iter = NULL;
+  gboolean done = FALSE;
+  gpointer item;
 
   g_return_val_if_fail (GST_IS_PAD (pad), FALSE);
   g_return_val_if_fail (dispatch != NULL, FALSE);
 
-  orig = int_pads = gst_pad_get_internal_links (pad);
+  iter = gst_pad_iterate_internal_links (pad);
 
-  while (int_pads) {
-    GstPad *int_pad = GST_PAD_CAST (int_pads->data);
-    GstPad *int_peer = gst_pad_get_peer (int_pad);
+  if (!iter)
+    goto no_iter;
 
-    if (int_peer) {
-      GST_DEBUG_OBJECT (int_pad, "dispatching to peer %s:%s",
-          GST_DEBUG_PAD_NAME (int_peer));
-      res = dispatch (int_peer, data);
-      gst_object_unref (int_peer);
-      if (res)
+  while (!done) {
+    switch (gst_iterator_next (iter, &item)) {
+      case GST_ITERATOR_OK:
+      {
+        GstPad *int_pad = GST_PAD_CAST (item);
+        GstPad *int_peer = gst_pad_get_peer (int_pad);
+
+        if (int_peer) {
+          GST_DEBUG_OBJECT (int_pad, "dispatching to peer %s:%s",
+              GST_DEBUG_PAD_NAME (int_peer));
+          done = res = dispatch (int_peer, data);
+          gst_object_unref (int_peer);
+        } else {
+          GST_DEBUG_OBJECT (int_pad, "no peer");
+        }
+      }
+        gst_object_unref (item);
         break;
-    } else {
-      GST_DEBUG_OBJECT (int_pad, "no peer");
+      case GST_ITERATOR_RESYNC:
+        gst_iterator_resync (iter);
+        break;
+      case GST_ITERATOR_ERROR:
+        done = TRUE;
+        GST_ERROR_OBJECT (pad, "Could not iterate internally linked pads");
+        break;
+      case GST_ITERATOR_DONE:
+        done = TRUE;
+        break;
     }
-    int_pads = g_list_next (int_pads);
   }
-  g_list_free (orig);
+  gst_iterator_free (iter);
+
   GST_DEBUG_OBJECT (pad, "done, result %d", res);
+
+no_iter:
 
   return res;
 }
@@ -3651,8 +3965,7 @@ GstFlowReturn
 gst_pad_chain (GstPad * pad, GstBuffer * buffer)
 {
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SINK,
-      GST_FLOW_ERROR);
+  g_return_val_if_fail (GST_PAD_IS_SINK (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (GST_IS_BUFFER (buffer), GST_FLOW_ERROR);
 
   return gst_pad_chain_unchecked (pad, buffer);
@@ -3694,7 +4007,7 @@ gst_pad_push (GstPad * pad, GstBuffer * buffer)
   gboolean caps_changed;
 
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SRC, GST_FLOW_ERROR);
+  g_return_val_if_fail (GST_PAD_IS_SRC (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (GST_IS_BUFFER (buffer), GST_FLOW_ERROR);
 
   GST_OBJECT_LOCK (pad);
@@ -3805,7 +4118,7 @@ gst_pad_check_pull_range (GstPad * pad)
   g_return_val_if_fail (GST_IS_PAD (pad), FALSE);
 
   GST_OBJECT_LOCK (pad);
-  if (GST_PAD_DIRECTION (pad) != GST_PAD_SINK)
+  if (!GST_PAD_IS_SINK (pad))
     goto wrong_direction;
 
   if (G_UNLIKELY ((peer = GST_PAD_PEER (pad)) == NULL))
@@ -3864,10 +4177,6 @@ not_connected:
  * installed (see gst_pad_set_getrange_function()) this function returns
  * #GST_FLOW_NOT_SUPPORTED.
  *
- * @buffer's caps must either be unset or the same as what is already
- * configured on @pad. Renegotiation within a running pull-mode pipeline is not
- * supported.
- *
  * This is a lowlevel function. Usualy gst_pad_pull_range() is used.
  *
  * Returns: a #GstFlowReturn from the pad.
@@ -3881,9 +4190,11 @@ gst_pad_get_range (GstPad * pad, guint64 offset, guint size,
   GstFlowReturn ret;
   GstPadGetRangeFunction getrangefunc;
   gboolean emit_signal;
+  GstCaps *caps;
+  gboolean caps_changed;
 
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SRC, GST_FLOW_ERROR);
+  g_return_val_if_fail (GST_PAD_IS_SRC (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (buffer != NULL, GST_FLOW_ERROR);
 
   GST_PAD_STREAM_LOCK (pad);
@@ -3913,23 +4224,22 @@ gst_pad_get_range (GstPad * pad, guint64 offset, guint size,
 
   GST_PAD_STREAM_UNLOCK (pad);
 
-  if (G_LIKELY (ret == GST_FLOW_OK)) {
-    GstCaps *caps;
-    gboolean caps_changed;
+  if (G_UNLIKELY (ret != GST_FLOW_OK))
+    goto get_range_failed;
 
-    GST_OBJECT_LOCK (pad);
-    /* Before pushing the buffer to the peer pad, ensure that caps
-     * are set on this pad */
-    caps = GST_BUFFER_CAPS (*buffer);
-    caps_changed = caps && caps != GST_PAD_CAPS (pad);
-    GST_OBJECT_UNLOCK (pad);
+  GST_OBJECT_LOCK (pad);
+  /* Before pushing the buffer to the peer pad, ensure that caps
+   * are set on this pad */
+  caps = GST_BUFFER_CAPS (*buffer);
+  caps_changed = caps && caps != GST_PAD_CAPS (pad);
+  GST_OBJECT_UNLOCK (pad);
 
-    /* we got a new datatype from the pad not supported in a running pull-mode
-     * pipeline */
-    if (G_UNLIKELY (caps_changed))
+  if (G_UNLIKELY (caps_changed)) {
+    GST_DEBUG_OBJECT (pad, "caps changed to %p %" GST_PTR_FORMAT, caps, caps);
+    /* this should usually work because the element produced the buffer */
+    if (G_UNLIKELY (!gst_pad_configure_src (pad, caps, TRUE)))
       goto not_negotiated;
   }
-
   return ret;
 
   /* ERRORS */
@@ -3958,23 +4268,20 @@ dropping:
     *buffer = NULL;
     return GST_FLOW_UNEXPECTED;
   }
+get_range_failed:
+  {
+    *buffer = NULL;
+    GST_CAT_WARNING_OBJECT (GST_CAT_SCHEDULING, pad,
+        "getrange failed %s", gst_flow_get_name (ret));
+    return ret;
+  }
 not_negotiated:
   {
-    /* ideally we want to use the commented-out code, but currently demuxers
-     * and typefind do not follow part-negotiation.txt. When switching into
-     * pull mode, typefind should probably return the found caps from
-     * getcaps(), and demuxers should do the setcaps(). */
-
-#if 0
     gst_buffer_unref (*buffer);
     *buffer = NULL;
     GST_CAT_WARNING_OBJECT (GST_CAT_SCHEDULING, pad,
-        "getrange returned buffer of different caps");
+        "getrange returned buffer of unaccaptable caps");
     return GST_FLOW_NOT_NEGOTIATED;
-#endif
-    GST_CAT_DEBUG_OBJECT (GST_CAT_SCHEDULING, pad,
-        "getrange returned buffer of different caps");
-    return ret;
   }
 }
 
@@ -4015,10 +4322,11 @@ gst_pad_pull_range (GstPad * pad, guint64 offset, guint size,
   GstPad *peer;
   GstFlowReturn ret;
   gboolean emit_signal;
+  GstCaps *caps;
+  gboolean caps_changed;
 
   g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_PAD_DIRECTION (pad) == GST_PAD_SINK,
-      GST_FLOW_ERROR);
+  g_return_val_if_fail (GST_PAD_IS_SINK (pad), GST_FLOW_ERROR);
   g_return_val_if_fail (buffer != NULL, GST_FLOW_ERROR);
 
   GST_OBJECT_LOCK (pad);
@@ -4040,28 +4348,28 @@ gst_pad_pull_range (GstPad * pad, guint64 offset, guint size,
 
   gst_object_unref (peer);
 
+  if (G_UNLIKELY (ret != GST_FLOW_OK))
+    goto pull_range_failed;
+
   /* can only fire the signal if we have a valid buffer */
-  if (G_UNLIKELY (emit_signal) && (ret == GST_FLOW_OK)) {
+  if (G_UNLIKELY (emit_signal)) {
     if (!gst_pad_emit_have_data_signal (pad, GST_MINI_OBJECT (*buffer)))
       goto dropping;
   }
 
-  if (G_LIKELY (ret == GST_FLOW_OK)) {
-    GstCaps *caps;
-    gboolean caps_changed;
+  GST_OBJECT_LOCK (pad);
+  /* Before pushing the buffer to the peer pad, ensure that caps
+   * are set on this pad */
+  caps = GST_BUFFER_CAPS (*buffer);
+  caps_changed = caps && caps != GST_PAD_CAPS (pad);
+  GST_OBJECT_UNLOCK (pad);
 
-    GST_OBJECT_LOCK (pad);
-    /* Before pushing the buffer to the peer pad, ensure that caps
-     * are set on this pad */
-    caps = GST_BUFFER_CAPS (*buffer);
-    caps_changed = caps && caps != GST_PAD_CAPS (pad);
-    GST_OBJECT_UNLOCK (pad);
-
-    /* we got a new datatype on the pad, see if it can handle it */
-    if (G_UNLIKELY (caps_changed))
+  /* we got a new datatype on the pad, see if it can handle it */
+  if (G_UNLIKELY (caps_changed)) {
+    GST_DEBUG_OBJECT (pad, "caps changed to %p %" GST_PTR_FORMAT, caps, caps);
+    if (G_UNLIKELY (!gst_pad_configure_sink (pad, caps)))
       goto not_negotiated;
   }
-
   return ret;
 
   /* ERROR recovery here */
@@ -4071,6 +4379,13 @@ not_connected:
         "pulling range, but it was not linked");
     GST_OBJECT_UNLOCK (pad);
     return GST_FLOW_NOT_LINKED;
+  }
+pull_range_failed:
+  {
+    *buffer = NULL;
+    GST_CAT_WARNING_OBJECT (GST_CAT_SCHEDULING, pad,
+        "pullrange failed %s", gst_flow_get_name (ret));
+    return ret;
   }
 dropping:
   {
@@ -4082,21 +4397,11 @@ dropping:
   }
 not_negotiated:
   {
-    /* ideally we want to use the commented-out code, but currently demuxers
-     * and typefind do not follow part-negotiation.txt. When switching into
-     * pull mode, typefind should probably return the found caps from
-     * getcaps(), and demuxers should do the setcaps(). */
-
-#if 0
     gst_buffer_unref (*buffer);
     *buffer = NULL;
     GST_CAT_WARNING_OBJECT (GST_CAT_SCHEDULING, pad,
         "pullrange returned buffer of different caps");
     return GST_FLOW_NOT_NEGOTIATED;
-#endif
-    GST_CAT_DEBUG_OBJECT (GST_CAT_SCHEDULING, pad,
-        "pullrange returned buffer of different caps");
-    return ret;
   }
 }
 

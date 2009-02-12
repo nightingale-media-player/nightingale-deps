@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -48,55 +48,107 @@
 
                     <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>;
 enum                <a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a>;
+enum                <a class="link" href="gstreamer-GstMessage.html#GstStructureChangeType" title="enum GstStructureChangeType">GstStructureChangeType</a>;
 #define             <a class="link" href="gstreamer-GstMessage.html#GST-MESSAGE-SRC:CAPS" title="GST_MESSAGE_SRC()">GST_MESSAGE_SRC</a>                     (message)
 #define             <a class="link" href="gstreamer-GstMessage.html#GST-MESSAGE-TIMESTAMP:CAPS" title="GST_MESSAGE_TIMESTAMP()">GST_MESSAGE_TIMESTAMP</a>               (message)
 #define             <a class="link" href="gstreamer-GstMessage.html#GST-MESSAGE-TYPE:CAPS" title="GST_MESSAGE_TYPE()">GST_MESSAGE_TYPE</a>                    (message)
 #define             <a class="link" href="gstreamer-GstMessage.html#GST-MESSAGE-TYPE-NAME:CAPS" title="GST_MESSAGE_TYPE_NAME()">GST_MESSAGE_TYPE_NAME</a>               (message)
 #define             <a class="link" href="gstreamer-GstMessage.html#GST-MESSAGE-TRACE-NAME:CAPS" title="GST_MESSAGE_TRACE_NAME">GST_MESSAGE_TRACE_NAME</a>
-GQuark              <a class="link" href="gstreamer-GstMessage.html#gst-message-type-to-quark" title="gst_message_type_to_quark ()">gst_message_type_to_quark</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);
-const gchar*        <a class="link" href="gstreamer-GstMessage.html#gst-message-type-get-name" title="gst_message_type_get_name ()">gst_message_type_get_name</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a>              <a class="link" href="gstreamer-GstMessage.html#gst-message-type-to-quark" title="gst_message_type_to_quark ()">gst_message_type_to_quark</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gstreamer-GstMessage.html#gst-message-type-get-name" title="gst_message_type_get_name ()">gst_message_type_get_name</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-ref" title="gst_message_ref ()">gst_message_ref</a>                     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *msg);
 #define             <a class="link" href="gstreamer-GstMessage.html#gst-message-unref" title="gst_message_unref()">gst_message_unref</a>                   (msg)
 #define             <a class="link" href="gstreamer-GstMessage.html#gst-message-copy" title="gst_message_copy()">gst_message_copy</a>                    (msg)
 const <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a>* <a class="link" href="gstreamer-GstMessage.html#gst-message-get-structure" title="gst_message_get_structure ()">gst_message_get_structure</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message);
 #define             <a class="link" href="gstreamer-GstMessage.html#gst-message-make-writable" title="gst_message_make_writable()">gst_message_make_writable</a>           (msg)
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             <a class="link" href="gstreamer-GstMessage.html#gst-message-get-seqnum" title="gst_message_get_seqnum ()">gst_message_get_seqnum</a>              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message);
+void                <a class="link" href="gstreamer-GstMessage.html#gst-message-set-seqnum" title="gst_message_set_seqnum ()">gst_message_set_seqnum</a>              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> seqnum);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-eos" title="gst_message_new_eos ()">gst_message_new_eos</a>                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-error" title="gst_message_new_error ()">gst_message_new_error</a>               (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-error" title="gst_message_parse_error ()">gst_message_parse_error</a>             (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-warning" title="gst_message_new_warning ()">gst_message_new_warning</a>             (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-warning" title="gst_message_parse_warning ()">gst_message_parse_warning</a>           (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-info" title="gst_message_new_info ()">gst_message_new_info</a>                (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-info" title="gst_message_parse_info ()">gst_message_parse_info</a>              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-tag" title="gst_message_new_tag ()">gst_message_new_tag</a>                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> *tag_list);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-tag" title="gst_message_parse_tag ()">gst_message_parse_tag</a>               (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstTagList.html#GstTagList" title="GstTagList">GstTagList</a> **tag_list);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-buffering" title="gst_message_new_buffering ()">gst_message_new_buffering</a>           (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         gint percent);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> percent);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-buffering" title="gst_message_parse_buffering ()">gst_message_parse_buffering</a>         (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         gint *percent);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *percent);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-set-buffering-stats" title="gst_message_set_buffering_stats ()">gst_message_set_buffering_stats</a>     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> mode,
-                                                         gint avg_in,
-                                                         gint avg_out,
-                                                         gint64 buffering_left);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> avg_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> avg_out,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> buffering_left);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-buffering-stats" title="gst_message_parse_buffering_stats ()">gst_message_parse_buffering_stats</a>   (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> *mode,
-                                                         gint *avg_in,
-                                                         gint *avg_out,
-                                                         gint64 *buffering_left);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *avg_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *avg_out,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *buffering_left);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-state-changed" title="gst_message_new_state_changed ()">gst_message_new_state_changed</a>       (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="GstElement.html#GstState" title="enum GstState">GstState</a> oldstate,
                                                          <a class="link" href="GstElement.html#GstState" title="enum GstState">GstState</a> newstate,
@@ -108,10 +160,14 @@ void                <a class="link" href="gstreamer-GstMessage.html#gst-message-
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-state-dirty" title="gst_message_new_state_dirty ()">gst_message_new_state_dirty</a>         (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-clock-provide" title="gst_message_new_clock_provide ()">gst_message_new_clock_provide</a>       (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="GstClock.html" title="GstClock">GstClock</a> *clock,
-                                                         gboolean ready);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> ready);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-clock-provide" title="gst_message_parse_clock_provide ()">gst_message_parse_clock_provide</a>     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="GstClock.html" title="GstClock">GstClock</a> **clock,
-                                                         gboolean *ready);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *ready);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-clock-lost" title="gst_message_new_clock_lost ()">gst_message_new_clock_lost</a>          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="GstClock.html" title="GstClock">GstClock</a> *clock);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-clock-lost" title="gst_message_parse_clock_lost ()">gst_message_parse_clock_lost</a>        (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
@@ -129,28 +185,56 @@ void                <a class="link" href="gstreamer-GstMessage.html#gst-message-
                                                          <a class="link" href="gstreamer-GstStructure.html#GstStructure" title="GstStructure">GstStructure</a> *structure);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-segment-start" title="gst_message_new_segment_start ()">gst_message_new_segment_start</a>       (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 position);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> position);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-segment-start" title="gst_message_parse_segment_start ()">gst_message_parse_segment_start</a>     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *position);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *position);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-segment-done" title="gst_message_new_segment_done ()">gst_message_new_segment_done</a>        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 position);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> position);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-segment-done" title="gst_message_parse_segment_done ()">gst_message_parse_segment_done</a>      (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *position);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *position);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-duration" title="gst_message_new_duration ()">gst_message_new_duration</a>            (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 duration);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> duration);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-duration" title="gst_message_parse_duration ()">gst_message_parse_duration</a>          (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-latency" title="gst_message_new_latency ()">gst_message_new_latency</a>             (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-async-start" title="gst_message_new_async_start ()">gst_message_new_async_start</a>         (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         gboolean new_base_time);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> new_base_time);
 void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-async-start" title="gst_message_parse_async_start ()">gst_message_parse_async_start</a>       (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         gboolean *new_base_time);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *new_base_time);
 <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-async-done" title="gst_message_new_async_done ()">gst_message_new_async_done</a>          (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src);
+<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         <a class="link" href="gstreamer-GstMessage.html#gst-message-new-structure-change" title="gst_message_new_structure_change ()">gst_message_new_structure_change</a>    (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a class="link" href="gstreamer-GstMessage.html#GstStructureChangeType" title="enum GstStructureChangeType">GstStructureChangeType</a> type,
+                                                         <a class="link" href="GstElement.html" title="GstElement">GstElement</a> *owner,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> busy);
+void                <a class="link" href="gstreamer-GstMessage.html#gst-message-parse-structure-change" title="gst_message_parse_structure_change ()">gst_message_parse_structure_change</a>  (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
+                                                         <a class="link" href="gstreamer-GstMessage.html#GstStructureChangeType" title="enum GstStructureChangeType">GstStructureChangeType</a> *type,
+                                                         <a class="link" href="GstElement.html" title="GstElement">GstElement</a> **owner,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *busy);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -171,7 +255,7 @@ The basic use pattern of posting a message on a <a class="link" href="GstBus.htm
 <p>
 </p>
 <div class="example">
-<a name="id2726362"></a><p class="title"><b>Example 11. Posting a <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"><span class="type">GstMessage</span></a></b></p>
+<a name="id2993662"></a><p class="title"><b>Example 11. Posting a <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"><span class="type">GstMessage</span></a></b></p>
 <div class="example-contents"><pre class="programlisting">
    gst_bus_post (bus, gst_message_new_eos());
   </pre></div>
@@ -221,7 +305,9 @@ A <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"
 </td>
 </tr>
 <tr>
-<td><p><span class="term">guint64 <em class="structfield"><code>timestamp</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> <em class="structfield"><code>timestamp</code></em>;</span></p></td>
 <td> the timestamp of the message
 </td>
 </tr>
@@ -360,8 +446,8 @@ implemented.
 </tr>
 <tr>
 <td><p><a name="GST-MESSAGE-STRUCTURE-CHANGE:CAPS"></a><span class="term"><code class="literal">GST_MESSAGE_STRUCTURE_CHANGE</code></span></p></td>
-<td> the structure of the pipeline changed. Not
-implemented yet.
+<td> the structure of the pipeline changed. This
+message is used internally and never forwarded to the application.
 </td>
 </tr>
 <tr>
@@ -428,6 +514,37 @@ pipeline. Since: 0.10.13
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstStructureChangeType"></a><h3>enum GstStructureChangeType</h3>
+<pre class="programlisting">typedef enum {
+  GST_STRUCTURE_CHANGE_TYPE_PAD_LINK   = 0,
+  GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK = 1
+} GstStructureChangeType;
+</pre>
+<p>
+The type of a <span class="type">GstMessageStructureChange</span>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><a name="GST-STRUCTURE-CHANGE-TYPE-PAD-LINK:CAPS"></a><span class="term"><code class="literal">GST_STRUCTURE_CHANGE_TYPE_PAD_LINK</code></span></p></td>
+<td> Pad linking is starting or done.
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-STRUCTURE-CHANGE-TYPE-PAD-UNLINK:CAPS"></a><span class="term"><code class="literal">GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK</code></span></p></td>
+<td> Pad unlinking is starting or done.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -522,7 +639,9 @@ The name used for memory allocation tracing</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-message-type-to-quark"></a><h3>gst_message_type_to_quark ()</h3>
-<pre class="programlisting">GQuark              gst_message_type_to_quark           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Quarks.html#GQuark"
+>GQuark</a>              gst_message_type_to_quark           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);</pre>
 <p>
 Get the unique quark for the given message type.</p>
 <p>
@@ -547,7 +666,9 @@ Get the unique quark for the given message type.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-message-type-get-name"></a><h3>gst_message_type_get_name ()</h3>
-<pre class="programlisting">const gchar*        gst_message_type_get_name           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_message_type_get_name           (<a class="link" href="gstreamer-GstMessage.html#GstMessageType" title="enum GstMessageType">GstMessageType</a> type);</pre>
 <p>
 Get a printable name for the given message type. Do not modify or free.</p>
 <p>
@@ -690,6 +811,88 @@ MT safe</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="gst-message-get-seqnum"></a><h3>gst_message_get_seqnum ()</h3>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             gst_message_get_seqnum              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message);</pre>
+<p>
+Retrieve the sequence number of a message.
+</p>
+<p>
+Messages have ever-incrementing sequence numbers, which may also be set
+explicitly via <a class="link" href="gstreamer-GstMessage.html#gst-message-set-seqnum" title="gst_message_set_seqnum ()"><code class="function">gst_message_set_seqnum()</code></a>. Sequence numbers are typically used
+to indicate that a message corresponds to some other set of messages or
+events, for example a SEGMENT_DONE message corresponding to a SEEK event. It
+is considered good practice to make this correspondence when possible, though
+it is not required.
+</p>
+<p>
+Note that events and messages share the same sequence number incrementor;
+two events or messages will never not have the same sequence number unless
+that correspondence was made explicitly.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
+<td> A <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"><span class="type">GstMessage</span></a>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The message's sequence number.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+
+MT safe.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-message-set-seqnum"></a><h3>gst_message_set_seqnum ()</h3>
+<pre class="programlisting">void                gst_message_set_seqnum              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> seqnum);</pre>
+<p>
+Set the sequence number of a message.
+</p>
+<p>
+This function might be called by the creator of a message to indicate that
+the message relates to other messages or events. See <a class="link" href="gstreamer-GstMessage.html#gst-message-get-seqnum" title="gst_message_get_seqnum ()"><code class="function">gst_message_get_seqnum()</code></a>
+for more information.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
+<td> A <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"><span class="type">GstMessage</span></a>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>seqnum</code></em> :</span></p></td>
+<td> A sequence number.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
+
+MT safe.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-message-new-eos"></a><h3>gst_message_new_eos ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_eos                 (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src);</pre>
 <p>
@@ -721,8 +924,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-new-error"></a><h3>gst_message_new_error ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_error               (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);</pre>
 <p>
 Create a new error message. The message will copy <em class="parameter"><code>error</code></em> and
 <em class="parameter"><code>debug</code></em>. This message is posted by element when a fatal event
@@ -746,7 +953,7 @@ receiving this message should stop the pipeline.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>debug</code></em> :</span></p></td>
-<td> A debugging string for something or other.
+<td> A debugging string.
 </td>
 </tr>
 <tr>
@@ -763,8 +970,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-parse-error"></a><h3>gst_message_parse_error ()</h3>
 <pre class="programlisting">void                gst_message_parse_error             (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);</pre>
 <p>
 Extracts the GError and debug string from the GstMessage. The values returned
 in the output arguments are copies; the caller must free them when done.
@@ -799,8 +1010,12 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-message-new-warning"></a><h3>gst_message_new_warning ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_warning             (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);</pre>
 <p>
 Create a new warning message. The message will make copies of <em class="parameter"><code>error</code></em> and
 <em class="parameter"><code>debug</code></em>.</p>
@@ -822,7 +1037,7 @@ Create a new warning message. The message will make copies of <em class="paramet
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>debug</code></em> :</span></p></td>
-<td> A debugging string for something or other.
+<td> A debugging string.
 </td>
 </tr>
 <tr>
@@ -839,8 +1054,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-parse-warning"></a><h3>gst_message_parse_warning ()</h3>
 <pre class="programlisting">void                gst_message_parse_warning           (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);</pre>
 <p>
 Extracts the GError and debug string from the GstMessage. The values returned
 in the output arguments are copies; the caller must free them when done.
@@ -875,8 +1094,12 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-message-new-info"></a><h3>gst_message_new_info ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_info                (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         GError *error,
-                                                         const gchar *debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> *error,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *debug);</pre>
 <p>
 Create a new info message. The message will make copies of <em class="parameter"><code>error</code></em> and
 <em class="parameter"><code>debug</code></em>.</p>
@@ -898,7 +1121,7 @@ Create a new info message. The message will make copies of <em class="parameter"
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>debug</code></em> :</span></p></td>
-<td> A debugging string for something or other.
+<td> A debugging string.
 </td>
 </tr>
 <tr>
@@ -918,8 +1141,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-parse-info"></a><h3>gst_message_parse_info ()</h3>
 <pre class="programlisting">void                gst_message_parse_info              (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         GError **gerror,
-                                                         gchar **debug);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Error-Reporting.html#GError"
+>GError</a> **gerror,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **debug);</pre>
 <p>
 Extracts the GError and debug string from the GstMessage. The values returned
 in the output arguments are copies; the caller must free them when done.
@@ -1020,7 +1247,9 @@ MT safe.</p>
 <div class="refsect2" lang="en">
 <a name="gst-message-new-buffering"></a><h3>gst_message_new_buffering ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_buffering           (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         gint percent);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> percent);</pre>
 <p>
 Create a new buffering message. This message can be posted by an element that
 needs to buffer data before it can continue processing. <em class="parameter"><code>percent</code></em> should be a
@@ -1066,7 +1295,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-parse-buffering"></a><h3>gst_message_parse_buffering ()</h3>
 <pre class="programlisting">void                gst_message_parse_buffering         (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         gint *percent);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *percent);</pre>
 <p>
 Extracts the buffering percent from the GstMessage. see also
 <a class="link" href="gstreamer-GstMessage.html#gst-message-new-buffering" title="gst_message_new_buffering ()"><code class="function">gst_message_new_buffering()</code></a>.</p>
@@ -1098,9 +1329,15 @@ MT safe.
 <a name="gst-message-set-buffering-stats"></a><h3>gst_message_set_buffering_stats ()</h3>
 <pre class="programlisting">void                gst_message_set_buffering_stats     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> mode,
-                                                         gint avg_in,
-                                                         gint avg_out,
-                                                         gint64 buffering_left);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> avg_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> avg_out,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> buffering_left);</pre>
 <p>
 Configures the buffering stats values in <em class="parameter"><code>message</code></em>.</p>
 <p>
@@ -1144,9 +1381,15 @@ Configures the buffering stats values in <em class="parameter"><code>message</co
 <a name="gst-message-parse-buffering-stats"></a><h3>gst_message_parse_buffering_stats ()</h3>
 <pre class="programlisting">void                gst_message_parse_buffering_stats   (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstBufferingMode" title="enum GstBufferingMode">GstBufferingMode</a> *mode,
-                                                         gint *avg_in,
-                                                         gint *avg_out,
-                                                         gint64 *buffering_left);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *avg_in,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *avg_out,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *buffering_left);</pre>
 <p>
 Extracts the buffering stats values from <em class="parameter"><code>message</code></em>.</p>
 <p>
@@ -1306,7 +1549,9 @@ MT safe.
 <a name="gst-message-new-clock-provide"></a><h3>gst_message_new_clock_provide ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_clock_provide       (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="GstClock.html" title="GstClock">GstClock</a> *clock,
-                                                         gboolean ready);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> ready);</pre>
 <p>
 Create a clock provide message. This message is posted whenever an
 element is ready to provide a clock or lost its ability to provide
@@ -1351,7 +1596,9 @@ MT safe.
 <a name="gst-message-parse-clock-provide"></a><h3>gst_message_parse_clock_provide ()</h3>
 <pre class="programlisting">void                gst_message_parse_clock_provide     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="GstClock.html" title="GstClock">GstClock</a> **clock,
-                                                         gboolean *ready);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *ready);</pre>
 <p>
 Extracts the clock and ready flag from the GstMessage.
 The clock object returned remains valid until the message is freed.
@@ -1634,7 +1881,9 @@ MT safe.
 <a name="gst-message-new-segment-start"></a><h3>gst_message_new_segment_start ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_segment_start       (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 position);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> position);</pre>
 <p>
 Create a new segment message. This message is posted by elements that
 start playback of a segment as a result of a segment seek. This message
@@ -1676,7 +1925,9 @@ MT safe.
 <a name="gst-message-parse-segment-start"></a><h3>gst_message_parse_segment_start ()</h3>
 <pre class="programlisting">void                gst_message_parse_segment_start     (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *position);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *position);</pre>
 <p>
 Extracts the position and format from the segment start message.
 </p>
@@ -1711,7 +1962,9 @@ MT safe.</p>
 <a name="gst-message-new-segment-done"></a><h3>gst_message_new_segment_done ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_segment_done        (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 position);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> position);</pre>
 <p>
 Create a new segment done message. This message is posted by elements that
 finish playback of a segment as a result of a segment seek. This message
@@ -1753,7 +2006,9 @@ MT safe.
 <a name="gst-message-parse-segment-done"></a><h3>gst_message_parse_segment_done ()</h3>
 <pre class="programlisting">void                gst_message_parse_segment_done      (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *position);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *position);</pre>
 <p>
 Extracts the position and format from the segment start message.
 </p>
@@ -1788,7 +2043,9 @@ MT safe.</p>
 <a name="gst-message-new-duration"></a><h3>gst_message_new_duration ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_duration            (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> format,
-                                                         gint64 duration);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> duration);</pre>
 <p>
 Create a new duration message. This message is posted by elements that
 know the duration of a stream in a specific format. This message
@@ -1833,7 +2090,9 @@ MT safe.
 <a name="gst-message-parse-duration"></a><h3>gst_message_parse_duration ()</h3>
 <pre class="programlisting">void                gst_message_parse_duration          (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);</pre>
 <p>
 Extracts the duration and format from the duration message. The duration
 might be GST_CLOCK_TIME_NONE, which indicates that the duration has
@@ -1901,7 +2160,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-new-async-start"></a><h3>gst_message_new_async_start ()</h3>
 <pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_async_start         (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
-                                                         gboolean new_base_time);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> new_base_time);</pre>
 <p>
 This message is posted by elements when they start an ASYNC state change. 
 <em class="parameter"><code>new_base_time</code></em> is set to TRUE when the element lost its state when it was
@@ -1939,7 +2200,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-message-parse-async-start"></a><h3>gst_message_parse_async_start ()</h3>
 <pre class="programlisting">void                gst_message_parse_async_start       (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
-                                                         gboolean *new_base_time);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *new_base_time);</pre>
 <p>
 Extract the new_base_time from the async_start message. 
 </p>
@@ -1994,6 +2257,107 @@ MT safe.
 </tbody>
 </table></div>
 <p class="since">Since  0.10.13
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-message-new-structure-change"></a><h3>gst_message_new_structure_change ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a>*         gst_message_new_structure_change    (<a class="link" href="GstObject.html" title="GstObject">GstObject</a> *src,
+                                                         <a class="link" href="gstreamer-GstMessage.html#GstStructureChangeType" title="enum GstStructureChangeType">GstStructureChangeType</a> type,
+                                                         <a class="link" href="GstElement.html" title="GstElement">GstElement</a> *owner,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> busy);</pre>
+<p>
+Create a new structure change message. This message is posted when the
+structure of a pipeline is in the process of being changed, for example
+when pads are linked or unlinked.
+</p>
+<p>
+<em class="parameter"><code>src</code></em> should be the srcpad that unlinked or linked.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
+<td> The object originating the message.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td> The change type.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>owner</code></em> :</span></p></td>
+<td> The owner element of <em class="parameter"><code>src</code></em>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>busy</code></em> :</span></p></td>
+<td> Whether the structure change is busy.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The new structure change message.
+
+MT safe.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-message-parse-structure-change"></a><h3>gst_message_parse_structure_change ()</h3>
+<pre class="programlisting">void                gst_message_parse_structure_change  (<a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage">GstMessage</a> *message,
+                                                         <a class="link" href="gstreamer-GstMessage.html#GstStructureChangeType" title="enum GstStructureChangeType">GstStructureChangeType</a> *type,
+                                                         <a class="link" href="GstElement.html" title="GstElement">GstElement</a> **owner,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *busy);</pre>
+<p>
+Extracts the change type and completion status from the GstMessage.
+</p>
+<p>
+MT safe.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
+<td> A valid <a class="link" href="gstreamer-GstMessage.html#GstMessage" title="GstMessage"><span class="type">GstMessage</span></a> of type GST_MESSAGE_STRUCTURE_CHANGE.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em> :</span></p></td>
+<td> A pointer to hold the change type
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>owner</code></em> :</span></p></td>
+<td> The owner element of the message source
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>busy</code></em> :</span></p></td>
+<td> A pointer to hold whether the change is in progress or has been
+completed
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.22
 </p>
 </div>
 </div>

@@ -14,8 +14,8 @@
 <link rel="chapter" href="libgstreamer.html" title="GStreamer Core Library">
 <link rel="chapter" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="api-index-full.html" title="API Index">
+<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -68,81 +68,175 @@ enum                <a class="link" href="GstPad.html#GstActivateMode" title="en
 <a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>*     <a class="link" href="GstPad.html#gst-pad-get-pad-template" title="gst_pad_get_pad_template ()">gst_pad_get_pad_template</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="GstPad.html#GstPadLinkReturn" title="enum GstPadLinkReturn">GstPadLinkReturn</a>    <a class="link" href="GstPad.html#gst-pad-link" title="gst_pad_link ()">gst_pad_link</a>                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-unlink" title="gst_pad_unlink ()">gst_pad_unlink</a>                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-unlink" title="gst_pad_unlink ()">gst_pad_unlink</a>                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-is-linked" title="gst_pad_is_linked ()">gst_pad_is_linked</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-can-link" title="gst_pad_can_link ()">gst_pad_can_link</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-is-linked" title="gst_pad_is_linked ()">gst_pad_is_linked</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-can-link" title="gst_pad_can_link ()">gst_pad_can_link</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-get-caps" title="gst_pad_get_caps ()">gst_pad_get_caps</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-get-allowed-caps" title="gst_pad_get_allowed_caps ()">gst_pad_get_allowed_caps</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-get-negotiated-caps" title="gst_pad_get_negotiated_caps ()">gst_pad_get_negotiated_caps</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 const <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*      <a class="link" href="GstPad.html#gst-pad-get-pad-template-caps" title="gst_pad_get_pad_template_caps ()">gst_pad_get_pad_template_caps</a>       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-set-caps" title="gst_pad_set_caps ()">gst_pad_set_caps</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-set-caps" title="gst_pad_set_caps ()">gst_pad_set_caps</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 <a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstPad.html#gst-pad-get-peer" title="gst_pad_get_peer ()">gst_pad_get_peer</a>                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-peer-get-caps" title="gst_pad_peer_get_caps ()">gst_pad_peer_get_caps</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 void                <a class="link" href="GstPad.html#gst-pad-use-fixed-caps" title="gst_pad_use_fixed_caps ()">gst_pad_use_fixed_caps</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-is-active" title="gst_pad_is_active ()">gst_pad_is_active</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-set-blocked" title="gst_pad_set_blocked ()">gst_pad_set_blocked</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked);
-gboolean            <a class="link" href="GstPad.html#gst-pad-set-blocked-async" title="gst_pad_set_blocked_async ()">gst_pad_set_blocked_async</a>           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-is-active" title="gst_pad_is_active ()">gst_pad_is_active</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-set-blocked" title="gst_pad_set_blocked ()">gst_pad_set_blocked</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-set-blocked-async" title="gst_pad_set_blocked_async ()">gst_pad_set_blocked_async</a>           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked,
                                                          <a class="link" href="GstPad.html#GstPadBlockCallback" title="GstPadBlockCallback ()">GstPadBlockCallback</a> callback,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 void                (<a class="link" href="GstPad.html#GstPadBlockCallback" title="GstPadBlockCallback ()">*GstPadBlockCallback</a>)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked,
-                                                         gpointer user_data);
-gboolean            <a class="link" href="GstPad.html#gst-pad-is-blocked" title="gst_pad_is_blocked ()">gst_pad_is_blocked</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-is-blocking" title="gst_pad_is_blocking ()">gst_pad_is_blocking</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()">gst_pad_add_data_probe</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-data-probe-full" title="gst_pad_add_data_probe_full ()">gst_pad_add_data_probe_full</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-buffer-probe" title="gst_pad_add_buffer_probe ()">gst_pad_add_buffer_probe</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-buffer-probe-full" title="gst_pad_add_buffer_probe_full ()">gst_pad_add_buffer_probe_full</a>       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-event-probe" title="gst_pad_add_event_probe ()">gst_pad_add_event_probe</a>             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);
-gulong              <a class="link" href="GstPad.html#gst-pad-add-event-probe-full" title="gst_pad_add_event_probe_full ()">gst_pad_add_event_probe_full</a>        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-is-blocked" title="gst_pad_is_blocked ()">gst_pad_is_blocked</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-is-blocking" title="gst_pad_is_blocking ()">gst_pad_is_blocking</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()">gst_pad_add_data_probe</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-data-probe-full" title="gst_pad_add_data_probe_full ()">gst_pad_add_data_probe_full</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-buffer-probe" title="gst_pad_add_buffer_probe ()">gst_pad_add_buffer_probe</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-buffer-probe-full" title="gst_pad_add_buffer_probe_full ()">gst_pad_add_buffer_probe_full</a>       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-event-probe" title="gst_pad_add_event_probe ()">gst_pad_add_event_probe</a>             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              <a class="link" href="GstPad.html#gst-pad-add-event-probe-full" title="gst_pad_add_event_probe_full ()">gst_pad_add_event_probe_full</a>        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);
 void                <a class="link" href="GstPad.html#gst-pad-remove-data-probe" title="gst_pad_remove_data_probe ()">gst_pad_remove_data_probe</a>           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);
 void                <a class="link" href="GstPad.html#gst-pad-remove-buffer-probe" title="gst_pad_remove_buffer_probe ()">gst_pad_remove_buffer_probe</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);
 void                <a class="link" href="GstPad.html#gst-pad-remove-event-probe" title="gst_pad_remove_event_probe ()">gst_pad_remove_event_probe</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);
 
-<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstPad.html#gst-pad-new" title="gst_pad_new ()">gst_pad_new</a>                         (const gchar *name,
+<a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstPad.html#gst-pad-new" title="gst_pad_new ()">gst_pad_new</a>                         (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection">GstPadDirection</a> direction);
 <a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstPad.html#gst-pad-new-from-template" title="gst_pad_new_from_template ()">gst_pad_new_from_template</a>           (<a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ,
-                                                         const gchar *name);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
 <a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             <a class="link" href="GstPad.html#gst-pad-new-from-static-template" title="gst_pad_new_from_static_template ()">gst_pad_new_from_static_template</a>    (<a class="link" href="GstPadTemplate.html#GstStaticPadTemplate" title="GstStaticPadTemplate">GstStaticPadTemplate</a> *templ,
-                                                         const gchar *name);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-alloc-buffer" title="gst_pad_alloc_buffer ()">gst_pad_alloc_buffer</a>                (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         gint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-alloc-buffer-and-set-caps" title="gst_pad_alloc_buffer_and_set_caps ()">gst_pad_alloc_buffer_and_set_caps</a>   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         gint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);
 void                <a class="link" href="GstPad.html#gst-pad-set-bufferalloc-function" title="gst_pad_set_bufferalloc_function ()">gst_pad_set_bufferalloc_function</a>    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadBufferAllocFunction" title="GstPadBufferAllocFunction ()">GstPadBufferAllocFunction</a> bufalloc);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       (<a class="link" href="GstPad.html#GstPadBufferAllocFunction" title="GstPadBufferAllocFunction ()">*GstPadBufferAllocFunction</a>)        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);
 void                <a class="link" href="GstPad.html#gst-pad-set-chain-function" title="gst_pad_set_chain_function ()">gst_pad_set_chain_function</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
@@ -151,20 +245,32 @@ void                <a class="link" href="GstPad.html#gst-pad-set-chain-function
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buffer);
 void                <a class="link" href="GstPad.html#gst-pad-set-checkgetrange-function" title="gst_pad_set_checkgetrange_function ()">gst_pad_set_checkgetrange_function</a>  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadCheckGetRangeFunction" title="GstPadCheckGetRangeFunction ()">GstPadCheckGetRangeFunction</a> check);
-gboolean            (<a class="link" href="GstPad.html#GstPadCheckGetRangeFunction" title="GstPadCheckGetRangeFunction ()">*GstPadCheckGetRangeFunction</a>)      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadCheckGetRangeFunction" title="GstPadCheckGetRangeFunction ()">*GstPadCheckGetRangeFunction</a>)      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-get-range" title="gst_pad_get_range ()">gst_pad_get_range</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);
 void                <a class="link" href="GstPad.html#gst-pad-set-getrange-function" title="gst_pad_set_getrange_function ()">gst_pad_set_getrange_function</a>       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadGetRangeFunction" title="GstPadGetRangeFunction ()">GstPadGetRangeFunction</a> get);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       (<a class="link" href="GstPad.html#GstPadGetRangeFunction" title="GstPadGetRangeFunction ()">*GstPadGetRangeFunction</a>)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint length,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> length,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);
 void                <a class="link" href="GstPad.html#gst-pad-set-event-function" title="gst_pad_set_event_function ()">gst_pad_set_event_function</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadEventFunction" title="GstPadEventFunction ()">GstPadEventFunction</a> event);
-gboolean            (<a class="link" href="GstPad.html#GstPadEventFunction" title="GstPadEventFunction ()">*GstPadEventFunction</a>)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadEventFunction" title="GstPadEventFunction ()">*GstPadEventFunction</a>)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);
 void                <a class="link" href="GstPad.html#gst-pad-set-link-function" title="gst_pad_set_link_function ()">gst_pad_set_link_function</a>           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadLinkFunction" title="GstPadLinkFunction ()">GstPadLinkFunction</a> link);
@@ -173,11 +279,15 @@ void                <a class="link" href="GstPad.html#gst-pad-set-link-function"
 void                <a class="link" href="GstPad.html#gst-pad-set-unlink-function" title="gst_pad_set_unlink_function ()">gst_pad_set_unlink_function</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadUnlinkFunction" title="GstPadUnlinkFunction ()">GstPadUnlinkFunction</a> unlink);
 void                (<a class="link" href="GstPad.html#GstPadUnlinkFunction" title="GstPadUnlinkFunction ()">*GstPadUnlinkFunction</a>)             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-accept-caps" title="gst_pad_accept_caps ()">gst_pad_accept_caps</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-accept-caps" title="gst_pad_accept_caps ()">gst_pad_accept_caps</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 void                <a class="link" href="GstPad.html#gst-pad-set-acceptcaps-function" title="gst_pad_set_acceptcaps_function ()">gst_pad_set_acceptcaps_function</a>     (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadAcceptCapsFunction" title="GstPadAcceptCapsFunction ()">GstPadAcceptCapsFunction</a> acceptcaps);
-gboolean            (<a class="link" href="GstPad.html#GstPadAcceptCapsFunction" title="GstPadAcceptCapsFunction ()">*GstPadAcceptCapsFunction</a>)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadAcceptCapsFunction" title="GstPadAcceptCapsFunction ()">*GstPadAcceptCapsFunction</a>)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 void                <a class="link" href="GstPad.html#gst-pad-set-getcaps-function" title="gst_pad_set_getcaps_function ()">gst_pad_set_getcaps_function</a>        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadGetCapsFunction" title="GstPadGetCapsFunction ()">GstPadGetCapsFunction</a> getcaps);
@@ -185,9 +295,13 @@ void                <a class="link" href="GstPad.html#gst-pad-set-getcaps-functi
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-proxy-getcaps" title="gst_pad_proxy_getcaps ()">gst_pad_proxy_getcaps</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 void                <a class="link" href="GstPad.html#gst-pad-set-setcaps-function" title="gst_pad_set_setcaps_function ()">gst_pad_set_setcaps_function</a>        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadSetCapsFunction" title="GstPadSetCapsFunction ()">GstPadSetCapsFunction</a> setcaps);
-gboolean            (<a class="link" href="GstPad.html#GstPadSetCapsFunction" title="GstPadSetCapsFunction ()">*GstPadSetCapsFunction</a>)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadSetCapsFunction" title="GstPadSetCapsFunction ()">*GstPadSetCapsFunction</a>)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
-gboolean            <a class="link" href="GstPad.html#gst-pad-proxy-setcaps" title="gst_pad_proxy_setcaps ()">gst_pad_proxy_setcaps</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-proxy-setcaps" title="gst_pad_proxy_setcaps ()">gst_pad_proxy_setcaps</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 void                <a class="link" href="GstPad.html#gst-pad-fixate-caps" title="gst_pad_fixate_caps ()">gst_pad_fixate_caps</a>                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
@@ -196,96 +310,197 @@ void                <a class="link" href="GstPad.html#gst-pad-set-fixatecaps-fun
 void                (<a class="link" href="GstPad.html#GstPadFixateCapsFunction" title="GstPadFixateCapsFunction ()">*GstPadFixateCapsFunction</a>)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a>*            <a class="link" href="GstPad.html#gst-pad-get-fixed-caps-func" title="gst_pad_get_fixed_caps_func ()">gst_pad_get_fixed_caps_func</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-peer-accept-caps" title="gst_pad_peer_accept_caps ()">gst_pad_peer_accept_caps</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-peer-accept-caps" title="gst_pad_peer_accept_caps ()">gst_pad_peer_accept_caps</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);
 void                <a class="link" href="GstPad.html#gst-pad-set-activate-function" title="gst_pad_set_activate_function ()">gst_pad_set_activate_function</a>       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadActivateFunction" title="GstPadActivateFunction ()">GstPadActivateFunction</a> activate);
-gboolean            (<a class="link" href="GstPad.html#GstPadActivateFunction" title="GstPadActivateFunction ()">*GstPadActivateFunction</a>)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadActivateFunction" title="GstPadActivateFunction ()">*GstPadActivateFunction</a>)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 void                <a class="link" href="GstPad.html#gst-pad-set-activatepush-function" title="gst_pad_set_activatepush_function ()">gst_pad_set_activatepush_function</a>   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadActivateModeFunction" title="GstPadActivateModeFunction ()">GstPadActivateModeFunction</a> activatepush);
 void                <a class="link" href="GstPad.html#gst-pad-set-activatepull-function" title="gst_pad_set_activatepull_function ()">gst_pad_set_activatepull_function</a>   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadActivateModeFunction" title="GstPadActivateModeFunction ()">GstPadActivateModeFunction</a> activatepull);
-gboolean            (<a class="link" href="GstPad.html#GstPadActivateModeFunction" title="GstPadActivateModeFunction ()">*GstPadActivateModeFunction</a>)       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadActivateModeFunction" title="GstPadActivateModeFunction ()">*GstPadActivateModeFunction</a>)       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-push" title="gst_pad_push ()">gst_pad_push</a>                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buffer);
-gboolean            <a class="link" href="GstPad.html#gst-pad-push-event" title="gst_pad_push_event ()">gst_pad_push_event</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-push-event" title="gst_pad_push_event ()">gst_pad_push_event</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);
-gboolean            <a class="link" href="GstPad.html#gst-pad-check-pull-range" title="gst_pad_check_pull_range ()">gst_pad_check_pull_range</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-check-pull-range" title="gst_pad_check_pull_range ()">gst_pad_check_pull_range</a>            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-pull-range" title="gst_pad_pull_range ()">gst_pad_pull_range</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);
-gboolean            <a class="link" href="GstPad.html#gst-pad-activate-pull" title="gst_pad_activate_pull ()">gst_pad_activate_pull</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);
-gboolean            <a class="link" href="GstPad.html#gst-pad-activate-push" title="gst_pad_activate_push ()">gst_pad_activate_push</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);
-gboolean            <a class="link" href="GstPad.html#gst-pad-send-event" title="gst_pad_send_event ()">gst_pad_send_event</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-activate-pull" title="gst_pad_activate_pull ()">gst_pad_activate_pull</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-activate-push" title="gst_pad_activate_push ()">gst_pad_activate_push</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-send-event" title="gst_pad_send_event ()">gst_pad_send_event</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);
-gboolean            <a class="link" href="GstPad.html#gst-pad-event-default" title="gst_pad_event_default ()">gst_pad_event_default</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-event-default" title="gst_pad_event_default ()">gst_pad_event_default</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query" title="gst_pad_query ()">gst_pad_query</a>                       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query" title="gst_pad_query ()">gst_pad_query</a>                       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
-gboolean            <a class="link" href="GstPad.html#gst-pad-peer-query" title="gst_pad_peer_query ()">gst_pad_peer_query</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-peer-query" title="gst_pad_peer_query ()">gst_pad_peer_query</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-default" title="gst_pad_query_default ()">gst_pad_query_default</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-default" title="gst_pad_query_default ()">gst_pad_query_default</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-position" title="gst_pad_query_position ()">gst_pad_query_position</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-position" title="gst_pad_query_position ()">gst_pad_query_position</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *cur);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-duration" title="gst_pad_query_duration ()">gst_pad_query_duration</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *cur);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-duration" title="gst_pad_query_duration ()">gst_pad_query_duration</a>              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-convert" title="gst_pad_query_convert ()">gst_pad_query_convert</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-convert" title="gst_pad_query_convert ()">gst_pad_query_convert</a>               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
-                                                         gint64 src_val,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_val,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
-                                                         gint64 *dest_val);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-peer-position" title="gst_pad_query_peer_position ()">gst_pad_query_peer_position</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_val);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-peer-position" title="gst_pad_query_peer_position ()">gst_pad_query_peer_position</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *cur);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-peer-duration" title="gst_pad_query_peer_duration ()">gst_pad_query_peer_duration</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *cur);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-peer-duration" title="gst_pad_query_peer_duration ()">gst_pad_query_peer_duration</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);
-gboolean            <a class="link" href="GstPad.html#gst-pad-query-peer-convert" title="gst_pad_query_peer_convert ()">gst_pad_query_peer_convert</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-query-peer-convert" title="gst_pad_query_peer_convert ()">gst_pad_query_peer_convert</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
-                                                         gint64 src_val,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_val,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
-                                                         gint64 *dest_val);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_val);
 void                <a class="link" href="GstPad.html#gst-pad-set-query-function" title="gst_pad_set_query_function ()">gst_pad_set_query_function</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadQueryFunction" title="GstPadQueryFunction ()">GstPadQueryFunction</a> query);
-gboolean            (<a class="link" href="GstPad.html#GstPadQueryFunction" title="GstPadQueryFunction ()">*GstPadQueryFunction</a>)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadQueryFunction" title="GstPadQueryFunction ()">*GstPadQueryFunction</a>)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);
 void                <a class="link" href="GstPad.html#gst-pad-set-query-type-function" title="gst_pad_set_query_type_function ()">gst_pad_set_query_type_function</a>     (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadQueryTypeFunction" title="GstPadQueryTypeFunction ()">GstPadQueryTypeFunction</a> type_func);
 const <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>* (<a class="link" href="GstPad.html#GstPadQueryTypeFunction" title="GstPadQueryTypeFunction ()">*GstPadQueryTypeFunction</a>)          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 const <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>* <a class="link" href="GstPad.html#gst-pad-get-query-types" title="gst_pad_get_query_types ()">gst_pad_get_query_types</a>             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 const <a class="link" href="gstreamer-GstQuery.html#GstQueryType" title="enum GstQueryType">GstQueryType</a>* <a class="link" href="GstPad.html#gst-pad-get-query-types-default" title="gst_pad_get_query_types_default ()">gst_pad_get_query_types_default</a>     (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+void                <a class="link" href="GstPad.html#gst-pad-set-iterate-internal-links-function" title="gst_pad_set_iterate_internal_links_function ()">gst_pad_set_iterate_internal_links_function</a>
+                                                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()">GstPadIterIntLinkFunction</a> iterintlink);
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        (<a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()">*GstPadIterIntLinkFunction</a>)        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="GstPad.html#gst-pad-iterate-internal-links" title="gst_pad_iterate_internal_links ()">gst_pad_iterate_internal_links</a>      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        <a class="link" href="GstPad.html#gst-pad-iterate-internal-links-default" title="gst_pad_iterate_internal_links_default ()">gst_pad_iterate_internal_links_default</a>
+                                                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 void                <a class="link" href="GstPad.html#gst-pad-set-internal-link-function" title="gst_pad_set_internal_link_function ()">gst_pad_set_internal_link_function</a>  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadIntLinkFunction" title="GstPadIntLinkFunction ()">GstPadIntLinkFunction</a> intlink);
-GList*              (<a class="link" href="GstPad.html#GstPadIntLinkFunction" title="GstPadIntLinkFunction ()">*GstPadIntLinkFunction</a>)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-GList*              <a class="link" href="GstPad.html#gst-pad-get-internal-links" title="gst_pad_get_internal_links ()">gst_pad_get_internal_links</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-GList*              <a class="link" href="GstPad.html#gst-pad-get-internal-links-default" title="gst_pad_get_internal_links_default ()">gst_pad_get_internal_links_default</a>  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              (<a class="link" href="GstPad.html#GstPadIntLinkFunction" title="GstPadIntLinkFunction ()">*GstPadIntLinkFunction</a>)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstPad.html#gst-pad-get-internal-links" title="gst_pad_get_internal_links ()">gst_pad_get_internal_links</a>          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="GstPad.html#gst-pad-get-internal-links-default" title="gst_pad_get_internal_links_default ()">gst_pad_get_internal_links_default</a>  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 void                <a class="link" href="GstPad.html#gst-pad-load-and-link" title="gst_pad_load_and_link ()">gst_pad_load_and_link</a>               (xmlNodePtr self,
                                                          <a class="link" href="GstObject.html" title="GstObject">GstObject</a> *parent);
-gboolean            <a class="link" href="GstPad.html#gst-pad-dispatcher" title="gst_pad_dispatcher ()">gst_pad_dispatcher</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-dispatcher" title="gst_pad_dispatcher ()">gst_pad_dispatcher</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadDispatcherFunction" title="GstPadDispatcherFunction ()">GstPadDispatcherFunction</a> dispatch,
-                                                         gpointer data);
-gboolean            (<a class="link" href="GstPad.html#GstPadDispatcherFunction" title="GstPadDispatcherFunction ()">*GstPadDispatcherFunction</a>)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gpointer data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="GstPad.html#GstPadDispatcherFunction" title="GstPadDispatcherFunction ()">*GstPadDispatcherFunction</a>)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
 void                <a class="link" href="GstPad.html#gst-pad-set-element-private" title="gst_pad_set_element_private ()">gst_pad_set_element_private</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gpointer priv);
-gpointer            <a class="link" href="GstPad.html#gst-pad-get-element-private" title="gst_pad_get_element_private ()">gst_pad_get_element_private</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> priv);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            <a class="link" href="GstPad.html#gst-pad-get-element-private" title="gst_pad_get_element_private ()">gst_pad_get_element_private</a>         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
 
 <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       <a class="link" href="GstPad.html#gst-pad-chain" title="gst_pad_chain ()">gst_pad_chain</a>                       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> *buffer);
-gboolean            <a class="link" href="GstPad.html#gst-pad-start-task" title="gst_pad_start_task ()">gst_pad_start_task</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-start-task" title="gst_pad_start_task ()">gst_pad_start_task</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstTask.html#GstTaskFunction" title="GstTaskFunction ()">GstTaskFunction</a> func,
-                                                         gpointer data);
-gboolean            <a class="link" href="GstPad.html#gst-pad-pause-task" title="gst_pad_pause_task ()">gst_pad_pause_task</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-stop-task" title="gst_pad_stop_task ()">gst_pad_stop_task</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
-gboolean            <a class="link" href="GstPad.html#gst-pad-set-active" title="gst_pad_set_active ()">gst_pad_set_active</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-pause-task" title="gst_pad_pause_task ()">gst_pad_pause_task</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-stop-task" title="gst_pad_stop_task ()">gst_pad_stop_task</a>                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="GstPad.html#gst-pad-set-active" title="gst_pad_set_active ()">gst_pad_set_active</a>                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);
 #define             <a class="link" href="GstPad.html#GST-PAD-CAPS:CAPS" title="GST_PAD_CAPS()">GST_PAD_CAPS</a>                        (pad)
 #define             <a class="link" href="GstPad.html#GST-PAD-GET-STREAM-LOCK:CAPS" title="GST_PAD_GET_STREAM_LOCK()">GST_PAD_GET_STREAM_LOCK</a>             (pad)
 #define             <a class="link" href="GstPad.html#GST-PAD-STREAM-LOCK:CAPS" title="GST_PAD_STREAM_LOCK()">GST_PAD_STREAM_LOCK</a>                 (pad)
@@ -300,7 +515,9 @@ gboolean            <a class="link" href="GstPad.html#gst-pad-set-active" title=
 <div class="refsect1" lang="en">
 <a name="GstPad.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
          +----GstPad
                +----GstProxyPad
@@ -432,6 +649,10 @@ Last reviewed on 2006-07-06 (0.10.9)</p>
    * of handlers attached. */
   gint				 do_buffer_signals;
   gint				 do_event_signals;
+
+  /* ABI added */
+  /* iterate internal links */
+  GstPadIterIntLinkFunction     iterintlinkfunc;
 } GstPad;
 </pre>
 <p>
@@ -443,7 +664,9 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">gpointer <em class="structfield"><code>element_private</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> <em class="structfield"><code>element_private</code></em>;</span></p></td>
 <td> private data owned by the parent element
 </td>
 </tr>
@@ -459,7 +682,9 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GStaticRecMutex *<em class="structfield"><code>stream_rec_lock</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GStaticRecMutex"
+>GStaticRecMutex</a> *<em class="structfield"><code>stream_rec_lock</code></em>;</span></p></td>
 <td> recursive stream lock of the pad, used to protect
                   the data used in streaming.
 </td>
@@ -470,17 +695,23 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GMutex *<em class="structfield"><code>preroll_lock</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GMutex"
+>GMutex</a> *<em class="structfield"><code>preroll_lock</code></em>;</span></p></td>
 <td> lock used when prerolling
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GCond *<em class="structfield"><code>preroll_cond</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GCond"
+>GCond</a> *<em class="structfield"><code>preroll_cond</code></em>;</span></p></td>
 <td> conf to signal preroll
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GCond *<em class="structfield"><code>block_cond</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Threads.html#GCond"
+>GCond</a> *<em class="structfield"><code>block_cond</code></em>;</span></p></td>
 <td> conditional to signal pad block
 </td>
 </tr>
@@ -490,7 +721,9 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gpointer <em class="structfield"><code>block_data</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> <em class="structfield"><code>block_data</code></em>;</span></p></td>
 <td> user data for <em class="parameter"><code>block_callback</code></em>
 </td>
 </tr>
@@ -550,7 +783,9 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gpointer <em class="structfield"><code>sched_private</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> <em class="structfield"><code>sched_private</code></em>;</span></p></td>
 <td> private storage for the scheduler
 </td>
 </tr>
@@ -600,13 +835,22 @@ The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad<
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>do_buffer_signals</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>do_buffer_signals</code></em>;</span></p></td>
 <td> counter counting installed buffer signals
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>do_event_signals</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>do_event_signals</code></em>;</span></p></td>
 <td> counter counting installed event signals
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()">GstPadIterIntLinkFunction</a> <em class="structfield"><code>iterintlinkfunc</code></em>;</span></p></td>
+<td> get the internal links iterator of this pad
 </td>
 </tr>
 </tbody>
@@ -937,7 +1181,9 @@ pad operates in push or pull mode.</p>
 <pre class="programlisting">#define gst_pad_get_name(pad) gst_object_get_name (GST_OBJECT_CAST (pad))
 </pre>
 <p>
-Get a copy of the name of the pad. <code class="function">g_free()</code> after usage.
+Get a copy of the name of the pad. <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> after usage.
 </p>
 <p>
 MT safe.</p>
@@ -1054,7 +1300,9 @@ Gets the template for <em class="parameter"><code>pad</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the <a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> from which this pad was instantiated, or <code class="literal">NULL</code>
+<td> the <a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> from which this pad was instantiated, or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
 if this pad has no template.
 
 FIXME: currently returns an unrefcounted padtemplate.
@@ -1100,7 +1348,9 @@ MT Safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-unlink"></a><h3>gst_pad_unlink ()</h3>
-<pre class="programlisting">gboolean            gst_pad_unlink                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_unlink                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);</pre>
 <p>
 Unlinks the source pad from the sink pad. Will emit the <a class="link" href="GstPad.html#GstPad-unlinked" title='The "unlinked" signal'><span class="type">"unlinked"</span></a>
@@ -1135,7 +1385,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-is-linked"></a><h3>gst_pad_is_linked ()</h3>
-<pre class="programlisting">gboolean            gst_pad_is_linked                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_is_linked                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Checks if a <em class="parameter"><code>pad</code></em> is linked to another pad or not.</p>
 <p>
@@ -1162,7 +1414,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-can-link"></a><h3>gst_pad_can_link ()</h3>
-<pre class="programlisting">gboolean            gst_pad_can_link                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_can_link                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
                                                          <a class="link" href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);</pre>
 <p>
 Checks if the source pad and the sink pad can be linked.
@@ -1321,7 +1575,9 @@ reference on the caps, make a copy (see <a class="link" href="gstreamer-GstCaps.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-set-caps"></a><h3>gst_pad_set_caps ()</h3>
-<pre class="programlisting">gboolean            gst_pad_set_caps                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_set_caps                    (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Sets the capabilities of this pad. The caps must be fixed. Any previous
@@ -1439,7 +1695,9 @@ on it, cannot be renegotiated to something else.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-is-active"></a><h3>gst_pad_is_active ()</h3>
-<pre class="programlisting">gboolean            gst_pad_is_active                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_is_active                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Query if a pad is active</p>
 <p>
@@ -1466,8 +1724,12 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-set-blocked"></a><h3>gst_pad_set_blocked ()</h3>
-<pre class="programlisting">gboolean            gst_pad_set_blocked                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_set_blocked                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked);</pre>
 <p>
 Blocks or unblocks the dataflow on a pad. This function is
 a shortcut for <a class="link" href="GstPad.html#gst-pad-set-blocked-async" title="gst_pad_set_blocked_async ()"><code class="function">gst_pad_set_blocked_async()</code></a> with a NULL
@@ -1502,10 +1764,16 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-set-blocked-async"></a><h3>gst_pad_set_blocked_async ()</h3>
-<pre class="programlisting">gboolean            gst_pad_set_blocked_async           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_set_blocked_async           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked,
                                                          <a class="link" href="GstPad.html#GstPadBlockCallback" title="GstPadBlockCallback ()">GstPadBlockCallback</a> callback,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Blocks or unblocks the dataflow on a pad. The provided callback
 is called when the operation succeeds; this happens right before the next
@@ -1560,8 +1828,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="GstPadBlockCallback"></a><h3>GstPadBlockCallback ()</h3>
 <pre class="programlisting">void                (*GstPadBlockCallback)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean blocked,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blocked,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Callback used by <a class="link" href="GstPad.html#gst-pad-set-blocked-async" title="gst_pad_set_blocked_async ()"><code class="function">gst_pad_set_blocked_async()</code></a>. Gets called when the blocking
 operation succeeds.</p>
@@ -1592,7 +1864,9 @@ operation succeeds.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-is-blocked"></a><h3>gst_pad_is_blocked ()</h3>
-<pre class="programlisting">gboolean            gst_pad_is_blocked                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_is_blocked                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Checks if the pad is blocked or not. This function returns the
 last requested state of the pad. It is not certain that the pad
@@ -1621,7 +1895,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-is-blocking"></a><h3>gst_pad_is_blocking ()</h3>
-<pre class="programlisting">gboolean            gst_pad_is_blocking                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_is_blocking                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Checks if the pad is blocking or not. This is a guaranteed state
 of whether the pad is actually blocking on a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> or a <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent"><span class="type">GstEvent</span></a>.</p>
@@ -1652,9 +1928,15 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-data-probe"></a><h3>gst_pad_add_data_probe ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_data_probe              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_data_probe              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 Adds a "data probe" to a pad. This function will be called whenever data
 passes through a pad. In this case data means both events and buffers. The
@@ -1712,10 +1994,18 @@ remove a probe, use the appropriate function, such as
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-data-probe-full"></a><h3>gst_pad_add_data_probe_full ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_data_probe_full         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_data_probe_full         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);</pre>
 <p>
 Adds a "data probe" to a pad. This function will be called whenever data
 passes through a pad. In this case data means both events and buffers. The
@@ -1785,9 +2075,15 @@ used to free <em class="parameter"><code>data</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-buffer-probe"></a><h3>gst_pad_add_buffer_probe ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_buffer_probe            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_buffer_probe            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 Adds a probe that will be called for all buffers passing through a pad. See
 <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()"><code class="function">gst_pad_add_data_probe()</code></a> for more information.</p>
@@ -1823,10 +2119,18 @@ Adds a probe that will be called for all buffers passing through a pad. See
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-buffer-probe-full"></a><h3>gst_pad_add_buffer_probe_full ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_buffer_probe_full       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_buffer_probe_full       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);</pre>
 <p>
 Adds a probe that will be called for all buffers passing through a pad. See
 <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()"><code class="function">gst_pad_add_data_probe()</code></a> for more information.
@@ -1874,9 +2178,15 @@ used to free <em class="parameter"><code>data</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-event-probe"></a><h3>gst_pad_add_event_probe ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_event_probe             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_event_probe             (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 Adds a probe that will be called for all events passing through a pad. See
 <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()"><code class="function">gst_pad_add_data_probe()</code></a> for more information.</p>
@@ -1912,10 +2222,18 @@ Adds a probe that will be called for all events passing through a pad. See
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-add-event-probe-full"></a><h3>gst_pad_add_event_probe_full ()</h3>
-<pre class="programlisting">gulong              gst_pad_add_event_probe_full        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         GCallback handler,
-                                                         gpointer data,
-                                                         GDestroyNotify notify);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>              gst_pad_add_event_probe_full        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Closures.html#GCallback"
+>GCallback</a> handler,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> notify);</pre>
 <p>
 Adds a probe that will be called for all events passing through a pad. See
 <a class="link" href="GstPad.html#gst-pad-add-data-probe" title="gst_pad_add_data_probe ()"><code class="function">gst_pad_add_data_probe()</code></a> for more information.
@@ -1964,7 +2282,9 @@ used to free <em class="parameter"><code>data</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-remove-data-probe"></a><h3>gst_pad_remove_data_probe ()</h3>
 <pre class="programlisting">void                gst_pad_remove_data_probe           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);</pre>
 <p>
 Removes a data probe from <em class="parameter"><code>pad</code></em>.</p>
 <p>
@@ -1990,7 +2310,9 @@ Removes a data probe from <em class="parameter"><code>pad</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-remove-buffer-probe"></a><h3>gst_pad_remove_buffer_probe ()</h3>
 <pre class="programlisting">void                gst_pad_remove_buffer_probe         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);</pre>
 <p>
 Removes a buffer probe from <em class="parameter"><code>pad</code></em>.</p>
 <p>
@@ -2016,7 +2338,9 @@ Removes a buffer probe from <em class="parameter"><code>pad</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-remove-event-probe"></a><h3>gst_pad_remove_event_probe ()</h3>
 <pre class="programlisting">void                gst_pad_remove_event_probe          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint handler_id);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> handler_id);</pre>
 <p>
 Removes an event probe from <em class="parameter"><code>pad</code></em>.</p>
 <p>
@@ -2041,7 +2365,9 @@ Removes an event probe from <em class="parameter"><code>pad</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-new"></a><h3>gst_pad_new ()</h3>
-<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_pad_new                         (const gchar *name,
+<pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_pad_new                         (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection">GstPadDirection</a> direction);</pre>
 <p>
 Creates a new pad with the given name in the given direction.
@@ -2078,7 +2404,9 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-pad-new-from-template"></a><h3>gst_pad_new_from_template ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_pad_new_from_template           (<a class="link" href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ,
-                                                         const gchar *name);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Creates a new pad with the given name from the given template.
 If name is NULL, a guaranteed unique name (across all pads)
@@ -2112,7 +2440,9 @@ This function makes a copy of the name so you can safely free the name.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-new-from-static-template"></a><h3>gst_pad_new_from_static_template ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html" title="GstPad">GstPad</a>*             gst_pad_new_from_static_template    (<a class="link" href="GstPadTemplate.html#GstStaticPadTemplate" title="GstStaticPadTemplate">GstStaticPadTemplate</a> *templ,
-                                                         const gchar *name);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre>
 <p>
 Creates a new pad with the given name from the given static template.
 If name is NULL, a guaranteed unique name (across all pads)
@@ -2146,8 +2476,12 @@ This function makes a copy of the name so you can safely free the name.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-alloc-buffer"></a><h3>gst_pad_alloc_buffer ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       gst_pad_alloc_buffer                (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         gint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);</pre>
 <p>
@@ -2157,7 +2491,9 @@ function only works if <em class="parameter"><code>pad</code></em> is a source p
 <p>
 A new, empty <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> will be put in the <em class="parameter"><code>buf</code></em> argument.
 You need to check the caps of the buffer after performing this
-function and renegotiate to the format if needed.</p>
+function and renegotiate to the format if needed. If the caps changed, it is
+possible that the buffer returned in <em class="parameter"><code>buf</code></em> is not of the right size for the
+new format, <em class="parameter"><code>buf</code></em> needs to be unreffed and reallocated if this is the case.</p>
 <p>
 
 </p>
@@ -2207,14 +2543,23 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-pad-alloc-buffer-and-set-caps"></a><h3>gst_pad_alloc_buffer_and_set_caps ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       gst_pad_alloc_buffer_and_set_caps   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         gint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);</pre>
 <p>
 In addition to the function <a class="link" href="GstPad.html#gst-pad-alloc-buffer" title="gst_pad_alloc_buffer ()"><code class="function">gst_pad_alloc_buffer()</code></a>, this function
 automatically calls <a class="link" href="GstPad.html#gst-pad-set-caps" title="gst_pad_set_caps ()"><code class="function">gst_pad_set_caps()</code></a> when the caps of the
-newly allocated buffer are different from the <em class="parameter"><code>pad</code></em> caps.</p>
+newly allocated buffer are different from the <em class="parameter"><code>pad</code></em> caps.
+</p>
+<p>
+After a renegotiation, the size of the new buffer returned in <em class="parameter"><code>buf</code></em> could
+be of the wrong size for the new format and must be unreffed an reallocated
+in that case.</p>
 <p>
 
 </p>
@@ -2291,8 +2636,12 @@ bufferalloc function can only be set on sinkpads.</p>
 <div class="refsect2" lang="en">
 <a name="GstPadBufferAllocFunction"></a><h3>GstPadBufferAllocFunction ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       (*GstPadBufferAllocFunction)        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buf);</pre>
 <p>
@@ -2305,14 +2654,17 @@ be processed by <em class="parameter"><code>pad</code></em>. The function is mos
 provide a hardware buffer in order to avoid additional memcpy operations.
 </p>
 <p>
-The function can return a buffer that does not have <em class="parameter"><code>caps</code></em>, in which case the
-upstream element requests a format change. If a format change was requested,
-the returned buffer will be one to hold the data of said new caps, so its
-size might be different from <em class="parameter"><code>size</code></em>.
+The function can return a buffer that has caps different from the requested
+<em class="parameter"><code>caps</code></em>, in which case the upstream element requests a format change to this
+new caps.
+If a format change was requested, the returned buffer will be one to hold
+the data of said new caps, so its size might be different from the requested
+<em class="parameter"><code>size</code></em>.
 </p>
 <p>
 When this function returns anything else than <a class="link" href="GstPad.html#GST-FLOW-OK:CAPS"><span class="type">GST_FLOW_OK</span></a>, the buffer allocation
-failed and <em class="parameter"><code>buf</code></em> does not contain valid data.
+failed and <em class="parameter"><code>buf</code></em> does not contain valid data. If the function returns <a class="link" href="GstPad.html#GST-FLOW-OK:CAPS"><span class="type">GST_FLOW_OK</span></a> and
+the <em class="parameter"><code>buf</code></em> is NULL, a <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> will be created with <em class="parameter"><code>caps</code></em>, <em class="parameter"><code>offset</code></em> and <em class="parameter"><code>size</code></em>.
 </p>
 <p>
 By default this function returns a new buffer of <em class="parameter"><code>size</code></em> and with <em class="parameter"><code>caps</code></em> containing
@@ -2401,7 +2753,7 @@ The implementer of this function receives a refcount to <em class="parameter"><c
 </p>
 <p>
 When a chain function detects an error in the data stream, it must post an
-error on the buffer and return an appropriate <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn"><span class="type">GstFlowReturn</span></a> value.</p>
+error on the bus and return an appropriate <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn"><span class="type">GstFlowReturn</span></a> value.</p>
 <p>
 
 </p>
@@ -2415,7 +2767,9 @@ error on the buffer and return an appropriate <a class="link" href="GstPad.html#
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> that is chained, not <code class="literal">NULL</code>.
+<td> the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a> that is chained, not <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
 </td>
 </tr>
 <tr>
@@ -2456,7 +2810,9 @@ on a pad if you dynamically support getrange based scheduling on the pad.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadCheckGetRangeFunction"></a><h3>GstPadCheckGetRangeFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadCheckGetRangeFunction)      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadCheckGetRangeFunction)      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Check if <em class="parameter"><code>pad</code></em> can be activated in pull mode.
 </p>
@@ -2486,8 +2842,12 @@ if a pad can support random access.</p>
 <div class="refsect2" lang="en">
 <a name="gst-pad-get-range"></a><h3>gst_pad_get_range ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       gst_pad_get_range                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);</pre>
 <p>
 When <em class="parameter"><code>pad</code></em> is flushing this function returns <a class="link" href="GstPad.html#GST-FLOW-WRONG-STATE:CAPS"><span class="type">GST_FLOW_WRONG_STATE</span></a>
@@ -2498,11 +2858,6 @@ Calls the getrange function of <em class="parameter"><code>pad</code></em>, see 
 description of a getrange function. If <em class="parameter"><code>pad</code></em> has no getrange function
 installed (see <a class="link" href="GstPad.html#gst-pad-set-getrange-function" title="gst_pad_set_getrange_function ()"><code class="function">gst_pad_set_getrange_function()</code></a>) this function returns
 <a class="link" href="GstPad.html#GST-FLOW-NOT-SUPPORTED:CAPS"><span class="type">GST_FLOW_NOT_SUPPORTED</span></a>.
-</p>
-<p>
-<em class="parameter"><code>buffer</code></em>'s caps must either be unset or the same as what is already
-configured on <em class="parameter"><code>pad</code></em>. Renegotiation within a running pull-mode pipeline is not
-supported.
 </p>
 <p>
 This is a lowlevel function. Usualy <a class="link" href="GstPad.html#gst-pad-pull-range" title="gst_pad_pull_range ()"><code class="function">gst_pad_pull_range()</code></a> is used.</p>
@@ -2529,7 +2884,9 @@ This is a lowlevel function. Usualy <a class="link" href="GstPad.html#gst-pad-pu
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> a pointer to hold the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>, returns <a class="link" href="GstPad.html#GST-FLOW-ERROR:CAPS"><span class="type">GST_FLOW_ERROR</span></a> if <code class="literal">NULL</code>.
+<td> a pointer to hold the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>, returns <a class="link" href="GstPad.html#GST-FLOW-ERROR:CAPS"><span class="type">GST_FLOW_ERROR</span></a> if <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
 </td>
 </tr>
 <tr>
@@ -2574,8 +2931,12 @@ called to produce a new <a class="link" href="gstreamer-GstBuffer.html#GstBuffer
 <div class="refsect2" lang="en">
 <a name="GstPadGetRangeFunction"></a><h3>GstPadGetRangeFunction ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       (*GstPadGetRangeFunction)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint length,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> length,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);</pre>
 <p>
 This function will be called on source pads when a peer element
@@ -2679,7 +3040,9 @@ Sets the given event handler for the pad.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadEventFunction"></a><h3>GstPadEventFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadEventFunction)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadEventFunction)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);</pre>
 <p>
 Function signature to handle an event for the pad.</p>
@@ -2825,7 +3188,9 @@ Function signature to handle a unlinking the pad prom its peer.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-accept-caps"></a><h3>gst_pad_accept_caps ()</h3>
-<pre class="programlisting">gboolean            gst_pad_accept_caps                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_accept_caps                 (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Check if the given pad accepts the caps.</p>
@@ -2885,7 +3250,9 @@ any caps that matches the caps from gst_pad_get_caps.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadAcceptCapsFunction"></a><h3>GstPadAcceptCapsFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadAcceptCapsFunction)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadAcceptCapsFunction)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Check if <em class="parameter"><code>pad</code></em> can accept <em class="parameter"><code>caps</code></em>. By default this function will see if <em class="parameter"><code>caps</code></em>
@@ -3054,7 +3421,9 @@ acceptable, the setcaps function should return FALSE.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadSetCapsFunction"></a><h3>GstPadSetCapsFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadSetCapsFunction)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadSetCapsFunction)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Set <em class="parameter"><code>caps</code></em> on <em class="parameter"><code>pad</code></em>. By default this function updates the caps of the
@@ -3087,7 +3456,9 @@ actions or verifications.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-proxy-setcaps"></a><h3>gst_pad_proxy_setcaps ()</h3>
-<pre class="programlisting">gboolean            gst_pad_proxy_setcaps               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_proxy_setcaps               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Calls <a class="link" href="GstPad.html#gst-pad-set-caps" title="gst_pad_set_caps ()"><code class="function">gst_pad_set_caps()</code></a> for every other pad belonging to the
@@ -3231,7 +3602,9 @@ when NULL.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-peer-accept-caps"></a><h3>gst_pad_peer_accept_caps ()</h3>
-<pre class="programlisting">gboolean            gst_pad_peer_accept_caps            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_peer_accept_caps            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="GstCaps">GstCaps</a> *caps);</pre>
 <p>
 Check if the peer of <em class="parameter"><code>pad</code></em> accepts <em class="parameter"><code>caps</code></em>. If <em class="parameter"><code>pad</code></em> has no peer, this function
@@ -3294,7 +3667,9 @@ Call this function if your sink pad can start a pull-based task.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadActivateFunction"></a><h3>GstPadActivateFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadActivateFunction)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadActivateFunction)           (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 This function is called when the pad is activated during the element
 READY to PAUSED state change. By default this function will call the
@@ -3377,8 +3752,12 @@ part-activation.txt for details.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadActivateModeFunction"></a><h3>GstPadActivateModeFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadActivateModeFunction)       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadActivateModeFunction)       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);</pre>
 <p>
 The prototype of the push and pull activate functions.</p>
 <p>
@@ -3460,7 +3839,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-push-event"></a><h3>gst_pad_push_event ()</h3>
-<pre class="programlisting">gboolean            gst_pad_push_event                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_push_event                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);</pre>
 <p>
 Sends the event to the peer of the given pad. This function is
@@ -3499,7 +3880,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-check-pull-range"></a><h3>gst_pad_check_pull_range ()</h3>
-<pre class="programlisting">gboolean            gst_pad_check_pull_range            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_check_pull_range            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Checks if a <a class="link" href="GstPad.html#gst-pad-pull-range" title="gst_pad_pull_range ()"><code class="function">gst_pad_pull_range()</code></a> can be performed on the peer
 source pad. This function is used by plugins that want to check
@@ -3534,8 +3917,12 @@ MT safe.
 <div class="refsect2" lang="en">
 <a name="gst-pad-pull-range"></a><h3>gst_pad_pull_range ()</h3>
 <pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn">GstFlowReturn</a>       gst_pad_pull_range                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         guint64 offset,
-                                                         guint size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer">GstBuffer</a> **buffer);</pre>
 <p>
 Pulls a <em class="parameter"><code>buffer</code></em> from the peer pad.
@@ -3577,7 +3964,9 @@ supported.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> a pointer to hold the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>, returns GST_FLOW_ERROR if <code class="literal">NULL</code>.
+<td> a pointer to hold the <a class="link" href="gstreamer-GstBuffer.html#GstBuffer" title="GstBuffer"><span class="type">GstBuffer</span></a>, returns GST_FLOW_ERROR if <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
 </td>
 </tr>
 <tr>
@@ -3597,8 +3986,12 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-activate-pull"></a><h3>gst_pad_activate_pull ()</h3>
-<pre class="programlisting">gboolean            gst_pad_activate_pull               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_activate_pull               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);</pre>
 <p>
 Activates or deactivates the given pad in pull mode via dispatching to the
 pad's activatepullfunc. For use from within pad activation functions only.
@@ -3637,8 +4030,12 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-activate-push"></a><h3>gst_pad_activate_push ()</h3>
-<pre class="programlisting">gboolean            gst_pad_activate_push               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_activate_push               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);</pre>
 <p>
 Activates or deactivates the given pad in push mode via dispatching to the
 pad's activatepushfunc. For use from within pad activation functions only.
@@ -3663,7 +4060,9 @@ If you don't know what this is, you probably don't want to call it.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the operation was successful.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the operation was successful.
 
 MT safe.
 </td>
@@ -3674,7 +4073,9 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-send-event"></a><h3>gst_pad_send_event ()</h3>
-<pre class="programlisting">gboolean            gst_pad_send_event                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_send_event                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);</pre>
 <p>
 Sends the event to the pad. This function can be used
@@ -3727,7 +4128,9 @@ This function takes owership of the provided event so you should
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-event-default"></a><h3>gst_pad_event_default ()</h3>
-<pre class="programlisting">gboolean            gst_pad_event_default               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_event_default               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstEvent.html#GstEvent" title="GstEvent">GstEvent</a> *event);</pre>
 <p>
 Invokes the default event handler for the given pad. End-of-stream and
@@ -3762,7 +4165,9 @@ Multi-sinkpad elements should implement custom event handlers.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query"></a><h3>gst_pad_query ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query                       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query                       (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
 <p>
 Dispatches a query to a pad. The query should have been allocated by the
@@ -3800,7 +4205,9 @@ the query structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-peer-query"></a><h3>gst_pad_peer_query ()</h3>
-<pre class="programlisting">gboolean            gst_pad_peer_query                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_peer_query                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
 <p>
 Performs <a class="link" href="GstPad.html#gst-pad-query" title="gst_pad_query ()"><code class="function">gst_pad_query()</code></a> on the peer of <em class="parameter"><code>pad</code></em>.
@@ -3826,7 +4233,9 @@ the query structure.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> TRUE if the query could be performed. This function returns <code class="literal">FALSE</code>
+<td> TRUE if the query could be performed. This function returns <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>
 if <em class="parameter"><code>pad</code></em> has no peer.
 
 </td>
@@ -3839,7 +4248,9 @@ if <em class="parameter"><code>pad</code></em> has no peer.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-default"></a><h3>gst_pad_query_default ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_default               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_default               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
 <p>
 Invokes the default query handler for the given pad.
@@ -3874,9 +4285,13 @@ Multi-sinkpad elements should implement custom query handlers.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-position"></a><h3>gst_pad_query_position ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_position              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_position              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *cur);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *cur);</pre>
 <p>
 Queries a pad for the stream position.</p>
 <p>
@@ -3912,9 +4327,13 @@ Queries a pad for the stream position.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-duration"></a><h3>gst_pad_query_duration ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_duration              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_duration              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);</pre>
 <p>
 Queries a pad for the total stream duration.</p>
 <p>
@@ -3950,11 +4369,17 @@ Queries a pad for the total stream duration.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-convert"></a><h3>gst_pad_query_convert ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_convert               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_convert               (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
-                                                         gint64 src_val,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_val,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
-                                                         gint64 *dest_val);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_val);</pre>
 <p>
 Queries a pad to convert <em class="parameter"><code>src_val</code></em> in <em class="parameter"><code>src_format</code></em> to <em class="parameter"><code>dest_format</code></em>.</p>
 <p>
@@ -3999,9 +4424,13 @@ Queries a pad to convert <em class="parameter"><code>src_val</code></em> in <em 
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-peer-position"></a><h3>gst_pad_query_peer_position ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_peer_position         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_peer_position         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *cur);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *cur);</pre>
 <p>
 Queries the peer of a given sink pad for the stream position.</p>
 <p>
@@ -4038,9 +4467,13 @@ Queries the peer of a given sink pad for the stream position.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-peer-duration"></a><h3>gst_pad_query_peer_duration ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_peer_duration         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_peer_duration         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *format,
-                                                         gint64 *duration);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *duration);</pre>
 <p>
 Queries the peer pad of a given sink pad for the total stream duration.</p>
 <p>
@@ -4077,11 +4510,17 @@ Queries the peer pad of a given sink pad for the total stream duration.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-query-peer-convert"></a><h3>gst_pad_query_peer_convert ()</h3>
-<pre class="programlisting">gboolean            gst_pad_query_peer_convert          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_query_peer_convert          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> src_format,
-                                                         gint64 src_val,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_val,
                                                          <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat">GstFormat</a> *dest_format,
-                                                         gint64 *dest_val);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_val);</pre>
 <p>
 Queries the peer pad of a given sink pad to convert <em class="parameter"><code>src_val</code></em> in <em class="parameter"><code>src_format</code></em>
 to <em class="parameter"><code>dest_format</code></em>.</p>
@@ -4154,7 +4593,9 @@ Set the given query function for the pad.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadQueryFunction"></a><h3>GstPadQueryFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadQueryFunction)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadQueryFunction)              (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="gstreamer-GstQuery.html#GstQuery" title="GstQuery">GstQuery</a> *query);</pre>
 <p>
 The signature of the query function.</p>
@@ -4288,9 +4729,144 @@ internally-linked pads has a query types function.
 </div>
 <hr>
 <div class="refsect2" lang="en">
+<a name="gst-pad-set-iterate-internal-links-function"></a><h3>gst_pad_set_iterate_internal_links_function ()</h3>
+<pre class="programlisting">void                gst_pad_set_iterate_internal_links_function
+                                                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()">GstPadIterIntLinkFunction</a> iterintlink);</pre>
+<p>
+Sets the given internal link iterator function for the pad.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> a <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> of either direction.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iterintlink</code></em> :</span></p></td>
+<td> the <a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()"><span class="type">GstPadIterIntLinkFunction</span></a> to set.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPadIterIntLinkFunction"></a><h3>GstPadIterIntLinkFunction ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        (*GstPadIterIntLinkFunction)        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<p>
+The signature of the internal pad link iterator function.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> The <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to query.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a> that will iterate over all pads that are
+linked to the given pad on the inside of the parent element.
+
+the caller must call <a class="link" href="gstreamer-GstIterator.html#gst-iterator-free" title="gst_iterator_free ()"><code class="function">gst_iterator_free()</code></a> after usage.
+
+Since 0.10.21
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-pad-iterate-internal-links"></a><h3>gst_pad_iterate_internal_links ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_pad_iterate_internal_links      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<p>
+Gets an iterator for the pads to which the given pad is linked to inside
+of the parent element.
+</p>
+<p>
+Each <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> element yielded by the iterator will have its refcount increased,
+so unref after use.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> the GstPad to get the internal links of.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a new <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a> of <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a> when the pad does not have an
+iterator function configured. Use <a class="link" href="gstreamer-GstIterator.html#gst-iterator-free" title="gst_iterator_free ()"><code class="function">gst_iterator_free()</code></a> after usage.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="gst-pad-iterate-internal-links-default"></a><h3>gst_pad_iterate_internal_links_default ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator">GstIterator</a>*        gst_pad_iterate_internal_links_default
+                                                        (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<p>
+Iterate the list of pads to which the given pad is linked to inside of
+the parent element.
+This is the default handler, and thus returns an iterator of all of the
+pads inside the parent element with opposite direction.
+</p>
+<p>
+The caller must free this iterator after use with <a class="link" href="gstreamer-GstIterator.html#gst-iterator-free" title="gst_iterator_free ()"><code class="function">gst_iterator_free()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
+<td> the <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to get the internal links of.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <a class="link" href="gstreamer-GstIterator.html#GstIterator" title="GstIterator"><span class="type">GstIterator</span></a> of <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or NULL if <em class="parameter"><code>pad</code></em> has no parent. Unref each
+returned pad with <a class="link" href="GstObject.html#gst-object-unref" title="gst_object_unref ()"><code class="function">gst_object_unref()</code></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  0.10.21
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
 <a name="gst-pad-set-internal-link-function"></a><h3>gst_pad_set_internal_link_function ()</h3>
 <pre class="programlisting">void                gst_pad_set_internal_link_function  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadIntLinkFunction" title="GstPadIntLinkFunction ()">GstPadIntLinkFunction</a> intlink);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gst_pad_set_internal_link_function</code> is deprecated and should not be used in newly-written code. Use the thread-safe <a class="link" href="GstPad.html#gst-pad-set-iterate-internal-links-function" title="gst_pad_set_iterate_internal_links_function ()"><code class="function">gst_pad_set_iterate_internal_links_function()</code></a></p>
+</div>
 <p>
 Sets the given internal link function for the pad.</p>
 <p>
@@ -4315,7 +4891,13 @@ Sets the given internal link function for the pad.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadIntLinkFunction"></a><h3>GstPadIntLinkFunction ()</h3>
-<pre class="programlisting">GList*              (*GstPadIntLinkFunction)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              (*GstPadIntLinkFunction)            (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">GstPadIntLinkFunction</code> is deprecated and should not be used in newly-written code. use the threadsafe <a class="link" href="GstPad.html#GstPadIterIntLinkFunction" title="GstPadIterIntLinkFunction ()"><span class="type">GstPadIterIntLinkFunction</span></a> instead.</p>
+</div>
 <p>
 The signature of the internal pad link function.</p>
 <p>
@@ -4331,9 +4913,15 @@ The signature of the internal pad link function.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly allocated <span class="type">GList</span> of pads that are linked to the given pad on
- the inside of the parent element.
- The caller must call <code class="function">g_list_free()</code> on it after use.
+<td> a newly allocated <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of pads that are linked to the given pad on
+the inside of the parent element.
+
+The caller must call <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"
+><code class="function">g_list_free()</code></a> on it after use.
+
 </td>
 </tr>
 </tbody>
@@ -4342,7 +4930,17 @@ The signature of the internal pad link function.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-get-internal-links"></a><h3>gst_pad_get_internal_links ()</h3>
-<pre class="programlisting">GList*              gst_pad_get_internal_links          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_pad_get_internal_links          (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gst_pad_get_internal_links</code> is deprecated and should not be used in newly-written code. This function does not ref the pads in the list so that they
+could become invalid by the time the application accesses them. It's also
+possible that the list changes while handling the pads, which the caller of
+this function is unable to know. Use the thread-safe 
+<a class="link" href="GstPad.html#gst-pad-iterate-internal-links" title="gst_pad_iterate_internal_links ()"><code class="function">gst_pad_iterate_internal_links()</code></a> instead.</p>
+</div>
 <p>
 Gets a list of pads to which the given pad is linked to
 inside of the parent element.
@@ -4360,9 +4958,14 @@ The caller must free this list after use.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly allocated <span class="type">GList</span> of pads.
+<td> a newly allocated <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of pads, free with <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"
+><code class="function">g_list_free()</code></a>.
 
 Not MT safe.
+
 </td>
 </tr>
 </tbody>
@@ -4371,13 +4974,27 @@ Not MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-get-internal-links-default"></a><h3>gst_pad_get_internal_links_default ()</h3>
-<pre class="programlisting">GList*              gst_pad_get_internal_links_default  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_pad_get_internal_links_default  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gst_pad_get_internal_links_default</code> is deprecated and should not be used in newly-written code. This function does not ref the pads in the list so that they
+could become invalid by the time the application accesses them. It's also
+possible that the list changes while handling the pads, which the caller of
+this function is unable to know. Use the thread-safe 
+<a class="link" href="GstPad.html#gst-pad-iterate-internal-links-default" title="gst_pad_iterate_internal_links_default ()"><code class="function">gst_pad_iterate_internal_links_default()</code></a> instead.</p>
+</div>
 <p>
 Gets a list of pads to which the given pad is linked to
 inside of the parent element.
 This is the default handler, and thus returns a list of all of the
 pads inside the parent element with opposite direction.
-The caller must free this list after use.</p>
+</p>
+<p>
+The caller must free this list after use with <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#g-list-free"
+><code class="function">g_list_free()</code></a>.</p>
 <p>
 
 </p>
@@ -4391,9 +5008,12 @@ The caller must free this list after use.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly allocated <span class="type">GList</span> of pads, or NULL if the pad has no parent.
+<td> a newly allocated <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of pads, or NULL if the pad has no parent.
 
 Not MT safe.
+
 </td>
 </tr>
 </tbody>
@@ -4429,9 +5049,13 @@ in the element to a pad of an element up in the hierarchy.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-dispatcher"></a><h3>gst_pad_dispatcher ()</h3>
-<pre class="programlisting">gboolean            gst_pad_dispatcher                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_dispatcher                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstPad.html#GstPadDispatcherFunction" title="GstPadDispatcherFunction ()">GstPadDispatcherFunction</a> dispatch,
-                                                         gpointer data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 Invokes the given dispatcher function on each respective peer of
 all pads that are internally linked to the given pad.
@@ -4469,8 +5093,12 @@ need to be processed.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPadDispatcherFunction"></a><h3>GstPadDispatcherFunction ()</h3>
-<pre class="programlisting">gboolean            (*GstPadDispatcherFunction)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gpointer data);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GstPadDispatcherFunction)         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 A dispatcher function is called for all internally linked pads, see
 <a class="link" href="GstPad.html#gst-pad-dispatcher" title="gst_pad_dispatcher ()"><code class="function">gst_pad_dispatcher()</code></a>.</p>
@@ -4502,7 +5130,9 @@ A dispatcher function is called for all internally linked pads, see
 <div class="refsect2" lang="en">
 <a name="gst-pad-set-element-private"></a><h3>gst_pad_set_element_private ()</h3>
 <pre class="programlisting">void                gst_pad_set_element_private         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gpointer priv);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> priv);</pre>
 <p>
 Set the given private data gpointer on the pad.
 This function can only be used by the element that owns the pad.
@@ -4529,7 +5159,9 @@ No locking is performed in this function.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-get-element-private"></a><h3>gst_pad_get_element_private ()</h3>
-<pre class="programlisting">gpointer            gst_pad_get_element_private         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>            gst_pad_get_element_private         (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Gets the private data of a pad.
 No locking is performed in this function.</p>
@@ -4546,7 +5178,9 @@ No locking is performed in this function.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">gpointer</span> to the private data.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+><span class="type">gpointer</span></a> to the private data.
 </td>
 </tr>
 </tbody>
@@ -4607,9 +5241,13 @@ MT safe.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-start-task"></a><h3>gst_pad_start_task ()</h3>
-<pre class="programlisting">gboolean            gst_pad_start_task                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_start_task                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                                          <a class="link" href="GstTask.html#GstTaskFunction" title="GstTaskFunction ()">GstTaskFunction</a> func,
-                                                         gpointer data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
 <p>
 Starts a task that repeatedly calls <em class="parameter"><code>func</code></em> with <em class="parameter"><code>data</code></em>. This function
 is mostly used in pad activation functions to start the dataflow.
@@ -4638,7 +5276,9 @@ before <em class="parameter"><code>func</code></em> is called.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <code class="literal">TRUE</code> if the task could be started.
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the task could be started.
 </td>
 </tr>
 </tbody>
@@ -4647,7 +5287,9 @@ before <em class="parameter"><code>func</code></em> is called.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-pause-task"></a><h3>gst_pad_pause_task ()</h3>
-<pre class="programlisting">gboolean            gst_pad_pause_task                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_pause_task                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Pause the task of <em class="parameter"><code>pad</code></em>. This function will also wait until the
 function executed by the task is finished if this function is not
@@ -4675,7 +5317,9 @@ has no task.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-stop-task"></a><h3>gst_pad_stop_task ()</h3>
-<pre class="programlisting">gboolean            gst_pad_stop_task                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_stop_task                   (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre>
 <p>
 Stop the task of <em class="parameter"><code>pad</code></em>. This function will also make sure that the
 function executed by the task will effectively stop if not called
@@ -4710,8 +5354,12 @@ released so as to ensure that streaming through this pad has finished.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pad-set-active"></a><h3>gst_pad_set_active ()</h3>
-<pre class="programlisting">gboolean            gst_pad_set_active                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
-                                                         gboolean active);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pad_set_active                  (<a class="link" href="GstPad.html" title="GstPad">GstPad</a> *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> active);</pre>
 <p>
 Activates or deactivates the given pad.
 Normally called from within core state change functions.
@@ -4743,7 +5391,9 @@ FALSE argument.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if the operation was successful.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if the operation was successful.
 
 MT safe.
 </td>
@@ -4967,9 +5617,13 @@ of a buffer was successfull.</p>
 <a name="GstPad.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstPad-have-data"></a><h3>The <code class="literal">"have-data"</code> signal</h3>
-<pre class="programlisting">gboolean            user_function                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a>        *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a>        *pad,
                                                         <a class="link" href="gstreamer-GstMiniObject.html#GstMiniObject" title="GstMiniObject">GstMiniObject</a> *mini_obj,
-                                                        gpointer       user_data)      : Run Last / Has Details</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last / Has Details</pre>
 <p>
 Signals that new data is available on the pad. This signal is used
 internally for implementing pad probes.
@@ -4996,7 +5650,11 @@ See gst_pad_add_*_probe functions.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> to keep the data, <code class="literal">FALSE</code> to drop it
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to keep the data, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> to drop it
 </td>
 </tr>
 </tbody>
@@ -5007,7 +5665,9 @@ See gst_pad_add_*_probe functions.</p>
 <a name="GstPad-linked"></a><h3>The <code class="literal">"linked"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a>  *pad,
                                                         <a class="link" href="GstPad.html" title="GstPad">GstPad</a>  *peer,
-                                                        gpointer user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data)      : Run Last</pre>
 <p>
 Signals that a pad has been linked to the peer pad.</p>
 <p>
@@ -5037,7 +5697,9 @@ Signals that a pad has been linked to the peer pad.</p>
 <div class="refsect2" lang="en">
 <a name="GstPad-request-link"></a><h3>The <code class="literal">"request-link"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a>  *pad,
-                                                        gpointer user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data)      : Run Last</pre>
 <p>
 Signals that a pad connection has been requested.</p>
 <p>
@@ -5068,7 +5730,9 @@ Signals that a pad connection has been requested.</p>
 <a name="GstPad-unlinked"></a><h3>The <code class="literal">"unlinked"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="GstPad.html" title="GstPad">GstPad</a>  *pad,
                                                         <a class="link" href="GstPad.html" title="GstPad">GstPad</a>  *peer,
-                                                        gpointer user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data)      : Run Last</pre>
 <p>
 Signals that a pad has been unlinked from the peer pad.</p>
 <p>

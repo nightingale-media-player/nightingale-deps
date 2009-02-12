@@ -58,11 +58,11 @@
       <sub name="GstTrace" link="gstreamer-GstTrace.html"/>
     </sub>
     <sub name="Object Hierarchy" link="gstreamer-hierarchy.html"/>
-    <sub name="Index" link="api-index.html"/>
-    <sub name="Index of deprecated symbols" link="ix02.html"/>
+    <sub name="API Index" link="api-index-full.html"/>
+    <sub name="Index of deprecated API" link="api-index-deprecated.html"/>
   </chapters>
   <functions>
-    <keyword type="" name="Environment variables" link="gst-running.html#id2530629"/>
+    <keyword type="" name="Environment variables" link="gst-running.html#id2870011"/>
     <keyword type="function" name="gst_init ()" link="gstreamer-Gst.html#gst-init"/>
     <keyword type="function" name="gst_init_check ()" link="gstreamer-Gst.html#gst-init-check"/>
     <keyword type="function" name="gst_init_get_option_group ()" link="gstreamer-Gst.html#gst-init-get-option-group"/>
@@ -74,7 +74,7 @@
     <keyword type="function" name="gst_registry_fork_is_enabled ()" link="gstreamer-Gst.html#gst-registry-fork-is-enabled" since="0.10.10"/>
     <keyword type="function" name="gst_registry_fork_set_enabled ()" link="gstreamer-Gst.html#gst-registry-fork-set-enabled" since="0.10.10"/>
     <keyword type="function" name="gst_update_registry ()" link="gstreamer-Gst.html#gst-update-registry" since="0.10.12"/>
-    <keyword type="" name="Notes" link="GstBin.html#id2580801"/>
+    <keyword type="" name="Notes" link="GstBin.html#id2891752"/>
     <keyword type="struct" name="GstBin" link="GstBin.html#GstBin-struct"/>
     <keyword type="struct" name="GstBinClass" link="GstBin.html#GstBinClass"/>
     <keyword type="function" name="gst_bin_new ()" link="GstBin.html#gst-bin-new"/>
@@ -89,6 +89,7 @@
     <keyword type="function" name="gst_bin_iterate_sorted ()" link="GstBin.html#gst-bin-iterate-sorted"/>
     <keyword type="function" name="gst_bin_iterate_sources ()" link="GstBin.html#gst-bin-iterate-sources"/>
     <keyword type="function" name="gst_bin_iterate_all_by_interface ()" link="GstBin.html#gst-bin-iterate-all-by-interface"/>
+    <keyword type="function" name="gst_bin_recalculate_latency ()" link="GstBin.html#gst-bin-recalculate-latency" since="0.10.22."/>
     <keyword type="function" name="gst_bin_add_many ()" link="GstBin.html#gst-bin-add-many"/>
     <keyword type="function" name="gst_bin_remove_many ()" link="GstBin.html#gst-bin-remove-many"/>
     <keyword type="function" name="gst_bin_find_unlinked_pad ()" link="GstBin.html#gst-bin-find-unlinked-pad" since="0.10.20"/>
@@ -98,6 +99,7 @@
     <keyword type="macro" name="GST_BIN_CHILDREN_COOKIE()" link="GstBin.html#GST-BIN-CHILDREN-COOKIE:CAPS"/>
     <keyword type="macro" name="GST_BIN_NUMCHILDREN()" link="GstBin.html#GST-BIN-NUMCHILDREN:CAPS"/>
     <keyword type="" name="The &quot;async-handling&quot; property" link="GstBin.html#GstBin--async-handling"/>
+    <keyword type="" name="The &quot;do-latency&quot; signal" link="GstBin.html#GstBin-do-latency"/>
     <keyword type="" name="The &quot;element-added&quot; signal" link="GstBin.html#GstBin-element-added"/>
     <keyword type="" name="The &quot;element-removed&quot; signal" link="GstBin.html#GstBin-element-removed"/>
     <keyword type="struct" name="GstBuffer" link="gstreamer-GstBuffer.html#GstBuffer"/>
@@ -109,6 +111,7 @@
     <keyword type="macro" name="GST_BUFFER_FLAG_UNSET()" link="gstreamer-GstBuffer.html#GST-BUFFER-FLAG-UNSET:CAPS"/>
     <keyword type="macro" name="GST_BUFFER_DATA()" link="gstreamer-GstBuffer.html#GST-BUFFER-DATA:CAPS"/>
     <keyword type="macro" name="GST_BUFFER_MALLOCDATA()" link="gstreamer-GstBuffer.html#GST-BUFFER-MALLOCDATA:CAPS"/>
+    <keyword type="macro" name="GST_BUFFER_FREE_FUNC()" link="gstreamer-GstBuffer.html#GST-BUFFER-FREE-FUNC:CAPS" since="0.10.22"/>
     <keyword type="macro" name="GST_BUFFER_SIZE()" link="gstreamer-GstBuffer.html#GST-BUFFER-SIZE:CAPS"/>
     <keyword type="macro" name="GST_BUFFER_TIMESTAMP()" link="gstreamer-GstBuffer.html#GST-BUFFER-TIMESTAMP:CAPS"/>
     <keyword type="macro" name="GST_BUFFER_DURATION()" link="gstreamer-GstBuffer.html#GST-BUFFER-DURATION:CAPS"/>
@@ -295,7 +298,6 @@
     <keyword type="function" name="gst_clock_id_compare_func ()" link="GstClock.html#gst-clock-id-compare-func"/>
     <keyword type="function" name="gst_clock_id_ref ()" link="GstClock.html#gst-clock-id-ref"/>
     <keyword type="function" name="gst_clock_id_unref ()" link="GstClock.html#gst-clock-id-unref"/>
-    <keyword type="macro" name="GST_TYPE_CLOCK_TIME" link="GstClock.html#GST-TYPE-CLOCK-TIME:CAPS"/>
     <keyword type="" name="The &quot;stats&quot; property" link="GstClock.html#GstClock--stats"/>
     <keyword type="" name="The &quot;timeout&quot; property" link="GstClock.html#GstClock--timeout"/>
     <keyword type="" name="The &quot;window-size&quot; property" link="GstClock.html#GstClock--window-size"/>
@@ -306,10 +308,7 @@
     <keyword type="macro" name="GST_DISABLE_TRACE" link="gstreamer-gstconfig.html#GST-DISABLE-TRACE:CAPS"/>
     <keyword type="macro" name="GST_DISABLE_ALLOC_TRACE" link="gstreamer-gstconfig.html#GST-DISABLE-ALLOC-TRACE:CAPS"/>
     <keyword type="macro" name="GST_DISABLE_REGISTRY" link="gstreamer-gstconfig.html#GST-DISABLE-REGISTRY:CAPS"/>
-    <keyword type="macro" name="GST_DISABLE_ENUMTYPES" link="gstreamer-gstconfig.html#GST-DISABLE-ENUMTYPES:CAPS"/>
-    <keyword type="macro" name="GST_DISABLE_INDEX" link="gstreamer-gstconfig.html#GST-DISABLE-INDEX:CAPS"/>
     <keyword type="macro" name="GST_DISABLE_PLUGIN" link="gstreamer-gstconfig.html#GST-DISABLE-PLUGIN:CAPS"/>
-    <keyword type="macro" name="GST_DISABLE_URI" link="gstreamer-gstconfig.html#GST-DISABLE-URI:CAPS"/>
     <keyword type="macro" name="GST_DISABLE_XML" link="gstreamer-gstconfig.html#GST-DISABLE-XML:CAPS"/>
     <keyword type="struct" name="GstElement" link="GstElement.html#GstElement-struct"/>
     <keyword type="struct" name="GstElementClass" link="GstElement.html#GstElementClass"/>
@@ -460,6 +459,8 @@
     <keyword type="function" name="gst_event_new_custom ()" link="gstreamer-GstEvent.html#gst-event-new-custom"/>
     <keyword type="function" name="gst_event_get_structure ()" link="gstreamer-GstEvent.html#gst-event-get-structure"/>
     <keyword type="function" name="gst_event_has_name ()" link="gstreamer-GstEvent.html#gst-event-has-name" since="0.10.20"/>
+    <keyword type="function" name="gst_event_get_seqnum ()" link="gstreamer-GstEvent.html#gst-event-get-seqnum" since="0.10.22"/>
+    <keyword type="function" name="gst_event_set_seqnum ()" link="gstreamer-GstEvent.html#gst-event-set-seqnum" since="0.10.22"/>
     <keyword type="function" name="gst_event_new_flush_start ()" link="gstreamer-GstEvent.html#gst-event-new-flush-start"/>
     <keyword type="function" name="gst_event_new_flush_stop ()" link="gstreamer-GstEvent.html#gst-event-new-flush-stop"/>
     <keyword type="function" name="gst_event_new_eos ()" link="gstreamer-GstEvent.html#gst-event-new-eos"/>
@@ -500,6 +501,7 @@
     <keyword type="function" name="gst_ghost_pad_new_no_target_from_template ()" link="GstGhostPad.html#gst-ghost-pad-new-no-target-from-template" since="0.10.10"/>
     <keyword type="function" name="gst_ghost_pad_set_target ()" link="GstGhostPad.html#gst-ghost-pad-set-target"/>
     <keyword type="function" name="gst_ghost_pad_get_target ()" link="GstGhostPad.html#gst-ghost-pad-get-target"/>
+    <keyword type="function" name="gst_ghost_pad_construct ()" link="GstGhostPad.html#gst-ghost-pad-construct" since="0.10.22"/>
     <keyword type="struct" name="GstImplementsInterface" link="GstImplementsInterface.html#GstImplementsInterface-struct"/>
     <keyword type="function" name="gst_element_implements_interface ()" link="GstImplementsInterface.html#gst-element-implements-interface"/>
     <keyword type="function" name="gst_implements_interface_cast ()" link="GstImplementsInterface.html#gst-implements-interface-cast"/>
@@ -581,6 +583,7 @@
     <keyword type="function" name="gst_iterator_find_custom ()" link="gstreamer-GstIterator.html#gst-iterator-find-custom"/>
     <keyword type="struct" name="GstMessage" link="gstreamer-GstMessage.html#GstMessage"/>
     <keyword type="enum" name="enum GstMessageType" link="gstreamer-GstMessage.html#GstMessageType"/>
+    <keyword type="enum" name="enum GstStructureChangeType" link="gstreamer-GstMessage.html#GstStructureChangeType" since="0.10.22"/>
     <keyword type="macro" name="GST_MESSAGE_SRC()" link="gstreamer-GstMessage.html#GST-MESSAGE-SRC:CAPS"/>
     <keyword type="macro" name="GST_MESSAGE_TIMESTAMP()" link="gstreamer-GstMessage.html#GST-MESSAGE-TIMESTAMP:CAPS"/>
     <keyword type="macro" name="GST_MESSAGE_TYPE()" link="gstreamer-GstMessage.html#GST-MESSAGE-TYPE:CAPS"/>
@@ -593,6 +596,8 @@
     <keyword type="macro" name="gst_message_copy()" link="gstreamer-GstMessage.html#gst-message-copy"/>
     <keyword type="function" name="gst_message_get_structure ()" link="gstreamer-GstMessage.html#gst-message-get-structure"/>
     <keyword type="macro" name="gst_message_make_writable()" link="gstreamer-GstMessage.html#gst-message-make-writable"/>
+    <keyword type="function" name="gst_message_get_seqnum ()" link="gstreamer-GstMessage.html#gst-message-get-seqnum" since=""/>
+    <keyword type="function" name="gst_message_set_seqnum ()" link="gstreamer-GstMessage.html#gst-message-set-seqnum" since=""/>
     <keyword type="function" name="gst_message_new_eos ()" link="gstreamer-GstMessage.html#gst-message-new-eos"/>
     <keyword type="function" name="gst_message_new_error ()" link="gstreamer-GstMessage.html#gst-message-new-error"/>
     <keyword type="function" name="gst_message_parse_error ()" link="gstreamer-GstMessage.html#gst-message-parse-error"/>
@@ -628,6 +633,8 @@
     <keyword type="function" name="gst_message_new_async_start ()" link="gstreamer-GstMessage.html#gst-message-new-async-start" since="0.10.13"/>
     <keyword type="function" name="gst_message_parse_async_start ()" link="gstreamer-GstMessage.html#gst-message-parse-async-start" since="0.10.13"/>
     <keyword type="function" name="gst_message_new_async_done ()" link="gstreamer-GstMessage.html#gst-message-new-async-done" since="0.10.13"/>
+    <keyword type="function" name="gst_message_new_structure_change ()" link="gstreamer-GstMessage.html#gst-message-new-structure-change" since="0.10.22."/>
+    <keyword type="function" name="gst_message_parse_structure_change ()" link="gstreamer-GstMessage.html#gst-message-parse-structure-change" since="0.10.22"/>
     <keyword type="struct" name="GstMiniObject" link="gstreamer-GstMiniObject.html#GstMiniObject"/>
     <keyword type="enum" name="enum GstMiniObjectFlags" link="gstreamer-GstMiniObject.html#GstMiniObjectFlags"/>
     <keyword type="function" name="GstMiniObjectCopyFunction ()" link="gstreamer-GstMiniObject.html#GstMiniObjectCopyFunction"/>
@@ -798,10 +805,14 @@
     <keyword type="function" name="GstPadQueryTypeFunction ()" link="GstPad.html#GstPadQueryTypeFunction"/>
     <keyword type="function" name="gst_pad_get_query_types ()" link="GstPad.html#gst-pad-get-query-types"/>
     <keyword type="function" name="gst_pad_get_query_types_default ()" link="GstPad.html#gst-pad-get-query-types-default"/>
-    <keyword type="function" name="gst_pad_set_internal_link_function ()" link="GstPad.html#gst-pad-set-internal-link-function"/>
-    <keyword type="function" name="GstPadIntLinkFunction ()" link="GstPad.html#GstPadIntLinkFunction"/>
-    <keyword type="function" name="gst_pad_get_internal_links ()" link="GstPad.html#gst-pad-get-internal-links"/>
-    <keyword type="function" name="gst_pad_get_internal_links_default ()" link="GstPad.html#gst-pad-get-internal-links-default"/>
+    <keyword type="function" name="gst_pad_set_iterate_internal_links_function ()" link="GstPad.html#gst-pad-set-iterate-internal-links-function" since="0.10.21"/>
+    <keyword type="function" name="GstPadIterIntLinkFunction ()" link="GstPad.html#GstPadIterIntLinkFunction"/>
+    <keyword type="function" name="gst_pad_iterate_internal_links ()" link="GstPad.html#gst-pad-iterate-internal-links" since="0.10.21"/>
+    <keyword type="function" name="gst_pad_iterate_internal_links_default ()" link="GstPad.html#gst-pad-iterate-internal-links-default" since="0.10.21"/>
+    <keyword type="function" name="gst_pad_set_internal_link_function ()" link="GstPad.html#gst-pad-set-internal-link-function" deprecated="Use the thread-safe gst_pad_set_iterate_internal_links_function()"/>
+    <keyword type="function" name="GstPadIntLinkFunction ()" link="GstPad.html#GstPadIntLinkFunction" deprecated="use the threadsafe #GstPadIterIntLinkFunction instead."/>
+    <keyword type="function" name="gst_pad_get_internal_links ()" link="GstPad.html#gst-pad-get-internal-links" deprecated=""/>
+    <keyword type="function" name="gst_pad_get_internal_links_default ()" link="GstPad.html#gst-pad-get-internal-links-default" deprecated=""/>
     <keyword type="function" name="gst_pad_load_and_link ()" link="GstPad.html#gst-pad-load-and-link"/>
     <keyword type="function" name="gst_pad_dispatcher ()" link="GstPad.html#gst-pad-dispatcher"/>
     <keyword type="function" name="GstPadDispatcherFunction ()" link="GstPad.html#GstPadDispatcherFunction"/>
@@ -842,6 +853,10 @@
     <keyword type="macro" name="GST_PAD_TEMPLATE_IS_FIXED()" link="GstPadTemplate.html#GST-PAD-TEMPLATE-IS-FIXED:CAPS"/>
     <keyword type="function" name="gst_pad_template_new ()" link="GstPadTemplate.html#gst-pad-template-new"/>
     <keyword type="function" name="gst_pad_template_get_caps ()" link="GstPadTemplate.html#gst-pad-template-get-caps"/>
+    <keyword type="" name="The &quot;caps&quot; property" link="GstPadTemplate.html#GstPadTemplate--caps"/>
+    <keyword type="" name="The &quot;direction&quot; property" link="GstPadTemplate.html#GstPadTemplate--direction"/>
+    <keyword type="" name="The &quot;name-template&quot; property" link="GstPadTemplate.html#GstPadTemplate--name-template"/>
+    <keyword type="" name="The &quot;presence&quot; property" link="GstPadTemplate.html#GstPadTemplate--presence"/>
     <keyword type="" name="The &quot;pad-created&quot; signal" link="GstPadTemplate.html#GstPadTemplate-pad-created"/>
     <keyword type="macro" name="GST_PARAM_CONTROLLABLE" link="gstreamer-GstParamSpec.html#GST-PARAM-CONTROLLABLE:CAPS"/>
     <keyword type="macro" name="GST_PARAM_USER_SHIFT" link="gstreamer-GstParamSpec.html#GST-PARAM-USER-SHIFT:CAPS"/>
@@ -903,6 +918,9 @@
     <keyword type="function" name="gst_plugin_load_by_name ()" link="GstPlugin.html#gst-plugin-load-by-name"/>
     <keyword type="function" name="gst_plugin_list_free ()" link="GstPlugin.html#gst-plugin-list-free"/>
     <keyword type="function" name="gst_plugin_register_static ()" link="GstPlugin.html#gst-plugin-register-static" since="0.10.16"/>
+    <keyword type="enum" name="enum GstPluginDependencyFlags" link="GstPlugin.html#GstPluginDependencyFlags" since="0.10.22"/>
+    <keyword type="function" name="gst_plugin_add_dependency ()" link="GstPlugin.html#gst-plugin-add-dependency" since="0.10.22"/>
+    <keyword type="function" name="gst_plugin_add_dependency_simple ()" link="GstPlugin.html#gst-plugin-add-dependency-simple" since="0.10.22"/>
     <keyword type="struct" name="GstPluginFeature" link="GstPluginFeature.html#GstPluginFeature-struct"/>
     <keyword type="macro" name="GST_PLUGIN_FEATURE_NAME()" link="GstPluginFeature.html#GST-PLUGIN-FEATURE-NAME:CAPS"/>
     <keyword type="struct" name="GstTypeNameData" link="GstPluginFeature.html#GstTypeNameData"/>
@@ -936,6 +954,7 @@
     <keyword type="function" name="gst_poll_set_flushing ()" link="gstreamer-GstPoll.html#gst-poll-set-flushing" since="0.10.18"/>
     <keyword type="function" name="gst_poll_wait ()" link="gstreamer-GstPoll.html#gst-poll-wait" since="0.10.18"/>
     <keyword type="struct" name="GstPreset" link="GstPreset.html#GstPreset-struct"/>
+    <keyword type="struct" name="GstPresetInterface" link="GstPreset.html#GstPresetInterface"/>
     <keyword type="function" name="gst_preset_get_preset_names ()" link="GstPreset.html#gst-preset-get-preset-names" since="0.10.20"/>
     <keyword type="function" name="gst_preset_get_property_names ()" link="GstPreset.html#gst-preset-get-property-names" since="0.10.20"/>
     <keyword type="function" name="gst_preset_load_preset ()" link="GstPreset.html#gst-preset-load-preset" since="0.10.20"/>
@@ -946,7 +965,6 @@
     <keyword type="function" name="gst_preset_get_meta ()" link="GstPreset.html#gst-preset-get-meta" since="0.10.20"/>
     <keyword type="struct" name="GstQuery" link="gstreamer-GstQuery.html#GstQuery"/>
     <keyword type="enum" name="enum GstQueryType" link="gstreamer-GstQuery.html#GstQueryType"/>
-    <keyword type="macro" name="GST_QUERY_TYPE()" link="gstreamer-GstQuery.html#GST-QUERY-TYPE:CAPS"/>
     <keyword type="macro" name="GST_QUERY_TYPE_NAME()" link="gstreamer-GstQuery.html#GST-QUERY-TYPE-NAME:CAPS" since="0.10.4"/>
     <keyword type="struct" name="GstQueryTypeDefinition" link="gstreamer-GstQuery.html#GstQueryTypeDefinition"/>
     <keyword type="function" name="gst_query_type_get_name ()" link="gstreamer-GstQuery.html#gst-query-type-get-name"/>
@@ -993,6 +1011,9 @@
     <keyword type="function" name="gst_query_parse_buffering_stats ()" link="gstreamer-GstQuery.html#gst-query-parse-buffering-stats" since="0.10.20"/>
     <keyword type="function" name="gst_query_set_buffering_range ()" link="gstreamer-GstQuery.html#gst-query-set-buffering-range" since="0.10.20"/>
     <keyword type="function" name="gst_query_parse_buffering_range ()" link="gstreamer-GstQuery.html#gst-query-parse-buffering-range" since="0.10.20"/>
+    <keyword type="function" name="gst_query_new_uri ()" link="gstreamer-GstQuery.html#gst-query-new-uri" since="0.10.22"/>
+    <keyword type="function" name="gst_query_parse_uri ()" link="gstreamer-GstQuery.html#gst-query-parse-uri" since="0.10.22"/>
+    <keyword type="function" name="gst_query_set_uri ()" link="gstreamer-GstQuery.html#gst-query-set-uri" since="0.10.22"/>
     <keyword type="struct" name="GstRegistry" link="GstRegistry.html#GstRegistry-struct"/>
     <keyword type="function" name="gst_registry_get_default ()" link="GstRegistry.html#gst-registry-get-default"/>
     <keyword type="function" name="gst_registry_get_feature_list ()" link="GstRegistry.html#gst-registry-get-feature-list"/>
@@ -1139,7 +1160,13 @@
     <keyword type="macro" name="GST_TAG_LANGUAGE_CODE" link="gstreamer-GstTagList.html#GST-TAG-LANGUAGE-CODE:CAPS"/>
     <keyword type="macro" name="GST_TAG_IMAGE" link="gstreamer-GstTagList.html#GST-TAG-IMAGE:CAPS" since="0.10.6"/>
     <keyword type="macro" name="GST_TAG_PREVIEW_IMAGE" link="gstreamer-GstTagList.html#GST-TAG-PREVIEW-IMAGE:CAPS" since="0.10.7"/>
+    <keyword type="macro" name="GST_TAG_ATTACHMENT" link="gstreamer-GstTagList.html#GST-TAG-ATTACHMENT:CAPS" since="0.10.21"/>
     <keyword type="macro" name="GST_TAG_BEATS_PER_MINUTE" link="gstreamer-GstTagList.html#GST-TAG-BEATS-PER-MINUTE:CAPS" since="0.10.12"/>
+    <keyword type="macro" name="GST_TAG_KEYWORDS" link="gstreamer-GstTagList.html#GST-TAG-KEYWORDS:CAPS" since="0.10.21"/>
+    <keyword type="macro" name="GST_TAG_GEO_LOCATION_NAME" link="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-NAME:CAPS" since="0.10.21"/>
+    <keyword type="macro" name="GST_TAG_GEO_LOCATION_LATITUDE" link="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-LATITUDE:CAPS" since="0.10.21"/>
+    <keyword type="macro" name="GST_TAG_GEO_LOCATION_LONGITUDE" link="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-LONGITUDE:CAPS" since="0.10.21"/>
+    <keyword type="macro" name="GST_TAG_GEO_LOCATION_ELEVATION" link="gstreamer-GstTagList.html#GST-TAG-GEO-LOCATION-ELEVATION:CAPS" since="0.10.21"/>
     <keyword type="function" name="gst_tag_register ()" link="gstreamer-GstTagList.html#gst-tag-register"/>
     <keyword type="function" name="gst_tag_merge_use_first ()" link="gstreamer-GstTagList.html#gst-tag-merge-use-first"/>
     <keyword type="function" name="gst_tag_merge_strings_with_comma ()" link="gstreamer-GstTagList.html#gst-tag-merge-strings-with-comma"/>
@@ -1193,9 +1220,9 @@
     <keyword type="function" name="gst_tag_list_get_pointer_index ()" link="gstreamer-GstTagList.html#gst-tag-list-get-pointer-index"/>
     <keyword type="function" name="gst_tag_list_get_date ()" link="gstreamer-GstTagList.html#gst-tag-list-get-date"/>
     <keyword type="function" name="gst_tag_list_get_date_index ()" link="gstreamer-GstTagList.html#gst-tag-list-get-date-index"/>
-    <keyword type="" name="" link="GstTagSetter.html#id2907370"/>
     <keyword type="struct" name="GstTagSetter" link="GstTagSetter.html#GstTagSetter-struct"/>
     <keyword type="struct" name="GstTagSetterIFace" link="GstTagSetter.html#GstTagSetterIFace"/>
+    <keyword type="function" name="gst_tag_setter_reset_tags ()" link="GstTagSetter.html#gst-tag-setter-reset-tags" since="0.10.22"/>
     <keyword type="function" name="gst_tag_setter_merge_tags ()" link="GstTagSetter.html#gst-tag-setter-merge-tags"/>
     <keyword type="function" name="gst_tag_setter_add_tags ()" link="GstTagSetter.html#gst-tag-setter-add-tags"/>
     <keyword type="function" name="gst_tag_setter_add_tag_values ()" link="GstTagSetter.html#gst-tag-setter-add-tag-values"/>
@@ -1257,9 +1284,19 @@
     <keyword type="macro" name="GST_BOILERPLATE()" link="gstreamer-GstUtils.html#GST-BOILERPLATE:CAPS"/>
     <keyword type="macro" name="GST_CALL_PARENT()" link="gstreamer-GstUtils.html#GST-CALL-PARENT:CAPS"/>
     <keyword type="macro" name="GST_CALL_PARENT_WITH_DEFAULT()" link="gstreamer-GstUtils.html#GST-CALL-PARENT-WITH-DEFAULT:CAPS"/>
+    <keyword type="macro" name="GDOUBLE_FROM_BE()" link="gstreamer-GstUtils.html#GDOUBLE-FROM-BE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GDOUBLE_FROM_LE()" link="gstreamer-GstUtils.html#GDOUBLE-FROM-LE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GDOUBLE_TO_BE()" link="gstreamer-GstUtils.html#GDOUBLE-TO-BE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GDOUBLE_TO_LE()" link="gstreamer-GstUtils.html#GDOUBLE-TO-LE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GFLOAT_FROM_BE()" link="gstreamer-GstUtils.html#GFLOAT-FROM-BE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GFLOAT_FROM_LE()" link="gstreamer-GstUtils.html#GFLOAT-FROM-LE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GFLOAT_TO_BE()" link="gstreamer-GstUtils.html#GFLOAT-TO-BE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GFLOAT_TO_LE()" link="gstreamer-GstUtils.html#GFLOAT-TO-LE:CAPS" since="0.10.22"/>
     <keyword type="macro" name="GST_READ_UINT8()" link="gstreamer-GstUtils.html#GST-READ-UINT8:CAPS"/>
     <keyword type="macro" name="GST_READ_UINT16_LE()" link="gstreamer-GstUtils.html#GST-READ-UINT16-LE:CAPS"/>
     <keyword type="macro" name="GST_READ_UINT16_BE()" link="gstreamer-GstUtils.html#GST-READ-UINT16-BE:CAPS"/>
+    <keyword type="macro" name="GST_READ_UINT24_LE()" link="gstreamer-GstUtils.html#GST-READ-UINT24-LE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GST_READ_UINT24_BE()" link="gstreamer-GstUtils.html#GST-READ-UINT24-BE:CAPS" since="0.10.22"/>
     <keyword type="macro" name="GST_READ_UINT32_LE()" link="gstreamer-GstUtils.html#GST-READ-UINT32-LE:CAPS"/>
     <keyword type="macro" name="GST_READ_UINT32_BE()" link="gstreamer-GstUtils.html#GST-READ-UINT32-BE:CAPS"/>
     <keyword type="macro" name="GST_READ_UINT64_LE()" link="gstreamer-GstUtils.html#GST-READ-UINT64-LE:CAPS"/>
@@ -1267,6 +1304,8 @@
     <keyword type="macro" name="GST_WRITE_UINT8()" link="gstreamer-GstUtils.html#GST-WRITE-UINT8:CAPS"/>
     <keyword type="macro" name="GST_WRITE_UINT16_LE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT16-LE:CAPS"/>
     <keyword type="macro" name="GST_WRITE_UINT16_BE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT16-BE:CAPS"/>
+    <keyword type="macro" name="GST_WRITE_UINT24_LE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT24-LE:CAPS" since="0.10.22"/>
+    <keyword type="macro" name="GST_WRITE_UINT24_BE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT24-BE:CAPS" since="0.10.22"/>
     <keyword type="macro" name="GST_WRITE_UINT32_LE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT32-LE:CAPS"/>
     <keyword type="macro" name="GST_WRITE_UINT32_BE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT32-BE:CAPS"/>
     <keyword type="macro" name="GST_WRITE_UINT64_LE()" link="gstreamer-GstUtils.html#GST-WRITE-UINT64-LE:CAPS"/>
@@ -1294,6 +1333,8 @@
     <keyword type="function" name="gst_util_dump_mem ()" link="gstreamer-GstUtils.html#gst-util-dump-mem"/>
     <keyword type="function" name="gst_util_uint64_scale ()" link="gstreamer-GstUtils.html#gst-util-uint64-scale"/>
     <keyword type="function" name="gst_util_uint64_scale_int ()" link="gstreamer-GstUtils.html#gst-util-uint64-scale-int"/>
+    <keyword type="function" name="gst_util_seqnum_next ()" link="gstreamer-GstUtils.html#gst-util-seqnum-next" since="0.10.22"/>
+    <keyword type="function" name="gst_util_seqnum_compare ()" link="gstreamer-GstUtils.html#gst-util-seqnum-compare" since="0.10.22"/>
     <keyword type="function" name="gst_util_set_object_arg ()" link="gstreamer-GstUtils.html#gst-util-set-object-arg"/>
     <keyword type="function" name="gst_util_set_value_from_string ()" link="gstreamer-GstUtils.html#gst-util-set-value-from-string"/>
     <keyword type="function" name="gst_util_get_timestamp ()" link="gstreamer-GstUtils.html#gst-util-get-timestamp" since="0.10.16"/>
@@ -1403,7 +1444,7 @@
     <keyword type="macro" name="GST_LEVEL_DEFAULT" link="gstreamer-GstInfo.html#GST-LEVEL-DEFAULT:CAPS"/>
     <keyword type="enum" name="enum GstDebugColorFlags" link="gstreamer-GstInfo.html#GstDebugColorFlags"/>
     <keyword type="struct" name="GstDebugCategory" link="gstreamer-GstInfo.html#GstDebugCategory"/>
-    <keyword type="enum" name="enum GstDebugGraphDetails" link="gstreamer-GstInfo.html#GstDebugGraphDetails"/>
+    <keyword type="enum" name="enum GstDebugGraphDetails" link="gstreamer-GstInfo.html#GstDebugGraphDetails" since="0.10.15"/>
     <keyword type="macro" name="GST_STR_NULL()" link="gstreamer-GstInfo.html#GST-STR-NULL:CAPS"/>
     <keyword type="macro" name="GST_DEBUG_PAD_NAME()" link="gstreamer-GstInfo.html#GST-DEBUG-PAD-NAME:CAPS"/>
     <keyword type="macro" name="GST_FUNCTION" link="gstreamer-GstInfo.html#GST-FUNCTION:CAPS"/>
@@ -1460,8 +1501,8 @@
     <keyword type="macro" name="GST_LOG()" link="gstreamer-GstInfo.html#GST-LOG:CAPS"/>
     <keyword type="macro" name="GST_DEBUG_FUNCPTR()" link="gstreamer-GstInfo.html#GST-DEBUG-FUNCPTR:CAPS"/>
     <keyword type="macro" name="GST_DEBUG_FUNCPTR_NAME()" link="gstreamer-GstInfo.html#GST-DEBUG-FUNCPTR-NAME:CAPS"/>
-    <keyword type="macro" name="GST_DEBUG_BIN_TO_DOT_FILE()" link="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE:CAPS"/>
-    <keyword type="macro" name="GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS()" link="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE-WITH-TS:CAPS"/>
+    <keyword type="macro" name="GST_DEBUG_BIN_TO_DOT_FILE()" link="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE:CAPS" since="0.10.15"/>
+    <keyword type="macro" name="GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS()" link="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE-WITH-TS:CAPS" since="0.10.15"/>
     <keyword type="function" name="gst_debug_print_stack_trace ()" link="gstreamer-GstInfo.html#gst-debug-print-stack-trace"/>
     <keyword type="macro" name="GST_TIME_FORMAT" link="gstreamer-GstInfo.html#GST-TIME-FORMAT:CAPS"/>
     <keyword type="macro" name="GST_TIME_ARGS()" link="gstreamer-GstInfo.html#GST-TIME-ARGS:CAPS"/>

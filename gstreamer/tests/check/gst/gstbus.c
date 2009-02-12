@@ -101,7 +101,7 @@ GST_START_TEST (test_hammer_bus)
 GST_END_TEST;
 
 static gboolean
-message_func_eos (GstBus * bus, GstMessage * message, gpointer data)
+message_func_eos (GstBus * bus, GstMessage * message, guint * p_counter)
 {
   const GstStructure *s;
   gint i;
@@ -114,11 +114,14 @@ message_func_eos (GstBus * bus, GstMessage * message, gpointer data)
   if (!gst_structure_get_int (s, "msg_id", &i))
     g_critical ("Invalid message");
 
+  if (p_counter != NULL)
+    *p_counter += 1;
+
   return i != 9;
 }
 
 static gboolean
-message_func_app (GstBus * bus, GstMessage * message, gpointer data)
+message_func_app (GstBus * bus, GstMessage * message, guint * p_counter)
 {
   const GstStructure *s;
   gint i;
@@ -131,6 +134,9 @@ message_func_app (GstBus * bus, GstMessage * message, gpointer data)
   s = gst_message_get_structure (message);
   if (!gst_structure_get_int (s, "msg_id", &i))
     g_critical ("Invalid message");
+
+  if (p_counter != NULL)
+    *p_counter += 1;
 
   return i != 9;
 }
@@ -158,6 +164,8 @@ send_messages (gpointer data)
  * respective callbacks. */
 GST_START_TEST (test_watch)
 {
+  guint num_eos = 0;
+  guint num_app = 0;
   guint id;
 
   test_bus = gst_bus_new ();
@@ -165,19 +173,70 @@ GST_START_TEST (test_watch)
   main_loop = g_main_loop_new (NULL, FALSE);
 
   id = gst_bus_add_watch (test_bus, gst_bus_async_signal_func, NULL);
+  fail_if (id == 0);
   g_signal_connect (test_bus, "message::eos", (GCallback) message_func_eos,
-      NULL);
+      &num_eos);
   g_signal_connect (test_bus, "message::application",
-      (GCallback) message_func_app, NULL);
+      (GCallback) message_func_app, &num_app);
 
   g_idle_add ((GSourceFunc) send_messages, NULL);
   while (g_main_context_pending (NULL))
     g_main_context_iteration (NULL, FALSE);
 
+  fail_unless_equals_int (num_eos, 10);
+  fail_unless_equals_int (num_app, 10);
+
   g_source_remove (id);
   g_main_loop_unref (main_loop);
 
   gst_object_unref ((GstObject *) test_bus);
+}
+
+GST_END_TEST;
+
+/* test if adding a signal watch for different message types calls the
+ * respective callbacks. */
+GST_START_TEST (test_watch_with_custom_context)
+{
+  GMainContext *ctx;
+  GSource *source;
+  guint num_eos = 0;
+  guint num_app = 0;
+  guint id;
+
+  test_bus = gst_bus_new ();
+
+  ctx = g_main_context_new ();
+  main_loop = g_main_loop_new (ctx, FALSE);
+
+  source = gst_bus_create_watch (test_bus);
+  g_source_set_callback (source, (GSourceFunc) gst_bus_async_signal_func, NULL,
+      NULL);
+  id = g_source_attach (source, ctx);
+  g_source_unref (source);
+  fail_if (id == 0);
+
+  g_signal_connect (test_bus, "message::eos", (GCallback) message_func_eos,
+      &num_eos);
+  g_signal_connect (test_bus, "message::application",
+      (GCallback) message_func_app, &num_app);
+
+  source = g_idle_source_new ();
+  g_source_set_callback (source, (GSourceFunc) send_messages, NULL, NULL);
+  g_source_attach (source, ctx);
+  g_source_unref (source);
+
+  while (g_main_context_pending (ctx))
+    g_main_context_iteration (ctx, FALSE);
+
+  fail_unless_equals_int (num_eos, 10);
+  fail_unless_equals_int (num_app, 10);
+
+  g_source_remove (id);
+  g_main_loop_unref (main_loop);
+  g_main_context_unref (ctx);
+
+  gst_object_unref (test_bus);
 }
 
 GST_END_TEST;
@@ -428,6 +487,84 @@ GST_START_TEST (test_timed_pop_thread)
 
 GST_END_TEST;
 
+static gboolean
+cb_bus_call (GstBus * bus, GstMessage * msg, gpointer data)
+{
+  GMainLoop *loop = data;
+
+  switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_EOS:
+    {
+      GST_INFO ("End-of-stream");
+      g_main_loop_quit (loop);
+      break;
+    }
+    case GST_MESSAGE_ERROR:
+    {
+      GError *err = NULL;
+
+      gst_message_parse_error (msg, &err, NULL);
+      g_error ("Error: %s", err->message);
+      g_error_free (err);
+
+      g_main_loop_quit (loop);
+      break;
+    }
+    default:
+    {
+      GST_LOG ("BUS MESSAGE: type=%s", GST_MESSAGE_TYPE_NAME (msg));
+      break;
+    }
+  }
+
+  return TRUE;
+}
+
+GST_START_TEST (test_custom_main_context)
+{
+  GMainContext *ctx;
+  GMainLoop *loop;
+  GstElement *pipeline;
+  GstElement *src;
+  GstElement *sink;
+  GSource *source;
+  GstBus *bus;
+
+  ctx = g_main_context_new ();
+  loop = g_main_loop_new (ctx, FALSE);
+
+  pipeline = gst_pipeline_new (NULL);
+  src = gst_element_factory_make ("fakesrc", NULL);
+  g_object_set (src, "num-buffers", 2000, NULL);
+
+  sink = gst_element_factory_make ("fakesink", NULL);
+
+  fail_unless (gst_bin_add (GST_BIN (pipeline), src));
+  fail_unless (gst_bin_add (GST_BIN (pipeline), sink));
+  fail_unless (gst_element_link (src, sink));
+
+  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+  source = gst_bus_create_watch (bus);
+  g_source_attach (source, ctx);
+  g_source_set_callback (source, (GSourceFunc) cb_bus_call, loop, NULL);
+  gst_object_unref (bus);
+
+  GST_INFO ("starting pipeline");
+
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
+  gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+
+  GST_INFO ("running event loop, ctx=%p", ctx);
+  g_main_loop_run (loop);
+
+  /* clean up */
+  if (ctx)
+    g_main_context_unref (ctx);
+  g_main_loop_unref (loop);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_bus_suite (void)
 {
@@ -440,10 +577,12 @@ gst_bus_suite (void)
   tcase_add_test (tc_chain, test_hammer_bus);
   tcase_add_test (tc_chain, test_watch);
   tcase_add_test (tc_chain, test_watch_with_poll);
+  tcase_add_test (tc_chain, test_watch_with_custom_context);
   tcase_add_test (tc_chain, test_timed_pop);
   tcase_add_test (tc_chain, test_timed_pop_thread);
   tcase_add_test (tc_chain, test_timed_pop_filtered);
   tcase_add_test (tc_chain, test_timed_pop_filtered_with_timeout);
+  tcase_add_test (tc_chain, test_custom_main_context);
   return s;
 }
 

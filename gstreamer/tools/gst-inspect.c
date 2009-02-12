@@ -122,7 +122,6 @@ print_query_types (const GstQueryType * types)
   }
 }
 
-#ifndef GST_DISABLE_ENUMTYPES
 #if 0
 static void
 print_event_masks (const GstEventMask * masks)
@@ -170,12 +169,6 @@ print_event_masks (const GstEventMask * masks)
 
     masks++;
   }
-}
-#endif
-#else
-static void
-print_event_masks (const GstEventMask * masks)
-{
 }
 #endif
 
@@ -704,7 +697,6 @@ print_clocking_info (GstElement * element)
   }
 }
 
-#ifndef GST_DISABLE_INDEX
 static void
 print_index_info (GstElement * element)
 {
@@ -717,12 +709,6 @@ print_index_info (GstElement * element)
     n_print ("Element has no indexing capabilities.\n");
   }
 }
-#else
-static void
-print_index_info (GstElement * element)
-{
-}
-#endif
 
 static void
 print_uri_handler_info (GstElement * element)
@@ -982,18 +968,14 @@ print_element_list (gboolean print_all)
           g_print ("%s:  %s: %s\n", plugin->desc.name,
               GST_PLUGIN_FEATURE_NAME (factory),
               gst_element_factory_get_longname (factory));
-      }
-#ifndef GST_DISABLE_INDEX
-      else if (GST_IS_INDEX_FACTORY (feature)) {
+      } else if (GST_IS_INDEX_FACTORY (feature)) {
         GstIndexFactory *factory;
 
         factory = GST_INDEX_FACTORY (feature);
         if (!print_all)
           g_print ("%s:  %s: %s\n", plugin->desc.name,
               GST_PLUGIN_FEATURE_NAME (factory), factory->longdesc);
-      }
-#endif
-      else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
+      } else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
         GstTypeFindFactory *factory;
 
         factory = GST_TYPE_FIND_FACTORY (feature);
@@ -1038,6 +1020,80 @@ print_element_list (gboolean print_all)
 }
 
 static void
+print_all_uri_handlers (void)
+{
+  GList *plugins, *p, *features, *f;
+
+  plugins = gst_default_registry_get_plugin_list ();
+
+  for (p = plugins; p; p = p->next) {
+    GstPlugin *plugin = (GstPlugin *) (p->data);
+
+    features =
+        gst_registry_get_feature_list_by_plugin (gst_registry_get_default (),
+        plugin->desc.name);
+
+    for (f = features; f; f = f->next) {
+      GstPluginFeature *feature = GST_PLUGIN_FEATURE (features->data);
+
+      if (GST_IS_ELEMENT_FACTORY (feature)) {
+        GstElementFactory *factory;
+        GstElement *element;
+
+        factory = GST_ELEMENT_FACTORY (gst_plugin_feature_load (feature));
+        if (!factory) {
+          g_print ("element plugin %s couldn't be loaded\n", plugin->desc.name);
+          continue;
+        }
+
+        element = gst_element_factory_create (factory, NULL);
+        if (!element) {
+          g_print ("couldn't construct element for %s for some reason\n",
+              GST_OBJECT_NAME (factory));
+          gst_object_unref (factory);
+          continue;
+        }
+
+        if (GST_IS_URI_HANDLER (element)) {
+          const gchar *dir;
+          gchar **uri_protocols, *joined;
+
+          switch (gst_uri_handler_get_uri_type (GST_URI_HANDLER (element))) {
+            case GST_URI_SRC:
+              dir = "read";
+              break;
+            case GST_URI_SINK:
+              dir = "write";
+              break;
+            default:
+              dir = "unknown";
+              break;
+          }
+
+          uri_protocols =
+              gst_uri_handler_get_protocols (GST_URI_HANDLER (element));
+          joined = g_strjoinv (", ", uri_protocols);
+
+          g_print ("%s (%s, rank %u): %s\n", GST_OBJECT_NAME (factory), dir,
+              gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory)),
+              joined);
+
+          g_free (joined);
+          //g_strfreev (uri_protocols);
+        }
+
+        gst_object_unref (element);
+        gst_object_unref (factory);
+      }
+    }
+
+    gst_plugin_feature_list_free (features);
+  }
+
+  gst_plugin_list_free (plugins);
+}
+
+static void
 print_plugin_info (GstPlugin * plugin)
 {
   n_print ("Plugin Details:\n");
@@ -1079,17 +1135,13 @@ print_plugin_features (GstPlugin * plugin)
       n_print ("  %s: %s\n", GST_PLUGIN_FEATURE_NAME (factory),
           gst_element_factory_get_longname (factory));
       num_elements++;
-    }
-#ifndef GST_DISABLE_INDEX
-    else if (GST_IS_INDEX_FACTORY (feature)) {
+    } else if (GST_IS_INDEX_FACTORY (feature)) {
       GstIndexFactory *factory;
 
       factory = GST_INDEX_FACTORY (feature);
       n_print ("  %s: %s\n", GST_OBJECT_NAME (factory), factory->longdesc);
       num_indexes++;
-    }
-#endif
-    else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
+    } else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
       GstTypeFindFactory *factory;
 
       factory = GST_TYPE_FIND_FACTORY (feature);
@@ -1136,14 +1188,12 @@ print_element_features (const gchar * element_name)
   GstPluginFeature *feature;
 
   /* FIXME implement other pretty print function for these */
-#ifndef GST_DISABLE_INDEX
   feature = gst_default_registry_find_feature (element_name,
       GST_TYPE_INDEX_FACTORY);
   if (feature) {
     n_print ("%s: an index\n", element_name);
     return 0;
   }
-#endif
   feature = gst_default_registry_find_feature (element_name,
       GST_TYPE_TYPE_FIND_FACTORY);
   if (feature) {
@@ -1342,7 +1392,9 @@ int
 main (int argc, char *argv[])
 {
   gboolean print_all = FALSE;
+  gboolean plugin_name = FALSE;
   gboolean print_aii = FALSE;
+  gboolean uri_handlers = FALSE;
   GOptionEntry options[] = {
     {"print-all", 'a', 0, G_OPTION_ARG_NONE, &print_all,
         N_("Print all elements"), NULL},
@@ -1351,6 +1403,12 @@ main (int argc, char *argv[])
               "provides.\n                                       "
               "Useful in connection with external automatic plugin "
               "installation mechanisms"), NULL},
+    {"plugin", '\0', 0, G_OPTION_ARG_NONE, &plugin_name,
+        N_("List the plugin contents"), NULL},
+    {"uri-handlers", 'u', 0, G_OPTION_ARG_NONE, &uri_handlers,
+          N_
+          ("Print supported URI schemes, with the elements that implement them"),
+        NULL},
     GST_TOOLS_GOPTION_VERSION,
     {NULL}
   };
@@ -1377,28 +1435,40 @@ main (int argc, char *argv[])
 
   gst_tools_print_version ("gst-inspect");
 
-  if (print_all && argc > 2) {
+  if (print_all && argc > 1) {
     g_print ("-a requires no extra arguments\n");
     return 1;
   }
 
+  if (uri_handlers && argc > 1) {
+    g_print ("-u requires no extra arguments\n");
+    exit (1);
+  }
+
   /* if no arguments, print out list of elements */
-  if (argc == 1 || print_all) {
+  if (uri_handlers) {
+    print_all_uri_handlers ();
+  } else if (argc == 1 || print_all) {
     print_element_list (print_all);
-    /* else we try to get a factory */
   } else {
+    /* else we try to get a factory */
     GstElementFactory *factory;
     GstPlugin *plugin;
     const char *arg = argv[argc - 1];
     int retval;
 
-    factory = gst_element_factory_find (arg);
-    /* if there's a factory, print out the info */
-    if (factory) {
-      retval = print_element_info (factory, print_all);
-      gst_object_unref (factory);
+    if (!plugin_name) {
+      factory = gst_element_factory_find (arg);
+
+      /* if there's a factory, print out the info */
+      if (factory) {
+        retval = print_element_info (factory, print_all);
+        gst_object_unref (factory);
+      } else {
+        retval = print_element_features (arg);
+      }
     } else {
-      retval = print_element_features (arg);
+      retval = -1;
     }
 
     /* otherwise check if it's a plugin */

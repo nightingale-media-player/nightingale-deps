@@ -146,6 +146,8 @@ gst_controlled_property_new (GObject * object, const gchar * name)
       prop->pspec = pspec;
       prop->name = pspec->name;
       prop->disabled = FALSE;
+      memset (&prop->last_value, 0, sizeof (GValue));
+      g_value_init (&prop->last_value, G_PARAM_SPEC_VALUE_TYPE (prop->pspec));
     }
   } else {
     GST_WARNING ("class '%s' has no property '%s'", G_OBJECT_TYPE_NAME (object),
@@ -166,6 +168,7 @@ gst_controlled_property_free (GstControlledProperty * prop)
 {
   if (prop->csource)
     g_object_unref (prop->csource);
+  g_value_unset (&prop->last_value);
   g_free (prop);
 }
 
@@ -583,7 +586,8 @@ gst_controller_get_control_source (GstController * self, gchar * property_name)
  * Gets the value for the given controller-handled property at the requested
  * time.
  *
- * Returns: the GValue of the property at the given time, or %NULL if the property isn't handled by the controller
+ * Returns: the GValue of the property at the given time, or %NULL if the
+ * property isn't handled by the controller
  */
 GValue *
 gst_controller_get (GstController * self, gchar * property_name,
@@ -658,6 +662,9 @@ gst_controller_suggest_next_sync (GstController * self)
  * Sets the properties of the element, according to the controller that (maybe)
  * handles them and for the given timestamp.
  *
+ * If this function fails, it is most likely the application developers fault.
+ * Most probably the control sources are not setup correctly.
+ *
  * Returns: %TRUE if the controller values could be applied to the object
  * properties, %FALSE otherwise
  */
@@ -666,7 +673,8 @@ gst_controller_sync_values (GstController * self, GstClockTime timestamp)
 {
   GstControlledProperty *prop;
   GList *node;
-  gboolean ret = FALSE;
+  gboolean ret = TRUE, val_ret;
+  GValue value = { 0, };
 
   g_return_val_if_fail (GST_IS_CONTROLLER (self), FALSE);
   g_return_val_if_fail (GST_CLOCK_TIME_IS_VALID (timestamp), FALSE);
@@ -674,25 +682,39 @@ gst_controller_sync_values (GstController * self, GstClockTime timestamp)
   GST_LOG ("sync_values");
 
   g_mutex_lock (self->lock);
+  g_object_freeze_notify (self->object);
   /* go over the controlled properties of the controller */
   for (node = self->properties; node; node = g_list_next (node)) {
-    GValue value = { 0, };
     prop = node->data;
-
-    GST_DEBUG ("  property '%s' at ts=%" G_GUINT64_FORMAT, prop->name,
-        timestamp);
 
     if (!prop->csource || prop->disabled)
       continue;
 
+    GST_LOG ("property '%s' at ts=%" G_GUINT64_FORMAT, prop->name, timestamp);
+
+    /* we can make this faster
+     * http://bugzilla.gnome.org/show_bug.cgi?id=536939
+     */
     g_value_init (&value, G_PARAM_SPEC_VALUE_TYPE (prop->pspec));
-    ret = gst_control_source_get_value (prop->csource, timestamp, &value);
-    if (ret) {
-      g_object_set_property (self->object, prop->name, &value);
-      g_value_unset (&value);
+    val_ret = gst_control_source_get_value (prop->csource, timestamp, &value);
+    if (G_LIKELY (val_ret)) {
+      /* always set the value for first time, but then only if it changed
+       * this should limit g_object_notify invocations.
+       * FIXME: can we detect negative playback rates?
+       */
+      if ((timestamp < self->priv->last_sync) ||
+          gst_value_compare (&value, &prop->last_value) != GST_VALUE_EQUAL) {
+        g_object_set_property (self->object, prop->name, &value);
+        g_value_copy (&value, &prop->last_value);
+      }
+    } else {
+      GST_DEBUG ("no control value for param %s", prop->name);
     }
+    g_value_unset (&value);
+    ret &= val_ret;
   }
   self->priv->last_sync = timestamp;
+  g_object_thaw_notify (self->object);
 
   g_mutex_unlock (self->lock);
 

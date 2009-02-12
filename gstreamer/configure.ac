@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AC_INIT(GStreamer, 0.10.20,
+AC_INIT(GStreamer, 0.10.22,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gstreamer)
 AG_GST_INIT
@@ -43,7 +43,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 17, 0, 17)
+AS_LIBTOOL(GST, 19, 0, 19)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
@@ -63,7 +63,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.11.5])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gstreamer-$GST_MAJORMINOR])
 
@@ -109,24 +109,10 @@ else
   GST_REGISTRY_DOC_TYPES=
 fi
 AC_SUBST(GST_REGISTRY_DOC_TYPES)
-AG_GST_CHECK_SUBSYSTEM_DISABLE(ENUMTYPES,[enum types])
-AM_CONDITIONAL(GST_DISABLE_ENUMTYPES, test "x$GST_DISABLE_ENUMTYPES" = "xyes")
-AG_GST_CHECK_SUBSYSTEM_DISABLE(INDEX,[index])
-AM_CONDITIONAL(GST_DISABLE_INDEX, test "x$GST_DISABLE_INDEX" = "xyes")
-dnl define a substitution to use in docs/gst/gstreamer.types
-if test "x$GST_DISABLE_INDEX" = "xyes"
-then
-  GST_INDEX_DOC_TYPES="%"
-else
-  GST_INDEX_DOC_TYPES=
-fi
-AC_SUBST(GST_INDEX_DOC_TYPES)
 AG_GST_CHECK_SUBSYSTEM_DISABLE(NET,[network distribution])
 AM_CONDITIONAL(GST_DISABLE_NET, test "x$GST_DISABLE_NET" = "xyes")
 AG_GST_CHECK_SUBSYSTEM_DISABLE(PLUGIN,[plugin])
 AM_CONDITIONAL(GST_DISABLE_PLUGIN, test "x$GST_DISABLE_PLUGIN" = "xyes")
-AG_GST_CHECK_SUBSYSTEM_DISABLE(URI,[uri handlers])
-AM_CONDITIONAL(GST_DISABLE_URI, test "x$GST_DISABLE_URI" = "xyes")
 
 AG_GST_ARG_DEBUG
 AG_GST_ARG_PROFILING
@@ -316,6 +302,11 @@ AC_CHECK_HEADERS([sys/utsname.h])
 
 dnl Check for stdio_ext.f for __fbufsize
 AC_CHECK_HEADERS([stdio_ext.h])
+
+dnl Check for valgrind.h
+dnl separate from HAVE_VALGRIND because you can have the program, but not
+dnl the dev package
+AC_CHECK_HEADERS([valgrind/valgrind.h], HAVE_VALGRIND_H=yes)
 
 dnl used in gst/gstpoll.c
 AC_CHECK_HEADERS([winsock2.h], HAVE_WINSOCK2_H=yes)
@@ -507,13 +498,13 @@ fi
 AC_SUBST(GST_DISABLE_XML_DEFINE)
 
 dnl check for "check", unit testing library/header
-AM_PATH_CHECK(0.9.2,
-    [
-        HAVE_CHECK=yes
-        AC_MSG_NOTICE(CHECK_CFLAGS: $CHECK_CFLAGS)
-        AC_MSG_NOTICE(CHECK_LIBS: $CHECK_LIBS)
-    ],
-    HAVE_CHECK=no)
+if test "$cross_compiling" != yes; then
+  AM_PATH_CHECK(0.9.2,
+      HAVE_CHECK=yes,
+      HAVE_CHECK=no)
+else
+  HAVE_CHECK=no
+fi
 AM_CONDITIONAL(HAVE_CHECK, test "x$HAVE_CHECK" = "xyes")
 
 dnl pkg-config check that for libcheck that works for cross-compiling
@@ -696,3 +687,43 @@ gstreamer.spec
 )
 
 AC_OUTPUT
+
+dnl negate for output
+if test "x${GST_DISABLE_LOADSAVE}" = "xno"; then enable_loadsave="yes"; fi
+if test "x${GST_DISABLE_PARSE}" = "xno"; then enable_parse="yes"; fi
+if test "x${GST_DISABLE_OPTION_PARSING}" = "xno"; then enable_option_parsing="yes"; fi
+if test "x${GST_DISABLE_TRACE}" = "xno"; then enable_trace="yes"; fi
+if test "x${GST_DISABLE_ALLOC_TRACE}" = "xno"; then enable_alloc_trace="yes"; fi
+if test "x${GST_DISABLE_PLUGIN}" = "xno"; then enable_plugin="yes"; fi
+if test "x${GST_DISABLE_REGISTRY}" = "xno"; then enable_registry="yes"; fi
+if test "x${GST_DISABLE_NET}" = "xno"; then enable_net="yes"; fi
+
+echo "
+
+Configuration
+	Version                    : ${VERSION}
+	Source code location       : ${srcdir}
+	Prefix                     : ${prefix}
+	Compiler                   : ${CC}
+	Package name               : ${GST_PACKAGE_NAME}
+	Package origin             : ${GST_PACKAGE_ORIGIN}
+
+	Documentation (manuals)    : ${enable_docbook}
+	Documentation (API)        : ${enable_gtk_doc}
+
+	Pipeline XML load/save     : ${enable_loadsave}
+	Command-line parser        : ${enable_parse}
+	Option parsing in gst_init : ${enable_option_parsing}
+	Tracing subsystem          : ${enable_trace}
+	Allocation tracing         : ${enable_alloc_trace}
+	Plugin registry            : ${enable_registry}
+	Plugin support	           : ${enable_plugin}
+	Network support            : ${enable_net}
+
+	Debug                      : ${USE_DEBUG}
+	Profiling                  : ${USE_PROFILING}
+
+	Building examples          : ${BUILD_EXAMPLES}
+	Building test apps         : ${BUILD_TESTS}
+	Building tests that fail   : ${BUILD_FAILING_TESTS}
+"
