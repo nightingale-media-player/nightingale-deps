@@ -1196,6 +1196,16 @@ Engine.prototype = {
         return;
     }
 
+    // If we don't yet have a file, get one now before any engine metadata
+    // attributes are set. The only case where we would already have a file is
+    // if this is an update and _file was set above.
+    if (!aEngine._file) {
+      var uuidGenerator = Cc["@mozilla.org/uuid-generator;1"]
+                            .getService(Ci.nsIUUIDGenerator);
+      var uuid = uuidGenerator.generateUUID();
+      aEngine._file = getSanitizedFile(uuid.toString());
+    }
+
     try {
       // Initialize the engine from the obtained data
       aEngine._initFromData();
@@ -1232,11 +1242,6 @@ Engine.prototype = {
         return;
       aEngine._useNow = confirmation.useNow;
     }
-
-    // If we don't yet have a file, get one now. The only case where we would
-    // already have a file is if this is an update and _file was set above.
-    if (!aEngine._file)
-      aEngine._file = getSanitizedFile(aEngine.name);
 
     if (engineToUpdate) {
       // Keep track of the last modified date, so that we can make conditional
