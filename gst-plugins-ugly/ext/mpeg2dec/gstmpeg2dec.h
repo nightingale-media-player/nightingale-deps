@@ -107,8 +107,10 @@ struct _GstMpeg2dec {
   gint           fps_d;
   gboolean       need_sequence;
 
+#ifndef GST_DISABLE_INDEX
   GstIndex      *index;
   gint           index_id;
+#endif
   
   gint           error_count;
   gboolean       can_allocate_aligned;
@@ -121,6 +123,9 @@ struct _GstMpeg2dec {
   GList *gather;
   GList *decode;
   GList *queued;
+
+  /* whether we have a pixel aspect ratio from the sink caps */
+  gboolean have_par;
 };
 
 struct _GstMpeg2decClass {

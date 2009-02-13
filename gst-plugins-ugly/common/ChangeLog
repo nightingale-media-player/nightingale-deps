@@ -1,3 +1,45 @@
+2008-10-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc.mak:
+	  Also cp the entities here to all xinlcude based docs (workaround for
+	  not being able to set up a search path).
+
+2008-10-17  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* gtk-doc.mak:
+	  Don't clobber the real registry cache file when
+	  building docs.
+
+2008-10-07  Jan Schmidt - Sun Microsystems <jan.schmidt@sun.com>
+
+	* m4/gst-error.m4:
+	  Also disable the bogus "loop not entered at top" warnings appearing on Sparc Forte builds.
+
+2008-10-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc.mak:
+	  Apply the same fix as below to gtk-doc.mak. Somehow did not end up in
+	  CVS.
+
+2008-09-05  David Schleef  <ds@schleef.org>
+
+	* gtk-doc-plugins.mak: Fix the check for gtkdoc-rebase: don't
+	  pass the 'which' error back to make.  This fix is more specific
+	  than what is in upstream.
+
+2008-09-05  David Schleef  <ds@schleef.org>
+
+	* gtk-doc.mak: Fix the check for gtkdoc-rebase: don't pass the
+	  'which' error back to make.  This fix is more specific than
+	  what is in upstream.
+
+2008-09-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc-plugins.mak:
+	* gtk-doc.mak:
+	  Get closer to upstream makefiles. Don't install index.sgml twice. Call
+	  gtkdoc-rebase (if exists).
+
 2008-08-21  Stefan Kost  <ensonic@users.sf.net>
 
 	* gtk-doc-plugins.mak:

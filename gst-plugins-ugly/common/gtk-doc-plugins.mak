@@ -275,11 +275,11 @@ MAINTAINERCLEANFILES = $(MAINTAINER_DOC_STAMPS)
 
 # thomas: make docs parallel installable; devhelp requires majorminor too
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
+	(installfiles=`echo $(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css`; \
+	if test "$$installfiles" = '$(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css'; \
 	then echo '-- Nothing to install' ; \
 	else \
+          $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR); \
 	  for i in $$installfiles; do \
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
@@ -295,15 +295,11 @@ install-data-local:
 	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp \
 	    $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
 	  if test -e $(srcdir)/html/$(DOC_MODULE).devhelp2; then \
-        	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
+        	    $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
 	           $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
 	  fi; \
-	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
-	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
-		if test -e $(srcdir)/html/style.css; then \
-			echo '-- Installing $(srcdir)/html/style.css' ; \
-			$(INSTALL_DATA) $(srcdir)/html/style.css $(DESTDIR)$(TARGET_DIR); \
-		fi; \
+	  (which gtkdoc-rebase >/dev/null && \
+	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || true ; \
 	fi) 
 uninstall-local:
 	(installfiles=`echo ./html/*.html`; \
@@ -377,19 +373,12 @@ endif
 
 # FIXME: decide whether we want to dist generated html or not
 dist-hook: dist-check-gtkdoc dist-hook-local
-	mkdir $(distdir)/tmpl
-	mkdir $(distdir)/xml
 	mkdir $(distdir)/html
-	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
-	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
-	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
-	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
+	cp $(srcdir)/html/* $(distdir)/html
+	-cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
+	-cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
+	cd $(distdir) && rm -f $(DISTCLEANFILES)
+        -gtkdoc-rebase --online --relative --html-dir=$(distdir)/html
 
-	images=$(HTML_IMAGES) ;    	      \
-	for i in "" $$images ; do		      \
-	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
-	done
-
-.PHONY : dist-hook-local
+.PHONY : dist-hook-local docs
 

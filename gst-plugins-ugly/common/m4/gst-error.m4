@@ -57,7 +57,8 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
           for f in 'no%E_EMPTY_DECLARATION' \
                    'no%E_STATEMENT_NOT_REACHED' \
                    'no%E_ARGUEMENT_MISMATCH' \
-                   'no%E_MACRO_REDEFINED'
+                   'no%E_MACRO_REDEFINED' \
+                   'no%E_LOOP_NOT_ENTERED_AT_TOP'
           do
             AS_COMPILER_FLAG([-errwarn=%all,$f], [
               ERROR_CFLAGS="$ERROR_CFLAGS,$f"
@@ -125,7 +126,8 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
         for f in 'no%E_EMPTY_DECLARATION' \
                  'no%E_STATEMENT_NOT_REACHED' \
                  'no%E_ARGUEMENT_MISMATCH' \
-                 'no%E_MACRO_REDEFINED'
+                 'no%E_MACRO_REDEFINED' \
+                 'no%E_LOOP_NOT_ENTERED_AT_TOP'
         do
           AS_CXX_COMPILER_FLAG([-errwarn=%all,$f], [
             ERROR_CXXFLAGS="$ERROR_CXXFLAGS,$f"

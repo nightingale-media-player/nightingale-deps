@@ -41,31 +41,31 @@
   </chapters>
   <functions>
     <function name="Example launch line" link="gst-plugins-ugly-plugins-a52dec.html#id2575940"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-a52dec.html#id2563077"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-a52dec.html#id2499561"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-a52dec.html#id2563076"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-a52dec.html#id2499563"/>
     <function name="GstA52Dec" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec-struct"/>
     <function name="The &quot;drc&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--drc"/>
     <function name="The &quot;lfe&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--lfe"/>
     <function name="The &quot;mode&quot; property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--mode"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbdec.html#id2560410"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id2551750"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbdec.html#id2560040"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbdec.html#id2560412"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id2552370"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbdec.html#id2576060"/>
     <function name="GstAmrnbDec" link="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbenc.html#id2581192"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id2551200"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbenc.html#id2578354"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbenc.html#id2554588"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id2566595"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbenc.html#id2561729"/>
     <function name="GstAmrnbEnc" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc"/>
     <function name="The &quot;band-mode&quot; property" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc--band-mode"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbparse.html#id2562911"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbparse.html#id2556133"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbparse.html#id2585196"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-amrnbparse.html#id2571240"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-amrnbparse.html#id2523478"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-amrnbparse.html#id2589412"/>
     <function name="GstAmrnbParse" link="gst-plugins-ugly-plugins-amrnbparse.html#GstAmrnbParse"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2578085"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2578160"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2581397"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2570546"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2570621"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id2571759"/>
     <function name="GstCdioCddaSrc" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc-struct"/>
     <function name="The &quot;read-speed&quot; property" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed"/>
-    <function name="Output sample rate" link="gst-plugins-ugly-plugins-lame.html#id2563887"/>
+    <function name="Output sample rate" link="gst-plugins-ugly-plugins-lame.html#id2563886"/>
     <function name="Writing metadata (tags)" link="gst-plugins-ugly-plugins-lame.html#id2563899"/>
     <function name="Example pipelines" link="gst-plugins-ugly-plugins-lame.html#id2563912"/>
     <function name="Element Information" link="gst-plugins-ugly-plugins-lame.html#id2563976"/>
@@ -104,18 +104,18 @@
     <function name="The &quot;vbr-min-bitrate&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-min-bitrate"/>
     <function name="The &quot;vbr-quality&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--vbr-quality"/>
     <function name="The &quot;xingheader&quot; property" link="gst-plugins-ugly-plugins-lame.html#GstLame--xingheader"/>
-    <function name="Example pipelines" link="gst-plugins-ugly-plugins-mad.html#id2586729"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id2523010"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-mad.html#id2577701"/>
+    <function name="Example pipelines" link="gst-plugins-ugly-plugins-mad.html#id2567323"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id2498214"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-mad.html#id2575628"/>
     <function name="GstMad" link="gst-plugins-ugly-plugins-mad.html#GstMad-struct"/>
     <function name="The &quot;half&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--half"/>
     <function name="The &quot;ignore-crc&quot; property" link="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-rademux.html#id2565880"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-rademux.html#id2583400"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-rademux.html#id2583436"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-rademux.html#id2567462"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-rademux.html#id2584345"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-rademux.html#id2565690"/>
     <function name="GstRealAudioDemux" link="gst-plugins-ugly-plugins-rademux.html#GstRealAudioDemux-struct"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-rdtmanager.html#id2553056"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-rdtmanager.html#id2589830"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-rdtmanager.html#id2592489"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-rdtmanager.html#id2555778"/>
     <function name="GstRDTManager" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-struct"/>
     <function name="The &quot;latency&quot; property" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager--latency"/>
     <function name="The &quot;clear-pt-map&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-clear-pt-map"/>
@@ -123,15 +123,15 @@
     <function name="The &quot;on-bye-timeout&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-bye-timeout"/>
     <function name="The &quot;on-timeout&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-timeout"/>
     <function name="The &quot;request-pt-map&quot; signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-request-pt-map"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-rtspreal.html#id2592538"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-rtspreal.html#id2591799"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-rtspreal.html#id2560759"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-rtspreal.html#id2555393"/>
     <function name="GstRTSPReal" link="gst-plugins-ugly-plugins-rtspreal.html#GstRTSPReal-struct"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-rtspwms.html#id2562192"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-rtspwms.html#id2591179"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-rtspwms.html#id2591123"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-rtspwms.html#id2571484"/>
     <function name="GstRTSPWMS" link="gst-plugins-ugly-plugins-rtspwms.html#GstRTSPWMS-struct"/>
-    <function name="Example pipelines" link="gst-plugins-ugly-plugins-siddec.html#id2557962"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id2557987"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-siddec.html#id2555367"/>
+    <function name="Example pipelines" link="gst-plugins-ugly-plugins-siddec.html#id2568428"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id2568453"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-siddec.html#id2591439"/>
     <function name="GstSidDec" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct"/>
     <function name="The &quot;blocksize&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize"/>
     <function name="The &quot;clock&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock"/>
@@ -142,13 +142,13 @@
     <function name="The &quot;metadata&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata"/>
     <function name="The &quot;mos8580&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580"/>
     <function name="The &quot;tune&quot; property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-synaesthesia.html#id2591431"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-synaesthesia.html#id2591423"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-synaesthesia.html#id2579161"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-synaesthesia.html#id2562676"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-synaesthesia.html#id2586407"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-synaesthesia.html#id2578482"/>
     <function name="GstSynaesthesia" link="gst-plugins-ugly-plugins-synaesthesia.html#GstSynaesthesia"/>
-    <function name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id2550681"/>
-    <function name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id2569288"/>
-    <function name="Element Pads" link="gst-plugins-ugly-plugins-xingmux.html#id2560044"/>
+    <function name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id2579980"/>
+    <function name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id2590596"/>
+    <function name="Element Pads" link="gst-plugins-ugly-plugins-xingmux.html#id2561670"/>
     <function name="GstXingMux" link="gst-plugins-ugly-plugins-xingmux.html#GstXingMux-struct"/>
   </functions>
 </book>

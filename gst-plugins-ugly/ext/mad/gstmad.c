@@ -109,8 +109,10 @@ static GstFlowReturn gst_mad_chain (GstPad * pad, GstBuffer * buffer);
 static GstStateChangeReturn gst_mad_change_state (GstElement * element,
     GstStateChange transition);
 
+#ifndef GST_DISABLE_INDEX
 static void gst_mad_set_index (GstElement * element, GstIndex * index);
 static GstIndex *gst_mad_get_index (GstElement * element);
+#endif
 
 static void
 _do_init (GType type)
@@ -192,6 +194,7 @@ gst_mad_base_init (gpointer g_class)
       gst_static_pad_template_get (&mad_src_template_factory));
   gst_element_class_set_details (element_class, &gst_mad_details);
 }
+
 static void
 gst_mad_class_init (GstMadClass * klass)
 {
@@ -208,8 +211,10 @@ gst_mad_class_init (GstMadClass * klass)
   gobject_class->dispose = gst_mad_dispose;
 
   gstelement_class->change_state = gst_mad_change_state;
+#ifndef GST_DISABLE_INDEX
   gstelement_class->set_index = gst_mad_set_index;
   gstelement_class->get_index = gst_mad_get_index;
+#endif
 
   /* init properties */
   /* currently, string representations are used, we might want to change that */
@@ -293,7 +298,9 @@ gst_mad_dispose (GObject * object)
 {
   GstMad *mad = GST_MAD (object);
 
+#ifndef GST_DISABLE_INDEX
   gst_mad_set_index (GST_ELEMENT (object), NULL);
+#endif
 
   g_free (mad->tempbuffer);
   mad->tempbuffer = NULL;
@@ -305,6 +312,7 @@ gst_mad_dispose (GObject * object)
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
+#ifndef GST_DISABLE_INDEX
 static void
 gst_mad_set_index (GstElement * element, GstIndex * index)
 {
@@ -323,6 +331,7 @@ gst_mad_get_index (GstElement * element)
 
   return mad->index;
 }
+#endif
 
 static gboolean
 gst_mad_convert_sink (GstPad * pad, GstFormat src_format, gint64 src_value,
@@ -606,6 +615,7 @@ error:
   return FALSE;
 }
 
+#ifndef GST_DISABLE_INDEX
 static gboolean
 index_seek (GstMad * mad, GstPad * pad, GstEvent * event)
 {
@@ -679,6 +689,7 @@ index_seek (GstMad * mad, GstPad * pad, GstEvent * event)
 
   return FALSE;
 }
+#endif
 
 static gboolean
 normal_seek (GstMad * mad, GstPad * pad, GstEvent * event)
@@ -800,23 +811,24 @@ gst_mad_src_event (GstPad * pad, GstEvent * event)
   mad = GST_MAD (GST_PAD_PARENT (pad));
 
   switch (GST_EVENT_TYPE (event)) {
-      /* the all-formats seek logic */
     case GST_EVENT_SEEK:
+      /* the all-formats seek logic, ref the event, we need it later */
       gst_event_ref (event);
-      if (!(res = gst_pad_event_default (pad, event))) {
+      if (!(res = gst_pad_push_event (mad->sinkpad, event))) {
+#ifndef GST_DISABLE_INDEX
         if (mad->index)
           res = index_seek (mad, pad, event);
         else
+#endif
           res = normal_seek (mad, pad, event);
       }
+      gst_event_unref (event);
       break;
-
     default:
-      res = FALSE;
+      res = gst_pad_push_event (mad->sinkpad, event);
       break;
   }
 
-  gst_event_unref (event);
   return res;
 }
 
@@ -864,6 +876,7 @@ gst_mad_set_property (GObject * object, guint prop_id,
       break;
   }
 }
+
 static void
 gst_mad_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
@@ -1275,6 +1288,7 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
   guint8 *data;
   glong size, tempsize;
   gboolean new_pts = FALSE;
+  gboolean discont;
   GstClockTime timestamp;
   GstFlowReturn result = GST_FLOW_OK;
 
@@ -1285,6 +1299,9 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
     mad->need_newsegment = TRUE;
     GST_DEBUG ("mad restarted");
   }
+
+  /* take discont flag */
+  discont = GST_BUFFER_IS_DISCONT (buffer);
 
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   GST_DEBUG ("mad in timestamp %" GST_TIME_FORMAT, GST_TIME_ARGS (timestamp));
@@ -1321,6 +1338,10 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
     gint tocopy;
     guchar *mad_input_buffer;   /* convenience pointer to tempbuffer */
 
+    if (mad->tempsize == 0 && discont) {
+      mad->discont = TRUE;
+      discont = FALSE;
+    }
     tocopy =
         MIN (MAD_BUFFER_MDLEN, MIN (size,
             MAD_BUFFER_MDLEN * 3 - mad->tempsize));
@@ -1544,12 +1565,14 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
             GST_SECOND, mad->rate) - time_offset;
       }
 
+#ifndef GST_DISABLE_INDEX
       if (mad->index) {
         guint64 x_bytes = mad->base_byte_offset + mad->bytes_consumed;
 
         gst_index_add_association (mad->index, mad->index_id, 0,
             GST_FORMAT_BYTES, x_bytes, GST_FORMAT_TIME, time_offset, NULL);
       }
+#endif
 
       if (mad->segment_start <= (time_offset ==
               GST_CLOCK_TIME_NONE ? 0 : time_offset)) {
@@ -1610,6 +1633,7 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
         GST_BUFFER_TIMESTAMP (outbuffer) = time_offset;
         GST_BUFFER_DURATION (outbuffer) = time_duration;
         GST_BUFFER_OFFSET (outbuffer) = mad->total_samples;
+        GST_BUFFER_OFFSET_END (outbuffer) = mad->total_samples + nsamples;
 
         /* output sample(s) in 16-bit signed native-endian PCM */
         if (mad->channels == 1) {
@@ -1633,6 +1657,13 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
               "pushing buffer, off=%" G_GUINT64_FORMAT ", ts=%" GST_TIME_FORMAT,
               GST_BUFFER_OFFSET (outbuffer),
               GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuffer)));
+
+          /* apply discont */
+          if (mad->discont) {
+            GST_BUFFER_FLAG_SET (outbuffer, GST_BUFFER_FLAG_DISCONT);
+            mad->discont = FALSE;
+          }
+
           mad->segment.last_stop = GST_BUFFER_TIMESTAMP (outbuffer);
           result = gst_pad_push (mad->srcpad, outbuffer);
           if (result != GST_FLOW_OK) {
@@ -1656,6 +1687,10 @@ gst_mad_chain (GstPad * pad, GstBuffer * buffer)
         mad->bytes_consumed = 0;
       }
       tempsize = 0;
+      if (discont) {
+        mad->discont = TRUE;
+        discont = FALSE;
+      }
 
       if (gst_mad_check_restart (mad)) {
         goto end;
@@ -1707,6 +1742,7 @@ gst_mad_change_state (GstElement * element, GstStateChange transition)
       mad_frame_init (&mad->frame);
       mad_synth_init (&mad->synth);
       mad->tempsize = 0;
+      mad->discont = TRUE;
       mad->total_samples = 0;
       mad->rate = 0;
       mad->channels = 0;

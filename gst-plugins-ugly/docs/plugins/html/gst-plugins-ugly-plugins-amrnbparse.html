@@ -49,7 +49,7 @@ AMR narrowband bitstream parser.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2562911"></a><h3>Example launch line</h3>
+<a name="id2571240"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
 </pre></div>
@@ -57,7 +57,7 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2556133"></a><h3>Element Information</h3>
+<a name="id2523478"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -80,7 +80,7 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2585196"></a><h3>Element Pads</h3>
+<a name="id2589412"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -144,6 +144,9 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
   gboolean seekable;
   gboolean need_header;
   gint64 offset;
+  gint block;
+
+  GstAmrnbSeekHandler seek_handler;
 
   guint64 ts;
 

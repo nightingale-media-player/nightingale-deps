@@ -81,7 +81,7 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2563077"></a><h3>Element Information</h3>
+<a name="id2563076"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -104,7 +104,28 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2499561"></a><h3>Element Pads</h3>
+<a name="id2499563"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, endianness=(int)1234, width=(int)32, rate=(int)[ 4000, 96000 ], channels=(int)[ 1, 6 ]</td>
+</tr>
+</tbody>
+</table></div>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -131,27 +152,6 @@ gst-launch filesrc location=abc.ac3 ! a52dec ! audioresample ! audioconvert ! al
 <tr>
 <td><p><span class="term"></span></p></td>
 <td> audio/x-private1-ac3</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-float, endianness=(int)1234, width=(int)32, rate=(int)[ 4000, 96000 ], channels=(int)[ 1, 6 ]</td>
 </tr>
 </tbody>
 </table></div>

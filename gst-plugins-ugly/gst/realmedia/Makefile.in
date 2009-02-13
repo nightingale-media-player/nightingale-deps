@@ -93,7 +93,9 @@ am_libgstrmdemux_la_OBJECTS = libgstrmdemux_la-rademux.lo \
 	libgstrmdemux_la-rmdemux.lo libgstrmdemux_la-rmutils.lo \
 	libgstrmdemux_la-rdtdepay.lo libgstrmdemux_la-rdtmanager.lo \
 	libgstrmdemux_la-rtspreal.lo libgstrmdemux_la-realhash.lo \
-	libgstrmdemux_la-asmrules.lo
+	libgstrmdemux_la-asmrules.lo \
+	libgstrmdemux_la-rdtjitterbuffer.lo \
+	libgstrmdemux_la-gstrdtbuffer.lo
 libgstrmdemux_la_OBJECTS = $(am_libgstrmdemux_la_OBJECTS)
 PROGRAMS = $(noinst_PROGRAMS)
 asmrules_SOURCES = asmrules.c
@@ -428,14 +430,18 @@ target_alias = @target_alias@
 plugin_LTLIBRARIES = libgstrmdemux.la
 libgstrmdemux_la_SOURCES = rademux.c rmdemux.c  \
 			   rmutils.c rdtdepay.c rdtmanager.c \
-			   rtspreal.c realhash.c asmrules.c
+			   rtspreal.c realhash.c asmrules.c \
+			   rdtjitterbuffer.c gstrdtbuffer.c
 
 libgstrmdemux_la_CFLAGS = $(GST_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS)
 libgstrmdemux_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS)\
 	     -lgstrtsp-@GST_MAJORMINOR@ -lgstsdp-@GST_MAJORMINOR@
 
 libgstrmdemux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-noinst_HEADERS = rademux.h rmdemux.h rmutils.h rdtdepay.h rdtmanager.h rtspreal.h realhash.h asmrules.h
+libgstrmdemux_la_LIBTOOLFLAGS = --tag=disable-static
+noinst_HEADERS = rademux.h rmdemux.h rmutils.h rdtdepay.h rdtmanager.h \
+		 rdtjitterbuffer.h rtspreal.h realhash.h asmrules.h gstrdtbuffer.h
+
 asmrules_CFLAGS = $(GST_CFLAGS) -DTEST
 asmrules_LDADD = $(GST_LIBS) $(LIBM)
 all: all-am
@@ -519,8 +525,10 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asmrules-asmrules.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-asmrules.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-gstrdtbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-rademux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-rdtdepay.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-rdtjitterbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-rdtmanager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-realhash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrmdemux_la-rmdemux.Plo@am__quote@
@@ -603,6 +611,20 @@ libgstrmdemux_la-asmrules.lo: asmrules.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='asmrules.c' object='libgstrmdemux_la-asmrules.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrmdemux_la_CFLAGS) $(CFLAGS) -c -o libgstrmdemux_la-asmrules.lo `test -f 'asmrules.c' || echo '$(srcdir)/'`asmrules.c
+
+libgstrmdemux_la-rdtjitterbuffer.lo: rdtjitterbuffer.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrmdemux_la_CFLAGS) $(CFLAGS) -MT libgstrmdemux_la-rdtjitterbuffer.lo -MD -MP -MF "$(DEPDIR)/libgstrmdemux_la-rdtjitterbuffer.Tpo" -c -o libgstrmdemux_la-rdtjitterbuffer.lo `test -f 'rdtjitterbuffer.c' || echo '$(srcdir)/'`rdtjitterbuffer.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrmdemux_la-rdtjitterbuffer.Tpo" "$(DEPDIR)/libgstrmdemux_la-rdtjitterbuffer.Plo"; else rm -f "$(DEPDIR)/libgstrmdemux_la-rdtjitterbuffer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rdtjitterbuffer.c' object='libgstrmdemux_la-rdtjitterbuffer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrmdemux_la_CFLAGS) $(CFLAGS) -c -o libgstrmdemux_la-rdtjitterbuffer.lo `test -f 'rdtjitterbuffer.c' || echo '$(srcdir)/'`rdtjitterbuffer.c
+
+libgstrmdemux_la-gstrdtbuffer.lo: gstrdtbuffer.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrmdemux_la_CFLAGS) $(CFLAGS) -MT libgstrmdemux_la-gstrdtbuffer.lo -MD -MP -MF "$(DEPDIR)/libgstrmdemux_la-gstrdtbuffer.Tpo" -c -o libgstrmdemux_la-gstrdtbuffer.lo `test -f 'gstrdtbuffer.c' || echo '$(srcdir)/'`gstrdtbuffer.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstrmdemux_la-gstrdtbuffer.Tpo" "$(DEPDIR)/libgstrmdemux_la-gstrdtbuffer.Plo"; else rm -f "$(DEPDIR)/libgstrmdemux_la-gstrdtbuffer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstrdtbuffer.c' object='libgstrmdemux_la-gstrdtbuffer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrmdemux_la_CFLAGS) $(CFLAGS) -c -o libgstrmdemux_la-gstrdtbuffer.lo `test -f 'gstrdtbuffer.c' || echo '$(srcdir)/'`gstrdtbuffer.c
 
 asmrules-asmrules.o: asmrules.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(asmrules_CFLAGS) $(CFLAGS) -MT asmrules-asmrules.o -MD -MP -MF "$(DEPDIR)/asmrules-asmrules.Tpo" -c -o asmrules-asmrules.o `test -f 'asmrules.c' || echo '$(srcdir)/'`asmrules.c; \

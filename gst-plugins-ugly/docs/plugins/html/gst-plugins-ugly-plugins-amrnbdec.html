@@ -50,7 +50,7 @@ AMR narrowband decoder based on the
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2560410"></a><h3>Example launch line</h3>
+<a name="id2560412"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
 </pre></div>
@@ -58,7 +58,7 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2551750"></a><h3>Element Information</h3>
+<a name="id2552370"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -81,7 +81,7 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2560040"></a><h3>Element Pads</h3>
+<a name="id2576060"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -140,6 +140,8 @@ gst-launch filesrc location=abc.amr ! amrnbparse ! amrnbdec ! audioresample ! au
   /* pads */
   GstPad *sinkpad, *srcpad;
   guint64 ts;
+
+  GstAmrnbVariant variant;
 
   GstAdapter *adapter;
 

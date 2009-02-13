@@ -1,3 +1,287 @@
+=== release 0.10.10 ===
+
+2008-11-19  Jan Schmidt <jan.schmidt@sun.com>
+
+	* configure.ac:
+	  releasing 0.10.10, "Under the House"
+
+2008-11-17  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/sidplay/Makefile.am:
+	Use GST_CXXFLAGS for C++ code instead of GST_CFLAGS. The latter could
+	contain CFLAGS that do not exist for C++, like -Wvla or
+	-Wdeclaration-after-statement. Fixes bug #561161.
+
+2008-11-12  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.9.3 pre-release
+
+2008-11-11  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/asfdemux/gstasfdemux.c: (gst_asf_demux_add_video_stream):
+	Only copy sane aspect ratio values on the caps. Fixes #559682.
+
+2008-11-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/amrnb/amrnbdec.c: (gst_amrnb_variant_get_type),
+	(gst_amrnbdec_class_init), (gst_amrnbdec_set_property),
+	(gst_amrnbdec_get_property), (gst_amrnbdec_chain):
+	* ext/amrnb/amrnbdec.h:
+	Add a property to select the amr variant. Fixes #424070.
+
+2008-11-03  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Tal Shalif <tshalif at nargila dot org>
+
+	* gst/mpegstream/gstdvddemux.c:
+	(gst_dvd_demux_get_subpicture_stream):
+	* gst/mpegstream/gstmpegdemux.c: (gst_mpeg_demux_get_video_stream),
+	(gst_mpeg_demux_get_audio_stream):
+	Fix memmory corruption due to not storing the new updated pointer
+	after a g_renew(). Fixes #558896.
+
+2008-10-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* tests/check/Makefile.am:
+	  Blacklist cdiocddasrc from state-change tests. Fixes #558277.
+
+2008-10-24  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	oops, forgot to bump the version back to devel
+	after the last release 0.10.9.1
+
+2008-10-24  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_add_stream),
+	(gst_rmdemux_descramble_mp4a_audio),
+	(gst_rmdemux_handle_scrambled_packet):
+	Add suport for mpeg4 and aac audio. See #556714.
+
+2008-10-14  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	  Calculate samples per frame correctly for "MPEG 2.5" layer 3.
+	  Fixes skipping on these files. Fixes bug #558564.
+
+2008-10-14  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	Patch by: Robin Stocker <robin at nibor dot org>
+
+	* ext/mpeg2dec/gstmpeg2dec.c: (gst_mpeg2dec_init),
+	(handle_sequence), (gst_mpeg2dec_setcaps):
+	* ext/mpeg2dec/gstmpeg2dec.h:
+	Prefer the container's PAR over the stream's PAR if it's
+	given in the srcpad caps. Fixes bug #556184.
+
+2008-10-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/a52dec/Makefile.am:
+	* ext/amrnb/Makefile.am:
+	* ext/cdio/Makefile.am:
+	* ext/dvdnav/Makefile.am:
+	* ext/dvdread/Makefile.am:
+	* ext/lame/Makefile.am:
+	* ext/mad/Makefile.am:
+	* ext/mpeg2dec/Makefile.am:
+	* ext/sidplay/Makefile.am:
+	* gst/ac3parse/Makefile.am:
+	* gst/asfdemux/Makefile.am:
+	* gst/dvdlpcmdec/Makefile.am:
+	* gst/dvdsub/Makefile.am:
+	* gst/iec958/Makefile.am:
+	* gst/mpegaudioparse/Makefile.am:
+	* gst/mpegstream/Makefile.am:
+	* gst/realmedia/Makefile.am:
+	* gst/synaesthesia/Makefile.am:
+	  Don't install static libs for plugins. Fixes #550851 for ugly.
+
+2008-10-13  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mpegaudioparse/gstmpegaudioparse.c:
+	(gst_mp3parse_sink_event):
+	Post a GST_ELEMENT_ERROR if we get EOS before seeing any valid
+	frames. Partially fixes bug #552237.
+
+2008-10-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/amrnb/amrnbparse.c:
+	  use #defines for HEADER. Unref the object in _sink_activate_pull().
+
+2008-10-08  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/mad/gstmad.c: (gst_mad_src_event), (gst_mad_chain),
+	(gst_mad_change_state):
+	* ext/mad/gstmad.h:
+	track discont on incomming buffers and set discont on outgoing
+	buffers.
+	Pass unknown events upstreams instead of dropping them.
+
+2008-09-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Sameer Naik <sameer dot subscriptions at damagehead dot com>
+
+	* ext/mpeg2dec/gstmpeg2dec.c: (gst_mpeg2dec_class_init),
+	(handle_slice), (gst_mpeg2dec_sink_event),
+	(gst_mpeg2dec_src_event):
+	* ext/mpeg2dec/gstmpeg2dec.h:
+	Fix compilation with --disable-index. Fixes bug #554150.
+
+2008-09-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Sameer Naik <sameer dot subscriptions at damagehead dot com>
+
+	* ext/mad/gstmad.c: (gst_mad_class_init), (gst_mad_dispose),
+	(gst_mad_src_event), (gst_mad_chain):
+	* ext/mad/gstmad.h:
+	Fix compilation with --disable-index. Fixes bug #554142.
+
+2008-09-27  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/a52dec/gsta52dec.c:
+	* ext/a52dec/gsta52dec.h:
+	Fix channel re-negotiation on a change of the incoming stream.
+
+	Patch By: Thijs Vermeir <thijsvermeir@gmail.com>
+	Fixes: #551660
+
+2008-09-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/amrnb/amrnbenc.c: (gst_amrnbenc_chain),
+	(gst_amrnbenc_state_change):
+	* ext/amrnb/amrnbenc.h:
+	Pass the discont flag from the input buffer on to the output buffer in
+	the AMR encoder.
+
+2008-09-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Benoit Fouet <benoit dot fouet at purplelabs dot com>
+
+	* ext/amrnb/amrnbparse.c: (gst_amrnbparse_init),
+	(gst_amrnbparse_handle_pull_seek),
+	(gst_amrnbparse_handle_push_seek), (gst_amrnbparse_src_event),
+	(gst_amrnbparse_sink_activate_push),
+	(gst_amrnbparse_sink_activate_pull):
+	* ext/amrnb/amrnbparse.h:
+	Add flush seek handler. Fixes #536274.
+
+2008-09-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Benoit Fouet <benoit dot fouet at purplelabs dot com>
+
+	* ext/amrnb/amrnbparse.c: (gst_amrnbparse_query),
+	(gst_amrnbparse_chain), (gst_amrnbparse_loop),
+	(gst_amrnbparse_state_change):
+	* ext/amrnb/amrnbparse.h:
+	Fix the duration query. Fixes #536226.
+	Also set caps on the pads and buffers more correctly.
+
+2008-09-02  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* po/LINGUAS:
+	  Add 'ca' to LINGUAS.
+
+2008-08-28  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/asfdemux/gstasfdemux.c: (gst_asf_demux_loop):
+	Fix aggregated GST_FLOW_RETURN check for when to send an error message
+	on the bus.
+	Re-fixes #546859
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rdtdepay.c: (gst_rdt_depay_init),
+	(gst_rdt_depay_setcaps), (gst_rdt_depay_sink_event),
+	(create_segment_event), (gst_rdt_depay_push),
+	(gst_rdt_depay_handle_data), (gst_rdt_depay_change_state):
+	* gst/realmedia/rdtdepay.h:
+	Parse other values from the incomming caps.
+	Add event handler to handle flushing and segments.
+	Create segment events.
+
+	* gst/realmedia/rdtjitterbuffer.c: (rdt_jitter_buffer_insert):
+	Do skew correction based on RDT timestamps.
+
+	* gst/realmedia/rdtmanager.c: (activate_session),
+	(gst_rdt_manager_parse_caps), (gst_rdt_manager_setcaps),
+	(create_recv_rtp):
+	Parse caps to get the clockrate needed for the jitterbuffer.
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_parse_video_packet):
+	Apply timestamp fixup after correcting for initial timestamp and
+	internal base timestamp corrections.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rdtdepay.c: (gst_rdt_depay_handle_data),
+	(gst_rdt_depay_change_state):
+	* gst/realmedia/rdtdepay.h:
+	Check seqnum gaps and drop duplicate packets or mark outgoing buffers
+	with a DISCONT flag when needed.
+
+	* gst/realmedia/rdtmanager.c: (gst_rdt_manager_query_src):
+	Report the configure latency instead of a hardcoded value.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rdtmanager.c: (create_session), (activate_session),
+	(free_session), (gst_rdt_manager_query_src),
+	(gst_rdt_manager_src_activate_push),
+	(gst_rdt_manager_handle_data_packet), (gst_rdt_manager_chain_rdt),
+	(gst_rdt_manager_loop), (create_recv_rtp):
+	Include the new rdt jitterbuffer in the session manager.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rdtdepay.c: (gst_rdt_depay_class_init),
+	(gst_rdt_depay_finalize), (gst_rdt_depay_setcaps),
+	(gst_rdt_depay_push), (gst_rdt_depay_handle_data),
+	(gst_rdt_depay_chain), (gst_rdt_depay_change_state):
+	* gst/realmedia/rdtdepay.h:
+	Use new RDT parsing helper functions.
+	Copy discont flags correctly.
+	Push the header from the chain function instead of the setcaps function.
+	Copy incomming timestamp to the output buffers instead of doing magic
+	with the RDT timestamps.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/Makefile.am:
+	* gst/realmedia/gstrdtbuffer.c: (gst_rdt_buffer_validate_data),
+	(gst_rdt_buffer_validate), (gst_rdt_buffer_get_packet_count),
+	(read_packet_header), (gst_rdt_buffer_get_first_packet),
+	(gst_rdt_packet_move_to_next), (gst_rdt_packet_get_type),
+	(gst_rdt_packet_get_length), (gst_rdt_packet_to_buffer),
+	(gst_rdt_buffer_compare_seqnum), (gst_rdt_packet_data_get_seq),
+	(gst_rdt_packet_data_peek_data),
+	(gst_rdt_packet_data_get_stream_id),
+	(gst_rdt_packet_data_get_timestamp):
+	* gst/realmedia/gstrdtbuffer.h:
+	Add first support for parsing RDT messages.
+
+	* gst/realmedia/rdtjitterbuffer.c: (rdt_jitter_buffer_class_init),
+	(rdt_jitter_buffer_init), (rdt_jitter_buffer_finalize),
+	(rdt_jitter_buffer_new), (rdt_jitter_buffer_reset_skew),
+	(calculate_skew), (rdt_jitter_buffer_insert),
+	(rdt_jitter_buffer_pop), (rdt_jitter_buffer_peek),
+	(rdt_jitter_buffer_flush), (rdt_jitter_buffer_num_packets),
+	(rdt_jitter_buffer_get_ts_diff):
+	* gst/realmedia/rdtjitterbuffer.h:
+	Add first version of an RDT jitterbuffer.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/realmedia/rmdemux.c: (gst_rmdemux_init),
+	(find_seek_offset_time), (gst_rmdemux_reset), (gst_rmdemux_chain),
+	(gst_rmdemux_parse_mdpr), (gst_rmdemux_descramble_cook_audio),
+	(gst_rmdemux_descramble_dnet_audio),
+	(gst_rmdemux_parse_video_packet), (gst_rmdemux_parse_audio_packet):
+	* gst/realmedia/rmdemux.h:
+	Keep track of the first timestamp of the stream and add this to the
+	outgoing buffer timestamps so that we can handle live streams.
+	Set discont flag on the first buffers and after a seek.
+
 === release 0.10.9 ===
 
 2008-08-26  Jan Schmidt <jan.schmidt@sun.com>
