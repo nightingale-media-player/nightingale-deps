@@ -105,6 +105,9 @@ struct _GstDirectSoundRingBuffer {
   /* lock used to protect writes and resets */
   GMutex *dsound_lock;
 
+  /* directsound buffer waveformat description */
+  WAVEFORMATEX wave_format;
+
   /* directsound object interface pointer */
   LPDIRECTSOUND8 pDS8;
 
