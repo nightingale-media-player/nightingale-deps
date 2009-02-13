@@ -63,7 +63,8 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-nas --disable-neon --disable-ofa --disable-dvdnav \
         --disable-sndfile --disable-soundtouch --disable-swfdec \
         --disable-theoradec --disable-timidity --disable-wildmidi \
-        --disable-wininet  --disable-x264 --disable-xvid
+        --disable-wininet  --disable-x264 --disable-xvid \
+        --disable-dccp
 
 DIRECTSHOW_LIBS_ROOT = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/DirectShowBaseClasses
 
