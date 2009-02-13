@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>celtenc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-celtdec.html" title="celtdec">
+<link rel="next" href="gst-plugins-bad-plugins-dccpclientsink.html" title="dccpclientsink">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-celtdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-dccpclientsink.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-celtenc.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-celtenc.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-celtenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-celtenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-celtenc.properties" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-celtenc.top_of_page"></a>celtenc</span></h2>
+<p>celtenc — Encodes audio in Celt format</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-celtenc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstCeltEnc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-celtenc.html#GstCeltEnc-struct" title="GstCeltEnc">GstCeltEnc</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GstObject
+         +----GstElement
+               +----GstCeltEnc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstCeltEnc implements
+ GstTagSetter.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-celtenc.html#GstCeltEnc--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-celtenc.html#GstCeltEnc--framesize" title='The "framesize" property'>framesize</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.description"></a><h2>Description</h2>
+<p>
+This element raw audio to CELT.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2862346"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc wave=sine num-buffers=100 ! audioconvert ! celtenc ! oggmux ! filesink location=sine.ogg
+</pre></div> Encode a test sine signal to Ogg/CELT.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2836329"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-celt.html#plugin-celt">celt</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2842461"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)[ 32000, 64000 ], channels=(int)[ 1, 2 ], endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-celt, rate=(int)[ 32000, 64000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstCeltEnc-struct"></a><h3>GstCeltEnc</h3>
+<pre class="programlisting">typedef struct _GstCeltEnc GstCeltEnc;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstCeltEnc--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify an encoding bit-rate (in bps). (0 = automatic).</p>
+<p>Allowed values: [0,150]</p>
+<p>Default value: 128</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstCeltEnc--framesize"></a><h3>The <code class="literal">"framesize"</code> property</h3>
+<pre class="programlisting">  "framesize"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>The number of samples per frame.</p>
+<p>Allowed values: [64,256]</p>
+<p>Default value: 256</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-celtenc.see-also"></a><h2>See Also</h2>
+celtdec, oggmux
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

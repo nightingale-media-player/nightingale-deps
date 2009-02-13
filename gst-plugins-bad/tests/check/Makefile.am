@@ -13,7 +13,7 @@ TESTS_ENVIRONMENT = \
         $(REGISTRY_ENVIRONMENT)                                 \
         GST_PLUGIN_SYSTEM_PATH=					\
         GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GSTPB_PLUGINS_DIR):$(GST_PLUGINS_DIR) \
-        STATE_IGNORE_ELEMENTS="cdaudio festival vcdsrc nassink glimagesink dvbsrc dvbbasebin sdlaudiosink sdlvideosink alsaspdifsink dfbvideosink dc1394src"
+        STATE_IGNORE_ELEMENTS="alsaspdifsink apexsink cdaudio dc1394src dvbsrc dvbbasebin dfbvideosink festival nassink sdlaudiosink sdlvideosink vcdsrc rfbsrc"
 
 plugindir = $(libdir)/gstreamer-@GST_MAJORMINOR@
 
@@ -26,6 +26,12 @@ CLEANFILES = core.* test-registry.*
 SUPPRESSIONS = $(top_srcdir)/common/gst.supp $(srcdir)/gst-plugins-bad.supp
 
 clean-local: clean-local-check
+
+if USE_METADATA
+check_metadata = pipelines/metadata
+else
+check_metadata =
+endif
 
 if USE_MPEG2ENC
 check_mpeg2enc = elements/mpeg2enc
@@ -57,10 +63,17 @@ else
 check_timidity=
 endif
 
+if USE_X264
+check_x264enc=elements/x264enc
+else
+check_x264enc=
+endif
+
 
 VALGRIND_TO_FIX = \
 	elements/mpeg2enc \
-	elements/mplex
+	elements/mplex \
+	elements/x264enc
 
 # valgrind testing
 VALGRIND_TESTS_DISABLE = \
@@ -73,10 +86,17 @@ check_PROGRAMS = \
 	$(check_neon)      \
 	$(check_ofa)        \
 	$(check_timidity)  \
+	$(check_x264enc)   \
+	elements/aacparse \
+	elements/amrparse \
+	elements/audioresample \
+	elements/qtmux \
 	elements/selector \
-	elements/y4menc
+	elements/mxfdemux \
+	elements/y4menc   \
+	$(check_metadata)
 
-noinst_HEADERS = 
+noinst_HEADERS = elements/mxfdemux.h elements/amrparse_data.h elements/aacparse_data.h
 
 TESTS = $(check_PROGRAMS)
 

@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>twolame</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-timidity.html" title="timidity">
+<link rel="next" href="gst-plugins-bad-plugins-trm.html" title="trm">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-timidity.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-trm.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-twolame.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-twolame.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-twolame.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-twolame.properties" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-twolame"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-twolame.top_of_page"></a>twolame</span></h2>
+<p>twolame — High-quality free MP2 encoder</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-twolame.synopsis"></a><h2>Synopsis</h2>
+<a name="GstTwoLame"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame-struct" title="GstTwoLame">GstTwoLame</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GstObject
+         +----GstElement
+               +----GstTwoLame
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--ath-level" title='The "ath-level" property'>ath-level</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--copyright" title='The "copyright" property'>copyright</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--emphasis" title='The "emphasis" property'>emphasis</a>"                 GstTwoLameEmphasis    : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--energy-level-extension" title='The "energy-level-extension" property'>energy-level-extension</a>"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--error-protection" title='The "error-protection" property'>error-protection</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--mode" title='The "mode" property'>mode</a>"                     GstTwoLameMode        : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--original" title='The "original" property'>original</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--padding" title='The "padding" property'>padding</a>"                  GstTwoLamePadding     : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--psymodel" title='The "psymodel" property'>psymodel</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--quick-mode" title='The "quick-mode" property'>quick-mode</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--quick-mode-count" title='The "quick-mode-count" property'>quick-mode-count</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--vbr" title='The "vbr" property'>vbr</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--vbr-level" title='The "vbr-level" property'>vbr-level</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-twolame.html#GstTwoLame--vbr-max-bitrate" title='The "vbr-max-bitrate" property'>vbr-max-bitrate</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.description"></a><h2>Description</h2>
+<p>
+This element encodes raw integer audio into an MPEG-1 layer 2 (MP2) stream.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2909325"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v audiotestsrc wave=sine num-buffers=100 ! audioconvert ! twolame ! filesink location=sine.mp2
+</pre></div> Encode a test sine signal to MP2.
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v alsasrc ! audioconvert ! twolame bitrate=192 ! filesink location=alsasrc.mp2
+</pre></div> Record from a sound card using ALSA and encode to MP2
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=music.wav ! decodebin ! audioconvert ! audioresample ! twolame bitrate=192 ! id3v2mux ! filesink location=music.mp2
+</pre></div> Transcode from a .wav file to MP2 (the id3v2mux element is optional)
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v cdda://5 ! audioconvert ! twolame bitrate=192 ! filesink location=track5.mp2
+</pre></div> Encode Audio CD track 5 to MP2
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2909375"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-twolame.html#plugin-twolame">twolame</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2909438"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, endianness=(int)1234, width=(int)32, rate=(int){ 16000, 22050, 24000, 32000, 44100, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int){ 16000, 22050, 24000, 32000, 44100, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/mpeg, mpegversion=(int)1, layer=(int)2, rate=(int){ 16000, 22050, 24000, 32000, 44100, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame-struct"></a><h3>GstTwoLame</h3>
+<pre class="programlisting">typedef struct _GstTwoLame GstTwoLame;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--ath-level"></a><h3>The <code class="literal">"ath-level"</code> property</h3>
+<pre class="programlisting">  "ath-level"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
+<p>ATH Level in dB.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Bitrate in kbit/sec (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</p>
+<p>Allowed values: [8,384]</p>
+<p>Default value: 192</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--copyright"></a><h3>The <code class="literal">"copyright"</code> property</h3>
+<pre class="programlisting">  "copyright"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Mark as copyright.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--emphasis"></a><h3>The <code class="literal">"emphasis"</code> property</h3>
+<pre class="programlisting">  "emphasis"                 GstTwoLameEmphasis    : Read / Write</pre>
+<p>Pre-emphasis to apply to the decoded audio.</p>
+<p>Default value: No emphasis</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--energy-level-extension"></a><h3>The <code class="literal">"energy-level-extension"</code> property</h3>
+<pre class="programlisting">  "energy-level-extension"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Write peak PCM level to each frame.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--error-protection"></a><h3>The <code class="literal">"error-protection"</code> property</h3>
+<pre class="programlisting">  "error-protection"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Adds checksum to every frame.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--mode"></a><h3>The <code class="literal">"mode"</code> property</h3>
+<pre class="programlisting">  "mode"                     GstTwoLameMode        : Read / Write</pre>
+<p>Encoding mode.</p>
+<p>Default value: Joint Stereo</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--original"></a><h3>The <code class="literal">"original"</code> property</h3>
+<pre class="programlisting">  "original"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Mark as original.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--padding"></a><h3>The <code class="literal">"padding"</code> property</h3>
+<pre class="programlisting">  "padding"                  GstTwoLamePadding     : Read / Write</pre>
+<p>Padding type.</p>
+<p>Default value: No Padding</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--psymodel"></a><h3>The <code class="literal">"psymodel"</code> property</h3>
+<pre class="programlisting">  "psymodel"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Psychoacoustic model used to encode the audio.</p>
+<p>Allowed values: [G_MAXULONG,4]</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--quick-mode"></a><h3>The <code class="literal">"quick-mode"</code> property</h3>
+<pre class="programlisting">  "quick-mode"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Calculate Psymodel every frames.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--quick-mode-count"></a><h3>The <code class="literal">"quick-mode-count"</code> property</h3>
+<pre class="programlisting">  "quick-mode-count"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Calculate Psymodel every n frames.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 10</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--vbr"></a><h3>The <code class="literal">"vbr"</code> property</h3>
+<pre class="programlisting">  "vbr"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Enable variable bitrate mode.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--vbr-level"></a><h3>The <code class="literal">"vbr-level"</code> property</h3>
+<pre class="programlisting">  "vbr-level"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
+<p>VBR Level.</p>
+<p>Allowed values: [-10,10]</p>
+<p>Default value: 5</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstTwoLame--vbr-max-bitrate"></a><h3>The <code class="literal">"vbr-max-bitrate"</code> property</h3>
+<pre class="programlisting">  "vbr-max-bitrate"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Specify maximum VBR bitrate (0=off, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</p>
+<p>Allowed values: [0,384]</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-twolame.see-also"></a><h2>See Also</h2>
+mad, lame
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

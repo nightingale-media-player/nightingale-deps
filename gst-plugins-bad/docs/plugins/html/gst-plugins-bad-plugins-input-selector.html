@@ -51,7 +51,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-input-selector.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstInputSelector
@@ -61,8 +63,12 @@
 <a name="gst-plugins-bad-plugins-input-selector.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector--active-pad" title='The "active-pad" property'>active-pad</a>"               GstPad*               : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector--n-pads" title='The "n-pads" property'>n-pads</a>"                   guint                 : Read
-  "<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector--select-all" title='The "select-all" property'>select-all</a>"               gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector--n-pads" title='The "n-pads" property'>n-pads</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
+  "<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector--select-all" title='The "select-all" property'>select-all</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -79,7 +85,7 @@ Direct one out of N input streams to the output pad.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2578896"></a><h3>Element Information</h3>
+<a name="id2846186"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -105,28 +111,7 @@ Direct one out of N input streams to the output pad.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2628805"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink%d</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>request</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+<a name="id2888285"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -141,6 +126,27 @@ Direct one out of N input streams to the output pad.</p>
 <tr>
 <td><p><span class="term">presence</span></p></td>
 <td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
@@ -174,14 +180,18 @@ Direct one out of N input streams to the output pad.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstInputSelector--n-pads"></a><h3>The <code class="literal">"n-pads"</code> property</h3>
-<pre class="programlisting">  "n-pads"                   guint                 : Read</pre>
+<pre class="programlisting">  "n-pads"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
 <p>The number of sink pads.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstInputSelector--select-all"></a><h3>The <code class="literal">"select-all"</code> property</h3>
-<pre class="programlisting">  "select-all"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "select-all"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Forwards data from all input pads.</p>
 <p>Default value: FALSE</p>
 </div>
@@ -190,8 +200,12 @@ Direct one out of N input streams to the output pad.</p>
 <a name="gst-plugins-bad-plugins-input-selector.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstInputSelector-block"></a><h3>The <code class="literal">"block"</code> signal</h3>
-<pre class="programlisting">gint64              user_function                      (<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector">GstInputSelector</a> *inputselector,
-                                                        gpointer          user_data)          : Run Last / Action</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>              user_function                      (<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector">GstInputSelector</a> *inputselector,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>          user_data)          : Run Last / Action</pre>
 <p>
 Block all sink pads in preparation for a switch. Returns the stop time of
 the current switch segment, as a running time, or 0 if there is no current
@@ -219,9 +233,15 @@ active pad or the current active pad never received data.</p>
 <a name="GstInputSelector-switch"></a><h3>The <code class="literal">"switch"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-bad-plugins-input-selector.html#GstInputSelector">GstInputSelector</a> *inputselector,
                                                         GstPad           *pad,
-                                                        gint64            stop_time,
-                                                        gint64            start_time,
-                                                        gpointer          user_data)          : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>            stop_time,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>            start_time,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>          user_data)          : Run Last</pre>
 <p>
 Switch to a new feed. The segment opened by the previously active pad, if
 any, will be closed, and a new segment opened before data flows again.

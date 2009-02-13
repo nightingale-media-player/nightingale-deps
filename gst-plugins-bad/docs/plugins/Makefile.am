@@ -68,12 +68,7 @@ CFILE_GLOB=$(DOC_SOURCE_DIR)/*/*/*.c $(DOC_SOURCE_DIR)/*/*/*.cc
 SCANOBJ_DEPS =
 
 # Header files to ignore when scanning.
-IGNORE_HFILES = \
-	arch.h \
-	speex_resampler.h \
-	speex_resampler_wrapper.h \
-	fixed_generic.h
-
+IGNORE_HFILES = 
 IGNORE_CFILES =
 
 # we add all .h files of elements that have signals/args we want
@@ -97,25 +92,39 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/amrwb/gstamrwbdec.h \
 	$(top_srcdir)/ext/amrwb/gstamrwbenc.h \
 	$(top_srcdir)/ext/amrwb/gstamrwbparse.h \
+	$(top_srcdir)/ext/celt/gstceltdec.h \
+	$(top_srcdir)/ext/celt/gstceltenc.h \
 	$(top_srcdir)/ext/dc1394/gstdc1394.h \
 	$(top_srcdir)/ext/directfb/dfbvideosink.h \
 	$(top_srcdir)/ext/ivorbis/vorbisdec.h \
+	$(top_srcdir)/ext/jack/gstjackaudiosrc.h \
 	$(top_srcdir)/ext/jack/gstjackaudiosink.h \
 	$(top_srcdir)/ext/musicbrainz/gsttrm.h \
 	$(top_srcdir)/ext/metadata/gstbasemetadata.h \
 	$(top_srcdir)/ext/metadata/gstmetadatademux.h \
 	$(top_srcdir)/ext/metadata/gstmetadatamux.h \
 	$(top_srcdir)/ext/mpeg2enc/gstmpeg2enc.hh \
+	$(top_srcdir)/ext/mplex/gstmplex.hh \
 	$(top_srcdir)/ext/mythtv/gstmythtvsrc.h \
 	$(top_srcdir)/ext/sdl/sdlaudiosink.h \
 	$(top_srcdir)/ext/sdl/sdlvideosink.h \
 	$(top_srcdir)/ext/theora/theoradec.h \
 	$(top_srcdir)/ext/timidity/gsttimidity.h \
 	$(top_srcdir)/ext/timidity/gstwildmidi.h \
+	$(top_srcdir)/ext/twolame/gsttwolame.h \
+	$(top_srcdir)/ext/x264/gstx264enc.h \
+	$(top_srcdir)/gst/aacparse/gstaacparse.h \
+	$(top_srcdir)/gst/amrparse/gstamrparse.h \
+	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/deinterlace/gstdeinterlace.h \
+	$(top_srcdir)/gst/dccp/gstdccpclientsink.h \
+	$(top_srcdir)/gst/dccp/gstdccpclientsrc.h \
+	$(top_srcdir)/gst/dccp/gstdccpserversink.h \
+	$(top_srcdir)/gst/dccp/gstdccpserversrc.h \
 	$(top_srcdir)/gst/dvdspu/gstdvdspu.h \
 	$(top_srcdir)/gst/festival/gstfestival.h \
 	$(top_srcdir)/gst/modplug/gstmodplug.h \
+	$(top_srcdir)/gst/mxf/mxfdemux.h \
 	$(top_srcdir)/gst/nuvdemux/gstnuvdemux.h \
 	$(top_srcdir)/gst/rawparse/gstaudioparse.h \
 	$(top_srcdir)/gst/rawparse/gstvideoparse.h \
@@ -125,11 +134,11 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/rtpmanager/gstrtpptdemux.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpsession.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpssrcdemux.h \
+	$(top_srcdir)/gst/scaletempo/gstscaletempo.h \
 	$(top_srcdir)/gst/sdp/gstsdpdemux.h \
 	$(top_srcdir)/gst/selector/gstinputselector.h \
 	$(top_srcdir)/gst/selector/gstoutputselector.h \
 	$(top_srcdir)/gst/speed/gstspeed.h \
-	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
 	$(top_srcdir)/gst/stereo/gststereo.h \
 	$(top_srcdir)/gst/videosignal/gstvideoanalyse.h \
 	$(top_srcdir)/gst/videosignal/gstvideodetect.h \

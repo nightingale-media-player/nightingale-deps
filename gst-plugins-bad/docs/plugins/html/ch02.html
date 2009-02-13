@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="prev" href="gst-plugins-bad-plugins-y4menc.html" title="y4menc">
-<link rel="next" href="gst-plugins-bad-plugins-plugin-alsaspdif.html" title="alsaspdif">
+<link rel="next" href="gst-plugins-bad-plugins-plugin-aacparse.html" title="aacparse">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
@@ -20,20 +20,26 @@
 <td> </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-plugin-alsaspdif.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-plugin-aacparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="chapter" lang="en">
 <div class="titlepage"><div><div><h2 class="title">
-<a name="id2528265"></a>gst-plugins-bad Plugins</h2></div></div></div>
+<a name="id2784915"></a>gst-plugins-bad Plugins</h2></div></div></div>
 <div class="toc"><dl>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-aacparse.html">aacparse</a></span><span class="refpurpose"> — Advanced Audio Coding Parser</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-amrparse.html">amrparse</a></span><span class="refpurpose"> — Adaptive Multi-Rate Parser</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-legacyresample.html">legacyresample</a></span><span class="refpurpose"> — Resamples audio</span>
+</dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-alsaspdif.html">alsaspdif</a></span><span class="refpurpose"> — Alsa plugin for S/PDIF output</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-amrwb.html">amrwb</a></span><span class="refpurpose"> — Adaptive Multi-Rate Wide-Band</span>
-</dt>
-<dt>
-<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-app.html">app</a></span><span class="refpurpose"> — Elements used to communicate with applications</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-bayer.html">bayer</a></span><span class="refpurpose"> — Elements to convert Bayer images</span>
@@ -46,6 +52,12 @@
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-cdxaparse.html">cdxaparse</a></span><span class="refpurpose"> — Parse a .dat file (VCD) into raw mpeg1</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-celt.html">celt</a></span><span class="refpurpose"> — CELT plugin library</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-dccp.html">dccp</a></span><span class="refpurpose"> — transfer data over the network via DCCP.</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-dfbvideosink.html">dfbvideosink</a></span><span class="refpurpose"> — DirectFB video output plugin</span>
@@ -114,6 +126,9 @@
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-mpeg2enc.html">mpeg2enc</a></span><span class="refpurpose"> — High-quality MPEG-1/2 video encoder</span>
 </dt>
 <dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-mplex.html">mplex</a></span><span class="refpurpose"> — High-quality MPEG/DVD/SVCD/VCD video/audio multiplexer</span>
+</dt>
+<dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-mpeg4videoparse.html">mpeg4videoparse</a></span><span class="refpurpose"> — MPEG-4 video parser</span>
 </dt>
 <dt>
@@ -130,6 +145,9 @@
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-mve.html">mve</a></span><span class="refpurpose"> — Interplay MVE movie format manipulation</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-mxf.html">mxf</a></span><span class="refpurpose"> — MXF plugin library</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-nas.html">nas</a></span><span class="refpurpose"> — NAS (Network Audio System) support for GStreamer</span>
@@ -153,6 +171,9 @@
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-rfbsrc.html">rfbsrc</a></span><span class="refpurpose"> — Connects to a VNC server and decodes RFB stream</span>
 </dt>
 <dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-scaletempo.html">scaletempo</a></span><span class="refpurpose"> — Scale audio tempo in sync with playback rate</span>
+</dt>
+<dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-sdl.html">sdl</a></span><span class="refpurpose"> — SDL (Simple DirectMedia Layer) support for GStreamer</span>
 </dt>
 <dt>
@@ -174,9 +195,6 @@
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-speed.html">speed</a></span><span class="refpurpose"> — Set speed/pitch on audio/raw streams (resampler)</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-speexresample.html">speexresample</a></span><span class="refpurpose"> — Resamples audio</span>
-</dt>
-<dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-stereo.html">stereo</a></span><span class="refpurpose"> — Muck with the stereo signal, enhance it's 'stereo-ness'</span>
 </dt>
 <dt>
@@ -184,6 +202,9 @@
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-timidity.html">timidity</a></span><span class="refpurpose"> — Timidity Plugin</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-twolame.html">twolame</a></span><span class="refpurpose"> — Encode MP2s with TwoLAME</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-bad-plugins-plugin-tremor.html">tremor</a></span><span class="refpurpose"> — OGG Vorbis Tremor plugins element</span>

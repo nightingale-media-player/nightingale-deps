@@ -80,16 +80,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/gst-alsa.m4 $(top_srcdir)/m4/gst-sdl.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/gst-alsa.m4 $(top_srcdir)/m4/gst-fionread.m4 \
+	$(top_srcdir)/m4/gst-sdl.m4 $(top_srcdir)/m4/iconv.m4 \
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 SOURCES =
@@ -103,6 +105,8 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMRWB_LIBS = @AMRWB_LIBS@
 AMTAR = @AMTAR@
+APEXSINK_CFLAGS = @APEXSINK_CFLAGS@
+APEXSINK_LIBS = @APEXSINK_LIBS@
 AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
@@ -125,6 +129,8 @@ CCDEPMODE = @CCDEPMODE@
 CDAUDIO_CFLAGS = @CDAUDIO_CFLAGS@
 CDAUDIO_CONFIG = @CDAUDIO_CONFIG@
 CDAUDIO_LIBS = @CDAUDIO_LIBS@
+CELT_CFLAGS = @CELT_CFLAGS@
+CELT_LIBS = @CELT_LIBS@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -171,6 +177,7 @@ FGREP = @FGREP@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLADE_CFLAGS = @GLADE_CFLAGS@
 GLADE_LIBS = @GLADE_LIBS@
@@ -179,6 +186,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GMYTH_CFLAGS = @GMYTH_CFLAGS@
 GMYTH_LIBS = @GMYTH_LIBS@
 GREP = @GREP@
@@ -214,14 +222,11 @@ GST_PLUGINS_SELECTED = @GST_PLUGINS_SELECTED@
 GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_AMRWB = @HAVE_AMRWB@
 HAVE_BZ2 = @HAVE_BZ2@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
@@ -265,9 +270,9 @@ HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
 HAVE_GSM = @HAVE_GSM@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_JP2K = @HAVE_JP2K@
 HAVE_NAS = @HAVE_NAS@
 HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
@@ -276,6 +281,9 @@ HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
 HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
 HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
 HAVE_X = @HAVE_X@
+HAVE_X11 = @HAVE_X11@
+HAVE_X11_FALSE = @HAVE_X11_FALSE@
+HAVE_X11_TRUE = @HAVE_X11_TRUE@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -283,12 +291,14 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 IPTC_CFLAGS = @IPTC_CFLAGS@
 IPTC_LIBS = @IPTC_LIBS@
 IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+JP2K_LIBS = @JP2K_LIBS@
 LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
@@ -317,7 +327,6 @@ METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
 MJPEG_CFLAGS = @MJPEG_CFLAGS@
 MJPEG_LIBS = @MJPEG_LIBS@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_LIBS = @MOZILLA_LIBS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
@@ -325,6 +334,7 @@ MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
 MPLEX_CFLAGS = @MPLEX_CFLAGS@
 MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
 MUSICBRAINZ_CFLAGS = @MUSICBRAINZ_CFLAGS@
@@ -381,6 +391,8 @@ THEORADEC_CFLAGS = @THEORADEC_CFLAGS@
 THEORADEC_LIBS = @THEORADEC_LIBS@
 TIMIDITY_CFLAGS = @TIMIDITY_CFLAGS@
 TIMIDITY_LIBS = @TIMIDITY_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
 USE_ACM_FALSE = @USE_ACM_FALSE@
 USE_ACM_TRUE = @USE_ACM_TRUE@
 USE_ALSA_FALSE = @USE_ALSA_FALSE@
@@ -393,6 +405,8 @@ USE_BZ2_FALSE = @USE_BZ2_FALSE@
 USE_BZ2_TRUE = @USE_BZ2_TRUE@
 USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
+USE_CELT_FALSE = @USE_CELT_FALSE@
+USE_CELT_TRUE = @USE_CELT_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
 USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
@@ -425,6 +439,8 @@ USE_IVORBIS_FALSE = @USE_IVORBIS_FALSE@
 USE_IVORBIS_TRUE = @USE_IVORBIS_TRUE@
 USE_JACK_FALSE = @USE_JACK_FALSE@
 USE_JACK_TRUE = @USE_JACK_TRUE@
+USE_JP2K_FALSE = @USE_JP2K_FALSE@
+USE_JP2K_TRUE = @USE_JP2K_TRUE@
 USE_LADSPA_FALSE = @USE_LADSPA_FALSE@
 USE_LADSPA_TRUE = @USE_LADSPA_TRUE@
 USE_LIBMMS_FALSE = @USE_LIBMMS_FALSE@
@@ -454,14 +470,20 @@ USE_OFA_FALSE = @USE_OFA_FALSE@
 USE_OFA_TRUE = @USE_OFA_TRUE@
 USE_OSS4_FALSE = @USE_OSS4_FALSE@
 USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_AACPARSE_FALSE = @USE_PLUGIN_AACPARSE_FALSE@
+USE_PLUGIN_AACPARSE_TRUE = @USE_PLUGIN_AACPARSE_TRUE@
 USE_PLUGIN_AIFFPARSE_FALSE = @USE_PLUGIN_AIFFPARSE_FALSE@
 USE_PLUGIN_AIFFPARSE_TRUE = @USE_PLUGIN_AIFFPARSE_TRUE@
-USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
-USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_AMRPARSE_FALSE = @USE_PLUGIN_AMRPARSE_FALSE@
+USE_PLUGIN_AMRPARSE_TRUE = @USE_PLUGIN_AMRPARSE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
 USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
 USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
 USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DCCP_FALSE = @USE_PLUGIN_DCCP_FALSE@
+USE_PLUGIN_DCCP_TRUE = @USE_PLUGIN_DCCP_TRUE@
 USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
 USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
 USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
@@ -484,30 +506,38 @@ USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
 USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
 USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
 USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
-USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
-USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGDEMUX_FALSE = @USE_PLUGIN_MPEGDEMUX_FALSE@
+USE_PLUGIN_MPEGDEMUX_TRUE = @USE_PLUGIN_MPEGDEMUX_TRUE@
+USE_PLUGIN_MPEGTSMUX_FALSE = @USE_PLUGIN_MPEGTSMUX_FALSE@
+USE_PLUGIN_MPEGTSMUX_TRUE = @USE_PLUGIN_MPEGTSMUX_TRUE@
 USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
 USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
 USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
 USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_MXF_FALSE = @USE_PLUGIN_MXF_FALSE@
+USE_PLUGIN_MXF_TRUE = @USE_PLUGIN_MXF_TRUE@
 USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
 USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
 USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
 USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_PCAPPARSE_FALSE = @USE_PLUGIN_PCAPPARSE_FALSE@
+USE_PLUGIN_PCAPPARSE_TRUE = @USE_PLUGIN_PCAPPARSE_TRUE@
+USE_PLUGIN_QTMUX_FALSE = @USE_PLUGIN_QTMUX_FALSE@
+USE_PLUGIN_QTMUX_TRUE = @USE_PLUGIN_QTMUX_TRUE@
 USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
 USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
 USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
 USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
 USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
 USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SCALETEMPO_FALSE = @USE_PLUGIN_SCALETEMPO_FALSE@
+USE_PLUGIN_SCALETEMPO_TRUE = @USE_PLUGIN_SCALETEMPO_TRUE@
 USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
 USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
 USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
 USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
 USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
 USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
-USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
-USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
 USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
 USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
@@ -536,6 +566,8 @@ USE_THEORADEC_FALSE = @USE_THEORADEC_FALSE@
 USE_THEORADEC_TRUE = @USE_THEORADEC_TRUE@
 USE_TIMIDITY_FALSE = @USE_TIMIDITY_FALSE@
 USE_TIMIDITY_TRUE = @USE_TIMIDITY_TRUE@
+USE_TWOLAME_FALSE = @USE_TWOLAME_FALSE@
+USE_TWOLAME_TRUE = @USE_TWOLAME_TRUE@
 USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
@@ -553,9 +585,13 @@ VERSION = @VERSION@
 WILDMIDI_CFLAGS = @WILDMIDI_CFLAGS@
 WILDMIDI_LIBS = @WILDMIDI_LIBS@
 WINDOWS_SDK_DIR = @WINDOWS_SDK_DIR@
+X11_CFLAGS = @X11_CFLAGS@
+X11_LIBS = @X11_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
@@ -694,12 +730,7 @@ CFILE_GLOB = $(DOC_SOURCE_DIR)/*/*/*.c $(DOC_SOURCE_DIR)/*/*/*.cc
 SCANOBJ_DEPS = 
 
 # Header files to ignore when scanning.
-IGNORE_HFILES = \
-	arch.h \
-	speex_resampler.h \
-	speex_resampler_wrapper.h \
-	fixed_generic.h
-
+IGNORE_HFILES = 
 IGNORE_CFILES = 
 
 # we add all .h files of elements that have signals/args we want
@@ -723,25 +754,39 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/amrwb/gstamrwbdec.h \
 	$(top_srcdir)/ext/amrwb/gstamrwbenc.h \
 	$(top_srcdir)/ext/amrwb/gstamrwbparse.h \
+	$(top_srcdir)/ext/celt/gstceltdec.h \
+	$(top_srcdir)/ext/celt/gstceltenc.h \
 	$(top_srcdir)/ext/dc1394/gstdc1394.h \
 	$(top_srcdir)/ext/directfb/dfbvideosink.h \
 	$(top_srcdir)/ext/ivorbis/vorbisdec.h \
+	$(top_srcdir)/ext/jack/gstjackaudiosrc.h \
 	$(top_srcdir)/ext/jack/gstjackaudiosink.h \
 	$(top_srcdir)/ext/musicbrainz/gsttrm.h \
 	$(top_srcdir)/ext/metadata/gstbasemetadata.h \
 	$(top_srcdir)/ext/metadata/gstmetadatademux.h \
 	$(top_srcdir)/ext/metadata/gstmetadatamux.h \
 	$(top_srcdir)/ext/mpeg2enc/gstmpeg2enc.hh \
+	$(top_srcdir)/ext/mplex/gstmplex.hh \
 	$(top_srcdir)/ext/mythtv/gstmythtvsrc.h \
 	$(top_srcdir)/ext/sdl/sdlaudiosink.h \
 	$(top_srcdir)/ext/sdl/sdlvideosink.h \
 	$(top_srcdir)/ext/theora/theoradec.h \
 	$(top_srcdir)/ext/timidity/gsttimidity.h \
 	$(top_srcdir)/ext/timidity/gstwildmidi.h \
+	$(top_srcdir)/ext/twolame/gsttwolame.h \
+	$(top_srcdir)/ext/x264/gstx264enc.h \
+	$(top_srcdir)/gst/aacparse/gstaacparse.h \
+	$(top_srcdir)/gst/amrparse/gstamrparse.h \
+	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/deinterlace/gstdeinterlace.h \
+	$(top_srcdir)/gst/dccp/gstdccpclientsink.h \
+	$(top_srcdir)/gst/dccp/gstdccpclientsrc.h \
+	$(top_srcdir)/gst/dccp/gstdccpserversink.h \
+	$(top_srcdir)/gst/dccp/gstdccpserversrc.h \
 	$(top_srcdir)/gst/dvdspu/gstdvdspu.h \
 	$(top_srcdir)/gst/festival/gstfestival.h \
 	$(top_srcdir)/gst/modplug/gstmodplug.h \
+	$(top_srcdir)/gst/mxf/mxfdemux.h \
 	$(top_srcdir)/gst/nuvdemux/gstnuvdemux.h \
 	$(top_srcdir)/gst/rawparse/gstaudioparse.h \
 	$(top_srcdir)/gst/rawparse/gstvideoparse.h \
@@ -751,11 +796,11 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/rtpmanager/gstrtpptdemux.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpsession.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpssrcdemux.h \
+	$(top_srcdir)/gst/scaletempo/gstscaletempo.h \
 	$(top_srcdir)/gst/sdp/gstsdpdemux.h \
 	$(top_srcdir)/gst/selector/gstinputselector.h \
 	$(top_srcdir)/gst/selector/gstoutputselector.h \
 	$(top_srcdir)/gst/speed/gstspeed.h \
-	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
 	$(top_srcdir)/gst/stereo/gststereo.h \
 	$(top_srcdir)/gst/videosignal/gstvideoanalyse.h \
 	$(top_srcdir)/gst/videosignal/gstvideodetect.h \
@@ -866,7 +911,7 @@ CLEANFILES = \
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(builddir)/inspect-registry.xml
+@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
@@ -1243,11 +1288,11 @@ distclean-local: clean
 
 # thomas: make docs parallel installable; devhelp requires majorminor too
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
+	(installfiles=`echo $(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css`; \
+	if test "$$installfiles" = '$(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css'; \
 	then echo '-- Nothing to install' ; \
 	else \
+          $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR); \
 	  for i in $$installfiles; do \
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
@@ -1263,47 +1308,19 @@ install-data-local:
 	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp \
 	    $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
 	  if test -e $(srcdir)/html/$(DOC_MODULE).devhelp2; then \
-        	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
+        	    $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
 	           $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
 	  fi; \
-	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
-	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
-		if test -e $(srcdir)/html/style.css; then \
-			echo '-- Installing $(srcdir)/html/style.css' ; \
-			$(INSTALL_DATA) $(srcdir)/html/style.css $(DESTDIR)$(TARGET_DIR); \
-		fi; \
+	  (which gtkdoc-rebase >/dev/null && \
+	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || true ; \
 	fi) 
 uninstall-local:
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
-	then echo '-- Nothing to uninstall' ; \
+	if test -d $(DESTDIR)$(TARGET_DIR); then \
+	  rm -rf $(DESTDIR)$(TARGET_DIR)/*; \
+	  rmdir -p $(DESTDIR)$(TARGET_DIR) 2>/dev/null || true; \
 	else \
-	  for i in $$installfiles; do \
-	    rmfile=`basename $$i` ; \
-	    echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	  done; \
-	  pngfiles=`echo ./html/*.png`; \
-	  if test "$$pngfiles" != './html/*.png'; then \
-	    for i in $$pngfiles; do \
-	      rmfile=`basename $$i` ; \
-	      echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	      rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	    done; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE).devhelp' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
-	  if test -e $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; then \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/index.sgml' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/index.sgml; \
-		if test -e $(DESTDIR)$(TARGET_DIR)/style.css; then \
-			echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/style.css' ; \
-			rm -f $(DESTDIR)$(TARGET_DIR)/style.css; \
-		fi; \
-	fi) 
-	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR) 2>/dev/null; fi; true
+	  echo '-- Nothing to uninstall' ; \
+	fi;
 
 #
 # Checks
@@ -1339,21 +1356,14 @@ check-inspected-versions:
 
 # FIXME: decide whether we want to dist generated html or not
 dist-hook: dist-check-gtkdoc dist-hook-local
-	mkdir $(distdir)/tmpl
-	mkdir $(distdir)/xml
 	mkdir $(distdir)/html
-	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
-	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
-	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
-	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
+	cp $(srcdir)/html/* $(distdir)/html
+	-cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
+	-cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
+	cd $(distdir) && rm -f $(DISTCLEANFILES)
+        -gtkdoc-rebase --online --relative --html-dir=$(distdir)/html
 
-	images=$(HTML_IMAGES) ;    	      \
-	for i in "" $$images ; do		      \
-	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
-	done
-
-.PHONY : dist-hook-local
+.PHONY : dist-hook-local docs
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

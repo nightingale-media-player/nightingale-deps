@@ -1,9 +1,10 @@
-plugin_LTLIBRARIES = libgstacmenc.la
+plugin_LTLIBRARIES = libgstacmencsink.la
 
-libgstacmenc_la_SOURCES = acmenc.c
-libgstacmenc_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+libgstacmencsink_la_SOURCES = acmenc.c
+libgstacmencsink_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS)
-libgstacmenc_la_LIBADD = $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) \
+libgstacmencsink_la_LIBADD = $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) \
 	-lgstriff-$(GST_MAJORMINOR) -lmsacm32
-libgstacmenc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(DIRECTSOUND_LDFLAGS)
+libgstacmencsink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstacmencsink_la_LIBTOOLFLAGS = --tag=disable-static
 

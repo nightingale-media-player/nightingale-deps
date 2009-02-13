@@ -1,3 +1,4875 @@
+=== release 0.10.10 ===
+
+2009-01-19  Jan Schmidt <jan.schmidt@sun.com>
+
+	* configure.ac:
+	  releasing 0.10.10, "keep them dogies rollin"
+
+2009-01-09  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.9.3 pre-release
+
+2009-01-09  David Schleef  <ds@schleef.org>
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Don't forward duration requests in BYTES, since the returned
+	value doesn't mean anything.  Fixes #566959
+
+2009-01-09  David Schleef  <ds@schleef.org>
+
+	* gst/qtmux/gstqtmuxmap.c: Add video/x-qt-part and video/x-m4-part
+	to caps so schroenc/schroparse can use it.  Fixes #566958
+
+2009-01-09  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/resindvd/resindvdsrc.c:
+	Additional patch for resin fixes time-based seeking in titles
+	that don't start at sector 0 in the VTS, and fixes interpretation
+	of the cell elapsed time, so that it reports the correct time after
+	the seek completes.
+	Really fixes #566957.
+
+2009-01-08  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Based on Patch by: Brian Cameron <brian dot cameron at sun dot com>
+
+	* ext/ladspa/search.c: (LADSPAPluginSearch):
+	Avoid searching (null) paths or crashing on platforms where printing a
+	NULL string segfaults. Fixes #567004.
+
+2009-01-08  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/resindvd/resindvdbin.c:
+	* ext/resindvd/resindvdsrc.c:
+	* ext/resindvd/resindvdsrc.h:
+	* ext/resindvd/rsnaudiomunge.c:
+	Add support for time based seeking.
+	Make setting dvd:// reset to the default device.
+	Make the 'audiomunge' element send any new segment start before
+	the 'gap filler' buffer it generates, and any segment closes
+	after.
+	Fixes: #566957
+
+2009-01-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/ladspa/gstladspa.c: (plugin_init):
+	Add plugin dependency for the LADSPA plugin directories.
+	Fixes bug #566878.
+
+2009-01-06  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* tests/check/Makefile.am:
+	Dist test headers for amr and aac parsers.
+	Remove leftover lines mentioned speexresample tests.
+
+2009-01-06  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/acmmp3dec/Makefile.am:
+	  Fix typo in the opposite way to give the plugin a sensible name.
+
+2009-01-06  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* sys/acmmp3dec/Makefile.am:
+	Fix typo in the makefile target preventing disting.
+
+2009-01-05  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/inspect/plugin-app.xml:
+	* examples/Makefile.am:
+	* examples/app/.cvsignore:
+	* examples/app/Makefile.am:
+	* examples/app/appsink-src.c:
+	* examples/app/appsrc-ra.c:
+	* examples/app/appsrc-seekable.c:
+	* examples/app/appsrc-stream.c:
+	* examples/app/appsrc-stream2.c:
+	* examples/app/appsrc_ex.c:
+	* gst-libs/gst/Makefile.am:
+	* gst-libs/gst/app/.cvsignore:
+	* gst-libs/gst/app/Makefile.am:
+	* gst-libs/gst/app/gstapp-marshal.list:
+	* gst-libs/gst/app/gstappbuffer.c:
+	* gst-libs/gst/app/gstappbuffer.h:
+	* gst-libs/gst/app/gstappsink.c:
+	* gst-libs/gst/app/gstappsink.h:
+	* gst-libs/gst/app/gstappsrc.c:
+	* gst-libs/gst/app/gstappsrc.h:
+	* gst/app/Makefile.am:
+	* gst/app/gstapp.c:
+
+	Remove AppSrc/AppSink that are moving to -base. Partially fixes
+	#564421
+
+2009-01-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/mpegtspacketizer.c:
+	Guard interval is 4 if descriptor part shows binary 11 (3 not 4).
+
+2009-01-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/gstmpegdesc.h:
+	Fix up satellite delivery subsystem defs.
+
+2009-01-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/gstmpegdesc.h:
+	Fix up terrestrial delivery system descriptor defs.
+	They should be shifted otherwise wrong values are seen.
+
+2009-01-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfdemux.c:
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_handle_tag),
+	(mxf_metadata_preface_handle_tag),
+	(mxf_metadata_identification_handle_tag),
+	(mxf_metadata_content_storage_handle_tag),
+	(mxf_metadata_essence_container_data_handle_tag),
+	(mxf_metadata_generic_package_handle_tag),
+	(mxf_metadata_track_handle_tag),
+	(mxf_metadata_sequence_handle_tag),
+	(mxf_metadata_structural_component_handle_tag),
+	(mxf_metadata_generic_descriptor_handle_tag),
+	(mxf_metadata_locator_handle_tag),
+	(mxf_metadata_locator_class_init):
+	* gst/mxf/mxfmetadata.h:
+	"Generation UID" and "This Generation UID" are different so handle
+	them different. Also both are not part of every metadata type.
+
+2009-01-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Sascha Hauer <s dot hauer at pengutronix dot de>
+	          Luotao Fu <l dot fu at pengutronix dot de>
+
+	* gst/bayer/gstbayer2rgb.c: (get_pix_offset),
+	(gst_bayer2rgb_set_caps):
+	Fix color offset calculation for 24bpp. Fixes bug #566613.
+
+2009-01-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: vanista <vanista at gmail dot com>
+
+	* gst/mpegtsmux/mpegtsmux.c: (mpegtsmux_create_stream):
+	* gst/mpegtsmux/tsmux/tsmux.c: (tsmux_write_pmt):
+	* gst/mpegtsmux/tsmux/tsmuxstream.c: (tsmux_stream_new),
+	(tsmux_stream_write_pes_header), (tsmux_stream_get_es_descrs):
+	* gst/mpegtsmux/tsmux/tsmuxstream.h:
+	Improve muxing of AC3/h264 streams a bit. Fixes bug #550613.
+
+2009-01-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_pad_next_component):
+	Don't allow negative or zero edit rates to prevent division
+	by zero and we support negative edit rates anyway.
+
+2009-01-05  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_class_init),
+	(gst_x264_enc_header_buf), (gst_x264_enc_encode_frame):
+	Use hyphen in property name, perform safety buffer size check
+	prior to mem access, and some more parentheses in macro.
+
+2009-01-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_handle_tag),
+	(mxf_bwf_create_caps):
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_handle_klv_packet):
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_handle_tag),
+	(mxf_metadata_preface_handle_tag),
+	(mxf_metadata_identification_handle_tag),
+	(mxf_metadata_content_storage_handle_tag),
+	(mxf_metadata_essence_container_data_handle_tag),
+	(mxf_metadata_generic_package_handle_tag),
+	(mxf_metadata_source_package_handle_tag),
+	(mxf_metadata_track_handle_tag),
+	(mxf_metadata_sequence_handle_tag),
+	(mxf_metadata_structural_component_handle_tag),
+	(mxf_metadata_source_clip_handle_tag),
+	(mxf_metadata_dm_segment_handle_tag),
+	(mxf_metadata_generic_descriptor_handle_tag),
+	(mxf_metadata_file_descriptor_handle_tag),
+	(mxf_metadata_generic_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_sound_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_data_essence_descriptor_handle_tag),
+	(mxf_metadata_multiple_descriptor_handle_tag):
+	* gst/mxf/mxfparse.c: (mxf_partition_pack_parse),
+	(mxf_index_table_segment_parse), (mxf_primer_pack_parse),
+	(mxf_local_tag_add_to_hash_table):
+	Fix compilation with debugging disabled.
+
+2009-01-05  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* configure.ac:
+	Also mention jp2kenc as a jp2k plugin feature.
+
+2009-01-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Sebastian Pölsterl <sebp at k-d-w dot org>
+
+	* sys/dvb/dvbbasebin.c: (dvb_base_bin_init),
+	(dvb_base_bin_finalize), (dvb_base_bin_activate_program),
+	(dvb_base_bin_pmt_info_cb), (dvb_base_bin_pad_added_cb),
+	(dvb_base_bin_program_destroy):
+	Fix some memory leaks. Fixes bug #566356.
+
+2009-01-02  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Olivier Crete <tester at tester dot ca>
+
+	* gst/rtpmanager/gstrtpsession.c:
+	(gst_rtp_session_setcaps_send_rtp), (create_send_rtp_sink):
+	* gst/rtpmanager/rtpsession.c: (rtp_session_set_internal_ssrc):
+	When an SSRC is found on the caps of the sender RTP, use this as the
+	internal SSRC. Fixes #565910.
+
+2009-01-02  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c:
+	(gst_rtp_session_event_send_rtp_sink),
+	(gst_rtp_session_getcaps_send_rtp):
+	* gst/rtpmanager/rtpsession.c: (check_collision),
+	(rtp_session_schedule_bye_locked), (rtp_session_schedule_bye):
+	* gst/rtpmanager/rtpsession.h:
+	Rename a method to better reflect what it really does.
+
+2009-01-02  Alessandro Decina  <alessandro.d@gmail.com>
+
+	* ext/apexsink/Makefile.am:
+	Move -lgcrypto from _LDFLAGS to _LIBADD.
+
+2009-01-02  Alessandro Decina  <alessandro.d@gmail.com>
+
+	* ext/apexsink/Makefile.am:
+	Link against -lgcrpyto for RSA_new and RSA_free.
+	* ext/faac/gstfaac.c:
+	* ext/x264/gstx264enc.c:
+	Fix compiler warnings.
+
+2009-01-02  Alessandro Decina  <alessandro.d@gmail.com>
+
+	* gst/mpegdemux/gstmpegdemux.c:
+	Initialize scr_rate_n and scr_rate_d in order to fix compiler warnings.
+
+2008-12-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c: (mxf_bwf_handle_essence_element),
+	(mxf_aes3_handle_essence_element):
+	* gst/mxf/mxfalaw.c: (mxf_alaw_handle_essence_element):
+	* gst/mxf/mxfd10.c: (mxf_d10_picture_handle_essence_element),
+	(mxf_d10_sound_handle_essence_element):
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pad_init),
+	(gst_mxf_demux_choose_package),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_pad_next_component),
+	(gst_mxf_demux_handle_generic_container_essence_element),
+	(gst_mxf_demux_parse_footer_metadata),
+	(gst_mxf_demux_handle_klv_packet), (gst_mxf_demux_src_query):
+	* gst/mxf/mxfdv-dif.c: (mxf_dv_dif_handle_essence_element):
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_handle_essence_element):
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_sequence_init),
+	(mxf_metadata_structural_component_init),
+	(mxf_metadata_generic_picture_essence_descriptor_init):
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_video_handle_essence_element),
+	(mxf_mpeg_audio_handle_essence_element):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxfup.c: (mxf_up_handle_essence_element):
+	* gst/mxf/mxfvc3.c: (mxf_vc3_handle_essence_element):
+	* tests/check/elements/mxfdemux.c: (_sink_chain):
+	Implement support for OP2a/b/c and OP3a/b/c, i.e. tracks with
+	more than a single component. This currently only works for
+	the case where the components are stored in playback order
+	in the file.
+
+	Set some more default/distinguished values for the structural
+	metadata.
+
+	Make some types more strict by choosing the correct subclasses.
+
+	Set DISCONT flag on buffers after a component switch.
+
+	Take the last partition from the random index pack for the footer
+	partition of the header partition doesn't reference the footer
+	partition. This gives us the final structural metadata for
+	some more files in the beginning.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_src_query),
+	(gst_flups_demux_parse_pack_start):
+	Use the adjusted SCR for calculating the mux rate.
+	Don't update the rate estimation after a discont.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_send_data):
+	* gst/mpegdemux/gstmpegdemux.h:
+	The position member in the newsegment event corresponds to the
+	stream_time of the segment start position.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Robin Stocker <robin at nibor dot org>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_src_query):
+	Converting from time to bytes operates on the stream_time, not the SCR
+	timeline.
+	The position reporting should happen in stream_time, not the segment
+	timestamp range. See #557161.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst-libs/gst/app/gstappsrc.c: (gst_app_src_class_init),
+	(gst_app_src_init), (gst_app_src_set_property),
+	(gst_app_src_get_property), (gst_app_src_query),
+	(gst_app_src_set_latencies), (gst_app_src_set_latency),
+	(gst_app_src_get_latency), (gst_app_src_push_buffer_full):
+	* gst-libs/gst/app/gstappsrc.h:
+	Add properties and methods to configure and retrieve the min and max
+	latencies.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Sebastian Pölsterl <sebp at k-d-w dot org>
+
+	* gst/mpegdemux/mpegtspacketizer.c: (mpegts_packetizer_parse_eit):
+	Fix memleak. Fixes #565614.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Sebastian Pölsterl <sebp at k-d-w dot org>
+
+	* gst/mpegdemux/mpegtspacketizer.c: (mpegts_packetizer_parse_sdt):
+	Add a scrambled field to the service structures retrieved from SDT to
+	determine if a channel is scrambled. Fixes #565613.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Damien Lespiau <damien dot lespiau at gmail dot com>
+
+	* gst/pcapparse/Makefile.am:
+	* gst/pcapparse/gstpcapparse.c:
+	Patch to make gstpcapparse compile with mingw32 gcc. Fixes #565439.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c:
+	(gst_rtp_session_getcaps_send_rtp):
+	Use method to get the internal SSRC.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(rtp_session_set_property), (rtp_session_get_property):
+	Add property to congiure the internal SSRC of the session.
+	Fixes #565910.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(rtp_session_set_property), (rtp_session_get_property):
+	Add property to change the internal SSRC of the session.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_set_internal_ssrc):
+	Only change the SSRC of the session and reset the internal source when
+	the SSRC actually changed. See #565910.
+
+2008-12-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsource.c: (rtp_source_init),
+	(rtp_source_update_caps), (get_clock_rate):
+	* gst/rtpmanager/rtpsource.h:
+	When no payload was specified on the caps but there was a clock-rate,
+	assume the clock-rate corresponds to the first payload type found in the
+	RTP packets. Fixes #565509.
+
+2008-12-23  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* sys/dvb/gstdvbsrc.c:
+	With constant read failures, make sure we exit the read_device
+	method.
+
+2008-12-23  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* sys/dvb/gstdvbsrc.c:
+	Post bus message with dvb read failure when unable to read from
+	device.
+
+2008-12-23  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Luotao Fu <l dot fu at pengutronix dot de>
+
+	* sys/fbdev/gstfbdevsink.c: (gst_fbdevsink_getcaps):
+	Fix the Depth calculation.
+	Fixes #564114.
+
+2008-12-23  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Arnout Vandecappelle <arnout at mind dot be>
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_reset_skew),
+	(calculate_skew):
+	* gst/rtpmanager/rtpjitterbuffer.h:
+	Keep track of the last outgoing timestamp and of the last sender-side
+	time.  Timestamps can only go forward if they do at the sender
+	side, can only go back if they do at the sender side, and remain the
+	same if they remain the same at the sender side. Fixes #565319.
+
+2008-12-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_es_create_caps),
+	(mxf_mpeg_create_caps):
+	Add initial support for h.264 video (SMPTE RP2008).
+
+2008-12-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_base_resolve):
+	* gst/mxf/mxfmetadata.h:
+	If resolving a metadata object failed the first time return
+	FALSE for a second mxf_metadata_base_resolve() call instead
+	of TRUE.
+
+2008-12-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxf.c:
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfd10.c:
+	* gst/mxf/mxfdms1.c:
+	* gst/mxf/mxfdms1.h:
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxftypes.h:
+	Cleanup of the includes.
+
+2008-12-19  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/gstqtmux.c: (gst_qt_mux_change_state):
+	Do not tempt or suggest to violate gst_collect_pads API specification.
+
+2008-12-19  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/atoms.c:
+	* gst/qtmux/atoms.h:
+	* gst/qtmux/descriptors.c:
+	* gst/qtmux/descriptors.h:
+	* gst/qtmux/fourcc.h:
+	* gst/qtmux/ftypcc.h:
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	* gst/qtmux/gstqtmuxmap.c:
+	* gst/qtmux/gstqtmuxmap.h:
+	* gst/qtmux/properties.c:
+	* gst/qtmux/properties.h:
+	Dual license qtmux LGPL/MIT.  Fixes #564232.
+
+2008-12-19  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c: (mxf_bwf_create_caps),
+	(mxf_aes3_create_caps):
+	* gst/mxf/mxfalaw.c: (mxf_alaw_create_caps):
+	* gst/mxf/mxfd10.c: (mxf_d10_create_caps):
+	* gst/mxf/mxfdemux.c:
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_source_package_resolve),
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps),
+	(mxf_metadata_generic_sound_essence_descriptor_set_caps):
+	* gst/mxf/mxfmetadata.h:
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_es_create_caps):
+	Add mxf_metadata_generic_sound_essence_descriptor_set_caps() to
+	set rate and channels and use this for all sound essence.
+
+	Give some debug output when setting picture essence caps with
+	invalid descriptor values.
+
+	Fix height calculation from the frame layout a bit more and
+	add a TODO to check if it's really correct now or if it needs
+	more fixing (especially, does the framerate need adjustments?).
+
+2008-12-18  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxf.c: (plugin_init):
+	* gst/mxf/mxfvc3.c: (mxf_is_vc3_essence_track),
+	(mxf_vc3_handle_essence_element), (mxf_vc3_create_caps),
+	(mxf_vc3_init):
+	* gst/mxf/mxfvc3.h:
+	Add support for VC-3 (aka DNxHD essence, see SMPTE 2019-4).
+	This is untested because of lack of sample files but should
+	work fine.
+
+2008-12-17  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* gst-libs/gst/app/gstappsink.c:
+	* gst-libs/gst/app/gstappsrc.c: (gst_app_src_class_init):
+	Add appsrc and appsink documentation.
+
+2008-12-17  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_chain):
+	In push mode skip the run in again if we get buffers with
+	an offset before the run in. This can happen on seeks for example.
+
+2008-12-16  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/celt/gstceltenc.c:
+	* ext/celt/gstceltenc.h:
+	* ext/metadata/gstmetadatamux.c:
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	  Totally remove the internal taglists and fully use tagsetter. Fixes
+	  various tag muxing issues.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* tests/check/elements/mxfdemux.c: (mxfdemux_suite):
+	Increase the timeout to 3 minutes to prevent timeouts.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* tests/check/elements/mxfdemux.c: (_sink_event):
+	* tests/check/elements/mxfdemux.h:
+	Make sure the main loop is already running when handling the EOS
+	event in pull mode. This works around a race condition that can
+	happen if the element goes into PLAYING, handles everything and
+	sends EOS before the main loop is started.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c: (mxf_is_aes_bwf_essence_track),
+	(mxf_bwf_handle_essence_element),
+	(mxf_aes3_handle_essence_element), (mxf_bwf_create_caps),
+	(mxf_aes3_create_caps), (mxf_aes_bwf_create_caps),
+	(mxf_aes_bwf_init):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfalaw.c: (mxf_is_alaw_essence_track),
+	(mxf_alaw_handle_essence_element), (mxf_alaw_create_caps),
+	(mxf_alaw_init):
+	* gst/mxf/mxfalaw.h:
+	* gst/mxf/mxfd10.c: (mxf_is_d10_essence_track),
+	(mxf_d10_picture_handle_essence_element),
+	(mxf_d10_sound_handle_essence_element), (mxf_d10_create_caps),
+	(mxf_d10_init):
+	* gst/mxf/mxfd10.h:
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	* gst/mxf/mxfdv-dif.c: (mxf_is_dv_dif_essence_track),
+	(mxf_dv_dif_handle_essence_element), (mxf_dv_dif_create_caps),
+	(mxf_dv_dif_init):
+	* gst/mxf/mxfdv-dif.h:
+	* gst/mxf/mxfjpeg2000.c: (mxf_is_jpeg2000_essence_track),
+	(mxf_jpeg2000_handle_essence_element), (mxf_jpeg2000_create_caps),
+	(mxf_jpeg2000_init):
+	* gst/mxf/mxfjpeg2000.h:
+	* gst/mxf/mxfmpeg.c: (mxf_is_mpeg_essence_track),
+	(mxf_mpeg_video_handle_essence_element),
+	(mxf_mpeg_audio_handle_essence_element), (mxf_mpeg_es_create_caps),
+	(mxf_mpeg_create_caps), (mxf_mpeg_init):
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxfparse.c: (mxf_essence_element_handler_register),
+	(mxf_essence_element_handler_find):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxfup.c: (mxf_is_up_essence_track),
+	(mxf_up_handle_essence_element), (mxf_up_rgba_create_caps),
+	(mxf_up_create_caps), (mxf_up_init):
+	* gst/mxf/mxfup.h:
+	Implement an essence element handling registry and use this instead
+	of an hardcoded, large if-then-else block.
+
+2008-12-16  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* tests/check/Makefile.am:
+	Blacklist rfbsrc from the state change test.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* tests/check/Makefile.am:
+	* tests/check/elements/mxfdemux.c: (_pad_added), (_sink_chain),
+	(_sink_event), (_create_sink_pad), (_create_src_pad_push),
+	(_src_getrange), (_src_query), (_create_src_pad_pull),
+	(GST_START_TEST), (mxfdemux_suite):
+	* tests/check/elements/mxfdemux.h:
+	Add push and pull mode unit test for mxfdemux.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/inspect/plugin-ladspa.xml:
+	* docs/plugins/inspect/plugin-musepack.xml:
+	* docs/plugins/inspect/plugin-mxf.xml:
+	* gst/mxf/mxfdemux.c:
+	* gst/mxf/mxfdemux.h:
+	Add initial documentation for the MXF plugin and mxfdemux.
+
+2008-12-16  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_resolve_references):
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_base_resolve_default),
+	(mxf_metadata_base_class_init), (mxf_metadata_base_parse),
+	(mxf_metadata_base_resolve), (mxf_metadata_new),
+	(mxf_metadata_preface_resolve),
+	(mxf_metadata_content_storage_resolve),
+	(mxf_metadata_essence_container_data_resolve),
+	(mxf_metadata_generic_package_resolve),
+	(mxf_metadata_source_package_resolve),
+	(mxf_metadata_track_resolve), (mxf_metadata_sequence_resolve),
+	(mxf_metadata_dm_segment_resolve),
+	(mxf_metadata_generic_descriptor_resolve),
+	(mxf_metadata_multiple_descriptor_resolve):
+	* gst/mxf/mxfmetadata.h:
+	Rename MXFMetadataBase methods to reflect that they belong to
+	MXFMetadataBase and not MXFMetadata.
+
+2008-12-15  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_handle_tag),
+	(mxf_metadata_aes3_audio_essence_descriptor_handle_tag):
+	* gst/mxf/mxfmetadata.c:
+	(mxf_metadata_multiple_descriptor_handle_tag):
+	Return FALSE when parsing a metadata tag failed.
+	Remove some useless return value assignments.
+
+2008-12-15  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxf.c: (plugin_init):
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_handle_tag),
+	(mxf_metadata_wave_audio_essence_descriptor_init),
+	(mxf_metadata_wave_audio_essence_descriptor_class_init),
+	(mxf_metadata_aes3_audio_essence_descriptor_finalize),
+	(mxf_metadata_aes3_audio_essence_descriptor_handle_tag),
+	(mxf_metadata_aes3_audio_essence_descriptor_init),
+	(mxf_metadata_aes3_audio_essence_descriptor_class_init),
+	(mxf_is_aes_bwf_essence_track), (mxf_bwf_create_caps),
+	(mxf_aes3_create_caps), (mxf_aes_bwf_create_caps),
+	(mxf_aes_bwf_init):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfalaw.c: (mxf_is_alaw_essence_track),
+	(mxf_alaw_create_caps), (mxf_alaw_init):
+	* gst/mxf/mxfalaw.h:
+	* gst/mxf/mxfd10.c: (mxf_is_d10_essence_track),
+	(mxf_d10_create_caps), (mxf_d10_init):
+	* gst/mxf/mxfd10.h:
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_find_package), (gst_mxf_demux_choose_package),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_metadata),
+	(gst_mxf_demux_handle_generic_container_essence_element),
+	(gst_mxf_demux_handle_klv_packet), (gst_mxf_demux_src_query):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfdv-dif.c: (mxf_is_dv_dif_essence_track),
+	(mxf_dv_dif_create_caps), (mxf_dv_dif_init):
+	* gst/mxf/mxfdv-dif.h:
+	* gst/mxf/mxfjpeg2000.c: (mxf_is_jpeg2000_essence_track),
+	(mxf_jpeg2000_create_caps), (mxf_jpeg2000_init):
+	* gst/mxf/mxfjpeg2000.h:
+	* gst/mxf/mxfmetadata.c: (mxf_metadata_base_finalize),
+	(mxf_metadata_base_handle_tag), (mxf_metadata_base_resolve),
+	(mxf_metadata_base_init), (mxf_metadata_base_class_init),
+	(mxf_metadata_parse), (mxf_metadata_resolve),
+	(mxf_metadata_handle_tag), (mxf_metadata_class_init),
+	(mxf_metadata_init), (mxf_metadata_init_types),
+	(mxf_metadata_register), (mxf_metadata_new),
+	(mxf_metadata_preface_finalize), (mxf_metadata_preface_handle_tag),
+	(mxf_metadata_preface_resolve), (mxf_metadata_preface_init),
+	(mxf_metadata_preface_class_init),
+	(mxf_metadata_identification_finalize),
+	(mxf_metadata_identification_handle_tag),
+	(mxf_metadata_identification_init),
+	(mxf_metadata_identification_class_init),
+	(mxf_metadata_content_storage_finalize),
+	(mxf_metadata_content_storage_handle_tag),
+	(mxf_metadata_content_storage_resolve),
+	(mxf_metadata_content_storage_init),
+	(mxf_metadata_content_storage_class_init),
+	(mxf_metadata_essence_container_data_handle_tag),
+	(mxf_metadata_essence_container_data_resolve),
+	(mxf_metadata_essence_container_data_init),
+	(mxf_metadata_essence_container_data_class_init),
+	(mxf_metadata_generic_package_finalize),
+	(mxf_metadata_generic_package_handle_tag),
+	(mxf_metadata_generic_package_resolve),
+	(mxf_metadata_generic_package_init),
+	(mxf_metadata_generic_package_class_init),
+	(mxf_metadata_material_package_resolve),
+	(mxf_metadata_material_package_init),
+	(mxf_metadata_material_package_class_init),
+	(mxf_metadata_source_package_finalize),
+	(mxf_metadata_source_package_handle_tag),
+	(mxf_metadata_source_package_resolve),
+	(mxf_metadata_source_package_init),
+	(mxf_metadata_source_package_class_init),
+	(mxf_metadata_track_finalize), (mxf_metadata_track_handle_tag),
+	(mxf_metadata_track_resolve), (mxf_metadata_track_init),
+	(mxf_metadata_track_class_init),
+	(mxf_metadata_track_identifier_parse),
+	(mxf_metadata_timeline_track_handle_tag),
+	(mxf_metadata_timeline_track_init),
+	(mxf_metadata_timeline_track_class_init),
+	(mxf_metadata_event_track_handle_tag),
+	(mxf_metadata_event_track_init),
+	(mxf_metadata_event_track_class_init),
+	(mxf_metadata_static_track_init),
+	(mxf_metadata_static_track_class_init),
+	(mxf_metadata_sequence_finalize),
+	(mxf_metadata_sequence_handle_tag),
+	(mxf_metadata_sequence_resolve), (mxf_metadata_sequence_init),
+	(mxf_metadata_sequence_class_init),
+	(mxf_metadata_structural_component_handle_tag),
+	(mxf_metadata_structural_component_init),
+	(mxf_metadata_structural_component_class_init),
+	(mxf_metadata_timecode_component_handle_tag),
+	(mxf_metadata_timecode_component_init),
+	(mxf_metadata_timecode_component_class_init),
+	(mxf_metadata_source_clip_handle_tag),
+	(mxf_metadata_source_clip_resolve),
+	(mxf_metadata_source_clip_init),
+	(mxf_metadata_source_clip_class_init),
+	(mxf_metadata_dm_source_clip_finalize),
+	(mxf_metadata_dm_source_clip_handle_tag),
+	(mxf_metadata_dm_source_clip_init),
+	(mxf_metadata_dm_source_clip_class_init),
+	(mxf_metadata_dm_segment_finalize),
+	(mxf_metadata_dm_segment_handle_tag),
+	(mxf_metadata_dm_segment_resolve), (mxf_metadata_dm_segment_init),
+	(mxf_metadata_dm_segment_class_init),
+	(mxf_metadata_generic_descriptor_finalize),
+	(mxf_metadata_generic_descriptor_handle_tag),
+	(mxf_metadata_generic_descriptor_resolve),
+	(mxf_metadata_generic_descriptor_init),
+	(mxf_metadata_generic_descriptor_class_init),
+	(mxf_metadata_file_descriptor_handle_tag),
+	(mxf_metadata_file_descriptor_init),
+	(mxf_metadata_file_descriptor_class_init),
+	(mxf_metadata_generic_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_picture_essence_descriptor_init),
+	(mxf_metadata_generic_picture_essence_descriptor_class_init),
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps),
+	(mxf_metadata_generic_sound_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_sound_essence_descriptor_init),
+	(mxf_metadata_generic_sound_essence_descriptor_class_init),
+	(mxf_metadata_cdci_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_cdci_picture_essence_descriptor_init),
+	(mxf_metadata_cdci_picture_essence_descriptor_class_init),
+	(mxf_metadata_rgba_picture_essence_descriptor_finalize),
+	(mxf_metadata_rgba_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_rgba_picture_essence_descriptor_init),
+	(mxf_metadata_rgba_picture_essence_descriptor_class_init),
+	(mxf_metadata_generic_data_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_data_essence_descriptor_init),
+	(mxf_metadata_generic_data_essence_descriptor_class_init),
+	(mxf_metadata_multiple_descriptor_finalize),
+	(mxf_metadata_multiple_descriptor_handle_tag),
+	(mxf_metadata_multiple_descriptor_resolve),
+	(mxf_metadata_multiple_descriptor_init),
+	(mxf_metadata_multiple_descriptor_class_init),
+	(mxf_metadata_locator_init), (mxf_metadata_locator_class_init),
+	(mxf_metadata_text_locator_finalize),
+	(mxf_metadata_text_locator_handle_tag),
+	(mxf_metadata_text_locator_init),
+	(mxf_metadata_text_locator_class_init),
+	(mxf_metadata_network_locator_finalize),
+	(mxf_metadata_network_locator_handle_tag),
+	(mxf_metadata_network_locator_init),
+	(mxf_metadata_network_locator_class_init):
+	* gst/mxf/mxfmetadata.h:
+	* gst/mxf/mxfmpeg.c:
+	(mxf_metadata_mpeg_video_descriptor_handle_tag),
+	(mxf_metadata_mpeg_video_descriptor_init),
+	(mxf_metadata_mpeg_video_descriptor_class_init),
+	(mxf_is_mpeg_essence_track), (mxf_mpeg_es_create_caps),
+	(mxf_mpeg_create_caps), (mxf_mpeg_init):
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxfparse.c: (mxf_index_table_segment_parse),
+	(mxf_local_tag_add_to_hash_table):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	* gst/mxf/mxfup.c: (mxf_is_up_essence_track), (mxf_up_create_caps),
+	(mxf_up_init):
+	* gst/mxf/mxfup.h:
+	Convert the structural metadata to GstMiniObjects to make a lot of
+	code easier and to make everything better extensible.
+	Add a "registry" for metadata handlers to improve extensibility even
+	more and to remove metadata type specifics from mxfdemux.
+
+	Clean up a lot of parts and add some more NULL checks.
+
+2008-12-15  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/faac/gstfaac.c:
+	  Fix default for outputformat property.
+
+2008-12-15  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* examples/app/appsrc-ra.c: (feed_data):
+	* examples/app/appsrc-seekable.c: (feed_data):
+	* examples/app/appsrc-stream.c: (read_data):
+	* examples/app/appsrc-stream2.c: (feed_data):
+	Fix example to unref after emiting the push-buffer action.
+
+	* gst-libs/gst/app/gstappsrc.c: (gst_app_src_class_init),
+	(gst_app_src_push_buffer_full), (gst_app_src_push_buffer),
+	(gst_app_src_push_buffer_action):
+	Don't take the ref on the buffer in push-buffer action because it's too
+	awkward for bindings. Fixes #564482.
+
+2008-12-13  Edward Hervey  <bilboed@gmail.com>
+
+	* m4/Makefile.am:
+	More .m4 that aren't shipped with gettext 0.17 anymore.
+
+2008-12-13  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* m4/Makefile.am:
+	inttypes.m4 hasn't been available since gettext-0.15, and since we now
+	require gettext >= 0.17 ... we can remove it from the list of files to
+	dist.
+
+2008-12-13  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_handle_descriptive_metadata),
+	(gst_mxf_demux_handle_klv_packet):
+	Add a generic handler for descriptive metadata so we can get some
+	debug output and let users file bugs for unsupport descriptive
+	metadata schemes.
+
+2008-12-12  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	* gst/mxf/mxfalaw.c: (mxf_alaw_create_caps):
+	* gst/mxf/mxfdemux.c:
+	* gst/mxf/mxfdv-dif.c: (mxf_dv_dif_create_caps):
+	* gst/mxf/mxfjpeg2000.c:
+	* gst/mxf/mxfmpeg.c:
+	* gst/mxf/mxfup.c:
+	Major update of the TODO lists. There's still much to do. 
+
+2008-12-11  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_handle_metadata_track),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_metadata):
+	* gst/mxf/mxfparse.c: (mxf_metadata_track_parse),
+	(mxf_metadata_structural_component_parse),
+	(mxf_metadata_structural_component_reset):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Implement parsing of Event Tracks, Static Tracks, DM Segments
+	and DM Source Clips as a preparation for descriptive metadata
+	support. Next step is to implement SMPTE S380M, "Descriptive
+	Metadata Scheme-1".
+
+2008-12-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	Implement detection of the colorspace used by the
+	JPEG2000 codestream. XYZ colorspace isn't supported by
+	our decoders yet unfortunately.
+
+2008-12-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps):
+	All frame layout values except 0 are for interlaced video,
+	not only 1 and 2.
+
+2008-12-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_primer_pack),
+	(gst_mxf_demux_handle_metadata_preface),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_choose_package),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_parse_footer_metadata),
+	(gst_mxf_demux_handle_klv_packet):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxftypes.h:
+	Remove the concept of "final" metadata, broken files have updated
+	metadata in following partitions even if the current partition
+	is closed and complete.
+
+	If there's a second primer pack inside a partition ignore the second
+	one instead of throwing an error.
+
+	Store the type of a track (audio, video, timestamp, ...) inside the
+	track struct.
+
+	Post no-more-pads only once for a stream and not a second time
+	when switching the currently playing package.
+
+	When updating all streams make sure that we could select and find
+	a package instead of dereferencing NULL.
+
+	Allow descriptive metadata inside metadata parts of a file when
+	pulling the footer metadata too.
+
+	Only switch the currently playing package if a new one was chosen
+	and the metadata is in a resolved state. If the latter isn't true
+	postpone the switch until the metadata is resolved.
+
+	Pull the footer metadata directly after parsing the header partition
+	pack if it's not closed or not complete instead of waiting until
+	the next KLV packet.
+
+2008-12-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfup.c: (mxf_up_handle_essence_element):
+	Don't create a subbuffer, instead just change the buffer metadata
+	of the input buffer.
+
+2008-12-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pad_finalize),
+	(gst_mxf_demux_pad_class_init), (gst_mxf_demux_pad_init),
+	(gst_mxf_demux_remove_pad), (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_combine_flows),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_generic_container_essence_element),
+	(gst_mxf_demux_pull_random_index_pack), (gst_mxf_demux_loop),
+	(gst_mxf_demux_src_query):
+	Rename GstMXFPad to GstMXFDemuxPad to prevent name clashes
+	with the GstMXFMuxPad in the muxer (later).
+
+	Pull the random index pack only directly after skipping the run
+	in and don't allocate an array for it if parsing it failed.
+
+2008-12-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfd10.c: (mxf_d10_sound_handle_essence_element),
+	(mxf_d10_create_caps):
+	Use the mapping data for storing the channel count and the
+	width instead of parsing caps for every buffer.
+
+2008-12-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfup.c: (mxf_up_handle_essence_element),
+	(mxf_up_rgba_create_caps):
+	Handle the image start and end offsets, otherwise we output
+	too large image buffers.
+
+2008-12-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_es_create_caps):
+	Set codec name tags for the MPEG audio essence.
+
+2008-12-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	* gst/mxf/mxftypes.h:
+	* gst/mxf/mxfup.c: (mxf_is_up_essence_track),
+	(mxf_up_handle_essence_element), (mxf_up_rgba_create_caps),
+	(mxf_up_create_caps):
+	* gst/mxf/mxfup.h:
+	Add initial support for uncompressed video essence (SMPTE S384M).
+	
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_rgba_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_rgba_picture_essence_descriptor_reset):
+	Fix parsing of the RGBA descriptor and add support for parsing
+	the pixel layout.
+
+2008-12-06  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_parse_footer_metadata):
+	The previous partition field of the partition is relative
+	to the current partition and not to the offset of the header
+	partition.
+
+2008-12-06  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfd10.c: (mxf_d10_sound_handle_essence_element):
+	Document decoding of the AES3 data and also skip the 32 bit
+	header in the beginning of every buffer, otherwise we get
+	one broken audio channel.
+
+2008-12-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_metadata_generic_data_essence_descriptor),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_metadata):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_data_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_data_essence_descriptor_reset):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Implement parsing of the generic data essence descriptor.
+
+2008-12-05  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_resolve_references):
+	Generalize some lines of codes that are more or less the same
+	by a macro.
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Apparently AC_CONFIG_MACRO_DIR breaks when using more
+	than one macro directory, reverting last change.
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Set AC_CONFIG_MACRO_DIR to common/m4 to point autoconf to
+	our M4 macros.
+
+2008-12-04  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/selector/gstinputselector.c:
+	  Ensure we emit notify::active-pad when auto-selecting a pad
+	  due to it having activity and us not having an existing active
+	  pad. Fixes #563147
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_resolve_references):
+	* gst/mxf/mxfdv-dif.c: (mxf_dv_dif_create_caps):
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	Coding style fixes.
+
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_audio_handle_essence_element),
+	(mxf_mpeg_es_create_caps), (mxf_mpeg_create_caps):
+	Add support for MPEG, AC3, DTS audio.
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	Ignore zero sized essence elements. They're often inserted
+	to fulfill the streaming requirements.
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps):
+	Fix setting of the height/width and PAR of video streams.
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfd10.c: (mxf_is_d10_essence_track),
+	(mxf_d10_picture_handle_essence_element),
+	(mxf_d10_sound_handle_essence_element), (mxf_d10_create_caps):
+	* gst/mxf/mxfd10.h:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	Add support for SMPTE D10 essence (SMPTE 386M).
+
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps):
+	Don't set width/height and PAR on the caps as those values are
+	wrong for most files (height is sometimes the height of a field
+	and aspect ratio is some random value).
+
+	* gst/mxf/mxfaes-bwf.c: (mxf_bwf_create_caps),
+	(mxf_aes3_create_caps):
+	Fix calculation of block align if it isn't set in the descriptor.
+
+2008-12-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_aes3_audio_essence_descriptor_handle_tag),
+	(mxf_metadata_aes3_audio_essence_descriptor_reset),
+	(mxf_aes3_handle_essence_element), (mxf_bwf_create_caps),
+	(mxf_aes3_create_caps), (mxf_aes_bwf_create_caps):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_metadata_aes3_audio_essence_descriptor),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_metadata):
+	* gst/mxf/mxfdemux.h:
+	Add support for AES3 audio (SMPTE 382M).
+
+	* gst/mxf/mxfdv-dif.c: (mxf_dv_dif_create_caps):
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	Fix coding style.
+
+2008-12-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	Improve debugging a bit.
+
+2008-12-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (FLV_GET_STRING):
+	Check if strings are valid UTF8 before using them.
+
+2008-12-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfparse.c:
+	Remove FIXME, zero-ULs and UMIDs are really invalid and we can
+	use them as "unset" value.
+
+2008-12-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_base_init):
+	Use a single "track_%u" src pad template and use the track ID
+	of the playback package for the pad name instead of the track ID
+	of the source package, as the latter could be the same for
+	more than one track if they're in different packages.
+
+2008-12-01  David Schleef  <ds@schleef.org>
+
+	* ext/jp2k/gstjasperenc.c: Some compilers complain about
+	  uninitialized variable; add a g_assert_not_reached()
+
+2008-12-01  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	Patch by: 이문형 <iwings at gmail dot com>
+
+	* gst-libs/gst/app/gstappsrc.c: (gst_app_src_push_buffer):
+	  Don't forget to release the lock again if we bail out because some
+	  pad is flushing or we've reached EOS, otherwise things will lock up
+	  next time _push_buffer() is called (#562802).
+
+2008-12-01  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/atoms.c: (build_jp2h_extension):
+	Fix mj2 sample description metadata construction.
+
+2008-12-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	Use new image/x-jpc caps for the raw JPEG2000 codestream.
+	For now assume sRGB as colorspace, has to be read from the descriptor
+	somehow later.
+
+2008-12-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/jp2k/gstjasperdec.c: (gst_jasper_dec_sink_setcaps):
+	* ext/jp2k/gstjasperenc.c: (gst_jasper_enc_reset),
+	(gst_jasper_enc_set_src_caps), (gst_jasper_enc_init_encoder),
+	(gst_jasper_enc_sink_setcaps), (gst_jasper_enc_get_data):
+	* ext/jp2k/gstjasperenc.h:
+	Add image/x-jpc caps name for real, raw JPEG2000 codestream data.
+	In 0.11 we should merge image/x-j2c and image/x-jpc and simply drop
+	the non-standard boxing in the jasper elements and handle it in
+	qtmux/qtdemux.
+	image/x-jpc will be used by mxfdemux later.
+
+	Also add support for JP2 output in jp2kenc.
+
+2008-12-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c: (mxf_bwf_create_caps):
+	* gst/mxf/mxfalaw.c: (mxf_alaw_create_caps):
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	* gst/mxf/mxfdv-dif.c: (mxf_dv_dif_create_caps):
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_es_create_caps),
+	(mxf_mpeg_create_caps):
+	Add the codec name, and if possible the avg bitrate, to the pad's taglist.
+
+2008-12-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_choose_package):
+	If the preface references a primary package use this as the default
+	playback package unless one was specified by the "package" property.
+	If there's no preface primary package still try to use the first
+	material package.
+
+2008-11-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_resolve_references):
+	If there's no descriptor for the track in the track's source
+	package and there's a single descriptor without a linked track
+	assume that it belongs to this track.
+
+2008-11-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfalaw.c: (mxf_is_alaw_essence_track):
+	* gst/mxf/mxfalaw.h:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	* gst/mxf/mxfjpeg2000.c: (mxf_is_jpeg2000_essence_track):
+	* gst/mxf/mxfjpeg2000.h:
+	* gst/mxf/mxfmpeg.c: (mxf_is_mpeg_essence_track),
+	(mxf_mpeg_es_create_caps), (mxf_mpeg_create_caps):
+	* gst/mxf/mxfmpeg.h:
+	Some random cleanup.
+
+2008-11-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_remove_pads),
+	(gst_mxf_demux_reset), (gst_mxf_demux_find_package),
+	(gst_mxf_demux_choose_package),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_klv_packet), (gst_mxf_demux_set_property),
+	(gst_mxf_demux_get_property), (gst_mxf_demux_finalize),
+	(gst_mxf_demux_class_init):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfparse.c: (mxf_umid_from_string):
+	* gst/mxf/mxfparse.h:
+	Add property to select the top-level source package or material
+	package that should be used for playback.
+
+2008-11-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pull_random_index_pack):
+	Make sure that demux->offset has the correct value before
+	calling any gst_mxf_demux_handle_* functions.
+
+2008-11-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfjpeg2000.c: (mxf_jpeg2000_create_caps):
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_video_create_caps):
+	Set the correct MPEG video version if possible and add support
+	for MPEG4 video, including codec_data.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	* gst/mxf/mxfjpeg2000.c: (mxf_is_jpeg2000_video_essence_track),
+	(mxf_jpeg2000_handle_essence_element), (mxf_jpeg2000_create_caps):
+	* gst/mxf/mxfjpeg2000.h:
+	Add initial support for JPEG2000 encoded video essence.
+
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps):
+	Set the framerate in the video caps.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/jp2k/gstjasperdec.c: (gst_jasper_dec_sink_setcaps):
+	Don't unref the element instance if we don't own a reference.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Cygwin Ports maintainer
+	          <yselkowitz at users dot sourceforge dot net>
+
+	* autogen.sh:
+	* configure.ac:
+	Require gettext 0.17 because older versions don't mix with libtool
+	2.2. At build time an older gettext version will still work.
+	Fixes bug #556091.
+
+2008-11-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pull_random_index_pack):
+	Only try to pull the random index pack at the end of file one time
+	and not for every single packet if it fails.
+
+2008-11-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfaes-bwf.c: (mxf_bwf_create_caps):
+	* gst/mxf/mxfalaw.c: (mxf_is_alaw_audio_essence_track),
+	(mxf_alaw_handle_essence_element), (mxf_alaw_create_caps):
+	* gst/mxf/mxfalaw.h:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	Add support for A-Law encoded audio essence (SMPTE 388M and 382M).
+
+2008-11-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset),
+	(gst_mxf_demux_handle_index_table_segment):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfparse.c: (mxf_index_table_segment_parse),
+	(mxf_index_table_segment_reset):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Implement parsing of index table segments, which will later be
+	used for seeking.
+
+2008-11-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/gst-plugins-bad-plugins.signals:
+	* docs/plugins/inspect/plugin-amrwb.xml:
+	* docs/plugins/inspect/plugin-faac.xml:
+	* docs/plugins/inspect/plugin-ladspa.xml:
+	* docs/plugins/inspect/plugin-mpeg2enc.xml:
+	* docs/plugins/inspect/plugin-mplex.xml:
+	* docs/plugins/inspect/plugin-musepack.xml:
+	* docs/plugins/inspect/plugin-spcdec.xml:
+	* docs/plugins/inspect/plugin-x264.xml:
+	* docs/plugins/inspect/plugin-xvid.xml:
+	* gst/audioresample/gstaudioresample.c:
+	Update audioresample documentation for the new element name.
+
+2008-11-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/audioresample/gstaudioresample.c:
+	And now also update the debug category from audioresample
+	to legacyresample.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Remove speexresample from the build system too.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/Makefile.am:
+	* gst/speexresample/README:
+	* gst/speexresample/arch.h:
+	* gst/speexresample/fixed_arm4.h:
+	* gst/speexresample/fixed_arm5e.h:
+	* gst/speexresample/fixed_bfin.h:
+	* gst/speexresample/fixed_debug.h:
+	* gst/speexresample/fixed_generic.h:
+	* gst/speexresample/gstspeexresample.c:
+	* gst/speexresample/gstspeexresample.h:
+	* gst/speexresample/resample.c:
+	* gst/speexresample/resample_sse.h:
+	* gst/speexresample/speex_resampler.h:
+	* gst/speexresample/speex_resampler_double.c:
+	* gst/speexresample/speex_resampler_float.c:
+	* gst/speexresample/speex_resampler_int.c:
+	* gst/speexresample/speex_resampler_wrapper.h:
+	* tests/check/elements/speexresample.c:
+	Remove old speexresample files.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* docs/plugins/inspect/plugin-speexresample.xml:
+	Remove old file.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* docs/plugins/inspect/plugin-legacyresample.xml:
+	Add missing file.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/gst-plugins-bad-plugins.signals:
+	* docs/plugins/inspect/plugin-aacparse.xml:
+	* docs/plugins/inspect/plugin-alsaspdif.xml:
+	* docs/plugins/inspect/plugin-amrparse.xml:
+	* docs/plugins/inspect/plugin-app.xml:
+	* docs/plugins/inspect/plugin-bayer.xml:
+	* docs/plugins/inspect/plugin-bz2.xml:
+	* docs/plugins/inspect/plugin-cdaudio.xml:
+	* docs/plugins/inspect/plugin-cdxaparse.xml:
+	* docs/plugins/inspect/plugin-celt.xml:
+	* docs/plugins/inspect/plugin-dccp.xml:
+	* docs/plugins/inspect/plugin-dfbvideosink.xml:
+	* docs/plugins/inspect/plugin-dtsdec.xml:
+	* docs/plugins/inspect/plugin-dvb.xml:
+	* docs/plugins/inspect/plugin-dvdspu.xml:
+	* docs/plugins/inspect/plugin-faad.xml:
+	* docs/plugins/inspect/plugin-fbdevsink.xml:
+	* docs/plugins/inspect/plugin-festival.xml:
+	* docs/plugins/inspect/plugin-filter.xml:
+	* docs/plugins/inspect/plugin-freeze.xml:
+	* docs/plugins/inspect/plugin-gsm.xml:
+	* docs/plugins/inspect/plugin-gstinterlace.xml:
+	* docs/plugins/inspect/plugin-gstrtpmanager.xml:
+	* docs/plugins/inspect/plugin-h264parse.xml:
+	* docs/plugins/inspect/plugin-jack.xml:
+	* docs/plugins/inspect/plugin-ladspa.xml:
+	* docs/plugins/inspect/plugin-metadata.xml:
+	* docs/plugins/inspect/plugin-mms.xml:
+	* docs/plugins/inspect/plugin-modplug.xml:
+	* docs/plugins/inspect/plugin-mpeg4videoparse.xml:
+	* docs/plugins/inspect/plugin-mpegvideoparse.xml:
+	* docs/plugins/inspect/plugin-musepack.xml:
+	* docs/plugins/inspect/plugin-musicbrainz.xml:
+	* docs/plugins/inspect/plugin-mve.xml:
+	* docs/plugins/inspect/plugin-mythtv.xml:
+	* docs/plugins/inspect/plugin-nas.xml:
+	* docs/plugins/inspect/plugin-neon.xml:
+	* docs/plugins/inspect/plugin-nsfdec.xml:
+	* docs/plugins/inspect/plugin-nuvdemux.xml:
+	* docs/plugins/inspect/plugin-oss4.xml:
+	* docs/plugins/inspect/plugin-rawparse.xml:
+	* docs/plugins/inspect/plugin-real.xml:
+	* docs/plugins/inspect/plugin-rfbsrc.xml:
+	* docs/plugins/inspect/plugin-scaletempo.xml:
+	* docs/plugins/inspect/plugin-sdl.xml:
+	* docs/plugins/inspect/plugin-sdp.xml:
+	* docs/plugins/inspect/plugin-selector.xml:
+	* docs/plugins/inspect/plugin-sndfile.xml:
+	* docs/plugins/inspect/plugin-soundtouch.xml:
+	* docs/plugins/inspect/plugin-speed.xml:
+	* docs/plugins/inspect/plugin-speexresample.xml:
+	* docs/plugins/inspect/plugin-stereo.xml:
+	* docs/plugins/inspect/plugin-subenc.xml:
+	* docs/plugins/inspect/plugin-tta.xml:
+	* docs/plugins/inspect/plugin-twolame.xml:
+	* docs/plugins/inspect/plugin-vcdsrc.xml:
+	* docs/plugins/inspect/plugin-videosignal.xml:
+	* docs/plugins/inspect/plugin-vmnc.xml:
+	* docs/plugins/inspect/plugin-wildmidi.xml:
+	* docs/plugins/inspect/plugin-y4menc.xml:
+	* gst/audioresample/gstaudioresample.c: (plugin_init):
+	* gst/audioresample/Makefile.am:
+	* tests/check/Makefile.am:
+	* tests/check/elements/audioresample.c: (setup_audioresample),
+	(GST_START_TEST):
+	Integrate the moved audioresample into the build system and
+	rename it to legacyresample. Fixes bug #558124.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset),
+	(gst_mxf_demux_handle_random_index_pack),
+	(gst_mxf_demux_pull_random_index_pack), (gst_mxf_demux_loop):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfparse.c: (mxf_random_index_pack_parse):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Implement parsing of the random index pack, which provides a seek
+	table (including body sid) to the start of partition packs.
+	Later this will be used for reading all index table segments of
+	the complete file efficiently.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_klv_packet):
+	* gst/mxf/mxfdv-dif.c: (mxf_is_dv_dif_essence_track),
+	(mxf_dv_dif_handle_essence_element), (mxf_dv_dif_create_caps):
+	* gst/mxf/mxfdv-dif.h:
+	* gst/mxf/mxfparse.c: (mxf_is_descriptive_metadata):
+	* gst/mxf/mxfparse.h:
+	Add fundamental support for DV-DIF essence streams.
+
+	Handle descriptive metadata packets as metadata packets.
+
+2008-11-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset),
+	(gst_mxf_demux_handle_klv_packet):
+	* gst/mxf/mxfdemux.h:
+	Only try to pull the footer metadata once and not on every KLV packet
+	if it failed before.
+
+2008-11-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (obtain_source),
+	(rtp_session_create_source), (rtp_session_process_rtp),
+	(rtp_session_process_sr), (rtp_session_process_rr),
+	(rtp_session_process_sdes), (rtp_session_process_bye):
+	Make obtain_source return an aditional ref so that we don't lose our ref
+	to it when a session cleanup occurs when we are emiting a signal.
+	Emit the on_new_ssrc signal for the CSRC, not the SSRC.
+	Fixes #562319.
+
+2008-11-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_reset_sync),
+	(gst_rtp_bin_clear_pt_map):
+	Reset the sync parameters when clearing the payload type map too.
+	Fixes #562312.
+
+2008-11-26  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (get_client),
+	(gst_rtp_bin_reset_sync), (gst_rtp_bin_associate),
+	(gst_rtp_bin_handle_sync), (create_stream),
+	(gst_rtp_bin_class_init), (new_ssrc_pad_found):
+	* gst/rtpmanager/gstrtpbin.h:
+	Remove a lot of per stream state that is not needed and pass new info in
+	the method call.
+	Add signal to reset sync parameters.
+	Avoid parsing the caps to get a clock_base, we get this from the sync
+	signal now. 
+
+2008-11-26  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_pad_init),
+	(gst_mxf_demux_reset_metadata), (gst_mxf_demux_combine_flows),
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	Properly combine flow returns of the source pads.
+
+	Improve debugging and reset pad fields together with the
+	metadata to prevent invalid memory references.
+
+	* gst/mxf/mxfparse.c: (mxf_metadata_preface_parse):
+	Fix typo.
+
+2008-11-26  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_reset):
+	* gst/mxf/mxfmpeg.c: (mxf_metadata_mpeg_video_descriptor_reset):
+	* gst/mxf/mxfparse.c: (mxf_metadata_file_descriptor_handle_tag),
+	(mxf_metadata_file_descriptor_reset),
+	(mxf_metadata_generic_sound_essence_descriptor_reset),
+	(mxf_metadata_generic_picture_essence_descriptor_reset),
+	(mxf_metadata_cdci_picture_essence_descriptor_reset),
+	(mxf_metadata_rgba_picture_essence_descriptor_reset),
+	(mxf_metadata_multiple_descriptor_reset):
+	* gst/mxf/mxfparse.h:
+	When memset'ing the descriptors to zeroes only touch the part
+	of this descriptor, not it's parent type.
+
+	Set correct default values for all metadata fields.
+
+2008-11-25  David Schleef  <ds@schleef.org>
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.h:
+	  Enable latency code, since we're definitely after 0.10.12
+
+2008-11-25  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Jonathan Matthew <notverysmart at gmail dot com>
+
+	* ext/spc/gstspc.c: (gst_spc_dec_sink_event), (spc_setup):
+	Post an error and push EOS when we can't start playback for some reason.
+	also avoid a crash when fed an empty file. Fixes #480543.
+
+2008-11-25  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* tests/check/elements/speexresample.c: (test_pipeline):
+	Make unit test again faster to prevent timeouts with valgrind.
+
+2008-11-25  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c:
+	(gst_rtp_session_event_send_rtcp_src):
+	Fix event leak.
+
+2008-11-25  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfmpeg.c: (mxf_mpeg_video_create_caps):
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_generic_picture_essence_descriptor_set_caps):
+	* gst/mxf/mxfparse.h:
+	Set video dimensions and pixel aspect ratio on the caps.
+
+2008-11-25  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_handle_metadata_generic_descriptor),
+	(gst_mxf_demux_handle_metadata_file_descriptor),
+	(gst_mxf_demux_handle_metadata_multiple_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_cdci_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_rgba_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_mpeg_video_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_sound_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_wave_audio_essence_descriptor),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_metadata):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfparse.c:
+	(mxf_metadata_rgba_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_rgba_picture_essence_descriptor_reset):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Add initial parsing of RGBA descriptors.
+
+	Don't initialize descriptor GArray with zeroes.
+
+2008-11-25  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_handle_tag):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_metadata_generic_descriptor),
+	(gst_mxf_demux_handle_metadata_file_descriptor),
+	(gst_mxf_demux_handle_metadata_multiple_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_cdci_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_mpeg_video_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_sound_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_wave_audio_essence_descriptor),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_metadata):
+	* gst/mxf/mxfmpeg.c:
+	(mxf_metadata_mpeg_video_descriptor_handle_tag):
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxfparse.c: (mxf_partition_pack_parse),
+	(mxf_primer_pack_parse), (mxf_metadata_preface_parse),
+	(mxf_metadata_identification_parse),
+	(mxf_metadata_content_storage_parse),
+	(mxf_metadata_essence_container_data_parse),
+	(mxf_metadata_generic_package_parse), (mxf_metadata_track_parse),
+	(mxf_metadata_sequence_parse),
+	(mxf_metadata_structural_component_parse),
+	(mxf_metadata_descriptor_parse),
+	(mxf_metadata_generic_descriptor_handle_tag),
+	(mxf_metadata_generic_descriptor_reset),
+	(mxf_metadata_file_descriptor_handle_tag),
+	(mxf_metadata_generic_sound_essence_descriptor_handle_tag),
+	(mxf_metadata_generic_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_cdci_picture_essence_descriptor_handle_tag),
+	(mxf_metadata_multiple_descriptor_handle_tag),
+	(mxf_metadata_locator_parse):
+	* gst/mxf/mxfparse.h:
+	Rewrite parsing of descriptors to go top-down instead of bottom-up
+	which makes it possible to have the buffer data non-writable.
+
+	Improve debugging a bit.
+
+2008-11-24  Michael Smith <msmith@songbirdnest.com>
+
+	* configure.ac:
+	* sys/Makefile.am:
+	  Add new directory for new acmmp3dec plugin
+	* sys/acmenc/Makefile.am:
+	* sys/acmenc/acmmp3dec.c:
+	  Add new acmmp3dec plugin, which uses ACM for decoding mp3 on windows.
+
+2008-11-24  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c:
+	(gst_mxf_demux_handle_generic_container_essence_element):
+	Make sure to only output generic container essence elements
+	for a track if the body SID of the surrounding partition is
+	the same as the body SID of the track's source package.
+
+2008-11-24  Julien Moutte  <julien@fluendo.com>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_find_offset),
+	(gst_flv_demux_handle_seek_push), (gst_flv_demux_handle_seek_pull):
+	Fix non key unit seeking by always going to the previous keyframe. Mark
+	the discont flag when we've moved in the file.
+	* gst/flv/gstflvparse.c: (gst_flv_parse_audio_negotiate): MP3 streams
+	are parsed already, makes autoplugged pipelines shorter.
+
+2008-11-24  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: vanista <vanista at gmail dot com>
+
+	* gst/mpegtsmux/mpegtsmux.c: (mpegtsmux_create_stream):
+	* gst/mpegtsmux/tsmux/tsmuxstream.c: (tsmux_stream_new):
+	Add initial support for muxing AC3/DTS/LPCM into MPEG TS.
+	Fixes bug #550613.
+
+2008-11-24  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pull_klv_packet),
+	(gst_mxf_demux_handle_klv_packet), (gst_mxf_demux_chain):
+	* gst/mxf/mxfparse.c: (mxf_product_version_parse),
+	(mxf_metadata_identification_parse),
+	(mxf_metadata_content_storage_parse):
+	Allow non-MXF KLV packets and just drop them instead of throwing
+	an error and handle 9 byte product versions as written by Avid.
+	This doesn't add support for the non-standard Avid MXF files
+	but at least makes it possible to parse their header metadata.
+
+	Fix a copy&paste error in debug output.
+
+2008-11-23  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/jack/gstjackaudiosink.c:
+	* ext/jack/gstjackaudiosrc.c:
+	  Query port latencies for sink/src delays.
+
+	* ext/jack/gstjackbin.c:
+	  No printf please.
+
+2008-11-23  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pull_klv_packet),
+	(gst_mxf_demux_chain):
+	Actually we support a length stored inside 8 bytes but it must
+	be smaller than G_MAXUINT for GstBuffer.
+
+2008-11-23  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Tal Shalif <tshalif at nargila dot org>
+
+	* ext/resindvd/resindvdsrc.c:
+	(rsn_dvdsrc_prepare_streamsinfo_event):
+	Fix format string. Fixes bug #561992.
+
+2008-11-22  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(rtp_session_init), (rtp_session_set_property),
+	(rtp_session_get_property):
+	Add property to configure the RTCP MTU.
+
+2008-11-22  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(copy_source), (rtp_session_create_sources),
+	(rtp_session_get_property):
+	Add G_PARAM_STATIC_STRINGS.
+	Add property to return a GValueArray of all known RTPSources in the
+	session.
+
+	* gst/rtpmanager/rtpsource.c: (rtp_source_class_init),
+	(rtp_source_create_sdes), (rtp_source_set_property),
+	(rtp_source_get_property):
+	Remove properties to set the various SDES items, an application is never
+	supposed to change the RTPSource data.
+	Change the SDES getter properties to one SDES property that returns all
+	SDES items in a GstStructure.
+
+2008-11-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* tests/check/elements/speexresample.c: (GST_START_TEST):
+	Make the unit test a bit faster to prevent timeouts, especially
+	with valgrind.
+
+2008-11-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_push_src_event),
+	(gst_mxf_demux_handle_header_metadata_update_streams):
+	* gst/mxf/mxfparse.c: (gst_mxf_ul_hash),
+	(mxf_partition_pack_parse), (mxf_primer_pack_parse),
+	(mxf_metadata_preface_parse), (mxf_metadata_content_storage_parse),
+	(mxf_metadata_generic_package_parse),
+	(mxf_metadata_sequence_parse),
+	(mxf_metadata_generic_descriptor_parse),
+	(mxf_metadata_multiple_descriptor_parse):
+	Some more format string fixes and usage of guint instead of gint
+	where negative values don't make sense.
+
+2008-11-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_parse):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfdemux.c: (gst_mxf_demux_pull_range),
+	(gst_mxf_demux_pull_klv_packet),
+	(gst_mxf_demux_parse_footer_metadata),
+	(gst_mxf_demux_handle_klv_packet),
+	(gst_mxf_demux_pull_and_handle_klv_packet), (gst_mxf_demux_chain):
+	* gst/mxf/mxfmpeg.c: (mxf_metadata_mpeg_video_descriptor_parse):
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxfparse.c: (mxf_timestamp_parse), (mxf_fraction_parse),
+	(mxf_utf16_to_utf8), (mxf_product_version_parse),
+	(mxf_partition_pack_parse), (mxf_primer_pack_parse),
+	(mxf_local_tag_parse), (mxf_metadata_preface_parse),
+	(mxf_metadata_identification_parse),
+	(mxf_metadata_content_storage_parse),
+	(mxf_metadata_essence_container_data_parse),
+	(mxf_metadata_generic_package_parse), (mxf_metadata_track_parse),
+	(mxf_metadata_sequence_parse),
+	(mxf_metadata_structural_component_parse),
+	(mxf_metadata_generic_descriptor_parse),
+	(mxf_metadata_file_descriptor_parse),
+	(mxf_metadata_generic_sound_essence_descriptor_parse),
+	(mxf_metadata_generic_picture_essence_descriptor_parse),
+	(mxf_metadata_cdci_picture_essence_descriptor_parse),
+	(mxf_metadata_multiple_descriptor_parse),
+	(mxf_metadata_locator_parse):
+	* gst/mxf/mxfparse.h:
+	Use guint instead of guint64 or gsize for all buffer sizes and
+	use correct format strings for them. Only local tag set sizes
+	are still guint16 as they can't be larger.
+
+	Only allow KLV packets of sizes below 1<<32 as GStreamer only uses
+	guint for buffer sizes. The MXF standard allows packet sizes up
+	to 1<<64.
+
+2008-11-22  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_release_pad):
+	Also unref the target pad for unknown pads.
+
+2008-11-22  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/dccp/gstdccp.c: (gst_dccp_socket_write):
+	Use G_GSIZE_FORMAT instead of "%u" for a size_t variable in
+	the format string to prevent a compiler warning.
+
+2008-11-21  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Olivier Crete <tester at tester dot ca>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_release_pad):
+	Release the right pads on rtpbin. Fixes #561752.
+
+2008-11-21  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_class_init), (gst_speex_resample_set_property),
+	(gst_speex_resample_get_property):
+	Add a "filter-length" property that maps to the quality values
+	for compatibilty with audioresample.
+
+2008-11-21  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Remove the "experimental" flag from the deinterlace2 plugin.
+
+2008-11-21  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* gst/mxf/Makefile.am:
+	* gst/mxf/mxf.c: (plugin_init):
+	* gst/mxf/mxfaes-bwf.c:
+	(mxf_metadata_wave_audio_essence_descriptor_parse),
+	(mxf_metadata_wave_audio_essence_descriptor_reset),
+	(mxf_is_aes_bwf_essence_track), (mxf_bwf_handle_essence_element),
+	(mxf_bwf_create_caps), (mxf_aes_bwf_create_caps):
+	* gst/mxf/mxfaes-bwf.h:
+	* gst/mxf/mxfdemux.c: (gst_mxf_pad_finalize),
+	(gst_mxf_pad_class_init), (gst_mxf_pad_init),
+	(gst_mxf_demux_flush), (gst_mxf_demux_remove_pad),
+	(gst_mxf_demux_reset_mxf_state), (gst_mxf_demux_reset_metadata),
+	(gst_mxf_demux_reset), (gst_mxf_demux_pull_range),
+	(gst_mxf_demux_push_src_event),
+	(gst_mxf_demux_handle_partition_pack),
+	(gst_mxf_demux_handle_primer_pack),
+	(gst_mxf_demux_handle_metadata_preface),
+	(gst_mxf_demux_handle_metadata_identification),
+	(gst_mxf_demux_handle_metadata_content_storage),
+	(gst_mxf_demux_handle_metadata_essence_container_data),
+	(gst_mxf_demux_handle_metadata_material_package),
+	(gst_mxf_demux_handle_metadata_source_package),
+	(gst_mxf_demux_handle_metadata_track),
+	(gst_mxf_demux_handle_metadata_sequence),
+	(gst_mxf_demux_handle_metadata_structural_component),
+	(gst_mxf_demux_handle_metadata_generic_descriptor),
+	(gst_mxf_demux_handle_metadata_file_descriptor),
+	(gst_mxf_demux_handle_metadata_multiple_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_cdci_picture_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_mpeg_video_descriptor),
+	(gst_mxf_demux_handle_metadata_generic_sound_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_wave_audio_essence_descriptor),
+	(gst_mxf_demux_handle_metadata_locator),
+	(gst_mxf_demux_handle_header_metadata_resolve_references),
+	(gst_mxf_demux_handle_header_metadata_update_streams),
+	(gst_mxf_demux_handle_metadata),
+	(gst_mxf_demux_handle_generic_container_system_item),
+	(gst_mxf_demux_handle_generic_container_essence_element),
+	(gst_mxf_demux_handle_random_index_pack),
+	(gst_mxf_demux_handle_index_table_segment),
+	(gst_mxf_demux_pull_klv_packet),
+	(gst_mxf_demux_parse_footer_metadata),
+	(gst_mxf_demux_handle_klv_packet),
+	(gst_mxf_demux_pull_and_handle_klv_packet), (gst_mxf_demux_loop),
+	(gst_mxf_demux_chain), (gst_mxf_demux_src_event),
+	(gst_mxf_demux_src_query_type), (gst_mxf_demux_src_query),
+	(gst_mxf_demux_sink_activate), (gst_mxf_demux_sink_activate_push),
+	(gst_mxf_demux_sink_activate_pull), (gst_mxf_demux_sink_event),
+	(gst_mxf_demux_change_state), (gst_mxf_demux_finalize),
+	(gst_mxf_demux_base_init), (gst_mxf_demux_class_init),
+	(gst_mxf_demux_init):
+	* gst/mxf/mxfdemux.h:
+	* gst/mxf/mxfmpeg.c: (mxf_metadata_mpeg_video_descriptor_parse),
+	(mxf_metadata_mpeg_video_descriptor_reset),
+	(mxf_is_mpeg_video_essence_track),
+	(mxf_mpeg_video_handle_essence_element),
+	(mxf_mpeg_video_create_caps):
+	* gst/mxf/mxfmpeg.h:
+	* gst/mxf/mxfparse.c: (mxf_is_mxf_packet), (mxf_is_partition_pack),
+	(mxf_is_header_partition_pack), (mxf_is_body_partition_pack),
+	(mxf_is_footer_partition_pack), (mxf_is_fill),
+	(mxf_is_primer_pack), (mxf_is_metadata),
+	(mxf_is_random_index_pack), (mxf_is_index_table_segment),
+	(mxf_is_generic_container_system_item),
+	(mxf_is_generic_container_essence_element),
+	(mxf_is_generic_container_essence_container_label),
+	(mxf_ul_is_equal), (mxf_ul_is_zero), (mxf_ul_to_string),
+	(mxf_umid_is_equal), (mxf_umid_is_zero), (mxf_umid_to_string),
+	(gst_mxf_ul_hash), (gst_mxf_ul_equal), (mxf_timestamp_parse),
+	(mxf_timestamp_is_unknown), (mxf_timestamp_compare),
+	(mxf_fraction_parse), (mxf_utf16_to_utf8),
+	(mxf_product_version_parse), (mxf_partition_pack_parse),
+	(mxf_partition_pack_reset), (_mxf_mapping_ul_free),
+	(mxf_primer_pack_parse), (mxf_primer_pack_reset),
+	(mxf_local_tag_parse), (gst_mxf_local_tag_free),
+	(gst_metadata_add_custom_tag), (mxf_metadata_preface_parse),
+	(mxf_metadata_preface_reset), (mxf_metadata_identification_parse),
+	(mxf_metadata_identification_reset),
+	(mxf_metadata_content_storage_parse),
+	(mxf_metadata_content_storage_reset),
+	(mxf_metadata_essence_container_data_parse),
+	(mxf_metadata_essence_container_data_reset),
+	(mxf_metadata_generic_package_parse),
+	(mxf_metadata_generic_package_reset), (mxf_metadata_track_parse),
+	(mxf_metadata_track_reset), (mxf_metadata_track_identifier_parse),
+	(mxf_metadata_sequence_parse), (mxf_metadata_sequence_reset),
+	(mxf_metadata_structural_component_parse),
+	(mxf_metadata_structural_component_reset),
+	(mxf_metadata_generic_descriptor_parse),
+	(mxf_metadata_generic_descriptor_reset),
+	(mxf_metadata_file_descriptor_parse),
+	(mxf_metadata_file_descriptor_reset),
+	(mxf_metadata_generic_sound_essence_descriptor_parse),
+	(mxf_metadata_generic_sound_essence_descriptor_reset),
+	(mxf_metadata_generic_picture_essence_descriptor_parse),
+	(mxf_metadata_generic_picture_essence_descriptor_reset),
+	(mxf_metadata_cdci_picture_essence_descriptor_parse),
+	(mxf_metadata_cdci_picture_essence_descriptor_reset),
+	(mxf_metadata_multiple_descriptor_parse),
+	(mxf_metadata_multiple_descriptor_reset),
+	(mxf_metadata_locator_parse), (mxf_metadata_locator_reset):
+	* gst/mxf/mxfparse.h:
+	* gst/mxf/mxftypes.h:
+	Add first version of an MXF demuxer. Currently it supports
+	MPEG video and raw audio and OP 1a/b/c.
+
+2008-11-20  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.cpp:
+	  Fix flushing/seeking problems returning error code.
+	  Fix mp3 decoding with winXP (crashed randomly, occasionally).
+	* sys/dshowdecwrapper/gstdshowvideodec.cpp:
+	  Fix problems when framerate is missing from video.
+
+2008-11-20  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c: (get_current_times),
+	(rtcp_thread), (gst_rtp_session_chain_recv_rtp):
+	Pass the running time to the session when processing RTP packets.
+	Improve the time function to provide more info.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(rtp_session_init), (update_arrival_stats),
+	(rtp_session_process_rtp), (rtp_session_process_sdes),
+	(rtp_session_process_rtcp), (session_start_rtcp),
+	(rtp_session_on_timeout):
+	* gst/rtpmanager/rtpsession.h:
+	Mark the internal source with a flag.
+	Use running_time instead of the more useless timestamp.
+	Validate a source when a valid SDES has been received.
+	Pass the current system time when processing SR packets.
+
+	* gst/rtpmanager/rtpsource.c: (rtp_source_class_init),
+	(rtp_source_init), (rtp_source_create_stats),
+	(rtp_source_get_property), (rtp_source_send_rtp),
+	(rtp_source_process_rb), (rtp_source_get_new_rb),
+	(rtp_source_get_last_rb):
+	* gst/rtpmanager/rtpsource.h:
+	Add property to get source stats.
+	Mark params as STATIC_STRINGS.
+	Calculate the bitrate at the sender SSRC.
+	Avoid negative values in the round trip time calculations.
+
+	* gst/rtpmanager/rtpstats.h:
+	Update some docs and change some variable name to more closely reflect
+	what it contains.
+
+2008-11-20  Stefan Kost  <ensonic@users.sf.net>
+
+	patch by: Leandro Melo de Sales <leandroal@gmail.com>
+
+	* gst/dccp/gstdccp.c:
+	* gst/dccp/gstdccp.h:
+	* gst/dccp/gstdccpclientsink.c:
+	* gst/dccp/gstdccpclientsink.h:
+	* gst/dccp/gstdccpclientsrc.c:
+	* gst/dccp/gstdccpserversink.c:
+	* gst/dccp/gstdccpserversrc.c:
+	* gst/dccp/gstdccpserversrc.h:
+	  CodeStyle improvements and minor fixes to the DCCP plugin.
+	  Fixes #553823.
+
+2008-11-20  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_chain_rtcp):
+	Initialize return value to fix compiler warning about uninitialized
+	variable.
+
+2008-11-19  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_class_init):
+	Mark signal arg as static scope.
+
+2008-11-19  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_associate),
+	(gst_rtp_bin_handle_sync), (create_stream), (free_stream),
+	(new_ssrc_pad_found):
+	Remove internal sync pad, use signals instead to get lip-sync
+	notifications.
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_base_init),
+	(gst_rtp_jitter_buffer_class_init),
+	(gst_rtp_jitter_buffer_internal_links), (create_rtcp_sink),
+	(remove_rtcp_sink), (gst_rtp_jitter_buffer_request_new_pad),
+	(gst_rtp_jitter_buffer_release_pad),
+	(gst_rtp_jitter_buffer_sink_rtcp_event),
+	(gst_rtp_jitter_buffer_chain_rtcp),
+	(gst_rtp_jitter_buffer_get_property):
+	* gst/rtpmanager/gstrtpjitterbuffer.h:
+	Make it possible to send SR packets to the jitterbuffer.
+	Check if the SR timestamps are valid by comparing them to the RTP
+	timestamps.
+	Signal the SR packet and the timing information to listeners.
+
+	* gst/rtpmanager/gstrtpssrcdemux.c: (create_demux_pad_for_ssrc),
+	(gst_rtp_ssrc_demux_rtcp_chain), (gst_rtp_ssrc_demux_src_query):
+	Remove some unused code.
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_reset_skew),
+	(calculate_skew), (rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/rtpjitterbuffer.h:
+	Keep track of the last seen RTP timestamp so that we can filter out
+	invalid SR packets.
+
+2008-11-18  Alessandro Decina  <alessandro.d@gmail.com>
+
+	* ext/metadata/gstbasemetadata.c:
+	Avoid deadlock during pad activation.
+	Fixes #561241.
+
+2008-11-17  David Schleef  <ds@schleef.org>
+
+	* gst/qtmux/gstqtmux.c: Quiet a debugging message that I recently
+	  added.
+
+2008-11-17  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsource.c: (get_clock_rate):
+	Fix GST_DEBUG call to only have as many arguments as required
+	by the format string. Fixes a compiler warning.
+
+2008-11-17  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_associate),
+	(gst_rtp_bin_sync_chain), (create_stream), (new_ssrc_pad_found):
+	Do not try to keep track of the clock-rate ourselves but simply get the
+	value from the jitterbuffer. 
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_jitter_buffer_sink_parse_caps), (gst_rtp_jitter_buffer_chain),
+	(gst_rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/gstrtpjitterbuffer.h:
+	Add some debug info.
+	Pass the clock-rate to the jitterbuffer.
+	Also pass the clock-rate along with the rtp timestamp when getting the
+	sync parameters.
+
+	* gst/rtpmanager/gstrtpptdemux.c: (gst_rtp_pt_demux_chain):
+	Fix some debug.
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_reset_skew),
+	(calculate_skew), (rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/rtpjitterbuffer.h:
+	Keep track of clock-rate changes and return the clock-rate together with
+	the rtp timestamps used for sync.
+	Don't try to construct timestamps when we have no base_time.
+
+	* gst/rtpmanager/rtpsource.c: (get_clock_rate):
+	Request a new clock-rate when the payload type changes.
+	Reset the jitter calculation when the clock-rate changes.
+
+2008-11-17  Stefan Kost  <ensonic@users.sf.net>
+
+	* tests/check/elements/aacparse_data.h:
+	* tests/check/elements/amrparse_data.h:
+	  Add missing files.
+
+2008-11-14  David Schleef  <ds@schleef.org>
+
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	  Use dts from GST_BUFFER_OFFSET_END() for video/x-qt-part.
+
+2008-11-14  David Schleef  <ds@schleef.org>
+
+	* sys/qtwrapper/codecmapping.c: Add some of our favorite codecs.
+
+2008-11-14  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/atoms.c:
+	* gst/qtmux/atoms.h:
+	* gst/qtmux/descriptors.c:
+	* gst/qtmux/descriptors.h:
+	* gst/qtmux/fourcc.h:
+	* gst/qtmux/ftypcc.h:
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	* gst/qtmux/gstqtmuxmap.c:
+	* gst/qtmux/gstqtmuxmap.h:
+	* gst/qtmux/properties.c:
+	* gst/qtmux/properties.h:
+	Revert previous commit.
+
+2008-11-14  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/atoms.c:
+	* gst/qtmux/atoms.h:
+	* gst/qtmux/descriptors.c:
+	* gst/qtmux/descriptors.h:
+	* gst/qtmux/fourcc.h:
+	* gst/qtmux/ftypcc.h:
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	* gst/qtmux/gstqtmuxmap.c:
+	* gst/qtmux/gstqtmuxmap.h:
+	* gst/qtmux/properties.c:
+	* gst/qtmux/properties.h:
+	Dual license LGPL/MIT, as apparently supposed to.
+
+2008-11-14  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/atoms.c: (build_esds_extension),
+	(build_mov_aac_extension), (build_jp2h_extension),
+	(build_codec_data_extension):
+	* gst/qtmux/atoms.h:
+	* gst/qtmux/fourcc.h:
+	* gst/qtmux/gstqtmux.c: (gst_qt_mux_audio_sink_set_caps),
+	(gst_qt_mux_video_sink_set_caps):
+	* gst/qtmux/gstqtmuxmap.c: (gst_qt_mux_map_format_to_header):
+	Cut detour in sample description extension construction.
+	Also actually implement ISO JPEG2000 mj2 format.
+
+2008-11-14  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_set_src_caps):
+	Construct source caps in more conventional (and correct) manner.
+
+2008-11-14  Christian Schaller <christian.schaller@collabora.co.uk>
+
+	* configure.ac: remove experimental build check, -bad is experimental
+	in itself and putting a plugin with a low rank, in the -bad sandbox
+	module demanding people pass --enable-experimental to build is just
+	like putting butter on lard (Rob tells me the English equivalent to
+	that expression is 'over egging the pudding').
+	* gst-plugins-bad.spec.in: add three latest plugin additions
+	
+2008-11-14  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst-libs/gst/play/.cvsignore:
+	* gst-libs/gst/play/play.h:
+	* gst-libs/gst/play/play.vcproj:
+	  Remove cruft. This is not entered by make and its not even compilable.
+
+2008-11-13  David Schleef  <ds@schleef.org>
+
+	* ext/dirac/gstdiracenc.cc:
+	Set pixel-aspect-ratio correctly in the encoder API, as well
+	as some default gstreamerish colorspace properties.  Also,
+	apparently, change a bunch of indentation.
+
+2008-11-13  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/jp2k/Makefile.am:
+	* ext/jp2k/gstjasperdec.c: (gst_jasper_dec_class_init),
+	(gst_jasper_dec_change_state):
+	* ext/jp2k/gstjasperenc.c: (gst_jasper_enc_base_init),
+	(gst_jasper_enc_class_init), (gst_jasper_enc_init),
+	(gst_jasper_enc_reset), (gst_jasper_enc_set_src_caps),
+	(gst_jasper_enc_init_encoder), (gst_jasper_enc_sink_setcaps),
+	(gst_jasper_enc_get_data), (gst_jasper_enc_chain),
+	(gst_jasper_enc_set_property), (gst_jasper_enc_get_property),
+	(gst_jasper_enc_change_state):
+	* ext/jp2k/gstjasperenc.h:
+	* ext/jp2k/gstjp2k.c: (plugin_init):
+	Add jp2kenc to jp2k plugin.
+
+2008-11-13  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/jp2k/gstjasperdec.c: (gst_jasper_dec_init),
+	(gst_jasper_dec_reset), (gst_jasper_dec_negotiate),
+	(gst_jasper_dec_get_picture):
+	* ext/jp2k/gstjasperdec.h:
+	Make pad template caps reflect the supported formats.
+	Add or modify some debug statements, and slightly simplify image
+	passing to encoding library.
+
+2008-11-13  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/aacparse/gstaacparse.c: (plugin_init):
+	Don't autoplug aacparse until it works.
+
+2008-11-13  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_jitter_buffer_sink_parse_caps),
+	(gst_rtp_jitter_buffer_flush_stop), (gst_rtp_jitter_buffer_chain):
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_reset_skew),
+	(calculate_skew):
+	Small cleanups and some more debug info.
+
+2008-11-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* tests/check/Makefile.am:
+	* tests/check/elements/aacparse.c:
+	* tests/check/elements/amrparse.c:
+	  Add unit tests for new parsers.
+
+2008-11-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/inspect/plugin-aacparse.xml:
+	* docs/plugins/inspect/plugin-amrparse.xml:
+	  Update docs.
+
+2008-11-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst/aacparse/gstbaseparse.c:
+	* gst/amrparse/gstbaseparse.c:
+	  Fix baseparse type name.
+
+2008-11-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
+	* gst/aacparse/Makefile.am:
+	* gst/aacparse/gstaacparse.c:
+	* gst/aacparse/gstaacparse.h:
+	* gst/aacparse/gstbaseparse.c:
+	* gst/aacparse/gstbaseparse.h:
+	* gst/amrparse/Makefile.am:
+	* gst/amrparse/gstamrparse.c:
+	* gst/amrparse/gstamrparse.h:
+	* gst/amrparse/gstbaseparse.c:
+	* gst/amrparse/gstbaseparse.h:
+	  Add two new baseparse based parsers (aac and amr) from Bug #518857.
+
+2008-11-12  Thijs Vermeir  <thijsvermeir@gmail.com>
+
+	* gst/librfb/rfbdecoder.c:
+	Fix uninitialized warnings
+
+2008-11-11  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* tests/check/Makefile.am:
+	* tests/check/elements/qtmux.c: (setup_src_pad),
+	(teardown_src_pad), (setup_qtmux), (cleanup_qtmux),
+	(check_qtmux_pad), (GST_START_TEST), (qtmux_suite), (main):
+	Add unit test for qtmux.
+
+2008-11-11  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst/qtmux/gstqtmux.c: (gst_qt_mux_add_metadata_tags):
+	Add some more safety/sanity checks in tag manipulation.
+
+2008-11-10  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_jitter_buffer_sink_parse_caps), (gst_rtp_jitter_buffer_chain):
+	Also configure the next expected output seqnum when we get a seqnum-base
+	on the caps.
+
+2008-11-10  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst-libs/gst/app/gstappsink.c:
+	* gst-libs/gst/app/gstappsrc.c:
+	* gst/h264parse/gsth264parse.c:
+	 Wim, you're a bad boy. You don't want people to contact you or what?
+
+2008-11-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gst/filter/gstiir.c:
+	  Fix name tag.
+
+2008-11-07  David Schleef  <ds@schleef.org>
+
+	patch by: Thiago Sousa Santos <thiagossantos@gmail.com>
+
+	* configure.ac:
+	* gst/qtmux/Makefile.am:
+	* gst/qtmux/atoms.c:
+	* gst/qtmux/atoms.h:
+	* gst/qtmux/descriptors.c:
+	* gst/qtmux/descriptors.h:
+	* gst/qtmux/fourcc.h:
+	* gst/qtmux/ftypcc.h:
+	* gst/qtmux/gstqtmux.c:
+	* gst/qtmux/gstqtmux.h:
+	* gst/qtmux/gstqtmuxmap.c:
+	* gst/qtmux/gstqtmuxmap.h:
+	* gst/qtmux/properties.c:
+	* gst/qtmux/properties.h:
+	  Copy qtmux from revision 148 of the gst-qtmux repository.
+	  Fixes #550280.
+
+2008-11-07  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst-libs/gst/app/gstappsrc.c: (gst_app_src_class_init),
+	(gst_app_src_init), (gst_app_src_set_property),
+	(gst_app_src_get_property), (gst_app_src_push_buffer):
+	* gst-libs/gst/app/gstappsrc.h:
+	Add is-live property.
+	Add some more docs.
+
+2008-11-06  Thijs Vermeir  <thijsvermeir@gmail.com>
+
+	* configure.ac:
+	* gst/librfb/Makefile.am:
+	* gst/librfb/gstrfbsrc.c:
+	Fix basic navigation events
+
+2008-11-06  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace2_class_init), (gst_deinterlace2_init),
+	(gst_deinterlace2_set_property), (gst_deinterlace2_get_property):
+	Bring properties into this century.
+
+2008-11-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* sys/dvb/gstdvbsrc.c:
+	Set filters in PAUSED or PLAYING.
+
+2008-11-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Make private section pads have a caps set so they are not tried
+	to be linked in parse_launch for example.
+
+2008-11-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	No need to reclaculate flush in this case.
+	Fixes some bad decode errors introduced.
+
+2008-11-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.h:
+	Fix typo.
+
+2008-11-06  Thijs Vermeir  <thijsvermeir@gmail.com>
+
+	* gst/librfb/gstrfbsrc.c:
+	Fix RGB mask in caps
+
+2008-11-05  Thijs Vermeir  <thijsvermeir@gmail.com>
+
+	* gst/librfb/gstrfbsrc.c:
+	* gst/librfb/rfbdecoder.c:
+	* gst/librfb/rfbdecoder.h:
+	Add Hextile encoding
+
+2008-11-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Heuristic approach when resyncing.
+
+2008-11-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+
+	* gst/mpegdemux/gstmpegdesc.c:
+	Length should be a guint8 not a gint.
+	* gst/mpegdemux/mpegtspacketizer.c:
+	Convert text to utf8 for each descriptor separately and not
+	concatenate them first and convert after.
+	
+2008-11-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst/modplug/gstmodplug.cc:
+	  Send tag event. Fixes #559286.
+
+2008-11-04  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+
+	* gst/mpegdemux/mpegtsparse.c:
+	Fix another memleak.
+
+2008-11-04  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+
+	* gst/mpegdemux/mpegtspacketizer.c:
+	* sys/dvb/gstdvbsrc.c:
+	Fix memleaks.
+
+2008-11-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/alsaspdif/Makefile.am:
+	* ext/amrwb/Makefile.am:
+	* ext/apexsink/Makefile.am:
+	* ext/arts/Makefile.am:
+	* ext/artsd/Makefile.am:
+	* ext/audiofile/Makefile.am:
+	* ext/audioresample/Makefile.am:
+	* ext/bz2/Makefile.am:
+	* ext/cdaudio/Makefile.am:
+	* ext/celt/Makefile.am:
+	* ext/dc1394/Makefile.am:
+	* ext/dirac/Makefile.am:
+	* ext/directfb/Makefile.am:
+	* ext/divx/Makefile.am:
+	* ext/dts/Makefile.am:
+	* ext/faac/Makefile.am:
+	* ext/faad/Makefile.am:
+	* ext/gsm/Makefile.am:
+	* ext/hermes/Makefile.am:
+	* ext/ivorbis/Makefile.am:
+	* ext/jack/Makefile.am:
+	* ext/jp2k/Makefile.am:
+	* ext/ladspa/Makefile.am:
+	* ext/lcs/Makefile.am:
+	* ext/libfame/Makefile.am:
+	* ext/libmms/Makefile.am:
+	* ext/metadata/Makefile.am:
+	* ext/mpeg2enc/Makefile.am:
+	* ext/mplex/Makefile.am:
+	* ext/musepack/Makefile.am:
+	* ext/musicbrainz/Makefile.am:
+	* ext/mythtv/Makefile.am:
+	* ext/nas/Makefile.am:
+	* ext/neon/Makefile.am:
+	* ext/ofa/Makefile.am:
+	* ext/polyp/Makefile.am:
+	* ext/resindvd/Makefile.am:
+	* ext/sdl/Makefile.am:
+	* ext/shout/Makefile.am:
+	* ext/snapshot/Makefile.am:
+	* ext/sndfile/Makefile.am:
+	* ext/soundtouch/Makefile.am:
+	* ext/spc/Makefile.am:
+	* ext/swfdec/Makefile.am:
+	* ext/tarkin/Makefile.am:
+	* ext/theora/Makefile.am:
+	* ext/timidity/Makefile.am:
+	* ext/twolame/Makefile.am:
+	* ext/x264/Makefile.am:
+	* ext/xine/Makefile.am:
+	* ext/xvid/Makefile.am:
+	* gst-libs/gst/app/Makefile.am:
+	* gst-libs/gst/dshow/Makefile.am:
+	* gst/aiffparse/Makefile.am:
+	* gst/app/Makefile.am:
+	* gst/audiobuffer/Makefile.am:
+	* gst/bayer/Makefile.am:
+	* gst/cdxaparse/Makefile.am:
+	* gst/chart/Makefile.am:
+	* gst/colorspace/Makefile.am:
+	* gst/dccp/Makefile.am:
+	* gst/deinterlace/Makefile.am:
+	* gst/deinterlace2/Makefile.am:
+	* gst/dvdspu/Makefile.am:
+	* gst/festival/Makefile.am:
+	* gst/filter/Makefile.am:
+	* gst/flacparse/Makefile.am:
+	* gst/flv/Makefile.am:
+	* gst/games/Makefile.am:
+	* gst/h264parse/Makefile.am:
+	* gst/librfb/Makefile.am:
+	* gst/mixmatrix/Makefile.am:
+	* gst/modplug/Makefile.am:
+	* gst/mpeg1sys/Makefile.am:
+	* gst/mpeg4videoparse/Makefile.am:
+	* gst/mpegdemux/Makefile.am:
+	* gst/mpegtsmux/Makefile.am:
+	* gst/mpegvideoparse/Makefile.am:
+	* gst/mve/Makefile.am:
+	* gst/nsf/Makefile.am:
+	* gst/nuvdemux/Makefile.am:
+	* gst/overlay/Makefile.am:
+	* gst/passthrough/Makefile.am:
+	* gst/pcapparse/Makefile.am:
+	* gst/playondemand/Makefile.am:
+	* gst/rawparse/Makefile.am:
+	* gst/real/Makefile.am:
+	* gst/rtjpeg/Makefile.am:
+	* gst/rtpmanager/Makefile.am:
+	* gst/scaletempo/Makefile.am:
+	* gst/sdp/Makefile.am:
+	* gst/selector/Makefile.am:
+	* gst/smooth/Makefile.am:
+	* gst/smoothwave/Makefile.am:
+	* gst/speed/Makefile.am:
+	* gst/speexresample/Makefile.am:
+	* gst/stereo/Makefile.am:
+	* gst/subenc/Makefile.am:
+	* gst/tta/Makefile.am:
+	* gst/vbidec/Makefile.am:
+	* gst/videodrop/Makefile.am:
+	* gst/videosignal/Makefile.am:
+	* gst/virtualdub/Makefile.am:
+	* gst/vmnc/Makefile.am:
+	* gst/y4m/Makefile.am:
+	* sys/acmenc/Makefile.am:
+	* sys/cdrom/Makefile.am:
+	* sys/dshowdecwrapper/Makefile.am:
+	* sys/dshowsrcwrapper/Makefile.am:
+	* sys/dvb/Makefile.am:
+	* sys/dxr3/Makefile.am:
+	* sys/fbdev/Makefile.am:
+	* sys/oss4/Makefile.am:
+	* sys/qcam/Makefile.am:
+	* sys/qtwrapper/Makefile.am:
+	* sys/vcd/Makefile.am:
+	* sys/wininet/Makefile.am:
+	* win32/common/config.h:
+	  Don't install static libs for plugins. Fixes #550851 for -bad.
+
+2008-11-04  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+	
+	* gst/mpegdemux/mpegtsparse.c:
+	Fix memleak.
+
+2008-11-04  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	based on patch by: Sebastian Pölsterl
+
+	* sys/dvb/gstdvbsrc.c:
+	Fix memleak.
+
+2008-11-03  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* examples/scaletempo/.cvsignore:
+	Add example to cvs ignores.
+
+2008-11-03  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* sys/qtwrapper/audiodecoders.c:
+	(open_decoder):
+	Fix mismatched signedness compiler warning.
+
+2008-11-03  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_convert_buffer):
+	Add TODO at the top of the file for enabling SSE/ARM specific
+	optimizations and choosing the fastest implementation at runtime.
+
+	Add g_assert_not_reached() at two places that should really never
+	be reached.
+
+2008-11-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_check_discont):
+	Fix format string and arguments.
+
+	* gst/speexresample/resample_sse.h:
+	Add missing file.
+
+2008-11-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/resindvd/Makefile.am:
+	  Dist the play scripts.
+
+2008-11-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/Makefile.am:
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_base_init), (gst_speex_resample_get_funcs),
+	(gst_speex_resample_convert_buffer), (_benchmark_int_float),
+	(_benchmark_int_int), (_benchmark_integer_resampling),
+	(plugin_init):
+	* gst/speexresample/gstspeexresample.h:
+	* gst/speexresample/resample.c:
+	* gst/speexresample/speex_resampler_double.c:
+	* gst/speexresample/speex_resampler_float.c:
+	* gst/speexresample/speex_resampler_int.c:
+	* gst/speexresample/speex_resampler_wrapper.h:
+	Add missing headers to Makefile.am.
+
+	Update copyright, years and my mail address.
+
+	Benchmark the integer resampling implementation against the
+	float implementation and use the faster one for 8/16 bit integer
+	input. On most recent systems the floating point version is faster.
+
+2008-10-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Use AC_TRY_COMPILE instead of AC_TRY_RUN as the result of the linking
+	is what is interesting, not that it actually runs.
+	Fixes cross-compilation and fixes bug #558639.
+
+2008-10-30  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/qtwrapper/audiodecoders.c:
+	  Add ALAC support.
+	  Fix decode of mono AAC files created by itunes.
+	  Set output format correctly (don't ask quicktime to
+	  resample for us).
+	  Use a larger decode buffer to avoid problems with large
+	  ALAC packets.
+	  Fix decode to loop until we have all output data.
+	* sys/qtwrapper/qtutils.c:
+	  Fix includes so we compile on more OSes.
+
+2008-10-30  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* configure.ac:
+	  Require at least Gtk 2.8.0 for the demos (that's the oldest I can
+	  test with; I'm fairly certain Gtk 2.0.0 is not good enough any
+	  longer); clean up some unused Gtk-related configure cruft.
+
+	* examples/scaletempo/demo-gui.c:
+	  Define Gtk 2.12 function to noop when compiling against older Gtk.
+
+2008-10-30  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_convert_buffer):
+	The length for the buffer conversion function is the number of
+	audio frames, i.e. we need to multiply it by the number of channels
+	to get the number of values. Also spotted by the unit test after
+	running in valgrind.
+
+2008-10-30  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* tests/check/elements/speexresample.c: (element_message_cb),
+	(eos_message_cb), (test_pipeline), (GST_START_TEST),
+	(speexresample_suite):
+	Add pipeline unit tests for testing all supported formats with
+	up/downsampling and different in/outrates.
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_push_drain), (gst_speex_resample_process):
+	* gst/speexresample/speex_resampler_wrapper.h:
+	Fix bugs identified by the testsuite.
+
+2008-10-30  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/speexresample/gstspeexresample.c: (gst_speex_resample_stop),
+	(gst_speex_resample_get_funcs),
+	(gst_speex_resample_transform_size),
+	(gst_speex_resample_convert_buffer),
+	(gst_speex_resample_push_drain), (gst_speex_resample_process):
+	* gst/speexresample/gstspeexresample.h:
+	* gst/speexresample/speex_resampler_wrapper.h:
+	Add support for int8, int24 and int32 input by converting internally
+	to/from int16 or double.
+
+2008-10-30  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/resindvd/resindvdsrc.c:
+	* ext/resindvd/resindvdsrc.h:
+	Better fix for #546319 and similar cases by explicitly
+	registering when we're in playing state or not.
+
+2008-10-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/ladspa/gstladspa.c:
+	  Whitespace.
+	* ext/ladspa/gstsignalprocessor.c:
+	  Add a FIXME:. not sure if this code does the forwarding correctly.
+
+2008-10-30  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/speexresample/Makefile.am:
+	* gst/speexresample/arch.h:
+	* gst/speexresample/gstspeexresample.c: (gst_speex_resample_stop),
+	(gst_speex_resample_get_unit_size), (gst_speex_resample_get_funcs),
+	(gst_speex_resample_init_state), (gst_speex_resample_update_state),
+	(gst_speex_resample_reset_state), (gst_speex_resample_parse_caps),
+	(_gcd), (gst_speex_resample_transform_size),
+	(gst_speex_resample_set_caps), (gst_speex_resample_push_drain),
+	(gst_speex_resample_process), (gst_speex_resample_transform),
+	(gst_speex_resample_query), (gst_speex_resample_set_property):
+	* gst/speexresample/gstspeexresample.h:
+	* gst/speexresample/resample.c:
+	* gst/speexresample/speex_resampler.h:
+	* gst/speexresample/speex_resampler_double.c:
+	* gst/speexresample/speex_resampler_wrapper.h:
+	* tests/check/elements/speexresample.c: (setup_speexresample),
+	(test_perfect_stream_instance), (GST_START_TEST),
+	(test_discont_stream_instance):
+	Add support for double samples as input and refactor the usage
+	of the different compilation flavors of the speex resampler.
+
+2008-10-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst/scaletempo/gstscaletempo.c:
+	  Return the result of parent_class->event().
+
+2008-10-30  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/audiobuffer/Makefile.am:
+	* gst/audiobuffer/gstaudioringbuffer.c:
+	(gst_int_ring_buffer_acquire), (gst_int_ring_buffer_release),
+	(gst_int_ring_buffer_start), (gst_int_ring_buffer_base_init),
+	(gst_int_ring_buffer_class_init), (gst_int_ring_buffer_init),
+	(gst_int_ring_buffer_new), (gst_audio_ringbuffer_get_type),
+	(gst_audio_ringbuffer_class_init), (gst_audio_ringbuffer_init),
+	(gst_audio_ringbuffer_finalize), (gst_audio_ringbuffer_getcaps),
+	(gst_audio_ringbuffer_setcaps), (gst_audio_ringbuffer_bufferalloc),
+	(gst_audio_ringbuffer_handle_sink_event),
+	(gst_audio_ringbuffer_render), (gst_audio_ringbuffer_chain),
+	(gst_audio_ringbuffer_handle_src_event),
+	(gst_audio_ringbuffer_handle_src_query),
+	(gst_audio_ringbuffer_get_range),
+	(gst_audio_ringbuffer_src_checkgetrange_function),
+	(gst_audio_ringbuffer_sink_activate_push),
+	(gst_audio_ringbuffer_src_activate_push),
+	(gst_audio_ringbuffer_src_activate_pull),
+	(gst_audio_ringbuffer_change_state),
+	(gst_audio_ringbuffer_set_property),
+	(gst_audio_ringbuffer_get_property), (plugin_init):
+	Add first version of an audioringbuffer element that can be inserted in
+	the pipeline to convert push-based upstream into a pull-based
+	downstream.
+
+2008-10-29  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/aiffparse/aiffparse.c:
+	  AIFF is always signed, even for 8 bit.
+
+2008-10-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst-libs/gst/app/gstappsink.c: (gst_app_sink_class_init):
+	Fix the docs.
+
+2008-10-29  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Robin Stocker <robin at nibor dot org>
+
+	* gst/real/gstrealvideodec.c: (gst_real_video_dec_setcaps):
+	A RealVideo video inside a container (for example MKV) should use the
+	PAR which is specified on the sinkpad caps. Fixes #558416.
+
+2008-10-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c: (gst_speex_resample_start),
+	(gst_speex_resample_get_unit_size),
+	(gst_speex_resample_push_drain), (gst_speex_resample_event),
+	(gst_speex_resample_check_discont), (gst_speex_resample_process),
+	(gst_speex_resample_transform):
+	* gst/speexresample/gstspeexresample.h:
+	Rewrite timestamp tracking to make it more robust and guarantee
+	a continous stream.
+
+	* tests/check/Makefile.am:
+	* tests/check/elements/speexresample.c: (setup_speexresample),
+	(cleanup_speexresample), (fail_unless_perfect_stream),
+	(test_perfect_stream_instance), (GST_START_TEST),
+	(test_discont_stream_instance), (live_switch_alloc_only_48000),
+	(live_switch_get_sink_caps), (live_switch_push),
+	(speexresample_suite):
+	Add unit tests for speexresample based on the audioresample unit tests.
+
+2008-10-29  Jan Schmidt  <thaytan@noraisin.net>
+
+	* ext/resindvd/resindvdsrc.c:
+	Make sure to start the NAV packet processing when changing
+	state to PLAYING  by passing a flag that indicates the state
+	change is in progress.
+	Fixes: #546319
+
+2008-10-28  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/resindvd/resin-play:
+	  Remove $@ to fix parse_launch warning
+
+	* ext/resindvd/resin-play2:
+	  Add a version that uses deinterlace and xvimagesink.
+	  
+
+2008-10-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_get_unit_size),
+	(gst_speex_resample_fixate_caps), (gst_speex_resample_init_state),
+	(gst_speex_resample_update_state), (gst_speex_resample_parse_caps),
+	(gst_speex_resample_transform_size), (gst_speex_resample_set_caps),
+	(gst_speex_resample_push_drain), (gst_speex_resample_event),
+	(gst_speex_resample_check_discont), (gst_speex_fix_output_buffer),
+	(gst_speex_resample_process), (gst_speex_resample_transform),
+	(gst_speex_resample_query), (gst_speex_resample_set_property):
+	* gst/speexresample/gstspeexresample.h:
+	Some random cleanup, add G_LIKELY and friends, use GST_DEBUG_OBJECT
+	instead of GST_DEBUG, ...
+
+2008-10-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_query):
+	Implement position query in time format.
+
+2008-10-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_cleanup),
+	(gst_flv_demux_loop), (gst_flv_demux_handle_seek_push),
+	(gst_flv_demux_handle_seek_pull), (gst_flv_demux_sink_event),
+	(gst_flv_demux_dispose), (gst_flv_demux_init):
+	* gst/flv/gstflvdemux.h:
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_audio),
+	(gst_flv_parse_tag_video), (gst_flv_parse_tag_timestamp):
+	Put the GstSegment directly into the instance struct instead of
+	allocating and free'ing it again.
+
+	Push tags already if only one pad was added, no need to wait for
+	the second one.
+
+	When generating our index set has_video and has_audio if we find
+	video or audio in case the FLV header has incorrect data.
+
+2008-10-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/speexresample/gstspeexresample.c:
+	(gst_speex_resample_class_init), (gst_speex_resample_fixate_caps),
+	(gst_speex_resample_process):
+	Fixate to the nearest supported rate instead of the first one.
+
+2008-10-28  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/speexresample/README:
+	* gst/speexresample/arch.h:
+	* gst/speexresample/fixed_arm4.h:
+	* gst/speexresample/fixed_arm5e.h:
+	* gst/speexresample/fixed_bfin.h:
+	* gst/speexresample/fixed_debug.h:
+	* gst/speexresample/fixed_generic.h:
+	* gst/speexresample/resample.c: (compute_func), (main), (sinc),
+	(cubic_coef), (resampler_basic_direct_single),
+	(resampler_basic_direct_double),
+	(resampler_basic_interpolate_single),
+	(resampler_basic_interpolate_double), (update_filter),
+	(speex_resampler_init_frac), (speex_resampler_process_native),
+	(speex_resampler_magic), (speex_resampler_process_float),
+	(speex_resampler_process_int),
+	(speex_resampler_process_interleaved_float),
+	(speex_resampler_process_interleaved_int),
+	(speex_resampler_set_rate_frac), (speex_resampler_skip_zeros),
+	(speex_resampler_reset_mem):
+	* gst/speexresample/speex_resampler.h:
+	Update Speex resampler with latest version from Speex GIT.
+
+2008-10-27  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/aiffparse/aiffparse.c:
+	* gst/aiffparse/aiffparse.h:
+	  Calculate width from depth correctly.
+	  Read SSND header properly (fixes 24 bit AIFF reading).
+
+2008-10-27  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_init_encoder):
+	Adapt to slightly modified x264 API.  Fixes #555238.
+
+2008-10-27  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/faac/gstfaac.c: (gst_faac_sink_event):
+	Prevent endless loop if buffer alloc error.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_chain),
+	(gst_flv_demux_pull_tag), (gst_flv_demux_pull_header),
+	(gst_flv_demux_create_index):
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_script),
+	(gst_flv_parse_tag_audio), (gst_flv_parse_tag_video),
+	(gst_flv_parse_tag_timestamp), (gst_flv_parse_tag_type),
+	(gst_flv_parse_header):
+	* gst/flv/gstflvparse.h:
+	Don't memcpy() all data we want to push downstream, instead just
+	create subbuffers and push them downstream.
+
+	Fix some minor memory leaks.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Require CVS of core for the last change.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/Makefile.am:
+	Fix (non-critical) syntax error and add all required CFLAGS and LIBS.
+
+	* gst/flv/gstflvparse.c: (FLV_GET_STRING),
+	(gst_flv_parse_metadata_item), (gst_flv_parse_tag_script),
+	(gst_flv_parse_tag_audio), (gst_flv_parse_tag_video),
+	(gst_flv_parse_tag_timestamp), (gst_flv_parse_tag_type):
+	Rewrite the script tag parsing to make sure we don't try to read
+	more data than we have. Also use GST_READ_UINT24_BE directly and
+	fix some minor memory leaks.
+	This should make all crashes on fuzzed FLV files disappear.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (FLV_GET_STRING),
+	(gst_flv_parse_tag_audio), (gst_flv_parse_tag_video),
+	(gst_flv_parse_tag_type), (gst_flv_parse_header):
+	Properly check everywhere that we have enough data to parse and
+	don't read outside the allocated memory region. 
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_audio),
+	(gst_flv_parse_tag_video):
+	If the caps change during playback and negotiation fails error out
+	instead of trying to continue.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvmux.c: (gst_flv_mux_audio_pad_setcaps),
+	(gst_flv_mux_request_new_pad), (gst_flv_mux_write_buffer),
+	(gst_flv_mux_collected):
+	* gst/flv/gstflvmux.h:
+	* gst/flv/gstflvparse.c: (gst_flv_parse_audio_negotiate):
+	Add support for Speex audio and allow buffers without valid
+	timestamp in the muxer.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_loop),
+	(gst_flv_demux_find_offset), (gst_flv_demux_handle_seek_push),
+	(gst_flv_demux_handle_seek_pull):
+	Don't post an error message on the bus if sending EOS downstream
+	didn't work. Fixes bug #550454.
+
+	Fix seek event handling to look at the flags of the seek event
+	instead of assuming some random flags, don't send segment-start
+	messages when operating in push mode and push seek events upstream
+	if we couldn't handle them.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_pull_tag):
+	Error out early if pulling a tag failed.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_create_index),
+	(gst_flv_demux_loop):
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_script),
+	(gst_flv_parse_tag_audio), (gst_flv_parse_tag_video),
+	(gst_flv_parse_tag_timestamp):
+	* gst/flv/gstflvparse.h:
+	In pull mode we create our own index before doing anything else
+	and don't use the index provided by some files (which are more than
+	often incorrect and cause failed seeks).
+
+	For push mode we still use the index provided by the file and extend it
+	while doing the playback.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_push_src_event),
+	(gst_flv_demux_loop), (gst_flv_demux_handle_seek_pull),
+	(gst_flv_demux_sink_event):
+	Instead of using gst_pad_event_default() use a small
+	gst_pad_push_event() wrapper that only does what we want and is much
+	more simple.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_change_state),
+	(gst_flv_demux_set_index), (gst_flv_demux_init):
+	* gst/flv/gstflvdemux.h:
+	If our index was created by the element and not provided from the
+	outside we should destroy it when starting a new stream to get
+	all old entries removed.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_pull_range):
+	Improve debugging a bit when pulling a buffer from upstream fails.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_cleanup),
+	(gst_flv_demux_handle_seek_pull), (gst_flv_demux_dispose):
+	* gst/flv/gstflvdemux.h:
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_audio),
+	(gst_flv_parse_tag_video):
+	Close the currently playing segment from the streaming thread
+	instead of the thread where the seek event is handled.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: David Härdeman <david at hardeman dot nu>
+
+	* gst/mpegdemux/mpegtspacketizer.c: (mpegts_packetizer_parse_nit):
+	Add support for the frequency list descriptor, which provides
+	additional frequencies that should be scanned by a DVB application.
+	Fixes bug #557814.
+
+2008-10-27  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: vanista <vanista at gmail dot com>
+
+	* gst/mpegtsmux/mpegtsmux.c: (mpegtsmux_choose_best_stream):
+	Fix EOS logic by correctly popping the collect pad buffers only
+	when we've chosen to use them instead of popping them always and
+	storing them in a private queue.
+
+	Before the pipeline would deadlock if all pads go EOS at the same
+	time. Fixes bug #557763.
+
+2008-10-26  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Back to development -> 0.10.9.1
+
+=== release 0.10.9 ===
+
+2008-10-24  Jan Schmidt <jan.schmidt@sun.com>
+
+	* configure.ac:
+	  releasing 0.10.9, "Matters of fact"
+
+2008-10-24  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Commit 0.10.8.4 pre-release
+
+2008-10-20  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_send_data):
+	Fix reverse playback regression.
+	Fixes #557080
+
+2008-10-19  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* ext/apexsink/gstapexplugin.c: (plugin_init):
+	  Set apexsink's rank to NONE so it doesn't get used by
+	  autoaudiosink (there's no point really). (#556588)
+
+2008-10-16  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	0.10.8.3 pre-release
+
+2008-10-16  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	Patch by: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.h:
+	Properly handle some resync cases in the optimised
+	buffering strategy.
+
+2008-10-16  Michael Smith <msmith@songbirdnest.com>
+	* sys/acmenc/Makefile.am:
+	  Remove incorrect use of DIRECTSOUND_LDFLAGS
+
+2008-10-16  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/flv/gstflvmux.c: (gst_flv_mux_audio_pad_setcaps),
+	(gst_flv_mux_write_buffer):
+	Don't set video_codec to the value that actually should go
+	into audio codec, otherwise we create invalid files.
+	Fixes bug #556564.
+
+2008-10-16  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* tests/check/Makefile.am:
+	Leave apexsink out of the states test.
+
+2008-10-16  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_jitter_buffer_sink_parse_caps),
+	(gst_rtp_jitter_buffer_flush_start),
+	(gst_rtp_jitter_buffer_flush_stop), (gst_rtp_jitter_buffer_chain),
+	(gst_rtp_jitter_buffer_loop):
+	Fix problem with using the output seqnum counter to check for input
+	seqnum discontinuities.
+	Improve gap detection and recovery, reset and flush the jitterbuffer on
+	seqnum restart. Fixes #556520.
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_insert):
+	Fix wrong G_LIKELY.
+
+2008-10-16  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Commit 0.10.8.2 pre-release bump, that actually went out in a
+	tarball on 2008-10-11
+
+2008-10-16  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c:
+	(gst_rtp_session_event_send_rtcp_src), (create_send_rtcp_src):
+	Install event handler on the rtcp_src pad, make LATENCY event return
+	TRUE. Fixes #556338.
+
+2008-10-16  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_send_data):
+	Make sure the mpegpsdemux element creates valid newsegment events.
+	Fixes #556428
+
+2008-10-16  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+	
+	* gst/mpegdemux/mpegtspacketizer.c:
+	Fixes segfault in get_encoding_and_convert.
+	Fixes #556482
+
+2008-10-15  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Fixes a segfault in the adaptation buffer size strategy.
+	Fixes #556440
+
+2008-10-15  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/selector/gstinputselector.c: (gst_input_selector_event),
+	(gst_input_selector_query):
+	Gracefully handle the cases when we dont' have otherpad.
+	Fixes #556430
+
+2008-10-14  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/aiffparse/aiffparse.c: (plugin_init):
+	Fix debugging category initialization.
+	Fixes #556274	
+
+2008-10-14  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/apexsink/gstapexsink.c:
+	Fix some more format string compiler warnings (from OS/X)
+
+2008-10-13  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/apexsink/gstapexraop.c: (gst_apexraop_connect),
+	(gst_apexraop_set_volume):
+	Fix format string compiler warnings.
+
+2008-10-12  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* sys/oss4/oss4-mixer.c:
+	* sys/oss4/oss4-sink.c:
+	* sys/oss4/oss4-source.c:
+	Add some spaces in translateable strings.
+	Fixes: #555969 #555968 #555965
+
+2008-10-12  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_pull_tag),
+	(gst_flv_demux_pull_header):
+	Fix regression of handling flow returns in pull mode.
+	Fixes bug #556003.
+
+2008-10-12  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/Makefile.am:
+	Add apexsink to SUBDIRS. Fixes bug #555912.
+
+2008-10-11  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* tests/check/pipelines/metadata.c:
+	Make the metadata test not fail when jpegenc isn't available....
+	as it isn't here, because it's not in this module, and
+	therefore not in the plugin path when the check runs.
+
+2008-10-10  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_audio),
+	(gst_flv_parse_tag_video):
+	Use gst_pad_alloc_buffer_and_set_caps() to make sure we get
+	a buffer with caps that we can work with (i.e. the pad's caps).
+
+	Add non-keyframe video frames to the index too but without the
+	keyframe flag.
+
+	Add audio frames to the index only if we have no video stream.
+
+2008-10-10  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_audio),
+	(gst_flv_parse_tag_video):
+	Create pads from the pad templates, use fixed caps on them
+	and only activate them after the caps are set.
+
+2008-10-10  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Disable flacparse for this release as it's too buggy.
+
+2008-10-10  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* gst/flacparse/gstbaseparse.c (gst_base_parse_push_buffer),
+	(gst_base_parse_update_upstream_durations):
+	Fix compiler warning on OS/X about parameters not matching
+	the debug format string.
+
+2008-10-09  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gst/deinterlace2/tvtime/tomsmocomp.c:
+	(gst_deinterlace_method_tomsmocomp_class_init):
+	Fix unused variable compiler warning when not building
+	X86 assembly.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_loop):
+	* gst/flv/gstflvparse.c: (gst_flv_parse_tag_timestamp):
+	* gst/flv/gstflvparse.h:
+	Get an approximate duration of the file by looking at the timestamp
+	of the last tag in pull mode. If we get (maybe better) duration from
+	metadata later we'll use that instead.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_pull_range),
+	(gst_flv_demux_pull_tag), (gst_flv_demux_pull_header):
+	Refactor _pull_range() logic with checks into a seperate function
+	to make things a bit more readable.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_chain),
+	(gst_flv_demux_base_init):
+	Use gst_element_class_set_details_simple().
+
+	If we get GST_FLOW_NOT_LINKED in the parse loop but at least
+	one of the pads is linked continue the loop.
+
+2008-10-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/amrwb/gstamrwbenc.c:
+	* ext/amrwb/gstamrwbenc.h:
+	  Pass the discont flag from the input buffer on to the output buffer in
+	  the AMR encoder.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvparse.c: (gst_flv_parse_audio_negotiate),
+	(gst_flv_parse_tag_audio), (gst_flv_parse_video_negotiate):
+	Correct caps for video codec id 5: It's On2 VP6 with alpha channel
+	which needs a different decoder and has different caps.
+
+	Add support for audio codec id 14, which is MP3 with 8kHz sampling
+	rate.
+
+	Fix endianness and signedness for raw audio codec ids.
+
+	Add support for alaw and mulaw audio.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/gstflvdemux.c: (gst_flv_demux_chain):
+	Go out of the parse loop as soon as we get an error instead
+	of parsing until the GstAdapter is empty.
+
+	Add some explanations about the header and tag size.
+
+	Don't print synchronizing message if everything is fine.
+
+2008-10-09  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flv/Makefile.am:
+	* gst/flv/gstflvdemux.c: (plugin_init):
+	* gst/flv/gstflvmux.c: (gst_flv_mux_base_init),
+	(gst_flv_mux_class_init), (gst_flv_mux_init),
+	(gst_flv_mux_finalize), (gst_flv_mux_reset),
+	(gst_flv_mux_handle_src_event), (gst_flv_mux_handle_sink_event),
+	(gst_flv_mux_video_pad_setcaps), (gst_flv_mux_audio_pad_setcaps),
+	(gst_flv_mux_request_new_pad), (gst_flv_mux_release_pad),
+	(gst_flv_mux_write_header), (gst_flv_mux_write_buffer),
+	(gst_flv_mux_collected), (gst_flv_mux_change_state):
+	* gst/flv/gstflvmux.h:
+	Add first version of a FLV muxer. The only missing feature is writing
+	of stream metadata.
+
+2008-10-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/amrwb/gstamrwbparse.c:
+	* ext/amrwb/gstamrwbparse.h:
+	  Add flush seek handler. Taken from recent armnbparse changes.
+	  Sync the code more and use #defines for HEADER.
+
+2008-10-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/amrwb/gstamrwbparse.c:
+	* ext/amrwb/gstamrwbparse.h:
+          Fix the duration query. Also set caps on the pads and buffers more
+          correctly. Taken from recent armnbparse changes.
+
+2008-10-08  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegdemux/gstmpegdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Add Fluendo to the Long Name.
+
+2008-10-08  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* configure.ac:
+	* gst-plugins-bad.spec.in:
+	* gst/mpegdemux/Makefile.am:
+	* gst/mpegdemux/flumpegdemux.c:
+	* gst/mpegdemux/gstmpegdesc.c:
+	* gst/mpegdemux/gstmpegdesc.h:
+	* gst/mpegdemux/mpegtspacketizer.c:
+	* gst/mpegdemux/mpegtspacketizer.h:
+	* gst/mpegdemux/mpegtsparse.c:
+	* gst/mpegdemux/mpegtsparse.h:
+	Move of mpegtsparse to mpegdemux.
+	Fixes #555193.
+
+2008-10-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_send_data),
+	(gst_flups_demux_parse_pack_start):
+	Prevent a division by zero if last mux rate was zero.
+
+	If we're going to send a NEWSEGMENT event but the segment start
+	and the current buffer timestamp differ by more than a second we
+	will start the NEWSEGMENT at the buffer timestamp.
+
+	This fixes playback of the tv2-1_25.mpg file, which has 0 as first SCR
+	but the first PTS are around 1 hour and 40 minutes.
+
+	Fixes bug #553755.
+
+2008-10-07  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/resindvd/resindvdsrc.c:
+	Fix next/prev chapter seeking at the beginning or end.
+	Use 64-bit scaling utility functions for converting MPEG
+	timestamps.
+
+2008-10-07  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Håvard Graff <havard dot graff at tandberg dot com>
+
+	* gst/rtpmanager/gstrtpbin-marshal.list:
+	Add marshaller for new action signal.
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_get_internal_session),
+	(gst_rtp_bin_class_init):
+	* gst/rtpmanager/gstrtpbin.h:
+	Add action signal to retrieve the internal RTPSession object.
+
+	* gst/rtpmanager/gstrtpsession.c: (gst_rtp_session_class_init),
+	(gst_rtp_session_get_property), (gst_rtp_session_release_pad):
+	Add property to access the internal RTPSession object.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(check_collision):
+	* gst/rtpmanager/rtpsession.h:
+	Add action signal to retrieve an RTPSource object by SSRC. 
+	See #555396.
+
+2008-10-07  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst/selector/gstoutputselector.c:
+	  Choose right pad for sending events. Fixes #555244
+
+2008-10-07  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (find_session_by_pad),
+	(free_session), (gst_rtp_bin_dispose), (remove_recv_rtp),
+	(remove_recv_rtcp), (remove_send_rtp), (remove_rtcp),
+	(gst_rtp_bin_release_pad):
+	Release pads of the session manager.
+	Start implementing releasing pads of gstrtpbin.
+
+	* gst/rtpmanager/gstrtpsession.c: (remove_recv_rtp_sink),
+	(remove_recv_rtcp_sink), (remove_send_rtp_sink),
+	(remove_send_rtcp_src), (gst_rtp_session_release_pad):
+	Implement releasing pads in gstrtpsession.
+
+2008-10-07  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_jitter_buffer_sink_parse_caps):
+	Only update the seqnum-base when it was not already configured for the
+	streams.
+
+2008-10-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac
+	* ext/metadata/README:
+	* ext/metadata/metadataexif.c:
+	* ext/metadata/metadatatags.c:
+	* ext/metadata/metadatatags.h:
+	  Start using core geo tags (bump req). Fix handling of location
+	  references.
+
+	* tests/check/Makefile.am:
+	  Sort blacklisted elements and remove moved ones. Add new test.
+
+	* tests/check/pipelines/metadata.c:
+	  Add first tests for metadata element.
+
+	* tests/icles/metadata_editor.c:
+	  Move free to correct place.
+
+2008-10-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* tests/check/generic/states.c:
+	  Stop test on state-change error. Should be applied on other modules if
+	  we agree that it makes sense.
+
+2008-10-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegtsparse/mpegtsparse.c:
+	Actually copy the structure passed in when assigning it because
+	it gets freed straight after the function call.
+	Re: pat_info and pmt_info GstStructures.
+
+2008-10-06  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	Patch by: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	Fix wrong firing of critical introduced by previous optimisation.
+
+2008-10-03  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* ext/faac/gstfaac.c: (gst_faac_configure_source_pad):
+	Warn and clamp to max bitrate for samplerate.
+	Fixes #550486.
+
+2008-10-03  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/mpegtsparse/mpegtsparse.c:
+	Fix possible crash where pat is pointing to a freed structure.
+
+2008-10-03  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/metadata/README:
+	* ext/metadata/metadataexif.c:
+	* ext/metadata/metadatatags.c:
+	* ext/metadata/metadatatags.h:
+	  Use core gps tags.
+
+2008-10-03  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/metadata/metadata_mapping.htm:
+	* ext/metadata/metadataxmp.c:
+	* ext/metadata/Makefile.am:
+	  Add mapping of format and mime type to xmp.
+
+2008-10-02  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/metadata/README:
+	* ext/metadata/metadataexif.c:
+	* ext/metadata/metadatatags.c:
+	* ext/metadata/metadatatags.h:
+	  Reverting. Will need to wait for core 0.10.21 release.
+
+2008-10-02  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/metadata/README:
+	* ext/metadata/metadataexif.c:
+	* ext/metadata/metadatatags.c:
+	* ext/metadata/metadatatags.h:
+	  Use core gps tags.
+
+2008-09-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flacparse/gstbaseparse.c: (gst_base_parse_finalize),
+	(gst_base_parse_class_init), (gst_base_parse_push_buffer),
+	(gst_base_parse_change_state), (gst_base_parse_set_index),
+	(gst_base_parse_get_index):
+	Add support for GstIndex.
+
+2008-09-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flacparse/gstbaseparse.c: (gst_base_parse_class_init),
+	(gst_base_parse_push_buffer),
+	(gst_base_parse_update_upstream_durations),
+	(gst_base_parse_convert), (gst_base_parse_frame_in_segment):
+	* gst/flacparse/gstbaseparse.h:
+	Provide a vfunc for the subclass to decide whether a frame is inside
+	the segment or not and add a default implementation.
+
+	Fix approximate bitrate calculations.
+
+2008-09-30  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/flacparse/gstbaseparse.c: (gst_base_parse_class_init),
+	(gst_base_parse_init), (gst_base_parse_push_buffer),
+	(gst_base_parse_update_upstream_durations), (gst_base_parse_chain),
+	(gst_base_parse_loop), (gst_base_parse_activate),
+	(gst_base_parse_convert), (gst_base_parse_query):
+	Approximate the average bitrate, duration and size if possible
+	and add a default conversion function which uses this for
+	time<->byte conversions.
+
+	* gst/flacparse/gstflacparse.c: (gst_flac_parse_get_frame_size):
+	Fix parsing if upstream gives -1 as duration.
+
+2008-09-30  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpsession.c: (on_new_ssrc), (on_ssrc_collision),
+	(on_ssrc_validated), (on_ssrc_active), (on_ssrc_sdes),
+	(on_bye_ssrc), (on_bye_timeout), (on_timeout), (on_sender_timeout):
+	Ref the rtpsource object before we release the session lock when we emit
+	the signals.
+
+2008-09-30  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/Makefile.am:
+	* sys/wasapi/Makefile.am:
+	* sys/wasapi/gstwasapi.c:
+	* sys/wasapi/gstwasapisink.c:
+	* sys/wasapi/gstwasapisink.h:
+	* sys/wasapi/gstwasapisrc.c:
+	* sys/wasapi/gstwasapisrc.h:
+	* sys/wasapi/gstwasapiutil.c:
+	* sys/wasapi/gstwasapiutil.h:
+	New plugin for audio capture and playback using Windows Audio Session
+	API (WASAPI) available with Vista and newer (#520901).
+
+	Comes with hardcoded caps and obviously needs lots of love. Haven't
+	had time to work on this code since it was written, was initially just
+	a quick experiment to play around with this new API.
+
+2008-09-30  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.cpp
+	  (AudioFakeSink.DoRenderSample):
+	Fix a couple of signed/unsigned comparison warnings.
+
+2008-09-30  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.h (AudioFakeSink.AudioFakeSink):
+	* sys/dshowdecwrapper/gstdshowvideodec.h (VideoFakeSink.VideoFakeSink):
+	Use the _T() macro to support both Unicode and MBCS.
+
+2008-09-30  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* ext/libmms/gstmms.c (plugin_init):
+	Fix return type of the GstURIHandler::get_type() implementation.
+
+2008-09-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* gst/flacparse/Makefile.am:
+	* gst/flacparse/gstbaseparse.c: (gst_base_parse_get_type),
+	(gst_base_parse_base_init), (gst_base_parse_base_finalize),
+	(gst_base_parse_finalize), (gst_base_parse_class_init),
+	(gst_base_parse_init), (gst_base_parse_check_frame),
+	(gst_base_parse_parse_frame), (gst_base_parse_bytepos_to_time),
+	(gst_base_parse_sink_event), (gst_base_parse_sink_eventfunc),
+	(gst_base_parse_src_event), (gst_base_parse_src_eventfunc),
+	(gst_base_parse_is_seekable), (gst_base_parse_push_buffer),
+	(gst_base_parse_handle_and_push_buffer), (gst_base_parse_drain),
+	(gst_base_parse_chain), (gst_base_parse_pull_range),
+	(gst_base_parse_loop), (gst_base_parse_sink_activate),
+	(gst_base_parse_activate), (gst_base_parse_sink_activate_push),
+	(gst_base_parse_sink_activate_pull), (gst_base_parse_set_duration),
+	(gst_base_parse_set_min_frame_size),
+	(gst_base_parse_get_querytypes), (gst_base_parse_query),
+	(gst_base_parse_handle_seek), (gst_base_parse_sink_setcaps):
+	* gst/flacparse/gstbaseparse.h:
+	* gst/flacparse/gstbitreader.c: (gst_bit_reader_new),
+	(gst_bit_reader_new_from_buffer), (gst_bit_reader_free),
+	(gst_bit_reader_init), (gst_bit_reader_init_from_buffer),
+	(gst_bit_reader_set_pos), (gst_bit_reader_get_pos),
+	(gst_bit_reader_get_remaining), (gst_bit_reader_skip),
+	(gst_bit_reader_skip_to_byte):
+	* gst/flacparse/gstbitreader.h:
+	* gst/flacparse/gstbytereader.c: (GDOUBLE_SWAP_LE_BE),
+	(GFLOAT_SWAP_LE_BE), (gst_byte_reader_new),
+	(gst_byte_reader_new_from_buffer), (gst_byte_reader_free),
+	(gst_byte_reader_init), (gst_byte_reader_init_from_buffer),
+	(gst_byte_reader_set_pos), (gst_byte_reader_get_pos),
+	(gst_byte_reader_get_remaining), (gst_byte_reader_skip),
+	(gst_byte_reader_get_uint8), (gst_byte_reader_get_int8),
+	(gst_byte_reader_peek_uint8), (gst_byte_reader_peek_int8),
+	(gst_byte_reader_get_uint24_le), (gst_byte_reader_get_uint24_be),
+	(gst_byte_reader_get_int24_le), (gst_byte_reader_get_int24_be),
+	(gst_byte_reader_peek_uint24_le), (gst_byte_reader_peek_uint24_be),
+	(gst_byte_reader_peek_int24_le), (gst_byte_reader_peek_int24_be):
+	* gst/flacparse/gstbytereader.h:
+	* gst/flacparse/gstflac.c: (plugin_init):
+	* gst/flacparse/gstflacparse.c: (gst_flac_parse_base_init),
+	(gst_flac_parse_class_init), (gst_flac_parse_init),
+	(gst_flac_parse_finalize), (gst_flac_parse_start),
+	(gst_flac_parse_stop), (gst_flac_parse_get_frame_size),
+	(gst_flac_parse_check_valid_frame),
+	(gst_flac_parse_handle_streaminfo),
+	(gst_flac_parse_handle_vorbiscomment),
+	(gst_flac_parse_handle_picture), (_value_array_append_buffer),
+	(gst_flac_parse_handle_headers), (gst_flac_parse_generate_headers),
+	(gst_flac_parse_parse_frame):
+	* gst/flacparse/gstflacparse.h:
+	Add FLAC parser, based on GstBaseParse. Also add the bit and byte reader
+	that will be added to libgstbase later.
+
+	The FLAC parser is currently not 100% bug free and fails to get the
+	correct frame size for some frames in some streams.
+
+2008-09-27  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/resindvd/gstmpegdemux.c:
+	* ext/resindvd/gstmpegdemux.h:
+	* ext/resindvd/resindvdbin.c:
+	* ext/resindvd/resindvdsrc.c:
+	* ext/resindvd/rsnstreamselector.c:
+	Add in Title/Chapter seeking, and simple but buggy audio
+	and subtitle stream selection.
+
+2008-09-24  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.cpp:
+	* sys/dshowdecwrapper/gstdshowaudiodec.h:
+	* sys/dshowdecwrapper/gstdshowfakesrc.cpp:
+	* sys/dshowdecwrapper/gstdshowutil.cpp:
+	* sys/dshowdecwrapper/gstdshowutil.h:
+	* sys/dshowdecwrapper/gstdshowvideodec.cpp:
+	* sys/dshowdecwrapper/gstdshowvideodec.h:
+	  Prefer known-good filters, create directly by GUID if possible,
+	  fall back to creating highest-merit filter otherwise.
+	  Fixes playback with random dshow filters installed in some
+	  cases.
+
+2008-09-23  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_insert),
+	(rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/rtpsession.c: (on_sender_timeout),
+	(session_cleanup):
+	* gst/rtpmanager/rtpsource.c:
+	Fix some docs.
+
+2008-09-23  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	Patch from: Josep Torra
+
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.h:
+	Use a preallocated buffer per stream for PES packets sent on src pads.
+	Adaptively adjust buffer size appropriately.
+
+2008-09-17  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* ext/neon/gstneonhttpsrc.c: (gst_neonhttp_src_start),
+	  (gst_neonhttp_src_send_request_and_redirect):
+	  Clean up the debug logging code and #ifdef mess a bit: whether or not
+	  gstreamer debug messages should be output should not depend on an
+	  element property; also, GST_ELEMENT_ERROR will leave a line in the log
+	  already, so merge the more useful debug log messages with the less useful
+	  error debug strings.
+
+2008-09-17  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* ext/neon/gstneonhttpsrc.c: (gst_neonhttp_src_start):
+	  Don't post LIBRARY_INIT errors where we should be posting
+	  RESOURCE OPEN_READ errors. Fixes #552506.
+
+2008-09-17  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* ext/jack/gstjackaudiosink.c: (jack_process_cb):
+	* gst/rtpmanager/rtpjitterbuffer.c: (calculate_skew):
+	Fix compiler warnings on OS/X
+
+2008-09-17  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Michael Krufky
+
+	* sys/dvb/gstdvbsrc.c:
+	Add adapter_name for bus message in ATSC case. Fixes #552536.
+
+2008-09-15  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/celt/gstceltenc.h:
+	  Help gtk-doc to parse this correctly.
+
+	* gst/pcapparse/gstpcapparse.c:
+	  Add missing include.
+
+2008-09-15  Stefan Kost  <ensonic@users.sf.net>
+
+	* examples/Makefile.am:
+	  Only built scaletempo example if we have gtk.
+
+2008-09-13  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (create_session),
+	(gst_rtp_bin_associate), (gst_rtp_bin_sync_chain):
+	Do not try to adjust the offset of streams for which we have not yet
+	seen an SR packet. Avoids large ts-offsets in some cases.
+
+2008-09-10  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/dshowdecwrapper/Makefile.am:
+	* sys/dshowdecwrapper/gstdshowaudiodec.c:
+	* sys/dshowdecwrapper/gstdshowaudiodec.cpp:
+	* sys/dshowdecwrapper/gstdshowaudiodec.h:
+	* sys/dshowdecwrapper/gstdshowdecwrapper.c:
+	* sys/dshowdecwrapper/gstdshowdecwrapper.cpp:
+	* sys/dshowdecwrapper/gstdshowdecwrapper.h:
+	* sys/dshowdecwrapper/gstdshowfakesrc.cpp:
+	* sys/dshowdecwrapper/gstdshowfakesrc.h:
+	* sys/dshowdecwrapper/gstdshowutil.cpp:
+	* sys/dshowdecwrapper/gstdshowutil.h:
+	* sys/dshowdecwrapper/gstdshowvideodec.c:
+	* sys/dshowdecwrapper/gstdshowvideodec.cpp:
+	* sys/dshowdecwrapper/gstdshowvideodec.h:
+	  Major rewrite of dshowdecwrapper. Converts code to
+	  C++, moves to direct use of DirectShow base classes,
+	  make a lot of code clearer, simplify, etc.
+	  Fix decode of MP3 on Vista by working around an apparent
+	  bug in the decoder.
+
+2008-09-10  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/winks/gstksclock.c (gst_ks_clock_worker_thread_func,
+	  gst_ks_clock_start):
+	  Synchronize KS clock as a single-shot operation for now, there's not
+	  much point in doing it periodically until we're actually using the
+	  KS timestamps for anything else than just discarding old frames.
+	* sys/winks/gstksvideosrc.c (gst_ks_video_src_open_device):
+	  Provide the GstClock when opening the device if we already have one.
+
+2008-09-10  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/winks/gstksvideodevice.c (GST_DEBUG_IS_ENABLED, last_timestamp,
+	  gst_ks_video_device_prepare_buffers, gst_ks_video_device_create_pin,
+	  gst_ks_video_device_set_state, gst_ks_video_device_request_frame,
+	  gst_ks_video_device_read_frame):
+	  Guard against capturing old frames by keeping track of the last
+	  timestamp and also zero-fill the buffers before each capture.
+	  Only assign a master clock if the pin hasn't already got one.
+	  Actually free buffers on the way down to avoid a huge memory leak,
+	  as this was previously done when changing state to ACQUIRE downwards
+	  and we now skip that state on the way down.
+	  Add some debug.
+	* sys/winks/gstksvideosrc.c (DEFAULT_DEVICE_PATH, DEFAULT_DEVICE_NAME,
+	  DEFAULT_DEVICE_INDEX, KS_WORKER_LOCK, KS_WORKER_UNLOCK,
+	  KS_WORKER_WAIT, KS_WORKER_NOTIFY, KS_WORKER_WAIT_FOR_RESULT,
+	  KS_WORKER_NOTIFY_RESULT, KS_WORKER_STATE_STARTING,
+	  KS_WORKER_STATE_READY, KS_WORKER_STATE_STOPPING,
+	  KS_WORKER_STATE_ERROR, KsWorkerState, device_path, device_name,
+	  device_index, running, worker_thread, worker_lock,
+	  worker_notify_cond, worker_result_cond, worker_state,
+	  worker_pending_caps, worker_setcaps_result, worker_pending_run,
+	  worker_run_result, gst_ks_video_src_reset,
+	  gst_ks_video_src_apply_driver_quirks, gst_ks_video_src_open_device,
+	  gst_ks_video_src_close_device, gst_ks_video_src_worker_func,
+	  gst_ks_video_src_start_worker, gst_ks_video_src_stop_worker,
+	  gst_ks_video_src_change_state, gst_ks_video_src_set_clock,
+	  gst_ks_video_src_set_caps, gst_ks_video_src_timestamp_buffer,
+	  gst_ks_video_src_create):
+	  Remove ENABLE_CLOCK_DEBUG define, it's GST_LEVEL_DEBUG after all.
+	  Get rid of PROP_ENSLAVE_KSCLOCK and always slave the ks clock to the
+	  GStreamer clock, it doesn't seem to hurt and matches DirectShow's
+	  behavior. As an added bonus we usually get PresentationTime set for
+	  each frame, so we can expand on this later for smarter latency
+	  reporting (by looking at the diff between the timestamp from the
+	  driver and the time according to the GStreamer clock).
+	  Use an internal worker thread for opening the device, setting caps,
+	  changing its state and closing it. This way we're a lot more
+	  compatible with drivers that rely on hacks to do video-effects
+	  between the low-level NT API and the application. Ick.
+	  Start the ks clock and set the pin to KSSTATE_RUN on the first
+	  create() so that we'll hopefully get hold of the GStreamer clock
+	  from the very beginning. This way there's no chance that the
+	  timestamps will make a sudden jump in the beginning of the stream
+	  when we're running with a clock.
+	* sys/winks/kshelpers.c (CHECK_OPTIONS_FLAG,
+	  ks_options_flags_to_string):
+	  Reorder the flags to match the headerfile order, and make the string
+	  a bit more compact.
+	* sys/winks/ksvideohelpers.c (ks_video_probe_filter_for_caps):
+	  Avoid leaking KSPROPERTY_PIN_DATARANGES.
+
+2008-09-09  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* configure.ac:
+	* ext/Makefile.am:
+	* ext/jp2k/Makefile.am:
+	* ext/jp2k/gstjasperdec.c: (gst_jasper_dec_base_init),
+	(gst_jasper_dec_class_init), (gst_jasper_dec_init),
+	(gst_jasper_dec_reset), (gst_jasper_dec_sink_setcaps),
+	(gst_jasper_dec_negotiate), (gst_jasper_dec_get_picture),
+	(gst_jasper_dec_chain), (gst_jasper_dec_set_property),
+	(gst_jasper_dec_get_property), (gst_jasper_dec_change_state),
+	(plugin_init):
+	* ext/jp2k/gstjasperdec.h:
+	Add jp2k plugin.  Fixes #550657.
+
+2008-09-09  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegdemux/flumpegdemux.c: (plugin_init):
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_sync_get_type),
+	(gst_flups_demux_get_type), (gst_flups_demux_plugin_init):
+	* gst/mpegdemux/gstmpegtsdemux.c: (gst_fluts_demux_get_type),
+	(gst_fluts_demux_plugin_init):
+	Fix conflicting public names in new mpeg demuxers.
+	Fixes #550468
+
+2008-09-08  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/aiffparse/aiffparse.c:
+	  Support chunks in AIFF in any order in pull mode, and any order so
+	  long as we get COMM before the actual data (SSND) in push mode.
+	  Fixes playback of AIFC files.
+
+2008-09-08  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/selector/gstinputselector.c: (gst_selector_pad_reset),
+	(gst_input_selector_reset), (gst_input_selector_change_state):
+	Reset the selector state when going to READY.
+
+2008-09-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (on_sender_timeout),
+	(create_session), (gst_rtp_bin_associate),
+	(gst_rtp_bin_sync_chain), (gst_rtp_bin_class_init),
+	(gst_rtp_bin_request_new_pad):
+	* gst/rtpmanager/gstrtpbin.h:
+	Add signal to notify listeners when a sender becomes a receiver.
+	Tweak lip-sync code, don't store our own copy of the ts-offset of the
+	jitterbuffer, don't adjust sync if the change is less than 4msec.
+	Get the RTP timestamp <-> GStreamer timestamp relation directly from
+	the jitterbuffer instead of our inaccurate version from the source.
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_chain), (gst_rtp_jitter_buffer_loop),
+	(gst_rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/gstrtpjitterbuffer.h:
+	Add G_LIKELY macros, use global defines for max packet reorder and
+	dropouts.
+	Reset the jitterbuffer clock skew detection when packets seqnums are
+	changed unexpectedly.
+
+	* gst/rtpmanager/gstrtpsession.c: (on_sender_timeout),
+	(gst_rtp_session_class_init), (gst_rtp_session_init):
+	* gst/rtpmanager/gstrtpsession.h:
+	Add sender timeout signal.
+
+	* gst/rtpmanager/rtpjitterbuffer.c: (rtp_jitter_buffer_reset_skew),
+	(calculate_skew), (rtp_jitter_buffer_insert),
+	(rtp_jitter_buffer_get_sync):
+	* gst/rtpmanager/rtpjitterbuffer.h:
+	Add some G_LIKELY macros.
+	Keep track of the extended RTP timestamp so that we can report the RTP
+	timestamp <-> GStreamer timestamp relation for lip-sync.
+	Remove server timestamp gap detection code, the server can sometimes
+	make a huge gap in timestamps (talk spurts,...) see #549774.
+	Detect timetamp weirdness instead by observing the sender/receiver
+	timestamp relation and resync if it changes more than 1 second.
+	Add method to report about the current rtp <-> gst timestamp relation
+	which is needed for lip-sync.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_class_init),
+	(on_sender_timeout), (check_collision), (rtp_session_process_sr),
+	(session_cleanup):
+	* gst/rtpmanager/rtpsession.h:
+	Add sender timeout signal.
+	Remove inaccurate rtp <-> gst timestamp relation code, the
+	jitterbuffer can now do an accurate reporting about this.
+
+	* gst/rtpmanager/rtpsource.c: (rtp_source_init),
+	(rtp_source_update_caps), (calculate_jitter),
+	(rtp_source_process_rtp):
+	* gst/rtpmanager/rtpsource.h:
+	Remove inaccurate rtp <-> gst timestamp relation code.
+
+	* gst/rtpmanager/rtpstats.h:
+	Define global max-reorder and max-dropout constants for use in various
+	subsystems.
+
+2008-09-05  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Sebastian Pölsterl
+
+	* sys/dvb/gstdvbsrc.c:
+	Add DVB Adapter name to structure sent over bus.
+
+2008-09-02  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegdemux/gstmpegdemux.c: (gst_flups_demux_parse_pack_start):
+	* gst/mpegdemux/gstmpegtsdemux.c: (gst_fluts_demux_data_cb):
+	Fix build on macosx.
+
+2008-09-02  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* configure.ac:
+	* gst/mpegdemux/Makefile.am:
+	* gst/mpegdemux/flumpegdemux.c:
+	* gst/mpegdemux/flutspatinfo.c:
+	* gst/mpegdemux/flutspatinfo.h:
+	* gst/mpegdemux/flutspmtinfo.c:
+	* gst/mpegdemux/flutspmtinfo.h:
+	* gst/mpegdemux/flutspmtstreaminfo.c:
+	* gst/mpegdemux/flutspmtstreaminfo.h:
+	* gst/mpegdemux/gstmpegdefs.h:
+	* gst/mpegdemux/gstmpegdemux.c:
+	* gst/mpegdemux/gstmpegdemux.h:
+	* gst/mpegdemux/gstmpegdesc.c:
+	* gst/mpegdemux/gstmpegdesc.h:
+	* gst/mpegdemux/gstmpegtsdemux.c:
+	* gst/mpegdemux/gstmpegtsdemux.h:
+	* gst/mpegdemux/gstpesfilter.c:
+	* gst/mpegdemux/gstpesfilter.h:
+	* gst/mpegdemux/gstsectionfilter.c:
+	* gst/mpegdemux/gstsectionfilter.h:
+	Add Fluendo MPEG PS and TS demuxers to gst-plugins-bad. This
+	is now dual licensed MPL and LGPL.
+
+2008-09-02  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/mpegtsmux/mpegtsmux.c: (new_packet_cb):
+	Set caps on outgoing buffers.
+
+2008-09-02  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* ext/resindvd/plugin.c: (plugin_init):
+	* ext/resindvd/resindvdsrc.c:
+	* ext/twolame/gsttwolame.c: (plugin_init):
+	* gst/aiffparse/aiffparse.c: (plugin_init):
+	  Enable/fix up translations for these plugins.
+
+	* po/LINGUAS:
+	  Add 'ca' to LINGUAS.
+
+	* po/POTFILES.in:
+	* po/POTFILES.skip:
+	  Add more files for translation and more files which tools
+	  should skip.
+
+2008-09-02  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegtsmux/tsmux/tsmux.c: (tsmux_write_ts_header):
+	Fix build on macosx.
+
+2008-09-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mpegtsmux/mpegtsmux_aac.c: (mpegtsmux_prepare_aac):
+	Allocate a fixed size buffer on the stack instead of using malloc().
+
+	* gst/mpegtsmux/tsmux/tsmux.c: (tsmux_new), (tsmux_free),
+	(tsmux_program_new), (tsmux_program_free):
+	* gst/mpegtsmux/tsmux/tsmuxstream.c: (tsmux_stream_new),
+	(tsmux_stream_free), (tsmux_stream_consume),
+	(tsmux_stream_add_data):
+	Use GSlice.
+
+2008-09-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/mpegtsmux/mpegtsmux.c: (mpegtsmux_create_stream):
+	Add support for muxing MPEG4 video.
+
+2008-09-01  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/mpegtsmux/tsmux/tsmux.h:
+	* gst/mpegtsmux/tsmux/tsmuxstream.h:
+	Fix build of mpegtsmux.
+	
+2008-09-01  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* gst/mpegtsmux/Makefile.am:
+	* gst/mpegtsmux/mpegtsmux.c: (mpegtsmux_base_init),
+	(mpegtsmux_class_init), (mpegtsmux_init), (mpegtsmux_dispose),
+	(gst_mpegtsmux_set_property), (gst_mpegtsmux_get_property),
+	(release_buffer_cb), (mpegtsmux_create_stream),
+	(mpegtsmux_create_streams), (mpegtsmux_choose_best_stream),
+	(mpegtsmux_collected), (mpegtsmux_request_new_pad),
+	(mpegtsmux_release_pad), (new_packet_cb),
+	(mpegtsdemux_prepare_srcpad), (mpegtsmux_change_state),
+	(plugin_init):
+	* gst/mpegtsmux/mpegtsmux.h:
+	* gst/mpegtsmux/mpegtsmux_aac.c: (mpegtsmux_prepare_aac):
+	* gst/mpegtsmux/mpegtsmux_aac.h:
+	* gst/mpegtsmux/mpegtsmux_h264.c: (mpegtsmux_prepare_h264):
+	* gst/mpegtsmux/mpegtsmux_h264.h:
+	* gst/mpegtsmux/tsmux/Makefile.am:
+	* gst/mpegtsmux/tsmux/crc.h:
+	* gst/mpegtsmux/tsmux/tsmux.c: (tsmux_new), (tsmux_set_write_func),
+	(tsmux_set_pat_frequency), (tsmux_get_pat_frequency), (tsmux_free),
+	(tsmux_program_new), (tsmux_set_pmt_frequency),
+	(tsmux_get_pmt_frequency), (tsmux_program_add_stream),
+	(tsmux_program_set_pcr_stream), (tsmux_get_new_pid),
+	(tsmux_create_stream), (tsmux_find_stream), (tsmux_packet_out),
+	(tsmux_write_adaptation_field), (tsmux_write_ts_header),
+	(tsmux_write_stream_packet), (tsmux_program_free),
+	(tsmux_write_section), (tsmux_write_section_hdr),
+	(tsmux_write_pat), (tsmux_write_pmt):
+	* gst/mpegtsmux/tsmux/tsmux.h:
+	* gst/mpegtsmux/tsmux/tsmuxcommon.h:
+	* gst/mpegtsmux/tsmux/tsmuxstream.c: (tsmux_stream_new),
+	(tsmux_stream_get_pid), (tsmux_stream_free),
+	(tsmux_stream_set_buffer_release_func), (tsmux_stream_consume),
+	(tsmux_stream_at_pes_start), (tsmux_stream_bytes_avail),
+	(tsmux_stream_bytes_in_buffer), (tsmux_stream_get_data),
+	(tsmux_stream_pes_header_length),
+	(tsmux_stream_find_pts_dts_within),
+	(tsmux_stream_write_pes_header), (tsmux_stream_add_data),
+	(tsmux_stream_get_es_descrs), (tsmux_stream_pcr_ref),
+	(tsmux_stream_pcr_unref), (tsmux_stream_is_pcr),
+	(tsmux_stream_get_pts):
+	* gst/mpegtsmux/tsmux/tsmuxstream.h:
+	Add Fluendo MPEG-TS muxer and libtsmux to gst-plugins-bad. This
+	is renamed to mpegtsmux to prevent conflicts. Also all relevant
+	informations about copyright and license are added to the top of
+	every file but apart from that no changes compared to the latest
+	SVN versions happened.
+
+2008-09-01  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/selector/gstinputselector.c: (gst_input_selector_init),
+	(gst_input_selector_event), (gst_input_selector_query):
+	Reuse the get_linked_pads for both source and sinkpads because they are
+	the same.
+	Implement a custum event handler and get the internally linked pad
+	directly instead of relying on the default (slower) implementation.
+
+2008-08-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/celt/gstceltdec.c: (celt_dec_chain_parse_data):
+	Correctly take the granulepos from upstream if possible and
+	correctly handle the granulepos in various calculations: the
+	granulepos is the sample number of the _last_ sample in a frame, not
+	the first. 
+
+	* ext/celt/gstceltenc.c: (gst_celt_enc_sinkevent),
+	(gst_celt_enc_encode), (gst_celt_enc_chain),
+	(gst_celt_enc_change_state):
+	* ext/celt/gstceltenc.h:
+	Handle non-zero start timestamps in the encoder and detect/handle
+	stream discontinuities. Fixes bug #547075.
+
+2008-08-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Rov Juvano <rovjuvano at users dot sourceforge dot net>
+
+	* configure.ac:
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/inspect/plugin-scaletempo.xml:
+	* examples/scaletempo/Makefile.am:
+	* examples/scaletempo/demo-gui.c: (pop_status_bar),
+	(status_bar_printf), (demo_gui_seek_bar_format), (update_position),
+	(demo_gui_seek_bar_change), (demo_gui_do_change_rate),
+	(demo_gui_do_set_rate), (demo_gui_do_rate_entered),
+	(demo_gui_do_toggle_advanced), (demo_gui_do_toggle_disabled),
+	(demo_gui_do_seek), (demo_gui_do_play), (demo_gui_do_pause),
+	(demo_gui_do_play_pause), (demo_gui_do_open_file),
+	(demo_gui_do_playlist_prev), (demo_gui_do_playlist_next),
+	(demo_gui_do_about_dialog), (demo_gui_do_quit),
+	(demo_gui_request_set_stride), (demo_gui_request_set_overlap),
+	(demo_gui_request_set_search), (demo_gui_rate_changed),
+	(demo_gui_playing_started), (demo_gui_playing_paused),
+	(demo_gui_playing_ended), (demo_gui_player_errored),
+	(demo_gui_stride_changed), (demo_gui_overlap_changed),
+	(demo_gui_search_changed), (demo_gui_set_player_func),
+	(demo_gui_set_playlist_func), (build_gvalue_array),
+	(create_action), (demo_gui_show_func), (demo_gui_set_player),
+	(demo_gui_set_playlist), (demo_gui_show), (demo_gui_get_property),
+	(demo_gui_set_property), (demo_gui_init), (demo_gui_class_init),
+	(demo_gui_get_type):
+	* examples/scaletempo/demo-gui.h:
+	* examples/scaletempo/demo-main.c: (handle_error_message),
+	(handle_quit), (main):
+	* examples/scaletempo/demo-player.c: (no_pipeline),
+	(demo_player_event_listener), (demo_player_state_changed_cb),
+	(demo_player_eos_cb), (demo_player_build_pipeline), (_set_rate),
+	(demo_player_scale_rate_func), (demo_player_set_rate_func),
+	(_set_state_and_wait), (demo_player_load_uri_func),
+	(demo_player_play_func), (demo_player_pause_func), (_seek_to),
+	(demo_player_seek_by_func), (demo_player_seek_to_func),
+	(demo_player_get_position_func), (demo_player_get_duration_func),
+	(demo_player_scale_rate), (demo_player_set_rate),
+	(demo_player_load_uri), (demo_player_play), (demo_player_pause),
+	(demo_player_seek_by), (demo_player_seek_to),
+	(demo_player_get_position), (demo_player_get_duration),
+	(demo_player_get_property), (demo_player_set_property),
+	(demo_player_init), (demo_player_class_init),
+	(demo_player_get_type):
+	* examples/scaletempo/demo-player.h:
+	* gst/scaletempo/Makefile.am:
+	* gst/scaletempo/gstscaletempo.c: (best_overlap_offset_float),
+	(best_overlap_offset_s16), (output_overlap_float),
+	(output_overlap_s16), (fill_queue), (reinit_buffers),
+	(gst_scaletempo_transform), (gst_scaletempo_transform_size),
+	(gst_scaletempo_sink_event), (gst_scaletempo_set_caps),
+	(gst_scaletempo_get_property), (gst_scaletempo_set_property),
+	(gst_scaletempo_base_init), (gst_scaletempo_class_init),
+	(gst_scaletempo_init):
+	* gst/scaletempo/gstscaletempo.h:
+	* gst/scaletempo/gstscaletempoplugin.c: (plugin_init):
+	Add scaletempo plugin, which allows to scale the speed of audio without
+	changing the pitch by handling seeks with a rate!=1.0.
+	Integrate it into the docs and add the example application for it.
+	Fixes bug #537700.
+
+2008-08-30  David Schleef  <ds@schleef.org>
+
+	* ext/dirac/gstdiracenc.cc: Fix some memleaks.
+
+2008-08-29  David Schleef  <ds@schleef.org>
+
+	* ext/dirac/gstdiracenc.cc: Fix EOS handling.  Clean up at
+	  object disposal.  Handle 4:2:2 and 4:4:4 video.
+
+2008-08-29  Jan Schmidt  <Jan.Schmidt@sun.com>
+
+	* ext/resindvd/resindvdbin.c:
+	Fix compiler warning on Forte.
+
+2008-08-29  Jan Schmidt  <Jan.Schmidt@sun.com>
+
+	* configure.ac:
+	Commit FIONREAD	check, needed for the dccp src.
+
+2008-08-29  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* ext/faac/gstfaac.c: (gst_faac_init), (gst_faac_sink_event),
+	(gst_faac_chain), (gst_faac_change_state):
+	* ext/faac/gstfaac.h:
+	Add code for calculating proper timestamp/duration for the trailing
+	encoded buffers that faac will output when receiving EOS.
+
+2008-08-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	Fix CFLAGS and LIBS for the apexsink.
+
+2008-08-28  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/winks/ksvideohelpers.c (ks_video_media_type_free):
+	  Avoid leaking the KSDATARANGE member of each KsVideoMediaType.
+
+2008-08-28  Jan Schmidt  <Jan.Schmidt@sun.com>
+
+	* gst/dccp/gstdccp.c:
+	* gst/dccp/gstdccpclientsrc.c:
+	Fix compilation on Solaris by including filio.h as needed.
+
+	* gst/deinterlace2/tvtime/tomsmocomp/TomsMoCompAll.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/TomsMoCompAll2.inc:
+	Fix compilation with Forte - apparently it hates concatenating a
+	macro argument that starts with an underscore??
+
+2008-08-28  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Jérémie Bernard <gremimail at gmail dot com>
+
+	* configure.ac:
+	* ext/apexsink/LGPL-3.0.txt:
+	* ext/apexsink/Makefile.am:
+	* ext/apexsink/gstapexplugin.c: (plugin_init):
+	* ext/apexsink/gstapexraop.c: (g_strdel), (gst_apexraop_send),
+	(gst_apexraop_recv), (gst_apexraop_new), (gst_apexraop_free),
+	(gst_apexraop_set_host), (gst_apexraop_get_host),
+	(gst_apexraop_set_port), (gst_apexraop_get_port),
+	(gst_apexraop_set_useragent), (gst_apexraop_get_useragent),
+	(gst_apexraop_connect), (gst_apexraop_get_jacktype),
+	(gst_apexraop_get_jackstatus), (gst_apexraop_close),
+	(gst_apexraop_set_volume), (gst_apexraop_write_bits),
+	(gst_apexraop_write), (gst_apexraop_flush):
+	* ext/apexsink/gstapexraop.h:
+	* ext/apexsink/gstapexsink.c: (gst_apexsink_jackstatus_get_type),
+	(gst_apexsink_jacktype_get_type), (gst_apexsink_interfaces_init),
+	(gst_apexsink_implements_interface_init),
+	(gst_apexsink_mixer_interface_init),
+	(gst_apexsink_interface_supported),
+	(gst_apexsink_mixer_list_tracks), (gst_apexsink_mixer_set_volume),
+	(gst_apexsink_mixer_get_volume), (gst_apexsink_base_init),
+	(gst_apexsink_class_init), (gst_apexsink_init),
+	(gst_apexsink_set_property), (gst_apexsink_get_property),
+	(gst_apexsink_finalise), (gst_apexsink_open),
+	(gst_apexsink_prepare), (gst_apexsink_write),
+	(gst_apexsink_unprepare), (gst_apexsink_delay),
+	(gst_apexsink_reset), (gst_apexsink_close):
+	* ext/apexsink/gstapexsink.h:
+	Add apexsink for audio output to Apple AirPort Express Wireless
+	devices. Fixes bug #542510.
+
+2008-08-28  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpsession.c: (gst_rtp_session_send_rtcp),
+	(gst_rtp_session_event_send_rtp_sink):
+	Send EOS when the session object instructs us to.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_on_timeout):
+	* gst/rtpmanager/rtpsession.h:
+	Make it possible for the session manager to instruct us to send EOS. We
+	currently will EOS when the session is a sender and when the sender part
+	goes EOS. This is not entirely correct behaviour because the session
+	could still participate as a receiver.
+	Fixes #549409.
+
+2008-08-27  Michael Smith <msmith@songbirdnest.com>
+
+	* gst/aiffparse/aiffparse.c:
+	  Read size of chunks preceeding the audio data with the
+	  correct endianness. Fixes playback of some files.
+	  Fixes #538500
+
+2008-08-27  Michael Smith <msmith@songbirdnest.com>
+
+	* configure.ac:
+	* gst/aiffparse/Makefile.am:
+	* gst/aiffparse/aiffparse.c:
+	* gst/aiffparse/aiffparse.h:
+	  Add an AIFF parsing element, heavily based on wavparse.
+
+2008-08-27  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* sys/winks/gstksvideodevice.c (gst_ks_video_device_class_init,
+	  gst_ks_video_device_set_state):
+	  Don't set the pin state to KSSTATE_RUN from the streaming thread.
+	  Skip KSSTATE_ACQUIRE when changing pin state downwards.
+	  Be nice and specify G_PARAM_STATIC_STRINGS.
+	  Remove unused finalize method.
+
+	* sys/winks/gstksvideosrc.c (DEFAULT_ENABLE_QUIRKS, PROP_ENABLE_QUIRKS,
+	  enable_quirks, gst_ks_video_src_class_init, gst_ks_video_src_init,
+	  gst_ks_video_src_finalize, gst_ks_video_src_get_property,
+	  gst_ks_video_src_set_property, gst_ks_video_src_reset,
+	  gst_ks_video_src_apply_driver_quirks, gst_ks_video_src_change_state,
+	  gst_ks_video_src_set_caps):
+	  First driver quirk: work around Logitech's hostile driver software to
+	  improve stability and performance. See comments for details.
+	  Provide a property to disable driver quirks (enabled by default).
+	  Be nice and specify G_PARAM_STATIC_STRINGS.
+	  Remove unused dispose method.
+	  Tweak include order.
+
+2008-08-27  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/selector/gstinputselector.c: (gst_input_selector_init),
+	(gst_input_selector_query):
+	Implement the LATENCY query in a better way by taking the latency of all
+	sinkpads and taking the min/max instead of just taking a random pad.
+
+2008-08-26  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/tvtime/tomsmocomp/SearchLoopBottom.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/SearchLoopTop.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/StrangeBob.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/WierdBob.inc:
+	Unroll the loop to handle two bytes at once. This should give
+	a small speedup and makes it possible to handle chroma and luma
+	different which is needed later.
+
+2008-08-26  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/dccp/gstdccpserversink.c:
+	* gst/dccp/gstdccpserversink.h:
+	Don't put globals only used by one '.c' file in a header !
+	Declare it as static, fixes build on macosx.
+
+2008-08-26  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/dccp/gstdccp.c: (gst_dccp_send_buffer):
+	Whoops, that was one fix too much :)
+
+2008-08-26  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/dccp/gstdccp.c: (gst_dccp_read_buffer),
+	(gst_dccp_send_buffer), (gst_dccp_set_sock_windowsize):
+	size_t's size varies by platform/architecture. Use glib convenience
+	macro instead. Fixes build on macosx.
+	Remove ending '\n' in debug statements.
+
+2008-08-26  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst/pcapparse/gstpcapparse.c: (gst_pcap_parse_class_init):
+	Remove unused code and fix includes.
+
+2008-08-25  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace_method_class_init):
+	* gst/deinterlace2/gstdeinterlace2.h:
+	* gst/deinterlace2/tvtime/tomsmocomp.c:
+	(gst_deinterlace_method_tomsmocomp_class_init):
+	* gst/deinterlace2/tvtime/tomsmocomp/SearchLoopBottom.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/SearchLoopTop.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/StrangeBob.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/TomsMoCompAll.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/TomsMoCompAll2.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/WierdBob.inc:
+	* gst/deinterlace2/tvtime/tomsmocomp/tomsmocompmacros.h:
+	First part of the C implementation of the tomsmocomp deinterlacing
+	algorithm. This only supports search-effort=0 currently, is painfully
+	slow and needs some cleanup later when all search-effort settings
+	are implemented in C.
+
+2008-08-24  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* configure.ac:
+	* sys/Makefile.am:
+	* sys/winks/Makefile.am:
+	* sys/winks/gstksclock.c:
+	* sys/winks/gstksclock.h:
+	* sys/winks/gstksvideodevice.c:
+	* sys/winks/gstksvideodevice.h:
+	* sys/winks/gstksvideosrc.c:
+	* sys/winks/gstksvideosrc.h:
+	* sys/winks/kshelpers.c:
+	* sys/winks/kshelpers.h:
+	* sys/winks/ksvideohelpers.c:
+	* sys/winks/ksvideohelpers.h:
+	  New plugin for low-latency video capture on Windows (#519935).
+
+	  Uses Kernel Streaming, the lowest level API for doing video capture
+	  on Windows (more or less just raw ioctls).
+
+2008-08-24  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* gst/pcapparse/gstpcapparse.c:
+	* sys/winscreencap/gstdx9screencapsrc.c:
+	* sys/winscreencap/gstgdiscreencapsrc.c:
+	  Added documentation blobs. Thanks to Stefan for noticing!
+
+2008-08-24  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	* configure.ac:
+	* gst/pcapparse/Makefile.am:
+	* gst/pcapparse/gstpcapparse.c:
+	* gst/pcapparse/gstpcapparse.h:
+	  New plugin: pcapparse (#520899).
+
+2008-08-24  Ole André Vadla Ravnås  <ole.andre.ravnas@tandberg.com>
+
+	patch by: Haakon Sporsheim <hakon.sporsheim@tandberg.com>
+
+	* configure.ac:
+	* sys/Makefile.am:
+	* sys/winscreencap/Makefile.am:
+	* sys/winscreencap/gstdx9screencapsrc.c:
+	* sys/winscreencap/gstdx9screencapsrc.h:
+	* sys/winscreencap/gstgdiscreencapsrc.c:
+	* sys/winscreencap/gstgdiscreencapsrc.h:
+	* sys/winscreencap/gstwinscreencap.c:
+	* sys/winscreencap/gstwinscreencap.h:
+	  New plugin: winscreencap (#463941).
+
+2008-08-22  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.c:
+	  Flip mpeg1/mpeg2 arrays for mpeg audio. Detect which type the audio
+	  is correctly, instead of backwards. No functional changes, since this
+	  mistake was completely self-consistent.
+
+2008-08-22  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	  Add, but commented out xml/element-dc1394.xml. Its documented, but
+	  I can't get it to be build.
+
+	* ext/celt/gstceltdec.c:
+	* ext/celt/gstceltenc.c:
+	  Fix doc warnings and reformat the doc block.
+
+2008-08-21  Stefan Kost  <ensonic@users.sf.net>
+
+	patch by: Leandro Melo de Sales <leandroal@gmail.com>
+
+	* configure.ac:
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/gst-plugins-bad-plugins.signals:
+	* docs/plugins/inspect/plugin-dccp.xml:
+	* gst/dccp/Makefile.am:
+	* gst/dccp/gstdccp.c:
+	* gst/dccp/gstdccp.h:
+	* gst/dccp/gstdccpclientsink.c:
+	* gst/dccp/gstdccpclientsink.h:
+	* gst/dccp/gstdccpclientsrc.c:
+	* gst/dccp/gstdccpclientsrc.h:
+	* gst/dccp/gstdccpplugin.c:
+	* gst/dccp/gstdccpserversink.c:
+	* gst/dccp/gstdccpserversink.h:
+	* gst/dccp/gstdccpserversrc.c:
+	* gst/dccp/gstdccpserversrc.h:
+	* tests/icles/dccp/README:
+	* tests/icles/dccp/call/README:
+	* tests/icles/dccp/call/DCCPClient.c:
+	* tests/icles/dccp/call/DCCPServer.c:
+	* tests/icles/dccp/file/DCCPClientSaveFile.c:
+	* tests/icles/dccp/file/DCCPServerSendFile.c:
+	* tests/icles/dccp/mic/DCCPClientPlayMic.c:
+	* tests/icles/dccp/mic/DCCPServerMic.c:
+	* tests/icles/dccp/mp3/DCCPClientPlayMP3.c:
+	* tests/icles/dccp/mp3/DCCPServerSendMP3.c:
+	* tests/icles/dccp/mp3Speex/DCCPClientPlaySpeexMP3.c:
+	* tests/icles/dccp/mp3Speex/DCCPServerSendSpeexMP3.c:
+	* tests/icles/dccp/mp3Stream/DCCPClientPlayMP3Stream.c:
+	* tests/icles/dccp/mp3Stream/DCCPServerSendMP3Stream.c:
+	  Add dccp plugin. Fixes #542390.
+
+2008-08-20  Tim-Philipp Müller  <tim at collabora co uk>
+
+	* configure.ac:
+	  Remove bits that presumably weren't supposed to be committed.
+
+2008-08-20  Michael Smith <msmith@songbirdnest.com>
+
+	* configure.ac:
+	* sys/Makefile.am:
+	* sys/acmenc/Makefile.am:
+	* sys/acmenc/acmenc.c:
+	  Add new windows ACM encoder wrapper.
+
+2008-08-18  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	patch by: Michael Krufky
+
+	* sys/dvb/gstdvbsrc.c:
+	* sys/dvb/parsechannels.c:
+	Add ATSC tunning and channels.conf parsing support.
+	Fixes #537455
+
+2008-08-13  Michael Smith <msmith@songbirdnest.com>
+
+	* sys/dshowdecwrapper/gstdshowaudiodec.c:
+	* sys/dshowdecwrapper/gstdshowaudiodec.h:
+	* sys/dshowdecwrapper/gstdshowvideodec.c:
+	* sys/dshowdecwrapper/gstdshowvideodec.h:
+	* sys/dshowvideosink/dshowvideosink.cpp:
+	* sys/dshowvideosink/dshowvideosink.h:
+	  Initialise COM with default flags.
+	  Only deinitialise if the initialisation was successful.
+
+2008-08-13  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/rtpmanager/gstrtpbin.c: (gst_rtp_bin_associate),
+	(gst_rtp_bin_sync_chain), (new_ssrc_pad_found):
+	Reset rtp timestamp interpollation when we detect a gap when the
+	clock_base changed.
+	Don't try to adjust the ts-offset when it's too big (> 3seconds)
+
+	* gst/rtpmanager/gstrtpsession.c: (gst_rtp_session_set_ssrc):
+	* gst/rtpmanager/gstrtpsession.h:
+	Add method to set session SSRC.
+
+	* gst/rtpmanager/rtpsession.c: (check_collision),
+	(rtp_session_set_internal_ssrc), (rtp_session_get_internal_ssrc),
+	(rtp_session_on_timeout):
+	* gst/rtpmanager/rtpsession.h:
+	Added debugging for the collision checks.
+	Add method to change the internal SSRC of the session.
+
+	* gst/rtpmanager/rtpsource.c: (rtp_source_process_rtp):
+	Reset the clock base when we detect large jumps in the seqnums.
+
+2008-08-12  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_reset),
+	(gst_x264_enc_chain), (gst_x264_enc_encode_frame):
+	* ext/x264/gstx264enc.h:
+	Do not deal with duplicated input (timestamps).  If needed,
+	a generic element can do so.
+	Do not manipulate input timestamps on the way out,
+	since that shifts the timeline and A/V sync.
+
+2008-08-12  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	Integrate new properties into documentation.
+	* ext/x264/gstx264enc.c: (gst_x264_enc_class_init),
+	(gst_x264_enc_init), (gst_x264_enc_init_encoder),
+	(gst_x264_enc_set_property), (gst_x264_enc_get_property):
+	Fix up API prior to eventual plugin move.
+	API: GstX264Enc:pass (provides more options, and changed to enum)
+
+2008-08-12  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/inspect/plugin-mplex.xml:
+	* ext/mplex/gstmplex.cc:
+	Update and add documentation for mplex.
+	* ext/mpeg2enc/gstmpeg2enc.cc:
+	Documentation update.
+
+2008-08-12  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* ext/x264/gstx264enc.c:
+	* tests/check/Makefile.am:
+	* tests/check/elements/x264enc.c: (setup_x264enc),
+	(cleanup_x264enc), (GST_START_TEST), (x264enc_suite), (main):
+	Add documentation and unit test for x264enc.
+
+2008-08-11  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_init),
+	(gst_x264_enc_header_buf), (gst_x264_enc_encode_frame):
+	Allocate some buffers in more adaptive and economical fashion.
+
+2008-08-11  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* configure.ac:
+	Check for sufficiently up-to-date x264 API.
+	* ext/x264/gstx264enc.c: (gst_x264_enc_pass_get_type),
+	(gst_x264_enc_base_init), (gst_x264_enc_class_init),
+	(gst_x264_enc_init), (gst_x264_enc_init_encoder),
+	(gst_x264_enc_set_property), (gst_x264_enc_get_property):
+	* ext/x264/gstx264enc.h:
+	Expose some more parameters of the x264 encoder as properties.
+
+2008-08-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* gst/rtpmanager/gstrtpbin.c:
+	  Print the pad-name in debug log.
+
+	* sys/dshowsrcwrapper/gstdshowaudiosrc.c:
+	* sys/dshowsrcwrapper/gstdshowvideosrc.c:
+	  Use "-" instead of "_" in property names. Can we call them just
+	  "device" like everywhere else?
+
+2008-08-08  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.c: (gst_x264_enc_log_callback),
+	(gst_x264_enc_finalize), (gst_x264_enc_header_buf),
+	(gst_x264_enc_set_src_caps), (gst_x264_enc_sink_set_caps),
+	(gst_x264_enc_flush_frames):
+	Coding style and layout; re-order some functions in more
+	typical and natural flow.
+
+2008-08-08  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/Makefile.am:
+	* ext/x264/gstx264enc.c: (gst_x264_enc_set_src_caps),
+	(gst_x264_enc_sink_set_caps), (gst_x264_enc_init),
+	(gst_x264_enc_reset), (gst_x264_enc_finalize),
+	(gst_x264_enc_flush_frames), (gst_x264_enc_sink_event),
+	(gst_x264_enc_chain), (gst_x264_enc_encode_frame),
+	(gst_x264_enc_change_state), (gst_x264_enc_set_property):
+	* ext/x264/gstx264enc.h:
+	Use GQueue in stead of custom queue code.
+	Factorize flushing out encoder delayed frames.
+	Factorize initialization and state change reset.
+
+2008-08-08  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/gstx264enc.h:
+	* sys/fbdev/gstfbdevsink.c:
+	Use configure-generated _stdint.h.
+
+2008-08-08  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* ext/x264/Makefile.am:
+	* ext/x264/gstx264enc.c: (gst_x264_enc_header_buf),
+	(gst_x264_enc_sink_set_caps), (gst_x264_enc_base_init),
+	(gst_x264_enc_class_init), (gst_x264_enc_log_callback),
+	(gst_x264_enc_init), (gst_x264_enc_init_encoder),
+	(gst_x264_enc_finalize), (gst_x264_enc_chain),
+	(gst_x264_enc_encode_frame), (plugin_init):
+	* ext/x264/gstx264enc.h:
+	Use video format library and GST_WRITE_*_BE macros where applicable.
+	Use finalize in stead of dispose.
+	Set up debug category and log callback.
+
+2008-08-07  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	Patch by: Frederic Crozat <fcrozat@mandriva.org>
+
+	* ext/sndfile/gstsf.c: (plugin_init):
+	* sys/dvb/gstdvbsrc.c: (gst_dvbsrc_plugin_init):
+	* sys/oss4/oss4-audio.c: (plugin_init):
+	Make sure gettext returns translations in UTF-8 encoding rather
+	than in the current locale encoding (#546822).
+
+2008-08-07  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* ext/twolame/gsttwolame.c: (gst_two_lame_sink_setcaps),
+	(gst_two_lame_chain):
+	* ext/twolame/gsttwolame.h:
+	Allow raw float samples as input for encoding.
+
+2008-08-07  Stefan Kost  <ensonic@users.sf.net>
+
+	* ext/jack/gstjackaudiosrc.c:
+	  Try committing this once again. Now properly renamed.
+
+2008-08-07  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/inspect/plugin-jack.xml
+	  Add new element to docs.
+
+	* ext/jack/gstjack.h
+	  Add missing file.
+
+	* ext/jack/gstjackaudiosrc.c:
+	* ext/jack/gstjackaudiosrc.h:
+	  Rename jackaudiosrc to jack_audio_src.
+
+2008-08-07  Stefan Kost  <ensonic@users.sf.net>
+
+	patch by: Tristan Matthews <tristan@sat.qc.ca>
+
+	* ext/jack/Makefile.am:
+	* ext/jack/gstjack.c:
+	* ext/jack/gstjackaudioclient.c:
+	* ext/jack/gstjackaudiosink.c:
+	* ext/jack/gstjackaudiosink.h:
+	* ext/jack/gstjackaudiosrc.c:
+	* ext/jack/gstjackaudiosrc.h:
+	* ext/jack/gstjackringbuffer.h:
+	  Add a jackaudiosrc. Refactor sink slightly for better code reuse.
+	  Fixes #545197.
+
+2008-08-06  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* docs/plugins/Makefile.am:
+	* docs/plugins/gst-plugins-bad-plugins-docs.sgml:
+	* docs/plugins/gst-plugins-bad-plugins-sections.txt:
+	* docs/plugins/gst-plugins-bad-plugins.args:
+	* docs/plugins/gst-plugins-bad-plugins.hierarchy:
+	* docs/plugins/gst-plugins-bad-plugins.interfaces:
+	* docs/plugins/gst-plugins-bad-plugins.prerequisites:
+	* docs/plugins/inspect/plugin-celt.xml:
+	* docs/plugins/inspect/plugin-twolame.xml:
+	Add twolame and celt plugins to the docs.
+
+2008-08-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Based on patch by: Olivier Crete <tester at tester dot ca>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_chain), (gst_rtp_jitter_buffer_loop):
+	Make the buffer metadata writable before inserting it in the
+	jitterbuffer because the jitterbuffer will modify the timestamps.
+
+	* gst/rtpmanager/rtpjitterbuffer.c:
+	Update method comment about requiring writable metadata on buffers.
+
+	* gst/rtpmanager/rtpsession.c: (rtp_session_process_sr),
+	(rtp_session_process_rtcp):
+	Make the RTCP buffer metadata writable because we want to modify the
+	metadata.
+	Fixes #546312.
+
+2008-08-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	* gst/selector/gstinputselector.c: (gst_selector_pad_bufferalloc),
+	(gst_selector_pad_chain), (gst_input_selector_getcaps),
+	(gst_input_selector_activate_sinkpad):
+	Move the select-all logic into the activation of the currently selected
+	pad. We want to remember the last pad with activity in select-all mode.
+	Fix the getcaps function, we can produce the union of the upstream caps
+	in select-all mode, not the intersection like proxy_getcaps() does.
+
+2008-08-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Håvard Graff <havard dot graff at tandberg dot com>
+
+	* gst/rtpmanager/gstrtpjitterbuffer.c:
+	(gst_rtp_jitter_buffer_chain):
+	Fix debug by logging the right seqnum.
+
+2008-08-05  Wim Taymans  <wim.taymans@collabora.co.uk>
+
+	Patch by: Olivier Crete <tester at tester dot ca>
+
+	* gst/rtpmanager/gstrtpbin.c: (get_pt_map):
+	Release lock before emitting the request-pt-map signal.
+	Fixes #543480.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace_simple_method_interpolate_scanline),
+	(gst_deinterlace_simple_method_copy_scanline),
+	(gst_deinterlace_simple_method_deinterlace_frame):
+	* gst/deinterlace2/tvtime/greedy.c: (deinterlace_frame_di_greedy):
+	* gst/deinterlace2/tvtime/greedyh.c:
+	(deinterlace_frame_di_greedyh):
+	* gst/deinterlace2/tvtime/scalerbob.c:
+	(deinterlace_scanline_scaler_bob):
+	* gst/deinterlace2/tvtime/tomsmocomp.c: (Fieldcopy):
+	* gst/deinterlace2/tvtime/weave.c: (deinterlace_scanline_weave),
+	(copy_scanline):
+	* gst/deinterlace2/tvtime/weavebff.c: (deinterlace_scanline_weave),
+	(copy_scanline):
+	* gst/deinterlace2/tvtime/weavetff.c: (deinterlace_scanline_weave),
+	(copy_scanline):
+	Use oil_memcpy() instead of memcpy() as it's faster for the sizes that
+	are usually used here.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/Makefile.am:
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace_simple_method_deinterlace_frame),
+	(gst_deinterlace2_methods_get_type), (gst_deinterlace2_set_method):
+	* gst/deinterlace2/gstdeinterlace2.h:
+	* gst/deinterlace2/tvtime/linear.c:
+	(deinterlace_scanline_linear_c), (deinterlace_scanline_linear_mmx),
+	(deinterlace_scanline_linear_mmxext),
+	(gst_deinterlace_method_linear_class_init),
+	(gst_deinterlace_method_linear_init):
+	* gst/deinterlace2/tvtime/linearblend.c:
+	(deinterlace_scanline_linear_blend_c),
+	(deinterlace_scanline_linear_blend2_c),
+	(deinterlace_scanline_linear_blend_mmx),
+	(deinterlace_scanline_linear_blend2_mmx),
+	(gst_deinterlace_method_linear_blend_class_init),
+	(gst_deinterlace_method_linear_blend_init):
+	* gst/deinterlace2/tvtime/plugins.h:
+	* gst/deinterlace2/tvtime/scalerbob.c:
+	(deinterlace_scanline_scaler_bob),
+	(gst_deinterlace_method_scaler_bob_class_init),
+	(gst_deinterlace_method_scaler_bob_init):
+	* gst/deinterlace2/tvtime/weave.c: (deinterlace_scanline_weave),
+	(copy_scanline), (gst_deinterlace_method_weave_class_init),
+	(gst_deinterlace_method_weave_init):
+	* gst/deinterlace2/tvtime/weavebff.c: (deinterlace_scanline_weave),
+	(copy_scanline), (gst_deinterlace_method_weave_bff_class_init),
+	(gst_deinterlace_method_weave_bff_init):
+	* gst/deinterlace2/tvtime/weavetff.c: (deinterlace_scanline_weave),
+	(copy_scanline), (gst_deinterlace_method_weave_tff_class_init),
+	(gst_deinterlace_method_weave_tff_init):
+	Add the remaining tvtime deinterlacing methods and fix the
+	deinterlace_frame() implementation of GstDeinterlaceSimpleMethod.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/tvtime/vfir.c: (deinterlace_line_c),
+	(deinterlace_line_mmx), (gst_deinterlace_method_vfir_class_init):
+	Implement the VFIR deinterlacing method as simple method.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace_simple_method_interpolate_scanline),
+	(gst_deinterlace_simple_method_copy_scanline),
+	(gst_deinterlace_simple_method_deinterlace_frame),
+	(gst_deinterlace_simple_method_class_init),
+	(gst_deinterlace_simple_method_init):
+	* gst/deinterlace2/gstdeinterlace2.h:
+	Add a GstDeinterlaceSimpleMethod subclass of GstDeinterlaceMethod that
+	can be used by simple deinterlacing methods. They only have to provide
+	a function for interpolating a scanline or copying a scanline.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c: (gst_deinterlace2_chain):
+	Respect the latency of the deinterlacing algorithm for the timestamps
+	of every buffer.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/tvtime/greedyh.asm:
+	* gst/deinterlace2/tvtime/tomsmocomp/SearchLoopBottom.inc:
+	Add the MMX registers to the clobbered registers only if __MMX__ is
+	defined.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/Makefile.am:
+	* gst/deinterlace2/gstdeinterlace2.c:
+	(gst_deinterlace2_methods_get_type), (gst_deinterlace2_set_method),
+	(gst_deinterlace2_class_init):
+	Enable tomsmocomp again as the C port will be ready for the next
+	release.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* gst/deinterlace2/gstdeinterlace2.c: (gst_deinterlace2_init),
+	(gst_greatest_common_divisor), (gst_fraction_double),
+	(gst_deinterlace2_getcaps), (gst_deinterlace2_setcaps):
+	Don't use proxy_getcaps() but implement our own getcaps() function
+	that doubles/halfs the framerate if all fields should be sent out.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* ext/Makefile.am:
+	* ext/twolame/Makefile.am:
+	* ext/twolame/gsttwolame.c: (gst_two_lame_mode_get_type),
+	(gst_two_lame_padding_get_type), (gst_two_lame_emphasis_get_type),
+	(gst_two_lame_release_memory), (gst_two_lame_finalize),
+	(gst_two_lame_base_init), (gst_two_lame_class_init),
+	(gst_two_lame_src_setcaps), (gst_two_lame_sink_setcaps),
+	(gst_two_lame_init), (gst_two_lame_set_property),
+	(gst_two_lame_get_property), (gst_two_lame_sink_event),
+	(gst_two_lame_chain), (gst_two_lame_setup),
+	(gst_two_lame_change_state), (gst_two_lame_get_default_settings),
+	(plugin_init):
+	* ext/twolame/gsttwolame.h:
+	Add TwoLAME MP2 encoding element, based on the LAME element.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* configure.ac:
+	* ext/Makefile.am:
+	* ext/celt/Makefile.am:
+	* ext/celt/gstcelt.c: (plugin_init):
+	* ext/celt/gstceltdec.c: (gst_celt_dec_base_init),
+	(gst_celt_dec_class_init), (gst_celt_dec_reset),
+	(gst_celt_dec_init), (celt_dec_convert),
+	(celt_get_sink_query_types), (celt_dec_sink_query),
+	(celt_get_src_query_types), (celt_dec_src_query),
+	(celt_dec_src_event), (celt_dec_sink_event),
+	(celt_dec_chain_parse_header), (celt_dec_chain_parse_comments),
+	(celt_dec_chain_parse_data), (celt_dec_chain),
+	(celt_dec_change_state):
+	* ext/celt/gstceltdec.h:
+	* ext/celt/gstceltenc.c: (gst_celt_enc_setup_interfaces),
+	(gst_celt_enc_base_init), (gst_celt_enc_class_init),
+	(gst_celt_enc_finalize), (gst_celt_enc_sink_setcaps),
+	(gst_celt_enc_sink_getcaps), (gst_celt_enc_convert_src),
+	(gst_celt_enc_convert_sink), (gst_celt_enc_get_latency),
+	(gst_celt_enc_get_query_types), (gst_celt_enc_src_query),
+	(gst_celt_enc_sink_query), (gst_celt_enc_init),
+	(gst_celt_enc_create_metadata_buffer), (gst_celt_enc_setup),
+	(gst_celt_enc_buffer_from_data), (gst_celt_enc_push_buffer),
+	(gst_celt_enc_set_header_on_caps), (gst_celt_enc_sinkevent),
+	(gst_celt_enc_chain), (gst_celt_enc_get_property),
+	(gst_celt_enc_set_property), (gst_celt_enc_change_state):
+	* ext/celt/gstceltenc.h:
+	Add CELT encoder and decoder elements based on the Speex elements.
+
+2008-08-02  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Tal Shalif <tshalif at nargila dot org>
+
+	* ext/sdl/sdlvideosink.c: (gst_sdlvideosink_initsdl):
+	Use g_setenv() and g_unsetenv() instead of setenv() to fix compilation
+	with mingw. Fixes bug #545247.
+
+2008-08-02  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* configure.ac:
+	Back to development -> 0.10.8.1
+
 === release 0.10.8 ===
 
 2008-07-28  Jan Schmidt <jan.schmidt@sun.com>

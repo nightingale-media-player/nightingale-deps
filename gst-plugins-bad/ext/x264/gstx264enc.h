@@ -22,7 +22,8 @@
 #define __GST_X264_ENC_H__
 
 #include <gst/gst.h>
-#include <_stdint.h>
+#include <gst/video/video.h>
+#include "_stdint.h"
 #include <x264.h>
 
 G_BEGIN_DECLS
@@ -40,7 +41,7 @@ G_BEGIN_DECLS
 
 typedef struct _GstX264Enc GstX264Enc;
 typedef struct _GstX264EncClass GstX264EncClass;
- 
+
 struct _GstX264Enc
 {
   GstElement element;
@@ -52,8 +53,10 @@ struct _GstX264Enc
   x264_t *x264enc;
   x264_param_t x264param;
 
+  /* properties */
   guint threads;
-  guint pass;
+  gint pass;
+  guint quantizer;
   gchar *stats_file;
   gboolean byte_stream;
   guint bitrate;
@@ -63,6 +66,7 @@ struct _GstX264Enc
   gboolean dct8x8;
   guint ref;
   guint bframes;
+  gboolean b_adapt;
   gboolean b_pyramid;
   gboolean weightb;
   guint sps_id;
@@ -70,18 +74,25 @@ struct _GstX264Enc
   guint vbv_buf_capacity;
   guint keyint_max;
   gboolean cabac;
+  gfloat ip_factor;
+  gfloat pb_factor;
+  guint qp_min;
+  guint qp_max;
+  guint qp_step;
+  guint noise_reduction;
+  gboolean interlaced;
 
+  /* input description */
+  GstVideoFormat format;
   gint width, height;
-  guint stride, luma_plane_size;
-  gint framerate_num, framerate_den;
+  gint fps_num, fps_den;
   gint par_num, par_den;
+  /* cache some format properties */
+  gint stride[4], offset[4];
+  gint image_size;
 
-  GstClockTime last_timestamp;
-  GstClockTime *timestamp_queue;
-  GstClockTime *timestamp_queue_dur;
-  guint timestamp_queue_size;
-  guint timestamp_queue_head;
-  guint timestamp_queue_tail;
+  /* for b-frame delay handling */
+  GQueue *delay;
 
   guint8 *buffer;
   gulong buffer_size;

@@ -1075,7 +1075,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>Output format</NICK>
 <BLURB>Format of output frames.</BLURB>
-<DEFAULT>OUTPUTFORMAT_ADTS</DEFAULT>
+<DEFAULT>OUTPUTFORMAT_RAW</DEFAULT>
 </ARG>
 
 <ARG>
@@ -8561,11 +8561,11 @@
 <ARG>
 <NAME>ladspa-tap-tubewarmth::Drive</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,10]</RANGE>
+<RANGE>[0.1,10]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Drive</NICK>
 <BLURB>Drive.</BLURB>
-<DEFAULT>2,575</DEFAULT>
+<DEFAULT>2.575</DEFAULT>
 </ARG>
 
 <ARG>
@@ -8665,7 +8665,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Rotor-Horn-Mix</NICK>
 <BLURB>Rotor-Horn-Mix.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -8845,7 +8845,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Fractal-Dimension</NICK>
 <BLURB>Fractal-Dimension.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -8891,17 +8891,17 @@
 <ARG>
 <NAME>ladspa-tap-limiter::latency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,2500,1]</RANGE>
+<RANGE>[0,2500.1]</RANGE>
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>2500,1</DEFAULT>
+<DEFAULT>2500.1</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-1-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-1-Bandwidth--octaves-</NICK>
 <BLURB>Band-1-Bandwidth--octaves-.</BLURB>
@@ -8931,7 +8931,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-2-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-2-Bandwidth--octaves-</NICK>
 <BLURB>Band-2-Bandwidth--octaves-.</BLURB>
@@ -8961,7 +8961,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-3-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-3-Bandwidth--octaves-</NICK>
 <BLURB>Band-3-Bandwidth--octaves-.</BLURB>
@@ -8991,7 +8991,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-4-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-4-Bandwidth--octaves-</NICK>
 <BLURB>Band-4-Bandwidth--octaves-.</BLURB>
@@ -9021,7 +9021,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-5-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-5-Bandwidth--octaves-</NICK>
 <BLURB>Band-5-Bandwidth--octaves-.</BLURB>
@@ -9051,7 +9051,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-6-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-6-Bandwidth--octaves-</NICK>
 <BLURB>Band-6-Bandwidth--octaves-.</BLURB>
@@ -9081,7 +9081,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-7-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-7-Bandwidth--octaves-</NICK>
 <BLURB>Band-7-Bandwidth--octaves-.</BLURB>
@@ -9111,7 +9111,7 @@
 <ARG>
 <NAME>ladspa-tap-equalizer-bw::Band-8-Bandwidth--octaves-</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,5]</RANGE>
+<RANGE>[0.1,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-8-Bandwidth--octaves-</NICK>
 <BLURB>Band-8-Bandwidth--octaves-.</BLURB>
@@ -9545,7 +9545,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Pitch-Tracking</NICK>
 <BLURB>Pitch-Tracking.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -9555,7 +9555,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Time-Tracking</NICK>
 <BLURB>Time-Tracking.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -9775,13 +9775,13 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-pitchScaleHQ::Pitch-co-efficient</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,5,2]</RANGE>
+<RANGE>[0.5,2]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Pitch-co-efficient</NICK>
 <BLURB>Pitch-co-efficient.</BLURB>
@@ -9795,7 +9795,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -9845,7 +9845,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Frequency--Hz-</NICK>
 <BLURB>Frequency--Hz-.</BLURB>
-<DEFAULT>1,25</DEFAULT>
+<DEFAULT>1.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -9875,7 +9875,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10041,11 +10041,11 @@
 <ARG>
 <NAME>ladspa-sc4m::Attack-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[1,5,400]</RANGE>
+<RANGE>[1.5,400]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,125</DEFAULT>
+<DEFAULT>101.125</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10065,7 +10065,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10155,13 +10155,13 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-pitchScale::Pitch-co-efficient</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,5,2]</RANGE>
+<RANGE>[0.5,2]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Pitch-co-efficient</NICK>
 <BLURB>Pitch-co-efficient.</BLURB>
@@ -10175,7 +10175,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10191,17 +10191,17 @@
 <ARG>
 <NAME>ladspa-pointerCastDistortion::Effect-cutoff-freq</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,13230]</RANGE>
+<RANGE>[4.41,13230]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Effect-cutoff-freq</NICK>
 <BLURB>Effect-cutoff-freq.</BLURB>
-<DEFAULT>32,6376</DEFAULT>
+<DEFAULT>32.6377</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-const::Signal-amplitude</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[-1,1,1]</RANGE>
+<RANGE>[-1,1.1]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Signal-amplitude</NICK>
 <BLURB>Signal-amplitude.</BLURB>
@@ -10211,11 +10211,11 @@
 <ARG>
 <NAME>ladspa-lsFilter::Cutoff-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[88,2,22050]</RANGE>
+<RANGE>[88.2,22050]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-frequency</NICK>
 <BLURB>Cutoff-frequency.</BLURB>
-<DEFAULT>1394,56</DEFAULT>
+<DEFAULT>1394.56</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10601,61 +10601,61 @@
 <ARG>
 <NAME>ladspa-butthigh-iir::Cutoff-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-Frequency</NICK>
 <BLURB>Cutoff-Frequency.</BLURB>
-<DEFAULT>36,1195</DEFAULT>
+<DEFAULT>36.1195</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-butthigh-iir::Resonance</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,1,41]</RANGE>
+<RANGE>[0.1,1.41]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Resonance</NICK>
 <BLURB>Resonance.</BLURB>
-<DEFAULT>0,755</DEFAULT>
+<DEFAULT>0.755</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-buttlow-iir::Cutoff-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-Frequency</NICK>
 <BLURB>Cutoff-Frequency.</BLURB>
-<DEFAULT>36,1195</DEFAULT>
+<DEFAULT>36.1195</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-buttlow-iir::Resonance</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,1,41]</RANGE>
+<RANGE>[0.1,1.41]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Resonance</NICK>
 <BLURB>Resonance.</BLURB>
-<DEFAULT>0,755</DEFAULT>
+<DEFAULT>0.755</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-bwxover-iir::Cutoff-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-Frequency</NICK>
 <BLURB>Cutoff-Frequency.</BLURB>
-<DEFAULT>36,1195</DEFAULT>
+<DEFAULT>36.1195</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-bwxover-iir::Resonance</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,1,41]</RANGE>
+<RANGE>[0.1,1.41]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Resonance</NICK>
 <BLURB>Resonance.</BLURB>
-<DEFAULT>0,755</DEFAULT>
+<DEFAULT>0.755</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10695,7 +10695,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10735,27 +10735,27 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-notch-iir::Bandwidth</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Bandwidth</NICK>
 <BLURB>Bandwidth.</BLURB>
-<DEFAULT>295,832</DEFAULT>
+<DEFAULT>295.832</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-notch-iir::Center-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Center-Frequency</NICK>
 <BLURB>Center-Frequency.</BLURB>
-<DEFAULT>295,832</DEFAULT>
+<DEFAULT>295.832</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10771,11 +10771,11 @@
 <ARG>
 <NAME>ladspa-lowpass-iir::Cutoff-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-Frequency</NICK>
 <BLURB>Cutoff-Frequency.</BLURB>
-<DEFAULT>2422,97</DEFAULT>
+<DEFAULT>2422.97</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10791,11 +10791,11 @@
 <ARG>
 <NAME>ladspa-highpass-iir::Cutoff-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Cutoff-Frequency</NICK>
 <BLURB>Cutoff-Frequency.</BLURB>
-<DEFAULT>36,1195</DEFAULT>
+<DEFAULT>36.1195</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10811,21 +10811,21 @@
 <ARG>
 <NAME>ladspa-bandpass-iir::Bandwidth</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Bandwidth</NICK>
 <BLURB>Bandwidth.</BLURB>
-<DEFAULT>295,832</DEFAULT>
+<DEFAULT>295.832</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-bandpass-iir::Center-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Center-Frequency</NICK>
 <BLURB>Center-Frequency.</BLURB>
-<DEFAULT>295,832</DEFAULT>
+<DEFAULT>295.832</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10841,21 +10841,21 @@
 <ARG>
 <NAME>ladspa-bandpass-a-iir::Bandwidth</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Bandwidth</NICK>
 <BLURB>Bandwidth.</BLURB>
-<DEFAULT>295,832</DEFAULT>
+<DEFAULT>295.832</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-bandpass-a-iir::Center-Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,19845]</RANGE>
+<RANGE>[4.41,19845]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Center-Frequency</NICK>
 <BLURB>Center-Frequency.</BLURB>
-<DEFAULT>36,1195</DEFAULT>
+<DEFAULT>36.1195</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10871,11 +10871,11 @@
 <ARG>
 <NAME>ladspa-se4::Attack-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[1,5,400]</RANGE>
+<RANGE>[1.5,400]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,125</DEFAULT>
+<DEFAULT>101.125</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10905,7 +10905,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10951,7 +10951,7 @@
 <ARG>
 <NAME>ladspa-sinCos::Base-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,0441,22050]</RANGE>
+<RANGE>[0.0441,22050]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Base-frequency</NICK>
 <BLURB>Base-frequency.</BLURB>
@@ -10975,7 +10975,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -10991,11 +10991,11 @@
 <ARG>
 <NAME>ladspa-gongBeater::Strike-duration</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,001,0,2]</RANGE>
+<RANGE>[0.001,0.2]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Strike-duration</NICK>
 <BLURB>Strike-duration.</BLURB>
-<DEFAULT>0,1005</DEFAULT>
+<DEFAULT>0.1005</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11031,7 +11031,7 @@
 <ARG>
 <NAME>ladspa-djFlanger::LFO-period</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,32]</RANGE>
+<RANGE>[0.1,32]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>LFO-period</NICK>
 <BLURB>LFO-period.</BLURB>
@@ -11045,23 +11045,23 @@
 <FLAGS>rwx</FLAGS>
 <NICK>LFO-sync</NICK>
 <BLURB>LFO-sync.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-giantFlange::Delay-1-range</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,10,5]</RANGE>
+<RANGE>[0,10.5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay-1-range</NICK>
 <BLURB>Delay-1-range.</BLURB>
-<DEFAULT>2,625</DEFAULT>
+<DEFAULT>2.625</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-giantFlange::Delay-2-range</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,10,5]</RANGE>
+<RANGE>[0,10.5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay-2-range</NICK>
 <BLURB>Delay-2-range.</BLURB>
@@ -11075,7 +11075,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Double-delay</NICK>
 <BLURB>Double-delay.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11241,11 +11241,11 @@
 <ARG>
 <NAME>ladspa-sc4::Attack-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[1,5,400]</RANGE>
+<RANGE>[1.5,400]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,125</DEFAULT>
+<DEFAULT>101.125</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11265,7 +11265,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11331,7 +11331,7 @@
 <ARG>
 <NAME>ladspa-amPitchshift::Pitch-shift</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,25,4]</RANGE>
+<RANGE>[0.25,4]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Pitch-shift</NICK>
 <BLURB>Pitch-shift.</BLURB>
@@ -11345,7 +11345,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11385,7 +11385,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11405,7 +11405,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11425,7 +11425,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,5</DEFAULT>
+<DEFAULT>101.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11445,7 +11445,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11495,7 +11495,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,5</DEFAULT>
+<DEFAULT>101.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11505,7 +11505,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11555,7 +11555,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>101,5</DEFAULT>
+<DEFAULT>101.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11565,7 +11565,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Knee-radius</NICK>
 <BLURB>Knee-radius.</BLURB>
-<DEFAULT>3,25</DEFAULT>
+<DEFAULT>3.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11615,7 +11615,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-damping</NICK>
 <BLURB>Inner-damping.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11625,7 +11625,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-size-1</NICK>
 <BLURB>Inner-size-1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11635,7 +11635,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-size-2</NICK>
 <BLURB>Inner-size-2.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11645,7 +11645,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-size-3</NICK>
 <BLURB>Inner-size-3.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11655,7 +11655,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-size-4</NICK>
 <BLURB>Inner-size-4.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11665,7 +11665,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-1--</NICK>
 <BLURB>Inner-stiffness-1--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11675,7 +11675,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-1---1</NICK>
 <BLURB>Inner-stiffness-1---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11685,7 +11685,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-2--</NICK>
 <BLURB>Inner-stiffness-2--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11695,7 +11695,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-2---1</NICK>
 <BLURB>Inner-stiffness-2---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11705,7 +11705,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-3--</NICK>
 <BLURB>Inner-stiffness-3--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11715,7 +11715,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-3---1</NICK>
 <BLURB>Inner-stiffness-3---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11725,7 +11725,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-4--</NICK>
 <BLURB>Inner-stiffness-4--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11735,7 +11735,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Inner-stiffness-4---1</NICK>
 <BLURB>Inner-stiffness-4---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11745,7 +11745,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Mic-position</NICK>
 <BLURB>Mic-position.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11755,7 +11755,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-damping</NICK>
 <BLURB>Outer-damping.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11765,7 +11765,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-size-1</NICK>
 <BLURB>Outer-size-1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11775,7 +11775,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-size-2</NICK>
 <BLURB>Outer-size-2.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11785,7 +11785,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-size-3</NICK>
 <BLURB>Outer-size-3.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11795,7 +11795,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-size-4</NICK>
 <BLURB>Outer-size-4.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11805,7 +11805,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-1--</NICK>
 <BLURB>Outer-stiffness-1--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11815,7 +11815,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-1---1</NICK>
 <BLURB>Outer-stiffness-1---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11825,7 +11825,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-2--</NICK>
 <BLURB>Outer-stiffness-2--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11835,7 +11835,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-2---1</NICK>
 <BLURB>Outer-stiffness-2---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11845,7 +11845,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-3--</NICK>
 <BLURB>Outer-stiffness-3--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11855,7 +11855,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-3---1</NICK>
 <BLURB>Outer-stiffness-3---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11865,7 +11865,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-4--</NICK>
 <BLURB>Outer-stiffness-4--.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11875,7 +11875,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Outer-stiffness-4---1</NICK>
 <BLURB>Outer-stiffness-4---1.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11885,7 +11885,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Damping</NICK>
 <BLURB>Damping.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11895,17 +11895,17 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Dry-wet-mix</NICK>
 <BLURB>Dry-wet-mix.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-plate::Reverb-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,01,8,5]</RANGE>
+<RANGE>[0.01,8.5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Reverb-time</NICK>
 <BLURB>Reverb-time.</BLURB>
-<DEFAULT>4,255</DEFAULT>
+<DEFAULT>4.255</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11945,7 +11945,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Tracking-speed</NICK>
 <BLURB>Tracking-speed.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -11961,7 +11961,7 @@
 <ARG>
 <NAME>ladspa-analogueOsc::Frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,0441,22005,9]</RANGE>
+<RANGE>[0.0441,22005.9]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Frequency</NICK>
 <BLURB>Frequency.</BLURB>
@@ -12071,11 +12071,11 @@
 <ARG>
 <NAME>ladspa-gate::Attack</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,01,1000]</RANGE>
+<RANGE>[0.01,1000]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Attack</NICK>
 <BLURB>Attack.</BLURB>
-<DEFAULT>250,008</DEFAULT>
+<DEFAULT>250.008</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12091,7 +12091,7 @@
 <ARG>
 <NAME>ladspa-gate::HF-key-filter</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[220,5,21609]</RANGE>
+<RANGE>[220.5,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>HF-key-filter</NICK>
 <BLURB>HF-key-filter.</BLURB>
@@ -12105,17 +12105,17 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Hold</NICK>
 <BLURB>Hold.</BLURB>
-<DEFAULT>1500,5</DEFAULT>
+<DEFAULT>1500.5</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-gate::LF-key-filter</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[30,87,4410]</RANGE>
+<RANGE>[30.87,4410]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>LF-key-filter</NICK>
 <BLURB>LF-key-filter.</BLURB>
-<DEFAULT>30,87</DEFAULT>
+<DEFAULT>30.87</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12211,7 +12211,7 @@
 <ARG>
 <NAME>ladspa-crossoverDist::Crossover-amplitude</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,0,1]</RANGE>
+<RANGE>[0,0.1]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Crossover-amplitude</NICK>
 <BLURB>Crossover-amplitude.</BLURB>
@@ -12235,7 +12235,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Compression-ratio</NICK>
 <BLURB>Compression-ratio.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12245,7 +12245,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Fast-compression-ratio</NICK>
 <BLURB>Fast-compression-ratio.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12265,13 +12265,13 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Release-time</NICK>
 <BLURB>Release-time.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-delayorama::Amplitude-change</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,2,5]</RANGE>
+<RANGE>[0.2,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Amplitude-change</NICK>
 <BLURB>Amplitude-change.</BLURB>
@@ -12291,7 +12291,7 @@
 <ARG>
 <NAME>ladspa-delayorama::Delay-change</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,2,5]</RANGE>
+<RANGE>[0.2,5]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay-change</NICK>
 <BLURB>Delay-change.</BLURB>
@@ -12311,7 +12311,7 @@
 <ARG>
 <NAME>ladspa-delayorama::Delay-range</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,0001,6]</RANGE>
+<RANGE>[0.0001,6]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay-range</NICK>
 <BLURB>Delay-range.</BLURB>
@@ -12485,7 +12485,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Attack-time</NICK>
 <BLURB>Attack-time.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12495,7 +12495,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Decay-time</NICK>
 <BLURB>Decay-time.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12515,7 +12515,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Modulation-depth</NICK>
 <BLURB>Modulation-depth.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12575,7 +12575,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Frequency-1</NICK>
 <BLURB>Frequency-1.</BLURB>
-<DEFAULT>5000,75</DEFAULT>
+<DEFAULT>5000.75</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12585,7 +12585,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Frequency-2</NICK>
 <BLURB>Frequency-2.</BLURB>
-<DEFAULT>10000,5</DEFAULT>
+<DEFAULT>10000.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12595,7 +12595,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Frequency-3</NICK>
 <BLURB>Frequency-3.</BLURB>
-<DEFAULT>15000,2</DEFAULT>
+<DEFAULT>15000.2</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12625,7 +12625,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>LFO-depth</NICK>
 <BLURB>LFO-depth.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12655,7 +12655,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Damping</NICK>
 <BLURB>Damping.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12685,17 +12685,17 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Input-bandwidth</NICK>
 <BLURB>Input-bandwidth.</BLURB>
-<DEFAULT>0,75</DEFAULT>
+<DEFAULT>0.75</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-gverb::Reverb-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,30]</RANGE>
+<RANGE>[0.1,30]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Reverb-time</NICK>
 <BLURB>Reverb-time.</BLURB>
-<DEFAULT>7,575</DEFAULT>
+<DEFAULT>7.575</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12705,7 +12705,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Roomsize</NICK>
 <BLURB>Roomsize.</BLURB>
-<DEFAULT>75,75</DEFAULT>
+<DEFAULT>75.75</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12715,7 +12715,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Tail-level</NICK>
 <BLURB>Tail-level.</BLURB>
-<DEFAULT>-17,5</DEFAULT>
+<DEFAULT>-17.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12755,7 +12755,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12765,7 +12765,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Filter-Q</NICK>
 <BLURB>Filter-Q.</BLURB>
-<DEFAULT>0,25</DEFAULT>
+<DEFAULT>0.25</DEFAULT>
 </ARG>
 
 <ARG>
@@ -12965,13 +12965,13 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Average-stall</NICK>
 <BLURB>Average-stall.</BLURB>
-<DEFAULT>2,5</DEFAULT>
+<DEFAULT>2.5</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-retroFlange::Flange-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,5,8]</RANGE>
+<RANGE>[0.5,8]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Flange-frequency</NICK>
 <BLURB>Flange-frequency.</BLURB>
@@ -12981,7 +12981,7 @@
 <ARG>
 <NAME>ladspa-fadDelay::Delay</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,10]</RANGE>
+<RANGE>[0.1,10]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay</NICK>
 <BLURB>Delay.</BLURB>
@@ -13031,11 +13031,11 @@
 <ARG>
 <NAME>ladspa-triplePara::Band-1-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,21609]</RANGE>
+<RANGE>[4.41,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-1-frequency</NICK>
 <BLURB>Band-1-frequency.</BLURB>
-<DEFAULT>36,8967</DEFAULT>
+<DEFAULT>36.8967</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13061,11 +13061,11 @@
 <ARG>
 <NAME>ladspa-triplePara::Band-2-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,21609]</RANGE>
+<RANGE>[4.41,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-2-frequency</NICK>
 <BLURB>Band-2-frequency.</BLURB>
-<DEFAULT>308,7</DEFAULT>
+<DEFAULT>308.7</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13091,11 +13091,11 @@
 <ARG>
 <NAME>ladspa-triplePara::Band-3-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,21609]</RANGE>
+<RANGE>[4.41,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Band-3-frequency</NICK>
 <BLURB>Band-3-frequency.</BLURB>
-<DEFAULT>2582,77</DEFAULT>
+<DEFAULT>2582.77</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13111,7 +13111,7 @@
 <ARG>
 <NAME>ladspa-triplePara::High-shelving-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,21609]</RANGE>
+<RANGE>[4.41,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>High-shelving-frequency</NICK>
 <BLURB>High-shelving-frequency.</BLURB>
@@ -13135,17 +13135,17 @@
 <FLAGS>rwx</FLAGS>
 <NICK>High-shelving-slope</NICK>
 <BLURB>High-shelving-slope.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
 <NAME>ladspa-triplePara::Low-shelving-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[4,41,21609]</RANGE>
+<RANGE>[4.41,21609]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Low-shelving-frequency</NICK>
 <BLURB>Low-shelving-frequency.</BLURB>
-<DEFAULT>4,41</DEFAULT>
+<DEFAULT>4.41</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13165,7 +13165,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Low-shelving-slope</NICK>
 <BLURB>Low-shelving-slope.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13211,7 +13211,7 @@
 <ARG>
 <NAME>ladspa-decimator::Sample-rate</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[44,1,44100]</RANGE>
+<RANGE>[44.1,44100]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Sample-rate</NICK>
 <BLURB>Sample-rate.</BLURB>
@@ -13221,11 +13221,11 @@
 <ARG>
 <NAME>ladspa-flanger::Delay-base</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,1,25]</RANGE>
+<RANGE>[0.1,25]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Delay-base</NICK>
 <BLURB>Delay-base.</BLURB>
-<DEFAULT>6,325</DEFAULT>
+<DEFAULT>6.325</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13241,11 +13241,11 @@
 <ARG>
 <NAME>ladspa-flanger::LFO-frequency</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,05,100]</RANGE>
+<RANGE>[0.05,100]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>LFO-frequency</NICK>
 <BLURB>LFO-frequency.</BLURB>
-<DEFAULT>0,33437</DEFAULT>
+<DEFAULT>0.33437</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13255,7 +13255,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Max-slowdown</NICK>
 <BLURB>Max-slowdown.</BLURB>
-<DEFAULT>2,5</DEFAULT>
+<DEFAULT>2.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13315,7 +13315,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Voice-separation</NICK>
 <BLURB>Voice-separation.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13825,7 +13825,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>Xover-lower-freq</NICK>
 <BLURB>Xover-lower-freq.</BLURB>
-<DEFAULT>1537,5</DEFAULT>
+<DEFAULT>1537.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13881,11 +13881,11 @@
 <ARG>
 <NAME>ladspa-fastLookaheadLimiter::Release-time</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[0,01,2]</RANGE>
+<RANGE>[0.01,2]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Release-time</NICK>
 <BLURB>Release-time.</BLURB>
-<DEFAULT>0,5075</DEFAULT>
+<DEFAULT>0.5075</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13895,7 +13895,7 @@
 <FLAGS>r</FLAGS>
 <NICK>latency</NICK>
 <BLURB>latency.</BLURB>
-<DEFAULT>-3,40282e+38</DEFAULT>
+<DEFAULT>-3.40282e+38</DEFAULT>
 </ARG>
 
 <ARG>
@@ -13911,7 +13911,7 @@
 <ARG>
 <NAME>ladspa-comb::Feedback</NAME>
 <TYPE>gfloat</TYPE>
-<RANGE>[-0,99,0,99]</RANGE>
+<RANGE>[-0.99,0.99]</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Feedback</NICK>
 <BLURB>Feedback.</BLURB>
@@ -17000,12 +17000,12 @@
 
 <ARG>
 <NAME>GstX264Enc::pass</NAME>
-<TYPE>guint</TYPE>
-<RANGE><= 3</RANGE>
+<TYPE>GstX264EncPass</TYPE>
+<RANGE></RANGE>
 <FLAGS>rw</FLAGS>
-<NICK>Pass</NICK>
-<BLURB>Pass of multipass encoding (0=single pass; 1=first pass, 2=middle pass, 3=last pass).</BLURB>
-<DEFAULT>0</DEFAULT>
+<NICK>Encoding pass/type</NICK>
+<BLURB>Encoding pass/type.</BLURB>
+<DEFAULT>Constant Bitrate Encoding</DEFAULT>
 </ARG>
 
 <ARG>
@@ -17051,10 +17051,10 @@
 <ARG>
 <NAME>GstX264Enc::threads</NAME>
 <TYPE>guint</TYPE>
-<RANGE>[1,4]</RANGE>
+<RANGE><= 4</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Threads</NICK>
-<BLURB>Number of threads used by the codec.</BLURB>
+<BLURB>Number of threads used by the codec (0 for automatic).</BLURB>
 <DEFAULT>1</DEFAULT>
 </ARG>
 
@@ -17086,6 +17086,96 @@
 <NICK>Weighted B-Frames</NICK>
 <BLURB>Weighted prediction for B-frames.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::b-adapt</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>B-Adapt</NICK>
+<BLURB>Automatically decide how many B-frames to use.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::interlaced</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Interlaced</NICK>
+<BLURB>Interlaced material.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::ip-factor</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,2]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>IP-Factor</NICK>
+<BLURB>Quantizer factor between I- and P-frames.</BLURB>
+<DEFAULT>1.4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::noise-reduction</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 100000</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Noise Reducation</NICK>
+<BLURB>Noise reduction strength.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::pb-factor</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,2]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>PB-Factor</NICK>
+<BLURB>Quantizer factor between P- and B-frames.</BLURB>
+<DEFAULT>1.3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-max</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,51]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Maximum Quantizer</NICK>
+<BLURB>Maximum quantizer.</BLURB>
+<DEFAULT>51</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-min</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,51]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Minimum Quantizer</NICK>
+<BLURB>Minimum quantizer.</BLURB>
+<DEFAULT>10</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::qp-step</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,50]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Maximum Quantizer Difference</NICK>
+<BLURB>Maximum quantizer difference between frames.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstX264Enc::quantizer</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,50]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Constant Quantizer</NICK>
+<BLURB>Constant quantizer or quality to apply.</BLURB>
+<DEFAULT>21</DEFAULT>
 </ARG>
 
 <ARG>
@@ -18116,6 +18206,16 @@
 <NICK>SDES TOOL</NICK>
 <BLURB>The TOOL to put in SDES messages of this session.</BLURB>
 <DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::internal-session</NAME>
+<TYPE>RTPSession*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Internal Session</NICK>
+<BLURB>The internal RTPSession object.</BLURB>
+<DEFAULT></DEFAULT>
 </ARG>
 
 <ARG>
@@ -19214,6 +19314,36 @@
 </ARG>
 
 <ARG>
+<NAME>GstDiracEnc::pf-strength</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,10]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>pf_strength</NICK>
+<BLURB>pf_strength.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDiracEnc::picture-coding-mode</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>picture_coding_mode</NICK>
+<BLURB>picture_coding_mode.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDiracEnc::prefilter</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,3]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>prefilter</NICK>
+<BLURB>prefilter.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstMultiFileSrc::caps</NAME>
 <TYPE>GstCaps*</TYPE>
 <RANGE></RANGE>
@@ -19296,7 +19426,7 @@
 <ARG>
 <NAME>GstAppSrc::size</NAME>
 <TYPE>gint64</TYPE>
-<RANGE>>= -1</RANGE>
+<RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Size</NICK>
 <BLURB>The size of the data stream (-1 if unknown).</BLURB>
@@ -19340,6 +19470,16 @@
 <FLAGS>rw</FLAGS>
 <NICK>Block</NICK>
 <BLURB>Block push-buffer when max-bytes are queued.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::is-live</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Is Live</NICK>
+<BLURB>Whether to act as a live source.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
 </ARG>
 
@@ -20500,7 +20640,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>LP-filter</NICK>
 <BLURB>LP-filter.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -20550,7 +20690,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>LP-filter</NICK>
 <BLURB>LP-filter.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -20620,7 +20760,7 @@
 <FLAGS>rwx</FLAGS>
 <NICK>LP-filter</NICK>
 <BLURB>LP-filter.</BLURB>
-<DEFAULT>0,5</DEFAULT>
+<DEFAULT>0.5</DEFAULT>
 </ARG>
 
 <ARG>
@@ -21930,7 +22070,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>Method</NICK>
 <BLURB>Deinterlace Method.</BLURB>
-<DEFAULT>Greedy High Motion</DEFAULT>
+<DEFAULT>Motion Adaptive: Advanced Detection</DEFAULT>
 </ARG>
 
 <ARG>
@@ -21950,6 +22090,836 @@
 <FLAGS>rw</FLAGS>
 <NICK>Device</NICK>
 <BLURB>DVD device location.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::ath-level</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>ATH Level</NICK>
+<BLURB>ATH Level in dB.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[8,384]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Bitrate (kb/s)</NICK>
+<BLURB>Bitrate in kbit/sec (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</BLURB>
+<DEFAULT>192</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::copyright</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Copyright</NICK>
+<BLURB>Mark as copyright.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::emphasis</NAME>
+<TYPE>GstTwoLameEmphasis</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Emphasis</NICK>
+<BLURB>Pre-emphasis to apply to the decoded audio.</BLURB>
+<DEFAULT>No emphasis</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::energy-level-extension</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Energy Level Extension</NICK>
+<BLURB>Write peak PCM level to each frame.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::error-protection</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Error protection</NICK>
+<BLURB>Adds checksum to every frame.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::mode</NAME>
+<TYPE>GstTwoLameMode</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Mode</NICK>
+<BLURB>Encoding mode.</BLURB>
+<DEFAULT>Joint Stereo</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::original</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Original</NICK>
+<BLURB>Mark as original.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::padding</NAME>
+<TYPE>GstTwoLamePadding</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Padding</NICK>
+<BLURB>Padding type.</BLURB>
+<DEFAULT>No Padding</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::psymodel</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-1,4]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Psychoacoustic Model</NICK>
+<BLURB>Psychoacoustic model used to encode the audio.</BLURB>
+<DEFAULT>3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::quick-mode</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quick mode</NICK>
+<BLURB>Calculate Psymodel every frames.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::quick-mode-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Quick mode count</NICK>
+<BLURB>Calculate Psymodel every n frames.</BLURB>
+<DEFAULT>10</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR</NICK>
+<BLURB>Enable variable bitrate mode.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr-level</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[-10,10]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR Level</NICK>
+<BLURB>VBR Level.</BLURB>
+<DEFAULT>5</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstTwoLame::vbr-max-bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,384]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>VBR max bitrate</NICK>
+<BLURB>Specify maximum VBR bitrate (0=off, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320, 384).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstCeltEnc::bitrate</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,150]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Encoding Bit-rate</NICK>
+<BLURB>Specify an encoding bit-rate (in bps). (0 = automatic).</BLURB>
+<DEFAULT>128</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstCeltEnc::framesize</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[64,256]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Frame Size</NICK>
+<BLURB>The number of samples per frame.</BLURB>
+<DEFAULT>256</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstJackAudioSrc::connect</NAME>
+<TYPE>GstJackConnect</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Connect</NICK>
+<BLURB>Specify how the input ports will be connected.</BLURB>
+<DEFAULT>Automatically connect ports to physical ports</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstJackAudioSrc::server</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Server</NICK>
+<BLURB>The Jack server to connect to (NULL = default).</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Caps</NICK>
+<BLURB>The caps of the source pad.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::ccid</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 2</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>CCID</NICK>
+<BLURB>The Congestion Control IDentified to be used.</BLURB>
+<DEFAULT>2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::close-socket</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Close socket</NICK>
+<BLURB>Close socket at the end of stream.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::host</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Host</NICK>
+<BLURB>The host IP address to receive packets from.</BLURB>
+<DEFAULT>"127.0.0.1"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>The port to receive packets from.</BLURB>
+<DEFAULT>5001</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSrc::sockfd</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Socket fd</NICK>
+<BLURB>The socket file descriptor.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSink::ccid</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 2</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>CCID</NICK>
+<BLURB>The Congestion Control IDentified to be used.</BLURB>
+<DEFAULT>2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSink::close-socket</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Close</NICK>
+<BLURB>Close the client sockets at end of stream.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSink::port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>The port to listen to.</BLURB>
+<DEFAULT>5001</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSink::sockfd</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Socket fd</NICK>
+<BLURB>The client socket file descriptor.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSink::wait-connections</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Wait connections</NICK>
+<BLURB>Wait for many client connections.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSink::ccid</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 2</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>CCID</NICK>
+<BLURB>The Congestion Control IDentified to be used.</BLURB>
+<DEFAULT>2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSink::close-socket</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Close</NICK>
+<BLURB>Close socket at end of stream.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSink::host</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Host</NICK>
+<BLURB>The host IP address to send packets to.</BLURB>
+<DEFAULT>"127.0.0.1"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSink::port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>The port to send the packets to.</BLURB>
+<DEFAULT>5001</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPClientSink::sockfd</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Socket fd</NICK>
+<BLURB>The socket file descriptor.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Caps</NICK>
+<BLURB>The caps of the source pad.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::ccid</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 2</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>CCID</NICK>
+<BLURB>The Congestion Control IDentified to be used.</BLURB>
+<DEFAULT>2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::close-socket</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Close socket</NICK>
+<BLURB>Close client socket at the end of stream.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::host</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Host</NICK>
+<BLURB>The hostname to listen as.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>The port to listen to.</BLURB>
+<DEFAULT>5001</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDCCPServerSrc::sockfd</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Socket fd</NICK>
+<BLURB>The client socket file descriptor.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::check-crc</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Check CRC</NICK>
+<BLURB>Enable CRC checking.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::es-pids</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Colon separated list of PIDs containing Elementary Streams</NICK>
+<BLURB>PIDs to treat as Elementary Streams in the absence of a PMT, eg 0x10:0x11:0x20.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::m2ts-mode</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>M2TS(192 bytes) Mode</NICK>
+<BLURB>Defines if the input is normal TS ie .ts(188 bytes)or Blue-Ray Format ie .m2ts(192 bytes).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::pat-info</NAME>
+<TYPE>GValueArray*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>GValueArray containing GObjects with properties</NICK>
+<BLURB>Array of GObjects containing information from the TS PAT about all programs listed in the current Program Association Table (PAT).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::pmt-info</NAME>
+<TYPE>FluTsPmtInfo*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Information about the current program</NICK>
+<BLURB>GObject with properties containing information from the TS PMT about the currently selected program and its streams.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMpegTSDemux::program-number</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Program Number</NICK>
+<BLURB>Program number to demux for (-1 to ignore).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstScaletempo::overlap</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Overlap Length</NICK>
+<BLURB>Percentage of stride to overlap.</BLURB>
+<DEFAULT>0.2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstScaletempo::rate</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[-2.14748e+09,2.14748e+09]</RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Playback Rate</NICK>
+<BLURB>Current playback rate.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstScaletempo::search</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 500</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Search Length</NICK>
+<BLURB>Length in milliseconds to search for best overlap position.</BLURB>
+<DEFAULT>14</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstScaletempo::stride</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[1,5000]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Stride Length</NICK>
+<BLURB>Length in milliseconds to output each stride.</BLURB>
+<DEFAULT>30</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPcapParse::dst-ip</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Destination IP</NICK>
+<BLURB>Destination IP to restrict to.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPcapParse::dst-port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-1,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Destination port</NICK>
+<BLURB>Destination port to restrict to.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPcapParse::src-ip</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Source IP</NICK>
+<BLURB>Source IP to restrict to.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPcapParse::src-port</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-1,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Source port</NICK>
+<BLURB>Source port to restrict to.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>MpegTsMux::m2ts-mode</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>M2TS(192 bytes) Mode</NICK>
+<BLURB>Defines what packet size to use, normal TS format ie .ts(188 bytes) or Blue-Ray disc ie .m2ts(192 bytes).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstApExSink::host</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Host</NICK>
+<BLURB>AirPort Express target host.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstApExSink::jack-status</NAME>
+<TYPE>GstApExJackStatus</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Jack Status</NICK>
+<BLURB>AirPort Express jack connection status.</BLURB>
+<DEFAULT>GST_APEX_JACK_STATUS_UNDEFINED</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstApExSink::jack-type</NAME>
+<TYPE>GstApExJackType</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Jack Type</NICK>
+<BLURB>AirPort Express connected jack type.</BLURB>
+<DEFAULT>GST_APEX_JACK_TYPE_UNDEFINED</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstApExSink::port</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 32000</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Port</NICK>
+<BLURB>AirPort Express target port.</BLURB>
+<DEFAULT>5000</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstApExSink::volume</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 100</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Volume</NICK>
+<BLURB>AirPort Express target volume.</BLURB>
+<DEFAULT>75</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMJ2Mux::faststart</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Format file to faststart</NICK>
+<BLURB>If the file should be formated for faststart (headers first). .</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMJ2Mux::faststart-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>File to use for storing buffers</NICK>
+<BLURB>File that will be used temporarily to store data from the stream when creating a faststart file. If null a filepath will be created automatically.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMJ2Mux::large-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Support for large files</NICK>
+<BLURB>Uses 64bits to some fields instead of 32bits, providing support for large files.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMJ2Mux::movie-timescale</NAME>
+<TYPE>guint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Movie timescale</NICK>
+<BLURB>Timescale to use in the movie (units per second).</BLURB>
+<DEFAULT>600</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMJ2Mux::presentation-time</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Include presentation-time info</NICK>
+<BLURB>Calculate and include presentation/composition time (in addition to decoding time) (use with caution).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGPPMux::faststart</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Format file to faststart</NICK>
+<BLURB>If the file should be formated for faststart (headers first). .</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGPPMux::faststart-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>File to use for storing buffers</NICK>
+<BLURB>File that will be used temporarily to store data from the stream when creating a faststart file. If null a filepath will be created automatically.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGPPMux::large-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Support for large files</NICK>
+<BLURB>Uses 64bits to some fields instead of 32bits, providing support for large files.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGPPMux::movie-timescale</NAME>
+<TYPE>guint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Movie timescale</NICK>
+<BLURB>Timescale to use in the movie (units per second).</BLURB>
+<DEFAULT>600</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGPPMux::presentation-time</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Include presentation-time info</NICK>
+<BLURB>Calculate and include presentation/composition time (in addition to decoding time) (use with caution).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMP4Mux::faststart</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Format file to faststart</NICK>
+<BLURB>If the file should be formated for faststart (headers first). .</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMP4Mux::faststart-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>File to use for storing buffers</NICK>
+<BLURB>File that will be used temporarily to store data from the stream when creating a faststart file. If null a filepath will be created automatically.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMP4Mux::large-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Support for large files</NICK>
+<BLURB>Uses 64bits to some fields instead of 32bits, providing support for large files.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMP4Mux::movie-timescale</NAME>
+<TYPE>guint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Movie timescale</NICK>
+<BLURB>Timescale to use in the movie (units per second).</BLURB>
+<DEFAULT>600</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMP4Mux::presentation-time</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Include presentation-time info</NICK>
+<BLURB>Calculate and include presentation/composition time (in addition to decoding time) (use with caution).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQTMux::faststart</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Format file to faststart</NICK>
+<BLURB>If the file should be formated for faststart (headers first). .</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQTMux::faststart-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>File to use for storing buffers</NICK>
+<BLURB>File that will be used temporarily to store data from the stream when creating a faststart file. If null a filepath will be created automatically.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQTMux::large-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Support for large files</NICK>
+<BLURB>Uses 64bits to some fields instead of 32bits, providing support for large files.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQTMux::movie-timescale</NAME>
+<TYPE>guint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Movie timescale</NICK>
+<BLURB>Timescale to use in the movie (units per second).</BLURB>
+<DEFAULT>600</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstQTMux::presentation-time</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Include presentation-time info</NICK>
+<BLURB>Calculate and include presentation/composition time (in addition to decoding time) (use with caution).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioresample::filter-length</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>filter length</NICK>
+<BLURB>Length of the resample filter.</BLURB>
+<DEFAULT>16</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstMXFDemux::package</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Package</NICK>
+<BLURB>Material or Source package to use for playback.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
 

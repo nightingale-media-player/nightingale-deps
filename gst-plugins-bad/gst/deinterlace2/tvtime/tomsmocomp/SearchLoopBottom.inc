@@ -1,10 +1,8 @@
 // -*- c++ -*-       
 
-#ifdef IS_SSE2
-//sse2 code deleted for now
-#else
-
 // Version for non-SSE2
+
+#ifndef IS_C
 
 #ifdef SKIP_SEARCH
             "movq    %%mm6, %%mm0\n\t"            // just use the results of our wierd bob
@@ -59,6 +57,7 @@
             V_MOVNTQ ("(%"XAX", %%"XDX")", "%%mm0")
             //      pavgb   mm1, qword ptr["XBX"+"XCX"]
             V_PAVGB ("%%mm1", "(%%"XBX", %%"XCX")", "%%mm2", _ShiftMask)
+	    //FIXME: XDX or XAX!!
             "addq   "_dst_pitchw", %%"XBX
             //      movntq  qword ptr["XAX"+"XDX"], mm1
             V_MOVNTQ ("(%%"XAX", %%"XDX")", "%%mm1")
@@ -71,7 +70,6 @@
            LEAX"    8(%%"XDX"), %%"XDX"\n\t"       // bump offset pointer
            CMPX"    "_Last8", %%"XDX"\n\t"       // done with line?
            "jb      1b\n\t"                    // y
-#endif
 
            MOVX" "_oldbx", %%"XBX"\n\t"
 
@@ -98,11 +96,10 @@
           "m"(oldbx)
 
         : XAX, XCX, XDX, XSI, XDI,
-#ifdef ARCH_386
           "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)",
+#ifdef __MMX__
+          "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
 #endif
-          /* FIXME: breaks unless compiling with -mmmx
-	     "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", */
           "memory", "cc"
         );
 
@@ -115,3 +112,63 @@
     }
     
     return 0;
+#else
+#ifdef SKIP_SEARCH
+            out[0] = best[0];            // just use the results of our wierd bob
+	    out[1] = best[1];
+#else
+            diff[0] = diff[0] - MIN (diff[0], 10) - 4;
+	    diff[1] = diff[1] - MIN (diff[1] - 10) - 4;
+	    if (diff[0] < 0)
+	      out[0] = weave[0];
+	    else
+	      out[0] = best[0];
+	    
+	    if (diff[1] < 0)
+	      out[1] = weave[1];
+	    else
+	      out[1] = best[1];
+
+
+	    out[0] = CLAMP (out[0], MinVals[0], MaxVals[0]);
+	    out[1] = CLAMP (out[1], MinVals[1], MaxVals[1]);
+#endif
+
+#ifdef USE_VERTICAL_FILTER
+            pDest[x] = (out[0] + pBob[0]) / 2;
+	    pDest[x + dst_pitchw] = (pBob[src_pitch2] + out[0]) / 2;
+            pDest[x + 1] = (out[1] + pBob[1]) / 2;
+	    pDest[x + 1 + dst_pitchw] = (pBob[src_pitch2 + 1] + out[1]) / 2;
+#else
+            pDest[x] = out[0];
+	    pDest[x+1] = out[1];
+#endif
+            pBob += 2;
+            pBobP += 2;
+            pSrc += 2;
+            pSrcP += 2;
+	}
+        // adjust for next line
+        pSrc  = src_pitch2 * (y+1) + pWeaveSrc;
+        pSrcP = src_pitch2 * (y+1) + pWeaveSrcP;
+        pDest = dst_pitch2 * (y+1) + pWeaveDest + dst_pitch2;
+
+
+	if (TopFirst)
+	{
+		pBob = pCopySrc + src_pitch2;
+		pBobP = pCopySrcP + src_pitch2;
+	}
+	else
+	{
+		pBob =  pCopySrc;
+		pBobP =  pCopySrcP;
+	}
+
+        pBob  += src_pitch2 * (y+1);
+        pBobP += src_pitch2 * (y+1);
+    }
+    
+    return 0;
+
+#endif

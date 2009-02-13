@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-sdpdemux.html" title="sdpdemux">
-<link rel="next" href="gst-plugins-bad-plugins-speexresample.html" title="speexresample">
+<link rel="next" href="gst-plugins-bad-plugins-stereo.html" title="stereo">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
@@ -21,7 +21,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-speexresample.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-stereo.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-speed.synopsis" class="shortcut">Top</a>
                    | 
@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-speed.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstSpeed
@@ -58,7 +60,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-speed.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-speed.html#GstSpeed--speed" title='The "speed" property'>speed</a>"                    gfloat                : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-speed.html#GstSpeed--speed" title='The "speed" property'>speed</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -75,7 +79,7 @@ requires a fairly up-to-date gst-plugins-base, as of February 2007).
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2620349"></a><h3>Example launch line</h3>
+<a name="id2871820"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=test.ogg ! decodebin ! audioconvert ! speed speed=1.5 ! audioconvert ! audioresample ! autoaudiosink
 </pre></div> Plays an .ogg file at 1.5x speed.
@@ -87,7 +91,7 @@ Last reviewed on 2007-02-26 (0.10.4.1)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2597746"></a><h3>Element Information</h3>
+<a name="id2844979"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -110,17 +114,17 @@ Last reviewed on 2007-02-26 (0.10.4.1)</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2604454"></a><h3>Element Pads</h3>
+<a name="id2874951"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>src</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>source</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -141,11 +145,11 @@ Last reviewed on 2007-02-26 (0.10.4.1)</p>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>sink</td>
+<td>src</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>sink</td>
+<td>source</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -181,9 +185,11 @@ Last reviewed on 2007-02-26 (0.10.4.1)</p>
 <a name="gst-plugins-bad-plugins-speed.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstSpeed--speed"></a><h3>The <code class="literal">"speed"</code> property</h3>
-<pre class="programlisting">  "speed"                    gfloat                : Read / Write / Construct</pre>
+<pre class="programlisting">  "speed"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write / Construct</pre>
 <p>speed.</p>
-<p>Allowed values: [0,1,40]</p>
+<p>Allowed values: [0.1,40]</p>
 <p>Default value: 1</p>
 </div>
 </div>

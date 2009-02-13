@@ -59,7 +59,7 @@ AMR wideband encoder based on the
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2602881"></a><h3>Example launch line</h3>
+<a name="id2836662"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=abc.wav ! wavparse ! audioresample ! audioconvert ! amrwbenc ! filesink location=abc.amr
 </pre></div>
@@ -69,7 +69,7 @@ the stream.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2586425"></a><h3>Element Information</h3>
+<a name="id2846894"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -92,28 +92,7 @@ the stream.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2586815"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)16000, channels=(int)1</td>
-</tr>
-</tbody>
-</table></div>
+<a name="id2864098"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -135,6 +114,27 @@ the stream.
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)16000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
@@ -151,6 +151,7 @@ the stream.
   /* pads */
   GstPad *sinkpad, *srcpad;
   guint64 ts;
+  gboolean discont;
 
   GstAdapter *adapter;
 

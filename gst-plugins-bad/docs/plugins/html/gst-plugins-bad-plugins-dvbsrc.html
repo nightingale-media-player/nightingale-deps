@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dvbsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -63,25 +65,53 @@
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--bandwidth" title='The "bandwidth" property'>bandwidth</a>"                GstDvbSrcBandwidth    : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--code-rate-hp" title='The "code-rate-hp" property'>code-rate-hp</a>"             GstDvbSrcCode_Rate    : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--code-rate-lp" title='The "code-rate-lp" property'>code-rate-lp</a>"             GstDvbSrcCode_Rate    : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--device" title='The "device" property'>device</a>"                   gchararray            : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-src" title='The "diseqc-src" property'>diseqc-src</a>"               gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--freq" title='The "freq" property'>freq</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--device" title='The "device" property'>device</a>"                   <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-src" title='The "diseqc-src" property'>diseqc-src</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--freq" title='The "freq" property'>freq</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--guard" title='The "guard" property'>guard</a>"                    GstDvbSrcGuard        : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--hierarchy" title='The "hierarchy" property'>hierarchy</a>"                GstDvbSrcHierarchy    : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--inversion" title='The "inversion" property'>inversion</a>"                GstDvbSrcInversion    : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--modulation" title='The "modulation" property'>modulation</a>"               GstDvbSrcModulation   : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pids" title='The "pids" property'>pids</a>"                     gchar*                : Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pol" title='The "pol" property'>pol</a>"                      gchararray            : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--srate" title='The "srate" property'>srate</a>"                    gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pids" title='The "pids" property'>pids</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--pol" title='The "pol" property'>pol</a>"                      <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--srate" title='The "srate" property'>srate</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--trans-mode" title='The "trans-mode" property'>trans-mode</a>"               GstDvbSrcTransmission_Mode  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--tune" title='The "tune" property'>tune</a>"                     gpointer              : Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--adapter" title='The "adapter" property'>adapter</a>"                  gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-source" title='The "diseqc-source" property'>diseqc-source</a>"            gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frequency" title='The "frequency" property'>frequency</a>"                gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frontend" title='The "frontend" property'>frontend</a>"                 gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--polarity" title='The "polarity" property'>polarity</a>"                 gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--symbol-rate" title='The "symbol-rate" property'>symbol-rate</a>"              gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--stats-reporting-interval" title='The "stats-reporting-interval" property'>stats-reporting-interval</a>" guint                 : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--tune" title='The "tune" property'>tune</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--adapter" title='The "adapter" property'>adapter</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--diseqc-source" title='The "diseqc-source" property'>diseqc-source</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frequency" title='The "frequency" property'>frequency</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--frontend" title='The "frontend" property'>frontend</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--polarity" title='The "polarity" property'>polarity</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--symbol-rate" title='The "symbol-rate" property'>symbol-rate</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dvbsrc.html#GstDvbSrc--stats-reporting-interval" title='The "stats-reporting-interval" property'>stats-reporting-interval</a>" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -92,7 +122,7 @@ dvbsrc can be used to capture video from DVB cards, DVB-T, DVB-S or DVB-T.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2616831"></a><h3>Example launch line</h3>
+<a name="id2879097"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch dvbsrc modulation="QAM 64" trans-mode=8k bandwidth=8MHz frequency=514000000 code-rate-lp=AUTO code-rate-hp=2/3 guard=4  hierarchy=0 ! flutsdemux crc-check=false name=demux ! queue max-size-buffers=0 max-size-time=0 ! flumpeg2vdec ! xvimagesink sync demux. ! queue max-size-buffers=0 max-size-time=0 ! flump3dec ! alsasink sync
 </pre></div> Captures a full transport stream from dvb card 0 that is a DVB-T card at tuned frequency 514000000 with other parameters as seen in the 
@@ -107,7 +137,7 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2616890"></a><h3>Element Information</h3>
+<a name="id2880672"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -131,7 +161,7 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2620416"></a><h3>Element Pads</h3>
+<a name="id2880736"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -194,14 +224,18 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--device"></a><h3>The <code class="literal">"device"</code> property</h3>
-<pre class="programlisting">  "device"                   gchararray            : Read / Write</pre>
+<pre class="programlisting">  "device"                   <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
 <p>The device directory.</p>
 <p>Default value: "/dev/dvb/adapter0"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--diseqc-src"></a><h3>The <code class="literal">"diseqc-src"</code> property</h3>
-<pre class="programlisting">  "diseqc-src"               gint                  : Read / Write</pre>
+<pre class="programlisting">  "diseqc-src"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>DISEqC selected source (-1 disabled) (DVB-S).</p>
 <p>Allowed values: [-1,7]</p>
 <p>Default value: -1</p>
@@ -209,7 +243,9 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--freq"></a><h3>The <code class="literal">"freq"</code> property</h3>
-<pre class="programlisting">  "freq"                     gint                  : Read / Write</pre>
+<pre class="programlisting">  "freq"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Frequency.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -245,21 +281,27 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--pids"></a><h3>The <code class="literal">"pids"</code> property</h3>
-<pre class="programlisting">  "pids"                     gchar*                : Write</pre>
+<pre class="programlisting">  "pids"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write</pre>
 <p>Colon seperated list of pids (eg. 110:120).</p>
 <p>Default value: "8192"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--pol"></a><h3>The <code class="literal">"pol"</code> property</h3>
-<pre class="programlisting">  "pol"                      gchararray            : Read / Write</pre>
+<pre class="programlisting">  "pol"                      <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
 <p>Polarity [vhHV] (DVB-S).</p>
 <p>Default value: "h"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--srate"></a><h3>The <code class="literal">"srate"</code> property</h3>
-<pre class="programlisting">  "srate"                    gint                  : Read / Write</pre>
+<pre class="programlisting">  "srate"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Symbol Rate (DVB-S, DVB-C).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -274,13 +316,17 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--tune"></a><h3>The <code class="literal">"tune"</code> property</h3>
-<pre class="programlisting">  "tune"                     gpointer              : Write</pre>
+<pre class="programlisting">  "tune"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Write</pre>
 <p>Atomically tune to channel. (For Apps).</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--adapter"></a><h3>The <code class="literal">"adapter"</code> property</h3>
-<pre class="programlisting">  "adapter"                  gint                  : Read / Write</pre>
+<pre class="programlisting">  "adapter"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The adapter device number (eg. 0 for adapter0).</p>
 <p>Allowed values: [0,16]</p>
 <p>Default value: 0</p>
@@ -288,15 +334,19 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--diseqc-source"></a><h3>The <code class="literal">"diseqc-source"</code> property</h3>
-<pre class="programlisting">  "diseqc-source"            gint                  : Read / Write</pre>
+<pre class="programlisting">  "diseqc-source"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>DISEqC selected source (-1 disabled) (DVB-S).</p>
-<p>Allowed values: [-1,7]</p>
+<p>Allowed values: [G_MAXULONG,7]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--frequency"></a><h3>The <code class="literal">"frequency"</code> property</h3>
-<pre class="programlisting">  "frequency"                gint                  : Read / Write</pre>
+<pre class="programlisting">  "frequency"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Frequency.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -304,7 +354,9 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--frontend"></a><h3>The <code class="literal">"frontend"</code> property</h3>
-<pre class="programlisting">  "frontend"                 gint                  : Read / Write</pre>
+<pre class="programlisting">  "frontend"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The frontend device number (eg. 0 for frontend0).</p>
 <p>Allowed values: [0,16]</p>
 <p>Default value: 0</p>
@@ -312,14 +364,18 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--polarity"></a><h3>The <code class="literal">"polarity"</code> property</h3>
-<pre class="programlisting">  "polarity"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "polarity"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Polarity [vhHV] (DVB-S).</p>
 <p>Default value: "h"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--symbol-rate"></a><h3>The <code class="literal">"symbol-rate"</code> property</h3>
-<pre class="programlisting">  "symbol-rate"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "symbol-rate"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Symbol Rate (DVB-S, DVB-C).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -327,7 +383,9 @@ gst-launch dvbsrc polarity="h" frequency=11302000 srate=27500 diseqc-src=0 pids=
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDvbSrc--stats-reporting-interval"></a><h3>The <code class="literal">"stats-reporting-interval"</code> property</h3>
-<pre class="programlisting">  "stats-reporting-interval" guint                 : Read / Write</pre>
+<pre class="programlisting">  "stats-reporting-interval" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>The number of reads before reporting frontend stats.</p>
 <p>Default value: 100</p>
 </div>

@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AC_INIT(GStreamer Bad Plug-ins, 0.10.8,
+AC_INIT(GStreamer Bad Plug-ins, 0.10.10,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-bad)
 
@@ -48,7 +48,7 @@ AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.20
+GST_REQ=0.10.21.1
 GSTPB_REQ=0.10.20
 
 dnl *** autotools stuff ****
@@ -61,7 +61,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.11.5])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gst-plugins-bad-$GST_MAJORMINOR])
 
@@ -139,6 +139,10 @@ AX_CREATE_STDINT_H
 
 dnl *** checks for types/defines ***
 
+dnl Check for FIONREAD ioctl declaration
+dnl used in gst/dccp
+GST_CHECK_FIONREAD
+
 dnl *** checks for structures ***
 
 dnl *** checks for compiler characteristics ***
@@ -190,27 +194,7 @@ AC_SUBST(GSTPB_PREFIX)
 
 dnl GTK is optional and used in examples
 HAVE_GTK=NO
-PKG_CHECK_MODULES(GTK2, gtk+-2.0 >= 2.2.0, HAVE_GTK_22=yes, HAVE_GTK_22=no)
-if test "x$HAVE_GTK_22" = "xyes"; then
-  HAVE_GTK=yes
-  GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-  AC_SUBST(GTK_VERSION)
-  GTK_PREFIX=`$PKG_CONFIG --variable=prefix gdk-pixbuf-2.0`
-  AC_SUBST(GTK_BASE_DIR)
-  GDK_PIXBUF_LIBDIR=`$PKG_CONFIG --variable=libdir gdk-pixbuf-2.0`
-  GDK_PIXBUF_PREFIXDIR=`$PKG_CONFIG --variable=prefix gdk-pixbuf-2.0`
-  AC_SUBST(GTK_BASE_DIR)
-else
-  PKG_CHECK_MODULES(GTK2, gtk+-2.0, HAVE_GTK_20=yes, HAVE_GTK_20=no)
-fi
-if test "x$HAVE_GTK_20" = "xyes"; then
-  HAVE_GTK=yes
-fi
-GTK_CFLAGS=$GTK2_CFLAGS
-GTK_LIBS=$GTK2_LIBS
-AC_SUBST(GTK_LIBS)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(HAVE_GTK)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.8.0, HAVE_GTK=yes, HAVE_GTK=no)
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
 dnl libglade is optional and only used in examples
@@ -220,6 +204,17 @@ AC_SUBST(GLADE_LIBS)
 AC_SUBST(GLADE_CFLAGS)
 AC_SUBST(HAVE_GLADE)
 AM_CONDITIONAL(HAVE_GLADE, test "x$HAVE_GLADE" = "xyes")
+
+dnl x11 is optional for librfb
+HAVE_X11=NO
+PKG_CHECK_MODULES(X11, x11, HAVE_X11=yes, HAVE_X11=no)
+AC_SUBST(X11_LIBS)
+AC_SUBST(X11_CFLAGS)
+AC_SUBST(HAVE_X11)
+AM_CONDITIONAL(HAVE_X11, test "x$HAVE_X11" = "xyes")
+if test "x$HAVE_X11" = "xyes"; then
+  AC_DEFINE(HAVE_X11, 1, [Define if you have X11 library])
+fi
 
 dnl set license and copyright notice
 GST_LICENSE="LGPL"
@@ -241,10 +236,13 @@ AG_GST_SET_LEVEL_DEFAULT($GST_CVS)
 dnl *** plug-ins to include ***
 
 dnl these are all the gst plug-ins, compilable without additional libs
+AG_GST_CHECK_PLUGIN(aacparse)
 AG_GST_CHECK_PLUGIN(aiffparse)
-AG_GST_CHECK_PLUGIN(app)
+AG_GST_CHECK_PLUGIN(amrparse)
+AG_GST_CHECK_PLUGIN(audioresample)
 AG_GST_CHECK_PLUGIN(bayer)
 AG_GST_CHECK_PLUGIN(cdxaparse)
+AG_GST_CHECK_PLUGIN(dccp)
 AG_GST_CHECK_PLUGIN(deinterlace)
 AG_GST_CHECK_PLUGIN(deinterlace2)
 AG_GST_CHECK_PLUGIN(dvdspu)
@@ -255,19 +253,23 @@ AG_GST_CHECK_PLUGIN(freeze)
 AG_GST_CHECK_PLUGIN(h264parse)
 AG_GST_CHECK_PLUGIN(librfb)
 AG_GST_CHECK_PLUGIN(modplug)
-AG_GST_CHECK_PLUGIN(mpegtsparse)
+AG_GST_CHECK_PLUGIN(mpegdemux)
+AG_GST_CHECK_PLUGIN(mpegtsmux)
 AG_GST_CHECK_PLUGIN(mpeg4videoparse)
 AG_GST_CHECK_PLUGIN(mpegvideoparse)
 AG_GST_CHECK_PLUGIN(mve)
+AG_GST_CHECK_PLUGIN(mxf)
 AG_GST_CHECK_PLUGIN(nsf)
 AG_GST_CHECK_PLUGIN(nuvdemux)
+AG_GST_CHECK_PLUGIN(pcapparse)
+AG_GST_CHECK_PLUGIN(qtmux)
 AG_GST_CHECK_PLUGIN(rawparse)
 AG_GST_CHECK_PLUGIN(real)
 AG_GST_CHECK_PLUGIN(rtpmanager)
+AG_GST_CHECK_PLUGIN(scaletempo)
 AG_GST_CHECK_PLUGIN(sdp)
 AG_GST_CHECK_PLUGIN(selector)
 AG_GST_CHECK_PLUGIN(speed)
-AG_GST_CHECK_PLUGIN(speexresample)
 AG_GST_CHECK_PLUGIN(subenc)
 AG_GST_CHECK_PLUGIN(stereo)
 AG_GST_CHECK_PLUGIN(tta)
@@ -290,9 +292,8 @@ if test "x$HAVE_CPU_I386" != "xyes" && test "x$HAVE_CPU_X86_64" != "xyes"; then
 fi
 
 dnl disable experimental plug-ins
-if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
-  AG_GST_DISABLE_PLUGIN(deinterlace2)
-fi
+#if test "x$BUILD_EXPERIMENTAL" != "xyes"; then
+#fi
 
 dnl disable gst plugins we might not be able to build on this
 dnl platform: librfb (ugly but minimally invasive)
@@ -469,10 +470,11 @@ AG_GST_CHECK_FEATURE(APEXSINK, [AirPort Express Wireless sink], apexsink, [
 
                   # Basic test to check for compatible version and correct linking
                   # *does not* test for RSA - that comes later.
-                  AC_TRY_RUN(
+                  AC_TRY_COMPILE(
                           [
 #include <string.h>
 #include <openssl/rand.h>
+],[
 int main(void)
 {
         char a[2048];
@@ -509,12 +511,12 @@ int main(void)
                   # Try to use $ssldir/lib if it exists, otherwise
                   # $ssldir
                   if test -d "$ssldir/lib" ; then
-                          APEXSINK_LIBS="-L$ssldir/lib $saved_LDFLAGS"
+                          APEXSINK_LIBS="-L$ssldir/lib $LDFLAGS"
                           if test ! -z "$need_dash_r" ; then
                                   APEXSINK_LIBS="-R$ssldir/lib $LDFLAGS"
                           fi
                   else
-                          APEXSINK_LDFLAGS="-L$ssldir $saved_LDFLAGS"
+                          APEXSINK_LDFLAGS="-L$ssldir $LDFLAGS"
                           if test ! -z "$need_dash_r" ; then
                                   APEXSINK_LIBS="-R$ssldir $LDFLAGS"
                           fi
@@ -522,13 +524,17 @@ int main(void)
                   # Try to use $ssldir/include if it exists, otherwise
                   # $ssldir
                   if test -d "$ssldir/include" ; then
-                          APEXSINK_CFLAGS="-I$ssldir/include $saved_CPPFLAGS"
+                          APEXSINK_CFLAGS="-I$ssldir/include $CPPFLAGS"
                   else
-                          APEXSINK_CFLAGS="-I$ssldir $saved_CPPFLAGS"
+                          APEXSINK_CFLAGS="-I$ssldir $CPPFLAGS"
                   fi
           fi
   fi
   APEXSINK_LIBS="$APEXSINK_LIBS $LIBS"
+  AC_SUBST(APEXSINK_LIBS)
+  AC_SUBST(APEXSINK_CFLAGS)
+  CPPFLAGS="$saved_CPPFLAGS"
+  LDFLAGS="$saved_LDFLAGS"
   LIBS="$saved_LIBS"
 ])
 
@@ -558,6 +564,17 @@ AG_GST_CHECK_FEATURE(CDAUDIO, [cdaudio], cdaudio, [
   AC_SUBST(CDAUDIO_LIBS)
 ])
 
+dnl *** celt ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_CELT, true)
+AG_GST_CHECK_FEATURE(CELT, [celt], celt, [
+  PKG_CHECK_MODULES(CELT, celt >= 0.4.0, [
+      HAVE_CELT="yes"], [
+      HAVE_CELT="no"
+      AC_MSG_RESULT(no)
+  ])
+  AC_SUBST(CELT_CFLAGS)
+  AC_SUBST(CELT_LIBS)
+])
 
 dnl *** dc1394  ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_DC1394, true)
@@ -681,7 +698,6 @@ return 0;
 ])
 
 dnl *** dvdnav for resindvd ***
-USE_DVDNAV=$BUILD_EXPERIMENTAL
 translit(dnm, m, l) AM_CONDITIONAL(USE_DVDNAV, true)
 AG_GST_CHECK_FEATURE(DVDNAV, [dvdnav library], resindvd, [
   translit(dnm, m, l) AC_SUBST(DVDNAV_LIBS)
@@ -838,6 +854,14 @@ AG_GST_CHECK_FEATURE(JACK, Jack, jack, [
   PKG_CHECK_MODULES(JACK, jack >= 0.99.10, HAVE_JACK="yes", HAVE_JACK="no")
   AC_SUBST(JACK_CFLAGS)
   AC_SUBST(JACK_LIBS)
+])
+
+dnl *** jp2k ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_JP2K, true)
+AG_GST_CHECK_FEATURE(JP2K, [jp2k], jp2kdec jp2kenc, [
+  AG_GST_CHECK_LIBHEADER(JP2K, jasper, jas_stream_fopen, , jasper/jasper.h,
+    JP2K_LIBS="-ljasper")
+  AC_SUBST(JP2K_LIBS)
 ])
 
 dnl *** ladspa ***
@@ -1150,6 +1174,18 @@ AG_GST_CHECK_FEATURE(WILDMIDI, [wildmidi midi soft synth plugin], wildmidi, [
   AC_SUBST(WILDMIDI_LIBS)
 ])
 
+dnl *** twolame ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_TWOLAME, true)
+AG_GST_CHECK_FEATURE(TWOLAME, [twolame], twolame, [
+  PKG_CHECK_MODULES(TWOLAME, twolame >= 0.3.0, [
+      HAVE_TWOLAME="yes"], [
+      HAVE_TWOLAME="no"
+      AC_MSG_RESULT(no)
+  ])
+  AC_SUBST(TWOLAME_CFLAGS)
+  AC_SUBST(TWOLAME_LIBS)
+])
+
 dnl *** SDL ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_SDL, true)
 AG_GST_CHECK_FEATURE(SDL, [SDL plug-in], sdlvideosink sdlaudiosink, [
@@ -1222,10 +1258,23 @@ dnl *** x264 (MPEG-4 part 10/h.264/AVC encoder) ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_X264, true)
 AG_GST_CHECK_FEATURE(X264, [x264 plug-in], x264, [
   AG_GST_CHECK_LIBHEADER(X264, x264, x264_nal_encode, -lm, x264.h,
-      X264_LIBS="$LDFLAGS -lx264 -lm"
-      X264_CFLAGS="$CFLAGS"
-      AC_SUBST(X264_LIBS)
-      AC_SUBST(X264_CFLAGS))
+      AC_MSG_CHECKING([for uptodate x264 API version])
+      dnl _stdint not yet generated, so no compiling
+      AC_TRY_CPP([
+        #include <x264.h>
+        #if X264_BUILD < 55
+        #error "x264 build too old"
+        #endif
+      ], [
+        AC_MSG_RESULT(yes)
+        X264_LIBS="$LDFLAGS -lx264 -lm"
+        X264_CFLAGS="$CFLAGS"
+        AC_SUBST(X264_LIBS)
+        AC_SUBST(X264_CFLAGS)
+      ], [
+        AC_MSG_RESULT(no)
+        HAVE_X264=no
+      ]))
 ])
 
 dnl *** XVID ***
@@ -1283,11 +1332,8 @@ dnl *** acm ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_ACM, true)
 AG_GST_CHECK_FEATURE(ACM, [Windows ACM library], acm, [
   AC_MSG_CHECKING([Checking for ACM support])
-  AC_CHECK_HEADERS([msacm.h],
-      [HAVE_ACM="yes"], [HAVE_ACM="no"],
-      [[#include <windows.h>
-#include <mmreg.h>
-      ]])
+  AC_CHECK_HEADERS([windows.h msacm.h],
+      [HAVE_ACM="yes"], [HAVE_ACM="no"])
 ])
 
 else
@@ -1302,6 +1348,7 @@ AM_CONDITIONAL(USE_AMRWB, false)
 AM_CONDITIONAL(USE_APEXSINK, false)
 AM_CONDITIONAL(USE_BZ2, false)
 AM_CONDITIONAL(USE_CDAUDIO, false)
+AM_CONDITIONAL(USE_CELT, false)
 AM_CONDITIONAL(USE_DC1394, false)
 AM_CONDITIONAL(USE_DIRECTFB, false)
 AM_CONDITIONAL(USE_DTS, false)
@@ -1314,6 +1361,7 @@ AM_CONDITIONAL(USE_FBDEV, false)
 AM_CONDITIONAL(USE_GSM, false)
 AM_CONDITIONAL(USE_IVORBIS, false)
 AM_CONDITIONAL(USE_JACK, false)
+AM_CONDITIONAL(USE_JP2K, false)
 AM_CONDITIONAL(USE_LADSPA, false)
 AM_CONDITIONAL(USE_LIBMMS, false)
 AM_CONDITIONAL(USE_METADATA, false)
@@ -1326,6 +1374,7 @@ AM_CONDITIONAL(USE_NAS, false)
 AM_CONDITIONAL(USE_NEON, false)
 AM_CONDITIONAL(USE_OFA, false)
 AM_CONDITIONAL(USE_OSS4, false)
+AM_CONDITIONAL(USE_TWOLAME, false)
 AM_CONDITIONAL(USE_SDL, false)
 AM_CONDITIONAL(USE_SNDFILE, false)
 AM_CONDITIONAL(USE_SOUNDTOUCH, false)
@@ -1337,6 +1386,7 @@ AM_CONDITIONAL(USE_X264, false)
 AM_CONDITIONAL(USE_XVID, false)
 AM_CONDITIONAL(USE_WILDMIDI, false)
 AM_CONDITIONAL(USE_WININET, false)
+AM_CONDITIONAL(USE_ACM, false)
 
 fi dnl of EXT plugins
 
@@ -1430,10 +1480,13 @@ AC_CONFIG_FILES(
 Makefile
 gst-plugins-bad.spec
 gst/Makefile
+gst/aacparse/Makefile
 gst/aiffparse/Makefile
-gst/app/Makefile
+gst/amrparse/Makefile
+gst/audioresample/Makefile
 gst/bayer/Makefile
 gst/cdxaparse/Makefile
+gst/dccp/Makefile
 gst/deinterlace/Makefile
 gst/deinterlace2/Makefile
 gst/dvdspu/Makefile
@@ -1445,18 +1498,23 @@ gst/h264parse/Makefile
 gst/librfb/Makefile
 gst/modplug/Makefile
 gst/modplug/libmodplug/Makefile
-gst/mpegtsparse/Makefile
+gst/mpegdemux/Makefile
+gst/mpegtsmux/Makefile
+gst/mpegtsmux/tsmux/Makefile
 gst/mpeg4videoparse/Makefile
 gst/mpegvideoparse/Makefile
 gst/mve/Makefile
+gst/mxf/Makefile
 gst/nsf/Makefile
 gst/nuvdemux/Makefile
+gst/pcapparse/Makefile
+gst/qtmux/Makefile
 gst/rawparse/Makefile
 gst/rtpmanager/Makefile
+gst/scaletempo/Makefile
 gst/sdp/Makefile
 gst/selector/Makefile
 gst/speed/Makefile
-gst/speexresample/Makefile
 gst/subenc/Makefile
 gst/stereo/Makefile
 gst/tta/Makefile
@@ -1466,7 +1524,6 @@ gst/real/Makefile
 gst/y4m/Makefile
 gst-libs/Makefile
 gst-libs/gst/Makefile
-gst-libs/gst/app/Makefile
 gst-libs/gst/dshow/Makefile
 sys/Makefile
 sys/acmenc/Makefile
@@ -1479,16 +1536,20 @@ sys/fbdev/Makefile
 sys/oss4/Makefile
 sys/qtwrapper/Makefile
 sys/vcd/Makefile
+sys/wasapi/Makefile
 sys/wininet/Makefile
+sys/winks/Makefile
+sys/winscreencap/Makefile
 examples/Makefile
-examples/app/Makefile
 examples/directfb/Makefile
+examples/scaletempo/Makefile
 examples/switch/Makefile
 ext/amrwb/Makefile
 ext/alsaspdif/Makefile
 ext/apexsink/Makefile
 ext/bz2/Makefile
 ext/cdaudio/Makefile
+ext/celt/Makefile
 ext/dc1394/Makefile
 ext/dirac/Makefile
 ext/directfb/Makefile
@@ -1501,6 +1562,7 @@ ext/faad/Makefile
 ext/gsm/Makefile
 ext/ivorbis/Makefile
 ext/jack/Makefile
+ext/jp2k/Makefile
 ext/ladspa/Makefile
 ext/libmms/Makefile
 ext/Makefile
@@ -1513,6 +1575,7 @@ ext/mythtv/Makefile
 ext/neon/Makefile
 ext/ofa/Makefile
 ext/resindvd/Makefile
+ext/twolame/Makefile
 ext/sdl/Makefile
 ext/sndfile/Makefile
 ext/soundtouch/Makefile

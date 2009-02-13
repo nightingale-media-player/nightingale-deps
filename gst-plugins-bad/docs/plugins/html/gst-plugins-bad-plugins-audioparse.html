@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-amrwbparse.html" title="amrwbparse">
-<link rel="next" href="gst-plugins-bad-plugins-deinterlace.html" title="deinterlace">
+<link rel="next" href="gst-plugins-bad-plugins-celtdec.html" title="celtdec">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
@@ -21,7 +21,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-deinterlace.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-celtdec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-audioparse.synopsis" class="shortcut">Top</a>
                    | 
@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-audioparse.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstRawParse
@@ -59,13 +61,23 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-audioparse.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--channels" title='The "channels" property'>channels</a>"                 gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--depth" title='The "depth" property'>depth</a>"                    gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--channels" title='The "channels" property'>channels</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--depth" title='The "depth" property'>depth</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--endianness" title='The "endianness" property'>endianness</a>"               GstAudioParseEndianness  : Read / Write
   "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--format" title='The "format" property'>format</a>"                   GstAudioParseFormat   : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--rate" title='The "rate" property'>rate</a>"                     gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--signed" title='The "signed" property'>signed</a>"                   gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--width" title='The "width" property'>width</a>"                    gint                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--rate" title='The "rate" property'>rate</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--signed" title='The "signed" property'>signed</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-audioparse.html#GstAudioParse--width" title='The "width" property'>width</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -75,7 +87,7 @@ Converts a byte stream into audio frames.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2597077"></a><h3>Element Information</h3>
+<a name="id2863251"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -98,28 +110,7 @@ Converts a byte stream into audio frames.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2591872"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
+<a name="id2837556"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -145,6 +136,27 @@ Converts a byte stream into audio frames.</p>
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
@@ -165,7 +177,9 @@ Converts a byte stream into audio frames.</p>
 <a name="gst-plugins-bad-plugins-audioparse.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstAudioParse--channels"></a><h3>The <code class="literal">"channels"</code> property</h3>
-<pre class="programlisting">  "channels"                 gint                  : Read / Write</pre>
+<pre class="programlisting">  "channels"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Number of channels in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 2</p>
@@ -173,7 +187,9 @@ Converts a byte stream into audio frames.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioParse--depth"></a><h3>The <code class="literal">"depth"</code> property</h3>
-<pre class="programlisting">  "depth"                    gint                  : Read / Write</pre>
+<pre class="programlisting">  "depth"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Depth of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 16</p>
@@ -195,7 +211,9 @@ Converts a byte stream into audio frames.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioParse--rate"></a><h3>The <code class="literal">"rate"</code> property</h3>
-<pre class="programlisting">  "rate"                     gint                  : Read / Write</pre>
+<pre class="programlisting">  "rate"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Rate of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 44100</p>
@@ -203,14 +221,18 @@ Converts a byte stream into audio frames.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioParse--signed"></a><h3>The <code class="literal">"signed"</code> property</h3>
-<pre class="programlisting">  "signed"                   gboolean              : Read / Write</pre>
+<pre class="programlisting">  "signed"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Sign of audio samples in raw stream.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioParse--width"></a><h3>The <code class="literal">"width"</code> property</h3>
-<pre class="programlisting">  "width"                    gint                  : Read / Write</pre>
+<pre class="programlisting">  "width"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Width of audio samples in raw stream.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 16</p>

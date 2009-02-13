@@ -25,6 +25,7 @@ libgstqtvideowrapper_la_SOURCES = \
 libgstqtvideowrapper_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) $(QUICKTIME_CFLAGS)
 libgstqtvideowrapper_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS)
 libgstqtvideowrapper_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(QUICKTIME_LDFLAGS)
+libgstqtwrapper_la_LIBTOOLFLAGS = --tag=disable-static
 
 # headers we need but don't want installed
 noinst_HEADERS = 		\

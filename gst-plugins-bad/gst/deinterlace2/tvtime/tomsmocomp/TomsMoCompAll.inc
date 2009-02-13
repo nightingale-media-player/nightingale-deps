@@ -36,8 +36,10 @@
 #define SEFUNC(x) Search_Effort_MMXEXT_##x(int src_pitch, int dst_pitch, int rowsize, const unsigned char *pWeaveSrc, const unsigned char *pWeaveSrcP, unsigned char *pWeaveDest, int IsOdd, const unsigned char *pCopySrc, const unsigned char *pCopySrcP, int FldHeight)
 #elif defined(IS_3DNOW)
 #define SEFUNC(x) Search_Effort_3DNOW_##x(int src_pitch, int dst_pitch, int rowsize, const unsigned char *pWeaveSrc, const unsigned char *pWeaveSrcP, unsigned char *pWeaveDest, int IsOdd, const unsigned char *pCopySrc, const unsigned char *pCopySrcP, int FldHeight)
-#else
+#elif defined(IS_MMX)
 #define SEFUNC(x) Search_Effort_MMX_##x(int src_pitch, int dst_pitch, int rowsize, const unsigned char *pWeaveSrc, const unsigned char *pWeaveSrcP, unsigned char *pWeaveDest, int IsOdd, const unsigned char *pCopySrc, const unsigned char *pCopySrcP, int FldHeight)
+#else
+#define SEFUNC(x) Search_Effort_C_##x(int src_pitch, int dst_pitch, int rowsize, const unsigned char *pWeaveSrc, const unsigned char *pWeaveSrcP, unsigned char *pWeaveDest, int IsOdd, const unsigned char *pCopySrc, const unsigned char *pCopySrcP, int FldHeight)
 #endif
 
 #include "TomsMoCompAll2.inc"
@@ -53,8 +55,10 @@
 #define SEFUNC(x) Search_Effort_MMXEXT_##x(src_pitch, dst_pitch, rowsize, pWeaveSrc, pWeaveSrcP, pWeaveDest, IsOdd, pCopySrc, pCopySrcP, FldHeight)
 #elif defined(IS_3DNOW)
 #define SEFUNC(x) Search_Effort_3DNOW_##x(src_pitch, dst_pitch, rowsize, pWeaveSrc, pWeaveSrcP, pWeaveDest, IsOdd, pCopySrc, pCopySrcP, FldHeight)
-#else
+#elif defined(IS_MMX)
 #define SEFUNC(x) Search_Effort_MMX_##x(src_pitch, dst_pitch, rowsize, pWeaveSrc, pWeaveSrcP, pWeaveDest, IsOdd, pCopySrc, pCopySrcP, FldHeight)
+#else
+#define SEFUNC(x) Search_Effort_C_##x(src_pitch, dst_pitch, rowsize, pWeaveSrc, pWeaveSrcP, pWeaveDest, IsOdd, pCopySrc, pCopySrcP, FldHeight)
 #endif
 
 void FUNCT_NAME(GstDeinterlaceMethod *d_method, GstDeinterlace2* object)
@@ -182,56 +186,56 @@ void FUNCT_NAME(GstDeinterlaceMethod *d_method, GstDeinterlace2* object)
     {
       if (SearchEffort == 0)
 	{
-	  SEFUNC(0_SB);
+	  SEFUNC(0SB);
 	}
       else if (SearchEffort <= 1)
 	{
-	  SEFUNC(1_SB);
+	  SEFUNC(1SB);
 	}
       /*	else if (SearchEffort <= 2)
 		{
-		SEFUNC(2_SB);
+		SEFUNC(2SB);
 		}
       */
       else if (SearchEffort <= 3)
 	{
-	  SEFUNC(3_SB);
+	  SEFUNC(3SB);
 	}
       else if (SearchEffort <= 5)
 	{
-	  SEFUNC(5_SB);
+	  SEFUNC(5SB);
 	}
       else if (SearchEffort <= 9)
 	{
-	  SEFUNC(9_SB);
+	  SEFUNC(9SB);
 	}
       else if (SearchEffort <= 11)
 	{
-	  SEFUNC(11_SB);
+	  SEFUNC(11SB);
 	}
       else if (SearchEffort <= 13)
 	{
-	  SEFUNC(13_SB);
+	  SEFUNC(13SB);
 	}
       else if (SearchEffort <= 15)
 	{
-	  SEFUNC(15_SB);
+	  SEFUNC(15SB);
 	}
       else if (SearchEffort <= 19)
 	{
-	  SEFUNC(19_SB);
+	  SEFUNC(19SB);
 	}
       else if (SearchEffort <= 21)
 	{
-	  SEFUNC(21_SB);
+	  SEFUNC(21SB);
 	}
       else 
 	{
-	  SEFUNC(Max_SB);
+	  SEFUNC(MaxSB);
 	}
     }
 
-#ifdef HAVE_CPU_I386
+#if defined(BUILD_X86_ASM) && !defined(IS_C)
   __asm__ __volatile__("emms");
 #endif
 }

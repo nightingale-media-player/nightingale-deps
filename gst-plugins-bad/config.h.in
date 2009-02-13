@@ -52,6 +52,17 @@
 /* Define to enable cdaudio (used by cdaudio). */
 #undef HAVE_CDAUDIO
 
+/* Define to enable celt (used by celt). */
+#undef HAVE_CELT
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
 
@@ -146,6 +157,12 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
+/* FIONREAD ioctl found in sys/filio.h */
+#undef HAVE_FIONREAD_IN_SYS_FILIO
+
+/* FIONREAD ioctl found in sys/ioclt.h */
+#undef HAVE_FIONREAD_IN_SYS_IOCTL
+
 /* Define if compiler supports gcc inline assembly */
 #undef HAVE_GCC_ASM
 
@@ -155,7 +172,7 @@
 /* Define to enable GSM library (used by gsmenc gsmdec). */
 #undef HAVE_GSM
 
-/* Define if you have the iconv() function. */
+/* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -166,6 +183,9 @@
 
 /* Define to enable Jack (used by jack). */
 #undef HAVE_JACK
+
+/* Define to enable jp2k (used by jp2kdec jp2kenc). */
+#undef HAVE_JP2K
 
 /* Define to enable ladspa (used by ladspa). */
 #undef HAVE_LADSPA
@@ -272,6 +292,9 @@
 /* Define to enable timidity midi soft synth plugin (used by timidity). */
 #undef HAVE_TIMIDITY
 
+/* Define to enable twolame (used by twolame). */
+#undef HAVE_TWOLAME
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -295,6 +318,9 @@
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
+
+/* Define if you have X11 library */
+#undef HAVE_X11
 
 /* Define to enable x264 plug-in (used by x264). */
 #undef HAVE_X264

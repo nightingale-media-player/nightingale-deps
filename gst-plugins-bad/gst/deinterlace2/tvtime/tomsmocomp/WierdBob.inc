@@ -13,6 +13,7 @@
 		 
 		// selected for the	smallest of abs(a,f), abs(c,d), or abs(b,e), etc.
 
+#ifndef IS_C
 		// a,f
 		"movq    -2(%%"XBX"), %%mm0\n\t"		// value a from top left		
 		"movq    2(%%"XBX", %%"XCX"), %%mm1\n\t"	// value f from bottom right			
@@ -175,6 +176,7 @@
 		"pxor	%%mm4, %%mm4\n\t"			
 		"psubusb %%mm7, %%mm3\n\t"			// nonzero where new weights bigger, else 0
 		"pcmpeqb %%mm4, %%mm3\n\t"			// now ff where new better, else 00	
+
 		"pcmpeqb	%%mm3, %%mm4\n\t"			// here ff where old better, else 00
 
 		"pand	%%mm3, %%mm1\n\t"
@@ -187,3 +189,98 @@
 		"por		%%mm1, %%mm7\n\t"			// our x2 diffs
 		"movq	%%mm7, %%mm4\n\t"			// save as bob uncertainty indicator
 
+#else
+
+        // a,f
+        best[0] = (pBob[-2] + pBob[src_pitch2 + 2]) / 2;
+	diff[0] = ABS (pBob[-2] - pBob[src_pitch2 + 2]);
+        best[1] = (pBob[-1] + pBob[src_pitch2 + 3]) / 2;
+	diff[1] = ABS (pBob[-1] - pBob[src_pitch2 + 3]);
+
+        // c,d
+	if (ABS (pBob[2] - pBob[src_pitch2 - 2]) < diff[0]) {
+          best[0] = (pBob[2] + pBob[src_pitch2 - 2]) / 2;
+	  diff[0] = ABS (pBob[2] - pBob[src_pitch2 - 2]);
+	}
+
+	if (ABS (pBob[3] - pBob[src_pitch2 - 1]) < diff[1]) {
+          best[1] = (pBob[3] + pBob[src_pitch2 - 1]) / 2;
+	  diff[1] = ABS (pBob[3] - pBob[src_pitch2 - 1]);
+	}
+
+	// j,n
+	if (ABS (pBob[-4] - pBob[src_pitch2 + 4]) < diff[0]) {
+          best[0] = (pBob[-4] + pBob[src_pitch2 + 4]) / 2;
+	  diff[0] = ABS (pBob[-4] - pBob[src_pitch2 + 4]);
+	}
+
+	if (ABS (pBob[-3] - pBob[src_pitch2 + 5]) < diff[1]) {
+          best[1] = (pBob[-3] + pBob[src_pitch2 + 5]) / 2;
+	  diff[1] = ABS (pBob[-3] - pBob[src_pitch2 + 5]);
+	}
+
+	// k,m
+	if (ABS (pBob[4] - pBob[src_pitch2 - 4]) < diff[0]) {
+          best[0] = (pBob[4] + pBob[src_pitch2 - 4]) / 2;
+	  diff[0] = ABS (pBob[-4] - pBob[src_pitch2 - 4]);
+	}
+
+	if (ABS (pBob[5] - pBob[src_pitch2 - 3]) < diff[1]) {
+          best[1] = (pBob[5] + pBob[src_pitch2 - 3]) / 2;
+	  diff[1] = ABS (pBob[-3] - pBob[src_pitch2 - 3]);
+	}
+	// k,m
+	if (ABS (pBob[4] - pBob[src_pitch2 - 4]) < diff[0]) {
+          best[0] = (pBob[4] + pBob[src_pitch2 - 4]) / 2;
+	  diff[0] = ABS (pBob[-4] - pBob[src_pitch2 - 4]);
+	}
+	
+	if (ABS (pBob[5] - pBob[src_pitch2 - 3]) < diff[1]) {
+          best[1] = (pBob[5] + pBob[src_pitch2 - 3]) / 2;
+	  diff[1] = ABS (pBob[-3] - pBob[src_pitch2 - 3]);
+	}
+
+// We will also calc here the max/min values to later limit comb
+// so the max excursion will not exceed the Max_Comb constant
+
+#ifdef SKIP_SEARCH
+		best[0] = CLAMP (best[0], MIN (pBob[src_pitch2], pBob[0]), MAX (pBob[src_pitch2], pBob[0]));
+		best[1] = CLAMP (best[1], MIN (pBob[src_pitch2 + 1], pBob[1]), MAX (pBob[src_pitch2 + 1], pBob[1]));
+#else
+		mov[0] = MAX (ABS (pBob[0] - pBobP[0]), ABS (pBob[src_pitch2] - pBobP[src_pitch2]));
+		mov[1] = MAX (ABS (pBob[1] - pBobP[1]), ABS (pBob[src_pitch2 + 1] - pBobP[src_pitch2 + 1]));
+
+		MinVals[0] = 0;
+		MinVals[1] = 0;
+		MaxVals[0] = 255;
+		MaxVals[1] = 255;
+
+		if (mov[0] > Max_Mov[0]) {
+		  MinVals[0] = MAX (MIN (pBob[0], pBob[src_pitch2]), best[0]);
+		  MaxVals[0] = MIN (MAX (pBob[0], pBob[src_pitch2]), best[0]);
+		}
+		
+		if (mov[1] > Max_Mov[1]) {
+		  MinVals[1] = MAX (MIN (pBob[1], pBob[src_pitch2 + 1]), best[1]);
+		  MaxVals[1] = MIN (MAX (pBob[1], pBob[src_pitch2 + 1]), best[1]);
+		}
+
+		best[0] = CLAMP (best[0], MIN (pBob[src_pitch2], pBob[0]), MAX (pBob[src_pitch2], pBob[0]));
+		best[1] = CLAMP (best[1], MIN (pBob[src_pitch2 + 1], pBob[1]), MAX (pBob[src_pitch2 + 1], pBob[1]));
+#endif
+
+		avg[0] = (pBob[src_pitch2] + pBob[0]) / 2;
+		avg[1] = (pBob[src_pitch2 + 1] + pBob[1]) / 2;
+		diff2[0] = ABS (pBob[src_pitch2] - pBob[0]);
+		diff2[1] = ABS (pBob[src_pitch2 + 1] - pBob[1]);
+
+		if (diff2[0] < diff[0]) {
+		  best[0] = avg[0];
+		  diff[0] = diff2[0];
+		}
+
+		if (diff2[1] < diff[1]) {
+		  best[1] = avg[1];
+		  diff[1] = diff2[1];
+		}
+#endif

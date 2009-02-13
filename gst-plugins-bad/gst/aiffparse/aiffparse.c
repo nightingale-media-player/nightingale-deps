@@ -569,7 +569,7 @@ gst_aiffparse_peek_chunk (AIFFParse * aiff, guint32 * tag, guint32 * size)
 }
 
 static gboolean
-gst_aiffparse_peek_data (AIFFParse *aiff, guint32 size, const guint8 **data)
+gst_aiffparse_peek_data (AIFFParse * aiff, guint32 size, const guint8 ** data)
 {
   if (gst_adapter_available (aiff->adapter) < size)
     return FALSE;
@@ -678,13 +678,13 @@ gst_aiffparse_parse_comm (AIFFParse * aiff, GstBuffer * buf)
      * either big or little endian */
     if (GST_READ_UINT32_LE (data + 18) == GST_MAKE_FOURCC ('N', 'O', 'N', 'E'))
       aiff->endianness = G_BIG_ENDIAN;
-    else if (GST_READ_UINT32_LE (data + 18) == 
-            GST_MAKE_FOURCC ('s', 'o', 'w', 't'))
+    else if (GST_READ_UINT32_LE (data + 18) ==
+        GST_MAKE_FOURCC ('s', 'o', 'w', 't'))
       aiff->endianness = G_LITTLE_ENDIAN;
     else {
       GST_WARNING_OBJECT (aiff, "Unsupported compression in AIFC "
-              "file: %" GST_FOURCC_FORMAT, 
-              GST_FOURCC_ARGS (GST_READ_UINT32_LE (data + 18)));
+          "file: %" GST_FOURCC_FORMAT,
+          GST_FOURCC_ARGS (GST_READ_UINT32_LE (data + 18)));
       return FALSE;
     }
   } else
@@ -742,8 +742,7 @@ gst_aiffparse_create_caps (AIFFParse * aiff)
       "depth", G_TYPE_INT, aiff->depth,
       "channels", G_TYPE_INT, aiff->channels,
       "endianness", G_TYPE_INT, aiff->endianness,
-      "rate", G_TYPE_INT, aiff->rate,
-      "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+      "rate", G_TYPE_INT, aiff->rate, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
 
   GST_DEBUG_OBJECT (aiff, "Created caps: %" GST_PTR_FORMAT, caps);
   return caps;
@@ -845,20 +844,19 @@ gst_aiffparse_stream_headers (AIFFParse * aiff)
         } else {
           gst_buffer_unref (buf);
           if ((res =
-              gst_pad_pull_range (aiff->sinkpad, aiff->offset, 16,
-                  &ssndbuf)) != GST_FLOW_OK)
+                  gst_pad_pull_range (aiff->sinkpad, aiff->offset, 16,
+                      &ssndbuf)) != GST_FLOW_OK)
             goto header_read_error;
           ssnddata = GST_BUFFER_DATA (ssndbuf);
         }
 
         aiff->ssnd_offset = GST_READ_UINT32_BE (ssnddata + 8);
-        aiff->ssnd_blocksize = GST_READ_UINT32_BE ( ssnddata + 12);
+        aiff->ssnd_blocksize = GST_READ_UINT32_BE (ssnddata + 12);
 
         gotdata = TRUE;
         if (aiff->streaming) {
           gst_adapter_flush (aiff->adapter, 16);
-        }
-        else {
+        } else {
           gst_buffer_unref (ssndbuf);
         }
         aiff->offset += 16;
@@ -893,10 +891,10 @@ gst_aiffparse_stream_headers (AIFFParse * aiff)
     }
   }
 
-    /* We read all the chunks (in pull mode) or reached the SSND chunk
-     * (in push mode). We must have both COMM and SSND now; error out 
-     * otherwise.
-     */
+  /* We read all the chunks (in pull mode) or reached the SSND chunk
+   * (in push mode). We must have both COMM and SSND now; error out 
+   * otherwise.
+   */
   if (!aiff->got_comm) {
     GST_WARNING_OBJECT (aiff, "Failed to find COMM chunk");
     goto no_header;

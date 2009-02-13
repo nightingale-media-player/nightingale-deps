@@ -235,7 +235,7 @@ gst_faac_class_init (GstFaacClass * klass)
   g_object_class_install_property (gobject_class, ARG_OUTPUTFORMAT,
       g_param_spec_enum ("outputformat", "Output format",
           "Format of output frames",
-          GST_TYPE_FAAC_OUTPUTFORMAT, MAIN, G_PARAM_READWRITE));
+          GST_TYPE_FAAC_OUTPUTFORMAT, 0 /* RAW */ , G_PARAM_READWRITE));
 
   /* virtual functions */
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_faac_change_state);
@@ -250,6 +250,7 @@ gst_faac_init (GstFaac * faac)
   faac->cache = NULL;
   faac->cache_time = GST_CLOCK_TIME_NONE;
   faac->cache_duration = 0;
+  faac->next_ts = GST_CLOCK_TIME_NONE;
 
   faac->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_pad_set_chain_function (faac->sinkpad,
@@ -268,7 +269,7 @@ gst_faac_init (GstFaac * faac)
   faac->bitrate = 1000 * 128;
   faac->profile = MAIN;
   faac->shortctl = SHORTCTL_NORMAL;
-  faac->outputformat = 0;
+  faac->outputformat = 0;       /* RAW */
   faac->tns = FALSE;
   faac->midside = TRUE;
 }
@@ -355,6 +356,7 @@ gst_faac_configure_source_pad (GstFaac * faac)
   gboolean ret = FALSE;
   gint n, ver, mpegversion;
   faacEncConfiguration *conf;
+  guint maxbitrate;
 
   mpegversion = FAAC_DEFAULT_MPEGVERSION;
 
@@ -391,6 +393,20 @@ gst_faac_configure_source_pad (GstFaac * faac)
   conf->inputFormat = faac->format;
   conf->outputFormat = faac->outputformat;
   conf->shortctl = faac->shortctl;
+
+  /* check, warn and correct if the max bitrate for the given samplerate is
+   * exceeded. Maximum of 6144 bit for a channel */
+  maxbitrate =
+      (unsigned int) (6144.0 * (double) faac->samplerate / (double) 1024.0 +
+      .5);
+  if (conf->bitRate > maxbitrate) {
+    GST_ELEMENT_WARNING (faac, RESOURCE, SETTINGS, (NULL),
+        ("bitrate %lu exceeds maximum allowed bitrate of %u for samplerate %d. "
+            "Setting bitrate to %u", conf->bitRate, maxbitrate,
+            faac->samplerate, maxbitrate));
+    conf->bitRate = maxbitrate;
+  }
+
   if (!faacEncSetConfiguration (faac->handle, conf))
     goto set_failed;
 
@@ -459,23 +475,34 @@ gst_faac_sink_event (GstPad * pad, GstEvent * event)
         ret = TRUE;
 
       /* flush first */
+      GST_DEBUG ("Pushing out remaining buffers because of EOS");
       while (ret) {
         if (gst_pad_alloc_buffer_and_set_caps (faac->srcpad,
                 GST_BUFFER_OFFSET_NONE, faac->bytes,
                 GST_PAD_CAPS (faac->srcpad), &outbuf) == GST_FLOW_OK) {
           gint ret_size;
 
+          GST_DEBUG ("next_ts %" GST_TIME_FORMAT,
+              GST_TIME_ARGS (faac->next_ts));
+
           if ((ret_size = faacEncEncode (faac->handle, NULL, 0,
                       GST_BUFFER_DATA (outbuf), faac->bytes)) > 0) {
             GST_BUFFER_SIZE (outbuf) = ret_size;
-            GST_BUFFER_TIMESTAMP (outbuf) = GST_CLOCK_TIME_NONE;
-            GST_BUFFER_DURATION (outbuf) = GST_CLOCK_TIME_NONE;
+            GST_BUFFER_TIMESTAMP (outbuf) = faac->next_ts;
+            /* faac seems to always consume a fixed number of input samples,
+             * therefore extrapolate the duration from that value and the incoming
+             * bitrate */
+            GST_BUFFER_DURATION (outbuf) = gst_util_uint64_scale (faac->samples,
+                GST_SECOND, faac->channels * faac->samplerate);
+            if (GST_CLOCK_TIME_IS_VALID (faac->next_ts))
+              faac->next_ts += GST_BUFFER_DURATION (outbuf);
             gst_pad_push (faac->srcpad, outbuf);
           } else {
             gst_buffer_unref (outbuf);
             ret = FALSE;
           }
-        }
+        } else
+          ret = FALSE;
       }
       ret = gst_pad_event_default (pad, event);
       break;
@@ -512,6 +539,10 @@ gst_faac_chain (GstPad * pad, GstBuffer * inbuf)
     if (!gst_faac_configure_source_pad (faac))
       goto nego_failed;
   }
+
+  GST_DEBUG ("Got buffer time:%" GST_TIME_FORMAT " duration:%" GST_TIME_FORMAT,
+      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (inbuf)),
+      GST_TIME_ARGS (GST_BUFFER_DURATION (inbuf)));
 
   size = GST_BUFFER_SIZE (inbuf);
   in_size = size;
@@ -600,6 +631,14 @@ gst_faac_chain (GstPad * pad, GstBuffer * inbuf)
         GST_BUFFER_DURATION (outbuf) += faac->cache_duration;
         faac->cache_duration = 0;
       }
+      /* Store the value of the next expected timestamp to output
+       * This is required in order to output the trailing encoded packets
+       * at EOS with proper timestamps and duration. */
+      faac->next_ts =
+          GST_BUFFER_TIMESTAMP (outbuf) + GST_BUFFER_DURATION (outbuf);
+      GST_DEBUG ("Pushing out buffer time:%" GST_TIME_FORMAT " duration:%"
+          GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (outbuf)),
+          GST_TIME_ARGS (GST_BUFFER_DURATION (outbuf)));
       result = gst_pad_push (faac->srcpad, outbuf);
     } else {
       /* FIXME: what I'm doing here isn't fully correct, but there
@@ -745,6 +784,7 @@ gst_faac_change_state (GstElement * element, GstStateChange transition)
       faac->cache_duration = 0;
       faac->samplerate = -1;
       faac->channels = -1;
+      faac->next_ts = GST_CLOCK_TIME_NONE;
       GST_OBJECT_UNLOCK (faac);
       break;
     }

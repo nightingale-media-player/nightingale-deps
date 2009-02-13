@@ -59,14 +59,16 @@ struct _GstFLVDemux
   
   GstIndex *index;
   gint index_id;
+  gboolean own_index;
   
   GArray * times;
   GArray * filepositions;
 
   GstAdapter *adapter;
 
-  GstSegment *segment;
+  GstSegment segment;
 
+  GstEvent *close_seg_event;
   GstEvent *new_seg_event;
 
   GstTagList *taglist;

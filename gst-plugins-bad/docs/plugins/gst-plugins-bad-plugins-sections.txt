@@ -1,4 +1,32 @@
 <SECTION>
+<FILE>element-aacparse</FILE>
+<TITLE>aacparse</TITLE>
+GstAacParse
+<SUBSECTION Standard>
+GstAacParseClass
+GST_AACPARSE
+GST_AACPARSE_CLASS
+GST_IS_AACPARSE
+GST_IS_AACPARSE_CLASS
+GST_TYPE_AACPARSE
+gst_aacparse_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-amrparse</FILE>
+<TITLE>amrparse</TITLE>
+GstAmrParse
+<SUBSECTION Standard>
+GstAmrParseClass
+GST_AMRPARSE
+GST_AMRPARSE_CLASS
+GST_IS_AMRPARSE
+GST_IS_AMRPARSE_CLASS
+GST_TYPE_AMRPARSE
+gst_amrparse_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-amrwbdec</FILE>
 <TITLE>amrwbdec</TITLE>
 GstAmrwbDec
@@ -55,6 +83,34 @@ gst_audio_parse_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-celtdec</FILE>
+<TITLE>celtdec</TITLE>
+GstCeltDec
+<SUBSECTION Standard>
+GstCeltDecClass
+GST_CELT_DEC
+GST_CELT_DEC_CLASS
+GST_IS_CELT_DEC
+GST_IS_CELT_DEC_CLASS
+GST_TYPE_CELT_DEC
+gst_celt_dec_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-celtenc</FILE>
+<TITLE>celtenc</TITLE>
+GstCeltEnc
+<SUBSECTION Standard>
+GstCeltEncClass
+GST_CELT_ENC
+GST_CELT_ENC_CLASS
+GST_IS_CELT_ENC
+GST_IS_CELT_ENC_CLASS
+GST_TYPE_CELT_ENC
+gst_celt_enc_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-dc1394</FILE>
 <TITLE>dc1394</TITLE>
 GstDc1394
@@ -66,6 +122,62 @@ GST_IS_DC1394
 GST_IS_DC1394_CLASS
 GST_TYPE_DC1394
 gst_dc1394_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-dccpclientsink</FILE>
+<TITLE>dccpclientsink</TITLE>
+GstDCCPClientSink
+<SUBSECTION Standard>
+GstDCCPClientSinkClass
+GST_DCCP_CLIENT_SINK
+GST_DCCP_CLIENT_SINK_CLASS
+GST_IS_DCCP_CLIENT_SINK
+GST_IS_DCCP_CLIENT_SINK_CLASS
+GST_TYPE_DCCP_CLIENT_SINK
+gst_dccp_client_sink_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-dccpclientsrc</FILE>
+<TITLE>dccpclientsrc</TITLE>
+GstDCCPClientSrc
+<SUBSECTION Standard>
+GstDCCPClientSrcClass
+GST_DCCP_CLIENT_SRC
+GST_DCCP_CLIENT_SRC_CLASS
+GST_IS_DCCP_CLIENT_SRC
+GST_IS_DCCP_CLIENT_SRC_CLASS
+GST_TYPE_DCCP_CLIENT_SRC
+gst_dccp_client_src_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-dccpserversink</FILE>
+<TITLE>dccpserversink</TITLE>
+GstDCCPServerSink
+<SUBSECTION Standard>
+GstDCCPServerSinkClass
+GST_DCCP_SERVER_SINK
+GST_DCCP_SERVER_SINK_CLASS
+GST_IS_DCCP_SERVER_SINK
+GST_IS_DCCP_SERVER_SINK_CLASS
+GST_TYPE_DCCP_SERVER_SINK
+gst_dccp_server_sink_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-dccpserversrc</FILE>
+<TITLE>dccpserversrc</TITLE>
+GstDCCPServerSrc
+<SUBSECTION Standard>
+GstDCCPServerSrcClass
+GST_DCCP_SERVER_SRC
+GST_DCCP_SERVER_SRC_CLASS
+GST_IS_DCCP_SERVER_SRC
+GST_IS_DCCP_SERVER_SRC_CLASS
+GST_TYPE_DCCP_SERVER_SRC
+gst_dccp_server_src_get_type
 </SECTION>
 
 <SECTION>
@@ -203,10 +315,24 @@ gst_ivorbis_dec_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-jackaudiosrc</FILE>
+<TITLE>jackaudiosrc</TITLE>
+GstJackAudioSrc
+<SUBSECTION Standard>
+GstJackAudioSrcClass
+GST_JACK_AUDIO_SRC
+GST_JACK_AUDIO_SRC_CLASS
+GST_JACK_AUDIO_SRC_GET_CLASS
+GST_IS_JACK_AUDIO_SRC
+GST_IS_JACK_AUDIO_SRC_CLASS
+GST_TYPE_JACK_AUDIO_SRC
+gst_jack_audio_src_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-jackaudiosink</FILE>
-GstJackAudioSink
 <TITLE>jackaudiosink</TITLE>
-GstJackConnect
+GstJackAudioSink
 <SUBSECTION Standard>
 GstJackAudioSinkClass
 GST_JACK_AUDIO_SINK
@@ -306,6 +432,25 @@ gst_mpeg2enc_get_type
 </SECTION>
 
 <SECTION>
+<FILE>element-mplex</FILE>
+<TITLE>mplex</TITLE>
+GstMplex
+<SUBSECTION Standard>
+GstMplexClass
+GST_MPLEX
+GST_MPLEX_CLASS
+GST_IS_MPLEX
+GST_IS_MPLEX_CLASS
+GST_TYPE_MPLEX
+GST_MPLEX_MUTEX_LOCK
+GST_MPLEX_MUTEX_UNLOCK
+GST_MPLEX_SIGNAL
+GST_MPLEX_SIGNAL_ALL
+GST_MPLEX_WAIT
+gst_mplex_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-mythtvsrc</FILE>
 <TITLE>mythtvsrc</TITLE>
 GstMythtvSrc
@@ -318,6 +463,20 @@ GST_IS_MYTHTV_SRC
 GST_IS_MYTHTV_SRC_CLASS
 GST_TYPE_MYTHTV_SRC
 gst_mythtv_src_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-mxfdemux</FILE>
+<TITLE>mxfdemux</TITLE>
+GstMXFDemux
+<SUBSECTION Standard>
+GstMXFDemuxClass
+GST_IS_MXF_DEMUX
+GST_IS_MXF_DEMUX_CLASS
+GST_MXF_DEMUX
+GST_MXF_DEMUX_CLASS
+GST_TYPE_MXF_DEMUX
+gst_mxf_demux_get_type
 </SECTION>
 
 <SECTION>
@@ -441,6 +600,20 @@ GST_IS_RTP_SSRC_DEMUX_CLASS
 </SECTION>
 
 <SECTION>
+<FILE>element-scaletempo</FILE>
+<TITLE>scaletempo</TITLE>
+GstScaletempo
+<SUBSECTION Standard>
+GstScaletempoClass
+GST_IS_SCALETEMPO
+GST_IS_SCALETEMPO_CLASS
+GST_SCALETEMPO
+GST_SCALETEMPO_CLASS
+GST_TYPE_SCALETEMPO
+gst_scaletempo_get_type
+</SECTION>
+
+<SECTION>
 <FILE>element-sdlaudiosink</FILE>
 <TITLE>sdlaudiosink</TITLE>
 GstSDLAudioSink
@@ -520,17 +693,17 @@ gst_stereo_get_type
 </SECTION>
 
 <SECTION>
-<FILE>element-speexresample</FILE>
-<TITLE>speexresample</TITLE>
-GstSpeexResample
+<FILE>element-legacyresample</FILE>
+<TITLE>legacyresample</TITLE>
+GstAudioresample
 <SUBSECTION Standard>
-GstSpeexResampleClass
-GST_SPEEX_RESAMPLE
-GST_SPEEX_RESAMPLE_CLASS
-GST_IS_SPEEX_RESAMPLE
-GST_IS_SPEEX_RESAMPLE_CLASS
-GST_TYPE_SPEEX_RESAMPLE
-gst_speex_resample_get_type
+GstAudioresampleClass
+GST_AUDIORESAMPLE
+GST_AUDIORESAMPLE_CLASS
+GST_IS_AUDIORESAMPLE
+GST_IS_AUDIORESAMPLE_CLASS
+GST_TYPE_AUDIORESAMPLE
+gst_audioresample_get_type
 </SECTION>
 
 <SECTION>
@@ -558,6 +731,20 @@ GST_IS_TIMIDITY
 GST_IS_TIMIDITY_CLASS
 GST_TYPE_TIMIDITY
 gst_timidity_get_type
+</SECTION>
+
+<SECTION>
+<FILE>element-twolame</FILE>
+<TITLE>twolame</TITLE>
+GstTwoLame
+<SUBSECTION Standard>
+GstTwoLameClass
+GST_TWO_LAME
+GST_TWO_LAME_CLASS
+GST_IS_TWO_LAME
+GST_IS_TWO_LAME_CLASS
+GST_TYPE_TWO_LAME
+gst_two_lame_get_type
 </SECTION>
 
 <SECTION>
@@ -645,6 +832,19 @@ GST_TYPE_WILDMIDI
 </SECTION>
 
 <SECTION>
+<FILE>element-x264enc</FILE>
+<TITLE>x264enc</TITLE>
+GstX264Enc
+<SUBSECTION Standard>
+GstX264EncClass
+GST_X264_ENC
+GST_X264_ENC_CLASS
+GST_IS_X264_ENC
+GST_IS_X264_ENC_CLASS
+GST_TYPE_X264_ENC
+</SECTION>
+
+<SECTION>
 <FILE>element-y4menc</FILE>
 <TITLE>y4menc</TITLE>
 GstY4mEncode
@@ -654,5 +854,7 @@ GST_Y4M_ENCODE
 GST_Y4M_ENCODE_CLASS
 GST_IS_Y4M_ENCODE
 GST_IS_Y4M_ENCODE_CLASS
+GST_Y4M_ENCODE_GET_CLASS
 GST_TYPE_Y4M_ENCODE
+gst_y4m_encode_get_type
 </SECTION>

@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-stereo.html" title="stereo">
-<link rel="next" href="gst-plugins-bad-plugins-trm.html" title="trm">
+<link rel="next" href="gst-plugins-bad-plugins-twolame.html" title="twolame">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
@@ -21,13 +21,11 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-trm.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-twolame.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-timidity.synopsis" class="shortcut">Top</a>
                    | 
-                  <a href="#gst-plugins-bad-plugins-timidity.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-timidity.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+                  <a href="#gst-plugins-bad-plugins-timidity.description" class="shortcut">Description</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-timidity"></a><div class="titlepage"></div>
@@ -40,17 +38,8 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-bad-plugins-timidity.synopsis"></a><h2>Synopsis</h2>
-<a name="GstTimidity"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-timidity.html#GstTimidity-struct" title="GstTimidity">GstTimidity</a>;
-</pre>
-</div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-bad-plugins-timidity.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GstObject
-         +----GstElement
-               +----GstTimidity
+                    <a class="link" href="gst-plugins-bad-plugins-timidity.html#GstTimidity" title="GstTimidity">GstTimidity</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -62,7 +51,7 @@ This element renders midi-files as audio streams using
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2529508"></a><h3>Example pipeline</h3>
+<a name="id2908541"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=song.mid ! timidity ! alsasink
 </pre></div> This example pipeline will parse the midi and render to raw audio which is
@@ -71,7 +60,7 @@ played via alsa.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2632912"></a><h3>Element Information</h3>
+<a name="id2905235"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -94,7 +83,7 @@ played via alsa.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2607689"></a><h3>Element Pads</h3>
+<a name="id2856464"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -146,8 +135,34 @@ played via alsa.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-timidity.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstTimidity-struct"></a><h3>GstTimidity</h3>
-<pre class="programlisting">typedef struct _GstTimidity GstTimidity;</pre>
+<a name="GstTimidity"></a><h3>GstTimidity</h3>
+<pre class="programlisting">typedef struct {
+    GstElement element;
+
+    GstPad *sinkpad, *srcpad;
+
+    gboolean initialized;
+
+    /* input stream properties */
+    gint64 mididata_size, mididata_offset;
+    gchar *mididata;
+    gboolean mididata_filled;
+
+    MidSong *song;
+
+    /* output data */
+    gboolean o_new_segment, o_segment_changed, o_seek;
+    GstSegment o_segment[1];
+    gint64 o_len;
+
+    /* format of the stream */
+    MidSongOptions song_options[1];
+    gint64 bytes_per_frame;
+    GstClockTime time_per_frame;
+
+    GstCaps *out_caps;
+} GstTimidity;
+</pre>
 <p>
 
 </p>

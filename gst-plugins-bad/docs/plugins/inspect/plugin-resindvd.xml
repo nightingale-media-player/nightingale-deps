@@ -3,7 +3,7 @@
   <description>Resin DVD playback elements</description>
   <filename>../../ext/resindvd/.libs/libresindvd.so</filename>
   <basename>libresindvd.so</basename>
-  <version>0.10.8</version>
+  <version>0.10.10</version>
   <license>GPL</license>
   <source>gst-plugins-bad</source>
   <package>GStreamer</package>
@@ -17,10 +17,10 @@
       <author>Jan Schmidt &lt;thaytan@noraisin.net&gt;</author>
       <pads>
         <caps>
-          <name>video</name>
+          <name>subpicture</name>
           <direction>source</direction>
           <presence>sometimes</presence>
-          <details>video/mpeg, mpegversion=(int){ 1, 2 }, systemstream=(boolean)false</details>
+          <details>video/x-dvd-subpicture</details>
         </caps>
         <caps>
           <name>audio</name>
@@ -29,10 +29,10 @@
           <details>audio/x-raw-int; audio/x-raw-float</details>
         </caps>
         <caps>
-          <name>subpicture</name>
+          <name>video</name>
           <direction>source</direction>
           <presence>sometimes</presence>
-          <details>video/x-dvd-subpicture</details>
+          <details>video/mpeg, mpegversion=(int){ 1, 2 }, systemstream=(boolean)false</details>
         </caps>
       </pads>
     </element>

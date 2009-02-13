@@ -141,6 +141,8 @@ gst_dvbsrc_modulation_get_type (void)
     {QAM_128, "QAM 128", "QAM 128"},
     {QAM_256, "QAM 256", "QAM 256"},
     {QAM_AUTO, "AUTO", "AUTO"},
+    {VSB_8, "8VSB", "8VSB"},
+    {VSB_16, "16VSB", "16VSB"},
     {0, NULL, NULL},
   };
 
@@ -521,6 +523,8 @@ gst_dvbsrc_set_property (GObject * _object, guint prop_id,
         char **tmp;
 
         tmp = pids = g_strsplit (pid_string, ":", MAX_FILTERS);
+        if (pid_string)
+          g_free (pid_string);
 
         /* always add the PAT and CAT pids */
         object->pids[0] = 0;
@@ -539,9 +543,10 @@ gst_dvbsrc_set_property (GObject * _object, guint prop_id,
 
         g_strfreev (tmp);
       }
-      /* if we are in playing, then set filters now */
+      /* if we are in playing or paused, then set filters now */
       GST_INFO_OBJECT (object, "checking if playing for setting pes filters");
-      if (GST_ELEMENT (object)->current_state == GST_STATE_PLAYING) {
+      if (GST_ELEMENT (object)->current_state == GST_STATE_PLAYING ||
+          GST_ELEMENT (object)->current_state == GST_STATE_PAUSED) {
         GST_INFO_OBJECT (object, "Setting pes filters now");
         gst_dvbsrc_set_pes_filters (object);
       }
@@ -681,6 +686,7 @@ gst_dvbsrc_open_frontend (GstDvbSrc * object)
   char *adapter_desc = NULL;
   gchar *frontend_dev;
   GstStructure *adapter_structure;
+  char *adapter_name = NULL;
 
   frontend_dev = g_strdup_printf ("/dev/dvb/adapter%d/frontend%d",
       object->adapter_number, object->frontend_number);
@@ -715,18 +721,22 @@ gst_dvbsrc_open_frontend (GstDvbSrc * object)
     return FALSE;
   }
 
+  adapter_name = g_strdup (fe_info.name);
+
   object->adapter_type = fe_info.type;
   switch (object->adapter_type) {
     case FE_QPSK:
       adapter_desc = "DVB-S";
       adapter_structure = gst_structure_new ("dvb-adapter",
           "type", G_TYPE_STRING, adapter_desc,
+          "name", G_TYPE_STRING, adapter_name,
           "auto-fec", G_TYPE_BOOLEAN, fe_info.caps & FE_CAN_FEC_AUTO, NULL);
       break;
     case FE_QAM:
       adapter_desc = "DVB-C";
       adapter_structure = gst_structure_new ("dvb-adapter",
           "type", G_TYPE_STRING, adapter_desc,
+          "name", G_TYPE_STRING, adapter_name,
           "auto-inversion", G_TYPE_BOOLEAN,
           fe_info.caps & FE_CAN_INVERSION_AUTO, "auto-qam", G_TYPE_BOOLEAN,
           fe_info.caps & FE_CAN_QAM_AUTO, "auto-fec", G_TYPE_BOOLEAN,
@@ -736,6 +746,7 @@ gst_dvbsrc_open_frontend (GstDvbSrc * object)
       adapter_desc = "DVB-T";
       adapter_structure = gst_structure_new ("dvb-adapter",
           "type", G_TYPE_STRING, adapter_desc,
+          "name", G_TYPE_STRING, adapter_name,
           "auto-inversion", G_TYPE_BOOLEAN,
           fe_info.caps & FE_CAN_INVERSION_AUTO, "auto-qam", G_TYPE_BOOLEAN,
           fe_info.caps & FE_CAN_QAM_AUTO, "auto-transmission-mode",
@@ -745,16 +756,23 @@ gst_dvbsrc_open_frontend (GstDvbSrc * object)
           G_TYPE_BOOLEAN, fe_info.caps % FE_CAN_HIERARCHY_AUTO, "auto-fec",
           G_TYPE_BOOLEAN, fe_info.caps & FE_CAN_FEC_AUTO, NULL);
       break;
+    case FE_ATSC:
+      adapter_desc = "ATSC";
+      adapter_structure = gst_structure_new ("dvb-adapter",
+          "type", G_TYPE_STRING, adapter_desc,
+          "name", G_TYPE_STRING, adapter_name, NULL);
+      break;
     default:
       g_error ("Unknown frontend type: %d", object->adapter_type);
       adapter_structure = gst_structure_new ("dvb-adapter",
           "type", G_TYPE_STRING, "unknown", NULL);
   }
 
-  GST_INFO_OBJECT (object, "DVB card: %s ", fe_info.name);
+  GST_INFO_OBJECT (object, "DVB card: %s ", adapter_name);
   gst_element_post_message (GST_ELEMENT_CAST (object), gst_message_new_element
       (GST_OBJECT (object), adapter_structure));
   g_free (frontend_dev);
+  g_free (adapter_name);
   return TRUE;
 }
 
@@ -834,6 +852,7 @@ gst_dvbsrc_plugin_init (GstPlugin * plugin)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
   return gst_element_register (plugin, "dvbsrc", GST_RANK_NONE,
@@ -841,7 +860,8 @@ gst_dvbsrc_plugin_init (GstPlugin * plugin)
 }
 
 static GstBuffer *
-read_device (int fd, int adapter_number, int frontend_number, int size)
+read_device (int fd, int adapter_number, int frontend_number, int size,
+    GstDvbSrc * object)
 {
   int count = 0;
   struct pollfd pfd[1];
@@ -892,9 +912,16 @@ read_device (int fd, int adapter_number, int frontend_number, int size)
         GST_WARNING
             ("Unable to read after %u attempts from device: /dev/dvb/adapter%d/dvr%d (%d)",
             attempts, adapter_number, frontend_number, errno);
+        gst_element_post_message (GST_ELEMENT_CAST (object),
+            gst_message_new_element (GST_OBJECT (object),
+                gst_structure_empty_new ("dvb-read-failure")));
+
       }
     } else if (errno == -EINTR) {       // poll interrupted
-      ;
+      if (attempts % 50 == 0) {
+        gst_buffer_unref (buf);
+        return NULL;
+      };
     }
 
   }
@@ -925,7 +952,7 @@ gst_dvbsrc_create (GstPushSrc * element, GstBuffer ** buf)
     /* --- Read TS from DVR device --- */
     GST_DEBUG_OBJECT (object, "Reading from DVR device");
     *buf = read_device (object->fd_dvr, object->adapter_number,
-        object->frontend_number, buffer_size);
+        object->frontend_number, buffer_size, object);
     if (*buf != NULL) {
       GstCaps *caps;
 
@@ -1274,6 +1301,11 @@ gst_dvbsrc_tune (GstDvbSrc * object)
         feparams.u.qam.fec_inner = object->code_rate_hp;
         feparams.u.qam.modulation = object->modulation;
         feparams.u.qam.symbol_rate = sym_rate;
+        break;
+      case FE_ATSC:
+        GST_INFO_OBJECT (object, "Tuning ATSC to %d", freq);
+        feparams.frequency = freq;
+        feparams.u.vsb.modulation = object->modulation;
         break;
       default:
         g_error ("Unknown frontend type: %d", object->adapter_type);

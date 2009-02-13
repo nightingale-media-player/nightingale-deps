@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="prev" href="gst-plugins-bad-plugins-audioparse.html" title="audioparse">
+<link rel="prev" href="gst-plugins-bad-plugins-dccpserversrc.html" title="dccpserversrc">
 <link rel="next" href="gst-plugins-bad-plugins-dfbvideosink.html" title="dfbvideosink">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -17,7 +17,7 @@
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-audioparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-dccpserversrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-deinterlace.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseTransform
@@ -59,12 +61,24 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-deinterlace.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--blend" title='The "blend" property'>blend</a>"                    gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--di-area-only" title='The "di-area-only" property'>di-area-only</a>"             gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--edge-detect" title='The "edge-detect" property'>edge-detect</a>"              gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--threshold" title='The "threshold" property'>threshold</a>"                gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--deinterlace" title='The "deinterlace" property'>deinterlace</a>"              gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--ni-area-only" title='The "ni-area-only" property'>ni-area-only</a>"             gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--blend" title='The "blend" property'>blend</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--di-area-only" title='The "di-area-only" property'>di-area-only</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--edge-detect" title='The "edge-detect" property'>edge-detect</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--threshold" title='The "threshold" property'>threshold</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--deinterlace" title='The "deinterlace" property'>deinterlace</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDeinterlace--ni-area-only" title='The "ni-area-only" property'>ni-area-only</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -78,7 +92,7 @@ below.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2588684"></a><h3>Example launch line</h3>
+<a name="id2859272"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
 </pre></div>
@@ -86,7 +100,7 @@ gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2592709"></a><h3>Element Information</h3>
+<a name="id2851254"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -109,17 +123,17 @@ gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2592771"></a><h3>Element Pads</h3>
+<a name="id2851316"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>src</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>source</td>
+<td>sink</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -136,11 +150,11 @@ gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>sink</td>
+<td>src</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
-<td>sink</td>
+<td>source</td>
 </tr>
 <tr>
 <td><p><span class="term">presence</span></p></td>
@@ -172,7 +186,9 @@ gst-launch -v videotestsrc ! deinterlace ! ffmpegcolorspace ! xvimagesink
 <a name="gst-plugins-bad-plugins-deinterlace.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--blend"></a><h3>The <code class="literal">"blend"</code> property</h3>
-<pre class="programlisting">  "blend"                    gboolean              : Read / Write</pre>
+<pre class="programlisting">  "blend"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
 Change the blending for pixels which are detected as
 'interlacing artifacts'. When true, the output pixel is a weighted
@@ -187,7 +203,9 @@ are averaged from the surrounding pixels above and below (the odd field).</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--di-area-only"></a><h3>The <code class="literal">"di-area-only"</code> property</h3>
-<pre class="programlisting">  "di-area-only"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "di-area-only"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
 When set to true, only areas affected by the deinterlacing are output,
 making it easy to see which regions are being modified.
@@ -202,7 +220,9 @@ See Also: <a class="link" href="gst-plugins-bad-plugins-deinterlace.html#GstDein
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--edge-detect"></a><h3>The <code class="literal">"edge-detect"</code> property</h3>
-<pre class="programlisting">  "edge-detect"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "edge-detect"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>
 Affects the weighting of the edge-detection function used for detecting
 interlacing artifacts.</p>
@@ -214,7 +234,9 @@ interlacing artifacts.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--threshold"></a><h3>The <code class="literal">"threshold"</code> property</h3>
-<pre class="programlisting">  "threshold"                gint                  : Read / Write</pre>
+<pre class="programlisting">  "threshold"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>
 Affects the threshold of the edge-detection function used for detecting
 interlacing artifacts.</p>
@@ -226,7 +248,9 @@ interlacing artifacts.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--deinterlace"></a><h3>The <code class="literal">"deinterlace"</code> property</h3>
-<pre class="programlisting">  "deinterlace"              gboolean              : Read / Write</pre>
+<pre class="programlisting">  "deinterlace"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
 Turn processing on/off. When false, no modification of the 
 video frames occurs and they pass through intact.</p>
@@ -238,7 +262,9 @@ video frames occurs and they pass through intact.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDeinterlace--ni-area-only"></a><h3>The <code class="literal">"ni-area-only"</code> property</h3>
-<pre class="programlisting">  "ni-area-only"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "ni-area-only"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>
 When set to true, only areas unaffected by the deinterlacing are output,
 making it easy to see which regions are being preserved intact.

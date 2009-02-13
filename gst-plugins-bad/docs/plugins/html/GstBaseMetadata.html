@@ -50,15 +50,21 @@ void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata
                                                          const MetaOptions options);
 void                <a class="link" href="GstBaseMetadata.html#gst-base-metadata-update-inject-segment-with-new-data" title="gst_base_metadata_update_inject_segment_with_new_data ()">gst_base_metadata_update_inject_segment_with_new_data</a>
                                                         (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
-                                                         guint8 **data,
-                                                         guint32 *size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *size,
                                                          MetadataChunkType type);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="GstBaseMetadata.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseMetadata
@@ -84,7 +90,7 @@ types of elements are supported:
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2656327"></a><p>
+<a name="id2923232"></a><p>
 This a abstract element that parses a stream and find chunks and offset
 where new chunks could be injected into it.
 Basically, the only thing need by implementors (parsers, (de)muxers) is to
@@ -262,8 +268,12 @@ EXIF, IPTC, XMP or not.
 <a name="gst-base-metadata-update-inject-segment-with-new-data"></a><h3>gst_base_metadata_update_inject_segment_with_new_data ()</h3>
 <pre class="programlisting">void                gst_base_metadata_update_inject_segment_with_new_data
                                                         (<a class="link" href="GstBaseMetadata.html" title="gstbasemetadata">GstBaseMetadata</a> *base,
-                                                         guint8 **data,
-                                                         guint32 *size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> **data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *size,
                                                          MetadataChunkType type);</pre>
 <p>
 If the file type specification of the parsed stream allows a chunk of <em class="parameter"><code>type</code></em>,

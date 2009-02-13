@@ -139,9 +139,33 @@ guint  arg2
 </SIGNAL>
 
 <SIGNAL>
-<NAME>GstRtpJitterBuffer::clear-pt-map</NAME>
+<NAME>GstRtpBin::get-internal-session</NAME>
+<RETURNS>RTPSession*</RETURNS>
+<FLAGS>la</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::on-sender-timeout</NAME>
 <RETURNS>void</RETURNS>
 <FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::reset-sync</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstRtpBin *gstrtpbin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpJitterBuffer::clear-pt-map</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
 GstRtpJitterBuffer *gstrtpjitterbuffer
 </SIGNAL>
 
@@ -151,6 +175,14 @@ GstRtpJitterBuffer *gstrtpjitterbuffer
 <FLAGS>l</FLAGS>
 GstRtpJitterBuffer *gstrtpjitterbuffer
 guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpJitterBuffer::handle-sync</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpJitterBuffer *gstrtpjitterbuffer
+GstStructure *arg1
 </SIGNAL>
 
 <SIGNAL>
@@ -265,6 +297,14 @@ guint  arg1
 </SIGNAL>
 
 <SIGNAL>
+<NAME>GstRtpSession::on-sender-timeout</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpSession *gstrtpsession
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
 <NAME>GstRtpSsrcDemux::new-ssrc-pad</NAME>
 <RETURNS>void</RETURNS>
 <FLAGS>l</FLAGS>
@@ -341,5 +381,37 @@ guint64  arg1
 <RETURNS>void</RETURNS>
 <FLAGS>l</FLAGS>
 GstDivxEnc *gstdivxenc
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDCCPClientSrc::connected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>f</FLAGS>
+GstDCCPClientSrc *gstdccpclientsrc
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDCCPServerSink::connected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>f</FLAGS>
+GstDCCPServerSink *gstdccpserversink
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDCCPClientSink::connected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>f</FLAGS>
+GstDCCPClientSink *gstdccpclientsink
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDCCPServerSrc::connected</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>f</FLAGS>
+GstDCCPServerSrc *gstdccpserversrc
+gint  arg1
 </SIGNAL>
 

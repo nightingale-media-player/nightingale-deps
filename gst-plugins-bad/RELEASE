@@ -1,5 +1,5 @@
 
-Release notes for GStreamer Bad Plug-ins 0.10.8 "Vapour Trails"
+Release notes for GStreamer Bad Plug-ins 0.10.10 "keep them dogies rollin"
         
 
 
@@ -60,60 +60,67 @@ contains a set of well-supported plug-ins, but might pose problems for
 
 Features of this release
     
-      * Support shared desktops in RFB input
-      * Make the Quicktime codec wrapper work on win32
-      * Experimental DVD navigation support
-      * Support AAC/H.264 in FLV files
-      * Fixes in the DirectShow codec wrapper
-      * Fix the Real codec wrapper plugin
-      * New deinterlace2 plugin incorporating TVtime deinterlacers
-      * Handle seeking, timestamps, duration in RAW video/audio parsers
-      * New DirectShow video sink for Win32
-      * FAAD reverse playback support
-      * OSS4 support improvements
-      * MythTV seeking support
-      * SPC decoder now supports seeking, tags and duration queries
-      * Replaygain elements moved to Good
-      * Deinterleave/interleave elements fixed and moved to Good
-      * MPEG-4 video stream parser fixes
-      * Improved MPEG-TS parsing for DVB support
-      * Improvements in App source/sink
-      * RTP manager enhancements
+      * Require gettext 0.17
+      * ACM mp3 decoder element for win32
+      * New MXF demuxer added
+      * JPEG-2000 encoder - jp2enc added
+      * RTP support
+      * Fixes for RTP support
+      * Add parsers for AAC and AMR
+      * Move libgstapp and elements to -base
+      * Add Quicktime muxer element qtmux
+      * Enhance RFB capture
+      * Improve MPEG-TS and MPEG-PS demuxing
+      * Don't install static libs for plugins
+      * Introduce audioringbuffer element
+      * Improve DVD playback of ResinDVD components
+      * Move old audioresample from -base as legacyaudioresample
+      * Improve speexresampler, and then move it to -base
+      * Improve FLV demuxing and parsing
+      * Various DVB input fixes
+      * Add support for frequency list descriptors for DVB
+      * Improve MPEG-TS muxer
+      * Various other bug-fixes
 
 Bugs fixed in this release
      
-      * 533736 : [mythtvsrc] Seeking doesn't work
-      * 544050 : ext/timidity/gsttimidity.c :  ISO C90 forbids mixed decla...
-      * 454151 : SPC plugin enhancements (patch)
-      * 506594 : [interleave] doesn't work with channels > 1
-      * 521392 : Proposed patches for bayer2rgb encoding
-      * 525613 : [wildmidi] [PATCH] initializes library multiple times
-      * 528618 : amrwb plugin do not build without warning with the 3ggp s...
-      * 529359 : BBC Real Audio stream is just noise
-      * 530611 : [gstsrtenc] declare variables at beginning of block
-      * 531840 : QuickTime wrapper doesn't work on Win32
-      * 531955 : gstrtpsession doesn't send RTCP bye on EOS
-      * 532723 : mpeg4videoparse should parse the codec data
-      * 533435 : wildmidi does not work
-      * 533559 : mpeg4videoparse should skip garbage
-      * 535043 : VCD plugin only plays first track
-      * 536042 : mpeg4videoparse broken on big endian architectures
-      * 536258 : interleave doesn't close properly
-      * 536856 : rtpmanager deadlocks when receiving new data while going ...
-      * 538560 : [mpegtsparse] static caps reference counter incremented i...
-      * 539292 : memory leak in mpegtsparse
-      * 539601 : [realvideodec] not-negotiated error if codec lib isn't found
-      * 541522 : cross mingw32 gcc: festival plugin compilation fix
-      * 541543 : fix HAVE_OSS4 detection code in configure.ac
-      * 543286 : deinterlace2 doesn't build outside gcc
-      * 543846 : [resindvd] Impossible to build from the first configure r...
-      * 543848 : [ladspa] Needs to link with -ldl for dlopen() and friends
-      * 543860 : [modplug] Uses CFLAGS for CXXFLAGS
-      * 543861 : [resindvd] Some files not disted
-      * 544457 : -bad doesn't compile with MSVC
-      * 526905 : [musepack] Port to the new libmpcdec API
-      * 532011 : Deadlock in rtpsession
-      * 536309 : Seeking in pipeline with videoparse crashes
+      * 127574 : replaygain support
+      * 480543 : [spc] crashes when not given any input data
+      * 546319 : [resindvd] Stuck on first menu (language selection)
+      * 549222 : Totem using resindvd element as DVD navigation module doe...
+      * 550280 : Move qtmux to gst-plugins-bad
+      * 550454 : FLV demuxer screws up in Pitivi
+      * 550613 : [mpegtsmux] Add support for ac3/dts/lpcm
+      * 553823 : CodeStyle improvements and minor fixes to the DCCP plugin.
+      * 555238 : Recent changes in x264 breaks compilation of x264 plugin.
+      * 557161 : Wrong time displayed and no seeking with MPEG PS cut from...
+      * 557763 : [mpegtsmux] DeadlockEOS due to interleaving mechanism
+      * 557814 : [mpegdemux] frequency list descriptor support
+      * 558639 : cross-configuring interrupts due to a failing check for " ...
+      * 560841 : Provide access to packet loss
+      * 561992 : debug format warning during compilation of resindvdsrc.c ...
+      * 562312 : Lip-sync generates wrong `ts-offset' in GstRtpBin
+      * 562319 : [rtpsession] memory corruption
+      * 562802 : [appsrc] lockup in pad_push() if previous flow was wrong-...
+      * 563006 : mxf mpeg422 file stops playing
+      * 563147 : input-selector doesn't notify of active-pad changing when...
+      * 564232 : Dual Licensing qtmux
+      * 565439 : Make pcapparse compile with (mingw32) gcc
+      * 565509 : rtpsource on receiver side can't get clock-rate for h264,...
+      * 565614 : [mpegtsdemux] Fix memory leak
+      * 565910 : allow forcing the ssrc on a rtpsession
+      * 566356 : [dvbbasebin] Couple of memleaks
+      * 566613 : bayer2rgb calculates wrong color offset
+      * 566878 : [ladspa] Add dependencies for ladspa modules
+      * 566957 : Add time based seeking to ResinDVD
+      * 566958 : fix dirac support in qtmux/mp4mux
+      * 566959 : Fix duration query on mpegtsdemux
+      * 508029 : [speexresample] pops/glitches in some cases
+      * 558416 : [PATCH] realvideodec: use pixel aspect ratio of container
+      * 564482 : [appsrc] semantics of push-buffer signal awkward for bind...
+      * 565319 : rtpjitterbuffer: bursty reception can cause time to be re...
+      * 565613 : [mpegtsdemux] Add scrambled field to service structure
+      * 567004 : ladspa plugin crashes on Solaris
 
 Download
 
@@ -144,32 +151,35 @@ Applications
 Contributors to this release
     
       * Alessandro Decina
-      * Andy Wingo
-      * Bastien Nocera
-      * Brian Koropoff
-      * Clive Wright
+      * Arnout Vandecappelle
+      * Brian Cameron
+      * Christian Schaller
+      * Cygwin Ports maintainer
       * Damien Lespiau
+      * David Härdeman
       * David Schleef
       * Edward Hervey
-      * Håvard Graff
-      * Ilja Pavkovic
       * Jan Schmidt
-      * Jens Granseuer
+      * Jonathan Matthew
+      * Josep Torra
       * Julien Moutte
+      * Leandro Melo de Sales
+      * Luotao Fu
       * Mark Nauwelaerts
-      * Martin Eikermann
       * Michael Smith
-      * Ole André Vadla Ravnås
       * Olivier Crete
-      * Peter Kjellerstedt
-      * Ryan Houdek
+      * Robin Stocker
+      * Sascha Hauer
       * Sebastian Dröge
       * Sebastian Pölsterl
-      * Sebastien Merle
-      * Sjoerd Simons
       * Stefan Kost
+      * Tal Shalif
+      * Thiago Sousa Santos
       * Thijs Vermeir
+      * Thomas Vander Stichele
       * Tim-Philipp Müller
       * Wim Taymans
       * Zaheer Abbas Merali
+      * vanista
+      * 이문형
  

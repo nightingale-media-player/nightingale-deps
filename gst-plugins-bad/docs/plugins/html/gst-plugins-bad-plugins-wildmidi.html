@@ -7,7 +7,7 @@
 <link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-videoparse.html" title="videoparse">
-<link rel="next" href="gst-plugins-bad-plugins-y4menc.html" title="y4menc">
+<link rel="next" href="gst-plugins-bad-plugins-x264enc.html" title="x264enc">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
@@ -21,7 +21,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-y4menc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-x264enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-bad-plugins-wildmidi.synopsis" class="shortcut">Top</a>
                    | 
@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-wildmidi.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstWildmidi
@@ -58,8 +60,12 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-wildmidi.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-wildmidi.html#GstWildmidi--high-quality" title='The "high-quality" property'>high-quality</a>"             gboolean              : Read / Write / Construct
-  "<a class="link" href="gst-plugins-bad-plugins-wildmidi.html#GstWildmidi--linear-volume" title='The "linear-volume" property'>linear-volume</a>"            gboolean              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-wildmidi.html#GstWildmidi--high-quality" title='The "high-quality" property'>high-quality</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-wildmidi.html#GstWildmidi--linear-volume" title='The "linear-volume" property'>linear-volume</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -74,7 +80,7 @@ $HOME/.wildmidirc and /etc/wildmidi.cfg)
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2596839"></a><h3>Example pipeline</h3>
+<a name="id2878205"></a><h3>Example pipeline</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=song.mid ! wildmidi ! alsasink
 </pre></div> This example pipeline will parse the midi and render to raw audio which is
@@ -83,7 +89,7 @@ played via alsa.
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2606561"></a><h3>Element Information</h3>
+<a name="id2849094"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -106,28 +112,7 @@ played via alsa.
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2644216"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)44100, channels=(int)2, endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
-</tr>
-</tbody>
-</table></div>
+<a name="id2914874"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -146,6 +131,27 @@ played via alsa.
 <tr>
 <td><p><span class="term">details</span></p></td>
 <td>audio/midi</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-int, rate=(int)44100, channels=(int)2, endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
 </tr>
 </tbody>
 </table></div>
@@ -169,14 +175,18 @@ played via alsa.
 <a name="gst-plugins-bad-plugins-wildmidi.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstWildmidi--high-quality"></a><h3>The <code class="literal">"high-quality"</code> property</h3>
-<pre class="programlisting">  "high-quality"             gboolean              : Read / Write / Construct</pre>
+<pre class="programlisting">  "high-quality"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
 <p>High Quality.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstWildmidi--linear-volume"></a><h3>The <code class="literal">"linear-volume"</code> property</h3>
-<pre class="programlisting">  "linear-volume"            gboolean              : Read / Write / Construct</pre>
+<pre class="programlisting">  "linear-volume"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct</pre>
 <p>Linear volume.</p>
 <p>Default value: TRUE</p>
 </div>

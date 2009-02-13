@@ -27,6 +27,10 @@
                    | 
                   <a href="#gst-plugins-bad-plugins-dfbvideosink.description" class="shortcut">Description</a>
                    | 
+                  <a href="#gst-plugins-bad-plugins-dfbvideosink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-bad-plugins-dfbvideosink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
                   <a href="#gst-plugins-bad-plugins-dfbvideosink.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
@@ -40,20 +44,59 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-bad-plugins-dfbvideosink.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink" title="GstDfbVideoSink">GstDfbVideoSink</a>;
+<a name="GstDfbVideoSink"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink-struct" title="GstDfbVideoSink">GstDfbVideoSink</a>;
 </pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-dfbvideosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----<a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstvideosink.html#GstVideoSink"
+>GstVideoSink</a>
+                           +----GstDfbVideoSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-dfbvideosink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstDfbVideoSink implements
+ GstImplementsInterface,  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstnavigation.html#GstNavigation"
+>GstNavigation</a> and  <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance"
+>GstColorBalance</a>.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dfbvideosink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--brightness" title='The "brightness" property'>brightness</a>"               gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--contrast" title='The "contrast" property'>contrast</a>"                 gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--hue" title='The "hue" property'>hue</a>"                      gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--pixel-aspect-ratio" title='The "pixel-aspect-ratio" property'>pixel-aspect-ratio</a>"       gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--saturation" title='The "saturation" property'>saturation</a>"               gint                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface" title='The "surface" property'>surface</a>"                  gpointer              : Write
-  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--vsync" title='The "vsync" property'>vsync</a>"                    gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--brightness" title='The "brightness" property'>brightness</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--contrast" title='The "contrast" property'>contrast</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--hue" title='The "hue" property'>hue</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--pixel-aspect-ratio" title='The "pixel-aspect-ratio" property'>pixel-aspect-ratio</a>"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--saturation" title='The "saturation" property'>saturation</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--surface" title='The "surface" property'>surface</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Write
+  "<a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink--vsync" title='The "vsync" property'>vsync</a>"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -111,7 +154,7 @@ or the application provided external <a class="link" href="gst-plugins-bad-plugi
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2609312"></a><h3>Example application</h3>
+<a name="id2878733"></a><h3>Example application</h3>
 <p>
 </p>
 <pre class="programlisting">
@@ -205,7 +248,7 @@ main (int argc, char *argv[])
 </p>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2609372"></a><h3>Example pipelines</h3>
+<a name="id2878792"></a><h3>Example pipelines</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc ! dfbvideosink hue=20000 saturation=40000 brightness=25000
 </pre></div> test the colorbalance interface implementation in dfbvideosink
@@ -213,7 +256,7 @@ gst-launch -v videotestsrc ! dfbvideosink hue=20000 saturation=40000 brightness=
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2609392"></a><h3>Element Information</h3>
+<a name="id2878812"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -236,7 +279,7 @@ gst-launch -v videotestsrc ! dfbvideosink hue=20000 saturation=40000 brightness=
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2613351"></a><h3>Element Pads</h3>
+<a name="id2878874"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -271,13 +314,10 @@ gst-launch -v videotestsrc ! dfbvideosink hue=20000 saturation=40000 brightness=
 <div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dfbvideosink.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstDfbVideoSink"></a><h3>GstDfbVideoSink</h3>
-<pre class="programlisting">typedef struct {
-  GstVideoSink videosink;
-} GstDfbVideoSink;
-</pre>
+<a name="GstDfbVideoSink-struct"></a><h3>GstDfbVideoSink</h3>
+<pre class="programlisting">typedef struct _GstDfbVideoSink GstDfbVideoSink;</pre>
 <p>
-The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink" title="GstDfbVideoSink"><span class="type">GstDfbVideoSink</span></a> structure.</p>
+The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDfbVideoSink"><span class="type">GstDfbVideoSink</span></a> structure.</p>
 <p>
 
 </p>
@@ -287,7 +327,9 @@ The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDf
 <a name="gst-plugins-bad-plugins-dfbvideosink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--brightness"></a><h3>The <code class="literal">"brightness"</code> property</h3>
-<pre class="programlisting">  "brightness"               gint                  : Read / Write</pre>
+<pre class="programlisting">  "brightness"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The brightness of the video.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 32768</p>
@@ -295,7 +337,9 @@ The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDf
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--contrast"></a><h3>The <code class="literal">"contrast"</code> property</h3>
-<pre class="programlisting">  "contrast"                 gint                  : Read / Write</pre>
+<pre class="programlisting">  "contrast"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The contrast of the video.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 32768</p>
@@ -303,7 +347,9 @@ The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDf
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--hue"></a><h3>The <code class="literal">"hue"</code> property</h3>
-<pre class="programlisting">  "hue"                      gint                  : Read / Write</pre>
+<pre class="programlisting">  "hue"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The hue of the video.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 32768</p>
@@ -311,14 +357,18 @@ The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDf
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--pixel-aspect-ratio"></a><h3>The <code class="literal">"pixel-aspect-ratio"</code> property</h3>
-<pre class="programlisting">  "pixel-aspect-ratio"       gchar*                : Read / Write</pre>
+<pre class="programlisting">  "pixel-aspect-ratio"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>The pixel aspect ratio of the device.</p>
 <p>Default value: "1/1"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--saturation"></a><h3>The <code class="literal">"saturation"</code> property</h3>
-<pre class="programlisting">  "saturation"               gint                  : Read / Write</pre>
+<pre class="programlisting">  "saturation"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The saturation of the video.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 32768</p>
@@ -326,13 +376,17 @@ The opaque <a class="link" href="gst-plugins-bad-plugins-dfbvideosink.html#GstDf
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--surface"></a><h3>The <code class="literal">"surface"</code> property</h3>
-<pre class="programlisting">  "surface"                  gpointer              : Write</pre>
+<pre class="programlisting">  "surface"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Write</pre>
 <p>The target surface for video.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstDfbVideoSink--vsync"></a><h3>The <code class="literal">"vsync"</code> property</h3>
-<pre class="programlisting">  "vsync"                    gboolean              : Read / Write</pre>
+<pre class="programlisting">  "vsync"                    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Wait for next vertical sync to draw frames.</p>
 <p>Default value: TRUE</p>
 </div>

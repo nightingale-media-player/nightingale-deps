@@ -79,6 +79,7 @@ struct _GstDiracEnc
   dirac_encoder_t *encoder;
   dirac_sourceparams_t *src_params;
   GstBuffer *buffer;
+  GstCaps *srccaps;
 };
 
 struct _GstDiracEncClass
@@ -137,7 +138,7 @@ static GstStaticPadTemplate gst_dirac_enc_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YV12, YUY2, UYVY, AYUV }"))
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("{ I420, YUY2, UYVY, AYUV }"))
     );
 
 static GstStaticPadTemplate gst_dirac_enc_src_template =
@@ -289,14 +290,8 @@ gst_dirac_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
   gst_structure_get_fraction (structure, "pixel-aspect-ratio",
       &dirac_enc->par_n, &dirac_enc->par_d);
 
-  if (dirac_enc->fourcc != GST_MAKE_FOURCC ('I', '4', '2', '0')) {
-    GST_ERROR
-        ("Dirac encoder element is known to be buggy for video formats other that I420");
-  }
-
   switch (dirac_enc->fourcc) {
     case GST_MAKE_FOURCC ('I', '4', '2', '0'):
-    case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
       dirac_enc->enc_ctx.src_params.chroma = format420;
       break;
     case GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'):
@@ -315,25 +310,23 @@ gst_dirac_enc_sink_setcaps (GstPad * pad, GstCaps * caps)
 
   dirac_enc->enc_ctx.src_params.width = dirac_enc->width;
   dirac_enc->enc_ctx.src_params.height = dirac_enc->height;
-#if 0
-  /* FIXME */
-  dirac_enc->enc_ctx.src_params.clean_width = dirac_enc->width;
-  dirac_enc->enc_ctx.src_params.clean_height = dirac_enc->height;
-#endif
 
-#if 0
-  /* FIXME */
-  dirac_enc->enc_ctx.src_params.aspect_ratio_numerator = dirac_enc->par_n;
-  dirac_enc->enc_ctx.src_params.aspect_ratio_denominator = dirac_enc->par_d;
-#endif
+  dirac_enc->enc_ctx.src_params.clean_area.width = dirac_enc->width;
+  dirac_enc->enc_ctx.src_params.clean_area.height = dirac_enc->height;
+  dirac_enc->enc_ctx.src_params.clean_area.left_offset = 0;
+  dirac_enc->enc_ctx.src_params.clean_area.top_offset = 0;
 
-#if 0
-  /* FIXME */
-  dirac_video_format_set_std_signal_range (dirac_enc->video_format,
-      DIRAC_SIGNAL_RANGE_8BIT_VIDEO);
-  dirac_video_format_set_std_colour_spec (dirac_enc->video_format,
-      DIRAC_COLOUR_SPEC_HDTV);
-#endif
+  dirac_enc->enc_ctx.src_params.pix_asr.numerator = dirac_enc->par_n;
+  dirac_enc->enc_ctx.src_params.pix_asr.denominator = dirac_enc->par_d;
+
+  dirac_enc->enc_ctx.src_params.signal_range.luma_offset = 16;
+  dirac_enc->enc_ctx.src_params.signal_range.luma_excursion = 219;
+  dirac_enc->enc_ctx.src_params.signal_range.chroma_offset = 128;
+  dirac_enc->enc_ctx.src_params.signal_range.chroma_excursion = 224;
+  dirac_enc->enc_ctx.src_params.colour_spec.col_primary = CP_HDTV_COMP_INTERNET;
+  dirac_enc->enc_ctx.src_params.colour_spec.col_matrix.kr = 0.2126;
+  dirac_enc->enc_ctx.src_params.colour_spec.col_matrix.kb = 0.0722;
+  dirac_enc->enc_ctx.src_params.colour_spec.trans_func = TF_TV;
 
   dirac_enc->enc_ctx.decode_flag = 0;
   dirac_enc->enc_ctx.instr_flag = 0;
@@ -355,9 +348,11 @@ gst_dirac_enc_finalize (GObject * object)
   dirac_enc = GST_DIRAC_ENC (object);
 
   if (dirac_enc->encoder) {
-    /* FIXME */
-    //dirac_encoder_free (dirac_enc->encoder);
+    dirac_encoder_close (dirac_enc->encoder);
     dirac_enc->encoder = NULL;
+  }
+  if (dirac_enc->srccaps) {
+    gst_caps_unref (dirac_enc->srccaps);
   }
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -438,7 +433,7 @@ gst_dirac_enc_set_property (GObject * object, guint prop_id,
       encoder->enc_ctx.enc_params.picture_coding_mode = g_value_get_int (value);
       break;
     case PROP_USE_VLC:
-      encoder->enc_ctx.enc_params.using_ac = g_value_get_boolean (value);
+      encoder->enc_ctx.enc_params.using_ac = !g_value_get_boolean (value);
       break;
   }
 }
@@ -447,32 +442,74 @@ static void
 gst_dirac_enc_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
-  GstDiracEnc *src;
+  GstDiracEnc *encoder;
 
   g_return_if_fail (GST_IS_DIRAC_ENC (object));
-  src = GST_DIRAC_ENC (object);
+  encoder = GST_DIRAC_ENC (object);
 
-#if 0
-  if (prop_id >= 1) {
-    const DiracEncoderSetting *setting;
-
-    setting = dirac_encoder_get_setting_info (prop_id - 1);
-    switch (G_VALUE_TYPE (value)) {
-      case G_TYPE_DOUBLE:
-        g_value_set_double (value,
-            dirac_encoder_setting_get_double (src->encoder, setting->name));
-        break;
-      case G_TYPE_INT:
-        g_value_set_int (value,
-            dirac_encoder_setting_get_double (src->encoder, setting->name));
-        break;
-      case G_TYPE_BOOLEAN:
-        g_value_set_boolean (value,
-            dirac_encoder_setting_get_double (src->encoder, setting->name));
-        break;
-    }
+  switch (prop_id) {
+    case PROP_L1_SEP:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.L1_sep);
+      break;
+    case PROP_NUM_L1:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.num_L1);
+      break;
+    case PROP_XBLEN:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.xblen);
+      break;
+    case PROP_YBLEN:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.yblen);
+      break;
+    case PROP_XBSEP:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.xbsep);
+      break;
+    case PROP_YBSEP:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.ybsep);
+      break;
+    case PROP_CPD:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.cpd);
+      break;
+    case PROP_QF:
+      g_value_set_double (value, encoder->enc_ctx.enc_params.qf);
+      break;
+    case PROP_TARGETRATE:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.trate);
+      break;
+    case PROP_LOSSLESS:
+      g_value_set_boolean (value, encoder->enc_ctx.enc_params.lossless);
+      break;
+    case PROP_IWLT_FILTER:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.intra_wlt_filter);
+      break;
+    case PROP_RWLT_FILTER:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.inter_wlt_filter);
+      break;
+    case PROP_WLT_DEPTH:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.wlt_depth);
+      break;
+    case PROP_MULTI_QUANTS:
+      g_value_set_boolean (value, encoder->enc_ctx.enc_params.multi_quants);
+      break;
+    case PROP_MV_PREC:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.mv_precision);
+      break;
+    case PROP_NO_SPARTITION:
+      g_value_set_boolean (value,
+          !encoder->enc_ctx.enc_params.spatial_partition);
+      break;
+    case PROP_PREFILTER:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.prefilter);
+      break;
+    case PROP_PREFILTER_STRENGTH:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.prefilter_strength);
+      break;
+    case PROP_PICTURE_CODING_MODE:
+      g_value_set_int (value, encoder->enc_ctx.enc_params.picture_coding_mode);
+      break;
+    case PROP_USE_VLC:
+      g_value_set_boolean (value, !encoder->enc_ctx.enc_params.using_ac);
+      break;
   }
-#endif
 }
 
 static gboolean
@@ -732,11 +769,95 @@ gst_dirac_enc_chain (GstPad * pad, GstBuffer * buf)
     dirac_enc->started = TRUE;
   }
 
-  dirac_encoder_load (dirac_enc->encoder, GST_BUFFER_DATA (buf),
-      GST_BUFFER_SIZE (buf));
+  switch (dirac_enc->fourcc) {
+    case GST_MAKE_FOURCC ('I', '4', '2', '0'):
+      dirac_encoder_load (dirac_enc->encoder, GST_BUFFER_DATA (buf),
+          GST_BUFFER_SIZE (buf));
+      break;
+    case GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'):
+    {
+      uint8_t *data;
+      uint8_t *bufdata = GST_BUFFER_DATA (buf);
+      int i, j;
+
+      data = (uint8_t *) g_malloc (GST_BUFFER_SIZE (buf));
+      for (j = 0; j < dirac_enc->height; j++) {
+        for (i = 0; i < dirac_enc->width; i++) {
+          data[j * dirac_enc->width + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 2];
+        }
+        for (i = 0; i < dirac_enc->width / 2; i++) {
+          data[dirac_enc->height * dirac_enc->width +
+              j * (dirac_enc->width / 2) + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 4 + 1];
+          data[dirac_enc->height * dirac_enc->width +
+              +dirac_enc->height * (dirac_enc->width / 2)
+              + j * (dirac_enc->width / 2) + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 4 + 3];
+        }
+      }
+      dirac_encoder_load (dirac_enc->encoder, data, GST_BUFFER_SIZE (buf));
+      g_free (data);
+    }
+      break;
+    case GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'):
+    {
+      uint8_t *data;
+      uint8_t *bufdata = GST_BUFFER_DATA (buf);
+      int i, j;
+
+      data = (uint8_t *) g_malloc (GST_BUFFER_SIZE (buf));
+      for (j = 0; j < dirac_enc->height; j++) {
+        for (i = 0; i < dirac_enc->width; i++) {
+          data[j * dirac_enc->width + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 2 + 1];
+        }
+        for (i = 0; i < dirac_enc->width / 2; i++) {
+          data[dirac_enc->height * dirac_enc->width +
+              j * (dirac_enc->width / 2) + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 4 + 0];
+          data[dirac_enc->height * dirac_enc->width +
+              +dirac_enc->height * (dirac_enc->width / 2)
+              + j * (dirac_enc->width / 2) + i] =
+              bufdata[j * dirac_enc->width * 2 + i * 4 + 2];
+        }
+      }
+      dirac_encoder_load (dirac_enc->encoder, data, GST_BUFFER_SIZE (buf));
+      g_free (data);
+    }
+      break;
+    case GST_MAKE_FOURCC ('A', 'Y', 'U', 'V'):
+    {
+      uint8_t *data;
+      uint8_t *bufdata = GST_BUFFER_DATA (buf);
+      int i, j;
+
+      data = (uint8_t *) g_malloc (GST_BUFFER_SIZE (buf));
+      for (j = 0; j < dirac_enc->height; j++) {
+        for (i = 0; i < dirac_enc->width; i++) {
+          data[j * dirac_enc->width + i] =
+              bufdata[j * dirac_enc->width * 4 + i * 4 + 1];
+        }
+        for (i = 0; i < dirac_enc->width; i++) {
+          data[dirac_enc->height * dirac_enc->width
+              + j * dirac_enc->width + i] =
+              bufdata[j * dirac_enc->width * 4 + i * 4 + 2];
+          data[2 * dirac_enc->height * dirac_enc->width +
+              +j * dirac_enc->width + i] =
+              bufdata[j * dirac_enc->width * 4 + i * 4 + 3];
+        }
+      }
+      dirac_encoder_load (dirac_enc->encoder, data, GST_BUFFER_SIZE (buf));
+      g_free (data);
+    }
+      break;
+    default:
+      g_assert_not_reached ();
+  }
 
   ret = gst_dirac_enc_process (dirac_enc, FALSE);
 
+  gst_buffer_unref (buf);
   gst_object_unref (dirac_enc);
 
   return ret;
@@ -763,20 +884,19 @@ gst_dirac_enc_process (GstDiracEnc * dirac_enc, gboolean end_sequence)
     dirac_enc->encoder->enc_buf.size = GST_BUFFER_SIZE (outbuf);
 
     if (end_sequence) {
-      /* FIXME this is a hack to make the code simpler. */
       dirac_encoder_end_sequence (dirac_enc->encoder);
-      state = ENC_STATE_AVAIL;
-    } else {
-      state = dirac_encoder_output (dirac_enc->encoder);
     }
+    state = dirac_encoder_output (dirac_enc->encoder);
 
     switch (state) {
       case ENC_STATE_BUFFER:
+        gst_buffer_unref (outbuf);
         break;
       case ENC_STATE_INVALID:
         GST_ERROR ("Dirac returned ENC_STATE_INVALID");
         gst_buffer_unref (outbuf);
         return GST_FLOW_ERROR;
+      case ENC_STATE_EOS:
       case ENC_STATE_AVAIL:
         parse_code = ((guint8 *) GST_BUFFER_DATA (outbuf))[4];
         /* FIXME */
@@ -790,12 +910,14 @@ gst_dirac_enc_process (GstDiracEnc * dirac_enc, gboolean end_sequence)
         dirac_enc->granulepos_low = dirac_enc->granulepos_offset +
             presentation_frame + 1 - dirac_enc->granulepos_hi;
 
-        gst_buffer_set_caps (outbuf,
-            gst_caps_new_simple ("video/x-dirac",
-                "width", G_TYPE_INT, dirac_enc->width,
-                "height", G_TYPE_INT, dirac_enc->height,
-                "framerate", GST_TYPE_FRACTION, dirac_enc->fps_n,
-                dirac_enc->fps_d, NULL));
+        if (dirac_enc->srccaps == NULL) {
+          dirac_enc->srccaps = gst_caps_new_simple ("video/x-dirac",
+              "width", G_TYPE_INT, dirac_enc->width,
+              "height", G_TYPE_INT, dirac_enc->height,
+              "framerate", GST_TYPE_FRACTION, dirac_enc->fps_n,
+              dirac_enc->fps_d, NULL);
+        }
+        gst_buffer_set_caps (outbuf, dirac_enc->srccaps);
 
         GST_BUFFER_SIZE (outbuf) = dirac_enc->encoder->enc_buf.size;
         if (SCHRO_PARSE_CODE_IS_PICTURE (parse_code)) {
@@ -844,13 +966,8 @@ gst_dirac_enc_process (GstDiracEnc * dirac_enc, gboolean end_sequence)
         gst_buffer_unref (outbuf);
         return GST_FLOW_ERROR;
     }
-    if (end_sequence) {
-      /* FIXME more hackage */
-      return GST_FLOW_OK;
-    }
   } while (state == ENC_STATE_AVAIL);
 
-  gst_buffer_unref (outbuf);
   return GST_FLOW_OK;
 }
 

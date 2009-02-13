@@ -4,17 +4,21 @@ libgstdeinterlace2_la_SOURCES = \
 	gstdeinterlace2.c \
 	tvtime/greedy.c \
 	tvtime/greedyh.c \
-	tvtime/vfir.c
-
-#	tvtime/tomsmocomp.c
+	tvtime/vfir.c \
+	tvtime/tomsmocomp.c \
+	tvtime/weavetff.c \
+	tvtime/weavebff.c \
+	tvtime/weave.c \
+	tvtime/linear.c \
+	tvtime/linearblend.c \
+	tvtime/scalerbob.c
 
 libgstdeinterlace2_la_CFLAGS = $(GST_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(LIBOIL_CFLAGS)
 libgstdeinterlace2_la_LIBADD = $(GST_LIBS) \
 	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_MAJORMINOR) $(GST_BASE_LIBS) $(LIBOIL_LIBS)
 libgstdeinterlace2_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-
-EXTRA_DIST = tvtime/tomsmocomp.c
+libgstdeinterlace2_la_LIBTOOLFLAGS = --tag=disable-static
 
 noinst_HEADERS = \
 	gstdeinterlace2.h \

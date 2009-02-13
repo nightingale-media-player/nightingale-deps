@@ -225,6 +225,7 @@ enum
   PROP_SDES_NOTE,
   PROP_NUM_SOURCES,
   PROP_NUM_ACTIVE_SOURCES,
+  PROP_INTERNAL_SESSION,
   PROP_LAST
 };
 
@@ -655,6 +656,11 @@ gst_rtp_session_class_init (GstRtpSessionClass * klass)
           "The number of active sources in the session", 0, G_MAXUINT,
           DEFAULT_NUM_ACTIVE_SOURCES, G_PARAM_READABLE));
 
+  g_object_class_install_property (gobject_class, PROP_INTERNAL_SESSION,
+      g_param_spec_object ("internal-session", "Internal Session",
+          "The internal RTPSession object", RTP_TYPE_SESSION,
+          G_PARAM_READABLE));
+
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_rtp_session_change_state);
   gstelement_class->request_new_pad =
@@ -845,18 +851,22 @@ gst_rtp_session_get_property (GObject * object, guint prop_id,
       g_value_set_uint (value,
           rtp_session_get_num_active_sources (priv->session));
       break;
+    case PROP_INTERNAL_SESSION:
+      g_value_set_object (value, priv->session);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }
 
-static guint64
-get_current_ntp_ns_time (GstRtpSession * rtpsession)
+static void
+get_current_times (GstRtpSession * rtpsession,
+    GstClockTime * running_time, guint64 * ntpnstime)
 {
-  guint64 ntpnstime;
+  guint64 ntpns;
   GstClock *clock;
-  GstClockTime base_time, ntpnsbase;
+  GstClockTime base_time, ntpnsbase, rt;
 
   GST_OBJECT_LOCK (rtpsession);
   if ((clock = GST_ELEMENT_CLOCK (rtpsession))) {
@@ -865,20 +875,21 @@ get_current_ntp_ns_time (GstRtpSession * rtpsession)
     gst_object_ref (clock);
     GST_OBJECT_UNLOCK (rtpsession);
 
-    /* get current NTP time */
-    ntpnstime = gst_clock_get_time (clock);
-    /* convert to running time */
-    ntpnstime -= base_time;
-    /* add NTP base offset */
-    ntpnstime += ntpnsbase;
+    /* get current clock time and convert to running time */
+    rt = gst_clock_get_time (clock) - base_time;
+    /* add NTP base offset to get NTP ns time */
+    ntpns = rt + ntpnsbase;
 
     gst_object_unref (clock);
   } else {
     GST_OBJECT_UNLOCK (rtpsession);
-    ntpnstime = -1;
+    rt = -1;
+    ntpns = -1;
   }
-
-  return ntpnstime;
+  if (running_time)
+    *running_time = rt;
+  if (ntpnstime)
+    *ntpnstime = ntpns;
 }
 
 static void
@@ -926,7 +937,7 @@ rtcp_thread (GstRtpSession * rtpsession)
     current_time = gst_clock_get_time (rtpsession->priv->sysclock);
 
     /* get current NTP time */
-    ntpnstime = get_current_ntp_ns_time (rtpsession);
+    get_current_times (rtpsession, NULL, &ntpnstime);
 
     /* we get unlocked because we need to perform reconsideration, don't perform
      * the timeout but get a new reporting estimate. */
@@ -1362,6 +1373,7 @@ gst_rtp_session_event_recv_rtp_sink (GstPad * pad, GstEvent * event)
   return ret;
 
 }
+
 static GList *
 gst_rtp_session_internal_links (GstPad * pad)
 {
@@ -1414,7 +1426,7 @@ gst_rtp_session_chain_recv_rtp (GstPad * pad, GstBuffer * buffer)
   GstRtpSession *rtpsession;
   GstRtpSessionPrivate *priv;
   GstFlowReturn ret;
-  GstClockTime current_time;
+  GstClockTime current_time, running_time;
   guint64 ntpnstime;
   GstClockTime timestamp;
 
@@ -1427,21 +1439,20 @@ gst_rtp_session_chain_recv_rtp (GstPad * pad, GstBuffer * buffer)
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   if (GST_CLOCK_TIME_IS_VALID (timestamp)) {
     /* convert to running time using the segment values */
-    ntpnstime =
+    running_time =
         gst_segment_to_running_time (&rtpsession->recv_rtp_seg, GST_FORMAT_TIME,
         timestamp);
     /* add constant to convert running time to NTP time */
-    ntpnstime += priv->ntpnsbase;
+    ntpnstime = running_time + priv->ntpnsbase;
   } else {
-    ntpnstime = get_current_ntp_ns_time (rtpsession);
+    get_current_times (rtpsession, &running_time, &ntpnstime);
   }
-
   current_time = gst_clock_get_time (priv->sysclock);
+
   ret = rtp_session_process_rtp (priv->session, buffer, current_time,
-      ntpnstime);
+      running_time, ntpnstime);
   if (ret != GST_FLOW_OK)
     goto push_error;
-
 
 done:
   gst_object_unref (rtpsession);
@@ -1537,6 +1548,36 @@ gst_rtp_session_query_send_rtcp_src (GstPad * pad, GstQuery * query)
 }
 
 static gboolean
+gst_rtp_session_event_send_rtcp_src (GstPad * pad, GstEvent * event)
+{
+  GstRtpSession *rtpsession;
+  GstRtpSessionPrivate *priv;
+  gboolean ret;
+
+  rtpsession = GST_RTP_SESSION (gst_pad_get_parent (pad));
+  priv = rtpsession->priv;
+
+  GST_DEBUG_OBJECT (rtpsession, "received EVENT");
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_LATENCY:
+      gst_event_unref (event);
+      ret = TRUE;
+      break;
+    default:
+      /* other events simply fail for now */
+      gst_event_unref (event);
+      ret = FALSE;
+      break;
+  }
+
+  gst_object_unref (rtpsession);
+
+  return ret;
+}
+
+
+static gboolean
 gst_rtp_session_event_send_rtp_sink (GstPad * pad, GstEvent * event)
 {
   GstRtpSession *rtpsession;
@@ -1592,7 +1633,7 @@ gst_rtp_session_event_send_rtp_sink (GstPad * pad, GstEvent * event)
       ret = gst_pad_push_event (rtpsession->send_rtp_src, event);
       current_time = gst_clock_get_time (rtpsession->priv->sysclock);
       GST_DEBUG_OBJECT (rtpsession, "scheduling BYE message");
-      rtp_session_send_bye (rtpsession->priv->session, "End of stream",
+      rtp_session_schedule_bye (rtpsession->priv->session, "End of stream",
           current_time);
       break;
     }
@@ -1612,15 +1653,17 @@ gst_rtp_session_getcaps_send_rtp (GstPad * pad)
   GstRtpSessionPrivate *priv;
   GstCaps *result;
   GstStructure *s1, *s2;
+  guint ssrc;
 
   rtpsession = GST_RTP_SESSION (gst_pad_get_parent (pad));
   priv = rtpsession->priv;
 
+  ssrc = rtp_session_get_internal_ssrc (priv->session);
+
   /* we can basically accept anything but we prefer to receive packets with our
    * internal SSRC so that we don't have to patch it. Create a structure with
    * the SSRC and another one without. */
-  s1 = gst_structure_new ("application/x-rtp",
-      "ssrc", G_TYPE_UINT, priv->session->source->ssrc, NULL);
+  s1 = gst_structure_new ("application/x-rtp", "ssrc", G_TYPE_UINT, ssrc, NULL);
   s2 = gst_structure_new ("application/x-rtp", NULL);
 
   result = gst_caps_new_full (s1, s2, NULL);
@@ -1630,6 +1673,27 @@ gst_rtp_session_getcaps_send_rtp (GstPad * pad)
   gst_object_unref (rtpsession);
 
   return result;
+}
+
+static gboolean
+gst_rtp_session_setcaps_send_rtp (GstPad * pad, GstCaps * caps)
+{
+  GstRtpSession *rtpsession;
+  GstRtpSessionPrivate *priv;
+  GstStructure *s = gst_caps_get_structure (caps, 0);
+  guint ssrc;
+
+  rtpsession = GST_RTP_SESSION (gst_pad_get_parent (pad));
+  priv = rtpsession->priv;
+
+  if (gst_structure_get_uint (s, "ssrc", &ssrc)) {
+    GST_DEBUG_OBJECT (rtpsession, "setting internal SSRC to %08x", ssrc);
+    rtp_session_set_internal_ssrc (priv->session, ssrc);
+  }
+
+  gst_object_unref (rtpsession);
+
+  return TRUE;
 }
 
 /* Recieve an RTP packet to be send to the receivers, send to RTP session
@@ -1720,6 +1784,29 @@ create_recv_rtp_sink (GstRtpSession * rtpsession)
   return rtpsession->recv_rtp_sink;
 }
 
+/* Remove sinkpad to receive RTP packets from senders. This will also remove
+ * the srcpad for the RTP packets.
+ */
+static void
+remove_recv_rtp_sink (GstRtpSession * rtpsession)
+{
+  GST_DEBUG_OBJECT (rtpsession, "removing RTP sink pad");
+
+  /* deactivate from source to sink */
+  gst_pad_set_active (rtpsession->recv_rtp_src, FALSE);
+  gst_pad_set_active (rtpsession->recv_rtp_sink, FALSE);
+
+  /* remove pads */
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->recv_rtp_sink);
+  rtpsession->recv_rtp_sink = NULL;
+
+  GST_DEBUG_OBJECT (rtpsession, "removing RTP src pad");
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->recv_rtp_src);
+  rtpsession->recv_rtp_src = NULL;
+}
+
 /* Create a sinkpad to receive RTCP messages from senders, this will also create a
  * sync_src pad for the SR packets.
  */
@@ -1754,6 +1841,23 @@ create_recv_rtcp_sink (GstRtpSession * rtpsession)
   return rtpsession->recv_rtcp_sink;
 }
 
+static void
+remove_recv_rtcp_sink (GstRtpSession * rtpsession)
+{
+  GST_DEBUG_OBJECT (rtpsession, "removing RTCP sink pad");
+
+  gst_pad_set_active (rtpsession->sync_src, FALSE);
+  gst_pad_set_active (rtpsession->recv_rtcp_sink, FALSE);
+
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->recv_rtcp_sink);
+  rtpsession->recv_rtcp_sink = NULL;
+
+  GST_DEBUG_OBJECT (rtpsession, "removing sync src pad");
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession), rtpsession->sync_src);
+  rtpsession->sync_src = NULL;
+}
+
 /* Create a sinkpad to receive RTP packets for receivers. This will also create a
  * send_rtp_src pad.
  */
@@ -1769,6 +1873,8 @@ create_send_rtp_sink (GstRtpSession * rtpsession)
       gst_rtp_session_chain_send_rtp);
   gst_pad_set_getcaps_function (rtpsession->send_rtp_sink,
       gst_rtp_session_getcaps_send_rtp);
+  gst_pad_set_setcaps_function (rtpsession->send_rtp_sink,
+      gst_rtp_session_setcaps_send_rtp);
   gst_pad_set_event_function (rtpsession->send_rtp_sink,
       (GstPadEventFunction) gst_rtp_session_event_send_rtp_sink);
   gst_pad_set_internal_link_function (rtpsession->send_rtp_sink,
@@ -1786,6 +1892,23 @@ create_send_rtp_sink (GstRtpSession * rtpsession)
   gst_element_add_pad (GST_ELEMENT_CAST (rtpsession), rtpsession->send_rtp_src);
 
   return rtpsession->send_rtp_sink;
+}
+
+static void
+remove_send_rtp_sink (GstRtpSession * rtpsession)
+{
+  GST_DEBUG_OBJECT (rtpsession, "removing pad");
+
+  gst_pad_set_active (rtpsession->send_rtp_src, FALSE);
+  gst_pad_set_active (rtpsession->send_rtp_sink, FALSE);
+
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->send_rtp_sink);
+  rtpsession->send_rtp_sink = NULL;
+
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->send_rtp_src);
+  rtpsession->send_rtp_src = NULL;
 }
 
 /* Create a srcpad with the RTCP packets to send out.
@@ -1806,10 +1929,24 @@ create_send_rtcp_src (GstRtpSession * rtpsession)
       gst_rtp_session_internal_links);
   gst_pad_set_query_function (rtpsession->send_rtcp_src,
       gst_rtp_session_query_send_rtcp_src);
+  gst_pad_set_event_function (rtpsession->send_rtcp_src,
+      gst_rtp_session_event_send_rtcp_src);
   gst_element_add_pad (GST_ELEMENT_CAST (rtpsession),
       rtpsession->send_rtcp_src);
 
   return rtpsession->send_rtcp_src;
+}
+
+static void
+remove_send_rtcp_src (GstRtpSession * rtpsession)
+{
+  GST_DEBUG_OBJECT (rtpsession, "removing pad");
+
+  gst_pad_set_active (rtpsession->send_rtcp_src, FALSE);
+
+  gst_element_remove_pad (GST_ELEMENT_CAST (rtpsession),
+      rtpsession->send_rtcp_src);
+  rtpsession->send_rtcp_src = NULL;
 }
 
 static GstPad *
@@ -1879,10 +2016,37 @@ exists:
 static void
 gst_rtp_session_release_pad (GstElement * element, GstPad * pad)
 {
-}
+  GstRtpSession *rtpsession;
 
-void
-gst_rtp_session_set_ssrc (GstRtpSession * sess, guint32 ssrc)
-{
-  rtp_session_set_internal_ssrc (sess->priv->session, ssrc);
+  g_return_if_fail (GST_IS_RTP_SESSION (element));
+  g_return_if_fail (GST_IS_PAD (pad));
+
+  rtpsession = GST_RTP_SESSION (element);
+
+  GST_DEBUG_OBJECT (element, "releasing pad %s:%s", GST_DEBUG_PAD_NAME (pad));
+
+  GST_RTP_SESSION_LOCK (rtpsession);
+
+  if (rtpsession->recv_rtp_sink == pad) {
+    remove_recv_rtp_sink (rtpsession);
+  } else if (rtpsession->recv_rtcp_sink == pad) {
+    remove_recv_rtcp_sink (rtpsession);
+  } else if (rtpsession->send_rtp_sink == pad) {
+    remove_send_rtp_sink (rtpsession);
+  } else if (rtpsession->send_rtcp_src == pad) {
+    remove_send_rtcp_src (rtpsession);
+  } else
+    goto wrong_pad;
+
+  GST_RTP_SESSION_UNLOCK (rtpsession);
+
+  return;
+
+  /* ERRORS */
+wrong_pad:
+  {
+    GST_RTP_SESSION_UNLOCK (rtpsession);
+    g_warning ("gstrtpsession: asked to release an unknown pad");
+    return;
+  }
 }

@@ -211,7 +211,7 @@ fill_indesc_generic (QTWrapperAudioDecoder * qtwrapper, guint32 fourcc,
 }
 
 static void
-fill_indesc_alac (QTWrapperAudioDecoder *qtwrapper, guint32 fourcc,
+fill_indesc_alac (QTWrapperAudioDecoder * qtwrapper, guint32 fourcc,
     gint rate, gint channels)
 {
   clear_AudioStreamBasicDescription (&qtwrapper->indesc);
@@ -235,15 +235,17 @@ make_alac_magic_cookie (GstBuffer * codec_data, gsize * len)
   res = g_malloc0 (*len);
 
   /* 12 first bytes are 'frma' (format) atom with 'alac' value */
-  GST_WRITE_UINT32_BE (res, 0xc); /* Atom length: 12 bytes */
+  GST_WRITE_UINT32_BE (res, 0xc);       /* Atom length: 12 bytes */
   GST_WRITE_UINT32_LE (res + 4, QT_MAKE_FOURCC_BE ('f', 'r', 'm', 'a'));
   GST_WRITE_UINT32_LE (res + 8, QT_MAKE_FOURCC_BE ('a', 'l', 'a', 'c'));
 
   /* Write the codec_data, but with the first four bytes reversed (different
      endianness). This is the 'alac' atom. */
-  GST_WRITE_UINT32_BE (res + 12, GST_READ_UINT32_LE (GST_BUFFER_DATA (codec_data)));
-  memcpy (res + 16, GST_BUFFER_DATA (codec_data) + 4, GST_BUFFER_SIZE (codec_data) - 4);
-  
+  GST_WRITE_UINT32_BE (res + 12,
+      GST_READ_UINT32_LE (GST_BUFFER_DATA (codec_data)));
+  memcpy (res + 16, GST_BUFFER_DATA (codec_data) + 4,
+      GST_BUFFER_SIZE (codec_data) - 4);
+
   /* Terminator atom */
   GST_WRITE_UINT32_BE (res + 12 + GST_BUFFER_SIZE (codec_data), 8);
   GST_WRITE_UINT32_BE (res + 12 + GST_BUFFER_SIZE (codec_data) + 4, 0);
@@ -301,7 +303,7 @@ write_len (guint8 * buf, int val)
 }
 
 static void
-aac_parse_codec_data(GstBuffer *codec_data, gint *channels)
+aac_parse_codec_data (GstBuffer * codec_data, guint * channels)
 {
   guint8 *data = GST_BUFFER_DATA (codec_data);
   int codec_channels;
@@ -311,13 +313,12 @@ aac_parse_codec_data(GstBuffer *codec_data, gint *channels)
     return;
   }
 
-  codec_channels = (data[1] & 0x7f)>>3;
+  codec_channels = (data[1] & 0x7f) >> 3;
 
   if (*channels != codec_channels) {
     GST_INFO ("Overwriting channels %d with %d", *channels, codec_channels);
     *channels = codec_channels;
-  }
-  else {
+  } else {
     GST_INFO ("Retaining channel count %d", codec_channels);
   }
 }
@@ -441,12 +442,12 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
 
   oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
 
-  if (codec_data && oclass->componentSubType == QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a')) 
-  {
+  if (codec_data
+      && oclass->componentSubType == QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a')) {
     /* QuickTime/iTunes creates AAC files with the wrong channel count in the header,
        so parse that out of the codec data if we can.
      */
-    aac_parse_codec_data(codec_data, &channels);
+    aac_parse_codec_data (codec_data, (guint *) & channels);
   }
 
   /* If the quicktime demuxer gives us a full esds atom, use that instead of 
@@ -525,10 +526,10 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
   if (status) {
     GST_WARNING_OBJECT (qtwrapper,
         "Error setting input description on SCAudio: %ld", status);
-   
+
     GST_ELEMENT_ERROR (qtwrapper, STREAM, NOT_IMPLEMENTED,
-	("A QuickTime error occurred trying to decode this stream"),
-	("QuickTime returned error status %lx", status));
+        ("A QuickTime error occurred trying to decode this stream"),
+        ("QuickTime returned error status %lx", status));
     goto beach;
   }
 
@@ -569,50 +570,9 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
       gst_util_dump_mem (magiccookie, len);
 #endif
 
-      status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
-          kQTSCAudioPropertyID_InputMagicCookie, len, magiccookie);
-      if (status) {
-        GST_WARNING_OBJECT (qtwrapper, "Error setting extra codec data: %ld",
-            status);
-        goto beach;
-      }
-
-      g_free (magiccookie);
-    }
-  }
-
-  /* Set output to be interleaved raw PCM */
-  {
-    OSType outputFormat = kAudioFormatLinearPCM;
-    SCAudioFormatFlagsRestrictions restrictions = { 0 };
-
-    /* Set the mask in order to set this flag to zero */
-    restrictions.formatFlagsMask =
-        kAudioFormatFlagIsFloat | kAudioFormatFlagIsBigEndian;
-    restrictions.formatFlagsValues = kAudioFormatFlagIsFloat;
-
-    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
-        kQTSCAudioPropertyID_ClientRestrictedLPCMFlags,
-        sizeof (restrictions), &restrictions);
-    if (status) {
-      GST_WARNING_OBJECT (qtwrapper, "Error setting PCM to interleaved: %ld",
-          status);
-      goto beach;
-    }
-
-    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
-        kQTSCAudioPropertyID_ClientRestrictedCompressionFormatList,
-        sizeof (outputFormat), &outputFormat);
-    if (status) {
-      GST_WARNING_OBJECT (qtwrapper, "Error setting output to PCM: %ld",
-          status);
-      goto beach;
-    }
-  }
-
-  qtwrapper->outdesc.mSampleRate = 0; /* Use recommended; we read this out later */
+  qtwrapper->outdesc.mSampleRate = 0;   /* Use recommended; we read this out later */
   qtwrapper->outdesc.mFormatID = kAudioFormatLinearPCM;
-  qtwrapper->outdesc.mFormatFlags = kAudioFormatFlagIsFloat ;
+  qtwrapper->outdesc.mFormatFlags = kAudioFormatFlagIsFloat;
   qtwrapper->outdesc.mBytesPerPacket = 0;
   qtwrapper->outdesc.mFramesPerPacket = 0;
   qtwrapper->outdesc.mBytesPerFrame = 4 * channels;
@@ -640,9 +600,9 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
     goto beach;
   }
 
-  if (qtwrapper->outdesc.mFormatID != kAudioFormatLinearPCM /*||
-      (qtwrapper->outdesc.mFormatFlags & kAudioFormatFlagIsFloat) !=
-      kAudioFormatFlagIsFloat*/) {
+  if (qtwrapper->outdesc.mFormatID != kAudioFormatLinearPCM     /*||
+                                                                   (qtwrapper->outdesc.mFormatFlags & kAudioFormatFlagIsFloat) !=
+                                                                   kAudioFormatFlagIsFloat */ ) {
     GST_WARNING_OBJECT (qtwrapper, "Output is not floating point PCM");
     ret = FALSE;
     goto beach;
@@ -657,7 +617,7 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
   GST_DEBUG_OBJECT (qtwrapper, "Allocating bufferlist for %d channels",
       channels);
   qtwrapper->bufferlist =
-      AllocateAudioBufferList (channels, 
+      AllocateAudioBufferList (channels,
       qtwrapper->samplerate / 5 * qtwrapper->channels * 4);
 
   /* Create output caps matching the format the component is giving us */
@@ -666,7 +626,8 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
       "signed", G_TYPE_BOOLEAN, TRUE,
       "width", G_TYPE_INT, 32,
       "depth", G_TYPE_INT, 32,
-      "rate", G_TYPE_INT, qtwrapper->samplerate, "channels", G_TYPE_INT, qtwrapper->channels, NULL);
+      "rate", G_TYPE_INT, qtwrapper->samplerate, "channels", G_TYPE_INT,
+      qtwrapper->channels, NULL);
 
   ret = TRUE;
 
@@ -823,8 +784,9 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
   qtwrapper->input_buffer = buf;
 
   do {
-    GST_LOG_OBJECT (qtwrapper, "Calling SCAudioFillBuffer(outsamples:%d , outdata:%p)",
-        outsamples, qtwrapper->bufferlist->mBuffers[0].mData);
+    GST_LOG_OBJECT (qtwrapper,
+        "Calling SCAudioFillBuffer(outsamples:%d , outdata:%p)", outsamples,
+        qtwrapper->bufferlist->mBuffers[0].mData);
 
     /* Ask SCAudio to give us data ! */
     status = SCAudioFillBuffer (qtwrapper->adec,
@@ -888,7 +850,8 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
     if (ret != GST_FLOW_OK)
       goto beach;
 
-    GST_DEBUG_OBJECT (qtwrapper, "Read %d bytes, could have read up to %d bytes", realbytes, savedbytes);
+    GST_DEBUG_OBJECT (qtwrapper,
+        "Read %d bytes, could have read up to %d bytes", realbytes, savedbytes);
   } while (realbytes == savedbytes);
 
 beach:

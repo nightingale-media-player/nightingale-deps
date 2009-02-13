@@ -41,8 +41,11 @@ DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/common/check.mak
 check_PROGRAMS = generic/states$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
-	$(am__EXEEXT_5) elements/selector$(EXEEXT) \
-	elements/y4menc$(EXEEXT)
+	$(am__EXEEXT_5) $(am__EXEEXT_6) elements/aacparse$(EXEEXT) \
+	elements/amrparse$(EXEEXT) elements/audioresample$(EXEEXT) \
+	elements/qtmux$(EXEEXT) elements/selector$(EXEEXT) \
+	elements/mxfdemux$(EXEEXT) elements/y4menc$(EXEEXT) \
+	$(am__EXEEXT_7)
 subdir = tests/check
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
@@ -67,16 +70,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/gst-alsa.m4 $(top_srcdir)/m4/gst-sdl.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/gst-alsa.m4 $(top_srcdir)/m4/gst-fionread.m4 \
+	$(top_srcdir)/m4/gst-sdl.m4 $(top_srcdir)/m4/iconv.m4 \
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @USE_MPEG2ENC_TRUE@am__EXEEXT_1 = elements/mpeg2enc$(EXEEXT)
@@ -84,16 +89,34 @@ CONFIG_CLEAN_FILES =
 @USE_NEON_TRUE@am__EXEEXT_3 = elements/neonhttpsrc$(EXEEXT)
 @USE_OFA_TRUE@am__EXEEXT_4 = elements/ofa$(EXEEXT)
 @USE_TIMIDITY_TRUE@am__EXEEXT_5 = elements/timidity$(EXEEXT)
+@USE_X264_TRUE@am__EXEEXT_6 = elements/x264enc$(EXEEXT)
+@USE_METADATA_TRUE@am__EXEEXT_7 = pipelines/metadata$(EXEEXT)
+elements_aacparse_SOURCES = elements/aacparse.c
+elements_aacparse_OBJECTS = aacparse.$(OBJEXT)
+elements_aacparse_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+elements_aacparse_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__dirstamp = $(am__leading_dot)dirstamp
+elements_amrparse_SOURCES = elements/amrparse.c
+elements_amrparse_OBJECTS = amrparse.$(OBJEXT)
+elements_amrparse_LDADD = $(LDADD)
+elements_amrparse_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_audioresample_SOURCES = elements/audioresample.c
+elements_audioresample_OBJECTS = audioresample.$(OBJEXT)
+elements_audioresample_LDADD = $(LDADD)
+elements_audioresample_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_mpeg2enc_SOURCES = elements/mpeg2enc.c
 elements_mpeg2enc_OBJECTS = mpeg2enc.$(OBJEXT)
 elements_mpeg2enc_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
 elements_mpeg2enc_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__dirstamp = $(am__leading_dot)dirstamp
 elements_mplex_SOURCES = elements/mplex.c
 elements_mplex_OBJECTS = mplex.$(OBJEXT)
 elements_mplex_LDADD = $(LDADD)
 elements_mplex_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_mxfdemux_SOURCES = elements/mxfdemux.c
+elements_mxfdemux_OBJECTS = mxfdemux.$(OBJEXT)
+elements_mxfdemux_LDADD = $(LDADD)
+elements_mxfdemux_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_neonhttpsrc_SOURCES = elements/neonhttpsrc.c
 elements_neonhttpsrc_OBJECTS = neonhttpsrc.$(OBJEXT)
 elements_neonhttpsrc_LDADD = $(LDADD)
@@ -102,6 +125,10 @@ elements_ofa_SOURCES = elements/ofa.c
 elements_ofa_OBJECTS = ofa.$(OBJEXT)
 elements_ofa_LDADD = $(LDADD)
 elements_ofa_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_qtmux_SOURCES = elements/qtmux.c
+elements_qtmux_OBJECTS = qtmux.$(OBJEXT)
+elements_qtmux_LDADD = $(LDADD)
+elements_qtmux_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_selector_SOURCES = elements/selector.c
 elements_selector_OBJECTS = selector.$(OBJEXT)
 elements_selector_LDADD = $(LDADD)
@@ -111,6 +138,10 @@ elements_timidity_OBJECTS = elements_timidity-timidity.$(OBJEXT)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 elements_timidity_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2)
+elements_x264enc_SOURCES = elements/x264enc.c
+elements_x264enc_OBJECTS = x264enc.$(OBJEXT)
+elements_x264enc_LDADD = $(LDADD)
+elements_x264enc_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_y4menc_SOURCES = elements/y4menc.c
 elements_y4menc_OBJECTS = y4menc.$(OBJEXT)
 elements_y4menc_LDADD = $(LDADD)
@@ -119,6 +150,10 @@ generic_states_SOURCES = generic/states.c
 generic_states_OBJECTS = states.$(OBJEXT)
 generic_states_LDADD = $(LDADD)
 generic_states_DEPENDENCIES = $(am__DEPENDENCIES_1)
+pipelines_metadata_SOURCES = pipelines/metadata.c
+pipelines_metadata_OBJECTS = metadata.$(OBJEXT)
+pipelines_metadata_LDADD = $(LDADD)
+pipelines_metadata_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -130,12 +165,18 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = elements/mpeg2enc.c elements/mplex.c elements/neonhttpsrc.c \
-	elements/ofa.c elements/selector.c elements/timidity.c \
-	elements/y4menc.c generic/states.c
-DIST_SOURCES = elements/mpeg2enc.c elements/mplex.c \
-	elements/neonhttpsrc.c elements/ofa.c elements/selector.c \
-	elements/timidity.c elements/y4menc.c generic/states.c
+SOURCES = elements/aacparse.c elements/amrparse.c \
+	elements/audioresample.c elements/mpeg2enc.c elements/mplex.c \
+	elements/mxfdemux.c elements/neonhttpsrc.c elements/ofa.c \
+	elements/qtmux.c elements/selector.c elements/timidity.c \
+	elements/x264enc.c elements/y4menc.c generic/states.c \
+	pipelines/metadata.c
+DIST_SOURCES = elements/aacparse.c elements/amrparse.c \
+	elements/audioresample.c elements/mpeg2enc.c elements/mplex.c \
+	elements/mxfdemux.c elements/neonhttpsrc.c elements/ofa.c \
+	elements/qtmux.c elements/selector.c elements/timidity.c \
+	elements/x264enc.c elements/y4menc.c generic/states.c \
+	pipelines/metadata.c
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -148,6 +189,8 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMRWB_LIBS = @AMRWB_LIBS@
 AMTAR = @AMTAR@
+APEXSINK_CFLAGS = @APEXSINK_CFLAGS@
+APEXSINK_LIBS = @APEXSINK_LIBS@
 AR = @AR@
 AR_FLAGS = @AR_FLAGS@
 AR_SEP = @AR_SEP@
@@ -170,6 +213,8 @@ CCDEPMODE = @CCDEPMODE@
 CDAUDIO_CFLAGS = @CDAUDIO_CFLAGS@
 CDAUDIO_CONFIG = @CDAUDIO_CONFIG@
 CDAUDIO_LIBS = @CDAUDIO_LIBS@
+CELT_CFLAGS = @CELT_CFLAGS@
+CELT_LIBS = @CELT_LIBS@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -216,6 +261,7 @@ FGREP = @FGREP@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLADE_CFLAGS = @GLADE_CFLAGS@
 GLADE_LIBS = @GLADE_LIBS@
@@ -224,6 +270,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GMYTH_CFLAGS = @GMYTH_CFLAGS@
 GMYTH_LIBS = @GMYTH_LIBS@
 GREP = @GREP@
@@ -259,14 +306,11 @@ GST_PLUGINS_SELECTED = @GST_PLUGINS_SELECTED@
 GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_TOOLS_DIR = $(top_builddir)/tools
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-GTK_BASE_DIR = @GTK_BASE_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 HAVE_AMRWB = @HAVE_AMRWB@
 HAVE_BZ2 = @HAVE_BZ2@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
@@ -310,9 +354,9 @@ HAVE_GLADE_TRUE = @HAVE_GLADE_TRUE@
 HAVE_GSM = @HAVE_GSM@
 HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
-HAVE_GTK = @HAVE_GTK@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_JP2K = @HAVE_JP2K@
 HAVE_NAS = @HAVE_NAS@
 HAVE_UNISTD_H_FALSE = @HAVE_UNISTD_H_FALSE@
 HAVE_UNISTD_H_TRUE = @HAVE_UNISTD_H_TRUE@
@@ -321,6 +365,9 @@ HAVE_VALGRIND_TRUE = @HAVE_VALGRIND_TRUE@
 HAVE_WINSOCK2_H_FALSE = @HAVE_WINSOCK2_H_FALSE@
 HAVE_WINSOCK2_H_TRUE = @HAVE_WINSOCK2_H_TRUE@
 HAVE_X = @HAVE_X@
+HAVE_X11 = @HAVE_X11@
+HAVE_X11_FALSE = @HAVE_X11_FALSE@
+HAVE_X11_TRUE = @HAVE_X11_TRUE@
 HAVE_X264 = @HAVE_X264@
 HTML_DIR = @HTML_DIR@
 INSTALL_DATA = @INSTALL_DATA@
@@ -328,12 +375,14 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 IPTC_CFLAGS = @IPTC_CFLAGS@
 IPTC_LIBS = @IPTC_LIBS@
 IVORBIS_CFLAGS = @IVORBIS_CFLAGS@
 IVORBIS_LIBS = @IVORBIS_LIBS@
 JACK_CFLAGS = @JACK_CFLAGS@
 JACK_LIBS = @JACK_LIBS@
+JP2K_LIBS = @JP2K_LIBS@
 LADSPA_LIBS = @LADSPA_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
@@ -362,7 +411,6 @@ METADATA_CFLAGS = @METADATA_CFLAGS@
 METADATA_LIBS = @METADATA_LIBS@
 MJPEG_CFLAGS = @MJPEG_CFLAGS@
 MJPEG_LIBS = @MJPEG_LIBS@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_LIBS = @MOZILLA_LIBS@
 MPEG2ENC_CFLAGS = @MPEG2ENC_CFLAGS@
@@ -370,6 +418,7 @@ MPEG2ENC_LIBS = @MPEG2ENC_LIBS@
 MPLEX_CFLAGS = @MPLEX_CFLAGS@
 MPLEX_LIBS = @MPLEX_LIBS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MUSEPACK_LIBS = @MUSEPACK_LIBS@
 MUSICBRAINZ_CFLAGS = @MUSICBRAINZ_CFLAGS@
@@ -426,6 +475,8 @@ THEORADEC_CFLAGS = @THEORADEC_CFLAGS@
 THEORADEC_LIBS = @THEORADEC_LIBS@
 TIMIDITY_CFLAGS = @TIMIDITY_CFLAGS@
 TIMIDITY_LIBS = @TIMIDITY_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
 USE_ACM_FALSE = @USE_ACM_FALSE@
 USE_ACM_TRUE = @USE_ACM_TRUE@
 USE_ALSA_FALSE = @USE_ALSA_FALSE@
@@ -438,6 +489,8 @@ USE_BZ2_FALSE = @USE_BZ2_FALSE@
 USE_BZ2_TRUE = @USE_BZ2_TRUE@
 USE_CDAUDIO_FALSE = @USE_CDAUDIO_FALSE@
 USE_CDAUDIO_TRUE = @USE_CDAUDIO_TRUE@
+USE_CELT_FALSE = @USE_CELT_FALSE@
+USE_CELT_TRUE = @USE_CELT_TRUE@
 USE_DC1394_FALSE = @USE_DC1394_FALSE@
 USE_DC1394_TRUE = @USE_DC1394_TRUE@
 USE_DIRAC_FALSE = @USE_DIRAC_FALSE@
@@ -470,6 +523,8 @@ USE_IVORBIS_FALSE = @USE_IVORBIS_FALSE@
 USE_IVORBIS_TRUE = @USE_IVORBIS_TRUE@
 USE_JACK_FALSE = @USE_JACK_FALSE@
 USE_JACK_TRUE = @USE_JACK_TRUE@
+USE_JP2K_FALSE = @USE_JP2K_FALSE@
+USE_JP2K_TRUE = @USE_JP2K_TRUE@
 USE_LADSPA_FALSE = @USE_LADSPA_FALSE@
 USE_LADSPA_TRUE = @USE_LADSPA_TRUE@
 USE_LIBMMS_FALSE = @USE_LIBMMS_FALSE@
@@ -499,14 +554,20 @@ USE_OFA_FALSE = @USE_OFA_FALSE@
 USE_OFA_TRUE = @USE_OFA_TRUE@
 USE_OSS4_FALSE = @USE_OSS4_FALSE@
 USE_OSS4_TRUE = @USE_OSS4_TRUE@
+USE_PLUGIN_AACPARSE_FALSE = @USE_PLUGIN_AACPARSE_FALSE@
+USE_PLUGIN_AACPARSE_TRUE = @USE_PLUGIN_AACPARSE_TRUE@
 USE_PLUGIN_AIFFPARSE_FALSE = @USE_PLUGIN_AIFFPARSE_FALSE@
 USE_PLUGIN_AIFFPARSE_TRUE = @USE_PLUGIN_AIFFPARSE_TRUE@
-USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
-USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
+USE_PLUGIN_AMRPARSE_FALSE = @USE_PLUGIN_AMRPARSE_FALSE@
+USE_PLUGIN_AMRPARSE_TRUE = @USE_PLUGIN_AMRPARSE_TRUE@
+USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
+USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_BAYER_FALSE = @USE_PLUGIN_BAYER_FALSE@
 USE_PLUGIN_BAYER_TRUE = @USE_PLUGIN_BAYER_TRUE@
 USE_PLUGIN_CDXAPARSE_FALSE = @USE_PLUGIN_CDXAPARSE_FALSE@
 USE_PLUGIN_CDXAPARSE_TRUE = @USE_PLUGIN_CDXAPARSE_TRUE@
+USE_PLUGIN_DCCP_FALSE = @USE_PLUGIN_DCCP_FALSE@
+USE_PLUGIN_DCCP_TRUE = @USE_PLUGIN_DCCP_TRUE@
 USE_PLUGIN_DEINTERLACE2_FALSE = @USE_PLUGIN_DEINTERLACE2_FALSE@
 USE_PLUGIN_DEINTERLACE2_TRUE = @USE_PLUGIN_DEINTERLACE2_TRUE@
 USE_PLUGIN_DEINTERLACE_FALSE = @USE_PLUGIN_DEINTERLACE_FALSE@
@@ -529,30 +590,38 @@ USE_PLUGIN_MODPLUG_FALSE = @USE_PLUGIN_MODPLUG_FALSE@
 USE_PLUGIN_MODPLUG_TRUE = @USE_PLUGIN_MODPLUG_TRUE@
 USE_PLUGIN_MPEG4VIDEOPARSE_FALSE = @USE_PLUGIN_MPEG4VIDEOPARSE_FALSE@
 USE_PLUGIN_MPEG4VIDEOPARSE_TRUE = @USE_PLUGIN_MPEG4VIDEOPARSE_TRUE@
-USE_PLUGIN_MPEGTSPARSE_FALSE = @USE_PLUGIN_MPEGTSPARSE_FALSE@
-USE_PLUGIN_MPEGTSPARSE_TRUE = @USE_PLUGIN_MPEGTSPARSE_TRUE@
+USE_PLUGIN_MPEGDEMUX_FALSE = @USE_PLUGIN_MPEGDEMUX_FALSE@
+USE_PLUGIN_MPEGDEMUX_TRUE = @USE_PLUGIN_MPEGDEMUX_TRUE@
+USE_PLUGIN_MPEGTSMUX_FALSE = @USE_PLUGIN_MPEGTSMUX_FALSE@
+USE_PLUGIN_MPEGTSMUX_TRUE = @USE_PLUGIN_MPEGTSMUX_TRUE@
 USE_PLUGIN_MPEGVIDEOPARSE_FALSE = @USE_PLUGIN_MPEGVIDEOPARSE_FALSE@
 USE_PLUGIN_MPEGVIDEOPARSE_TRUE = @USE_PLUGIN_MPEGVIDEOPARSE_TRUE@
 USE_PLUGIN_MVE_FALSE = @USE_PLUGIN_MVE_FALSE@
 USE_PLUGIN_MVE_TRUE = @USE_PLUGIN_MVE_TRUE@
+USE_PLUGIN_MXF_FALSE = @USE_PLUGIN_MXF_FALSE@
+USE_PLUGIN_MXF_TRUE = @USE_PLUGIN_MXF_TRUE@
 USE_PLUGIN_NSF_FALSE = @USE_PLUGIN_NSF_FALSE@
 USE_PLUGIN_NSF_TRUE = @USE_PLUGIN_NSF_TRUE@
 USE_PLUGIN_NUVDEMUX_FALSE = @USE_PLUGIN_NUVDEMUX_FALSE@
 USE_PLUGIN_NUVDEMUX_TRUE = @USE_PLUGIN_NUVDEMUX_TRUE@
+USE_PLUGIN_PCAPPARSE_FALSE = @USE_PLUGIN_PCAPPARSE_FALSE@
+USE_PLUGIN_PCAPPARSE_TRUE = @USE_PLUGIN_PCAPPARSE_TRUE@
+USE_PLUGIN_QTMUX_FALSE = @USE_PLUGIN_QTMUX_FALSE@
+USE_PLUGIN_QTMUX_TRUE = @USE_PLUGIN_QTMUX_TRUE@
 USE_PLUGIN_RAWPARSE_FALSE = @USE_PLUGIN_RAWPARSE_FALSE@
 USE_PLUGIN_RAWPARSE_TRUE = @USE_PLUGIN_RAWPARSE_TRUE@
 USE_PLUGIN_REAL_FALSE = @USE_PLUGIN_REAL_FALSE@
 USE_PLUGIN_REAL_TRUE = @USE_PLUGIN_REAL_TRUE@
 USE_PLUGIN_RTPMANAGER_FALSE = @USE_PLUGIN_RTPMANAGER_FALSE@
 USE_PLUGIN_RTPMANAGER_TRUE = @USE_PLUGIN_RTPMANAGER_TRUE@
+USE_PLUGIN_SCALETEMPO_FALSE = @USE_PLUGIN_SCALETEMPO_FALSE@
+USE_PLUGIN_SCALETEMPO_TRUE = @USE_PLUGIN_SCALETEMPO_TRUE@
 USE_PLUGIN_SDP_FALSE = @USE_PLUGIN_SDP_FALSE@
 USE_PLUGIN_SDP_TRUE = @USE_PLUGIN_SDP_TRUE@
 USE_PLUGIN_SELECTOR_FALSE = @USE_PLUGIN_SELECTOR_FALSE@
 USE_PLUGIN_SELECTOR_TRUE = @USE_PLUGIN_SELECTOR_TRUE@
 USE_PLUGIN_SPEED_FALSE = @USE_PLUGIN_SPEED_FALSE@
 USE_PLUGIN_SPEED_TRUE = @USE_PLUGIN_SPEED_TRUE@
-USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
-USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_STEREO_FALSE = @USE_PLUGIN_STEREO_FALSE@
 USE_PLUGIN_STEREO_TRUE = @USE_PLUGIN_STEREO_TRUE@
 USE_PLUGIN_SUBENC_FALSE = @USE_PLUGIN_SUBENC_FALSE@
@@ -581,6 +650,8 @@ USE_THEORADEC_FALSE = @USE_THEORADEC_FALSE@
 USE_THEORADEC_TRUE = @USE_THEORADEC_TRUE@
 USE_TIMIDITY_FALSE = @USE_TIMIDITY_FALSE@
 USE_TIMIDITY_TRUE = @USE_TIMIDITY_TRUE@
+USE_TWOLAME_FALSE = @USE_TWOLAME_FALSE@
+USE_TWOLAME_TRUE = @USE_TWOLAME_TRUE@
 USE_VCD_FALSE = @USE_VCD_FALSE@
 USE_VCD_TRUE = @USE_VCD_TRUE@
 USE_WILDMIDI_FALSE = @USE_WILDMIDI_FALSE@
@@ -598,9 +669,13 @@ VERSION = @VERSION@
 WILDMIDI_CFLAGS = @WILDMIDI_CFLAGS@
 WILDMIDI_LIBS = @WILDMIDI_LIBS@
 WINDOWS_SDK_DIR = @WINDOWS_SDK_DIR@
+X11_CFLAGS = @X11_CFLAGS@
+X11_LIBS = @X11_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XMP_1_99_5_CFLAGS = @XMP_1_99_5_CFLAGS@
 XMP_1_99_5_LIBS = @XMP_1_99_5_LIBS@
@@ -684,12 +759,14 @@ TESTS_ENVIRONMENT = \
         $(REGISTRY_ENVIRONMENT)                                 \
         GST_PLUGIN_SYSTEM_PATH=					\
         GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GSTPB_PLUGINS_DIR):$(GST_PLUGINS_DIR) \
-        STATE_IGNORE_ELEMENTS="cdaudio festival vcdsrc nassink glimagesink dvbsrc dvbbasebin sdlaudiosink sdlvideosink alsaspdifsink dfbvideosink dc1394src"
+        STATE_IGNORE_ELEMENTS="alsaspdifsink apexsink cdaudio dc1394src dvbsrc dvbbasebin dfbvideosink festival nassink sdlaudiosink sdlvideosink vcdsrc rfbsrc"
 
 
 # the core dumps of some machines have PIDs appended
 CLEANFILES = core.* test-registry.*
 SUPPRESSIONS = $(top_srcdir)/common/gst.supp $(srcdir)/gst-plugins-bad.supp
+@USE_METADATA_FALSE@check_metadata = 
+@USE_METADATA_TRUE@check_metadata = pipelines/metadata
 @USE_MPEG2ENC_FALSE@check_mpeg2enc = 
 @USE_MPEG2ENC_TRUE@check_mpeg2enc = elements/mpeg2enc
 @USE_MPLEX_FALSE@check_mplex = 
@@ -700,16 +777,19 @@ SUPPRESSIONS = $(top_srcdir)/common/gst.supp $(srcdir)/gst-plugins-bad.supp
 @USE_OFA_TRUE@check_ofa = elements/ofa
 @USE_TIMIDITY_FALSE@check_timidity = 
 @USE_TIMIDITY_TRUE@check_timidity = elements/timidity
+@USE_X264_FALSE@check_x264enc = 
+@USE_X264_TRUE@check_x264enc = elements/x264enc
 VALGRIND_TO_FIX = \
 	elements/mpeg2enc \
-	elements/mplex
+	elements/mplex \
+	elements/x264enc
 
 
 # valgrind testing
 VALGRIND_TESTS_DISABLE = \
 	$(VALGRIND_TO_FIX)
 
-noinst_HEADERS = 
+noinst_HEADERS = elements/mxfdemux.h elements/amrparse_data.h elements/aacparse_data.h
 TESTS = $(check_PROGRAMS)
 AM_CFLAGS = $(GST_OBJ_CFLAGS) $(GST_CHECK_CFLAGS) $(CHECK_CFLAGS)  $(GST_OPTION_CFLAGS)
 LDADD = $(GST_OBJ_LIBS) $(GST_CHECK_LIBS) $(CHECK_LIBS)
@@ -758,24 +838,42 @@ clean-checkPROGRAMS:
 elements/$(am__dirstamp):
 	@$(mkdir_p) elements
 	@: > elements/$(am__dirstamp)
+elements/aacparse$(EXEEXT): $(elements_aacparse_OBJECTS) $(elements_aacparse_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/aacparse$(EXEEXT)
+	$(LINK) $(elements_aacparse_LDFLAGS) $(elements_aacparse_OBJECTS) $(elements_aacparse_LDADD) $(LIBS)
+elements/amrparse$(EXEEXT): $(elements_amrparse_OBJECTS) $(elements_amrparse_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/amrparse$(EXEEXT)
+	$(LINK) $(elements_amrparse_LDFLAGS) $(elements_amrparse_OBJECTS) $(elements_amrparse_LDADD) $(LIBS)
+elements/audioresample$(EXEEXT): $(elements_audioresample_OBJECTS) $(elements_audioresample_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/audioresample$(EXEEXT)
+	$(LINK) $(elements_audioresample_LDFLAGS) $(elements_audioresample_OBJECTS) $(elements_audioresample_LDADD) $(LIBS)
 elements/mpeg2enc$(EXEEXT): $(elements_mpeg2enc_OBJECTS) $(elements_mpeg2enc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/mpeg2enc$(EXEEXT)
 	$(LINK) $(elements_mpeg2enc_LDFLAGS) $(elements_mpeg2enc_OBJECTS) $(elements_mpeg2enc_LDADD) $(LIBS)
 elements/mplex$(EXEEXT): $(elements_mplex_OBJECTS) $(elements_mplex_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/mplex$(EXEEXT)
 	$(LINK) $(elements_mplex_LDFLAGS) $(elements_mplex_OBJECTS) $(elements_mplex_LDADD) $(LIBS)
+elements/mxfdemux$(EXEEXT): $(elements_mxfdemux_OBJECTS) $(elements_mxfdemux_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/mxfdemux$(EXEEXT)
+	$(LINK) $(elements_mxfdemux_LDFLAGS) $(elements_mxfdemux_OBJECTS) $(elements_mxfdemux_LDADD) $(LIBS)
 elements/neonhttpsrc$(EXEEXT): $(elements_neonhttpsrc_OBJECTS) $(elements_neonhttpsrc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/neonhttpsrc$(EXEEXT)
 	$(LINK) $(elements_neonhttpsrc_LDFLAGS) $(elements_neonhttpsrc_OBJECTS) $(elements_neonhttpsrc_LDADD) $(LIBS)
 elements/ofa$(EXEEXT): $(elements_ofa_OBJECTS) $(elements_ofa_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/ofa$(EXEEXT)
 	$(LINK) $(elements_ofa_LDFLAGS) $(elements_ofa_OBJECTS) $(elements_ofa_LDADD) $(LIBS)
+elements/qtmux$(EXEEXT): $(elements_qtmux_OBJECTS) $(elements_qtmux_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/qtmux$(EXEEXT)
+	$(LINK) $(elements_qtmux_LDFLAGS) $(elements_qtmux_OBJECTS) $(elements_qtmux_LDADD) $(LIBS)
 elements/selector$(EXEEXT): $(elements_selector_OBJECTS) $(elements_selector_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/selector$(EXEEXT)
 	$(LINK) $(elements_selector_LDFLAGS) $(elements_selector_OBJECTS) $(elements_selector_LDADD) $(LIBS)
 elements/timidity$(EXEEXT): $(elements_timidity_OBJECTS) $(elements_timidity_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/timidity$(EXEEXT)
 	$(LINK) $(elements_timidity_LDFLAGS) $(elements_timidity_OBJECTS) $(elements_timidity_LDADD) $(LIBS)
+elements/x264enc$(EXEEXT): $(elements_x264enc_OBJECTS) $(elements_x264enc_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/x264enc$(EXEEXT)
+	$(LINK) $(elements_x264enc_LDFLAGS) $(elements_x264enc_OBJECTS) $(elements_x264enc_LDADD) $(LIBS)
 elements/y4menc$(EXEEXT): $(elements_y4menc_OBJECTS) $(elements_y4menc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/y4menc$(EXEEXT)
 	$(LINK) $(elements_y4menc_LDFLAGS) $(elements_y4menc_OBJECTS) $(elements_y4menc_LDADD) $(LIBS)
@@ -785,6 +883,12 @@ generic/$(am__dirstamp):
 generic/states$(EXEEXT): $(generic_states_OBJECTS) $(generic_states_DEPENDENCIES) generic/$(am__dirstamp)
 	@rm -f generic/states$(EXEEXT)
 	$(LINK) $(generic_states_LDFLAGS) $(generic_states_OBJECTS) $(generic_states_LDADD) $(LIBS)
+pipelines/$(am__dirstamp):
+	@$(mkdir_p) pipelines
+	@: > pipelines/$(am__dirstamp)
+pipelines/metadata$(EXEEXT): $(pipelines_metadata_OBJECTS) $(pipelines_metadata_DEPENDENCIES) pipelines/$(am__dirstamp)
+	@rm -f pipelines/metadata$(EXEEXT)
+	$(LINK) $(pipelines_metadata_LDFLAGS) $(pipelines_metadata_OBJECTS) $(pipelines_metadata_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -792,13 +896,20 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aacparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/amrparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audioresample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_timidity-timidity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metadata.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpeg2enc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mplex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mxfdemux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/neonhttpsrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ofa.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qtmux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/selector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/states.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/x264enc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/y4menc.Po@am__quote@
 
 .c.o:
@@ -821,6 +932,48 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+aacparse.o: elements/aacparse.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aacparse.o -MD -MP -MF "$(DEPDIR)/aacparse.Tpo" -c -o aacparse.o `test -f 'elements/aacparse.c' || echo '$(srcdir)/'`elements/aacparse.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/aacparse.Tpo" "$(DEPDIR)/aacparse.Po"; else rm -f "$(DEPDIR)/aacparse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/aacparse.c' object='aacparse.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aacparse.o `test -f 'elements/aacparse.c' || echo '$(srcdir)/'`elements/aacparse.c
+
+aacparse.obj: elements/aacparse.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aacparse.obj -MD -MP -MF "$(DEPDIR)/aacparse.Tpo" -c -o aacparse.obj `if test -f 'elements/aacparse.c'; then $(CYGPATH_W) 'elements/aacparse.c'; else $(CYGPATH_W) '$(srcdir)/elements/aacparse.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/aacparse.Tpo" "$(DEPDIR)/aacparse.Po"; else rm -f "$(DEPDIR)/aacparse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/aacparse.c' object='aacparse.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aacparse.obj `if test -f 'elements/aacparse.c'; then $(CYGPATH_W) 'elements/aacparse.c'; else $(CYGPATH_W) '$(srcdir)/elements/aacparse.c'; fi`
+
+amrparse.o: elements/amrparse.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT amrparse.o -MD -MP -MF "$(DEPDIR)/amrparse.Tpo" -c -o amrparse.o `test -f 'elements/amrparse.c' || echo '$(srcdir)/'`elements/amrparse.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/amrparse.Tpo" "$(DEPDIR)/amrparse.Po"; else rm -f "$(DEPDIR)/amrparse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/amrparse.c' object='amrparse.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o amrparse.o `test -f 'elements/amrparse.c' || echo '$(srcdir)/'`elements/amrparse.c
+
+amrparse.obj: elements/amrparse.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT amrparse.obj -MD -MP -MF "$(DEPDIR)/amrparse.Tpo" -c -o amrparse.obj `if test -f 'elements/amrparse.c'; then $(CYGPATH_W) 'elements/amrparse.c'; else $(CYGPATH_W) '$(srcdir)/elements/amrparse.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/amrparse.Tpo" "$(DEPDIR)/amrparse.Po"; else rm -f "$(DEPDIR)/amrparse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/amrparse.c' object='amrparse.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o amrparse.obj `if test -f 'elements/amrparse.c'; then $(CYGPATH_W) 'elements/amrparse.c'; else $(CYGPATH_W) '$(srcdir)/elements/amrparse.c'; fi`
+
+audioresample.o: elements/audioresample.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT audioresample.o -MD -MP -MF "$(DEPDIR)/audioresample.Tpo" -c -o audioresample.o `test -f 'elements/audioresample.c' || echo '$(srcdir)/'`elements/audioresample.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/audioresample.Tpo" "$(DEPDIR)/audioresample.Po"; else rm -f "$(DEPDIR)/audioresample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/audioresample.c' object='audioresample.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o audioresample.o `test -f 'elements/audioresample.c' || echo '$(srcdir)/'`elements/audioresample.c
+
+audioresample.obj: elements/audioresample.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT audioresample.obj -MD -MP -MF "$(DEPDIR)/audioresample.Tpo" -c -o audioresample.obj `if test -f 'elements/audioresample.c'; then $(CYGPATH_W) 'elements/audioresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/audioresample.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/audioresample.Tpo" "$(DEPDIR)/audioresample.Po"; else rm -f "$(DEPDIR)/audioresample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/audioresample.c' object='audioresample.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o audioresample.obj `if test -f 'elements/audioresample.c'; then $(CYGPATH_W) 'elements/audioresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/audioresample.c'; fi`
 
 mpeg2enc.o: elements/mpeg2enc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpeg2enc.o -MD -MP -MF "$(DEPDIR)/mpeg2enc.Tpo" -c -o mpeg2enc.o `test -f 'elements/mpeg2enc.c' || echo '$(srcdir)/'`elements/mpeg2enc.c; \
@@ -850,6 +1003,20 @@ mplex.obj: elements/mplex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mplex.obj `if test -f 'elements/mplex.c'; then $(CYGPATH_W) 'elements/mplex.c'; else $(CYGPATH_W) '$(srcdir)/elements/mplex.c'; fi`
 
+mxfdemux.o: elements/mxfdemux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mxfdemux.o -MD -MP -MF "$(DEPDIR)/mxfdemux.Tpo" -c -o mxfdemux.o `test -f 'elements/mxfdemux.c' || echo '$(srcdir)/'`elements/mxfdemux.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mxfdemux.Tpo" "$(DEPDIR)/mxfdemux.Po"; else rm -f "$(DEPDIR)/mxfdemux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/mxfdemux.c' object='mxfdemux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mxfdemux.o `test -f 'elements/mxfdemux.c' || echo '$(srcdir)/'`elements/mxfdemux.c
+
+mxfdemux.obj: elements/mxfdemux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mxfdemux.obj -MD -MP -MF "$(DEPDIR)/mxfdemux.Tpo" -c -o mxfdemux.obj `if test -f 'elements/mxfdemux.c'; then $(CYGPATH_W) 'elements/mxfdemux.c'; else $(CYGPATH_W) '$(srcdir)/elements/mxfdemux.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/mxfdemux.Tpo" "$(DEPDIR)/mxfdemux.Po"; else rm -f "$(DEPDIR)/mxfdemux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/mxfdemux.c' object='mxfdemux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mxfdemux.obj `if test -f 'elements/mxfdemux.c'; then $(CYGPATH_W) 'elements/mxfdemux.c'; else $(CYGPATH_W) '$(srcdir)/elements/mxfdemux.c'; fi`
+
 neonhttpsrc.o: elements/neonhttpsrc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT neonhttpsrc.o -MD -MP -MF "$(DEPDIR)/neonhttpsrc.Tpo" -c -o neonhttpsrc.o `test -f 'elements/neonhttpsrc.c' || echo '$(srcdir)/'`elements/neonhttpsrc.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/neonhttpsrc.Tpo" "$(DEPDIR)/neonhttpsrc.Po"; else rm -f "$(DEPDIR)/neonhttpsrc.Tpo"; exit 1; fi
@@ -877,6 +1044,20 @@ ofa.obj: elements/ofa.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/ofa.c' object='ofa.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ofa.obj `if test -f 'elements/ofa.c'; then $(CYGPATH_W) 'elements/ofa.c'; else $(CYGPATH_W) '$(srcdir)/elements/ofa.c'; fi`
+
+qtmux.o: elements/qtmux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT qtmux.o -MD -MP -MF "$(DEPDIR)/qtmux.Tpo" -c -o qtmux.o `test -f 'elements/qtmux.c' || echo '$(srcdir)/'`elements/qtmux.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/qtmux.Tpo" "$(DEPDIR)/qtmux.Po"; else rm -f "$(DEPDIR)/qtmux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/qtmux.c' object='qtmux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o qtmux.o `test -f 'elements/qtmux.c' || echo '$(srcdir)/'`elements/qtmux.c
+
+qtmux.obj: elements/qtmux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT qtmux.obj -MD -MP -MF "$(DEPDIR)/qtmux.Tpo" -c -o qtmux.obj `if test -f 'elements/qtmux.c'; then $(CYGPATH_W) 'elements/qtmux.c'; else $(CYGPATH_W) '$(srcdir)/elements/qtmux.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/qtmux.Tpo" "$(DEPDIR)/qtmux.Po"; else rm -f "$(DEPDIR)/qtmux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/qtmux.c' object='qtmux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o qtmux.obj `if test -f 'elements/qtmux.c'; then $(CYGPATH_W) 'elements/qtmux.c'; else $(CYGPATH_W) '$(srcdir)/elements/qtmux.c'; fi`
 
 selector.o: elements/selector.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT selector.o -MD -MP -MF "$(DEPDIR)/selector.Tpo" -c -o selector.o `test -f 'elements/selector.c' || echo '$(srcdir)/'`elements/selector.c; \
@@ -906,6 +1087,20 @@ elements_timidity-timidity.obj: elements/timidity.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_timidity_CFLAGS) $(CFLAGS) -c -o elements_timidity-timidity.obj `if test -f 'elements/timidity.c'; then $(CYGPATH_W) 'elements/timidity.c'; else $(CYGPATH_W) '$(srcdir)/elements/timidity.c'; fi`
 
+x264enc.o: elements/x264enc.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x264enc.o -MD -MP -MF "$(DEPDIR)/x264enc.Tpo" -c -o x264enc.o `test -f 'elements/x264enc.c' || echo '$(srcdir)/'`elements/x264enc.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/x264enc.Tpo" "$(DEPDIR)/x264enc.Po"; else rm -f "$(DEPDIR)/x264enc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/x264enc.c' object='x264enc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x264enc.o `test -f 'elements/x264enc.c' || echo '$(srcdir)/'`elements/x264enc.c
+
+x264enc.obj: elements/x264enc.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x264enc.obj -MD -MP -MF "$(DEPDIR)/x264enc.Tpo" -c -o x264enc.obj `if test -f 'elements/x264enc.c'; then $(CYGPATH_W) 'elements/x264enc.c'; else $(CYGPATH_W) '$(srcdir)/elements/x264enc.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/x264enc.Tpo" "$(DEPDIR)/x264enc.Po"; else rm -f "$(DEPDIR)/x264enc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/x264enc.c' object='x264enc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x264enc.obj `if test -f 'elements/x264enc.c'; then $(CYGPATH_W) 'elements/x264enc.c'; else $(CYGPATH_W) '$(srcdir)/elements/x264enc.c'; fi`
+
 y4menc.o: elements/y4menc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT y4menc.o -MD -MP -MF "$(DEPDIR)/y4menc.Tpo" -c -o y4menc.o `test -f 'elements/y4menc.c' || echo '$(srcdir)/'`elements/y4menc.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/y4menc.Tpo" "$(DEPDIR)/y4menc.Po"; else rm -f "$(DEPDIR)/y4menc.Tpo"; exit 1; fi
@@ -933,6 +1128,20 @@ states.obj: generic/states.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generic/states.c' object='states.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o states.obj `if test -f 'generic/states.c'; then $(CYGPATH_W) 'generic/states.c'; else $(CYGPATH_W) '$(srcdir)/generic/states.c'; fi`
+
+metadata.o: pipelines/metadata.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT metadata.o -MD -MP -MF "$(DEPDIR)/metadata.Tpo" -c -o metadata.o `test -f 'pipelines/metadata.c' || echo '$(srcdir)/'`pipelines/metadata.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/metadata.Tpo" "$(DEPDIR)/metadata.Po"; else rm -f "$(DEPDIR)/metadata.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pipelines/metadata.c' object='metadata.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o metadata.o `test -f 'pipelines/metadata.c' || echo '$(srcdir)/'`pipelines/metadata.c
+
+metadata.obj: pipelines/metadata.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT metadata.obj -MD -MP -MF "$(DEPDIR)/metadata.Tpo" -c -o metadata.obj `if test -f 'pipelines/metadata.c'; then $(CYGPATH_W) 'pipelines/metadata.c'; else $(CYGPATH_W) '$(srcdir)/pipelines/metadata.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/metadata.Tpo" "$(DEPDIR)/metadata.Po"; else rm -f "$(DEPDIR)/metadata.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pipelines/metadata.c' object='metadata.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o metadata.obj `if test -f 'pipelines/metadata.c'; then $(CYGPATH_W) 'pipelines/metadata.c'; else $(CYGPATH_W) '$(srcdir)/pipelines/metadata.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1066,7 +1275,7 @@ check-TESTS: $(TESTS)
 	else :; fi
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../../common
+	$(mkdir_p) $(distdir)/../../common $(distdir)/elements
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -1122,6 +1331,7 @@ distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-rm -f elements/$(am__dirstamp)
 	-rm -f generic/$(am__dirstamp)
+	-rm -f pipelines/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"

@@ -59,61 +59,10 @@
 #include <string.h>
 
 #include "gstjackaudiosink.h"
+#include "gstjackringbuffer.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_jack_audio_sink_debug);
 #define GST_CAT_DEFAULT gst_jack_audio_sink_debug
-
-typedef jack_default_audio_sample_t sample_t;
-
-#define GST_TYPE_JACK_RING_BUFFER        \
-        (gst_jack_ring_buffer_get_type())
-#define GST_JACK_RING_BUFFER(obj)        \
-        (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_JACK_RING_BUFFER,GstJackRingBuffer))
-#define GST_JACK_RING_BUFFER_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_JACK_RING_BUFFER,GstJackRingBufferClass))
-#define GST_JACK_RING_BUFFER_GET_CLASS(obj) \
-        (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_JACK_RING_BUFFER, GstJackRingBufferClass))
-#define GST_JACK_RING_BUFFER_CAST(obj)        \
-        ((GstJackRingBuffer *)obj)
-#define GST_IS_JACK_RING_BUFFER(obj)     \
-        (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_JACK_RING_BUFFER))
-#define GST_IS_JACK_RING_BUFFER_CLASS(klass)\
-        (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_JACK_RING_BUFFER))
-
-typedef struct _GstJackRingBuffer GstJackRingBuffer;
-typedef struct _GstJackRingBufferClass GstJackRingBufferClass;
-
-struct _GstJackRingBuffer
-{
-  GstRingBuffer object;
-
-  gint sample_rate;
-  gint buffer_size;
-  gint channels;
-};
-
-struct _GstJackRingBufferClass
-{
-  GstRingBufferClass parent_class;
-};
-
-static void gst_jack_ring_buffer_class_init (GstJackRingBufferClass * klass);
-static void gst_jack_ring_buffer_init (GstJackRingBuffer * ringbuffer,
-    GstJackRingBufferClass * klass);
-static void gst_jack_ring_buffer_dispose (GObject * object);
-static void gst_jack_ring_buffer_finalize (GObject * object);
-
-static GstRingBufferClass *ring_parent_class = NULL;
-
-static gboolean gst_jack_ring_buffer_open_device (GstRingBuffer * buf);
-static gboolean gst_jack_ring_buffer_close_device (GstRingBuffer * buf);
-static gboolean gst_jack_ring_buffer_acquire (GstRingBuffer * buf,
-    GstRingBufferSpec * spec);
-static gboolean gst_jack_ring_buffer_release (GstRingBuffer * buf);
-static gboolean gst_jack_ring_buffer_start (GstRingBuffer * buf);
-static gboolean gst_jack_ring_buffer_pause (GstRingBuffer * buf);
-static gboolean gst_jack_ring_buffer_stop (GstRingBuffer * buf);
-static guint gst_jack_ring_buffer_delay (GstRingBuffer * buf);
 
 static gboolean
 gst_jack_audio_sink_allocate_channels (GstJackAudioSink * sink, gint channels)
@@ -294,7 +243,7 @@ jack_process_cb (jack_nframes_t nframes, void *arg)
 wrong_size:
   {
     GST_ERROR_OBJECT (sink, "nbytes (%d) != flen (%d)",
-        nframes * sizeof (sample_t), flen);
+        (gint) (nframes * sizeof (sample_t)), flen);
     return 1;
   }
 }
@@ -645,9 +594,17 @@ static guint
 gst_jack_ring_buffer_delay (GstRingBuffer * buf)
 {
   GstJackAudioSink *sink;
-  guint res = 0;
+  guint i, res = 0, latency;
+  jack_client_t *client;
 
   sink = GST_JACK_AUDIO_SINK (GST_OBJECT_PARENT (buf));
+  client = gst_jack_audio_client_get_client (sink->client);
+
+  for (i = 0; i < sink->port_count; i++) {
+    latency = jack_port_get_total_latency (client, sink->ports[i]);
+    if (latency > res)
+      res = latency;
+  }
 
   GST_DEBUG_OBJECT (sink, "delay %u", res);
 
@@ -688,25 +645,6 @@ enum
   PROP_SERVER,
   PROP_LAST
 };
-
-#define GST_TYPE_JACK_CONNECT (gst_jack_connect_get_type())
-static GType
-gst_jack_connect_get_type (void)
-{
-  static GType jack_connect_type = 0;
-  static const GEnumValue jack_connect[] = {
-    {GST_JACK_CONNECT_NONE,
-        "Don't automatically connect ports to physical ports", "none"},
-    {GST_JACK_CONNECT_AUTO,
-        "Automatically connect ports to physical ports", "auto"},
-    {0, NULL, NULL},
-  };
-
-  if (!jack_connect_type) {
-    jack_connect_type = g_enum_register_static ("GstJackConnect", jack_connect);
-  }
-  return jack_connect_type;
-}
 
 #define _do_init(bla) \
     GST_DEBUG_CATEGORY_INIT (gst_jack_audio_sink_debug, "jacksink", 0, "jacksink element");

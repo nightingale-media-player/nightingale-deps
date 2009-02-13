@@ -30,6 +30,9 @@
 
 #include <string.h>
 #include <stdlib.h>
+#ifdef HAVE_X11
+#include <X11/Xlib.h>
+#endif
 
 enum
 {
@@ -49,6 +52,7 @@ enum
 };
 
 GST_DEBUG_CATEGORY_STATIC (rfbsrc_debug);
+GST_DEBUG_CATEGORY (rfbdecoder_debug);
 #define GST_CAT_DEFAULT rfbsrc_debug
 
 static const GstElementDetails gst_rfb_src_details =
@@ -67,9 +71,9 @@ GST_STATIC_PAD_TEMPLATE ("src",
         "bpp = (int) [1, 255], "
         "depth = (int) [1, 255], "
         "endianness = (int) [1234, 4321], "
-        "red_mask = (int) 0x0000ff00, "
-        "green_mask = (int) 0x00ff0000, "
-        "blue_mask = (int) 0xff000000, "
+        "red_mask = (int) [min, max], "
+        "green_mask = (int) [min, max], "
+        "blue_mask = (int) [min, max], "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], " "framerate = (fraction) 0/1")
     );
@@ -88,11 +92,7 @@ static gboolean gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event);
 static GstFlowReturn gst_rfb_src_create (GstPushSrc * psrc,
     GstBuffer ** outbuf);
 
-#define DEBUG_INIT(bla) \
-    GST_DEBUG_CATEGORY_INIT (rfbsrc_debug, "rfbsrc", 0, "rfb src element");
-
-GST_BOILERPLATE_FULL (GstRfbSrc, gst_rfb_src, GstPushSrc, GST_TYPE_PUSH_SRC,
-    DEBUG_INIT);
+GST_BOILERPLATE (GstRfbSrc, gst_rfb_src, GstPushSrc, GST_TYPE_PUSH_SRC);
 
 static void
 gst_rfb_src_base_init (gpointer g_class)
@@ -111,6 +111,9 @@ gst_rfb_src_class_init (GstRfbSrcClass * klass)
   GObjectClass *gobject_class;
   GstBaseSrcClass *gstbasesrc_class;
   GstPushSrcClass *gstpushsrc_class;
+
+  GST_DEBUG_CATEGORY_INIT (rfbsrc_debug, "rfbsrc", 0, "rfb src element");
+  GST_DEBUG_CATEGORY_INIT (rfbdecoder_debug, "rfbdecoder", 0, "rfb decoder");
 
   gobject_class = (GObjectClass *) klass;
   gstbasesrc_class = (GstBaseSrcClass *) klass;
@@ -231,18 +234,7 @@ gst_rfb_property_set_version (GstRfbSrc * src, gchar * value)
 static gchar *
 gst_rfb_property_get_version (GstRfbSrc * src)
 {
-  gchar *version = g_malloc (8);
-  gchar *major = g_strdup_printf ("%d", src->version_major);
-  gchar *minor = g_strdup_printf ("%d", src->version_minor);
-
-  g_stpcpy (version, major);
-  g_strlcat (version, ".", 8);
-  g_strlcat (version, minor, 8);
-
-  g_free (major);
-  g_free (minor);
-
-  return version;
+  return g_strdup_printf ("%d.%d", src->version_major, src->version_minor);
 }
 
 static void
@@ -349,13 +341,14 @@ gst_rfb_src_start (GstBaseSrc * bsrc)
   GstRfbSrc *src = GST_RFB_SRC (bsrc);
   RfbDecoder *decoder;
   GstCaps *caps;
+  guint32 red_mask, green_mask, blue_mask;
 
   decoder = src->decoder;
 
   GST_DEBUG_OBJECT (src, "connecting to host %s on port %d",
       src->host, src->port);
   if (!rfb_decoder_connect_tcp (decoder, src->host, src->port)) {
-    GST_ELEMENT_ERROR (src, LIBRARY, INIT, (NULL),
+    GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
         ("Could not connect to host %s on port %d", src->host, src->port));
     rfb_decoder_free (decoder);
     return FALSE;
@@ -388,10 +381,20 @@ gst_rfb_src_start (GstBaseSrc * bsrc)
 
   caps =
       gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD (bsrc)));
-  gst_caps_set_simple (caps, "width", G_TYPE_INT, decoder->rect_width, "height",
-      G_TYPE_INT, decoder->rect_height, "bpp", G_TYPE_INT, decoder->bpp,
-      "depth", G_TYPE_INT, decoder->depth, "endianness", G_TYPE_INT,
-      (decoder->big_endian ? 1234 : 4321), NULL);
+
+  red_mask = decoder->red_max << decoder->red_shift;
+  green_mask = decoder->green_max << decoder->green_shift;
+  blue_mask = decoder->blue_max << decoder->blue_shift;
+
+  gst_caps_set_simple (caps, "width", G_TYPE_INT, decoder->rect_width,
+      "height", G_TYPE_INT, decoder->rect_height,
+      "bpp", G_TYPE_INT, decoder->bpp,
+      "depth", G_TYPE_INT, decoder->depth,
+      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
+      "red_mask", G_TYPE_INT, GST_READ_UINT32_BE (&red_mask),
+      "green_mask", G_TYPE_INT, GST_READ_UINT32_BE (&green_mask),
+      "blue_mask", G_TYPE_INT, GST_READ_UINT32_BE (&blue_mask), NULL);
+
   gst_pad_set_caps (GST_BASE_SRC_PAD (bsrc), caps);
   gst_caps_unref (caps);
 
@@ -462,6 +465,9 @@ gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event)
   gint button;
   GstStructure *structure;
   const gchar *event_type;
+  gboolean key_event, key_press;
+
+  key_event = FALSE;
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_NAVIGATION:
@@ -472,33 +478,49 @@ gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event)
 
       structure = event->structure;
       event_type = gst_structure_get_string (structure, "event");
+
+      if (strcmp (event_type, "key-press") == 0) {
+        key_event = key_press = TRUE;
+      } else if (strcmp (event_type, "key-release") == 0) {
+        key_event = TRUE;
+        key_press = FALSE;
+      }
+
+      if (key_event) {
+#ifdef HAVE_X11
+        const gchar *key;
+        KeySym key_sym;
+
+        key = gst_structure_get_string (structure, "key");
+        key_sym = XStringToKeysym (key);
+
+        if (key_sym != NoSymbol)
+          rfb_decoder_send_key_event (src->decoder, key_sym, key_press);
+#endif
+        break;
+      }
+
       gst_structure_get_double (structure, "pointer_x", &x);
       gst_structure_get_double (structure, "pointer_y", &y);
-      button = 0;
+      gst_structure_get_int (structure, "button", &button);
 
       /* we need to take care of the offset's */
       x += src->decoder->offset_x;
       y += src->decoder->offset_y;
 
-      if (strcmp (event_type, "key-press") == 0) {
-        const gchar *key = gst_structure_get_string (structure, "key");
-
-        GST_LOG_OBJECT (src, "sending key event for key %d", key[0]);
-        rfb_decoder_send_key_event (src->decoder, key[0], 1);
-        rfb_decoder_send_key_event (src->decoder, key[0], 0);
-      } else if (strcmp (event_type, "mouse-move") == 0) {
+      if (strcmp (event_type, "mouse-move") == 0) {
         GST_LOG_OBJECT (src, "sending mouse-move event "
             "button_mask=%d, x=%d, y=%d", src->button_mask, (gint) x, (gint) y);
         rfb_decoder_send_pointer_event (src->decoder, src->button_mask,
             (gint) x, (gint) y);
       } else if (strcmp (event_type, "mouse-button-release") == 0) {
-        src->button_mask &= ~(1 << button);
+        src->button_mask &= ~(1 << (button - 1));
         GST_LOG_OBJECT (src, "sending mouse-button-release event "
             "button_mask=%d, x=%d, y=%d", src->button_mask, (gint) x, (gint) y);
         rfb_decoder_send_pointer_event (src->decoder, src->button_mask,
             (gint) x, (gint) y);
       } else if (strcmp (event_type, "mouse-button-press") == 0) {
-        src->button_mask |= (1 << button);
+        src->button_mask |= (1 << (button - 1));
         GST_LOG_OBJECT (src, "sending mouse-button-press event "
             "button_mask=%d, x=%d, y=%d", src->button_mask, (gint) x, (gint) y);
         rfb_decoder_send_pointer_event (src->decoder, src->button_mask,

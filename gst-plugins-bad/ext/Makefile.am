@@ -10,6 +10,12 @@ else
 AMRWB_DIR =
 endif
 
+if USE_APEXSINK
+APEXSINK_DIR = apexsink
+else
+APEXSINK_DIR =
+endif
+
 # if USE_ARTS
 # ARTS_DIR=arts
 # else
@@ -44,6 +50,12 @@ if USE_CDAUDIO
 CDAUDIO_DIR=cdaudio
 else
 CDAUDIO_DIR=
+endif
+
+if USE_CELT
+CELT_DIR=celt
+else
+CELT_DIR=
 endif
 
 if USE_DC1394
@@ -122,6 +134,12 @@ if USE_JACK
 JACK_DIR=jack
 else
 JACK_DIR=
+endif
+
+if USE_JP2K
+JP2K_DIR = jp2k
+else
+JP2K_DIR =
 endif
 
 if USE_LADSPA
@@ -222,6 +240,12 @@ TIMIDITY_DIR=
 endif
 endif
 
+if USE_TWOLAME
+TWOLAME_DIR=twolame
+else
+TWOLAME_DIR=
+endif
+
 # if USE_POLYP
 # POLYP_DIR=polyp
 # else
@@ -303,12 +327,14 @@ endif
 SUBDIRS=\
 	$(ALSASPDIF_DIR) \
 	$(AMRWB_DIR) \
+	$(APEXSINK_DIR) \
 	$(ARTS_DIR) \
 	$(ARTSC_DIR) \
 	$(AUDIOFILE_DIR) \
 	$(AUDIORESAMPLE_DIR) \
 	$(BZ2_DIR) \
 	$(CDAUDIO_DIR) \
+	$(CELT_DIR) \
 	$(DC1394_DIR) \
 	$(DIRAC_DIR) \
 	$(DIRECTFB_DIR) \
@@ -322,6 +348,7 @@ SUBDIRS=\
 	$(HERMES_DIR) \
 	$(IVORBIS_DIR) \
 	$(JACK_DIR) \
+	$(JP2K_DIR) \
 	$(LADSPA_DIR) \
 	$(LCS_DIR) \
 	$(LIBFAME_DIR) \
@@ -347,6 +374,7 @@ SUBDIRS=\
 	$(TARKIN_DIR) \
 	$(THEORA_DIR) \
 	$(TIMIDITY_DIR) \
+	$(TWOLAME_DIR) \
 	$(X264_DIR) \
 	$(XINE_DIR) \
 	$(XVID_DIR)
@@ -354,8 +382,10 @@ SUBDIRS=\
 DIST_SUBDIRS = \
 	alsaspdif \
 	amrwb \
+	apexsink \
 	bz2 \
 	cdaudio \
+	celt \
 	dc1394 \
 	dirac \
 	directfb \
@@ -365,6 +395,7 @@ DIST_SUBDIRS = \
 	ivorbis \
 	ladspa \
 	jack \
+	jp2k \
 	libmms \
 	dts \
 	divx \
@@ -386,5 +417,6 @@ DIST_SUBDIRS = \
 	swfdec \
 	theora \
 	timidity \
+	twolame \
 	x264 \
 	xvid
