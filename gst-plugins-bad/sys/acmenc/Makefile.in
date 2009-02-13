@@ -86,10 +86,10 @@ am__installdirs = "$(DESTDIR)$(plugindir)"
 pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libgstacmencsink_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libgstacmenc_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_libgstacmencsink_la_OBJECTS = libgstacmencsink_la-acmenc.lo
-libgstacmencsink_la_OBJECTS = $(am_libgstacmencsink_la_OBJECTS)
+am_libgstacmenc_la_OBJECTS = libgstacmenc_la-acmenc.lo
+libgstacmenc_la_OBJECTS = $(am_libgstacmenc_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -101,8 +101,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstacmencsink_la_SOURCES)
-DIST_SOURCES = $(libgstacmencsink_la_SOURCES)
+SOURCES = $(libgstacmenc_la_SOURCES)
+DIST_SOURCES = $(libgstacmenc_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -669,16 +669,16 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-plugin_LTLIBRARIES = libgstacmencsink.la
-libgstacmencsink_la_SOURCES = acmenc.c
-libgstacmencsink_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+plugin_LTLIBRARIES = libgstacmenc.la
+libgstacmenc_la_SOURCES = acmenc.c
+libgstacmenc_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS)
 
-libgstacmencsink_la_LIBADD = $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) \
+libgstacmenc_la_LIBADD = $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) \
 	-lgstriff-$(GST_MAJORMINOR) -lmsacm32
 
-libgstacmencsink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstacmencsink_la_LIBTOOLFLAGS = --tag=disable-static
+libgstacmenc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstacmenc_la_LIBTOOLFLAGS = --tag=disable-static
 all: all-am
 
 .SUFFIXES:
@@ -739,8 +739,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstacmencsink.la: $(libgstacmencsink_la_OBJECTS) $(libgstacmencsink_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstacmencsink_la_LDFLAGS) $(libgstacmencsink_la_OBJECTS) $(libgstacmencsink_la_LIBADD) $(LIBS)
+libgstacmenc.la: $(libgstacmenc_la_OBJECTS) $(libgstacmenc_la_DEPENDENCIES) 
+	$(LINK) -rpath $(plugindir) $(libgstacmenc_la_LDFLAGS) $(libgstacmenc_la_OBJECTS) $(libgstacmenc_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -748,7 +748,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstacmencsink_la-acmenc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstacmenc_la-acmenc.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -771,12 +771,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libgstacmencsink_la-acmenc.lo: acmenc.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstacmencsink_la_CFLAGS) $(CFLAGS) -MT libgstacmencsink_la-acmenc.lo -MD -MP -MF "$(DEPDIR)/libgstacmencsink_la-acmenc.Tpo" -c -o libgstacmencsink_la-acmenc.lo `test -f 'acmenc.c' || echo '$(srcdir)/'`acmenc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstacmencsink_la-acmenc.Tpo" "$(DEPDIR)/libgstacmencsink_la-acmenc.Plo"; else rm -f "$(DEPDIR)/libgstacmencsink_la-acmenc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acmenc.c' object='libgstacmencsink_la-acmenc.lo' libtool=yes @AMDEPBACKSLASH@
+libgstacmenc_la-acmenc.lo: acmenc.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstacmenc_la_CFLAGS) $(CFLAGS) -MT libgstacmenc_la-acmenc.lo -MD -MP -MF "$(DEPDIR)/libgstacmenc_la-acmenc.Tpo" -c -o libgstacmenc_la-acmenc.lo `test -f 'acmenc.c' || echo '$(srcdir)/'`acmenc.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstacmenc_la-acmenc.Tpo" "$(DEPDIR)/libgstacmenc_la-acmenc.Plo"; else rm -f "$(DEPDIR)/libgstacmenc_la-acmenc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acmenc.c' object='libgstacmenc_la-acmenc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstacmencsink_la_CFLAGS) $(CFLAGS) -c -o libgstacmencsink_la-acmenc.lo `test -f 'acmenc.c' || echo '$(srcdir)/'`acmenc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstacmenc_la_CFLAGS) $(CFLAGS) -c -o libgstacmenc_la-acmenc.lo `test -f 'acmenc.c' || echo '$(srcdir)/'`acmenc.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
