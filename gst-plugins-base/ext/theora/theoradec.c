@@ -21,20 +21,16 @@
  * SECTION:element-theoradec
  * @see_also: theoraenc, oggdemux
  *
- * <refsect2>
- * <para>
  * This element decodes theora streams into raw video
  * <ulink url="http://www.theora.org/">Theora</ulink> is a royalty-free
  * video codec maintained by the <ulink url="http://www.xiph.org/">Xiph.org
  * Foundation</ulink>, based on the VP3 codec.
- * </para>
- * <para>
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipeline</title>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! xvimagesink
- * </programlisting>
- * This example pipeline will decode an ogg stream and decodes the theora video. Refer to
+ * ]| This example pipeline will decode an ogg stream and decodes the theora video. Refer to
  * the theoraenc example to create the ogg file.
  * </refsect2>
  *
@@ -90,6 +86,7 @@ static void theora_dec_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 
 static gboolean theora_dec_sink_event (GstPad * pad, GstEvent * event);
+static gboolean theora_dec_setcaps (GstPad * pad, GstCaps * caps);
 static GstFlowReturn theora_dec_chain (GstPad * pad, GstBuffer * buffer);
 static GstStateChangeReturn theora_dec_change_state (GstElement * element,
     GstStateChange transition);
@@ -150,6 +147,7 @@ gst_theora_dec_init (GstTheoraDec * dec, GstTheoraDecClass * g_class)
       gst_pad_new_from_static_template (&theora_dec_sink_factory, "sink");
   gst_pad_set_query_function (dec->sinkpad, theora_dec_sink_query);
   gst_pad_set_event_function (dec->sinkpad, theora_dec_sink_event);
+  gst_pad_set_setcaps_function (dec->sinkpad, theora_dec_setcaps);
   gst_pad_set_chain_function (dec->sinkpad, theora_dec_chain);
   gst_element_add_pad (GST_ELEMENT (dec), dec->sinkpad);
 
@@ -166,17 +164,18 @@ gst_theora_dec_init (GstTheoraDec * dec, GstTheoraDecClass * g_class)
   dec->gather = NULL;
   dec->decode = NULL;
   dec->queued = NULL;
+  dec->pendingevents = NULL;
 }
 
 static void
 gst_theora_dec_reset (GstTheoraDec * dec)
 {
   dec->need_keyframe = TRUE;
-  dec->sent_newsegment = FALSE;
   dec->last_timestamp = -1;
   dec->granulepos = -1;
   dec->discont = TRUE;
   dec->frame_nr = -1;
+  dec->seqnum = gst_util_seqnum_next ();
   gst_segment_init (&dec->segment, GST_FORMAT_TIME);
 
   GST_OBJECT_LOCK (dec);
@@ -193,6 +192,9 @@ gst_theora_dec_reset (GstTheoraDec * dec)
   g_list_foreach (dec->decode, (GFunc) gst_mini_object_unref, NULL);
   g_list_free (dec->decode);
   dec->decode = NULL;
+  g_list_foreach (dec->pendingevents, (GFunc) gst_mini_object_unref, NULL);
+  g_list_free (dec->pendingevents);
+  dec->pendingevents = NULL;
 
   if (dec->tags) {
     gst_tag_list_free (dec->tags);
@@ -601,9 +603,11 @@ theora_dec_src_event (GstPad * pad, GstEvent * event)
       GstSeekType cur_type, stop_type;
       gint64 cur, stop;
       gint64 tcur, tstop;
+      guint32 seqnum;
 
       gst_event_parse_seek (event, &rate, &format, &flags, &cur_type, &cur,
           &stop_type, &stop);
+      seqnum = gst_event_get_seqnum (event);
       gst_event_unref (event);
 
       /* we have to ask our peer to seek to time here as we know
@@ -621,6 +625,7 @@ theora_dec_src_event (GstPad * pad, GstEvent * event)
       /* then seek with time on the peer */
       real_seek = gst_event_new_seek (rate, GST_FORMAT_TIME,
           flags, cur_type, tcur, stop_type, tstop);
+      gst_event_set_seqnum (real_seek, seqnum);
 
       res = gst_pad_push_event (dec->sinkpad, real_seek);
       break;
@@ -702,13 +707,13 @@ theora_dec_sink_event (GstPad * pad, GstEvent * event)
       /* now configure the values */
       gst_segment_set_newsegment_full (&dec->segment, update,
           rate, arate, format, start, stop, time);
+      dec->seqnum = gst_event_get_seqnum (event);
 
       /* We don't forward this unless/until the decoder is initialised */
       if (dec->have_header) {
         ret = gst_pad_push_event (dec->srcpad, event);
-        dec->sent_newsegment = TRUE;
       } else {
-        gst_event_unref (event);
+        dec->pendingevents = g_list_append (dec->pendingevents, event);
         ret = TRUE;
       }
       break;
@@ -729,6 +734,25 @@ newseg_wrong_format:
     gst_event_unref (event);
     goto done;
   }
+}
+
+static gboolean
+theora_dec_setcaps (GstPad * pad, GstCaps * caps)
+{
+  GstTheoraDec *dec;
+  GstStructure *s;
+
+  dec = GST_THEORA_DEC (gst_pad_get_parent (pad));
+
+  s = gst_caps_get_structure (caps, 0);
+
+  /* parse the par, this overrides the encoded par */
+  dec->have_par = gst_structure_get_fraction (s, "pixel-aspect-ratio",
+      &dec->par_num, &dec->par_den);
+
+  gst_object_unref (dec);
+
+  return TRUE;
 }
 
 static GstFlowReturn
@@ -779,9 +803,8 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
   GstCaps *caps;
   gint par_num, par_den;
   GstFlowReturn ret = GST_FLOW_OK;
-  gboolean eret;
-  GstEvent *event;
   guint32 bitstream_version;
+  GList *walk;
 
   GST_DEBUG_OBJECT (dec, "fps %d/%d, PAR %d/%d",
       dec->info.fps_numerator, dec->info.fps_denominator,
@@ -793,8 +816,16 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
    * x:0 for other x isn't technically allowed, but it's seen in the wild and
    * is reasonable to treat the same. 
    */
-  par_num = dec->info.aspect_numerator;
-  par_den = dec->info.aspect_denominator;
+  if (dec->have_par) {
+    /* we had a par on the sink caps, override the encoded par */
+    GST_DEBUG_OBJECT (dec, "overriding with input PAR");
+    par_num = dec->par_num;
+    par_den = dec->par_den;
+  } else {
+    /* take encoded par */
+    par_num = dec->info.aspect_numerator;
+    par_den = dec->info.aspect_denominator;
+  }
   if (par_den == 0) {
     par_num = par_den = 1;
   }
@@ -861,15 +892,12 @@ theora_handle_type_packet (GstTheoraDec * dec, ogg_packet * packet)
   gst_caps_unref (caps);
 
   dec->have_header = TRUE;
-  if (!dec->sent_newsegment) {
-    GST_DEBUG_OBJECT (dec, "Sending newsegment event");
 
-    event = gst_event_new_new_segment_full (FALSE,
-        dec->segment.rate, dec->segment.applied_rate,
-        dec->segment.format, dec->segment.start, dec->segment.stop,
-        dec->segment.time);
-    eret = gst_pad_push_event (dec->srcpad, event);
-    dec->sent_newsegment = TRUE;
+  if (dec->pendingevents) {
+    for (walk = dec->pendingevents; walk; walk = g_list_next (walk))
+      gst_pad_push_event (dec->srcpad, GST_EVENT_CAST (walk->data));
+    g_list_free (dec->pendingevents);
+    dec->pendingevents = NULL;
   }
 
   if (dec->tags) {
@@ -1241,6 +1269,8 @@ theora_dec_decode_buffer (GstTheoraDec * dec, GstBuffer * buf)
   /* EOS does not matter for the decoder */
   packet.e_o_s = 0;
 
+  GST_LOG_OBJECT (dec, "decode buffer of size %ld", packet.bytes);
+
   if (dec->have_header) {
     if (packet.granulepos != -1) {
       dec->granulepos = packet.granulepos;
@@ -1487,6 +1517,7 @@ theora_dec_change_state (GstElement * element, GstStateChange transition)
       theora_comment_init (&dec->comment);
       GST_DEBUG_OBJECT (dec, "Setting have_header to FALSE in READY->PAUSED");
       dec->have_header = FALSE;
+      dec->have_par = FALSE;
       gst_theora_dec_reset (dec);
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:

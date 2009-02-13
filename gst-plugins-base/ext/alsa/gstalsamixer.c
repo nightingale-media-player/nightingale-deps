@@ -19,19 +19,13 @@
 
 /**
  * SECTION:element-alsamixer
- * @short_description: control properties of an audio device
  * @see_also: alsasink, alsasrc
  *
- * <refsect2>
- * <para>
  * This element controls various aspects such as the volume and balance
  * of an audio device using the ALSA api.
- * </para>
- * <para>
+ *
  * The application should query and use the interfaces provided by this 
  * element to control the device.
- * </para>
- * </refsect2>
  *
  * Last reviewed on 2006-03-01 (0.10.4)
  */
@@ -165,7 +159,29 @@ gst_alsa_mixer_find_master_mixer (GstAlsaMixer * mixer, snd_mixer_t * handle)
     element = snd_mixer_elem_next (element);
   }
 
-  /* If not, check if we have a playback mixer with both volume and switch */
+  /* If not, check if we have a playback mixer labelled as 'Speaker' */
+  element = snd_mixer_first_elem (handle);
+  for (i = 0; i < count; i++) {
+    if (snd_mixer_selem_has_playback_volume (element) &&
+        strcmp (snd_mixer_selem_get_name (element), "Speaker") == 0) {
+      return element;
+    }
+    element = snd_mixer_elem_next (element);
+  }
+
+  /* If not, check if we have a playback mixer with both volume and switch that
+   * is not mono */
+  element = snd_mixer_first_elem (handle);
+  for (i = 0; i < count; i++) {
+    if (snd_mixer_selem_has_playback_volume (element) &&
+        snd_mixer_selem_has_playback_switch (element) &&
+        !snd_mixer_selem_is_playback_mono (element)) {
+      return element;
+    }
+    element = snd_mixer_elem_next (element);
+  }
+
+  /* If not, check if we have any playback mixer with both volume and switch */
   element = snd_mixer_first_elem (handle);
   for (i = 0; i < count; i++) {
     if (snd_mixer_selem_has_playback_volume (element) &&

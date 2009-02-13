@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -49,7 +50,9 @@ enum                <a class="link" href="gst-plugins-base-plugins-videotestsrc.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videotestsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -61,16 +64,56 @@ enum                <a class="link" href="gst-plugins-base-plugins-videotestsrc.
 <a name="gst-plugins-base-plugins-videotestsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--pattern" title='The "pattern" property'>pattern</a>"                  <a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcPattern" title="enum GstVideoTestSrcPattern">GstVideoTestSrcPattern</a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         gint64                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--peer-alloc" title='The "peer-alloc" property'>peer-alloc</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--colorspec" title='The "colorspec" property'>colorspec</a>"                GstVideoTestSrcColorSpec  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--k0" title='The "k0" property'>k0</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kt" title='The "kt" property'>kt</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kt2" title='The "kt2" property'>kt2</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kx" title='The "kx" property'>kx</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kx2" title='The "kx2" property'>kx2</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kxt" title='The "kxt" property'>kxt</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kxy" title='The "kxy" property'>kxy</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--ky" title='The "ky" property'>ky</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--ky2" title='The "ky2" property'>ky2</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--kyt" title='The "kyt" property'>kyt</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--xoffset" title='The "xoffset" property'>xoffset</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrc--yoffset" title='The "yoffset" property'>yoffset</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videotestsrc.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2650286"></a><h3>Example launch line</h3>
 <p>
 The videotestsrc element is used to produce test video data in a wide variaty
 of formats. The video test data produced can be controlled with the "pattern"
@@ -78,23 +121,24 @@ property.
 </p>
 <p>
 </p>
-<pre class="programlisting">
-gst-launch -v videotestsrc pattern=snow ! ximagesink
-</pre>
-<p>
-Shows random noise in an X window.
-</p>
-</div>
 <div class="refsect2" lang="en">
-<a name="id2650263"></a><h3>Element Information</h3>
+<a name="id2803665"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v videotestsrc pattern=snow ! ximagesink
+</pre></div> Shows random noise in an X window.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2803652"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-videotestsrc.html#plugin-videotestsrc">videotestsrc</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-videotestsrc.html#plugin-videotestsrc">videotestsrc</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -106,6 +150,10 @@ Shows random noise in an X window.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2803574"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -240,6 +288,7 @@ Shows random noise in an X window.
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -271,7 +320,9 @@ Opaque data structure.</p>
   GST_VIDEO_TEST_SRC_CHECKERS4,
   GST_VIDEO_TEST_SRC_CHECKERS8,
   GST_VIDEO_TEST_SRC_CIRCULAR,
-  GST_VIDEO_TEST_SRC_BLINK
+  GST_VIDEO_TEST_SRC_BLINK,
+  GST_VIDEO_TEST_SRC_SMPTE75,
+  GST_VIDEO_TEST_SRC_ZONE_PLATE
 } GstVideoTestSrcPattern;
 </pre>
 <p>
@@ -347,6 +398,16 @@ The test pattern to produce.</p>
 <td> Alternate between black and white
 </td>
 </tr>
+<tr>
+<td><p><a name="GST-VIDEO-TEST-SRC-SMPTE75:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_SMPTE75</code></span></p></td>
+<td> SMPTE test pattern (75% color bars)
+</td>
+</tr>
+<tr>
+<td><p><a name="GST-VIDEO-TEST-SRC-ZONE-PLATE:CAPS"></a><span class="term"><code class="literal">GST_VIDEO_TEST_SRC_ZONE_PLATE</code></span></p></td>
+<td> Zone plate
+</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -362,16 +423,144 @@ The test pattern to produce.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoTestSrc--timestamp-offset"></a><h3>The <code class="literal">"timestamp-offset"</code> property</h3>
-<pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
+<pre class="programlisting">  "timestamp-offset"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write</pre>
 <p>An offset added to timestamps set on buffers (in ns).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoTestSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
-<pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
+<pre class="programlisting">  "is-live"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to act as a live source.</p>
 <p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--peer-alloc"></a><h3>The <code class="literal">"peer-alloc"</code> property</h3>
+<pre class="programlisting">  "peer-alloc"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Ask the peer to allocate an output buffer.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--colorspec"></a><h3>The <code class="literal">"colorspec"</code> property</h3>
+<pre class="programlisting">  "colorspec"                GstVideoTestSrcColorSpec  : Read / Write</pre>
+<p>Generate video in the given color specification.</p>
+<p>Default value: ITU-R Rec. BT.601</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--k0"></a><h3>The <code class="literal">"k0"</code> property</h3>
+<pre class="programlisting">  "k0"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate zero order phase, for generating plain fields or phase offsets.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kt"></a><h3>The <code class="literal">"kt"</code> property</h3>
+<pre class="programlisting">  "kt"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 1st order t phase, for generating phase rotation as a function of time.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kt2"></a><h3>The <code class="literal">"kt2"</code> property</h3>
+<pre class="programlisting">  "kt2"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 2nd order t phase, t*t/256 cycles per picture.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kx"></a><h3>The <code class="literal">"kx"</code> property</h3>
+<pre class="programlisting">  "kx"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 1st order x phase, for generating constant horizontal frequencies.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kx2"></a><h3>The <code class="literal">"kx2"</code> property</h3>
+<pre class="programlisting">  "kx2"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 2nd order x phase, normalised to kx2/256 cycles per horizontal pixel at width/2 from origin.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kxt"></a><h3>The <code class="literal">"kxt"</code> property</h3>
+<pre class="programlisting">  "kxt"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate x*t product phase, normalised to kxy/256 cycles per vertical pixel at width/2 from origin.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kxy"></a><h3>The <code class="literal">"kxy"</code> property</h3>
+<pre class="programlisting">  "kxy"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate x*t product phase.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--ky"></a><h3>The <code class="literal">"ky"</code> property</h3>
+<pre class="programlisting">  "ky"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 1st order y phase, for generating contant vertical frequencies.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--ky2"></a><h3>The <code class="literal">"ky2"</code> property</h3>
+<pre class="programlisting">  "ky2"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 2nd order y phase, normailsed to ky2/256 cycles per vertical pixel at height/2 from origin.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--kyt"></a><h3>The <code class="literal">"kyt"</code> property</h3>
+<pre class="programlisting">  "kyt"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate y*t product phase.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--xoffset"></a><h3>The <code class="literal">"xoffset"</code> property</h3>
+<pre class="programlisting">  "xoffset"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 2nd order products x offset.</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstVideoTestSrc--yoffset"></a><h3>The <code class="literal">"yoffset"</code> property</h3>
+<pre class="programlisting">  "yoffset"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Zoneplate 2nd order products y offset.</p>
+<p>Default value: 0</p>
 </div>
 </div>
 </div>

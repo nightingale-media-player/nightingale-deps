@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -49,7 +50,9 @@ enum                <a class="link" href="gst-plugins-base-plugins-audiotestsrc.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audiotestsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -59,53 +62,62 @@ enum                <a class="link" href="gst-plugins-base-plugins-audiotestsrc.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audiotestsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--freq" title='The "freq" property'>freq</a>"                     gdouble               : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--samplesperbuffer" title='The "samplesperbuffer" property'>samplesperbuffer</a>"         gint                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         gint64                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--freq" title='The "freq" property'>freq</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--is-live" title='The "is-live" property'>is-live</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--samplesperbuffer" title='The "samplesperbuffer" property'>samplesperbuffer</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--volume" title='The "volume" property'>volume</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--wave" title='The "wave" property'>wave</a>"                     <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave" title="enum GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--can-activate-pull" title='The "can-activate-pull" property'>can-activate-pull</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrc--can-activate-push" title='The "can-activate-push" property'>can-activate-push</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audiotestsrc.description"></a><h2>Description</h2>
 <p>
+AudioTestSrc can be used to generate basic audio signals. It support several
+different waveforms and allows to set the base frequency and volume.
+</p>
+<p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2617737"></a><h3>Example launch line</h3>
-<p>
-AudioTestSrc can be used to generate basic audio signals. It support several
-different waveforms and allows you to set the base frequency and volume.
-</p>
-<p>
-</p>
-<pre class="programlisting">
+<a name="id2766137"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc ! audioconvert ! alsasink
-</pre>
-<p>
-This pipeline produces a sine with default frequency (mid-C) and volume.
-</p>
-<p>
-</p>
-<pre class="programlisting">
+</pre></div> This pipeline produces a sine with default frequency, 440 Hz, and the
+default volume, 0.8 (relative to a maximum 1.0).
+<div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc wave=2 freq=200 ! audioconvert ! tee name=t ! queue ! alsasink t. ! queue ! libvisual_lv_scope ! ffmpegcolorspace ! xvimagesink
-</pre>
-<p>
-In this example a saw wave is generated. The wave is shown using a
+</pre></div> In this example a saw wave is generated. The wave is shown using a
 scope visualizer from libvisual, allowing you to visually verify that
 the saw wave is correct.
-</p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2617778"></a><h3>Element Information</h3>
+<a name="id2766170"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-audiotestsrc.html#plugin-audiotestsrc">audiotestsrc</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-audiotestsrc.html#plugin-audiotestsrc">audiotestsrc</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -117,6 +129,10 @@ the saw wave is correct.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2766232"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -147,6 +163,7 @@ the saw wave is correct.
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -173,7 +190,8 @@ audiotestsrc object structure.</p>
   GST_AUDIO_TEST_SRC_WAVE_SILENCE,
   GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE,
   GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE,
-  GST_AUDIO_TEST_SRC_WAVE_SINE_TAB
+  GST_AUDIO_TEST_SRC_WAVE_SINE_TAB,
+  GST_AUDIO_TEST_SRC_WAVE_TICKS
 } GstAudioTestSrcWave; 
 </pre>
 <p>
@@ -224,6 +242,11 @@ Different types of supported sound waves.</p>
 <td> sine wave using a table
 </td>
 </tr>
+<tr>
+<td><p><a name="GST-AUDIO-TEST-SRC-WAVE-TICKS:CAPS"></a><span class="term"><code class="literal">GST_AUDIO_TEST_SRC_WAVE_TICKS</code></span></p></td>
+<td> periodic ticks
+</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -232,7 +255,9 @@ Different types of supported sound waves.</p>
 <a name="gst-plugins-base-plugins-audiotestsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstAudioTestSrc--freq"></a><h3>The <code class="literal">"freq"</code> property</h3>
-<pre class="programlisting">  "freq"                     gdouble               : Read / Write</pre>
+<pre class="programlisting">  "freq"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>Frequency of test signal.</p>
 <p>Allowed values: [0,20000]</p>
 <p>Default value: 440</p>
@@ -240,14 +265,18 @@ Different types of supported sound waves.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioTestSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
-<pre class="programlisting">  "is-live"                  gboolean              : Read / Write</pre>
+<pre class="programlisting">  "is-live"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Whether to act as a live source.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioTestSrc--samplesperbuffer"></a><h3>The <code class="literal">"samplesperbuffer"</code> property</h3>
-<pre class="programlisting">  "samplesperbuffer"         gint                  : Read / Write</pre>
+<pre class="programlisting">  "samplesperbuffer"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Number of samples in each outgoing buffer.</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 1024</p>
@@ -255,14 +284,18 @@ Different types of supported sound waves.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioTestSrc--timestamp-offset"></a><h3>The <code class="literal">"timestamp-offset"</code> property</h3>
-<pre class="programlisting">  "timestamp-offset"         gint64                : Read / Write</pre>
+<pre class="programlisting">  "timestamp-offset"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write</pre>
 <p>An offset added to timestamps set on buffers (in ns).</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAudioTestSrc--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
-<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<pre class="programlisting">  "volume"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>Volume of test signal.</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 0.8</p>
@@ -273,6 +306,24 @@ Different types of supported sound waves.</p>
 <pre class="programlisting">  "wave"                     <a class="link" href="gst-plugins-base-plugins-audiotestsrc.html#GstAudioTestSrcWave" title="enum GstAudioTestSrcWave">GstAudioTestSrcWave</a>   : Read / Write</pre>
 <p>Oscillator waveform.</p>
 <p>Default value: Sine</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAudioTestSrc--can-activate-pull"></a><h3>The <code class="literal">"can-activate-pull"</code> property</h3>
+<pre class="programlisting">  "can-activate-pull"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Can activate in pull mode.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAudioTestSrc--can-activate-push"></a><h3>The <code class="literal">"can-activate-push"</code> property</h3>
+<pre class="programlisting">  "can-activate-push"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Can activate in push mode.</p>
+<p>Default value: TRUE</p>
 </div>
 </div>
 </div>

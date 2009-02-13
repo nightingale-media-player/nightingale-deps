@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -46,7 +47,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gdpdepay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstGDPDepay
@@ -55,32 +58,29 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gdpdepay.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2577528"></a><p>
 This element depayloads GStreamer Data Protocol buffers back to deserialized
 buffers and events.
 </p>
 <p>
 </p>
-<pre class="programlisting">
-gst-launch -v -m filesrc location=test.gdp ! gdpdepay ! xvimagesink
-</pre>
-<p>
-This pipeline plays back a serialized video stream as created in the
-example for gdppay.
-</p>
-</div>
 <div class="refsect2" lang="en">
-<a name="id2611144"></a><h3>Element Information</h3>
+<a name="id2757795"></a><div class="informalexample"><pre class="programlisting">
+gst-launch -v -m filesrc location=test.gdp ! gdpdepay ! xvimagesink
+</pre></div> This pipeline plays back a serialized video stream as created in the
+example for gdppay.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2735830"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-gdp.html#plugin-gdp">gdp</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-gdp.html#plugin-gdp">gdp</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -92,6 +92,10 @@ example for gdppay.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2725367"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -134,6 +138,7 @@ example for gdppay.
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -35,7 +36,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-giostreamsrc.top_of_page"></a>giostreamsrc</span></h2>
-<p>giostreamsrc — Reads data from a GIO GInputStream</p>
+<p>giostreamsrc — Read from any GIO stream</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -48,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giostreamsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -59,27 +62,37 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giostreamsrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-giostreamsrc.html#GstGioStreamSrc--stream" title='The "stream" property'>stream</a>"                   GInputStream*         : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-giostreamsrc.html#GstGioStreamSrc--stream" title='The "stream" property'>stream</a>"                   <a
+href="/usr/share/gtk-doc/html/gio/GInputStream.html"
+>GInputStream</a>*         : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giostreamsrc.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2627458"></a><h3>Example code</h3>
-<p>
-This plugin reads data from a custom GIO <span class="type">GInputStream</span>.
+This plugin reads data from a custom GIO <a
+href="/usr/share/gtk-doc/html/gio/GInputStream.html"
+><span class="type">GInputStream</span></a>.
 </p>
 <p>
 It can, for example, be used to read data from memory with a
-<span class="type">GMemoryInputStream</span> or to read from a file with a
-<span class="type">GFileInputStream</span>.
+<a
+href="/usr/share/gtk-doc/html/gio/GMemoryInputStream.html"
+><span class="type">GMemoryInputStream</span></a> or to read from a file with a
+<a
+href="/usr/share/gtk-doc/html/gio/GFileInputStream.html"
+><span class="type">GFileInputStream</span></a>.
 </p>
 <p>
-The following example reads data from a <span class="type">GMemoryOutputStream</span>.
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2778787"></a><h3>Example code</h3>
+<p>
+The following example reads data from a <a
+href="/usr/share/gtk-doc/html/gio/GMemoryOutputStream.html"
+><span class="type">GMemoryOutputStream</span></a>.
+</p>
+<div class="informalexample"><pre class="programlisting">
 
 #include &lt;gst/gst.h&gt;
 #include &lt;gio/gio.h&gt;
@@ -104,20 +117,22 @@ g_object_set (G_OBJECT (src), "stream", stream, NULL);
 
 ...
 
-</pre>
+</pre></div>
 <p>
 </p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2627521"></a><h3>Element Information</h3>
+<a name="id2778824"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-gio.html#plugin-gio">gio</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-gio.html#plugin-gio">gio</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -129,6 +144,10 @@ g_object_set (G_OBJECT (src), "stream", stream, NULL);
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2778886"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -151,6 +170,7 @@ g_object_set (G_OBJECT (src), "stream", stream, NULL);
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -171,7 +191,9 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-giostreamsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstGioStreamSrc--stream"></a><h3>The <code class="literal">"stream"</code> property</h3>
-<pre class="programlisting">  "stream"                   GInputStream*         : Read / Write</pre>
+<pre class="programlisting">  "stream"                   <a
+href="/usr/share/gtk-doc/html/gio/GInputStream.html"
+>GInputStream</a>*         : Read / Write</pre>
 <p>Stream to read from.</p>
 </div>
 </div>

@@ -5,7 +5,7 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, cvs and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for cvs/prerelease
-AC_INIT(GStreamer Base Plug-ins, 0.10.20,
+AC_INIT(GStreamer Base Plug-ins, 0.10.22,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gst-plugins-base)
 
@@ -44,7 +44,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 14, 0, 14)
+AS_LIBTOOL(GST, 16, 0, 16)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
@@ -55,7 +55,7 @@ AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=0.10.19.1
+GST_REQ=0.10.21.1
 
 dnl *** autotools stuff ****
 
@@ -67,7 +67,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I common/m4")
 
 dnl set up gettext
 dnl the version check needs to stay here because autopoint greps for it
-AM_GNU_GETTEXT_VERSION([0.11.5])
+AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gst-plugins-base-$GST_MAJORMINOR])
 
@@ -269,6 +269,11 @@ dnl GTK is optional and only used in examples
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.12.0, HAVE_GTK=yes, HAVE_GTK=no)
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
+dnl some examples need gtk+-x11
+PKG_CHECK_MODULES(GTK_X11, gtk+-x11-2.0 >= 2.12.0,
+    HAVE_GTK_X11=yes, HAVE_GTK_X11=no)
+AM_CONDITIONAL(HAVE_GTK_X11, test "x$HAVE_GTK_X11" = "xyes")
+
 dnl *** set variables based on configure arguments ***
 
 dnl set license and copyright notice
@@ -292,13 +297,14 @@ dnl *** plug-ins to include ***
 
 dnl these are all the gst plug-ins, compilable without additional libs
 AG_GST_CHECK_PLUGIN(adder)
+AG_GST_CHECK_PLUGIN(app)
 AG_GST_CHECK_PLUGIN(audioconvert)
 AG_GST_CHECK_PLUGIN(audiorate)
-AG_GST_CHECK_PLUGIN(audioresample)
 AG_GST_CHECK_PLUGIN(audiotestsrc)
 AG_GST_CHECK_PLUGIN(ffmpegcolorspace)
 AG_GST_CHECK_PLUGIN(gdp)
 AG_GST_CHECK_PLUGIN(playback)
+AG_GST_CHECK_PLUGIN(speexresample)
 AG_GST_CHECK_PLUGIN(subparse)
 AG_GST_CHECK_PLUGIN(tcp)
 AG_GST_CHECK_PLUGIN(typefind)
@@ -306,6 +312,11 @@ AG_GST_CHECK_PLUGIN(videotestsrc)
 AG_GST_CHECK_PLUGIN(videorate)
 AG_GST_CHECK_PLUGIN(videoscale)
 AG_GST_CHECK_PLUGIN(volume)
+
+dnl check for gstreamer core features (subsystems)
+GST_CONFIGPATH=`$PKG_CONFIG --variable=includedir gstreamer-0.10`"/gst/gstconfig.h"
+AG_GST_PARSE_SUBSYSTEM_DISABLES($GST_CONFIGPATH)
+AM_CONDITIONAL(USE_XML, test $GST_DISABLE_XML != "1")
 
 dnl disable plug-ins that require libxml2's HTML support if it is not available
 if test "x$HAVE_LIBXML_HTML" != "xyes"; then
@@ -459,14 +470,32 @@ dnl AC_CHECK_HEADER(cdda_paranoia.h, :, HAVE_CDPARANOIA=no)
 dnl *** GNOME VFS ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_GNOME_VFS, true)
 AG_GST_CHECK_FEATURE(GNOME_VFS, [GNOME VFS], gnomevfs, [
-  AG_GST_PKG_CHECK_MODULES(GNOME_VFS, gnome-vfs-2.0)
+  PKG_CHECK_MODULES(GNOME_VFS, gnome-vfs-2.0, [
+      HAVE_GNOME_VFS="yes"
+      AC_SUBST(GNOME_VFS_CFLAGS)
+      AC_SUBST(GNOME_VFS_LIBS)
+      GNOME_VFS_MODULES_DIR="`$PKG_CONFIG --variable=modulesdir gnome-vfs-2.0`"
+      AC_DEFINE_UNQUOTED(GNOME_VFS_MODULES_DIR, "$GNOME_VFS_MODULES_DIR",
+             [The GnomeVFS modules directory.])
+    ],[
+      HAVE_GNOME_VFS="no"
+    ]
+    )
 ])
 
 dnl *** libgio ***
 USE_GIO=$BUILD_EXPERIMENTAL
 translit(dnm, m, l) AM_CONDITIONAL(USE_GIO, true)
 AG_GST_CHECK_FEATURE(GIO, [GIO library], gio, [
-  PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.15.2, HAVE_GIO="yes", [
+  PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.15.2, [
+    HAVE_GIO="yes"
+    GIO_MODULE_DIR="`$PKG_CONFIG --variable=giomoduledir gio-2.0`"
+    AC_DEFINE_UNQUOTED(GIO_MODULE_DIR, "$GIO_MODULE_DIR",
+           [The GIO modules directory.])
+    GIO_LIBDIR="`$PKG_CONFIG --variable=libdir gio-2.0`"
+    AC_DEFINE_UNQUOTED(GIO_LIBDIR, "$GIO_LIBDIR",
+           [The GIO library directory.])
+  ], [
     HAVE_GIO="no"
     AC_MSG_RESULT(no)
   ])
@@ -482,6 +511,19 @@ AG_GST_CHECK_FEATURE(LIBVISUAL, [libvisual visualization library], libvisual, [
   if test $HAVE_LIBVISUAL = no
   then
     AG_GST_PKG_CHECK_MODULES(LIBVISUAL, libvisual = 0.2.0)
+    if test x$HAVE_LIBVISUAL == xyes; then
+      LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.2`"
+    fi
+  else
+    if test x$HAVE_LIBVISUAL == xyes; then
+      LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.4`"
+    fi
+  fi
+  AC_MSG_NOTICE([libvisual pluginsdir: $LIBVIS_PLUGINSDIR])
+  if test x$LIBVIS_PLUGINSDIR != x; then
+    AC_DEFINE_UNQUOTED(LIBVISUAL_PLUGINSBASEDIR,
+        "$LIBVIS_PLUGINSDIR",
+        [directory in which the detected libvisual's plugins are located])
   fi
 ])
 
@@ -505,9 +547,14 @@ AG_GST_CHECK_FEATURE(PANGO, [Pango font rendering], pango, [
 dnl *** theora ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_THEORA, true)
 AG_GST_CHECK_FEATURE(THEORA, [Xiph Theora video codec], theora, [
-  dnl this check will work as long as theora uses 1.0.x or similar for the
-  dnl first post-alpha release and not just 1.0
-  AG_GST_PKG_CHECK_MODULES(THEORA, theora >= 1.0alpha5)
+  dnl theora uses pkg-config version incorrectly, for pkg-config:
+  dnl 1.0 < 1.0RCX < 1.0alphaX < 1.0betaX < 1.0.0
+  dnl theoraenc and theoradec appeared in 1.0beta3
+
+  AG_GST_PKG_CHECK_MODULES(THEORA, theoradec theoraenc)
+  if test x$HAVE_THEORA = xno; then
+    AG_GST_PKG_CHECK_MODULES(THEORA, theora >= 1.0alpha5)
+  fi
 ])
 
 dnl *** vorbis ***
@@ -635,13 +682,14 @@ Makefile
 gst-plugins-base.spec
 gst/Makefile
 gst/adder/Makefile
+gst/app/Makefile
 gst/audioconvert/Makefile
 gst/audiorate/Makefile
-gst/audioresample/Makefile
 gst/audiotestsrc/Makefile
 gst/ffmpegcolorspace/Makefile
 gst/gdp/Makefile
 gst/playback/Makefile
+gst/speexresample/Makefile
 gst/subparse/Makefile
 gst/tcp/Makefile
 gst/typefind/Makefile
@@ -666,6 +714,7 @@ ext/vorbis/Makefile
 gst-libs/Makefile
 gst-libs/gst/Makefile
 gst-libs/gst/audio/Makefile
+gst-libs/gst/app/Makefile
 gst-libs/gst/cdda/Makefile
 gst-libs/gst/fft/Makefile
 gst-libs/gst/floatcast/Makefile
@@ -683,6 +732,8 @@ win32/common/config.h
 pkgconfig/Makefile
 pkgconfig/gstreamer-audio.pc
 pkgconfig/gstreamer-audio-uninstalled.pc
+pkgconfig/gstreamer-app.pc
+pkgconfig/gstreamer-app-uninstalled.pc
 pkgconfig/gstreamer-cdda.pc
 pkgconfig/gstreamer-cdda-uninstalled.pc
 pkgconfig/gstreamer-fft.pc
@@ -712,6 +763,7 @@ pkgconfig/gstreamer-plugins-base-uninstalled.pc
 tests/Makefile
 tests/check/Makefile
 tests/examples/Makefile
+tests/examples/app/Makefile
 tests/examples/dynamic/Makefile
 tests/examples/seek/Makefile
 tests/examples/volume/Makefile

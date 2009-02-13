@@ -927,7 +927,7 @@ output_hierarchy (FILE  *fp,
 
   for (i = 0; i < level; i++)
     fprintf (fp, "  ");
-  fprintf (fp, g_type_name (type));
+  fprintf (fp, "%s", g_type_name (type));
   fprintf (fp, "\\n");
 
   children = g_type_children (type, &n_children);
@@ -979,7 +979,7 @@ output_interfaces (FILE  *fp,
 
   if (n_interfaces > 0)
     {
-      fprintf (fp, g_type_name (type));
+      fprintf (fp, "%s", g_type_name (type));
       for (i=0; i < n_interfaces; i++)
           fprintf (fp, " %s", g_type_name (interfaces[i]));
       fprintf (fp, "\\n");
@@ -1024,7 +1024,7 @@ output_prerequisites (FILE  *fp,
 
   if (n_prerequisites > 0)
     {
-      fprintf (fp, g_type_name (type));
+      fprintf (fp, "%s", g_type_name (type));
       for (i=0; i < n_prerequisites; i++)
           fprintf (fp, " %s", g_type_name (prerequisites[i]));
       fprintf (fp, "\\n");

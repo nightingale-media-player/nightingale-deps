@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -48,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gdppay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstGDPPay
@@ -57,40 +60,41 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gdppay.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-gdppay.html#GstGDPPay--crc-header" title='The "crc-header" property'>crc-header</a>"               gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-gdppay.html#GstGDPPay--crc-payload" title='The "crc-payload" property'>crc-payload</a>"              gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gdppay.html#GstGDPPay--crc-header" title='The "crc-header" property'>crc-header</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gdppay.html#GstGDPPay--crc-payload" title='The "crc-payload" property'>crc-payload</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-gdppay.html#GstGDPPay--version" title='The "version" property'>version</a>"                  GstDPVersion          : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gdppay.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2601849"></a><p>
 This element payloads GStreamer buffers and events using the
 GStreamer Data Protocol.
 </p>
 <p>
 </p>
-<pre class="programlisting">
-gst-launch -v -m videotestsrc num-buffers=50 ! gdppay ! filesink location=test.gdp
-</pre>
-<p>
-This pipeline creates a serialized video stream that can be played back
-with the example shown in gdpdepay.
-</p>
-</div>
 <div class="refsect2" lang="en">
-<a name="id2605137"></a><h3>Element Information</h3>
+<a name="id2744776"></a><div class="informalexample"><pre class="programlisting">
+gst-launch -v -m videotestsrc num-buffers=50 ! gdppay ! filesink location=test.gdp
+</pre></div> This pipeline creates a serialized video stream that can be played back
+with the example shown in gdpdepay.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2765225"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-gdp.html#plugin-gdp">gdp</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-gdp.html#plugin-gdp">gdp</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -102,6 +106,10 @@ with the example shown in gdpdepay.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2773411"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -145,6 +153,7 @@ with the example shown in gdpdepay.
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -165,14 +174,18 @@ Private gdppay element structure.</p>
 <a name="gst-plugins-base-plugins-gdppay.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstGDPPay--crc-header"></a><h3>The <code class="literal">"crc-header"</code> property</h3>
-<pre class="programlisting">  "crc-header"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "crc-header"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Calculate and store a CRC checksum on the header.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstGDPPay--crc-payload"></a><h3>The <code class="literal">"crc-payload"</code> property</h3>
-<pre class="programlisting">  "crc-payload"              gboolean              : Read / Write</pre>
+<pre class="programlisting">  "crc-payload"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Calculate and store a CRC checksum on the payload.</p>
 <p>Default value: FALSE</p>
 </div>

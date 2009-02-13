@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -50,7 +51,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -67,63 +70,52 @@ GstGioSrc implements
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giosrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--file" title='The "file" property'>file</a>"                     GFile*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--location" title='The "location" property'>location</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-giosrc.html#GstGioSrc--file" title='The "file" property'>file</a>"                     <a
+href="/usr/share/gtk-doc/html/gio/GFile.html"
+>GFile</a>*                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-giosrc.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2626331"></a><p>
 This plugin reads data from a local or remote location specified
 by an URI. This location can be specified using any protocol supported by
 the GIO library or it's VFS backends. Common protocols are 'file', 'http',
 'ftp', or 'smb'.
 </p>
 <p>
-Example pipeline:
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2777741"></a><h3>Example launch lines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v giosrc location=file:///home/joe/foo.xyz ! fakesink
-</pre>
-<p>
-The above pipeline will simply read a local file and do nothing with the
+</pre></div> The above pipeline will simply read a local file and do nothing with the
 data read. Instead of giosrc, we could just as well have used the
 filesrc element here.
-</p>
-<p>
-Another example pipeline:
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v giosrc location=smb://othercomputer/foo.xyz ! filesink location=/home/joe/foo.xyz
-</pre>
-<p>
-The above pipeline will copy a file from a remote host to the local file
+</pre></div> The above pipeline will copy a file from a remote host to the local file
 system using the Samba protocol.
-</p>
-<p>
-Yet another example pipeline:
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v giosrc location=http://music.foobar.com/demo.mp3 ! mad ! audioconvert ! audioresample ! alsasink
-</pre>
-<p>
-The above pipeline will read and decode and play an mp3 file from a
+</pre></div> The above pipeline will read and decode and play an mp3 file from a
 web server using the http protocol.
-</p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2626381"></a><h3>Element Information</h3>
+<a name="id2777783"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-gio.html#plugin-gio">gio</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-gio.html#plugin-gio">gio</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -135,6 +127,10 @@ web server using the http protocol.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2777846"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -157,6 +153,7 @@ web server using the http protocol.
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -177,16 +174,22 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-giosrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstGioSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "location"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>URI location to read from.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstGioSrc--file"></a><h3>The <code class="literal">"file"</code> property</h3>
-<pre class="programlisting">  "file"                     GFile*                : Read / Write</pre>
+<pre class="programlisting">  "file"                     <a
+href="/usr/share/gtk-doc/html/gio/GFile.html"
+>GFile</a>*                : Read / Write</pre>
 <p>
-<code class="literal">GFile</code> to read from.</p>
+<a
+href="/usr/share/gtk-doc/html/gio/GFile.html"
+><code class="literal">GFile</code></a> to read from.</p>
 <p>
 
 </p>

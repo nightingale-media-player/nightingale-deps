@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -35,7 +36,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-vorbistag.top_of_page"></a>vorbistag</span></h2>
-<p>vorbistag — retags vorbis streams</p>
+<p>vorbistag — Retags vorbis streams</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -48,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbistag.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----<a class="link" href="gst-plugins-base-plugins-vorbisparse.html#GstVorbisParse">GstVorbisParse</a>
@@ -63,10 +66,6 @@ GstVorbisTag implements
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbistag.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2599374"></a><h3>Example pipelines</h3>
 <p>
 The vorbistags element can change the tag contained within a raw
 vorbis stream. Specifically, it modifies the comments header packet
@@ -84,26 +83,27 @@ automatically (and merged according to the merge mode set via the tag
 setter interface).
 </p>
 <p>
-This element is not useful with gst-launch, because it does not support
-setting the tags on a <span class="type">GstTagSetter</span> interface. Conceptually, the element
-will usually be used like:
 </p>
-<pre class="programlisting">
-gst-launch -v filesrc location=foo.ogg ! oggdemux ! vorbistag ! oggmux ! filesink location=bar.ogg
-</pre>
-<p>
-</p>
-</div>
 <div class="refsect2" lang="en">
-<a name="id2551983"></a><h3>Element Information</h3>
+<a name="id2754944"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=foo.ogg ! oggdemux ! vorbistag ! oggmux ! filesink location=bar.ogg
+</pre></div> This element is not useful with gst-launch, because it does not support
+setting the tags on a <span class="type">GstTagSetter</span> interface. Conceptually, the element
+will usually be used in this order though.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2737018"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -115,6 +115,10 @@ gst-launch -v filesrc location=foo.ogg ! oggdemux ! vorbistag ! oggmux ! filesin
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2808735"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -157,6 +161,7 @@ gst-launch -v filesrc location=foo.ogg ! oggdemux ! vorbistag ! oggmux ! filesin
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

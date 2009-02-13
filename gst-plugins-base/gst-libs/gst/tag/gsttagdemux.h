@@ -51,8 +51,12 @@ typedef enum {
   GST_TAG_DEMUX_RESULT_OK
 } GstTagDemuxResult;
 
+GType gst_tag_demux_result_get_type (void);
+#define GST_TYPE_TAG_DEMUX_RESULT (gst_tag_demux_result_get_type())
+
 /**
  * GstTagDemux:
+ * @element: parent element
  *
  * Opaque #GstTagDemux structure.
  *

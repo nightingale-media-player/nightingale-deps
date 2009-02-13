@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -59,16 +60,24 @@
 
                     <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClock-struct" title="GstAudioClock">GstAudioClock</a>;
 GstClockTime        (<a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClockGetTimeFunc" title="GstAudioClockGetTimeFunc ()">*GstAudioClockGetTimeFunc</a>)         (GstClock *clock,
-                                                         gpointer user_data);
-GstClock*           <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#gst-audio-clock-new" title="gst_audio_clock_new ()">gst_audio_clock_new</a>                 (gchar *name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+GstClock*           <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#gst-audio-clock-new" title="gst_audio_clock_new ()">gst_audio_clock_new</a>                 (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClockGetTimeFunc" title="GstAudioClockGetTimeFunc ()">GstAudioClockGetTimeFunc</a> func,
-                                                         gpointer user_data);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstaudioclock.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstClock
                +----GstSystemClock
@@ -109,7 +118,9 @@ Opaque <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioCl
 <div class="refsect2" lang="en">
 <a name="GstAudioClockGetTimeFunc"></a><h3>GstAudioClockGetTimeFunc ()</h3>
 <pre class="programlisting">GstClockTime        (*GstAudioClockGetTimeFunc)         (GstClock *clock,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 This function will be called whenever the current clock time needs to be
 calculated. If this function returns <span class="type">GST_CLOCK_TIME_NONE</span>, the last reported
@@ -142,9 +153,13 @@ be used.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-audio-clock-new"></a><h3>gst_audio_clock_new ()</h3>
-<pre class="programlisting">GstClock*           gst_audio_clock_new                 (gchar *name,
+<pre class="programlisting">GstClock*           gst_audio_clock_new                 (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
                                                          <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClockGetTimeFunc" title="GstAudioClockGetTimeFunc ()">GstAudioClockGetTimeFunc</a> func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Create a new <a class="link" href="gst-plugins-base-libs-gstaudioclock.html#GstAudioClock"><span class="type">GstAudioClock</span></a> instance. Whenever the clock time should be
 calculated it will call <em class="parameter"><code>func</code></em> with <em class="parameter"><code>user_data</code></em>. When <em class="parameter"><code>func</code></em> returns

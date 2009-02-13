@@ -25,53 +25,38 @@
 
 /**
  * SECTION:element-gnomevfssrc
- * @short_description: Read from any GnomeVFS-supported location
  * @see_also: #GstFileSrc, #GstGnomeVFSSink
  *
- * <refsect2>
- * <para>
  * This plugin reads data from a local or remote location specified
  * by an URI. This location can be specified using any protocol supported by
  * the GnomeVFS library. Common protocols are 'file', 'http', 'ftp', or 'smb'.
- * </para>
- * <para>
- * In case the element-gnomevfssrc::iradio-mode property is set and the
+ *
+ * In case the #GstGnomeVFSSrc:iradio-mode property is set and the
  * location is a http resource, gnomevfssrc will send special icecast http
  * headers to the server to request additional icecast metainformation. If
  * the server is not an icecast server, it will display the same behaviour
- * as if the element-gnomevfssrc::iradio-mode property was not set. However,
+ * as if the #GstGnomeVFSSrc:iradio-mode property was not set. However,
  * if the server is in fact an icecast server, gnomevfssrc will output
  * data with a media type of application/x-icy, in which case you will
- * need to use the #ICYDemux element as follow-up element to extract
+ * need to use the #GstICYDemux element as follow-up element to extract
  * the icecast meta data and to determine the underlying media type.
- * </para>
- * <para>
- * Example pipeline:
- * <programlisting>
+ *
+ * <refsect2>
+ * <title>Example launch lines</title>
+ * |[
  * gst-launch -v gnomevfssrc location=file:///home/joe/foo.xyz ! fakesink
- * </programlisting>
- * The above pipeline will simply read a local file and do nothing with the
+ * ]| The above pipeline will simply read a local file and do nothing with the
  * data read. Instead of gnomevfssrc, we could just as well have used the
  * filesrc element here.
- * </para>
- * <para>
- * Another example pipeline:
- * <programlisting>
+ * |[
  * gst-launch -v gnomevfssrc location=smb://othercomputer/foo.xyz ! filesink location=/home/joe/foo.xyz
- * </programlisting>
- * The above pipeline will copy a file from a remote host to the local file
+ * ]| The above pipeline will copy a file from a remote host to the local file
  * system using the Samba protocol.
- * </para>
- * <para>
- * Yet another example pipeline:
- * <programlisting>
+ * |[
  * gst-launch -v gnomevfssrc location=http://music.foobar.com/demo.mp3 ! mad ! audioconvert ! audioresample ! alsasink
- * </programlisting>
- * The above pipeline will read and decode and play an mp3 file from a
+ * ]| The above pipeline will read and decode and play an mp3 file from a
  * web server using the http protocol.
- * </para>
  * </refsect2>
- *
  */
 
 
@@ -156,6 +141,7 @@ static gboolean gst_gnome_vfs_src_check_get_range (GstBaseSrc * src);
 static gboolean gst_gnome_vfs_src_get_size (GstBaseSrc * src, guint64 * size);
 static GstFlowReturn gst_gnome_vfs_src_create (GstBaseSrc * basesrc,
     guint64 offset, guint size, GstBuffer ** buffer);
+static gboolean gst_gnome_vfs_src_query (GstBaseSrc * src, GstQuery * query);
 
 static GstElementClass *parent_class = NULL;
 
@@ -264,6 +250,7 @@ gst_gnome_vfs_src_class_init (GstGnomeVFSSrcClass * klass)
   gstbasesrc_class->check_get_range =
       GST_DEBUG_FUNCPTR (gst_gnome_vfs_src_check_get_range);
   gstbasesrc_class->create = GST_DEBUG_FUNCPTR (gst_gnome_vfs_src_create);
+  gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_gnome_vfs_src_query);
 }
 
 static void
@@ -512,6 +499,13 @@ gst_gnome_vfs_src_received_headers_callback (gconstpointer in,
   if (!src->iradio_mode)
     return;
 
+  GST_DEBUG_OBJECT (src, "receiving internet radio metadata\n");
+
+  /* FIXME: Could we use "Accept-Ranges: bytes"
+   * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.5
+   * to enable pull-mode?
+   */
+
   for (i = in_args->headers; i; i = i->next) {
     char *data = (char *) i->data;
     char *key = data;
@@ -524,6 +518,8 @@ gst_gnome_vfs_src_received_headers_callback (gconstpointer in,
     g_strstrip (value);
     if (!strlen (value))
       continue;
+
+    GST_LOG_OBJECT (src, "data %s", data);
 
     /* Icecast stuff */
     if (strncmp (data, "icy-metaint:", 12) == 0) {      /* ugh */
@@ -609,6 +605,7 @@ gst_gnome_vfs_src_create (GstBaseSrc * basesrc, guint64 offset, guint size,
   GstBuffer *buf;
   GnomeVFSFileSize readbytes;
   guint8 *data;
+  guint todo;
   GstGnomeVFSSrc *src;
 
   src = GST_GNOME_VFS_SRC (basesrc);
@@ -620,7 +617,7 @@ gst_gnome_vfs_src_create (GstBaseSrc * basesrc, guint64 offset, guint size,
   if (G_UNLIKELY (src->curoffset != offset)) {
     GST_DEBUG ("need to seek");
     if (src->seekable) {
-      GST_DEBUG ("seeking to %lld", offset);
+      GST_DEBUG ("seeking to %" G_GUINT64_FORMAT, offset);
       res = gnome_vfs_seek (src->handle, GNOME_VFS_SEEK_START, offset);
       if (res != GNOME_VFS_OK)
         goto seek_failed;
@@ -630,23 +627,36 @@ gst_gnome_vfs_src_create (GstBaseSrc * basesrc, guint64 offset, guint size,
     }
   }
 
-  buf = gst_buffer_new_and_alloc (size);
+  buf = gst_buffer_try_new_and_alloc (size);
+  if (G_UNLIKELY (buf == NULL && size == 0)) {
+    GST_ERROR_OBJECT (src, "Failed to allocate %u bytes", size);
+    return GST_FLOW_ERROR;
+  }
 
   data = GST_BUFFER_DATA (buf);
+
+  todo = size;
+  while (todo > 0) {
+    /* this can return less that we ask for */
+    res = gnome_vfs_read (src->handle, data, todo, &readbytes);
+
+    if (G_UNLIKELY (res == GNOME_VFS_ERROR_EOF || (res == GNOME_VFS_OK
+                && readbytes == 0)))
+      goto eos;
+
+    if (G_UNLIKELY (res != GNOME_VFS_OK))
+      goto read_failed;
+
+    if (readbytes < todo) {
+      data = &data[readbytes];
+      todo -= readbytes;
+    } else {
+      todo = 0;
+    }
+    GST_LOG ("  got size %" G_GUINT64_FORMAT, readbytes);
+  }
   GST_BUFFER_OFFSET (buf) = src->curoffset;
-
-  res = gnome_vfs_read (src->handle, data, size, &readbytes);
-
-  if (G_UNLIKELY (res == GNOME_VFS_ERROR_EOF || (res == GNOME_VFS_OK
-              && readbytes == 0)))
-    goto eos;
-
-  GST_BUFFER_SIZE (buf) = readbytes;
-
-  if (G_UNLIKELY (res != GNOME_VFS_OK))
-    goto read_failed;
-
-  src->curoffset += readbytes;
+  src->curoffset += size;
 
   /* we're done, return the buffer */
   *buffer = buf;
@@ -680,6 +690,28 @@ eos:
     GST_DEBUG_OBJECT (src, "Reading data gave EOS");
     return GST_FLOW_UNEXPECTED;
   }
+}
+
+static gboolean
+gst_gnome_vfs_src_query (GstBaseSrc * basesrc, GstQuery * query)
+{
+  gboolean ret = FALSE;
+  GstGnomeVFSSrc *src = GST_GNOME_VFS_SRC (basesrc);
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_URI:
+      gst_query_set_uri (query, src->uri_name);
+      ret = TRUE;
+      break;
+    default:
+      ret = FALSE;
+      break;
+  }
+
+  if (!ret)
+    ret = GST_BASE_SRC_CLASS (parent_class)->query (basesrc, query);
+
+  return ret;
 }
 
 static gboolean

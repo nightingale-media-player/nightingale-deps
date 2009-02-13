@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -33,7 +34,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-vorbisdec.top_of_page"></a>vorbisdec</span></h2>
-<p>vorbisdec — a decoder that decodes Vorbis to raw audio</p>
+<p>vorbisdec — decode raw vorbis streams to float audio</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -46,7 +47,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstVorbisDec
@@ -55,10 +58,6 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisdec.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2613577"></a><h3>Example pipelines</h3>
-<p>
 This element decodes a Vorbis stream to raw float audio.
 <a class="ulink" href="http://www.vorbis.com/" target="_top">Vorbis</a> is a royalty-free
 audio codec maintained by the <a class="ulink" href="http://www.xiph.org/" target="_top">Xiph.org
@@ -66,27 +65,28 @@ Foundation</a>.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2733503"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! alsasink
-</pre>
-<p>
-Decode an Ogg/Vorbis. To create an Ogg/Vorbis file refer to the documentation of vorbisenc.
-</p>
+</pre></div> Decode an Ogg/Vorbis. To create an Ogg/Vorbis file refer to the documentation of vorbisenc.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2601897"></a><h3>Element Information</h3>
+<a name="id2749840"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -98,6 +98,10 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2804295"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -140,6 +144,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

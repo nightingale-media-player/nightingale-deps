@@ -1,0 +1,446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>appsink</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-appsrc.html" title="appsrc">
+<link rel="next" href="gst-plugins-base-plugins-alsamixer.html" title="alsamixer">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-base-plugins-appsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-base-plugins-alsamixer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-appsink.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-appsink.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-appsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-appsink.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-appsink.signals" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-base-plugins-appsink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-appsink.top_of_page"></a>appsink</span></h2>
+<p>appsink — Allow the application to get access to raw buffer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-base-plugins-appsink.synopsis"></a><h2>Synopsis</h2>
+<a name="GstAppSink"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-struct" title="GstAppSink">GstAppSink</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GstObject
+         +----GstElement
+               +----GstBaseSink
+                     +----GstAppSink
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink--drop" title='The "drop" property'>drop</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink--emit-signals" title='The "emit-signals" property'>emit-signals</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink--eos" title='The "eos" property'>eos</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink--max-buffers" title='The "max-buffers" property'>max-buffers</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-eos" title='The "eos" signal'>eos</a>"                                            : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-new-buffer" title='The "new-buffer" signal'>new-buffer</a>"                                     : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-new-preroll" title='The "new-preroll" signal'>new-preroll</a>"                                    : Run Last
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-pull-buffer" title='The "pull-buffer" signal'>pull-buffer</a>"                                    : Run Last / Action
+  "<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink-pull-preroll" title='The "pull-preroll" signal'>pull-preroll</a>"                                   : Run Last / Action
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.description"></a><h2>Description</h2>
+<p>
+Appsink is a sink plugin that supports many different methods for making
+the application get a handle on the GStreamer data in a pipeline. Unlike
+most GStreamer elements, Appsink provides external API functions.
+</p>
+<p>
+For the documentation of the API, please see the
+libgstapp section in
+the GStreamer Plugins Base Libraries documentation.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2730011"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-app.html#plugin-app">app</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>David Schleef &lt;ds@schleef.org&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Sink</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2730074"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-struct"></a><h3>GstAppSink</h3>
+<pre class="programlisting">typedef struct _GstAppSink GstAppSink;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAppSink--caps"></a><h3>The <code class="literal">"caps"</code> property</h3>
+<pre class="programlisting">  "caps"                     GstCaps*              : Read / Write</pre>
+<p>The allowed caps for the sink pad.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink--drop"></a><h3>The <code class="literal">"drop"</code> property</h3>
+<pre class="programlisting">  "drop"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Drop old buffers when the buffer queue is filled.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink--emit-signals"></a><h3>The <code class="literal">"emit-signals"</code> property</h3>
+<pre class="programlisting">  "emit-signals"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Emit new-preroll and new-buffer signals.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink--eos"></a><h3>The <code class="literal">"eos"</code> property</h3>
+<pre class="programlisting">  "eos"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Check if the sink is EOS or not started.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink--max-buffers"></a><h3>The <code class="literal">"max-buffers"</code> property</h3>
+<pre class="programlisting">  "max-buffers"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>The maximum number of buffers to queue internally (0 = unlimited).</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-appsink.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-eos"></a><h3>The <code class="literal">"eos"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink">GstAppSink</a> *appsink,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last</pre>
+<p>
+Signal that the end-of-stream has been reached. This signal is emited from
+the steaming thread.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>appsink</code></em> :</span></p></td>
+<td> the appsink element that emited the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-new-buffer"></a><h3>The <code class="literal">"new-buffer"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink">GstAppSink</a> *appsink,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last</pre>
+<p>
+Signal that a new buffer is available.
+</p>
+<p>
+This signal is emited from the steaming thread and only when the
+"emit-signals" property is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>. 
+</p>
+<p>
+The new buffer can be retrieved with the "pull-buffer" action
+signal or <a
+href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsink.html#gst-app-sink-pull-buffer"
+><code class="function">gst_app_sink_pull_buffer()</code></a> either from this signal callback
+or from any other thread.
+</p>
+<p>
+Note that this signal is only emited when the "emit-signals" property is
+set to <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, which it is not by default for performance reasons.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>appsink</code></em> :</span></p></td>
+<td> the appsink element that emited the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-new-preroll"></a><h3>The <code class="literal">"new-preroll"</code> signal</h3>
+<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink">GstAppSink</a> *appsink,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last</pre>
+<p>
+Signal that a new preroll buffer is available. 
+</p>
+<p>
+This signal is emited from the steaming thread and only when the
+"emit-signals" property is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>. 
+</p>
+<p>
+The new preroll buffer can be retrieved with the "pull-preroll" action
+signal or <a
+href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsink.html#gst-app-sink-pull-preroll"
+><code class="function">gst_app_sink_pull_preroll()</code></a> either from this signal callback
+or from any other thread.
+</p>
+<p>
+Note that this signal is only emited when the "emit-signals" property is
+set to <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, which it is not by default for performance reasons.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>appsink</code></em> :</span></p></td>
+<td> the appsink element that emited the signal
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-pull-buffer"></a><h3>The <code class="literal">"pull-buffer"</code> signal</h3>
+<pre class="programlisting">GstBuffer*          user_function                      (<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink">GstAppSink</a> *appsink,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last / Action</pre>
+<p>
+This function blocks until a buffer or EOS becomes available or the appsink
+element is set to the READY/NULL state. 
+</p>
+<p>
+This function will only return buffers when the appsink is in the PLAYING
+state. All rendered buffers will be put in a queue so that the application
+can pull buffers at its own rate. 
+</p>
+<p>
+Note that when the application does not pull buffers fast enough, the
+queued buffers could consume a lot of memory, especially when dealing with
+raw video frames. It's possible to control the behaviour of the queue with
+the "drop" and "max-buffers" properties.
+</p>
+<p>
+If an EOS event was received before any buffers, this function returns
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>. Use <a
+href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsink.html#gst-app-sink-is-eos"
+><code class="function">gst_app_sink_is_eos()</code></a> to check for the EOS condition.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>appsink</code></em> :</span></p></td>
+<td> the appsink element to emit this signal on
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">GstBuffer</span> or NULL when the appsink is stopped or EOS.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstAppSink-pull-preroll"></a><h3>The <code class="literal">"pull-preroll"</code> signal</h3>
+<pre class="programlisting">GstBuffer*          user_function                      (<a class="link" href="gst-plugins-base-plugins-appsink.html#GstAppSink">GstAppSink</a> *appsink,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last / Action</pre>
+<p>
+Get the last preroll buffer in <em class="parameter"><code>appsink</code></em>. This was the buffer that caused the
+appsink to preroll in the PAUSED state. This buffer can be pulled many times
+and remains available to the application even after EOS.
+</p>
+<p>
+This function is typically used when dealing with a pipeline in the PAUSED
+state. Calling this function after doing a seek will give the buffer right
+after the seek position.
+</p>
+<p>
+Note that the preroll buffer will also be returned as the first buffer
+when calling <a
+href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsink.html#gst-app-sink-pull-buffer"
+><code class="function">gst_app_sink_pull_buffer()</code></a> or the "pull-buffer" action signal.
+</p>
+<p>
+If an EOS event was received before any buffers, this function returns
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>. Use <a
+href="/usr/share/gtk-doc/html/gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-appsink.html#gst-app-sink-is-eos"
+><code class="function">gst_app_sink_is_eos()</code></a> to check for the EOS condition. 
+</p>
+<p>
+This function blocks until a preroll buffer or EOS is received or the appsink
+element is set to the READY/NULL state.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>appsink</code></em> :</span></p></td>
+<td> the appsink element to emit this signal on
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> a <span class="type">GstBuffer</span> or NULL when the appsink is stopped or EOS.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -52,7 +53,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gnomevfssink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -69,7 +72,9 @@ GstGnomeVFSSink implements
 <a name="gst-plugins-base-plugins-gnomevfssink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--handle" title='The "handle" property'>handle</a>"                   GnomeVFSHandle*       : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--location" title='The "location" property'>location</a>"                 gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--location" title='The "location" property'>location</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink--uri" title='The "uri" property'>uri</a>"                      <a
 href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURI"
 >GnomeVFSURI</a>*          : Read / Write
@@ -84,53 +89,45 @@ href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#Gnom
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-gnomevfssink.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2628057"></a><p>
 This plugin writes incoming data to a local or remote location specified
 by an URI. This location can be specified using any protocol supported by
 the GnomeVFS library. Common protocols are 'file', 'ftp', or 'smb'.
 </p>
 <p>
-Example pipeline:
+Applications can connect to the <a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink-allow-overwrite" title='The "allow-overwrite" signal'><span class="type">"allow-overwrite"</span></a> signal to
+receive a callback when an existing file will be overwritten. The return
+value of the signal will determine if gnomevfssink will overwrite the
+resource or abort with an error.
 </p>
-<pre class="programlisting">
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2779345"></a><h3>Example launch lines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=input.xyz ! gnomevfssink location=file:///home/joe/out.xyz
-</pre>
-<p>
-The above pipeline will simply copy a local file. Instead of gnomevfssink,
+</pre></div> The above pipeline will simply copy a local file. Instead of gnomevfssink,
 we could just as well have used the filesink element here.
-</p>
-<p>
-Another example pipeline:
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=foo.mp3 ! mad ! flacenc ! gnomevfssink location=smb://othercomputer/foo.flac
-</pre>
-<p>
-The above pipeline will re-encode an mp3 file into FLAC format and store
+</pre></div> The above pipeline will re-encode an mp3 file into FLAC format and store
 it on a remote host using the Samba protocol.
-</p>
-<p>
-Applications can connect to the allow-overwrite signal to receive a callback when an
-existing file will be overwritten. The return value of the signal will determine if
-gnomevfssink will overwrite the resource or abort with an error.
-</p>
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-02-28 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2628108"></a><h3>Element Information</h3>
+<a name="id2779382"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-gnomevfs.html#plugin-gnomevfs">gnomevfs</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-gnomevfs.html#plugin-gnomevfs">gnomevfs</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -142,6 +139,10 @@ Last reviewed on 2006-02-28 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2779444"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -163,6 +164,7 @@ Last reviewed on 2006-02-28 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
@@ -190,7 +192,9 @@ Opaque data structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstGnomeVFSSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "location"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Location of the file to write.</p>
 <p>Default value: NULL</p>
 </div>
@@ -207,11 +211,15 @@ href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#Gnom
 <a name="gst-plugins-base-plugins-gnomevfssink.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstGnomeVFSSink-allow-overwrite"></a><h3>The <code class="literal">"allow-overwrite"</code> signal</h3>
-<pre class="programlisting">gboolean            user_function                      (<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink">GstGnomeVFSSink</a> *sink,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a class="link" href="gst-plugins-base-plugins-gnomevfssink.html#GstGnomeVFSSink">GstGnomeVFSSink</a> *sink,
                                                         <a
 href="/usr/share/gtk-doc/html/gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURI"
 >GnomeVFSURI</a>     *uri,
-                                                        gpointer         user_data)      : Cleanup</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Cleanup</pre>
 <p>
 This signal is fired when gnomevfssink is about to overwrite an
 existing resource. The application can connect to this signal and ask

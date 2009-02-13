@@ -18,13 +18,13 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include <gst/gst.h>
 
 #include <multichannel.c>
-#include <multichannel-enumtypes.c>
+#include <audio-enumtypes.c>
 
 gint
 main (gint argc, gchar * argv[])

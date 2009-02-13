@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -63,15 +64,23 @@ enum                <a class="link" href="gst-plugins-base-libs-gstmultichannel.
 void                <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#gst-audio-set-caps-channel-positions-list" title="gst_audio_set_caps_channel_positions_list ()">gst_audio_set_caps_channel_positions_list</a>
                                                         (GstCaps *caps,
                                                          const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         gint num_positions);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> num_positions);
 void                <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#gst-audio-set-channel-positions" title="gst_audio_set_channel_positions ()">gst_audio_set_channel_positions</a>     (GstStructure *str,
                                                          const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos);
 void                <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#gst-audio-set-structure-channel-positions-list" title="gst_audio_set_structure_channel_positions_list ()">gst_audio_set_structure_channel_positions_list</a>
                                                         (GstStructure *str,
                                                          const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         gint num_positions);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#gst-audio-check-channel-positions" title="gst_audio_check_channel_positions ()">gst_audio_check_channel_positions</a>   (const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         guint channels);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> num_positions);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#gst-audio-check-channel-positions" title="gst_audio_check_channel_positions ()">gst_audio_check_channel_positions</a>   (const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> channels);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -132,7 +141,9 @@ gboolean            <a class="link" href="gst-plugins-base-libs-gstmultichannel.
 Custom fixate function. Elements that implement some sort of
 channel conversion algorithm should use this function for
 fixating on GstAudioChannelPosition properties. It will take
-care of equal channel positioning (left/right). Caller <code class="function">g_free()</code>s
+care of equal channel positioning (left/right). Caller <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a>s
 the return value. The input properties may be (and are supposed
 to be) unfixed.
 Note that this function is mostly a hack because we currently
@@ -166,7 +177,9 @@ set of <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudio
 <p>
 Retrieves a number of (fixed!) audio channel positions from
 the provided <span class="type">GstStructure</span> and returns it as a newly allocated
-array. The caller should <code class="function">g_free()</code> this array. The caller
+array. The caller should <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> this array. The caller
 should also check that the members in this <span class="type">GstStructure</span> are
 indeed "fixed" before calling this function.</p>
 <p>
@@ -196,7 +209,9 @@ NULL on error.
 <pre class="programlisting">void                gst_audio_set_caps_channel_positions_list
                                                         (GstCaps *caps,
                                                          const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         gint num_positions);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> num_positions);</pre>
 <p>
 Sets a (possibly non-fixed) list of possible audio channel
 positions (given in pos) on the given caps. Each of the
@@ -269,7 +284,9 @@ provided <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAud
 <pre class="programlisting">void                gst_audio_set_structure_channel_positions_list
                                                         (GstStructure *str,
                                                          const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         gint num_positions);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> num_positions);</pre>
 <p>
 Sets a (possibly non-fixed) list of possible audio channel
 positions (given in pos) on the given structure. The
@@ -309,8 +326,12 @@ contain each of the values given in the pos array.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-audio-check-channel-positions"></a><h3>gst_audio_check_channel_positions ()</h3>
-<pre class="programlisting">gboolean            gst_audio_check_channel_positions   (const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
-                                                         guint channels);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_audio_check_channel_positions   (const <a class="link" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition">GstAudioChannelPosition</a> *pos,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> channels);</pre>
 <p>
 This functions checks if the given channel positions are valid. Channel
 positions are valid if:
@@ -341,8 +362,12 @@ positions are valid if:
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the given channel positions are valid
-and <code class="literal">FALSE</code> otherwise.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the given channel positions are valid
+and <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
 </td>
 </tr>
 </tbody>

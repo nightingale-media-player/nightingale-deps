@@ -51,6 +51,7 @@ gst_tag_register_tags_internal (gpointer unused)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
   /* musicbrainz tags */
@@ -155,6 +156,7 @@ GType
 gst_tag_image_type_get_type (void)
 {
   static GType id;
+
   static GOnce once = G_ONCE_INIT;
 
   g_once (&once, (GThreadFunc) register_tag_image_type_enum, &id);
@@ -165,6 +167,7 @@ static inline gboolean
 gst_tag_image_type_is_valid (GstTagImageType type)
 {
   GEnumClass *klass;
+
   gboolean res;
 
   klass = g_type_class_ref (gst_tag_image_type_get_type ());
@@ -262,7 +265,9 @@ gst_tag_freeform_string_to_utf8 (const gchar * data, gint size,
     const gchar ** env_vars)
 {
   const gchar *cur_loc = NULL;
+
   gsize bytes_read;
+
   gchar *utf8 = NULL;
 
   g_return_val_if_fail (data != NULL, NULL);
@@ -385,7 +390,9 @@ gst_tag_image_data_to_image_buffer (const guint8 * image_data,
     guint image_data_len, GstTagImageType image_type)
 {
   const gchar *name;
+
   GstBuffer *image;
+
   GstCaps *caps;
 
   g_return_val_if_fail (image_data != NULL, NULL);
@@ -403,7 +410,6 @@ gst_tag_image_data_to_image_buffer (const guint8 * image_data,
 
   memcpy (GST_BUFFER_DATA (image), image_data, image_data_len);
   GST_BUFFER_DATA (image)[image_data_len] = '\0';
-  GST_BUFFER_SIZE (image) = image_data_len;
 
   /* Find GStreamer media type, can't trust declared type */
   caps = gst_type_find_helper_for_buffer (NULL, image, NULL);
@@ -422,6 +428,12 @@ gst_tag_image_data_to_image_buffer (const guint8 * image_data,
     GST_DEBUG ("Unexpected image type '%s', ignoring image frame", name);
     goto error;
   }
+
+  /* Decrease size by 1 if we don't have an URI list
+   * to keep the original size of the image
+   */
+  if (!g_str_equal (name, "text/uri-list"))
+    GST_BUFFER_SIZE (image) = image_data_len;
 
   if (image_type != GST_TAG_IMAGE_TYPE_NONE) {
     GST_LOG ("Setting image type: %d", image_type);

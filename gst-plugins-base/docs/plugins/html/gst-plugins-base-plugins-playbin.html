@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -50,12 +51,14 @@ struct              <a class="link" href="gst-plugins-base-plugins-playbin.html#
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-playbin.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBin
                      +----GstPipeline
-                           +----GstPlayBaseBin
+                           +----<a class="link" href="GstPlayBaseBin.html" title="GstPlayBaseBin">GstPlayBaseBin</a>
                                  +----GstPlayBin
 </pre>
 </div>
@@ -70,19 +73,21 @@ GstPlayBin implements
 <pre class="synopsis">
   "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'>audio-sink</a>"               GstElement*           : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--frame" title='The "frame" property'>frame</a>"                    GstBuffer*            : Read
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-font-desc" title='The "subtitle-font-desc" property'>subtitle-font-desc</a>"       gchar*                : Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-font-desc" title='The "subtitle-font-desc" property'>subtitle-font-desc</a>"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write
   "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'>video-sink</a>"               GstElement*           : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--vis-plugin" title='The "vis-plugin" property'>vis-plugin</a>"               GstElement*           : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--volume" title='The "volume" property'>volume</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-playbin.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2634723"></a><h3>Usage</h3>
 <p>
 Playbin provides a stand-alone everything-in-one abstraction for an
 audio and/or video player.
@@ -120,8 +125,12 @@ volume control
 <p>
 </p>
 <p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2784028"></a><h3>Usage</h3>
+<p>
 A playbin element can be created just like any other element using
-<code class="function">gst_element_factory_make()</code>. The file/URI to play should be set via the "uri"
+<code class="function">gst_element_factory_make()</code>. The file/URI to play should be set via the <span class="type">"uri"</span>
 property. This must be an absolute URI, relative file paths are not allowed.
 Example URIs are file:///home/joe/movie.avi or http://www.joedoe.com/foo.ogg
 </p>
@@ -143,8 +152,8 @@ completely asynchroneous.
 When playback has finished (an EOS message has been received on the bus)
 or an error has occured (an ERROR message has been received on the bus) or
 the user wants to play a different track, playbin should be set back to
-READY or NULL state, then the "uri" property should be set to the new
-location and then playbin be set to PLAYING state again.
+READY or NULL state, then the <span class="type">"uri"</span> property should be set to the
+new location and then playbin be set to PLAYING state again.
 </p>
 <p>
 Seeking can be done using <code class="function">gst_element_seek_simple()</code> or <code class="function">gst_element_seek()</code>
@@ -161,10 +170,17 @@ via <code class="function">gst_element_query_position()</code> and <code class="
 setting the format passed to GST_FORMAT_TIME. If the query was successful,
 the duration or position will have been returned in units of nanoseconds.
 </p>
+</div>
+<p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2782978"></a><h3>Advanced Usage: specifying the audio and video sink</h3>
 <p>
 By default, if no audio sink or video sink has been specified via the
-"audio-sink" or "video-sink" property, playbin will use the autoaudiosink
-and autovideosink elements to find the first-best available output method.
+<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'><span class="type">"audio-sink"</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'><span class="type">"video-sink"</span></a> property, playbin will use
+the autoaudiosink and autovideosink elements to find the first-best
+available output method.
 This should work in most cases, but is not always desirable. Often either
 the user or application might want to specify more explicitly what to use
 for audio and video output.
@@ -173,7 +189,7 @@ for audio and video output.
 If the application wants more control over how audio or video should be
 output, it may create the audio/video sink elements itself (for example
 using <code class="function">gst_element_factory_make()</code>) and provide them to playbin using the
-"audio-sink" or "video-sink" property.
+<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'><span class="type">"audio-sink"</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'><span class="type">"video-sink"</span></a> property.
 </p>
 <p>
 GNOME-based applications, for example, will usually want to create
@@ -196,6 +212,12 @@ It is also possible to 'suppress' audio and/or video output by using
 'fakesink' elements (or capture it from there using the fakesink element's
 "handoff" signal, which, nota bene, is fired from the streaming thread!).
 </p>
+</div>
+<p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783081"></a><h3>Retrieving Tags and Other Meta Data</h3>
 <p>
 Most of the common meta data (artist, title, etc.) can be retrieved by
 watching for TAG messages on the pipeline's bus (see above).
@@ -203,9 +225,11 @@ watching for TAG messages on the pipeline's bus (see above).
 <p>
 Other more specific meta information like width/height/framerate of video
 streams or samplerate/number of channels of audio streams can be obtained
-using the "stream-info" property, which will return a GList of stream info
-objects, one for each stream. These are opaque objects that can only be
-accessed via the standard GObject property interface, ie. <code class="function">g_object_get()</code>.
+using the  <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'><span class="type">"stream-info"</span></a> property, which will return a GList of
+stream info objects, one for each stream. These are opaque objects that can
+only be accessed via the standard GObject property interface, ie. <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#g-object-get"
+><code class="function">g_object_get()</code></a>.
 Each stream info object has the following properties:
 </p>
 <div class="itemizedlist"><ul type="disc">
@@ -218,13 +242,18 @@ Each stream info object has the following properties:
 <li>"codec" (string) (format this stream was encoded in)</li>
 </ul></div>
 <p>
-Stream information from the stream-info properties is best queried once
+Stream information from the <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'><span class="type">"stream-info"</span></a> property is best queried once
 playbin has changed into PAUSED or PLAYING state (which can be detected
-via a state-changed message on the bus where old_state=READY and
+via a state-changed message on the <span class="type">GstBus</span> where old_state=READY and
 new_state=PAUSED), since before that the list might not be complete yet or
 not contain all available information (like language-codes).
 </p>
+</div>
 <p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783175"></a><h3>Buffering</h3>
 Playbin handles buffering automatically for the most part, but applications
 need to handle parts of the buffering process as well. Whenever playbin is
 buffering, it will post BUFFERING messages on the bus with a percentage
@@ -233,10 +262,7 @@ to set playbin to PLAYING or PAUSED state in response to these messages.
 They may also want to convey the buffering progress to the user in some
 way. Here is how to extract the percentage information from the message
 (requires GStreamer &gt;= 0.10.11):
-</p>
-<p>
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 switch (GST_MESSAGE_TYPE (msg)) {
   case GST_MESSAGE_BUFFERING: {
     gint percent = 0;
@@ -246,20 +272,29 @@ switch (GST_MESSAGE_TYPE (msg)) {
   }
   ...
 }
-</pre>
-<p>
+</pre></div>
 Note that applications should keep/set the pipeline in the PAUSED state when
 a BUFFERING message is received with a buffer percent value &lt; 100 and set
 the pipeline back to PLAYING state when a BUFFERING message with a value
 of 100 percent is received (if PLAYING is the desired state, that is).
-</p>
+</div>
 <p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783207"></a><h3>Embedding the video window in your application</h3>
 By default, playbin (or rather the video sinks used) will create their own
 window. Applications will usually want to force output to a window of their
-own, however. This can be done using the GstXOverlay interface, which most
+own, however. This can be done using the <a
+href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
+><span class="type">GstXOverlay</span></a> interface, which most
 video sinks implement. See the documentation there for more details.
-</p>
+</div>
 <p>
+</p>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783227"></a><h3>Specifying which CD/DVD device to use</h3>
 The device to use for CDs/DVDs needs to be set on the source element
 playbin creates before it is opened. The only way to do this at the moment
 is to connect to playbin's "notify::source" signal, which will be emitted
@@ -268,53 +303,40 @@ In the signal callback you can check if the source element has a "device"
 property and set it appropriately. In future ways might be added to specify
 the device as part of the URI, but at the time of writing this is not
 possible yet.
-</p>
+</div>
 <p>
-Here is a simple pipeline to play back a video or audio file:
 </p>
-<pre class="programlisting">
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783244"></a><h3>Examples</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v playbin uri=file:///path/to/somefile.avi
-</pre>
-<p>
-This will play back the given AVI video file, given that the video and
+</pre></div> This will play back the given AVI video file, given that the video and
 audio decoders required to decode the content are installed. Since no
 special audio sink or video sink is supplied (not possible via gst-launch),
 playbin will try to find a suitable audio and video sink automatically
 using the autoaudiosink and autovideosink elements.
-</p>
-<p>
-Here is a another pipeline to play track 4 of an audio CD:
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v playbin uri=cdda://4
-</pre>
-<p>
-This will play back track 4 on an audio CD in your disc drive (assuming
+</pre></div> This will play back track 4 on an audio CD in your disc drive (assuming
 the drive is detected automatically by the plugin).
-</p>
-<p>
-Here is a another pipeline to play title 1 of a DVD:
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v playbin uri=dvd://1
-</pre>
-<p>
-This will play back title 1 of a DVD in your disc drive (assuming
+</pre></div> This will play back title 1 of a DVD in your disc drive (assuming
 the drive is detected automatically by the plugin).
-</p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2631620"></a><h3>Element Information</h3>
+<a name="id2783288"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-plugins-0.10/gst-plugins-base-plugins-plugin-playbin.html#plugin-playbin"
->playbin</a>
-        </td>
+            playbin
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -326,6 +348,11 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-plugins-0.10/gst-plugins-base-plu
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2783350"></a><h3>Element Pads</h3>
+</div>
 </div>
 <p>
 
@@ -359,7 +386,9 @@ High-level player element</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPlayBin--subtitle-font-desc"></a><h3>The <code class="literal">"subtitle-font-desc"</code> property</h3>
-<pre class="programlisting">  "subtitle-font-desc"       gchar*                : Write</pre>
+<pre class="programlisting">  "subtitle-font-desc"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Write</pre>
 <p>Pango font description of font to be used for subtitle rendering.</p>
 <p>Default value: NULL</p>
 </div>
@@ -378,7 +407,9 @@ High-level player element</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPlayBin--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
-<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<pre class="programlisting">  "volume"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>volume.</p>
 <p>Allowed values: [0,10]</p>
 <p>Default value: 1</p>
@@ -386,9 +417,17 @@ High-level player element</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstPlayBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
-<pre class="programlisting">  "connection-speed"         guint                 : Read / Write</pre>
-<p>Network connection speed in kbps (0 = unknown).</p>
+<pre class="programlisting">  "connection-speed"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>
+Network connection speed in kbps (0 = unknown)</p>
+<p>
+
+</p>
 <p>Default value: 0</p>
+<p>Since  0.10.10 at gstplaybin.c, 0.10.15 moved to gstplaybasebin
+</p>
 </div>
 </div>
 </div>

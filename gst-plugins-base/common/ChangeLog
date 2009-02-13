@@ -1,3 +1,202 @@
+2008-12-17  Edward Hervey  <bilboed@gmail.com>
+
+	* gst.supp:
+	And yet another variation of the GstAudioFilter leak.
+
+2008-12-15  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Roland Illig <roland dot illig at gmx dot de>
+
+	* m4/gst-parser.m4:
+	Fix AG_GST_BISON_CHECK to handle version numbers with more than
+	two components (i.e. 2.4.1). Fixes bug #564507.
+
+2008-12-14  Edward Hervey  <bilboed@gmail.com>
+
+	* gst.supp:
+	And yet another variant of the GstAudioFilter leak.
+
+2008-12-13  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Added variants of leaks of dynamic pad templates created in
+	GstAudioFilter.
+	Add conditional jump triggered by getaddrinfo (maybe glibc-2.9).
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Fix leak in GIO called by gnomevfs. Nothing we can do about this.
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	Added another suppression for dynamic pad templates, in this case
+	GstAudioFilter.
+	Added suppression for PangoLanguage which can never be freed
+	according to the Pango API.
+
+2008-12-12  Edward Hervey  <edward.hervey@collabora.co.uk>
+
+	* gst.supp:
+	A whole bunch of suppressions detected on latest gentoo ~amd64.
+	Make some existing suppressions more generic (for subtle dependecy
+	code changes).
+	Added suppressions for glibc-2.9.
+	Added suppressions for new variants of ALSA leaks.
+	Added suppressions for a series of leaks in plugins registrations due
+	to some pad templates' caps calculated at runtime.
+	Added suppressions for variants of some leaks in pango/fontconfig.
+	Added suppressions for leak in gstffmpegcsp.c (nothing we can do
+	about it, but will only exist once).
+
+2008-12-04  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gst-plugin-docs.m4:
+	Remove the check if $have_gtk_doc equals yes as it's not defined
+	and $enable_gtk_doc should be good enough.
+	Also this restores the build of the plugin documentation.
+
+2008-12-01  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst.supp:
+	Add suppression variant for Ubuntu Hardy x86/64bit.
+
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc-plugins.mak:
+	* gtk-doc.mak:
+	  Simplily uninstall rule. Its closer to upstream and fixes #150331.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/glib-gettext.m4:
+	Update glib-gettext.m4 from latest stable GLib release.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	Patch by: Cygwin Ports maintainer
+	           <yselkowitz at users dot sourceforge dot net>
+
+	* gettext.patch:
+	Update the gettext patch for use with gettext 0.17 which is
+	required to build with libtool 2.2 because of conflicts.
+	First part of bug #556091.
+
+2008-11-29  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gtk-doc.m4:
+	* m4/pkg.m4:
+	Update gtk-doc and pkg-config m4 macros from their latest releases.
+
+2008-11-20  Michael Smith <msmith@songbirdnest.com>
+
+	* m4/as-objc.m4:
+	  Fix objective C test macro when none of the compilers are found at all.
+
+2008-10-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc.mak:
+	  Also cp the entities here to all xinlcude based docs (workaround for
+	  not being able to set up a search path).
+
+2008-10-17  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* gtk-doc.mak:
+	  Don't clobber the real registry cache file when
+	  building docs.
+
+2008-10-07  Jan Schmidt - Sun Microsystems <jan.schmidt@sun.com>
+
+	* m4/gst-error.m4:
+	  Also disable the bogus "loop not entered at top" warnings appearing on Sparc Forte builds.
+
+2008-10-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc.mak:
+	  Apply the same fix as below to gtk-doc.mak. Somehow did not end up in
+	  CVS.
+
+2008-09-05  David Schleef  <ds@schleef.org>
+
+	* gtk-doc-plugins.mak: Fix the check for gtkdoc-rebase: don't
+	  pass the 'which' error back to make.  This fix is more specific
+	  than what is in upstream.
+
+2008-09-05  David Schleef  <ds@schleef.org>
+
+	* gtk-doc.mak: Fix the check for gtkdoc-rebase: don't pass the
+	  'which' error back to make.  This fix is more specific than
+	  what is in upstream.
+
+2008-09-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc-plugins.mak:
+	* gtk-doc.mak:
+	  Get closer to upstream makefiles. Don't install index.sgml twice. Call
+	  gtkdoc-rebase (if exists).
+
+2008-08-21  Stefan Kost  <ensonic@users.sf.net>
+
+	* gtk-doc-plugins.mak:
+	  Revert $(top_builddir) -> $(builddir) change of rev. 1.39 as there is
+	  no variable called builddir.
+
+2008-07-31  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gst.supp:
+	Add suppressions for Ubunty Hardy x86/64bit, similar to earlier
+	versions and 32bit variant.
+
+2008-07-31  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gst-feature.m4:
+	Remove GST_DISABLE_(ENUMTYPES|INDEX|URI).
+
+2008-07-21  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* m4/gst-error.m4::
+	  When checking for GST_ERROR_CXXFLAGS, check each compiler flag
+	  individually, not all together.
+
+2008-07-20  Tim-Philipp Müller  <tim.muller at collabora co uk>
+
+	* m4/gst-parser.m4::
+	  Fix bison version number detection for older --version
+	  output format (as bison 1.28 on OSX 10.4 outputs).
+	  Fixes #543853.
+
+2008-07-12  Stefan Kost  <ensonic@users.sf.net>
+
+	* plugins.xsl:
+	  Split refsect2 also here to make "Element Pads" subtitle visible.
+
+2008-07-08  Sebastian Dröge  <sebastian.droege@collabora.co.uk>
+
+	* m4/gst-error.m4:
+	Add compiler flags to warn if declarations after statements or
+	variable length arrays are used. These are C99/GCC extensions and
+	are not supported by some compilers we want to support.
+
+2008-07-02  Mark Nauwelaerts  <mark.nauwelaerts@collabora.co.uk>
+
+	* gtk-doc-plugins.mak:
+	Only clean doc maintainer stamps in maintainer-clean.  Fixes #539977.
+
+2008-06-20  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gstdoc-scangobj:
+	Always use format strings for printf-like functions, even if they just
+	print a string. Fixes bug #536981.
+
+2008-06-20  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* gtk-doc-plugins.mak:
+	* gtk-doc.mak:
+	Include CFLAGS and LDFLAGS in GTKDOC_CFLAGS and GTKDOC_LDFLAGS,
+	otherwise the values passed to configure are ignored.
+	Fixes bug #536978.
+
 2008-06-05  Tim-Philipp Müller  <tim.muller at collabora co uk>
 
 	* m4/gst-error.m4:

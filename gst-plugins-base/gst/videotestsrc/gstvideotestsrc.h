@@ -52,6 +52,8 @@ G_BEGIN_DECLS
  * @GST_VIDEO_TEST_SRC_CHECKERS8: Checkers pattern (8px)
  * @GST_VIDEO_TEST_SRC_CIRCULAR: Circular pattern
  * @GST_VIDEO_TEST_SRC_BLINK: Alternate between black and white
+ * @GST_VIDEO_TEST_SRC_SMPTE75: SMPTE test pattern (75% color bars)
+ * @GST_VIDEO_TEST_SRC_ZONE_PLATE: Zone plate
  *
  * The test pattern to produce.
  */
@@ -68,8 +70,22 @@ typedef enum {
   GST_VIDEO_TEST_SRC_CHECKERS4,
   GST_VIDEO_TEST_SRC_CHECKERS8,
   GST_VIDEO_TEST_SRC_CIRCULAR,
-  GST_VIDEO_TEST_SRC_BLINK
+  GST_VIDEO_TEST_SRC_BLINK,
+  GST_VIDEO_TEST_SRC_SMPTE75,
+  GST_VIDEO_TEST_SRC_ZONE_PLATE
 } GstVideoTestSrcPattern;
+
+/**
+ * GstVideoTestSrcColorSpec:
+ * @GST_VIDEO_TEST_SRC_BT601: ITU-R Rec. BT.601
+ * @GST_VIDEO_TEST_SRC_BT709: ITU-R Rec. BT.601
+ *
+ * The color specification to use.
+ */
+typedef enum {
+  GST_VIDEO_TEST_SRC_BT601,
+  GST_VIDEO_TEST_SRC_BT709
+} GstVideoTestSrcColorSpec;
 
 typedef struct _GstVideoTestSrc GstVideoTestSrc;
 typedef struct _GstVideoTestSrcClass GstVideoTestSrcClass;
@@ -87,6 +103,9 @@ struct _GstVideoTestSrc {
   /* type of output */
   GstVideoTestSrcPattern pattern_type;
 
+  /* Color spec of output */
+  GstVideoTestSrcColorSpec color_spec;
+
   /* video state */
   char *format_name;
   gint width;
@@ -100,7 +119,22 @@ struct _GstVideoTestSrc {
   gint64 timestamp_offset;              /* base offset */
   GstClockTime running_time;            /* total running time */
   gint64 n_frames;                      /* total frames sent */
+  gboolean peer_alloc;
 
+  /* zoneplate */
+  gint k0;
+  gint kx;
+  gint ky;
+  gint kt;
+  gint kxt;
+  gint kyt;
+  gint kxy;
+  gint kx2;
+  gint ky2;
+  gint kt2;
+  gint xoffset;
+  gint yoffset;
+  
   void (*make_image) (GstVideoTestSrc *v, unsigned char *dest, int w, int h);
 };
 

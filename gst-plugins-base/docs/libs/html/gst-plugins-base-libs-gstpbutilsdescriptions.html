@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -56,20 +57,42 @@ and encoder, decoder, URI source and URI sink elements</p>
 
 #include &lt;gst/pbutils/descriptions.h&gt;
 
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-source-description" title="gst_pb_utils_get_source_description ()">gst_pb_utils_get_source_description</a> (const gchar *protocol);
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-sink-description" title="gst_pb_utils_get_sink_description ()">gst_pb_utils_get_sink_description</a>   (const gchar *protocol);
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-decoder-description" title="gst_pb_utils_get_decoder_description ()">gst_pb_utils_get_decoder_description</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-source-description" title="gst_pb_utils_get_source_description ()">gst_pb_utils_get_source_description</a> (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *protocol);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-sink-description" title="gst_pb_utils_get_sink_description ()">gst_pb_utils_get_sink_description</a>   (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *protocol);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-decoder-description" title="gst_pb_utils_get_decoder_description ()">gst_pb_utils_get_decoder_description</a>
                                                         (const GstCaps *caps);
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-encoder-description" title="gst_pb_utils_get_encoder_description ()">gst_pb_utils_get_encoder_description</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-encoder-description" title="gst_pb_utils_get_encoder_description ()">gst_pb_utils_get_encoder_description</a>
                                                         (const GstCaps *caps);
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-element-description" title="gst_pb_utils_get_element_description ()">gst_pb_utils_get_element_description</a>
-                                                        (const gchar *factory_name);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-element-description" title="gst_pb_utils_get_element_description ()">gst_pb_utils_get_element_description</a>
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factory_name);
 
-gboolean            <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list" title="gst_pb_utils_add_codec_description_to_tag_list ()">gst_pb_utils_add_codec_description_to_tag_list</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-add-codec-description-to-tag-list" title="gst_pb_utils_add_codec_description_to_tag_list ()">gst_pb_utils_add_codec_description_to_tag_list</a>
                                                         (GstTagList *taglist,
-                                                         const gchar *codec_tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *codec_tag,
                                                          const GstCaps *caps);
-gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-codec-description" title="gst_pb_utils_get_codec_description ()">gst_pb_utils_get_codec_description</a>  (const GstCaps *caps);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescriptions.html#gst-pb-utils-get-codec-description" title="gst_pb_utils_get_codec_description ()">gst_pb_utils_get_codec_description</a>  (const GstCaps *caps);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -77,7 +100,7 @@ gchar*              <a class="link" href="gst-plugins-base-libs-gstpbutilsdescri
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2774325"></a><p>
+<a name="id3190795"></a><p>
 The above functions provide human-readable strings for media formats
 and decoder/demuxer/depayloader/encoder/muxer/payloader elements for use
 in error dialogs or other messages shown to users.
@@ -96,7 +119,11 @@ given (fixed) <span class="type">GstCaps</span>.
 <a name="gst-plugins-base-libs-gstpbutilsdescriptions.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-source-description"></a><h3>gst_pb_utils_get_source_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_source_description (const gchar *protocol);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_source_description (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *protocol);</pre>
 <p>
 Returns a localised string describing a source element handling the protocol
 specified in <em class="parameter"><code>protocol</code></em>, for use in error dialogs or other messages to be
@@ -120,7 +147,9 @@ a missing feature from a missing-plugin message.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>
@@ -129,7 +158,11 @@ a missing feature from a missing-plugin message.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-sink-description"></a><h3>gst_pb_utils_get_sink_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_sink_description   (const gchar *protocol);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_sink_description   (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *protocol);</pre>
 <p>
 Returns a localised string describing a sink element handling the protocol
 specified in <em class="parameter"><code>protocol</code></em>, for use in error dialogs or other messages to be
@@ -153,7 +186,9 @@ a missing feature from a missing-plugin message.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>
@@ -162,7 +197,9 @@ a missing feature from a missing-plugin message.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-decoder-description"></a><h3>gst_pb_utils_get_decoder_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_decoder_description
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_decoder_description
                                                         (const GstCaps *caps);</pre>
 <p>
 Returns a localised string describing an decoder for the format specified
@@ -187,7 +224,9 @@ a missing feature from a missing-plugin message.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>
@@ -196,7 +235,9 @@ a missing feature from a missing-plugin message.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-encoder-description"></a><h3>gst_pb_utils_get_encoder_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_encoder_description
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_encoder_description
                                                         (const GstCaps *caps);</pre>
 <p>
 Returns a localised string describing an encoder for the format specified
@@ -221,7 +262,9 @@ a missing feature from a missing-plugin message.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>
@@ -230,8 +273,12 @@ a missing feature from a missing-plugin message.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-element-description"></a><h3>gst_pb_utils_get_element_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_element_description
-                                                        (const gchar *factory_name);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_element_description
+                                                        (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *factory_name);</pre>
 <p>
 Returns a localised string describing the given element, for use in
 error dialogs or other messages to be seen by the user. Should never
@@ -255,7 +302,9 @@ a missing feature from a missing-plugin message.</p>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>
@@ -264,9 +313,13 @@ a missing feature from a missing-plugin message.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-add-codec-description-to-tag-list"></a><h3>gst_pb_utils_add_codec_description_to_tag_list ()</h3>
-<pre class="programlisting">gboolean            gst_pb_utils_add_codec_description_to_tag_list
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_pb_utils_add_codec_description_to_tag_list
                                                         (GstTagList *taglist,
-                                                         const gchar *codec_tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *codec_tag,
                                                          const GstCaps *caps);</pre>
 <p>
 Adds a codec tag describing the format specified by <em class="parameter"><code>caps</code></em> to <em class="parameter"><code>taglist</code></em>.</p>
@@ -303,7 +356,9 @@ Adds a codec tag describing the format specified by <em class="parameter"><code>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-pb-utils-get-codec-description"></a><h3>gst_pb_utils_get_codec_description ()</h3>
-<pre class="programlisting">gchar*              gst_pb_utils_get_codec_description  (const GstCaps *caps);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_pb_utils_get_codec_description  (const GstCaps *caps);</pre>
 <p>
 Returns a localised (as far as this is possible) string describing the
 media format specified in <em class="parameter"><code>caps</code></em>, for use in error dialogs or other messages
@@ -326,7 +381,9 @@ Also see the convenience function
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td> a newly-allocated description string, or NULL on error. Free
-         string with <code class="function">g_free()</code> when not needed any longer.
+         string with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when not needed any longer.
 </td>
 </tr>
 </tbody>

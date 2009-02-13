@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstPlayBaseBin</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch03.html" title="gst-plugins-base Classes">
+<link rel="prev" href="ch03.html" title="gst-plugins-base Classes">
+<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch03.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
+<td> </td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#GstPlayBaseBin.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstPlayBaseBin.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstPlayBaseBin.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstPlayBaseBin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#GstPlayBaseBin.properties" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GstPlayBaseBin"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstPlayBaseBin.top_of_page"></a>GstPlayBaseBin</span></h2>
+<p>GstPlayBaseBin</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="GstPlayBaseBin.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+struct              <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin-struct" title="struct GstPlayBaseBin">GstPlayBaseBin</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GstObject
+         +----GstElement
+               +----GstBin
+                     +----GstPipeline
+                           +----GstPlayBaseBin
+                                 +----<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin">GstPlayBin</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstPlayBaseBin implements
+ GstChildProxy.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--current-audio" title='The "current-audio" property'>current-audio</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--current-text" title='The "current-text" property'>current-text</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--current-video" title='The "current-video" property'>current-video</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--nstreams" title='The "nstreams" property'>nstreams</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--queue-min-threshold" title='The "queue-min-threshold" property'>queue-min-threshold</a>"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--queue-size" title='The "queue-size" property'>queue-size</a>"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--queue-threshold" title='The "queue-threshold" property'>queue-threshold</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--source" title='The "source" property'>source</a>"                   GstElement*           : Read
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'>stream-info</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Read
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info-value-array" title='The "stream-info-value-array" property'>stream-info-value-array</a>"  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--suburi" title='The "suburi" property'>suburi</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--uri" title='The "uri" property'>uri</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.description"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin-struct"></a><h3>struct GstPlayBaseBin</h3>
+<pre class="programlisting">struct GstPlayBaseBin;</pre>
+<p>
+
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="GstPlayBaseBin.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
+<pre class="programlisting">  "connection-speed"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Network connection speed in kbps (0 = unknown).</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--current-audio"></a><h3>The <code class="literal">"current-audio"</code> property</h3>
+<pre class="programlisting">  "current-audio"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Currently playing audio stream (-1 = none).</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--current-text"></a><h3>The <code class="literal">"current-text"</code> property</h3>
+<pre class="programlisting">  "current-text"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Currently playing text stream (-1 = none).</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--current-video"></a><h3>The <code class="literal">"current-video"</code> property</h3>
+<pre class="programlisting">  "current-video"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Currently playing video stream (-1 = none).</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--nstreams"></a><h3>The <code class="literal">"nstreams"</code> property</h3>
+<pre class="programlisting">  "nstreams"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>number of streams.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--queue-min-threshold"></a><h3>The <code class="literal">"queue-min-threshold"</code> property</h3>
+<pre class="programlisting">  "queue-min-threshold"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
+<p>Buffering low threshold of internal queues in nanoseconds.</p>
+<p>Allowed values: &lt;= G_MAXINT64</p>
+<p>Default value: 900000000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--queue-size"></a><h3>The <code class="literal">"queue-size"</code> property</h3>
+<pre class="programlisting">  "queue-size"               <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
+<p>Size of internal queues in nanoseconds.</p>
+<p>Allowed values: &lt;= G_MAXINT64</p>
+<p>Default value: 3000000000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--queue-threshold"></a><h3>The <code class="literal">"queue-threshold"</code> property</h3>
+<pre class="programlisting">  "queue-threshold"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read / Write</pre>
+<p>Buffering threshold of internal queues in nanoseconds.</p>
+<p>Allowed values: &lt;= G_MAXINT64</p>
+<p>Default value: 2850000000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--source"></a><h3>The <code class="literal">"source"</code> property</h3>
+<pre class="programlisting">  "source"                   GstElement*           : Read</pre>
+<p>Source element.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--stream-info"></a><h3>The <code class="literal">"stream-info"</code> property</h3>
+<pre class="programlisting">  "stream-info"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              : Read</pre>
+<p>List of streaminfo.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--stream-info-value-array"></a><h3>The <code class="literal">"stream-info-value-array"</code> property</h3>
+<pre class="programlisting">  "stream-info-value-array"  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*          : Read</pre>
+<p>value array of streaminfo.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--subtitle-encoding"></a><h3>The <code class="literal">"subtitle-encoding"</code> property</h3>
+<pre class="programlisting">  "subtitle-encoding"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--suburi"></a><h3>The <code class="literal">"suburi"</code> property</h3>
+<pre class="programlisting">  "suburi"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Optional URI of a subtitle.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstPlayBaseBin--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
+<pre class="programlisting">  "uri"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>URI of the media to play.</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.10</div>
+</body>
+</html>

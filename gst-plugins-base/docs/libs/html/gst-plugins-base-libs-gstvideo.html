@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -99,27 +100,59 @@
 #define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-RED-MASK-16-INT:CAPS" title="GST_VIDEO_RED_MASK_16_INT">GST_VIDEO_RED_MASK_16_INT</a>
 #define             <a class="link" href="gst-plugins-base-libs-gstvideo.html#GST-VIDEO-SIZE-RANGE:CAPS" title="GST_VIDEO_SIZE_RANGE">GST_VIDEO_SIZE_RANGE</a>
 enum                <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>;
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-calculate-display-ratio" title="gst_video_calculate_display_ratio ()">gst_video_calculate_display_ratio</a>   (guint *dar_n,
-                                                         guint *dar_d,
-                                                         guint video_width,
-                                                         guint video_height,
-                                                         guint video_par_n,
-                                                         guint video_par_d,
-                                                         guint display_par_n,
-                                                         guint display_par_d);
-const GValue*       <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-frame-rate" title="gst_video_frame_rate ()">gst_video_frame_rate</a>                (GstPad *pad);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-get-size" title="gst_video_get_size ()">gst_video_get_size</a>                  (GstPad *pad,
-                                                         gint *width,
-                                                         gint *height);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-convert" title="gst_video_format_convert ()">gst_video_format_convert</a>            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-calculate-display-ratio" title="gst_video_calculate_display_ratio ()">gst_video_calculate_display_ratio</a>   (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *dar_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *dar_d,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_width,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_height,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_par_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_par_d,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> display_par_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> display_par_d);
+const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-frame-rate" title="gst_video_frame_rate ()">gst_video_frame_rate</a>                (GstPad *pad);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-get-size" title="gst_video_get_size ()">gst_video_get_size</a>                  (GstPad *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *width,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *height);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-convert" title="gst_video_format_convert ()">gst_video_format_convert</a>            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int fps_n,
                                                          int fps_d,
                                                          GstFormat src_format,
-                                                         gint64 src_value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_value,
                                                          GstFormat dest_format,
-                                                         gint64 *dest_value);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_value);
 GstCaps*            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-new-caps" title="gst_video_format_new_caps ()">gst_video_format_new_caps</a>           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
@@ -148,19 +181,35 @@ int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gs
 int                 <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-get-size" title="gst_video_format_get_size ()">gst_video_format_get_size</a>           (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-has-alpha" title="gst_video_format_has_alpha ()">gst_video_format_has_alpha</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-rgb" title="gst_video_format_is_rgb ()">gst_video_format_is_rgb</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-yuv" title="gst_video_format_is_yuv ()">gst_video_format_is_yuv</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
-guint32             <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-to-fourcc" title="gst_video_format_to_fourcc ()">gst_video_format_to_fourcc</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
-<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-from-fourcc" title="gst_video_format_from_fourcc ()">gst_video_format_from_fourcc</a>        (guint32 fourcc);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-parse-caps" title="gst_video_format_parse_caps ()">gst_video_format_parse_caps</a>         (GstCaps *caps,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-has-alpha" title="gst_video_format_has_alpha ()">gst_video_format_has_alpha</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-rgb" title="gst_video_format_is_rgb ()">gst_video_format_is_rgb</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-is-yuv" title="gst_video_format_is_yuv ()">gst_video_format_is_yuv</a>             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-to-fourcc" title="gst_video_format_to_fourcc ()">gst_video_format_to_fourcc</a>          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);
+<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-from-fourcc" title="gst_video_format_from_fourcc ()">gst_video_format_from_fourcc</a>        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> fourcc);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-format-parse-caps" title="gst_video_format_parse_caps ()">gst_video_format_parse_caps</a>         (GstCaps *caps,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> *format,
                                                          int *width,
                                                          int *height);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-framerate" title="gst_video_parse_caps_framerate ()">gst_video_parse_caps_framerate</a>      (GstCaps *caps,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-framerate" title="gst_video_parse_caps_framerate ()">gst_video_parse_caps_framerate</a>      (GstCaps *caps,
                                                          int *fps_n,
                                                          int *fps_d);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-pixel-aspect-ratio" title="gst_video_parse_caps_pixel_aspect_ratio ()">gst_video_parse_caps_pixel_aspect_ratio</a>
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gst-video-parse-caps-pixel-aspect-ratio" title="gst_video_parse_caps_pixel_aspect_ratio ()">gst_video_parse_caps_pixel_aspect_ratio</a>
                                                         (GstCaps *caps,
                                                          int *par_n,
                                                          int *par_d);
@@ -171,7 +220,7 @@ gboolean            <a class="link" href="gst-plugins-base-libs-gstvideo.html#gs
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2787325"></a><p>
+<a name="id3203795"></a><p>
 This library contains some helper functions and includes the 
 videosink and videofilter base classes.
 </p>
@@ -691,14 +740,32 @@ Enum value describing the most common video formats.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-calculate-display-ratio"></a><h3>gst_video_calculate_display_ratio ()</h3>
-<pre class="programlisting">gboolean            gst_video_calculate_display_ratio   (guint *dar_n,
-                                                         guint *dar_d,
-                                                         guint video_width,
-                                                         guint video_height,
-                                                         guint video_par_n,
-                                                         guint video_par_d,
-                                                         guint display_par_n,
-                                                         guint display_par_d);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_calculate_display_ratio   (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *dar_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *dar_d,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_width,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_height,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_par_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> video_par_d,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> display_par_n,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> display_par_d);</pre>
 <p>
 Given the Pixel Aspect Ratio and size of an input video frame, and the 
 pixel aspect ratio of the intended display device, calculates the actual 
@@ -765,7 +832,9 @@ The return value is FALSE in the case of integer overflow or other error.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-frame-rate"></a><h3>gst_video_frame_rate ()</h3>
-<pre class="programlisting">const GValue*       gst_video_frame_rate                (GstPad *pad);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a>*       gst_video_frame_rate                (GstPad *pad);</pre>
 <p>
 A convenience function to retrieve a GValue holding the framerate
 from the caps on a pad.
@@ -796,9 +865,15 @@ do not contain a framerate.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-get-size"></a><h3>gst_video_get_size ()</h3>
-<pre class="programlisting">gboolean            gst_video_get_size                  (GstPad *pad,
-                                                         gint *width,
-                                                         gint *height);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_get_size                  (GstPad *pad,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *width,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> *height);</pre>
 <p>
 Inspect the caps of the provided pad and retrieve the width and height of
 the video frames it is configured for.
@@ -838,15 +913,21 @@ The pad needs to have negotiated caps containing width and height properties.</p
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-convert"></a><h3>gst_video_format_convert ()</h3>
-<pre class="programlisting">gboolean            gst_video_format_convert            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_format_convert            (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format,
                                                          int width,
                                                          int height,
                                                          int fps_n,
                                                          int fps_d,
                                                          GstFormat src_format,
-                                                         gint64 src_value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> src_value,
                                                          GstFormat dest_format,
-                                                         gint64 *dest_value);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a> *dest_value);</pre>
 <p>
 Converts among various <span class="type">GstFormat</span> types.  This function handles
 GST_FORMAT_BYTES, GST_FORMAT_TIME, and GST_FORMAT_DEFAULT.  For
@@ -1243,7 +1324,9 @@ number should be used when allocating a buffer for raw video.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-has-alpha"></a><h3>gst_video_format_has_alpha ()</h3>
-<pre class="programlisting">gboolean            gst_video_format_has_alpha          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_format_has_alpha          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
 Returns TRUE or FALSE depending on if the video format provides an
 alpha channel.</p>
@@ -1272,7 +1355,9 @@ alpha channel.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-is-rgb"></a><h3>gst_video_format_is_rgb ()</h3>
-<pre class="programlisting">gboolean            gst_video_format_is_rgb             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_format_is_rgb             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
 Determine whether the video format is an RGB format.</p>
 <p>
@@ -1300,7 +1385,9 @@ Determine whether the video format is an RGB format.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-is-yuv"></a><h3>gst_video_format_is_yuv ()</h3>
-<pre class="programlisting">gboolean            gst_video_format_is_yuv             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_format_is_yuv             (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
 Determine whether the video format is a YUV format.</p>
 <p>
@@ -1328,7 +1415,9 @@ Determine whether the video format is a YUV format.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-to-fourcc"></a><h3>gst_video_format_to_fourcc ()</h3>
-<pre class="programlisting">guint32             gst_video_format_to_fourcc          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a>             gst_video_format_to_fourcc          (<a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> format);</pre>
 <p>
 Converts a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> value into the corresponding FOURCC.  Only
 a few YUV formats have corresponding FOURCC values.  If <em class="parameter"><code>format</code></em> has
@@ -1358,7 +1447,9 @@ no corresponding FOURCC value, 0 is returned.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-from-fourcc"></a><h3>gst_video_format_from_fourcc ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      gst_video_format_from_fourcc        (guint32 fourcc);</pre>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a>      gst_video_format_from_fourcc        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> fourcc);</pre>
 <p>
 Converts a FOURCC value into the corresponding <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>.
 If the FOURCC cannot be represented by <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>,
@@ -1388,7 +1479,9 @@ If the FOURCC cannot be represented by <a class="link" href="gst-plugins-base-li
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-format-parse-caps"></a><h3>gst_video_format_parse_caps ()</h3>
-<pre class="programlisting">gboolean            gst_video_format_parse_caps         (GstCaps *caps,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_format_parse_caps         (GstCaps *caps,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat">GstVideoFormat</a> *format,
                                                          int *width,
                                                          int *height);</pre>
@@ -1416,12 +1509,12 @@ function will fail and return FALSE.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td> the width of the video represented by <em class="parameter"><code>caps</code></em> (output)
+<td> the width of the video represented by <em class="parameter"><code>caps</code></em>, may be NULL (output)
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td> the height of the video represented by <em class="parameter"><code>caps</code></em> (output)
+<td> the height of the video represented by <em class="parameter"><code>caps</code></em>, may be NULL (output)
 </td>
 </tr>
 <tr>
@@ -1438,7 +1531,9 @@ function will fail and return FALSE.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-parse-caps-framerate"></a><h3>gst_video_parse_caps_framerate ()</h3>
-<pre class="programlisting">gboolean            gst_video_parse_caps_framerate      (GstCaps *caps,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_parse_caps_framerate      (GstCaps *caps,
                                                          int *fps_n,
                                                          int *fps_d);</pre>
 <p>
@@ -1484,7 +1579,9 @@ is not limited to formats handled by <a class="link" href="gst-plugins-base-libs
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-video-parse-caps-pixel-aspect-ratio"></a><h3>gst_video_parse_caps_pixel_aspect_ratio ()</h3>
-<pre class="programlisting">gboolean            gst_video_parse_caps_pixel_aspect_ratio
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_video_parse_caps_pixel_aspect_ratio
                                                         (GstCaps *caps,
                                                          int *par_n,
                                                          int *par_d);</pre>

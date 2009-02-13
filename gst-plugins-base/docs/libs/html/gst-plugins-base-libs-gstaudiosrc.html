@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -64,7 +65,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstaudiosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -134,8 +137,14 @@ Last reviewed on 2006-09-27 (0.10.12)</p>
 <a name="GstAudioSrc-struct"></a><h3>GstAudioSrc</h3>
 <pre class="programlisting">typedef struct _GstAudioSrc GstAudioSrc;</pre>
 <p>
+Base class for simple audio sources.</p>
+<p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2" lang="en">
@@ -162,8 +171,56 @@ Last reviewed on 2006-09-27 (0.10.12)</p>
 } GstAudioSrcClass;
 </pre>
 <p>
+<a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"><span class="type">GstAudioSrc</span></a> class. Override the vmethod to implement
+functionality.</p>
+<p>
 
 </p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-base-libs-gstbaseaudiosrc.html#GstBaseAudioSrcClass" title="GstBaseAudioSrcClass">GstBaseAudioSrcClass</a> <em class="structfield"><code>parent_class</code></em>;</span></p></td>
+<td> the parent class.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>open</code></em> ()</span></p></td>
+<td> open the device with the specified caps
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>prepare</code></em> ()</span></p></td>
+<td> configure device with format
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>unprepare</code></em> ()</span></p></td>
+<td> undo the configuration
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>close</code></em> ()</span></p></td>
+<td> close the device
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>read</code></em> ()</span></p></td>
+<td> read samples to the audio device
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>delay</code></em> ()</span></p></td>
+<td> the number of samples queued in the device
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code>reset</code></em> ()</span></p></td>
+<td> unblock a read to the device and reset.
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <div class="refsect1" lang="en">

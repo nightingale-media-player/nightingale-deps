@@ -42,11 +42,11 @@ check_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6) \
 	$(am__EXEEXT_7) elements/adder$(EXEEXT) \
 	elements/audioconvert$(EXEEXT) elements/audiorate$(EXEEXT) \
-	elements/audioresample$(EXEEXT) elements/audiotestsrc$(EXEEXT) \
-	elements/decodebin$(EXEEXT) elements/ffmpegcolorspace$(EXEEXT) \
-	elements/gdpdepay$(EXEEXT) elements/gdppay$(EXEEXT) \
-	elements/multifdsink$(EXEEXT) elements/playbin$(EXEEXT) \
-	$(am__EXEEXT_8) elements/videorate$(EXEEXT) \
+	elements/audiotestsrc$(EXEEXT) elements/decodebin$(EXEEXT) \
+	elements/ffmpegcolorspace$(EXEEXT) elements/gdpdepay$(EXEEXT) \
+	elements/gdppay$(EXEEXT) elements/multifdsink$(EXEEXT) \
+	elements/playbin$(EXEEXT) $(am__EXEEXT_8) \
+	elements/speexresample$(EXEEXT) elements/videorate$(EXEEXT) \
 	elements/videotestsrc$(EXEEXT) elements/volume$(EXEEXT) \
 	generic/clock-selection$(EXEEXT) generic/states$(EXEEXT) \
 	gst/typefindfunctions$(EXEEXT) libs/audio$(EXEEXT) \
@@ -83,16 +83,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @USE_ALSA_TRUE@am__EXEEXT_1 = elements/alsa$(EXEEXT)
@@ -129,11 +131,6 @@ elements_audioconvert_DEPENDENCIES = $(top_builddir)/gst-libs/gst/audio/libgstau
 elements_audiorate_SOURCES = elements/audiorate.c
 elements_audiorate_OBJECTS = elements_audiorate-audiorate.$(OBJEXT)
 elements_audiorate_DEPENDENCIES = $(am__DEPENDENCIES_2)
-elements_audioresample_SOURCES = elements/audioresample.c
-elements_audioresample_OBJECTS = audioresample.$(OBJEXT)
-elements_audioresample_LDADD = $(LDADD)
-elements_audioresample_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
 elements_audiotestsrc_SOURCES = elements/audiotestsrc.c
 elements_audiotestsrc_OBJECTS = audiotestsrc.$(OBJEXT)
 elements_audiotestsrc_LDADD = $(LDADD)
@@ -173,6 +170,12 @@ elements_playbin_SOURCES = elements/playbin.c
 elements_playbin_OBJECTS = elements_playbin-playbin.$(OBJEXT)
 elements_playbin_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2)
+elements_speexresample_SOURCES = elements/speexresample.c
+elements_speexresample_OBJECTS =  \
+	elements_speexresample-speexresample.$(OBJEXT)
+elements_speexresample_DEPENDENCIES = $(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
 elements_subparse_SOURCES = elements/subparse.c
 elements_subparse_OBJECTS = elements_subparse-subparse.$(OBJEXT)
 elements_subparse_DEPENDENCIES = $(am__DEPENDENCIES_2)
@@ -302,11 +305,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = elements/adder.c elements/alsa.c elements/audioconvert.c \
-	elements/audiorate.c elements/audioresample.c \
-	elements/audiotestsrc.c elements/decodebin.c \
-	elements/ffmpegcolorspace.c elements/gdpdepay.c \
-	elements/gdppay.c elements/gnomevfssink.c elements/libvisual.c \
-	elements/multifdsink.c elements/playbin.c elements/subparse.c \
+	elements/audiorate.c elements/audiotestsrc.c \
+	elements/decodebin.c elements/ffmpegcolorspace.c \
+	elements/gdpdepay.c elements/gdppay.c elements/gnomevfssink.c \
+	elements/libvisual.c elements/multifdsink.c elements/playbin.c \
+	elements/speexresample.c elements/subparse.c \
 	elements/textoverlay.c elements/videorate.c \
 	elements/videotestsrc.c elements/volume.c elements/vorbisdec.c \
 	elements/vorbistag.c generic/clock-selection.c \
@@ -319,20 +322,21 @@ SOURCES = elements/adder.c elements/alsa.c elements/audioconvert.c \
 	pipelines/vorbisenc.c
 DIST_SOURCES = elements/adder.c elements/alsa.c \
 	elements/audioconvert.c elements/audiorate.c \
-	elements/audioresample.c elements/audiotestsrc.c \
-	elements/decodebin.c elements/ffmpegcolorspace.c \
-	elements/gdpdepay.c elements/gdppay.c elements/gnomevfssink.c \
-	elements/libvisual.c elements/multifdsink.c elements/playbin.c \
-	elements/subparse.c elements/textoverlay.c \
-	elements/videorate.c elements/videotestsrc.c elements/volume.c \
-	elements/vorbisdec.c elements/vorbistag.c \
-	generic/clock-selection.c generic/states.c \
-	gst/typefindfunctions.c libs/audio.c libs/cddabasesrc.c \
-	libs/fft.c libs/mixer.c libs/netbuffer.c libs/pbutils.c \
-	libs/rtp.c libs/tag.c libs/video.c pipelines/gio.c \
-	pipelines/oggmux.c pipelines/simple-launch-lines.c \
-	pipelines/streamheader.c pipelines/theoraenc.c \
-	pipelines/vorbisdec.c pipelines/vorbisenc.c
+	elements/audiotestsrc.c elements/decodebin.c \
+	elements/ffmpegcolorspace.c elements/gdpdepay.c \
+	elements/gdppay.c elements/gnomevfssink.c elements/libvisual.c \
+	elements/multifdsink.c elements/playbin.c \
+	elements/speexresample.c elements/subparse.c \
+	elements/textoverlay.c elements/videorate.c \
+	elements/videotestsrc.c elements/volume.c elements/vorbisdec.c \
+	elements/vorbistag.c generic/clock-selection.c \
+	generic/states.c gst/typefindfunctions.c libs/audio.c \
+	libs/cddabasesrc.c libs/fft.c libs/mixer.c libs/netbuffer.c \
+	libs/pbutils.c libs/rtp.c libs/tag.c libs/video.c \
+	pipelines/gio.c pipelines/oggmux.c \
+	pipelines/simple-launch-lines.c pipelines/streamheader.c \
+	pipelines/theoraenc.c pipelines/vorbisdec.c \
+	pipelines/vorbisenc.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -396,6 +400,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -405,6 +410,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -418,6 +424,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -441,10 +455,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -480,6 +497,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -497,6 +516,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -518,8 +538,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -582,12 +602,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -596,6 +616,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -614,6 +636,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -630,6 +654,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -692,7 +718,7 @@ LOOPS = 10
 
 # inspect every plugin feature
 GST_INSPECT = $(GST_TOOLS_DIR)/gst-inspect-$(GST_MAJORMINOR)
-CHECK_REGISTRY = $(top_builddir)/tests/check/test-registry.xml
+CHECK_REGISTRY = $(top_builddir)/tests/check/test-registry.reg
 REGISTRY_ENVIRONMENT = \
 	GST_REGISTRY=$(CHECK_REGISTRY)
 
@@ -705,10 +731,10 @@ TESTS_ENVIRONMENT = \
 
 
 # ths core dumps of some machines have PIDs appended
-CLEANFILES = core.* test-registry.xml
+CLEANFILES = core.* test-registry.*
 
 # elements to ignore for the state tests
-STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_
+STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_ alsasrc alsasink
 TESTS = $(check_PROGRAMS)
 @USE_ALSA_FALSE@check_alsa = 
 @USE_ALSA_TRUE@check_alsa = elements/alsa
@@ -736,7 +762,6 @@ TESTS = $(check_PROGRAMS)
 
 # ffmpegcolorspace takes too long, so disabled for now
 VALGRIND_TO_FIX = \
-	elements/audioresample \
 	elements/ffmpegcolorspace \
 	libs/video
 
@@ -848,6 +873,17 @@ elements_decodebin_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_decodebin_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 elements_subparse_LDADD = $(LDADD)
 elements_subparse_CFLAGS = $(CFLAGS) $(AM_CFLAGS)
+elements_speexresample_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_BASE_CFLAGS) \
+	$(AM_CFLAGS)
+
+elements_speexresample_LDADD = \
+	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
+	$(GST_BASE_LIBS) \
+	$(LDADD)
+
 elements_textoverlay_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_textoverlay_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 elements_volume_LDADD = \
@@ -981,9 +1017,6 @@ elements/audioconvert$(EXEEXT): $(elements_audioconvert_OBJECTS) $(elements_audi
 elements/audiorate$(EXEEXT): $(elements_audiorate_OBJECTS) $(elements_audiorate_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/audiorate$(EXEEXT)
 	$(LINK) $(elements_audiorate_LDFLAGS) $(elements_audiorate_OBJECTS) $(elements_audiorate_LDADD) $(LIBS)
-elements/audioresample$(EXEEXT): $(elements_audioresample_OBJECTS) $(elements_audioresample_DEPENDENCIES) elements/$(am__dirstamp)
-	@rm -f elements/audioresample$(EXEEXT)
-	$(LINK) $(elements_audioresample_LDFLAGS) $(elements_audioresample_OBJECTS) $(elements_audioresample_LDADD) $(LIBS)
 elements/audiotestsrc$(EXEEXT): $(elements_audiotestsrc_OBJECTS) $(elements_audiotestsrc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/audiotestsrc$(EXEEXT)
 	$(LINK) $(elements_audiotestsrc_LDFLAGS) $(elements_audiotestsrc_OBJECTS) $(elements_audiotestsrc_LDADD) $(LIBS)
@@ -1011,6 +1044,9 @@ elements/multifdsink$(EXEEXT): $(elements_multifdsink_OBJECTS) $(elements_multif
 elements/playbin$(EXEEXT): $(elements_playbin_OBJECTS) $(elements_playbin_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/playbin$(EXEEXT)
 	$(LINK) $(elements_playbin_LDFLAGS) $(elements_playbin_OBJECTS) $(elements_playbin_LDADD) $(LIBS)
+elements/speexresample$(EXEEXT): $(elements_speexresample_OBJECTS) $(elements_speexresample_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/speexresample$(EXEEXT)
+	$(LINK) $(elements_speexresample_LDFLAGS) $(elements_speexresample_OBJECTS) $(elements_speexresample_LDADD) $(LIBS)
 elements/subparse$(EXEEXT): $(elements_subparse_OBJECTS) $(elements_subparse_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/subparse$(EXEEXT)
 	$(LINK) $(elements_subparse_LDFLAGS) $(elements_subparse_OBJECTS) $(elements_subparse_LDADD) $(LIBS)
@@ -1109,7 +1145,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audioresample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audiotestsrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clock-selection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_alsa-alsa.Po@am__quote@
@@ -1118,6 +1153,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_decodebin-decodebin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_libvisual-libvisual.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_playbin-playbin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_speexresample-speexresample.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_subparse-subparse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_textoverlay-textoverlay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements_volume-volume.Po@am__quote@
@@ -1225,20 +1261,6 @@ elements_audiorate-audiorate.obj: elements/audiorate.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/audiorate.c' object='elements_audiorate-audiorate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_audiorate_CFLAGS) $(CFLAGS) -c -o elements_audiorate-audiorate.obj `if test -f 'elements/audiorate.c'; then $(CYGPATH_W) 'elements/audiorate.c'; else $(CYGPATH_W) '$(srcdir)/elements/audiorate.c'; fi`
-
-audioresample.o: elements/audioresample.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT audioresample.o -MD -MP -MF "$(DEPDIR)/audioresample.Tpo" -c -o audioresample.o `test -f 'elements/audioresample.c' || echo '$(srcdir)/'`elements/audioresample.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/audioresample.Tpo" "$(DEPDIR)/audioresample.Po"; else rm -f "$(DEPDIR)/audioresample.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/audioresample.c' object='audioresample.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o audioresample.o `test -f 'elements/audioresample.c' || echo '$(srcdir)/'`elements/audioresample.c
-
-audioresample.obj: elements/audioresample.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT audioresample.obj -MD -MP -MF "$(DEPDIR)/audioresample.Tpo" -c -o audioresample.obj `if test -f 'elements/audioresample.c'; then $(CYGPATH_W) 'elements/audioresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/audioresample.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/audioresample.Tpo" "$(DEPDIR)/audioresample.Po"; else rm -f "$(DEPDIR)/audioresample.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/audioresample.c' object='audioresample.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o audioresample.obj `if test -f 'elements/audioresample.c'; then $(CYGPATH_W) 'elements/audioresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/audioresample.c'; fi`
 
 audiotestsrc.o: elements/audiotestsrc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT audiotestsrc.o -MD -MP -MF "$(DEPDIR)/audiotestsrc.Tpo" -c -o audiotestsrc.o `test -f 'elements/audiotestsrc.c' || echo '$(srcdir)/'`elements/audiotestsrc.c; \
@@ -1365,6 +1387,20 @@ elements_playbin-playbin.obj: elements/playbin.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/playbin.c' object='elements_playbin-playbin.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_playbin_CFLAGS) $(CFLAGS) -c -o elements_playbin-playbin.obj `if test -f 'elements/playbin.c'; then $(CYGPATH_W) 'elements/playbin.c'; else $(CYGPATH_W) '$(srcdir)/elements/playbin.c'; fi`
+
+elements_speexresample-speexresample.o: elements/speexresample.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_speexresample_CFLAGS) $(CFLAGS) -MT elements_speexresample-speexresample.o -MD -MP -MF "$(DEPDIR)/elements_speexresample-speexresample.Tpo" -c -o elements_speexresample-speexresample.o `test -f 'elements/speexresample.c' || echo '$(srcdir)/'`elements/speexresample.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/elements_speexresample-speexresample.Tpo" "$(DEPDIR)/elements_speexresample-speexresample.Po"; else rm -f "$(DEPDIR)/elements_speexresample-speexresample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/speexresample.c' object='elements_speexresample-speexresample.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_speexresample_CFLAGS) $(CFLAGS) -c -o elements_speexresample-speexresample.o `test -f 'elements/speexresample.c' || echo '$(srcdir)/'`elements/speexresample.c
+
+elements_speexresample-speexresample.obj: elements/speexresample.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_speexresample_CFLAGS) $(CFLAGS) -MT elements_speexresample-speexresample.obj -MD -MP -MF "$(DEPDIR)/elements_speexresample-speexresample.Tpo" -c -o elements_speexresample-speexresample.obj `if test -f 'elements/speexresample.c'; then $(CYGPATH_W) 'elements/speexresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/speexresample.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/elements_speexresample-speexresample.Tpo" "$(DEPDIR)/elements_speexresample-speexresample.Po"; else rm -f "$(DEPDIR)/elements_speexresample-speexresample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='elements/speexresample.c' object='elements_speexresample-speexresample.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_speexresample_CFLAGS) $(CFLAGS) -c -o elements_speexresample-speexresample.obj `if test -f 'elements/speexresample.c'; then $(CYGPATH_W) 'elements/speexresample.c'; else $(CYGPATH_W) '$(srcdir)/elements/speexresample.c'; fi`
 
 elements_subparse-subparse.o: elements/subparse.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_subparse_CFLAGS) $(CFLAGS) -MT elements_subparse-subparse.o -MD -MP -MF "$(DEPDIR)/elements_subparse-subparse.Tpo" -c -o elements_subparse-subparse.o `test -f 'elements/subparse.c' || echo '$(srcdir)/'`elements/subparse.c; \

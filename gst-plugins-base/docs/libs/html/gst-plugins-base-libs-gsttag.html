@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -70,14 +71,34 @@
 #define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-HEAD:CAPS" title="GST_TAG_CMML_HEAD">GST_TAG_CMML_HEAD</a>
 #define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-STREAM:CAPS" title="GST_TAG_CMML_STREAM">GST_TAG_CMML_STREAM</a>
 void                <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-register-musicbrainz-tags" title="gst_tag_register_musicbrainz_tags ()">gst_tag_register_musicbrainz_tags</a>   (void);
-gchar*              <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8" title="gst_tag_freeform_string_to_utf8 ()">gst_tag_freeform_string_to_utf8</a>     (const gchar *data,
-                                                         gint size,
-                                                         const gchar **env_vars);
-gboolean            <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment" title="gst_tag_parse_extended_comment ()">gst_tag_parse_extended_comment</a>      (const gchar *ext_comment,
-                                                         gchar **key,
-                                                         gchar **lang,
-                                                         gchar **value,
-                                                         gboolean fail_if_no_key);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8" title="gst_tag_freeform_string_to_utf8 ()">gst_tag_freeform_string_to_utf8</a>     (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **env_vars);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment" title="gst_tag_parse_extended_comment ()">gst_tag_parse_extended_comment</a>      (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *ext_comment,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **key,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **lang,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> fail_if_no_key);
 enum                <a class="link" href="gst-plugins-base-libs-gsttag.html#GstTagImageType" title="enum GstTagImageType">GstTagImageType</a>;
 </pre>
 </div>
@@ -86,7 +107,7 @@ enum                <a class="link" href="gst-plugins-base-libs-gsttag.html#GstT
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2765449"></a><p>
+<a name="id3181891"></a><p>
 Contains additional standardized GStreamer tag definitions for plugins
 and applications, and functions to register them with the GStreamer
 tag system.
@@ -271,9 +292,17 @@ function before using them. Can be called multiple times.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-freeform-string-to-utf8"></a><h3>gst_tag_freeform_string_to_utf8 ()</h3>
-<pre class="programlisting">gchar*              gst_tag_freeform_string_to_utf8     (const gchar *data,
-                                                         gint size,
-                                                         const gchar **env_vars);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_tag_freeform_string_to_utf8     (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> size,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **env_vars);</pre>
 <p>
 Convenience function to read a string with unknown character encoding. If
 the string is already in UTF-8 encoding, it will be returned right away.
@@ -318,18 +347,32 @@ ISO-8859-1 is assumed (which will almost always succeed).</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-parse-extended-comment"></a><h3>gst_tag_parse_extended_comment ()</h3>
-<pre class="programlisting">gboolean            gst_tag_parse_extended_comment      (const gchar *ext_comment,
-                                                         gchar **key,
-                                                         gchar **lang,
-                                                         gchar **value,
-                                                         gboolean fail_if_no_key);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_tag_parse_extended_comment      (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *ext_comment,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **key,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **lang,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **value,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> fail_if_no_key);</pre>
 <p>
 Convenience function to parse a GST_TAG_EXTENDED_COMMENT string and
 separate it into its components.
 </p>
 <p>
 If successful, <em class="parameter"><code>key</code></em>, <em class="parameter"><code>lang</code></em> and/or <em class="parameter"><code>value</code></em> will be set to newly allocated
-strings that you need to free with <code class="function">g_free()</code> when done. <em class="parameter"><code>key</code></em> and <em class="parameter"><code>lang</code></em>
+strings that you need to free with <a
+href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a> when done. <em class="parameter"><code>key</code></em> and <em class="parameter"><code>lang</code></em>
 may also be set to NULL by this function if there is no key or no language
 code in the extended comment string.</p>
 <p>

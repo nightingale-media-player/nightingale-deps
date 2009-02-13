@@ -39,21 +39,17 @@ GST_BOILERPLATE (GstGioBaseSrc, gst_gio_base_src, GstBaseSrc,
 static void gst_gio_base_src_finalize (GObject * object);
 
 static gboolean gst_gio_base_src_start (GstBaseSrc * base_src);
-
 static gboolean gst_gio_base_src_stop (GstBaseSrc * base_src);
-
 static gboolean gst_gio_base_src_get_size (GstBaseSrc * base_src,
     guint64 * size);
 static gboolean gst_gio_base_src_is_seekable (GstBaseSrc * base_src);
-
 static gboolean gst_gio_base_src_unlock (GstBaseSrc * base_src);
-
 static gboolean gst_gio_base_src_unlock_stop (GstBaseSrc * base_src);
-
 static gboolean gst_gio_base_src_check_get_range (GstBaseSrc * base_src);
-
 static GstFlowReturn gst_gio_base_src_create (GstBaseSrc * base_src,
     guint64 offset, guint size, GstBuffer ** buf);
+static gboolean gst_gio_base_src_query (GstBaseSrc * base_src,
+    GstQuery * query);
 
 static void
 gst_gio_base_src_base_init (gpointer gclass)
@@ -93,6 +89,7 @@ gst_gio_base_src_class_init (GstGioBaseSrcClass * klass)
   gstbasesrc_class->check_get_range =
       GST_DEBUG_FUNCPTR (gst_gio_base_src_check_get_range);
   gstbasesrc_class->create = GST_DEBUG_FUNCPTR (gst_gio_base_src_create);
+  gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_gio_base_src_query);
 }
 
 static void
@@ -317,9 +314,7 @@ gst_gio_base_src_create (GstBaseSrc * base_src, guint64 offset, guint size,
     GstBuffer ** buf_return)
 {
   GstGioBaseSrc *src = GST_GIO_BASE_SRC (base_src);
-
   GstBuffer *buf;
-
   GstFlowReturn ret = GST_FLOW_OK;
 
   g_return_val_if_fail (G_IS_INPUT_STREAM (src->stream), GST_FLOW_ERROR);
@@ -369,7 +364,11 @@ gst_gio_base_src_create (GstBaseSrc * base_src, guint64 offset, guint size,
         return ret;
     }
 
-    src->cache = gst_buffer_new_and_alloc (cachesize);
+    src->cache = gst_buffer_try_new_and_alloc (cachesize);
+    if (G_UNLIKELY (src->cache == NULL)) {
+      GST_ERROR_OBJECT (src, "Failed to allocate %u bytes", cachesize);
+      return GST_FLOW_ERROR;
+    }
 
     GST_LOG_OBJECT (src, "Reading %u bytes from offset %" G_GUINT64_FORMAT,
         cachesize, offset);
@@ -425,6 +424,31 @@ gst_gio_base_src_create (GstBaseSrc * base_src, guint64 offset, guint size,
   }
 
   *buf_return = buf;
+
+  return ret;
+}
+
+static gboolean
+gst_gio_base_src_query (GstBaseSrc * base_src, GstQuery * query)
+{
+  gboolean ret = FALSE;
+  GstGioBaseSrc *src = GST_GIO_BASE_SRC (base_src);
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_URI:
+      if (GST_IS_URI_HANDLER (src)) {
+        const gchar *uri = gst_uri_handler_get_uri (GST_URI_HANDLER (src));
+        gst_query_set_uri (query, uri);
+        ret = TRUE;
+      }
+      break;
+    default:
+      ret = FALSE;
+      break;
+  }
+
+  if (!ret)
+    ret = GST_BASE_SRC_CLASS (parent_class)->query (base_src, query);
 
   return ret;
 }

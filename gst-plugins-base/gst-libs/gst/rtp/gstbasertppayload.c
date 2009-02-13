@@ -467,6 +467,7 @@ gst_basertppayload_set_outcaps (GstBaseRTPPayload * payload, gchar * fieldname,
     ...)
 {
   GstCaps *srccaps, *peercaps;
+  gboolean res;
 
   /* fill in the defaults, there properties cannot be negotiated. */
   srccaps = gst_caps_new_simple ("application/x-rtp",
@@ -581,10 +582,10 @@ gst_basertppayload_set_outcaps (GstBaseRTPPayload * payload, gchar * fieldname,
     GST_DEBUG_OBJECT (payload, "with peer caps: %" GST_PTR_FORMAT, srccaps);
   }
 
-  gst_pad_set_caps (GST_BASE_RTP_PAYLOAD_SRCPAD (payload), srccaps);
+  res = gst_pad_set_caps (GST_BASE_RTP_PAYLOAD_SRCPAD (payload), srccaps);
   gst_caps_unref (srccaps);
 
-  return TRUE;
+  return res;
 }
 
 /**
@@ -816,6 +817,7 @@ gst_basertppayload_change_state (GstElement * element,
       else
         basertppayload->seqnum_base = basertppayload->seqnum_offset;
       priv->next_seqnum = basertppayload->seqnum_base;
+      basertppayload->seqnum = basertppayload->seqnum_base;
 
       if (priv->ssrc_random)
         basertppayload->current_ssrc = g_rand_int (basertppayload->ssrc_rand);
@@ -826,6 +828,7 @@ gst_basertppayload_change_state (GstElement * element,
         basertppayload->ts_base = g_rand_int (basertppayload->ts_rand);
       else
         basertppayload->ts_base = basertppayload->ts_offset;
+      basertppayload->timestamp = basertppayload->ts_base;
       break;
     default:
       break;

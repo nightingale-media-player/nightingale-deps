@@ -79,6 +79,8 @@ typedef enum
   GST_BASE_AUDIO_SRC_SLAVE_NONE
 } GstBaseAudioSrcSlaveMethod;
 
+#define GST_TYPE_BASE_AUDIO_SRC_SLAVE_METHOD (gst_base_audio_src_slave_method_get_type ())
+
 /**
  * GstBaseAudioSrc:
  *
@@ -126,6 +128,7 @@ struct _GstBaseAudioSrcClass {
 };
 
 GType gst_base_audio_src_get_type(void);
+GType gst_base_audio_src_slave_method_get_type (void);
 
 GstRingBuffer *gst_base_audio_src_create_ringbuffer (GstBaseAudioSrc *src);
 

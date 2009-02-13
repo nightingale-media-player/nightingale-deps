@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -45,7 +46,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstriff.top_of_page"></a>gstriff</span></h2>
-<p>gstriff</p>
+<p>gstriff — Riff fileformat utillity functions.</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -232,21 +233,27 @@
 #define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-y41p" title="GST_RIFF_y41p">GST_RIFF_y41p</a>
 #define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-yuy2" title="GST_RIFF_yuy2">GST_RIFF_yuy2</a>
 #define             <a class="link" href="gst-plugins-base-libs-gstriff.html#GST-RIFF-yv12" title="GST_RIFF_yv12">GST_RIFF_yv12</a>
-GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-caps" title="gst_riff_create_audio_caps ()">gst_riff_create_audio_caps</a>          (guint16 codec_id,
+GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-caps" title="gst_riff_create_audio_caps ()">gst_riff_create_audio_caps</a>          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> codec_id,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> *strf,
                                                          GstBuffer *strf_data,
                                                          GstBuffer *strd_data,
                                                          char **codec_name);
 GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-audio-template-caps" title="gst_riff_create_audio_template_caps ()">gst_riff_create_audio_template_caps</a> (void);
-GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-caps" title="gst_riff_create_iavs_caps ()">gst_riff_create_iavs_caps</a>           (guint32 codec_fcc,
+GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-caps" title="gst_riff_create_iavs_caps ()">gst_riff_create_iavs_caps</a>           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> *strf,
                                                          GstBuffer *strf_data,
                                                          GstBuffer *strd_data,
                                                          char **codec_name);
 GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-iavs-template-caps" title="gst_riff_create_iavs_template_caps ()">gst_riff_create_iavs_template_caps</a>  (void);
-GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-caps" title="gst_riff_create_video_caps ()">gst_riff_create_video_caps</a>          (guint32 codec_fcc,
+GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-create-video-caps" title="gst_riff_create_video_caps ()">gst_riff_create_video_caps</a>          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> *strf,
                                                          GstBuffer *strf_data,
@@ -256,36 +263,58 @@ GstCaps*            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
                     <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-dmlh" title="gst_riff_dmlh">gst_riff_dmlh</a>;
                     <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-index-entry" title="gst_riff_index_entry">gst_riff_index_entry</a>;
 void                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-init" title="gst_riff_init ()">gst_riff_init</a>                       (void);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-chunk" title="gst_riff_parse_chunk ()">gst_riff_parse_chunk</a>                (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-chunk" title="gst_riff_parse_chunk ()">gst_riff_parse_chunk</a>                (GstElement *element,
                                                          GstBuffer *buf,
-                                                         guint *offset,
-                                                         guint32 *fourcc,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *fourcc,
                                                          GstBuffer **chunk_data);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-file-header" title="gst_riff_parse_file_header ()">gst_riff_parse_file_header</a>          (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-file-header" title="gst_riff_parse_file_header ()">gst_riff_parse_file_header</a>          (GstElement *element,
                                                          GstBuffer *buf,
-                                                         guint32 *doctype);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *doctype);
 void                <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-info" title="gst_riff_parse_info ()">gst_riff_parse_info</a>                 (GstElement *element,
                                                          GstBuffer *buf,
                                                          GstTagList **taglist);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-auds" title="gst_riff_parse_strf_auds ()">gst_riff_parse_strf_auds</a>            (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-auds" title="gst_riff_parse_strf_auds ()">gst_riff_parse_strf_auds</a>            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> **strf,
                                                          GstBuffer **data);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-iavs" title="gst_riff_parse_strf_iavs ()">gst_riff_parse_strf_iavs</a>            (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-iavs" title="gst_riff_parse_strf_iavs ()">gst_riff_parse_strf_iavs</a>            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> **strf,
                                                          GstBuffer **data);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-vids" title="gst_riff_parse_strf_vids ()">gst_riff_parse_strf_vids</a>            (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strf-vids" title="gst_riff_parse_strf_vids ()">gst_riff_parse_strf_vids</a>            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> **strf,
                                                          GstBuffer **data);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strh" title="gst_riff_parse_strh ()">gst_riff_parse_strh</a>                 (GstElement *element,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-parse-strh" title="gst_riff_parse_strh ()">gst_riff_parse_strh</a>                 (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> **strh);
 GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-read-chunk" title="gst_riff_read_chunk ()">gst_riff_read_chunk</a>                 (GstElement *element,
                                                          GstPad *pad,
-                                                         guint64 *offset,
-                                                         guint32 *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *tag,
                                                          GstBuffer **chunk_data);
                     <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a>;
                     <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a>;
@@ -295,6 +324,9 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstriff.description"></a><h2>Description</h2>
+<p>
+A collection of functions to handle riff base files, such as avi, wav and
+asf.</p>
 <p>
 
 </p>
@@ -1896,7 +1928,9 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-create-audio-caps"></a><h3>gst_riff_create_audio_caps ()</h3>
-<pre class="programlisting">GstCaps*            gst_riff_create_audio_caps          (guint16 codec_id,
+<pre class="programlisting">GstCaps*            gst_riff_create_audio_caps          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> codec_id,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> *strf,
                                                          GstBuffer *strf_data,
@@ -1969,7 +2003,9 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-create-iavs-caps"></a><h3>gst_riff_create_iavs_caps ()</h3>
-<pre class="programlisting">GstCaps*            gst_riff_create_iavs_caps           (guint32 codec_fcc,
+<pre class="programlisting">GstCaps*            gst_riff_create_iavs_caps           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> *strf,
                                                          GstBuffer *strf_data,
@@ -2042,7 +2078,9 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-create-video-caps"></a><h3>gst_riff_create_video_caps ()</h3>
-<pre class="programlisting">GstCaps*            gst_riff_create_video_caps          (guint32 codec_fcc,
+<pre class="programlisting">GstCaps*            gst_riff_create_video_caps          (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> codec_fcc,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> *strh,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> *strf,
                                                          GstBuffer *strf_data,
@@ -2152,16 +2190,24 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstriff.html#gst
 <a name="gst-riff-init"></a><h3>gst_riff_init ()</h3>
 <pre class="programlisting">void                gst_riff_init                       (void);</pre>
 <p>
+Initialize riff library.</p>
+<p>
 
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-chunk"></a><h3>gst_riff_parse_chunk ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_chunk                (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_chunk                (GstElement *element,
                                                          GstBuffer *buf,
-                                                         guint *offset,
-                                                         guint32 *fourcc,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *fourcc,
                                                          GstBuffer **chunk_data);</pre>
 <p>
 Reads a single chunk.</p>
@@ -2209,9 +2255,13 @@ Reads a single chunk.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-file-header"></a><h3>gst_riff_parse_file_header ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_file_header          (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_file_header          (GstElement *element,
                                                          GstBuffer *buf,
-                                                         guint32 *doctype);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *doctype);</pre>
 <p>
 Reads the first few bytes from the provided buffer, checks
 if this stream is a RIFF stream, and determines document type.
@@ -2287,7 +2337,9 @@ Parses stream metadata from input data.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-auds"></a><h3>gst_riff_parse_strf_auds ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_strf_auds            (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_auds            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-auds" title="gst_riff_strf_auds">gst_riff_strf_auds</a> **strf,
                                                          GstBuffer **data);</pre>
@@ -2336,7 +2388,9 @@ use.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-iavs"></a><h3>gst_riff_parse_strf_iavs ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_strf_iavs            (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_iavs            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-iavs" title="gst_riff_strf_iavs">gst_riff_strf_iavs</a> **strf,
                                                          GstBuffer **data);</pre>
@@ -2384,7 +2438,9 @@ function takes ownership of <em class="parameter"><code>buf</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-strf-vids"></a><h3>gst_riff_parse_strf_vids ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_strf_vids            (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strf_vids            (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strf-vids" title="gst_riff_strf_vids">gst_riff_strf_vids</a> **strf,
                                                          GstBuffer **data);</pre>
@@ -2432,7 +2488,9 @@ extradata from input data. This function takes ownership of <em class="parameter
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-riff-parse-strh"></a><h3>gst_riff_parse_strh ()</h3>
-<pre class="programlisting">gboolean            gst_riff_parse_strh                 (GstElement *element,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_riff_parse_strh                 (GstElement *element,
                                                          GstBuffer *buf,
                                                          <a class="link" href="gst-plugins-base-libs-gstriff.html#gst-riff-strh" title="gst_riff_strh">gst_riff_strh</a> **strh);</pre>
 <p>
@@ -2473,8 +2531,12 @@ Parses a strh structure from input data. Takes ownership of <em class="parameter
 <a name="gst-riff-read-chunk"></a><h3>gst_riff_read_chunk ()</h3>
 <pre class="programlisting">GstFlowReturn       gst_riff_read_chunk                 (GstElement *element,
                                                          GstPad *pad,
-                                                         guint64 *offset,
-                                                         guint32 *tag,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a> *offset,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *tag,
                                                          GstBuffer **chunk_data);</pre>
 <p>
 Reads a single chunk of data. Since 0.10.8 'JUNK' chunks
@@ -2576,8 +2638,13 @@ are skipped automatically.</p>
 #define GST_RIFF_WAVE_FORMAT_MPEGL3         (0x0055)
 #define GST_RIFF_WAVE_FORMAT_LUCENT_G723    (0x0059)
 #define GST_RIFF_WAVE_FORMAT_CIRRUS         (0x0060)
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4  (0x0061)  /* not official */
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK3  (0x0062)  /* not official */
+/* FIXME: where are these from? are they used at all? */
+#if 0
 #define GST_RIFF_WAVE_FORMAT_ESPCM          (0x0061)
 #define GST_RIFF_WAVE_FORMAT_VOXWARE        (0x0062)
+#endif
 #define GST_RIFF_WAVE_FORMAT_CANOPUS_ATRAC  (0x0063)
 #define GST_RIFF_WAVE_FORMAT_G726_ADPCM     (0x0064)
 #define GST_RIFF_WAVE_FORMAT_G722_ADPCM     (0x0065)

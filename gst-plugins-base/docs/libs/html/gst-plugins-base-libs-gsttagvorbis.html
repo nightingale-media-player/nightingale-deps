@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -56,24 +57,52 @@
 
 #include &lt;gst/tag/tag.h&gt;
 
-const gchar*        <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-from-vorbis-tag" title="gst_tag_from_vorbis_tag ()">gst_tag_from_vorbis_tag</a>             (const gchar *vorbis_tag);
-const gchar*        <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-tag" title="gst_tag_to_vorbis_tag ()">gst_tag_to_vorbis_tag</a>               (const gchar *gst_tag);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-from-vorbis-tag" title="gst_tag_from_vorbis_tag ()">gst_tag_from_vorbis_tag</a>             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *vorbis_tag);
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-tag" title="gst_tag_to_vorbis_tag ()">gst_tag_to_vorbis_tag</a>               (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *gst_tag);
 void                <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-vorbis-tag-add" title="gst_vorbis_tag_add ()">gst_vorbis_tag_add</a>                  (GstTagList *list,
-                                                         const gchar *tag,
-                                                         const gchar *value);
-GList*              <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-comments" title="gst_tag_to_vorbis_comments ()">gst_tag_to_vorbis_comments</a>          (const GstTagList *list,
-                                                         const gchar *tag);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-to-vorbis-comments" title="gst_tag_to_vorbis_comments ()">gst_tag_to_vorbis_comments</a>          (const GstTagList *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);
 
 GstTagList*         <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-list-from-vorbiscomment-buffer" title="gst_tag_list_from_vorbiscomment_buffer ()">gst_tag_list_from_vorbiscomment_buffer</a>
                                                         (const GstBuffer *buffer,
-                                                         const guint8 *id_data,
-                                                         const guint id_data_length,
-                                                         gchar **vendor_string);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *id_data,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id_data_length,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **vendor_string);
 GstBuffer*          <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-list-to-vorbiscomment-buffer" title="gst_tag_list_to_vorbiscomment_buffer ()">gst_tag_list_to_vorbiscomment_buffer</a>
                                                         (const GstTagList *list,
-                                                         const guint8 *id_data,
-                                                         const guint id_data_length,
-                                                         const gchar *vendor_string);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *id_data,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id_data_length,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *vendor_string);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -81,7 +110,7 @@ GstBuffer*          <a class="link" href="gst-plugins-base-libs-gsttagvorbis.htm
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2769003"></a><p>
+<a name="id3185445"></a><p>
 Contains various utility functions for plugins to parse or create
 vorbiscomments and map them to and from <span class="type">GstTagList</span>s.
 </p>
@@ -94,7 +123,11 @@ vorbiscomments and map them to and from <span class="type">GstTagList</span>s.
 <a name="gst-plugins-base-libs-gsttagvorbis.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
 <a name="gst-tag-from-vorbis-tag"></a><h3>gst_tag_from_vorbis_tag ()</h3>
-<pre class="programlisting">const gchar*        gst_tag_from_vorbis_tag             (const gchar *vorbis_tag);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_tag_from_vorbis_tag             (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *vorbis_tag);</pre>
 <p>
 Looks up the GStreamer tag for a vorbiscomment tag.</p>
 <p>
@@ -119,7 +152,11 @@ Looks up the GStreamer tag for a vorbiscomment tag.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-to-vorbis-tag"></a><h3>gst_tag_to_vorbis_tag ()</h3>
-<pre class="programlisting">const gchar*        gst_tag_to_vorbis_tag               (const gchar *gst_tag);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_tag_to_vorbis_tag               (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *gst_tag);</pre>
 <p>
 Looks up the vorbiscomment tag for a GStreamer tag.</p>
 <p>
@@ -145,8 +182,12 @@ Looks up the vorbiscomment tag for a GStreamer tag.</p>
 <div class="refsect2" lang="en">
 <a name="gst-vorbis-tag-add"></a><h3>gst_vorbis_tag_add ()</h3>
 <pre class="programlisting">void                gst_vorbis_tag_add                  (GstTagList *list,
-                                                         const gchar *tag,
-                                                         const gchar *value);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);</pre>
 <p>
 Convenience function using <a class="link" href="gst-plugins-base-libs-gsttagvorbis.html#gst-tag-from-vorbis-tag" title="gst_tag_from_vorbis_tag ()"><code class="function">gst_tag_from_vorbis_tag()</code></a>, parsing
 a vorbis comment string into the right type and adding it to the
@@ -182,8 +223,12 @@ of a <span class="type">GST_TAG_EXTENDED_COMMENT</span> (since 0.10.10 at least)
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-tag-to-vorbis-comments"></a><h3>gst_tag_to_vorbis_comments ()</h3>
-<pre class="programlisting">GList*              gst_tag_to_vorbis_comments          (const GstTagList *list,
-                                                         const gchar *tag);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gst_tag_to_vorbis_comments          (const GstTagList *list,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tag);</pre>
 <p>
 Creates a new tag list that contains the information parsed out of a
 vorbiscomment packet.</p>
@@ -205,7 +250,9 @@ vorbiscomment packet.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A <span class="type">GList</span> of newly-allowcated key=value strings. Free with
+<td> A <a
+href="/usr/share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> of newly-allowcated key=value strings. Free with
          g_list_foreach (list, (GFunc) g_free, NULL) plus g_list_free (list)
 </td>
 </tr>
@@ -217,9 +264,15 @@ vorbiscomment packet.</p>
 <a name="gst-tag-list-from-vorbiscomment-buffer"></a><h3>gst_tag_list_from_vorbiscomment_buffer ()</h3>
 <pre class="programlisting">GstTagList*         gst_tag_list_from_vorbiscomment_buffer
                                                         (const GstBuffer *buffer,
-                                                         const guint8 *id_data,
-                                                         const guint id_data_length,
-                                                         gchar **vendor_string);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *id_data,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id_data_length,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **vendor_string);</pre>
 <p>
 Creates a new tag list that contains the information parsed out of a
 vorbiscomment packet.</p>
@@ -264,9 +317,15 @@ vorbiscomment packet.</p>
 <a name="gst-tag-list-to-vorbiscomment-buffer"></a><h3>gst_tag_list_to_vorbiscomment_buffer ()</h3>
 <pre class="programlisting">GstBuffer*          gst_tag_list_to_vorbiscomment_buffer
                                                         (const GstTagList *list,
-                                                         const guint8 *id_data,
-                                                         const guint id_data_length,
-                                                         const gchar *vendor_string);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *id_data,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> id_data_length,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *vendor_string);</pre>
 <p>
 Creates a new vorbiscomment buffer from a tag list.</p>
 <p>

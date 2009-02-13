@@ -20,47 +20,37 @@
 
 /**
  * SECTION:element-theoraparse
- * @short_description: parses theora streams 
  * @see_also: theoradec, oggdemux, vorbisparse
  *
- * <refsect2>
- * <para>
  * The theoraparse element will parse the header packets of the Theora
  * stream and put them as the streamheader in the caps. This is used in the
  * multifdsink case where you want to stream live theora streams to multiple
  * clients, each client has to receive the streamheaders first before they can
  * consume the theora packets.
- * </para>
- * <para>
+ *
  * This element also makes sure that the buffers that it pushes out are properly
  * timestamped and that their offset and offset_end are set. The buffers that
  * theoraparse outputs have all of the metadata that oggmux expects to receive,
  * which allows you to (for example) remux an ogg/theora file.
- * </para>
- * <para>
+ *
  * In addition, this element allows you to fix badly synchronized streams. You
  * pass in an array of (granule time, buffer time) synchronization points via
  * the synchronization-points GValueArray property, and this element will adjust
  * the granulepos values that it outputs. The adjustment will be made by
  * offsetting all buffers that it outputs by a specified amount, and updating
  * that offset from the value array whenever a keyframe is processed.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=video.ogg ! oggdemux ! theoraparse ! fakesink
- * </programlisting>
- * This pipeline shows that the streamheader is set in the caps, and that each
+ * ]| This pipeline shows that the streamheader is set in the caps, and that each
  * buffer has the timestamp, duration, offset, and offset_end set.
- * </para>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch filesrc location=video.ogg ! oggdemux ! theoraparse \
  *            ! oggmux ! filesink location=video-remuxed.ogg
- * </programlisting>
- * This pipeline shows remuxing. video-remuxed.ogg might not be exactly the same
+ * ]| This pipeline shows remuxing. video-remuxed.ogg might not be exactly the same
  * as video.ogg, but they should produce exactly the same decoded data.
- * </para>
  * </refsect2>
  *
  * Last reviewed on 2008-05-28 (0.10.20)
@@ -327,6 +317,7 @@ theora_parse_set_streamheader (GstTheoraParse * parse)
   for (i = 0; i < 3; i++) {
     ogg_packet packet;
     GstBuffer *buf;
+    int ret;
 
     buf = parse->streamheader[i];
     gst_buffer_set_caps (buf, GST_PAD_CAPS (parse->srcpad));
@@ -336,7 +327,12 @@ theora_parse_set_streamheader (GstTheoraParse * parse)
     packet.granulepos = GST_BUFFER_OFFSET_END (buf);
     packet.packetno = i + 1;
     packet.e_o_s = 0;
-    theora_decode_header (&parse->info, &parse->comment, &packet);
+    packet.b_o_s = (i == 0);
+    ret = theora_decode_header (&parse->info, &parse->comment, &packet);
+    if (ret < 0) {
+      GST_WARNING_OBJECT (parse, "Failed to decode Theora header %d: %d\n",
+          i + 1, ret);
+    }
   }
 
   parse->fps_n = parse->info.fps_numerator;

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -26,7 +27,9 @@
                    | 
                   <a href="#gst-plugins-base-plugins-clockoverlay.description" class="shortcut">Description</a>
                    | 
-                  <a href="#gst-plugins-base-plugins-clockoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+                  <a href="#gst-plugins-base-plugins-clockoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-base-plugins-clockoverlay.properties" class="shortcut">Properties</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="gst-plugins-base-plugins-clockoverlay"></a><div class="titlepage"></div>
@@ -46,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-clockoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay">GstTextOverlay</a>
@@ -54,11 +59,16 @@
 </pre>
 </div>
 <div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-clockoverlay.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay--time-format" title='The "time-format" property'>time-format</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-clockoverlay.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2606377"></a><p>
 This element overlays the current clock time on top of a video
 stream. You can position the text and configure the font details
 using the properties of the <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay"><span class="type">GstTextOverlay</span></a> class. By default, the
@@ -66,36 +76,31 @@ time is displayed in the top left corner of the picture, with some
 padding to the left and to the top.
 </p>
 <p>
-Here is a simple pipeline that displays the current time in the top left
-corner of the video picture:
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2769798"></a><h3>Example launch lines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v videotestsrc ! clockoverlay ! xvimagesink
-</pre>
-<p>
-</p>
-<p>
-Here is another pipeline that displays the current time with some leading
+</pre></div> Display the current time in the top left corner of the video picture
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge City" shaded-background=true ! ffmpegcolorspace ! ximagesink
+</pre></div> Another pipeline that displays the current time with some leading
 text in the bottom right corner of the video picture, with the background
 of the text being shaded in order to make it more legible on top of a
-bright video background:
-</p>
-<pre class="programlisting">
-gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge City" shaded-background=true ! ffmpegcolorspace ! ximagesink
-</pre>
-<p>
-</p>
+bright video background.
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2604509"></a><h3>Element Information</h3>
+<a name="id2699236"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-pango.html#plugin-pango">pango</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-pango.html#plugin-pango">pango</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -107,6 +112,10 @@ gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge 
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2747928"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -150,6 +159,7 @@ gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge 
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -164,6 +174,17 @@ Opaque clockoverlay data structure.</p>
 <p>
 
 </p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-base-plugins-clockoverlay.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstClockOverlay--time-format"></a><h3>The <code class="literal">"time-format"</code> property</h3>
+<pre class="programlisting">  "time-format"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Format to use for time and date value, as in strftime.</p>
+<p>Default value: "%H:%M:%S"</p>
 </div>
 </div>
 <div class="refsect1" lang="en">

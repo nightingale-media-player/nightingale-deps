@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -63,25 +64,37 @@ void                <a class="link" href="gst-plugins-base-libs-gstbasertpaudiop
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
 void                <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-frame-options" title="gst_base_rtp_audio_payload_set_frame_options ()">gst_base_rtp_audio_payload_set_frame_options</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
-                                                         gint frame_duration,
-                                                         gint frame_size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> frame_duration,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> frame_size);
 void                <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-based" title="gst_base_rtp_audio_payload_set_sample_based ()">gst_base_rtp_audio_payload_set_sample_based</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
 void                <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-set-sample-options" title="gst_base_rtp_audio_payload_set_sample_options ()">gst_base_rtp_audio_payload_set_sample_options</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
-                                                         gint sample_size);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> sample_size);
 GstAdapter*         <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-get-adapter" title="gst_base_rtp_audio_payload_get_adapter ()">gst_base_rtp_audio_payload_get_adapter</a>
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload);
 GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#gst-base-rtp-audio-payload-push" title="gst_base_rtp_audio_payload_push ()">gst_base_rtp_audio_payload_push</a>     (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *baseaudiopayload,
-                                                         const guint8 *data,
-                                                         guint payload_len,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> payload_len,
                                                          GstClockTime timestamp);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstbasertpaudiopayload.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a>
@@ -93,7 +106,7 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpaudiop
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2674546"></a><h3>Usage</h3>
+<a name="id3090691"></a><h3>Usage</h3>
 <p>
 Provides a base class for audio RTP payloaders for frame or sample based
 audio codecs (constant bitrate)
@@ -176,8 +189,12 @@ audio codec</p>
 <a name="gst-base-rtp-audio-payload-set-frame-options"></a><h3>gst_base_rtp_audio_payload_set_frame_options ()</h3>
 <pre class="programlisting">void                gst_base_rtp_audio_payload_set_frame_options
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
-                                                         gint frame_duration,
-                                                         gint frame_size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> frame_duration,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> frame_size);</pre>
 <p>
 Sets the options for frame based audio codecs.</p>
 <p>
@@ -229,7 +246,9 @@ audio codec</p>
 <a name="gst-base-rtp-audio-payload-set-sample-options"></a><h3>gst_base_rtp_audio_payload_set_sample_options ()</h3>
 <pre class="programlisting">void                gst_base_rtp_audio_payload_set_sample_options
                                                         (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *basertpaudiopayload,
-                                                         gint sample_size);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> sample_size);</pre>
 <p>
 Sets the options for sample based audio codecs.</p>
 <p>
@@ -284,8 +303,12 @@ Gets the internal adapter used by the depayloader.</p>
 <div class="refsect2" lang="en">
 <a name="gst-base-rtp-audio-payload-push"></a><h3>gst_base_rtp_audio_payload_push ()</h3>
 <pre class="programlisting">GstFlowReturn       gst_base_rtp_audio_payload_push     (<a class="link" href="gst-plugins-base-libs-gstbasertpaudiopayload.html#GstBaseRTPAudioPayload">GstBaseRTPAudioPayload</a> *baseaudiopayload,
-                                                         const guint8 *data,
-                                                         guint payload_len,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> payload_len,
                                                          GstClockTime timestamp);</pre>
 <p>
 Create an RTP buffer and store <em class="parameter"><code>payload_len</code></em> bytes of <em class="parameter"><code>data</code></em> as the

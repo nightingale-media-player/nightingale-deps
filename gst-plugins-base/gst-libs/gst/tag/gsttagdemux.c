@@ -163,6 +163,23 @@ static void gst_tag_demux_init (GstTagDemux * obj, GstTagDemuxClass * klass);
 
 static gpointer parent_class;   /* NULL */
 
+GType
+gst_tag_demux_result_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      {GST_TAG_DEMUX_RESULT_BROKEN_TAG, "GST_TAG_DEMUX_RESULT_BROKEN_TAG",
+          "broken-tag"},
+      {GST_TAG_DEMUX_RESULT_AGAIN, "GST_TAG_DEMUX_RESULT_AGAIN", "again"},
+      {GST_TAG_DEMUX_RESULT_OK, "GST_TAG_DEMUX_RESULT_OK", "ok"},
+      {0, NULL, NULL}
+    };
+    etype = g_enum_register_static ("GstTagDemuxResult", values);
+  }
+  return etype;
+}
+
 /* Cannot use boilerplate macros here because we want the abstract flag */
 GType
 gst_tag_demux_get_type (void)
@@ -821,12 +838,14 @@ gst_tag_demux_srcpad_event (GstPad * pad, GstEvent * event)
       break;
     }
     default:
-      /* FIXME: shouldn't we pass unknown and unhandled events upstream? */
+      res = gst_pad_push_event (tagdemux->priv->sinkpad, event);
+      event = NULL;
       break;
   }
 
   gst_object_unref (tagdemux);
-  gst_event_unref (event);
+  if (event)
+    gst_event_unref (event);
   return res;
 }
 
@@ -1151,9 +1170,8 @@ gst_tag_demux_sink_activate (GstPad * sinkpad)
     demux->priv->send_tag_event = TRUE;
   }
 
-  if (demux->priv->upstream_size <= 
-          demux->priv->strip_start + demux->priv->strip_end)
-  {
+  if (demux->priv->upstream_size <=
+      demux->priv->strip_start + demux->priv->strip_end) {
     /* There was no data (probably due to a truncated file) */
     GST_DEBUG_OBJECT (demux, "No data in file");
     return FALSE;

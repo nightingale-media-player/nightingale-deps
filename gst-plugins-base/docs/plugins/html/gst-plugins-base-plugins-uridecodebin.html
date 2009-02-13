@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -39,7 +40,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-uridecodebin.top_of_page"></a>uridecodebin</span></h2>
-<p>uridecodebin — decoder for an uri</p>
+<p>uridecodebin — Autoplug and decode an URI to raw media</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -53,7 +54,9 @@ enum                <a class="link" href="gst-plugins-base-plugins-uridecodebin.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-uridecodebin.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBin
@@ -69,11 +72,23 @@ GstURIDecodeBin implements
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-uridecodebin.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--uri" title='The "uri" property'>uri</a>"                      gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--uri" title='The "uri" property'>uri</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--caps" title='The "caps" property'>caps</a>"                     GstCaps*              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        gchar*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--subtitle-encoding" title='The "subtitle-encoding" property'>subtitle-encoding</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
   "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--source" title='The "source" property'>source</a>"                   GstElement*           : Read
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--buffer-duration" title='The "buffer-duration" property'>buffer-duration</a>"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -90,16 +105,18 @@ GstURIDecodeBin implements
 <a name="gst-plugins-base-plugins-uridecodebin.description"></a><h2>Description</h2>
 <p>
 Decodes data from a URI into raw media.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2647183"></a><h3>Element Information</h3>
+<a name="id2799392"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-uridecodebin.html#plugin-uridecodebin">uridecodebin</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-uridecodebin.html#plugin-uridecodebin">uridecodebin</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -111,6 +128,10 @@ Decodes data from a URI into raw media.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2799455"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -132,6 +153,7 @@ Decodes data from a URI into raw media.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
@@ -188,14 +210,18 @@ return values for the autoplug-select signal.</p>
 <a name="gst-plugins-base-plugins-uridecodebin.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin--uri"></a><h3>The <code class="literal">"uri"</code> property</h3>
-<pre class="programlisting">  "uri"                      gchar*                : Read / Write</pre>
+<pre class="programlisting">  "uri"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>URI to decode.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
-<pre class="programlisting">  "connection-speed"         guint                 : Read / Write</pre>
+<pre class="programlisting">  "connection-speed"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Network connection speed in kbps (0 = unknown).</p>
 <p>Default value: 0</p>
 </div>
@@ -208,7 +234,9 @@ return values for the autoplug-select signal.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin--subtitle-encoding"></a><h3>The <code class="literal">"subtitle-encoding"</code> property</h3>
-<pre class="programlisting">  "subtitle-encoding"        gchar*                : Read / Write</pre>
+<pre class="programlisting">  "subtitle-encoding"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
 <p>Default value: NULL</p>
 </div>
@@ -218,15 +246,39 @@ return values for the autoplug-select signal.</p>
 <pre class="programlisting">  "source"                   GstElement*           : Read</pre>
 <p>Source object used.</p>
 </div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--buffer-duration"></a><h3>The <code class="literal">"buffer-duration"</code> property</h3>
+<pre class="programlisting">  "buffer-duration"          <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write</pre>
+<p>Buffer duration when buffering network streams.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstURIDecodeBin--buffer-size"></a><h3>The <code class="literal">"buffer-size"</code> property</h3>
+<pre class="programlisting">  "buffer-size"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Buffer size when buffering network streams.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-uridecodebin.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin-autoplug-continue"></a><h3>The <code class="literal">"autoplug-continue"</code> signal</h3>
-<pre class="programlisting">gboolean            user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
                                                         GstPad          *caps,
                                                         GstCaps         *Returns,
-                                                        gpointer         user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last</pre>
 <p>
 This signal is emitted whenever uridecodebin finds a new stream. It is
 emitted before looking for any elements that can handle that stream.</p>
@@ -252,8 +304,12 @@ emitted before looking for any elements that can handle that stream.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <span class="type">TRUE</span> if you wish uridecodebin to look for elements that can
-handle the given <em class="parameter"><code>caps</code></em>. If <span class="type">FALSE</span>, those caps will be considered as
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><span class="type">TRUE</span></a> if you wish uridecodebin to look for elements that can
+handle the given <em class="parameter"><code>caps</code></em>. If <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
+><span class="type">FALSE</span></a>, those caps will be considered as
 final and the pad will be exposed as such (see 'new-decoded-pad'
 signal).
 </td>
@@ -264,10 +320,14 @@ signal).
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin-autoplug-factories"></a><h3>The <code class="literal">"autoplug-factories"</code> signal</h3>
-<pre class="programlisting">GValueArray*        user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+>GValueArray</a>*        user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
                                                         GstPad          *caps,
                                                         GstCaps         *Returns,
-                                                        gpointer         user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last</pre>
 <p>
 This function is emited when an array of possible factories for <em class="parameter"><code>caps</code></em> on
 <em class="parameter"><code>pad</code></em> is needed. Decodebin2 will by default return</p>
@@ -293,7 +353,9 @@ This function is emited when an array of possible factories for <em class="param
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <span class="type">GValueArray</span>* with a list of factories to try. The factories are
+<td> a <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+><span class="type">GValueArray</span></a>* with a list of factories to try. The factories are
 by default tried in the returned order or based on the index returned by
 "autoplug-select".
 </td>
@@ -308,7 +370,9 @@ by default tried in the returned order or based on the index returned by
                                                         GstPad            *caps,
                                                         GstCaps           *factories,
                                                         GstElementFactory *Returns,
-                                                        gpointer           user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
 <p>
 This signal is emitted once uridecodebin has found all the possible
 <span class="type">GstElementFactory</span> that can be used to handle the given <em class="parameter"><code>caps</code></em>.</p>
@@ -330,7 +394,9 @@ This signal is emitted once uridecodebin has found all the possible
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>factories</code></em> :</span></p></td>
-<td> A <span class="type">GValueArray</span> of possible <span class="type">GstElementFactory</span> to use, sorted by
+<td> A <a
+href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray"
+><span class="type">GValueArray</span></a> of possible <span class="type">GstElementFactory</span> to use, sorted by
 rank (higher ranks come first).
 </td>
 </tr>
@@ -340,7 +406,9 @@ rank (higher ranks come first).
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> A <span class="type">gint</span> indicating what factory index from the <em class="parameter"><code>factories</code></em> array
+<td> A <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+><span class="type">gint</span></a> indicating what factory index from the <em class="parameter"><code>factories</code></em> array
 that you wish uridecodebin to use for trying to decode the given <em class="parameter"><code>caps</code></em>.
 -1 to stop selection of a factory. The default handler always
 returns the first possible factory.
@@ -355,7 +423,9 @@ returns the first possible factory.
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *pad,
                                                         GstPad          *caps,
                                                         GstCaps         *arg2,
-                                                        gpointer         user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last</pre>
 <p>
 This signal is emitted when a pad for which there is no further possible
 decoding is added to the uridecodebin.</p>
@@ -387,7 +457,9 @@ stream type.
 <div class="refsect2" lang="en">
 <a name="GstURIDecodeBin-drained"></a><h3>The <code class="literal">"drained"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-plugins-uridecodebin.html#GstURIDecodeBin">GstURIDecodeBin</a> *arg0,
-                                                        gpointer         user_data)      : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last</pre>
 <p>
 This signal is emitted when the data for the current uri is played.</p>
 <p>

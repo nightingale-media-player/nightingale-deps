@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -64,7 +65,9 @@ for a <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerC
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gsttunernorm.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstTunerNorm
 </pre>
 </div>
@@ -73,7 +76,7 @@ for a <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerC
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2645800"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm"><span class="type">GstTunerNorm</span></a> object is created by an element implementing the
+<a name="id3061602"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm"><span class="type">GstTunerNorm</span></a> object is created by an element implementing the
 <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> interface and encapsulates the selection of a capture/output format
 for a selected <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a>.
 </p>
@@ -100,12 +103,16 @@ for a selected <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>label</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>label</code></em>;</span></p></td>
 <td> A string containing a descriptive name for the norm
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GValue <em class="structfield"><code>framerate</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue"
+>GValue</a> <em class="structfield"><code>framerate</code></em>;</span></p></td>
 <td> A GValue containing the framerate associated with this norm,
             if any. (May be unset).
 </td>

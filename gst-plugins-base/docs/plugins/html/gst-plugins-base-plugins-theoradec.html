@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -48,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoradec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstTheoraDec
@@ -57,15 +60,13 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoradec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-theoradec.html#GstTheoraDec--crop" title='The "crop" property'>crop</a>"                     gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-theoradec.html#GstTheoraDec--crop" title='The "crop" property'>crop</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-theoradec.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2597434"></a><h3>Example pipeline</h3>
 <p>
 This element decodes theora streams into raw video
 <a class="ulink" href="http://www.theora.org/" target="_top">Theora</a> is a royalty-free
@@ -74,26 +75,29 @@ Foundation</a>, based on the VP3 codec.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2729438"></a><h3>Example pipeline</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! xvimagesink
-</pre>
-This example pipeline will decode an ogg stream and decodes the theora video. Refer to
+</pre></div> This example pipeline will decode an ogg stream and decodes the theora video. Refer to
 the theoraenc example to create the ogg file.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2607483"></a><h3>Element Information</h3>
+<a name="id2769246"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -105,6 +109,10 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2793353"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -148,6 +156,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -168,7 +177,9 @@ Opaque object data structure.</p>
 <a name="gst-plugins-base-plugins-theoradec.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstTheoraDec--crop"></a><h3>The <code class="literal">"crop"</code> property</h3>
-<pre class="programlisting">  "crop"                     gboolean              : Read / Write</pre>
+<pre class="programlisting">  "crop"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Crop the image to the visible region.</p>
 <p>Default value: TRUE</p>
 </div>

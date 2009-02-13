@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -50,7 +51,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-volume.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseTransform
@@ -71,40 +74,41 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-g
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-volume.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-volume.html#GstVolume--mute" title='The "mute" property'>mute</a>"                     gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-volume.html#GstVolume--volume" title='The "volume" property'>volume</a>"                   gdouble               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-volume.html#GstVolume--mute" title='The "mute" property'>mute</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-volume.html#GstVolume--volume" title='The "volume" property'>volume</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-volume.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2649103"></a><h3>Example launch line</h3>
-<p>
 The volume element changes the volume of the audio data.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2801707"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v -m audiotestsrc ! volume volume=0.5 ! level ! fakesink silent=TRUE
-</pre>
-<p>
-This pipeline shows that the level of audiotestsrc has been halved
+</pre></div> This pipeline shows that the level of audiotestsrc has been halved
 (peak values are around -6 dB and RMS around -9 dB) compared to
 the same pipeline without the volume element.
-</p>
 </div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2649096"></a><h3>Element Information</h3>
+<a name="id2801696"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-volume.html#plugin-volume">volume</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-volume.html#plugin-volume">volume</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -116,6 +120,10 @@ the same pipeline without the volume element.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2738449"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -191,6 +199,7 @@ the same pipeline without the volume element.
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -211,14 +220,18 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-volume.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstVolume--mute"></a><h3>The <code class="literal">"mute"</code> property</h3>
-<pre class="programlisting">  "mute"                     gboolean              : Read / Write</pre>
+<pre class="programlisting">  "mute"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>mute channel.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVolume--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
-<pre class="programlisting">  "volume"                   gdouble               : Read / Write</pre>
+<pre class="programlisting">  "volume"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>volume factor.</p>
 <p>Allowed values: [0,10]</p>
 <p>Default value: 1</p>

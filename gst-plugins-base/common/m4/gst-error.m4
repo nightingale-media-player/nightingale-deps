@@ -28,7 +28,15 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
   AS_COMPILER_FLAG(-Wall,
                    ERROR_CFLAGS="-Wall",
                    ERROR_CFLAGS="")
-  
+ 
+  dnl Warn if declarations after statements are used (C99 extension)
+  AS_COMPILER_FLAG(-Wdeclaration-after-statement,
+        ERROR_CFLAGS="$ERROR_CFLAGS -Wdeclaration-after-statement")
+
+  dnl Warn if variable length arrays are used (C99 extension)
+  AS_COMPILER_FLAG(-Wvla,
+        ERROR_CFLAGS="$ERROR_CFLAGS -Wvla")
+
   dnl if asked for, add -Werror if supported
   if test "x$1" != "xno"
   then
@@ -49,7 +57,8 @@ AC_DEFUN([AG_GST_SET_ERROR_CFLAGS],
           for f in 'no%E_EMPTY_DECLARATION' \
                    'no%E_STATEMENT_NOT_REACHED' \
                    'no%E_ARGUEMENT_MISMATCH' \
-                   'no%E_MACRO_REDEFINED'
+                   'no%E_MACRO_REDEFINED' \
+                   'no%E_LOOP_NOT_ENTERED_AT_TOP'
           do
             AS_COMPILER_FLAG([-errwarn=%all,$f], [
               ERROR_CFLAGS="$ERROR_CFLAGS,$f"
@@ -96,7 +105,7 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
         ERROR_CXXFLAGS="$ERROR_CXXFLAGS -Werror"
 
         dnl add exceptions
-        for f in '-Wno-non-virtual-dtor -fno-strict-aliasing'
+        for f in '-Wno-non-virtual-dtor' '-fno-strict-aliasing'
         do
           AS_CXX_COMPILER_FLAG([$f], ERROR_CXXFLAGS="$ERROR_CXXFLAGS $f")
         done
@@ -117,7 +126,8 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
         for f in 'no%E_EMPTY_DECLARATION' \
                  'no%E_STATEMENT_NOT_REACHED' \
                  'no%E_ARGUEMENT_MISMATCH' \
-                 'no%E_MACRO_REDEFINED'
+                 'no%E_MACRO_REDEFINED' \
+                 'no%E_LOOP_NOT_ENTERED_AT_TOP'
         do
           AS_CXX_COMPILER_FLAG([-errwarn=%all,$f], [
             ERROR_CXXFLAGS="$ERROR_CXXFLAGS,$f"

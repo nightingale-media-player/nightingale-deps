@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -37,7 +38,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-alsasrc.top_of_page"></a>alsasrc</span></h2>
-<p>alsasrc — capture audio from an alsa device</p>
+<p>alsasrc — Read from a sound card via ALSA</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -50,7 +51,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-alsasrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSrc
@@ -77,40 +80,43 @@ href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-g
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-alsasrc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-alsasrc.html#GstAlsaSrc--device" title='The "device" property'>device</a>"                   gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-alsasrc.html#GstAlsaSrc--device-name" title='The "device-name" property'>device-name</a>"              gchar*                : Read
+  "<a class="link" href="gst-plugins-base-plugins-alsasrc.html#GstAlsaSrc--device" title='The "device" property'>device</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-alsasrc.html#GstAlsaSrc--device-name" title='The "device-name" property'>device-name</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-alsasrc.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2588578"></a><h3>Example pipelines</h3>
-<p>
 This element reads data from an audio card using the ALSA API.
 </p>
 <p>
-Record from a sound card using ALSA and encode to Ogg/Vorbis.
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2729072"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v alsasrc ! audioconvert ! vorbisenc ! oggmux ! filesink location=alsasrc.ogg
-</pre>
+</pre></div> Record from a sound card using ALSA and encode to Ogg/Vorbis.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2618992"></a><h3>Element Information</h3>
+<a name="id2742052"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-alsa.html#plugin-alsa">alsa</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-alsa.html#plugin-alsa">alsa</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -122,6 +128,10 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2742115"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -160,6 +170,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -180,14 +191,18 @@ Opaque data structure</p>
 <a name="gst-plugins-base-plugins-alsasrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstAlsaSrc--device"></a><h3>The <code class="literal">"device"</code> property</h3>
-<pre class="programlisting">  "device"                   gchar*                : Read / Write</pre>
+<pre class="programlisting">  "device"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>ALSA device, as defined in an asound configuration file.</p>
 <p>Default value: "default"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstAlsaSrc--device-name"></a><h3>The <code class="literal">"device-name"</code> property</h3>
-<pre class="programlisting">  "device-name"              gchar*                : Read</pre>
+<pre class="programlisting">  "device-name"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
 <p>Human-readable name of the sound device.</p>
 <p>Default value: ""</p>
 </div>

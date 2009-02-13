@@ -33,16 +33,56 @@
 {
    <conditional jump on wim's debian 2/2/06>
    Memcheck:Cond
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:dl_open_worker
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:_dl_open
    fun:dlopen_doit
-   obj:/lib/ld-2.3.*.so
+   obj:/lib/ld-2.*.so
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
+   fun:dlopen
    fun:g_module_open
    fun:gst_plugin_load_file
+}
+
+{
+   <Conditional jump>
+   Memcheck:Cond
+   fun:strlen
+   fun:fillin_rpath
+   fun:_dl_init_paths
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+   obj:/lib64/ld-2.*.so
+   obj:*
+   obj:*
+}
+
+{
+   <Conditional jump>
+   Memcheck:Cond
+   fun:_dl_relocate_object
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+   obj:/lib64/ld-2.*.so
+   obj:*
+   obj:*
+}
+
+{
+   <insert a suppression name here>
+   Memcheck:Cond
+   fun:_dl_relocate_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_2.2.5
+   fun:g_module_open
 }
 
 # glibc does not deallocate thread-local storage
@@ -1635,11 +1675,11 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc_tcval
-   obj:/usr/lib/libORBit-2.so.*
+   obj:*
    fun:PortableServer_POA_servant_to_reference
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1665,14 +1705,14 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc*
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_demarshal_IOR
    fun:ORBit_demarshal_object
    fun:ORBit_demarshal_value
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_small_invoke_stub
    fun:ConfigServer_get_default_database
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1681,15 +1721,15 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc*
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:IOP_generate_profiles
    fun:ORBit_marshal_object
    fun:ORBit_marshal_value
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:ORBit_small_invoke_stub
    fun:ConfigServer_add_client
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1698,11 +1738,11 @@
    fun:calloc
    fun:g_malloc0
    fun:ORBit_alloc_by_tc
-   obj:/usr/lib/libORBit-2.so.*
+   fun:*
    fun:PortableServer_POA_servant_to_reference
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
-   obj:/usr/lib/libgconf-2.so.*
+   fun:*
+   fun:*
+   fun:*
    fun:gconf_engine_get_default
 }
 {
@@ -1721,6 +1761,20 @@
    obj:/usr/lib/libgconf-2.so.*
    obj:/usr/lib/libgconf-2.so.*
    fun:gconf_engine_get_default
+}
+
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:ORBit_alloc*
+   fun:*
+   fun:ORBit_demarshal_IOR
+   fun:ORBit_demarshal_object
+   fun:*
+   fun:*
+   fun:gconf_activate_server
 }
 
 # Some libORBit/bonobo initialisation stuff
@@ -1767,7 +1821,7 @@
    fun:g_malloc0
    fun:ORBit_alloc_tcval
    fun:ORBit_adaptor_setup
-   obj:/usr/lib/libORBit-2.so*
+   fun:*
    fun:ORBit_POA_setup_root
    fun:ORBit_init_internals
    fun:CORBA_ORB_init
@@ -2126,6 +2180,118 @@
    fun:gst_plugin_load_*
 }
 
+# series of invalid read of size 8 in g_module_open for ubuntu
+# hardy x86/64bit
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlopen
+   fun:g_module_open
+}
+
+{
+   <invalid read of size 8 within <g_module_open>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libc-2.7.so
+   obj:/lib/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libdl-2.7.so
+   fun:dlsym
+   fun:g_module_symbol
+   fun:g_module_open
+}
+
 {
    <GLib caching>
    Memcheck:Addr4
@@ -2203,3 +2369,362 @@
    fun:_nss_compat_getpwnam_r
    fun:getpwnam_r
 }
+
+{
+   <GLib caching>
+   Memcheck:Addr8
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/libc-2.7.so
+   obj:/lib/ld-2.7.so
+   fun:__libc_dlopen_mode
+   fun:__nss_lookup_function
+   obj:/lib/libc-2.7.so
+   fun:getpwnam_r
+}
+
+## Leaks in ALSA (variations of leak from snd_config_load1)
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:calloc
+   fun:_snd_config_make
+   fun:_snd_config_make_add
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:snd_config_load1
+}
+
+{
+   <Alsa leak>
+   Memcheck:Leak
+   fun:malloc
+   fun:snd1_dlobj_cache_add
+   fun:snd_ctl_open_noupdate
+}
+
+# The following are leaks of caps that need to be created dynamically
+# in the type registration of the plugin (used for pad templates).
+
+{
+   <Leak in ogmparsers>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_new_simple
+   fun:*
+   fun:g_type_class_ref
+   fun:gst_element_register
+}
+
+{
+   <Leak in ogmparsers>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:*
+   fun:*
+   fun:g_type_class_ref
+   fun:gst_element_register
+   fun:gst_ogm_parse_plugin_init
+   fun:plugin_init
+}
+
+{
+   <Leak in videotestsrc>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_video_test_src_base_init
+   fun:g_type_class_ref
+   fun:gst_element_register
+}
+
+{
+   <Leak in ffmpegcolorspace>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_ffmpegcsp_codectype_to_caps
+   fun:gst_ffmpegcolorspace_register
+   fun:plugin_init
+}
+
+{
+   <Leak in ffmpegocolorspace>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_ffmpegcolorspace_register
+   fun:plugin_init
+}
+
+{
+   <Leak in gstffmpegdemux>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_new_any
+   fun:gst_ffmpegdemux_register
+   fun:plugin_init
+}
+
+{
+   <Leak in GstAudioFilter subclasses>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_append
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_append
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant>
+   Memcheck:Leak
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   fun:g_ptr_array_maybe_expand
+   fun:g_ptr_array_add
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in GstAudioFilter subclasses, variant2>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_ptr_array_sized_new
+   fun:gst_caps_new_empty
+   fun:gst_caps_copy
+   fun:gst_audio_filter_class_add_pad_templates
+}
+
+{
+   <Leak in riff-media>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:gst_caps_new_empty
+   fun:gst_riff_create_*_template_caps
+}
+
+## Leaks in pango (bilboed: gentoo unstable amd64)
+
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:realloc
+   fun:FcPatternObjectInsertElt
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:pango_layout_get_extents*
+   fun:pango_layout_get_pixel_extents
+   fun:gst_text_overlay_render_text
+}
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:pango_language_from_string
+   fun:pango_language_get_default
+   fun:pango_context_init
+   fun:g_type_create_instance
+   fun:g_object_constructor
+   fun:g_object_newv
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:pango_font_map_create_context
+}
+
+{
+   <PangoLanguage can never be freed>
+   Memcheck:Leak
+   fun:calloc
+   fun:g_malloc0
+   fun:pango_language_from_string
+}
+
+## Leak of property_list in gstffmpegcfg.c
+## This list is created in gst_ffmpegcsp_init(), called from 
+## gst_ffmpegenc_register.
+{
+   <insert a suppression name here>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_datalist_id_set_data_full
+   fun:gst_ffmpeg_cfg_init
+   fun:gst_ffmpegenc_register
+   fun:plugin_init
+}
+
+## Leak of GIO module through gnomevfs
+
+{
+   <gio leak>
+   Memcheck:Leak
+   fun:malloc
+   fun:g_malloc
+   fun:*
+   fun:*
+   fun:g_type_create_instance
+   fun:*
+   fun:*
+   fun:*
+   fun:*
+   fun:g_io_module_new
+   fun:g_io_modules_load_all_in_directory
+   fun:*
+   fun:get_default_vfs
+}
+
+## Conditional jump in getaddrinfo (bilboed, gentoo ~amd64, Dec 13 2008)
+{
+   <Leak of addrinfo in esd>
+   Memcheck:Cond
+   fun:gaih_inet
+   fun:getaddrinfo
+}
+

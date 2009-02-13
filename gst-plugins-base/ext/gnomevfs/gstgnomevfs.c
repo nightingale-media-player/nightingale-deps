@@ -114,6 +114,9 @@ plugin_init (GstPlugin * plugin)
     }
   }
 
+  gst_plugin_add_dependency_simple (plugin, NULL, GNOME_VFS_MODULES_DIR, NULL,
+      GST_PLUGIN_DEPENDENCY_FLAG_NONE);
+
   if (!gst_element_register (plugin, "gnomevfssrc", GST_RANK_SECONDARY,
           gst_gnome_vfs_src_get_type ()))
     return FALSE;
@@ -127,6 +130,7 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE, LOCALEDIR);
  */
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
   return TRUE;

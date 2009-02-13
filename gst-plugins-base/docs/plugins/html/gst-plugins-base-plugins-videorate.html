@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -35,8 +36,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-videorate.top_of_page"></a>videorate</span></h2>
-<p>videorate — retimestamps and drops/duplicates video frames to
- match the source pad's framerate and create a perfect stream</p>
+<p>videorate — Drops/duplicates/adjusts timestamps on video frames to make a perfect stream</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -49,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videorate.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstVideoRate
@@ -58,20 +60,28 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videorate.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--drop" title='The "drop" property'>drop</a>"                     guint64               : Read
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--duplicate" title='The "duplicate" property'>duplicate</a>"                guint64               : Read
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--in" title='The "in" property'>in</a>"                       guint64               : Read
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--new-pref" title='The "new-pref" property'>new-pref</a>"                 gdouble               : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--out" title='The "out" property'>out</a>"                      guint64               : Read
-  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--silent" title='The "silent" property'>silent</a>"                   gboolean              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--drop" title='The "drop" property'>drop</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--duplicate" title='The "duplicate" property'>duplicate</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--in" title='The "in" property'>in</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--new-pref" title='The "new-pref" property'>new-pref</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--out" title='The "out" property'>out</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read
+  "<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--silent" title='The "silent" property'>silent</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videorate.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2551972"></a><h3>Example pipelines</h3>
 <p>
 This element takes an incoming stream of timestamped video frames.
 It will produce a perfect stream that matches the source pad's framerate.
@@ -94,55 +104,53 @@ A conversion to a specific framerate can be forced by using filtered caps on
 the source pad.
 </p>
 <p>
-The properties "in", "out", "duplicate" and "drop" can be read to obtain
-information about number of input frames, output frames, dropped frames
-(i.e. the number of unused input frames) and duplicated frames (i.e. the
- number of times an input frame was duplicated, beside being used normally).
+The properties <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--in" title='The "in" property'><span class="type">"in"</span></a>, <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--out" title='The "out" property'><span class="type">"out"</span></a>, <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--duplicate" title='The "duplicate" property'><span class="type">"duplicate"</span></a>
+and <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--drop" title='The "drop" property'><span class="type">"drop"</span></a> can be read to obtain information about number of
+input frames, output frames, dropped frames (i.e. the number of unused input
+frames) and duplicated frames (i.e. the number of times an input frame was
+duplicated, beside being used normally).
 </p>
 <p>
 An input stream that needs no adjustments will thus never have dropped or
 duplicated frames.
 </p>
 <p>
-When the "silent" property is set to FALSE, a GObject property notification
-will be emitted whenever one of the "duplicate" or "drop" values changes.
+When the <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--silent" title='The "silent" property'><span class="type">"silent"</span></a> property is set to FALSE, a GObject property
+notification will be emitted whenever one of the <a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--duplicate" title='The "duplicate" property'><span class="type">"duplicate"</span></a> or
+<a class="link" href="gst-plugins-base-plugins-videorate.html#GstVideoRate--drop" title='The "drop" property'><span class="type">"drop"</span></a> values changes.
 This can potentially cause performance degradation.
 Note that property notification will happen from the streaming thread, so
 applications should be prepared for this.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2745788"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! videorate ! video/x-raw-yuv,framerate=15/1 ! xvimagesink
-</pre>
-<p>
-Decode an Ogg/Theora file and adjust the framerate to 15 fps before playing.
+</pre></div> Decode an Ogg/Theora file and adjust the framerate to 15 fps before playing.
 To create the test Ogg/Theora file refer to the documentation of theoraenc.
-</p>
-<p>
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v v4lsrc ! videorate ! video/x-raw-yuv,framerate=25/2 ! theoraenc ! oggmux ! filesink location=v4l.ogg
-</pre>
-<p>
-Capture video from a V4L device, and adjust the stream to 12.5 fps before
+</pre></div> Capture video from a V4L device, and adjust the stream to 12.5 fps before
 encoding to Ogg/Theora.
-</p>
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-09-02 (0.10.11)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2645042"></a><h3>Element Information</h3>
+<a name="id2800563"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-videorate.html#plugin-videorate">videorate</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-videorate.html#plugin-videorate">videorate</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -154,6 +162,10 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2800625"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -177,6 +189,14 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 <td><p><span class="term"></span></p></td>
 <td> video/x-raw-rgb</td>
 </tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/jpeg</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/png</td>
+</tr>
 </tbody>
 </table></div>
 <div class="variablelist"><table border="0">
@@ -202,8 +222,17 @@ Last reviewed on 2006-09-02 (0.10.11)</p>
 <td><p><span class="term"></span></p></td>
 <td> video/x-raw-rgb</td>
 </tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/jpeg</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> image/png</td>
+</tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
@@ -225,28 +254,36 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-videorate.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--drop"></a><h3>The <code class="literal">"drop"</code> property</h3>
-<pre class="programlisting">  "drop"                     guint64               : Read</pre>
+<pre class="programlisting">  "drop"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read</pre>
 <p>Number of dropped frames.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--duplicate"></a><h3>The <code class="literal">"duplicate"</code> property</h3>
-<pre class="programlisting">  "duplicate"                guint64               : Read</pre>
+<pre class="programlisting">  "duplicate"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read</pre>
 <p>Number of duplicated frames.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--in"></a><h3>The <code class="literal">"in"</code> property</h3>
-<pre class="programlisting">  "in"                       guint64               : Read</pre>
+<pre class="programlisting">  "in"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read</pre>
 <p>Number of input frames.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--new-pref"></a><h3>The <code class="literal">"new-pref"</code> property</h3>
-<pre class="programlisting">  "new-pref"                 gdouble               : Read / Write</pre>
+<pre class="programlisting">  "new-pref"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
 <p>Value indicating how much to prefer new frames (unused).</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 1</p>
@@ -254,14 +291,18 @@ Opaque data structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--out"></a><h3>The <code class="literal">"out"</code> property</h3>
-<pre class="programlisting">  "out"                      guint64               : Read</pre>
+<pre class="programlisting">  "out"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"
+>guint64</a>               : Read</pre>
 <p>Number of output frames.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVideoRate--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
-<pre class="programlisting">  "silent"                   gboolean              : Read / Write</pre>
+<pre class="programlisting">  "silent"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Don't emit notify for dropped and duplicated frames.</p>
 <p>Default value: TRUE</p>
 </div>

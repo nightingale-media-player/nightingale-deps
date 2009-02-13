@@ -19,7 +19,6 @@
 
 /**
  * SECTION:element-uridecodebin
- * @short_description: decoder for an uri
  *
  * Decodes data from a URI into raw media.
  */
@@ -420,7 +419,7 @@ gst_uri_decode_bin_init (GstURIDecodeBin * dec, GstURIDecodeBinClass * klass)
   dec->connection_speed = DEFAULT_CONNECTION_SPEED;
   dec->caps = DEFAULT_CAPS;
   dec->encoding = g_strdup (DEFAULT_SUBTITLE_ENCODING);
- 
+
   dec->buffer_duration = DEFAULT_BUFFER_DURATION;
   dec->buffer_size = DEFAULT_BUFFER_SIZE;
 }
@@ -433,6 +432,10 @@ gst_uri_decode_bin_finalize (GObject * obj)
   g_mutex_free (dec->lock);
   g_free (dec->uri);
   g_free (dec->encoding);
+  if (dec->factories) {
+    g_value_array_free (dec->factories);
+    dec->factories = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
@@ -1153,10 +1156,10 @@ type_found (GstElement * typefind, guint probability,
   /* If buffer size or duration are set, set them on the queue2 element */
   if (decoder->buffer_size != -1)
     g_object_set (G_OBJECT (queue), "max-size-bytes",
-            decoder->buffer_size, NULL);
+        decoder->buffer_size, NULL);
   if (decoder->buffer_duration != -1)
     g_object_set (G_OBJECT (queue), "max-size-time",
-            decoder->buffer_duration, NULL);
+        decoder->buffer_duration, NULL);
 
   gst_bin_add (GST_BIN_CAST (decoder), queue);
 
@@ -1856,6 +1859,7 @@ gst_uri_decode_bin_plugin_init (GstPlugin * plugin)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
   return gst_element_register (plugin, "uridecodebin", GST_RANK_NONE,

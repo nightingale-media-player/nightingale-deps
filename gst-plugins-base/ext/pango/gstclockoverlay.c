@@ -22,30 +22,23 @@
  * SECTION:element-clockoverlay
  * @see_also: #GstTextOverlay, #GstTimeOverlay
  *
- * <refsect2>
- * <para>
  * This element overlays the current clock time on top of a video
  * stream. You can position the text and configure the font details
  * using the properties of the #GstTextOverlay class. By default, the
  * time is displayed in the top left corner of the picture, with some
  * padding to the left and to the top.
- * </para>
- * <para>
- * Here is a simple pipeline that displays the current time in the top left
- * corner of the video picture:
- * <programlisting>
+ *
+ * <refsect2>
+ * <title>Example launch lines</title>
+ * |[
  * gst-launch -v videotestsrc ! clockoverlay ! xvimagesink
- * </programlisting>
- * </para>
- * <para>
- * Here is another pipeline that displays the current time with some leading
+ * ]| Display the current time in the top left corner of the video picture
+ * |[
+ * gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge City" shaded-background=true ! ffmpegcolorspace ! ximagesink
+ * ]| Another pipeline that displays the current time with some leading
  * text in the bottom right corner of the video picture, with the background
  * of the text being shaded in order to make it more legible on top of a
- * bright video background:
- * <programlisting>
- * gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge City" shaded-background=true ! ffmpegcolorspace ! ximagesink
- * </programlisting>
- * </para>
+ * bright video background.
  * </refsect2>
  */
 
@@ -56,6 +49,16 @@
 #include <gstclockoverlay.h>
 #include <gst/video/video.h>
 #include <time.h>
+
+
+#define DEFAULT_PROP_TIMEFORMAT 	"%H:%M:%S"
+
+enum
+{
+  PROP_0,
+  PROP_TIMEFORMAT,
+  PROP_LAST
+};
 
 static const GstElementDetails clock_overlay_details =
 GST_ELEMENT_DETAILS ("Clock overlay",
@@ -73,11 +76,19 @@ GST_BOILERPLATE (GstClockOverlay, gst_clock_overlay, GstTextOverlay,
   gst_element_class_set_details (element_class, &clock_overlay_details);
 }
 
+
+static void gst_clock_overlay_finalize (GObject * object);
+static void gst_clock_overlay_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_clock_overlay_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
+
 static gchar *
 gst_clock_overlay_render_time (GstClockOverlay * overlay)
 {
   struct tm *t;
   time_t now;
+  gchar buf[256];
 
 #ifdef HAVE_LOCALTIME_R
   struct tm dummy;
@@ -95,7 +106,9 @@ gst_clock_overlay_render_time (GstClockOverlay * overlay)
   if (t == NULL)
     return g_strdup ("--:--:--");
 
-  return g_strdup_printf ("%02u:%02u:%02u", t->tm_hour, t->tm_min, t->tm_sec);
+  if (strftime (buf, sizeof (buf), overlay->format, t) == 0)
+    return g_strdup ("");
+  return g_strdup (buf);
 }
 
 /* Called with lock held */
@@ -125,12 +138,36 @@ gst_clock_overlay_get_text (GstTextOverlay * overlay, GstBuffer * video_frame)
 static void
 gst_clock_overlay_class_init (GstClockOverlayClass * klass)
 {
+  GObjectClass *gobject_class;
   GstTextOverlayClass *gsttextoverlay_class;
 
+  gobject_class = (GObjectClass *) klass;
   gsttextoverlay_class = (GstTextOverlayClass *) klass;
 
+  gobject_class->finalize = gst_clock_overlay_finalize;
+  gobject_class->set_property = gst_clock_overlay_set_property;
+  gobject_class->get_property = gst_clock_overlay_get_property;
+
   gsttextoverlay_class->get_text = gst_clock_overlay_get_text;
+
+  g_object_class_install_property (gobject_class, PROP_TIMEFORMAT,
+      g_param_spec_string ("time-format", "Date/Time Format",
+          "Format to use for time and date value, as in strftime.",
+          DEFAULT_PROP_TIMEFORMAT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
+
+
+static void
+gst_clock_overlay_finalize (GObject * object)
+{
+  GstClockOverlay *overlay = GST_CLOCK_OVERLAY (object);
+
+  g_free (overlay->format);
+  overlay->format = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
 
 static void
 gst_clock_overlay_init (GstClockOverlay * overlay, GstClockOverlayClass * klass)
@@ -158,4 +195,45 @@ gst_clock_overlay_init (GstClockOverlay * overlay, GstClockOverlayClass * klass)
 
   textoverlay->valign = GST_TEXT_OVERLAY_VALIGN_TOP;
   textoverlay->halign = GST_TEXT_OVERLAY_HALIGN_LEFT;
+
+  overlay->format = g_strdup (DEFAULT_PROP_TIMEFORMAT);
+}
+
+
+static void
+gst_clock_overlay_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
+{
+  GstClockOverlay *overlay = GST_CLOCK_OVERLAY (object);
+
+  GST_OBJECT_LOCK (overlay);
+  switch (prop_id) {
+    case PROP_TIMEFORMAT:
+      g_free (overlay->format);
+      overlay->format = g_value_dup_string (value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+  GST_OBJECT_UNLOCK (overlay);
+}
+
+
+static void
+gst_clock_overlay_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstClockOverlay *overlay = GST_CLOCK_OVERLAY (object);
+
+  GST_OBJECT_LOCK (overlay);
+  switch (prop_id) {
+    case PROP_TIMEFORMAT:
+      g_value_set_string (value, overlay->format);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+  GST_OBJECT_UNLOCK (overlay);
 }

@@ -129,6 +129,36 @@
 </ARG>
 
 <ARG>
+<NAME>GstXvImageSink::autopaint-colorkey</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Autofill with colorkey</NICK>
+<BLURB>Whether to autofill overlay with colorkey.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstXvImageSink::colorkey</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Colorkey</NICK>
+<BLURB>Color to use for the overlay mask.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstXvImageSink::draw-borders</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Colorkey</NICK>
+<BLURB>Draw black borders to fill unused area in force-aspect-ratio mode.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstXImageSink::display</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
@@ -286,6 +316,146 @@
 <NICK>Is Live</NICK>
 <BLURB>Whether to act as a live source.</BLURB>
 <DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::peer-alloc</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Peer Alloc</NICK>
+<BLURB>Ask the peer to allocate an output buffer.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::colorspec</NAME>
+<TYPE>GstVideoTestSrcColorSpec</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Color Specification</NICK>
+<BLURB>Generate video in the given color specification.</BLURB>
+<DEFAULT>ITU-R Rec. BT.601</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::k0</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate zero order phase</NICK>
+<BLURB>Zoneplate zero order phase, for generating plain fields or phase offsets.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kt</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 1st order t phase</NICK>
+<BLURB>Zoneplate 1st order t phase, for generating phase rotation as a function of time.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kt2</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 2nd order t phase</NICK>
+<BLURB>Zoneplate 2nd order t phase, t*t/256 cycles per picture.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kx</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 1st order x phase</NICK>
+<BLURB>Zoneplate 1st order x phase, for generating constant horizontal frequencies.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kx2</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 2nd order x phase</NICK>
+<BLURB>Zoneplate 2nd order x phase, normalised to kx2/256 cycles per horizontal pixel at width/2 from origin.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kxt</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate x*t product phase</NICK>
+<BLURB>Zoneplate x*t product phase, normalised to kxy/256 cycles per vertical pixel at width/2 from origin.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kxy</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate x*y product phase</NICK>
+<BLURB>Zoneplate x*t product phase.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::ky</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 1st order y phase</NICK>
+<BLURB>Zoneplate 1st order y phase, for generating contant vertical frequencies.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::ky2</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 2nd order y phase</NICK>
+<BLURB>Zoneplate 2nd order y phase, normailsed to ky2/256 cycles per vertical pixel at height/2 from origin.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::kyt</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate y*t product phase</NICK>
+<BLURB>Zoneplate y*t product phase.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::xoffset</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 2nd order products x offset</NICK>
+<BLURB>Zoneplate 2nd order products x offset.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstVideoTestSrc::yoffset</NAME>
+<TYPE>gint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zoneplate 2nd order products y offset</NICK>
+<BLURB>Zoneplate 2nd order products y offset.</BLURB>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -679,6 +849,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstDecodeBin::sink-caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Sink Caps</NICK>
+<BLURB>The caps of the input data. (NULL = use typefind element).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstPlayBin::audio-sink</NAME>
 <TYPE>GstElement*</TYPE>
 <RANGE></RANGE>
@@ -871,7 +1051,7 @@
 <ARG>
 <NAME>GstTheoraEnc::bitrate</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[0,2000]</RANGE>
+<RANGE>[0,16777215]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Bitrate</NICK>
 <BLURB>Compressed video bitrate (kbps).</BLURB>
@@ -1186,6 +1366,26 @@
 <NICK>Waveform</NICK>
 <BLURB>Oscillator waveform.</BLURB>
 <DEFAULT>Sine</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioTestSrc::can-activate-pull</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Can activate pull</NICK>
+<BLURB>Can activate in pull mode.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAudioTestSrc::can-activate-push</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Can activate push</NICK>
+<BLURB>Can activate in push mode.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -1684,7 +1884,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>subtitle charset encoding</NICK>
-<BLURB>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</BLURB>
+<BLURB>Encoding to assume if input subtitles are not in UTF-8 or any other Unicode encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
 
@@ -1806,6 +2006,26 @@
 <NICK>Source</NICK>
 <BLURB>Source object used.</BLURB>
 <DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstURIDecodeBin::buffer-duration</NAME>
+<TYPE>gint64</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer duration (ns)</NICK>
+<BLURB>Buffer duration when buffering network streams.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstURIDecodeBin::buffer-size</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer size (bytes)</NICK>
+<BLURB>Buffer size when buffering network streams.</BLURB>
+<DEFAULT>-1</DEFAULT>
 </ARG>
 
 <ARG>
@@ -2139,6 +2359,26 @@
 </ARG>
 
 <ARG>
+<NAME>GstPlayBin2::buffer-duration</NAME>
+<TYPE>gint64</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer duration (ns)</NICK>
+<BLURB>Buffer duration when buffering network streams.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPlayBin2::buffer-size</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Buffer size (bytes)</NICK>
+<BLURB>Buffer size when buffering network streams.</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstGioSink::location</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
@@ -2336,5 +2576,175 @@
 <NICK>URI</NICK>
 <BLURB>URI of the media to play.</BLURB>
 <DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSpeexResample::filter-length</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Filter length</NICK>
+<BLURB>DEPRECATED, DON'T USE THIS! Length of the resample filter.</BLURB>
+<DEFAULT>64</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSpeexResample::quality</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,10]</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Quality</NICK>
+<BLURB>Resample quality with 0 being the lowest and 10 being the best.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstClockOverlay::time-format</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Date/Time Format</NICK>
+<BLURB>Format to use for time and date value, as in strftime.</BLURB>
+<DEFAULT>"%H:%M:%S"</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSink::caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Caps</NICK>
+<BLURB>The allowed caps for the sink pad.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSink::drop</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Drop</NICK>
+<BLURB>Drop old buffers when the buffer queue is filled.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSink::emit-signals</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Emit signals</NICK>
+<BLURB>Emit new-preroll and new-buffer signals.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSink::eos</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>EOS</NICK>
+<BLURB>Check if the sink is EOS or not started.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSink::max-buffers</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Max Buffers</NICK>
+<BLURB>The maximum number of buffers to queue internally (0 = unlimited).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::block</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Block</NICK>
+<BLURB>Block push-buffer when max-bytes are queued.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::caps</NAME>
+<TYPE>GstCaps*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Caps</NICK>
+<BLURB>The allowed caps for the src pad.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::format</NAME>
+<TYPE>GstFormat</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Format</NICK>
+<BLURB>The format of the segment events and seek.</BLURB>
+<DEFAULT>GST_FORMAT_BYTES</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::is-live</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Is Live</NICK>
+<BLURB>Whether to act as a live source.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::max-bytes</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Max bytes</NICK>
+<BLURB>The maximum number of bytes to queue internally (0 = unlimited).</BLURB>
+<DEFAULT>200000</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::max-latency</NAME>
+<TYPE>gint64</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Max Latency</NICK>
+<BLURB>The maximum latency (-1 = unlimited).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::min-latency</NAME>
+<TYPE>gint64</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Min Latency</NICK>
+<BLURB>The minimum latency (-1 = default).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::size</NAME>
+<TYPE>gint64</TYPE>
+<RANGE>>= -1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Size</NICK>
+<BLURB>The size of the data stream in bytes (-1 if unknown).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstAppSrc::stream-type</NAME>
+<TYPE>GstAppStreamType</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Stream Type</NICK>
+<BLURB>the type of the stream.</BLURB>
+<DEFAULT>Stream</DEFAULT>
 </ARG>
 

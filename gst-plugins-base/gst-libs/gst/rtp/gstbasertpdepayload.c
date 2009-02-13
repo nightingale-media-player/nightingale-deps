@@ -58,6 +58,8 @@ struct _GstBaseRTPDepayloadPrivate
   GstClockTime duration;
 
   guint32 next_seqnum;
+
+  gboolean negotiated;
 };
 
 /* Filter signals and args */
@@ -243,6 +245,8 @@ gst_base_rtp_depayload_setcaps (GstPad * pad, GstCaps * caps)
   else
     res = TRUE;
 
+  priv->negotiated = res;
+
   gst_object_unref (filter);
 
   return res;
@@ -258,17 +262,22 @@ gst_base_rtp_depayload_chain (GstPad * pad, GstBuffer * in)
   GstBuffer *out_buf;
   GstClockTime timestamp;
   guint16 seqnum;
+  guint32 rtptime;
   gboolean reset_seq, discont;
   gint gap;
 
   filter = GST_BASE_RTP_DEPAYLOAD (GST_OBJECT_PARENT (pad));
+  priv = filter->priv;
+
+  /* we must have a setcaps first */
+  if (G_UNLIKELY (!priv->negotiated))
+    goto not_negotiated;
 
   /* we must validate, it's possible that this element is plugged right after a
    * network receiver and we don't want to operate on invalid data */
-  if (!gst_rtp_buffer_validate (in))
+  if (G_UNLIKELY (!gst_rtp_buffer_validate (in)))
     goto invalid_buffer;
 
-  priv = filter->priv;
   priv->discont = GST_BUFFER_IS_DISCONT (in);
 
   timestamp = GST_BUFFER_TIMESTAMP (in);
@@ -280,16 +289,18 @@ gst_base_rtp_depayload_chain (GstPad * pad, GstBuffer * in)
   priv->duration = GST_BUFFER_DURATION (in);
 
   seqnum = gst_rtp_buffer_get_seq (in);
+  rtptime = gst_rtp_buffer_get_timestamp (in);
   reset_seq = TRUE;
   discont = FALSE;
 
-  GST_LOG_OBJECT (filter, "discont %d, seqnum %u, timestamp %"
-      GST_TIME_FORMAT, priv->discont, seqnum, GST_TIME_ARGS (timestamp));
+  GST_LOG_OBJECT (filter, "discont %d, seqnum %u, rtptime %u, timestamp %"
+      GST_TIME_FORMAT, priv->discont, seqnum, rtptime,
+      GST_TIME_ARGS (timestamp));
 
   /* Check seqnum. This is a very simple check that makes sure that the seqnums
    * are striclty increasing, dropping anything that is out of the ordinary. We
    * can only do this when the next_seqnum is known. */
-  if (priv->next_seqnum != -1) {
+  if (G_LIKELY (priv->next_seqnum != -1)) {
     gap = gst_rtp_buffer_compare_seqnum (seqnum, priv->next_seqnum);
 
     /* if we have no gap, all is fine */
@@ -317,7 +328,7 @@ gst_base_rtp_depayload_chain (GstPad * pad, GstBuffer * in)
   }
   priv->next_seqnum = (seqnum + 1) & 0xffff;
 
-  if (discont && !priv->discont) {
+  if (G_UNLIKELY (discont && !priv->discont)) {
     GST_LOG_OBJECT (filter, "mark DISCONT on input buffer");
     /* we detected a seqnum discont but the buffer was not flagged with a discont,
      * set the discont flag so that the subclass can throw away old data. */
@@ -333,10 +344,6 @@ gst_base_rtp_depayload_chain (GstPad * pad, GstBuffer * in)
   /* let's send it out to processing */
   out_buf = bclass->process (filter, in);
   if (out_buf) {
-    guint32 rtptime;
-
-    rtptime = gst_rtp_buffer_get_timestamp (in);
-
     /* we pass rtptime as backward compatibility, in reality, the incomming
      * buffer timestamp is always applied to the outgoing packet. */
     ret = gst_base_rtp_depayload_push_ts (filter, rtptime, out_buf);
@@ -346,6 +353,14 @@ gst_base_rtp_depayload_chain (GstPad * pad, GstBuffer * in)
   return ret;
 
   /* ERRORS */
+not_negotiated:
+  {
+    /* this is not fatal but should be filtered earlier */
+    GST_ELEMENT_ERROR (filter, CORE, NEGOTIATION, (NULL),
+        ("Not RTP format was negotiated"));
+    gst_buffer_unref (in);
+    return GST_FLOW_NOT_NEGOTIATED;
+  }
 invalid_buffer:
   {
     /* this is not fatal but should be filtered earlier */
@@ -435,6 +450,28 @@ gst_base_rtp_depayload_handle_sink_event (GstPad * pad, GstEvent * event)
   return res;
 }
 
+static GstEvent *
+create_segment_event (GstBaseRTPDepayload * filter, gboolean update,
+    GstClockTime position)
+{
+  GstEvent *event;
+  GstClockTime stop;
+  GstBaseRTPDepayloadPrivate *priv;
+
+  priv = filter->priv;
+
+  if (priv->npt_stop != -1)
+    stop = priv->npt_stop - priv->npt_start;
+  else
+    stop = -1;
+
+  event = gst_event_new_new_segment_full (update, priv->play_speed,
+      priv->play_scale, GST_FORMAT_TIME, position, stop,
+      position + priv->npt_start);
+
+  return event;
+}
+
 static GstFlowReturn
 gst_base_rtp_depayload_push_full (GstBaseRTPDepayload * filter,
     gboolean do_ts, guint32 rtptime, GstBuffer * out_buf)
@@ -456,6 +493,18 @@ gst_base_rtp_depayload_push_full (GstBaseRTPDepayload * filter,
   /* set the timestamp if we must and can */
   if (bclass->set_gst_timestamp && do_ts)
     bclass->set_gst_timestamp (filter, rtptime, out_buf);
+
+  /* if this is the first buffer send a NEWSEGMENT */
+  if (G_UNLIKELY (filter->need_newsegment)) {
+    GstEvent *event;
+
+    event = create_segment_event (filter, FALSE, 0);
+
+    gst_pad_push_event (filter->srcpad, event);
+
+    filter->need_newsegment = FALSE;
+    GST_DEBUG_OBJECT (filter, "Pushed newsegment event on this first buffer");
+  }
 
   if (G_UNLIKELY (priv->discont)) {
     GST_LOG_OBJECT (filter, "Marking DISCONT on output buffer");
@@ -514,28 +563,6 @@ gst_base_rtp_depayload_push (GstBaseRTPDepayload * filter, GstBuffer * out_buf)
   return gst_base_rtp_depayload_push_full (filter, FALSE, 0, out_buf);
 }
 
-static GstEvent *
-create_segment_event (GstBaseRTPDepayload * filter, gboolean update,
-    GstClockTime position)
-{
-  GstEvent *event;
-  GstClockTime stop;
-  GstBaseRTPDepayloadPrivate *priv;
-
-  priv = filter->priv;
-
-  if (priv->npt_stop != -1)
-    stop = priv->npt_stop - priv->npt_start;
-  else
-    stop = -1;
-
-  event = gst_event_new_new_segment_full (update, priv->play_speed,
-      priv->play_scale, GST_FORMAT_TIME, position, stop,
-      position + priv->npt_start);
-
-  return event;
-}
-
 /* convert the PacketLost event form a jitterbuffer to a segment update.
  * subclasses can override this.  */
 static gboolean
@@ -586,18 +613,6 @@ gst_base_rtp_depayload_set_gst_timestamp (GstBaseRTPDepayload * filter,
     GST_BUFFER_TIMESTAMP (buf) = priv->timestamp;
   if (!GST_CLOCK_TIME_IS_VALID (duration))
     GST_BUFFER_DURATION (buf) = priv->duration;
-
-  /* if this is the first buffer send a NEWSEGMENT */
-  if (filter->need_newsegment) {
-    GstEvent *event;
-
-    event = create_segment_event (filter, FALSE, 0);
-
-    gst_pad_push_event (filter->srcpad, event);
-
-    filter->need_newsegment = FALSE;
-    GST_DEBUG_OBJECT (filter, "Pushed newsegment event on this first buffer");
-  }
 }
 
 static GstStateChangeReturn
@@ -620,7 +635,8 @@ gst_base_rtp_depayload_change_state (GstElement * element,
       priv->npt_stop = -1;
       priv->play_speed = 1.0;
       priv->play_scale = 1.0;
-      filter->priv->next_seqnum = -1;
+      priv->next_seqnum = -1;
+      priv->negotiated = FALSE;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
       break;

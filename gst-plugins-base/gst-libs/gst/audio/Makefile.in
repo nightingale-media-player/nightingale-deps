@@ -76,16 +76,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -98,7 +100,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libgstaudio_@GST_MAJORMINOR@includedir)" \
 	"$(DESTDIR)$(libgstaudio_@GST_MAJORMINOR@includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstaudio_@GST_MAJORMINOR@_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) \
@@ -114,19 +116,13 @@ am_libgstaudio_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstaudio_@GST_MAJORMINOR@_la-gstbaseaudiosink.lo \
 	libgstaudio_@GST_MAJORMINOR@_la-gstbaseaudiosrc.lo \
 	libgstaudio_@GST_MAJORMINOR@_la-gstringbuffer.lo
-am__objects_1 =  \
-	libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo
+am__objects_1 = libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo
 am__objects_2 =
 nodist_libgstaudio_@GST_MAJORMINOR@_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_2)
 libgstaudio_@GST_MAJORMINOR@_la_OBJECTS =  \
 	$(am_libgstaudio_@GST_MAJORMINOR@_la_OBJECTS) \
 	$(nodist_libgstaudio_@GST_MAJORMINOR@_la_OBJECTS)
-libgstaudiofilterexample_la_LIBADD =
-am_libgstaudiofilterexample_la_OBJECTS =  \
-	libgstaudiofilterexample_la-gstaudiofilterexample.lo
-libgstaudiofilterexample_la_OBJECTS =  \
-	$(am_libgstaudiofilterexample_la_OBJECTS)
 PROGRAMS = $(noinst_PROGRAMS)
 am_testchannels_OBJECTS = testchannels-testchannels.$(OBJEXT)
 testchannels_OBJECTS = $(am_testchannels_OBJECTS)
@@ -144,9 +140,9 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libgstaudio_@GST_MAJORMINOR@_la_SOURCES) \
 	$(nodist_libgstaudio_@GST_MAJORMINOR@_la_SOURCES) \
-	$(libgstaudiofilterexample_la_SOURCES) $(testchannels_SOURCES)
+	$(testchannels_SOURCES)
 DIST_SOURCES = $(libgstaudio_@GST_MAJORMINOR@_la_SOURCES) \
-	$(libgstaudiofilterexample_la_SOURCES) $(testchannels_SOURCES)
+	$(testchannels_SOURCES)
 libgstaudio_@GST_MAJORMINOR@includeHEADERS_INSTALL = $(INSTALL_HEADER)
 nodist_libgstaudio_@GST_MAJORMINOR@includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(libgstaudio_@GST_MAJORMINOR@include_HEADERS) \
@@ -214,6 +210,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -223,6 +220,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -236,6 +234,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -259,10 +265,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -298,6 +307,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -315,6 +326,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -336,8 +348,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -400,12 +412,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -414,6 +426,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -432,6 +446,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -448,6 +464,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -508,20 +526,19 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # variables used for enum/marshal generation
-glib_enum_headers = multichannel.h
+glib_enum_headers = \
+	multichannel.h		\
+	gstringbuffer.h
+
 glib_enum_define = GST_AUDIO
 glib_enum_prefix = gst_audio
-built_sources = multichannel-enumtypes.c
-built_headers = multichannel-enumtypes.h
+built_sources = audio-enumtypes.c
+built_headers = audio-enumtypes.h
 BUILT_SOURCES = $(built_sources) $(built_headers)
 lib_LTLIBRARIES = \
 	libgstaudio-@GST_MAJORMINOR@.la
 
-noinst_LTLIBRARIES = libgstaudiofilterexample.la
-EXTRA_DIST = gstaudiofiltertemplate.c make_filter
-CLEANFILES = gstaudiofilterexample.c \
-	$(BUILT_SOURCES)
-
+CLEANFILES = $(BUILT_SOURCES)
 libgstaudio_@GST_MAJORMINOR@_la_SOURCES = \
 	audio.c \
 	gstaudioclock.c \
@@ -549,16 +566,13 @@ libgstaudio_@GST_MAJORMINOR@include_HEADERS = \
 	multichannel.h
 
 nodist_libgstaudio_@GST_MAJORMINOR@include_HEADERS = \
-	multichannel-enumtypes.h
+	audio-enumtypes.h
 
 libgstaudio_@GST_MAJORMINOR@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstaudio_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) \
   $(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la
 
 libgstaudio_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
-libgstaudiofilterexample_la_SOURCES = gstaudiofilterexample.c
-libgstaudiofilterexample_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
-libgstaudiofilterexample_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 testchannels_SOURCES = testchannels.c
 testchannels_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 testchannels_LDADD = $(GST_LIBS)
@@ -624,19 +638,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
 libgstaudio-@GST_MAJORMINOR@.la: $(libgstaudio_@GST_MAJORMINOR@_la_OBJECTS) $(libgstaudio_@GST_MAJORMINOR@_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(libgstaudio_@GST_MAJORMINOR@_la_LDFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_OBJECTS) $(libgstaudio_@GST_MAJORMINOR@_la_LIBADD) $(LIBS)
-libgstaudiofilterexample.la: $(libgstaudiofilterexample_la_OBJECTS) $(libgstaudiofilterexample_la_DEPENDENCIES) 
-	$(LINK)  $(libgstaudiofilterexample_la_LDFLAGS) $(libgstaudiofilterexample_la_OBJECTS) $(libgstaudiofilterexample_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
@@ -654,6 +657,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-gstaudioclock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-gstaudiofilter.Plo@am__quote@
@@ -663,9 +667,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-gstbaseaudiosrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-gstringbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-mixerutils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaudiofilterexample_la-gstaudiofilterexample.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testchannels-testchannels.Po@am__quote@
 
 .c.o:
@@ -759,19 +761,12 @@ libgstaudio_@GST_MAJORMINOR@_la-gstringbuffer.lo: gstringbuffer.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstaudio_@GST_MAJORMINOR@_la-gstringbuffer.lo `test -f 'gstringbuffer.c' || echo '$(srcdir)/'`gstringbuffer.c
 
-libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo: multichannel-enumtypes.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo -MD -MP -MF "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.Tpo" -c -o libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo `test -f 'multichannel-enumtypes.c' || echo '$(srcdir)/'`multichannel-enumtypes.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.Tpo" "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.Plo"; else rm -f "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='multichannel-enumtypes.c' object='libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo' libtool=yes @AMDEPBACKSLASH@
+libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo: audio-enumtypes.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo -MD -MP -MF "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.Tpo" -c -o libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo `test -f 'audio-enumtypes.c' || echo '$(srcdir)/'`audio-enumtypes.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.Tpo" "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.Plo"; else rm -f "$(DEPDIR)/libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audio-enumtypes.c' object='libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstaudio_@GST_MAJORMINOR@_la-multichannel-enumtypes.lo `test -f 'multichannel-enumtypes.c' || echo '$(srcdir)/'`multichannel-enumtypes.c
-
-libgstaudiofilterexample_la-gstaudiofilterexample.lo: gstaudiofilterexample.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudiofilterexample_la_CFLAGS) $(CFLAGS) -MT libgstaudiofilterexample_la-gstaudiofilterexample.lo -MD -MP -MF "$(DEPDIR)/libgstaudiofilterexample_la-gstaudiofilterexample.Tpo" -c -o libgstaudiofilterexample_la-gstaudiofilterexample.lo `test -f 'gstaudiofilterexample.c' || echo '$(srcdir)/'`gstaudiofilterexample.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstaudiofilterexample_la-gstaudiofilterexample.Tpo" "$(DEPDIR)/libgstaudiofilterexample_la-gstaudiofilterexample.Plo"; else rm -f "$(DEPDIR)/libgstaudiofilterexample_la-gstaudiofilterexample.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstaudiofilterexample.c' object='libgstaudiofilterexample_la-gstaudiofilterexample.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudiofilterexample_la_CFLAGS) $(CFLAGS) -c -o libgstaudiofilterexample_la-gstaudiofilterexample.lo `test -f 'gstaudiofilterexample.c' || echo '$(srcdir)/'`gstaudiofilterexample.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaudio_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstaudio_@GST_MAJORMINOR@_la-audio-enumtypes.lo `test -f 'audio-enumtypes.c' || echo '$(srcdir)/'`audio-enumtypes.c
 
 testchannels-testchannels.o: testchannels.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testchannels_CFLAGS) $(CFLAGS) -MT testchannels-testchannels.o -MD -MP -MF "$(DEPDIR)/testchannels-testchannels.Tpo" -c -o testchannels-testchannels.o `test -f 'testchannels.c' || echo '$(srcdir)/'`testchannels.c; \
@@ -945,7 +940,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -997,12 +992,12 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-nodist_libgstaudio_@GST_MAJORMINOR@includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
-	clean-noinstPROGRAMS ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-exec install-exec-am \
-	install-info install-info-am install-libLTLIBRARIES \
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-libLTLIBRARIES \
 	install-libgstaudio_@GST_MAJORMINOR@includeHEADERS install-man \
 	install-nodist_libgstaudio_@GST_MAJORMINOR@includeHEADERS \
 	install-strip installcheck installcheck-am installdirs \
@@ -1013,9 +1008,6 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-libgstaudio_@GST_MAJORMINOR@includeHEADERS \
 	uninstall-nodist_libgstaudio_@GST_MAJORMINOR@includeHEADERS
 
-
-gstaudiofilterexample.c: $(srcdir)/make_filter $(srcdir)/gstaudiofiltertemplate.c
-	$(srcdir)/make_filter AudioFilterExample $(srcdir)/gstaudiofiltertemplate.c
 
 # these are all the rules generating the relevant files
 %-marshal.h: %-marshal.list

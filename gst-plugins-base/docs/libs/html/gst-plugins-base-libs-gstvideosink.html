@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -66,13 +67,17 @@
 void                <a class="link" href="gst-plugins-base-libs-gstvideosink.html#gst-video-sink-center-rect" title="gst_video_sink_center_rect ()">gst_video_sink_center_rect</a>          (<a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> src,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> dst,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> *result,
-                                                         gboolean scaling);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> scaling);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstvideosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -84,7 +89,7 @@ void                <a class="link" href="gst-plugins-base-libs-gstvideosink.htm
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2798372"></a><p>
+<a name="id3214843"></a><p>
 Provides useful functions and a base class for video sinks. 
 </p>
 <p>
@@ -138,22 +143,30 @@ Helper structure representing a rectangular area.</p>
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>x</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>x</code></em>;</span></p></td>
 <td> X coordinate of rectangle's top-left point
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>y</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>y</code></em>;</span></p></td>
 <td> Y coordinate of rectangle's top-left point
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>w</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>w</code></em>;</span></p></td>
 <td> width of the rectangle
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>h</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>h</code></em>;</span></p></td>
 <td> height of the rectangle
 </td>
 </tr>
@@ -223,7 +236,9 @@ Get the sink <span class="type">GstPad</span> of <em class="parameter"><code>obj
 <pre class="programlisting">void                gst_video_sink_center_rect          (<a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> src,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> dst,
                                                          <a class="link" href="gst-plugins-base-libs-gstvideosink.html#GstVideoRectangle" title="GstVideoRectangle">GstVideoRectangle</a> *result,
-                                                         gboolean scaling);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> scaling);</pre>
 <p>
 Takes <em class="parameter"><code>src</code></em> rectangle and position it at the center of <em class="parameter"><code>dst</code></em> rectangle with or
 without <em class="parameter"><code>scaling</code></em>. It handles clipping if the <em class="parameter"><code>src</code></em> rectangle is bigger than
@@ -251,7 +266,9 @@ the <em class="parameter"><code>dst</code></em> one and <em class="parameter"><c
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scaling</code></em> :</span></p></td>
-<td> a <span class="type">gboolean</span> indicating if scaling should be applied or not
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+><span class="type">gboolean</span></a> indicating if scaling should be applied or not
 </td>
 </tr>
 </tbody>

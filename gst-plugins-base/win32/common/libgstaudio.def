@@ -26,25 +26,32 @@ EXPORTS
 	gst_base_audio_sink_get_type
 	gst_base_audio_sink_set_provide_clock
 	gst_base_audio_sink_set_slave_method
+	gst_base_audio_sink_slave_method_get_type
 	gst_base_audio_src_create_ringbuffer
 	gst_base_audio_src_get_provide_clock
 	gst_base_audio_src_get_slave_method
 	gst_base_audio_src_get_type
 	gst_base_audio_src_set_provide_clock
 	gst_base_audio_src_set_slave_method
+	gst_base_audio_src_slave_method_get_type
+	gst_buffer_format_get_type
+	gst_buffer_format_type_get_type
 	gst_ring_buffer_acquire
+	gst_ring_buffer_activate
 	gst_ring_buffer_advance
 	gst_ring_buffer_clear
 	gst_ring_buffer_clear_all
 	gst_ring_buffer_close_device
 	gst_ring_buffer_commit
 	gst_ring_buffer_commit_full
+	gst_ring_buffer_convert
 	gst_ring_buffer_debug_spec_buff
 	gst_ring_buffer_debug_spec_caps
 	gst_ring_buffer_delay
 	gst_ring_buffer_device_is_open
 	gst_ring_buffer_get_type
 	gst_ring_buffer_is_acquired
+	gst_ring_buffer_is_active
 	gst_ring_buffer_may_start
 	gst_ring_buffer_open_device
 	gst_ring_buffer_parse_caps
@@ -53,8 +60,10 @@ EXPORTS
 	gst_ring_buffer_read
 	gst_ring_buffer_release
 	gst_ring_buffer_samples_done
+	gst_ring_buffer_seg_state_get_type
 	gst_ring_buffer_set_callback
 	gst_ring_buffer_set_flushing
 	gst_ring_buffer_set_sample
 	gst_ring_buffer_start
+	gst_ring_buffer_state_get_type
 	gst_ring_buffer_stop

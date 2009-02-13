@@ -19,23 +19,18 @@
 
 /**
  * SECTION:element-vorbisdec
- * @short_description: a decoder that decodes Vorbis to raw audio
  * @see_also: vorbisenc, oggdemux
  *
- * <refsect2>
- * <para>
  * This element decodes a Vorbis stream to raw float audio.
  * <ulink url="http://www.vorbis.com/">Vorbis</ulink> is a royalty-free
  * audio codec maintained by the <ulink url="http://www.xiph.org/">Xiph.org
  * Foundation</ulink>.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! alsasink
- * </programlisting>
- * Decode an Ogg/Vorbis. To create an Ogg/Vorbis file refer to the documentation of vorbisenc.
- * </para>
+ * ]| Decode an Ogg/Vorbis. To create an Ogg/Vorbis file refer to the documentation of vorbisenc.
  * </refsect2>
  *
  * Last reviewed on 2006-03-01 (0.10.4)
@@ -193,6 +188,7 @@ gst_vorbis_dec_reset (GstVorbisDec * dec)
   dec->prev_timestamp = GST_CLOCK_TIME_NONE;
   dec->granulepos = -1;
   dec->discont = TRUE;
+  dec->seqnum = gst_util_seqnum_next ();
   gst_segment_init (&dec->segment, GST_FORMAT_TIME);
 
   g_list_foreach (dec->queued, (GFunc) gst_mini_object_unref, NULL);
@@ -448,9 +444,11 @@ vorbis_dec_src_event (GstPad * pad, GstEvent * event)
       GstSeekType cur_type, stop_type;
       gint64 cur, stop;
       gint64 tcur, tstop;
+      guint32 seqnum;
 
       gst_event_parse_seek (event, &rate, &format, &flags, &cur_type, &cur,
           &stop_type, &stop);
+      seqnum = gst_event_get_seqnum (event);
       gst_event_unref (event);
 
       /* we have to ask our peer to seek to time here as we know
@@ -468,9 +466,9 @@ vorbis_dec_src_event (GstPad * pad, GstEvent * event)
       /* then seek with time on the peer */
       real_seek = gst_event_new_seek (rate, GST_FORMAT_TIME,
           flags, cur_type, tcur, stop_type, tstop);
+      gst_event_set_seqnum (real_seek, seqnum);
 
       res = gst_pad_push_event (dec->sinkpad, real_seek);
-
       break;
     }
     default:
@@ -537,6 +535,7 @@ vorbis_dec_sink_event (GstPad * pad, GstEvent * event)
       /* now configure the values */
       gst_segment_set_newsegment_full (&dec->segment, update,
           rate, arate, format, start, stop, time);
+      dec->seqnum = gst_event_get_seqnum (event);
 
       if (dec->initialized)
         /* and forward */
@@ -633,6 +632,7 @@ vorbis_handle_identification_packet (GstVorbisDec * vd)
         GST_AUDIO_CHANNEL_POSITION_REAR_CENTER,
       };
       pos = pos7;
+      /* fallthrough */
     }
     case 8:{
       static const GstAudioChannelPosition pos8[] = {
@@ -647,6 +647,7 @@ vorbis_handle_identification_packet (GstVorbisDec * vd)
       };
 
       pos = pos8;
+      /* fallthrough */
     }
     default:{
       gint i;
@@ -687,7 +688,7 @@ vorbis_handle_comment_packet (GstVorbisDec * vd, ogg_packet * packet)
 {
   guint bitrate = 0;
   gchar *encoder = NULL;
-  GstTagList *list;
+  GstTagList *list, *old_list;
   GstBuffer *buf;
 
   GST_DEBUG_OBJECT (vd, "parsing comment packet");
@@ -699,8 +700,11 @@ vorbis_handle_comment_packet (GstVorbisDec * vd, ogg_packet * packet)
       gst_tag_list_from_vorbiscomment_buffer (buf, (guint8 *) "\003vorbis", 7,
       &encoder);
 
+  old_list = vd->taglist;
   vd->taglist = gst_tag_list_merge (vd->taglist, list, GST_TAG_MERGE_REPLACE);
 
+  if (old_list)
+    gst_tag_list_free (old_list);
   gst_tag_list_free (list);
   gst_buffer_unref (buf);
 
@@ -1019,8 +1023,7 @@ vorbis_handle_data_packet (GstVorbisDec * vd, ogg_packet * packet)
         GST_TIME_ARGS (GST_BUFFER_DURATION (out)),
         GST_TIME_ARGS (vd->cur_timestamp + GST_BUFFER_DURATION (out)));
     vd->cur_timestamp += GST_BUFFER_DURATION (out);
-    GST_BUFFER_OFFSET (out) = GST_CLOCK_TIME_TO_FRAMES (vd->cur_timestamp,
-        vd->vi.rate);
+    GST_BUFFER_OFFSET (out) = GST_CLOCK_TIME_TO_FRAMES (timestamp, vd->vi.rate);
     GST_BUFFER_OFFSET_END (out) = GST_BUFFER_OFFSET (out) + sample_count;
   } else {
     /* we have incoming granulepos */
@@ -1430,6 +1433,7 @@ vorbis_dec_change_state (GstElement * element, GstStateChange transition)
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       GST_DEBUG_OBJECT (vd, "PAUSED -> READY, clearing vorbis structures");
+      vd->initialized = FALSE;
       vorbis_block_clear (&vd->vb);
       vorbis_dsp_clear (&vd->vd);
       vorbis_comment_clear (&vd->vc);

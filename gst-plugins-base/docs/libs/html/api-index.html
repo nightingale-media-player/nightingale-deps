@@ -10,6 +10,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -40,21 +41,11 @@
 <div class="index"><div class="indexdiv">
 <h3>G</h3>
 <dl>
-<dt>GDOUBLE_FROM_BE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-BE:CAPS">GDOUBLE_FROM_BE()</a>
+<dt>GstAppSink, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#GstAppSink">GstAppSink</a>
 </dt>
-<dt>GDOUBLE_FROM_LE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-LE:CAPS">GDOUBLE_FROM_LE()</a>
+<dt>GstAppSrc, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#GstAppSrc">GstAppSrc</a>
 </dt>
-<dt>GDOUBLE_TO_BE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-BE:CAPS">GDOUBLE_TO_BE()</a>
-</dt>
-<dt>GDOUBLE_TO_LE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-LE:CAPS">GDOUBLE_TO_LE()</a>
-</dt>
-<dt>GFLOAT_FROM_BE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-BE:CAPS">GFLOAT_FROM_BE()</a>
-</dt>
-<dt>GFLOAT_FROM_LE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-LE:CAPS">GFLOAT_FROM_LE()</a>
-</dt>
-<dt>GFLOAT_TO_BE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-BE:CAPS">GFLOAT_TO_BE()</a>
-</dt>
-<dt>GFLOAT_TO_LE, <a class="indexterm" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-LE:CAPS">GFLOAT_TO_LE()</a>
+<dt>GstAppStreamType, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#GstAppStreamType">enum GstAppStreamType</a>
 </dt>
 <dt>GstAudioChannelPosition, <a class="indexterm" href="gst-plugins-base-libs-gstmultichannel.html#GstAudioChannelPosition">enum GstAudioChannelPosition</a>
 </dt>
@@ -166,6 +157,10 @@
 </dt>
 <dt>GstColorBalanceChannel::value-changed, <a class="indexterm" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannel-value-changed">The "value-changed" signal</a>
 </dt>
+<dt>GstColorBalanceChannelClass, <a class="indexterm" href="gst-plugins-base-libs-gstcolorbalancechannel.html#GstColorBalanceChannelClass">GstColorBalanceChannelClass</a>
+</dt>
+<dt>GstColorBalanceClass, <a class="indexterm" href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalanceClass">GstColorBalanceClass</a>
+</dt>
 <dt>GstColorBalanceType, <a class="indexterm" href="gst-plugins-base-libs-gstcolorbalance.html#GstColorBalanceType">enum GstColorBalanceType</a>
 </dt>
 <dt>GstFFTF32, <a class="indexterm" href="gst-plugins-base-libs-gstfftf32.html#GstFFTF32">GstFFTF32</a>
@@ -192,7 +187,7 @@
 </dt>
 <dt>GstInstallPluginsReturn, <a class="indexterm" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn">enum GstInstallPluginsReturn</a>
 </dt>
-<dt>GstMixer, <a class="indexterm" href="gst-plugins-base-libs-gstmixer.html#GstMixer-struct">GstMixer</a>
+<dt>GstMixer, <a class="indexterm" href="gst-plugins-base-libs-gstmixer.html#GstMixer">GstMixer</a>
 </dt>
 <dt>GstMixer::mute-toggled, <a class="indexterm" href="gst-plugins-base-libs-gstmixer.html#GstMixer-mute-toggled">The "mute-toggled" signal</a>
 </dt>
@@ -211,6 +206,8 @@
 <dt>GstMixerTrack, <a class="indexterm" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack-struct">GstMixerTrack</a>
 </dt>
 <dt>GstMixerTrack:flags, <a class="indexterm" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack--flags">The "flags" property</a>
+</dt>
+<dt>GstMixerTrack:index, <a class="indexterm" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack--index">The "index" property</a>
 </dt>
 <dt>GstMixerTrack:label, <a class="indexterm" href="gst-plugins-base-libs-gstmixertrack.html#GstMixerTrack--label">The "label" property</a>
 </dt>
@@ -350,6 +347,8 @@
 </dt>
 <dt>GstTunerChannelFlags, <a class="indexterm" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannelFlags">enum GstTunerChannelFlags</a>
 </dt>
+<dt>GstTunerClass, <a class="indexterm" href="gst-plugins-base-libs-gsttuner.html#GstTunerClass">GstTunerClass</a>
+</dt>
 <dt>GstTunerNorm, <a class="indexterm" href="gst-plugins-base-libs-gsttunernorm.html#GstTunerNorm-struct">GstTunerNorm</a>
 </dt>
 <dt>GstVideoFilter, <a class="indexterm" href="gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter-struct">GstVideoFilter</a>
@@ -369,6 +368,54 @@
 <dt>GstVideoSinkClass, <a class="indexterm" href="gst-plugins-base-libs-gstvideosink.html#GstVideoSinkClass">GstVideoSinkClass</a>
 </dt>
 <dt>GstXOverlay, <a class="indexterm" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlay-struct">GstXOverlay</a>
+</dt>
+<dt>GstXOverlayClass, <a class="indexterm" href="gst-plugins-base-libs-gstxoverlay.html#GstXOverlayClass">GstXOverlayClass</a>
+</dt>
+<dt>gst_app_sink_get_caps, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-get-caps">gst_app_sink_get_caps ()</a>
+</dt>
+<dt>gst_app_sink_get_drop, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-get-drop">gst_app_sink_get_drop ()</a>
+</dt>
+<dt>gst_app_sink_get_emit_signals, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-get-emit-signals">gst_app_sink_get_emit_signals ()</a>
+</dt>
+<dt>gst_app_sink_get_max_buffers, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-get-max-buffers">gst_app_sink_get_max_buffers ()</a>
+</dt>
+<dt>gst_app_sink_is_eos, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-is-eos">gst_app_sink_is_eos ()</a>
+</dt>
+<dt>gst_app_sink_pull_buffer, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-pull-buffer">gst_app_sink_pull_buffer ()</a>
+</dt>
+<dt>gst_app_sink_pull_preroll, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-pull-preroll">gst_app_sink_pull_preroll ()</a>
+</dt>
+<dt>gst_app_sink_set_caps, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-set-caps">gst_app_sink_set_caps ()</a>
+</dt>
+<dt>gst_app_sink_set_drop, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-set-drop">gst_app_sink_set_drop ()</a>
+</dt>
+<dt>gst_app_sink_set_emit_signals, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-set-emit-signals">gst_app_sink_set_emit_signals ()</a>
+</dt>
+<dt>gst_app_sink_set_max_buffers, <a class="indexterm" href="gst-plugins-base-libs-appsink.html#gst-app-sink-set-max-buffers">gst_app_sink_set_max_buffers ()</a>
+</dt>
+<dt>gst_app_src_end_of_stream, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-end-of-stream">gst_app_src_end_of_stream ()</a>
+</dt>
+<dt>gst_app_src_get_caps, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-get-caps">gst_app_src_get_caps ()</a>
+</dt>
+<dt>gst_app_src_get_latency, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-get-latency">gst_app_src_get_latency ()</a>
+</dt>
+<dt>gst_app_src_get_max_bytes, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-get-max-bytes">gst_app_src_get_max_bytes ()</a>
+</dt>
+<dt>gst_app_src_get_size, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-get-size">gst_app_src_get_size ()</a>
+</dt>
+<dt>gst_app_src_get_stream_type, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-get-stream-type">gst_app_src_get_stream_type ()</a>
+</dt>
+<dt>gst_app_src_push_buffer, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-push-buffer">gst_app_src_push_buffer ()</a>
+</dt>
+<dt>gst_app_src_set_caps, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-set-caps">gst_app_src_set_caps ()</a>
+</dt>
+<dt>gst_app_src_set_latency, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-set-latency">gst_app_src_set_latency ()</a>
+</dt>
+<dt>gst_app_src_set_max_bytes, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-set-max-bytes">gst_app_src_set_max_bytes ()</a>
+</dt>
+<dt>gst_app_src_set_size, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-set-size">gst_app_src_set_size ()</a>
+</dt>
+<dt>gst_app_src_set_stream_type, <a class="indexterm" href="gst-plugins-base-libs-appsrc.html#gst-app-src-set-stream-type">gst_app_src_set_stream_type ()</a>
 </dt>
 <dt>gst_audio_buffer_clip, <a class="indexterm" href="gst-plugins-base-libs-gstaudio.html#gst-audio-buffer-clip">gst_audio_buffer_clip ()</a>
 </dt>
@@ -1070,6 +1117,8 @@
 </dt>
 <dt>gst_ring_buffer_acquire, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-acquire">gst_ring_buffer_acquire ()</a>
 </dt>
+<dt>gst_ring_buffer_activate, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-activate">gst_ring_buffer_activate ()</a>
+</dt>
 <dt>gst_ring_buffer_advance, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-advance">gst_ring_buffer_advance ()</a>
 </dt>
 <dt>GST_RING_BUFFER_BROADCAST, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-BROADCAST:CAPS">GST_RING_BUFFER_BROADCAST()</a>
@@ -1084,6 +1133,8 @@
 </dt>
 <dt>gst_ring_buffer_commit_full, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-commit-full">gst_ring_buffer_commit_full ()</a>
 </dt>
+<dt>gst_ring_buffer_convert, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-convert">gst_ring_buffer_convert ()</a>
+</dt>
 <dt>gst_ring_buffer_delay, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-delay">gst_ring_buffer_delay ()</a>
 </dt>
 <dt>gst_ring_buffer_device_is_open, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-device-is-open">gst_ring_buffer_device_is_open ()</a>
@@ -1091,6 +1142,8 @@
 <dt>GST_RING_BUFFER_GET_COND, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#GST-RING-BUFFER-GET-COND:CAPS">GST_RING_BUFFER_GET_COND()</a>
 </dt>
 <dt>gst_ring_buffer_is_acquired, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-is-acquired">gst_ring_buffer_is_acquired ()</a>
+</dt>
+<dt>gst_ring_buffer_is_active, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-is-active">gst_ring_buffer_is_active ()</a>
 </dt>
 <dt>gst_ring_buffer_may_start, <a class="indexterm" href="gst-plugins-base-libs-gstringbuffer.html#gst-ring-buffer-may-start">gst_ring_buffer_may_start ()</a>
 </dt>
@@ -1419,6 +1472,8 @@
 <dt>gst_rtsp_transport_new, <a class="indexterm" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-new">gst_rtsp_transport_new ()</a>
 </dt>
 <dt>gst_rtsp_transport_parse, <a class="indexterm" href="gst-plugins-base-libs-gstrtsptransport.html#gst-rtsp-transport-parse">gst_rtsp_transport_parse ()</a>
+</dt>
+<dt>gst_rtsp_url_copy, <a class="indexterm" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-copy">gst_rtsp_url_copy ()</a>
 </dt>
 <dt>gst_rtsp_url_free, <a class="indexterm" href="gst-plugins-base-libs-gstrtspurl.html#gst-rtsp-url-free">gst_rtsp_url_free ()</a>
 </dt>

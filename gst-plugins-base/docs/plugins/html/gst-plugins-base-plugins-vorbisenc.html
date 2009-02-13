@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -37,7 +38,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-vorbisenc.top_of_page"></a>vorbisenc</span></h2>
-<p>vorbisenc — an encoder that encodes audio to Vorbis</p>
+<p>vorbisenc — Encodes audio in Vorbis format</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -50,7 +51,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstVorbisEnc
@@ -65,20 +68,28 @@ GstVorbisEnc implements
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisenc.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--bitrate" title='The "bitrate" property'>bitrate</a>"                  gint                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--last-message" title='The "last-message" property'>last-message</a>"             gchar*                : Read
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--managed" title='The "managed" property'>managed</a>"                  gboolean              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--max-bitrate" title='The "max-bitrate" property'>max-bitrate</a>"              gint                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--min-bitrate" title='The "min-bitrate" property'>min-bitrate</a>"              gint                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--quality" title='The "quality" property'>quality</a>"                  gfloat                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--last-message" title='The "last-message" property'>last-message</a>"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--managed" title='The "managed" property'>managed</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--max-bitrate" title='The "max-bitrate" property'>max-bitrate</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--min-bitrate" title='The "min-bitrate" property'>min-bitrate</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--quality" title='The "quality" property'>quality</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisenc.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2651455"></a><h3>Example pipelines</h3>
 <p>
 This element encodes raw float audio into a Vorbis stream.
 <a class="ulink" href="http://www.vorbis.com/" target="_top">Vorbis</a> is a royalty-free
@@ -86,33 +97,33 @@ audio codec maintained by the <a class="ulink" href="http://www.xiph.org/" targe
 Foundation</a>.
 </p>
 <p>
-Encode a test sine signal to Ogg/Vorbis.  Note that the resulting file
-will be really small because a sine signal compresses very well.
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2806175"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v audiotestsrc wave=sine num-buffers=100 ! audioconvert ! vorbisenc ! oggmux ! filesink location=sine.ogg
-</pre>
-<p>
-Record from a sound card using ALSA and encode to Ogg/Vorbis.
-</p>
-<pre class="programlisting">
+</pre></div> Encode a test sine signal to Ogg/Vorbis.  Note that the resulting file
+will be really small because a sine signal compresses very well.
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v alsasrc ! audioconvert ! vorbisenc ! oggmux ! filesink location=alsasrc.ogg
-</pre>
+</pre></div> Record from a sound card using ALSA and encode to Ogg/Vorbis.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-03-01 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2651510"></a><h3>Element Information</h3>
+<a name="id2806211"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -124,6 +135,10 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2806275"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -167,6 +182,7 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -187,7 +203,9 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-vorbisenc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
-<pre class="programlisting">  "bitrate"                  gint                  : Read / Write</pre>
+<pre class="programlisting">  "bitrate"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Attempt to encode at a bitrate averaging this (in bps). This uses the bitrate management engine, and is not recommended for most users. Quality is a better alternative. (-1 == disabled).</p>
 <p>Allowed values: [-1,250001]</p>
 <p>Default value: -1</p>
@@ -195,21 +213,27 @@ Opaque data structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
-<pre class="programlisting">  "last-message"             gchar*                : Read</pre>
+<pre class="programlisting">  "last-message"             <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
 <p>The last status message.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--managed"></a><h3>The <code class="literal">"managed"</code> property</h3>
-<pre class="programlisting">  "managed"                  gboolean              : Read / Write</pre>
+<pre class="programlisting">  "managed"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Enable bitrate management engine.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--max-bitrate"></a><h3>The <code class="literal">"max-bitrate"</code> property</h3>
-<pre class="programlisting">  "max-bitrate"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "max-bitrate"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Specify a maximum bitrate (in bps). Useful for streaming applications. (-1 == disabled).</p>
 <p>Allowed values: [-1,250001]</p>
 <p>Default value: -1</p>
@@ -217,7 +241,9 @@ Opaque data structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--min-bitrate"></a><h3>The <code class="literal">"min-bitrate"</code> property</h3>
-<pre class="programlisting">  "min-bitrate"              gint                  : Read / Write</pre>
+<pre class="programlisting">  "min-bitrate"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Specify a minimum bitrate (in bps). Useful for encoding for a fixed-size channel. (-1 == disabled).</p>
 <p>Allowed values: [-1,250001]</p>
 <p>Default value: -1</p>
@@ -225,7 +251,9 @@ Opaque data structure.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstVorbisEnc--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
-<pre class="programlisting">  "quality"                  gfloat                : Read / Write</pre>
+<pre class="programlisting">  "quality"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a>                : Read / Write</pre>
 <p>Specify quality instead of specifying a particular bitrate.</p>
 <p>Allowed values: [-0.1,1]</p>
 <p>Default value: 0.3</p>

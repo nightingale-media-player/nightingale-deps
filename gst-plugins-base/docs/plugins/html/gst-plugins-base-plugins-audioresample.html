@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -35,68 +36,70 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-audioresample.top_of_page"></a>audioresample</span></h2>
-<p>audioresample — Resample audio</p>
+<p>audioresample — Resamples audio</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-base-plugins-audioresample.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAudioresample"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-base-plugins-audioresample.html#GstAudioresample-struct" title="GstAudioresample">GstAudioresample</a>;
+<a name="GstSpeexResample"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-base-plugins-audioresample.html#GstSpeexResample-struct" title="GstSpeexResample">GstSpeexResample</a>;
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audioresample.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseTransform
-                     +----GstAudioresample
+                     +----GstSpeexResample
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audioresample.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-audioresample.html#GstAudioresample--filter-length" title='The "filter-length" property'>filter-length</a>"            gint                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-base-plugins-audioresample.html#GstSpeexResample--filter-length" title='The "filter-length" property'>filter-length</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write / Construct
+  "<a class="link" href="gst-plugins-base-plugins-audioresample.html#GstSpeexResample--quality" title='The "quality" property'>quality</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write / Construct
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audioresample.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2604151"></a><h3>Example launch line</h3>
-Audioresample resamples raw audio buffers to different sample rates using
+audioresample resamples raw audio buffers to different sample rates using
 a configurable windowing function to enhance quality.
-<p>
-</p>
-<pre class="programlisting">
-gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! audio/x-raw-int, rate=8000 ! alsasink
-</pre>
-<p>
-Decode an Ogg/Vorbis downsample to 8Khz and play sound through alsa. 
-To create the Ogg/Vorbis file refer to the documentation of vorbisenc.
-</p>
-</div>
-<p>
 </p>
 <p>
-Last reviewed on 2006-03-02 (0.10.4)</p>
+</p>
 <div class="refsect2" lang="en">
-<a name="id2604125"></a><h3>Element Information</h3>
+<a name="id2762269"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! audio/x-raw-int, rate=8000 ! alsasink
+</pre></div> Decode an Ogg/Vorbis downsample to 8Khz and play sound through alsa.
+To create the Ogg/Vorbis file refer to the documentation of vorbisenc.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2762266"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-audioresample.html#plugin-audioresample">audioresample</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-audioresample.html#plugin-audioresample">audioresample</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>David Schleef &lt;ds@schleef.org&gt;</td>
+<td>Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -104,6 +107,10 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2759720"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -121,7 +128,7 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+<td>audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -129,11 +136,15 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32</td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)24, depth=(int)24, signed=(boolean)true</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)64</td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean)true</td>
 </tr>
 </tbody>
 </table></div>
@@ -154,7 +165,7 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+<td>audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 32, 64 }</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -162,14 +173,19 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32</td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)24, depth=(int)24, signed=(boolean)true</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-float, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)64</td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean)true</td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 
@@ -178,8 +194,8 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audioresample.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstAudioresample-struct"></a><h3>GstAudioresample</h3>
-<pre class="programlisting">typedef struct _GstAudioresample GstAudioresample;</pre>
+<a name="GstSpeexResample-struct"></a><h3>GstSpeexResample</h3>
+<pre class="programlisting">typedef struct _GstSpeexResample GstSpeexResample;</pre>
 <p>
 Opaque data structure.</p>
 <p>
@@ -190,11 +206,23 @@ Opaque data structure.</p>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-audioresample.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
-<a name="GstAudioresample--filter-length"></a><h3>The <code class="literal">"filter-length"</code> property</h3>
-<pre class="programlisting">  "filter-length"            gint                  : Read / Write / Construct</pre>
-<p>Length of the resample filter.</p>
+<a name="GstSpeexResample--filter-length"></a><h3>The <code class="literal">"filter-length"</code> property</h3>
+<pre class="programlisting">  "filter-length"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write / Construct</pre>
+<p>DEPRECATED, DON'T USE THIS! Length of the resample filter.</p>
 <p>Allowed values: &gt;= 0</p>
-<p>Default value: 16</p>
+<p>Default value: 64</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstSpeexResample--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
+<pre class="programlisting">  "quality"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write / Construct</pre>
+<p>Resample quality with 0 being the lowest and 10 being the best.</p>
+<p>Allowed values: [0,10]</p>
+<p>Default value: 4</p>
 </div>
 </div>
 </div>

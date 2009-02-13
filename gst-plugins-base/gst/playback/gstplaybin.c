@@ -20,12 +20,9 @@
 /**
  * SECTION:element-playbin
  *
- * <refsect2>
- * <para>
  * Playbin provides a stand-alone everything-in-one abstraction for an
  * audio and/or video player.
- * </para>
- * <para>
+ *
  * It can handle both audio and video files and features
  * <itemizedlist>
  * <listitem>
@@ -54,36 +51,33 @@
  * volume control
  * </listitem>
  * </itemizedlist>
- * </para>
+ *
+ * <refsect2>
  * <title>Usage</title>
  * <para>
  * A playbin element can be created just like any other element using
- * gst_element_factory_make(). The file/URI to play should be set via the "uri"
+ * gst_element_factory_make(). The file/URI to play should be set via the #GstPlayBin:uri
  * property. This must be an absolute URI, relative file paths are not allowed.
  * Example URIs are file:///home/joe/movie.avi or http://www.joedoe.com/foo.ogg
- * </para>
- * <para>
+ *
  * Playbin is a #GstPipeline. It will notify the application of everything
  * that's happening (errors, end of stream, tags found, state changes, etc.)
  * by posting messages on its #GstBus. The application needs to watch the
  * bus.
- * </para>
- * <para>
+ *
  * Playback can be initiated by setting the element to PLAYING state using
  * gst_element_set_state(). Note that the state change will take place in
  * the background in a separate thread, when the function returns playback
  * is probably not happening yet and any errors might not have occured yet.
  * Applications using playbin should ideally be written to deal with things
  * completely asynchroneous.
- * </para>
- * <para>
+ *
  * When playback has finished (an EOS message has been received on the bus)
  * or an error has occured (an ERROR message has been received on the bus) or
  * the user wants to play a different track, playbin should be set back to
- * READY or NULL state, then the "uri" property should be set to the new
- * location and then playbin be set to PLAYING state again.
- * </para>
- * <para>
+ * READY or NULL state, then the #GstPlayBin:uri property should be set to the
+ * new location and then playbin be set to PLAYING state again.
+ *
  * Seeking can be done using gst_element_seek_simple() or gst_element_seek()
  * on the playbin element. Again, the seek will not be executed
  * instantaneously, but will be done in a background thread. When the seek
@@ -91,35 +85,34 @@
  * may wait for the seek to finish (or fail) using gst_element_get_state() with
  * -1 as the timeout, but this will block the user interface and is not
  * recommended at all.
- * </para>
- * <para>
+ *
  * Applications may query the current position and duration of the stream
  * via gst_element_query_position() and gst_element_query_duration() and
  * setting the format passed to GST_FORMAT_TIME. If the query was successful,
  * the duration or position will have been returned in units of nanoseconds.
  * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Advanced Usage: specifying the audio and video sink</title>
  * <para>
  * By default, if no audio sink or video sink has been specified via the
- * "audio-sink" or "video-sink" property, playbin will use the autoaudiosink
- * and autovideosink elements to find the first-best available output method.
+ * #GstPlayBin:audio-sink or #GstPlayBin:video-sink property, playbin will use
+ * the autoaudiosink and autovideosink elements to find the first-best
+ * available output method.
  * This should work in most cases, but is not always desirable. Often either
  * the user or application might want to specify more explicitly what to use
  * for audio and video output.
- * </para>
- * <para>
+ *
  * If the application wants more control over how audio or video should be
  * output, it may create the audio/video sink elements itself (for example
  * using gst_element_factory_make()) and provide them to playbin using the
- * "audio-sink" or "video-sink" property.
- * </para>
- * <para>
+ * #GstPlayBin:audio-sink or #GstPlayBin:video-sink property.
+ *
  * GNOME-based applications, for example, will usually want to create
  * gconfaudiosink and gconfvideosink elements and make playbin use those,
  * so that output happens to whatever the user has configured in the GNOME
  * Multimedia System Selector confinguration dialog.
- * </para>
- * <para>
+ *
  * The sink elements do not necessarily need to be ready-made sinks. It is
  * possible to create container elements that look like a sink to playbin,
  * but in reality contain a number of custom elements linked together. This
@@ -128,23 +121,23 @@
  * it to the sink pad of the first element within the bin. This can be used
  * for a number of purposes, for example to force output to a particular
  * format or to modify or observe the data before it is output.
- * </para>
- * <para>
+ *
  * It is also possible to 'suppress' audio and/or video output by using
  * 'fakesink' elements (or capture it from there using the fakesink element's
  * "handoff" signal, which, nota bene, is fired from the streaming thread!).
  * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Retrieving Tags and Other Meta Data</title>
  * <para>
  * Most of the common meta data (artist, title, etc.) can be retrieved by
  * watching for TAG messages on the pipeline's bus (see above).
- * </para>
- * <para>
+ *
  * Other more specific meta information like width/height/framerate of video
  * streams or samplerate/number of channels of audio streams can be obtained
- * using the "stream-info" property, which will return a GList of stream info
- * objects, one for each stream. These are opaque objects that can only be
- * accessed via the standard GObject property interface, ie. g_object_get().
+ * using the  #GstPlayBaseBin:stream-info property, which will return a GList of
+ * stream info objects, one for each stream. These are opaque objects that can
+ * only be accessed via the standard GObject property interface, ie. g_object_get().
  * Each stream info object has the following properties:
  * <itemizedlist>
  * <listitem>"object" (GstObject) (the decoder source pad usually)</listitem>
@@ -155,14 +148,15 @@
  * <listitem>"language-code" (string) (ISO-639 language code for this stream, mostly used for audio/subtitle streams)</listitem>
  * <listitem>"codec" (string) (format this stream was encoded in)</listitem>
  * </itemizedlist>
- * Stream information from the stream-info properties is best queried once
+ * Stream information from the #GstPlayBaseBin:stream-info property is best queried once
  * playbin has changed into PAUSED or PLAYING state (which can be detected
- * via a state-changed message on the bus where old_state=READY and
+ * via a state-changed message on the #GstBus where old_state=READY and
  * new_state=PAUSED), since before that the list might not be complete yet or
  * not contain all available information (like language-codes).
  * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Buffering</title>
- * <para>
  * Playbin handles buffering automatically for the most part, but applications
  * need to handle parts of the buffering process as well. Whenever playbin is
  * buffering, it will post BUFFERING messages on the bus with a percentage
@@ -171,9 +165,7 @@
  * They may also want to convey the buffering progress to the user in some
  * way. Here is how to extract the percentage information from the message
  * (requires GStreamer >= 0.10.11):
- * </para>
- * <para>
- * <programlisting>
+ * |[
  * switch (GST_MESSAGE_TYPE (msg)) {
  *   case GST_MESSAGE_BUFFERING: {
  *     gint percent = 0;
@@ -183,21 +175,21 @@
  *   }
  *   ...
  * }
- * </programlisting>
+ * ]|
  * Note that applications should keep/set the pipeline in the PAUSED state when
  * a BUFFERING message is received with a buffer percent value < 100 and set
  * the pipeline back to PLAYING state when a BUFFERING message with a value
  * of 100 percent is received (if PLAYING is the desired state, that is).
- * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Embedding the video window in your application</title>
- * <para>
  * By default, playbin (or rather the video sinks used) will create their own
  * window. Applications will usually want to force output to a window of their
- * own, however. This can be done using the GstXOverlay interface, which most
+ * own, however. This can be done using the #GstXOverlay interface, which most
  * video sinks implement. See the documentation there for more details.
- * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Specifying which CD/DVD device to use</title>
- * <para>
  * The device to use for CDs/DVDs needs to be set on the source element
  * playbin creates before it is opened. The only way to do this at the moment
  * is to connect to playbin's "notify::source" signal, which will be emitted
@@ -206,35 +198,24 @@
  * property and set it appropriately. In future ways might be added to specify
  * the device as part of the URI, but at the time of writing this is not
  * possible yet.
- * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Examples</title>
- * <para>
- * Here is a simple pipeline to play back a video or audio file:
- * <programlisting>
+ * |[
  * gst-launch -v playbin uri=file:///path/to/somefile.avi
- * </programlisting>
- * This will play back the given AVI video file, given that the video and
+ * ]| This will play back the given AVI video file, given that the video and
  * audio decoders required to decode the content are installed. Since no
  * special audio sink or video sink is supplied (not possible via gst-launch),
  * playbin will try to find a suitable audio and video sink automatically
  * using the autoaudiosink and autovideosink elements.
- * </para>
- * <para>
- * Here is a another pipeline to play track 4 of an audio CD:
- * <programlisting>
+ * |[
  * gst-launch -v playbin uri=cdda://4
- * </programlisting>
- * This will play back track 4 on an audio CD in your disc drive (assuming
+ * ]| This will play back track 4 on an audio CD in your disc drive (assuming
  * the drive is detected automatically by the plugin).
- * </para>
- * <para>
- * Here is a another pipeline to play title 1 of a DVD:
- * <programlisting>
+ * |[
  * gst-launch -v playbin uri=dvd://1
- * </programlisting>
- * This will play back title 1 of a DVD in your disc drive (assuming
+ * ]| This will play back title 1 of a DVD in your disc drive (assuming
  * the drive is detected automatically by the plugin).
- * </para>
  * </refsect2>
  */
 
@@ -281,6 +262,7 @@ struct _GstPlayBin
   GstElement *pending_visualisation;
   GstElement *volume_element;
   GstElement *textoverlay_element;
+  GstElement *spu_element;
   gfloat volume;
 
   /* these are the currently active sinks */
@@ -450,6 +432,7 @@ gst_play_bin_init (GstPlayBin * play_bin)
   play_bin->pending_visualisation = NULL;
   play_bin->volume_element = NULL;
   play_bin->textoverlay_element = NULL;
+  play_bin->spu_element = NULL;
   play_bin->volume = 1.0;
   play_bin->sinks = NULL;
   play_bin->frame = NULL;
@@ -494,6 +477,10 @@ gst_play_bin_dispose (GObject * object)
   if (play_bin->textoverlay_element != NULL) {
     gst_object_unref (play_bin->textoverlay_element);
     play_bin->textoverlay_element = NULL;
+  }
+  if (play_bin->spu_element != NULL) {
+    gst_object_unref (play_bin->spu_element);
+    play_bin->spu_element = NULL;
   }
   g_free (play_bin->font_desc);
   play_bin->font_desc = NULL;
@@ -930,7 +917,7 @@ link_failed:
  *  | tbin                  +-------------+            |
  *  |          +-----+      | textoverlay |   +------+ |
  *  |          | csp | +--video_sink      |   | vbin | |
- * video_sink-sink  src+ +-text_sink     src-sink    | |
+ * video_sink-sink  src+ +-text_sink    src---sink   | |
  *  |          +-----+   |  +-------------+   +------+ |
  * text_sink-------------+                             |
  *  +--------------------------------------------------+
@@ -939,15 +926,10 @@ link_failed:
  *  videosink without the text_sink pad.
  */
 static GstElement *
-gen_text_element (GstPlayBin * play_bin)
+add_text_element (GstPlayBin * play_bin, GstElement * vbin)
 {
-  GstElement *element, *csp, *overlay, *vbin;
+  GstElement *element, *csp, *overlay;
   GstPad *pad;
-
-  /* Create the video rendering bin, error is posted when this fails. */
-  vbin = gen_video_element (play_bin);
-  if (!vbin)
-    return NULL;
 
   /* Text overlay */
   overlay = gst_element_factory_make ("textoverlay", "overlay");
@@ -988,6 +970,13 @@ gen_text_element (GstPlayBin * play_bin)
   gst_element_add_pad (element, gst_ghost_pad_new ("sink", pad));
   gst_object_unref (pad);
 
+  /* If the vbin provides a subpicture sink pad, ghost it too */
+  pad = gst_element_get_static_pad (vbin, "subpicture_sink");
+  if (pad) {
+    gst_element_add_pad (element, gst_ghost_pad_new ("subpicture_sink", pad));
+    gst_object_unref (pad);
+  }
+
   /* Set state to READY */
   gst_element_set_state (element, GST_STATE_READY);
 
@@ -999,6 +988,74 @@ no_overlay:
     post_missing_element_message (play_bin, "textoverlay");
     GST_WARNING_OBJECT (play_bin,
         "No overlay (pango) element, subtitles disabled");
+    return vbin;
+  }
+}
+
+/* make an element for rendering DVD subpictures onto output video
+ *
+ *  +---------------------------------------------+
+ *  | tbin                   +--------+           |
+ *  |          +-----+       |        |  +------+ |
+ *  |          | csp | src-videosink  |  | vbin | |
+ * video_sink-sink  src+     |       src-sink   | |
+ *  |          +-----+   +subpicture  |  +------+ |
+ * subpicture_pad--------+   +--------+           |
+ *  +---------- ----------------------------------+
+ *
+ */
+static GstElement *
+add_spu_element (GstPlayBin * play_bin, GstElement * vbin)
+{
+  GstElement *element, *csp, *overlay;
+  GstPad *pad;
+
+  /* DVD spu overlay */
+  GST_DEBUG_OBJECT (play_bin, "Attempting to insert DVD SPU element");
+
+  overlay = gst_element_factory_make ("dvdspu", "overlay");
+
+  /* If no overlay return the video bin without subpicture support. */
+  if (!overlay)
+    goto no_overlay;
+
+  /* Create our bin */
+  element = gst_bin_new ("spubin");
+
+  /* Take a ref */
+  play_bin->spu_element = GST_ELEMENT_CAST (gst_object_ref (overlay));
+
+  /* we know this will succeed, as the video bin already created one before */
+  csp = gst_element_factory_make ("ffmpegcolorspace", "spucsp");
+
+  /* Add our elements */
+  gst_bin_add_many (GST_BIN_CAST (element), csp, overlay, vbin, NULL);
+
+  /* Link */
+  gst_element_link_pads (csp, "src", overlay, "video");
+  gst_element_link_pads (overlay, "src", vbin, "sink");
+
+  /* Add ghost pad on the subpicture bin so it looks like vbin */
+  pad = gst_element_get_static_pad (csp, "sink");
+  gst_element_add_pad (element, gst_ghost_pad_new ("sink", pad));
+  gst_object_unref (pad);
+
+  pad = gst_element_get_static_pad (overlay, "subpicture");
+  gst_element_add_pad (element, gst_ghost_pad_new ("subpicture_sink", pad));
+  gst_object_unref (pad);
+
+  /* Set state to READY */
+  gst_element_set_state (element, GST_STATE_READY);
+
+  return element;
+
+  /* ERRORS */
+no_overlay:
+  {
+    post_missing_element_message (play_bin, "dvdspu");
+    GST_WARNING_OBJECT (play_bin,
+        "No DVD overlay (dvdspu) element. "
+        "menu highlight/subtitles unavailable");
     return vbin;
   }
 }
@@ -1498,8 +1555,10 @@ static gboolean
 setup_sinks (GstPlayBaseBin * play_base_bin, GstPlayBaseGroup * group)
 {
   GstPlayBin *play_bin = GST_PLAY_BIN (play_base_bin);
+  gboolean have_video = FALSE;
   gboolean need_vis = FALSE;
   gboolean need_text = FALSE;
+  gboolean need_spu = FALSE;
   GstPad *textsrcpad = NULL, *pad = NULL, *origtextsrcpad = NULL;
   GstElement *sink;
   gboolean res = TRUE;
@@ -1511,10 +1570,12 @@ setup_sinks (GstPlayBaseBin * play_base_bin, GstPlayBaseGroup * group)
   GST_DEBUG_OBJECT (play_base_bin, "setupsinks");
 
   /* find out what to do */
-  if (group->type[GST_STREAM_TYPE_VIDEO - 1].npads > 0 &&
-      group->type[GST_STREAM_TYPE_TEXT - 1].npads > 0) {
+  have_video = (group->type[GST_STREAM_TYPE_VIDEO - 1].npads > 0);
+  need_spu = (group->type[GST_STREAM_TYPE_SUBPICTURE - 1].npads != 0);
+
+  if (have_video && group->type[GST_STREAM_TYPE_TEXT - 1].npads > 0) {
     need_text = TRUE;
-  } else if (group->type[GST_STREAM_TYPE_VIDEO - 1].npads == 0 &&
+  } else if (!have_video &&
       group->type[GST_STREAM_TYPE_AUDIO - 1].npads > 0 &&
       play_bin->visualisation != NULL) {
     need_vis = TRUE;
@@ -1540,12 +1601,23 @@ setup_sinks (GstPlayBaseBin * play_base_bin, GstPlayBaseGroup * group)
   }
 
   /* link video */
-  if (group->type[GST_STREAM_TYPE_VIDEO - 1].npads > 0) {
+  if (have_video) {
+    /* Create the video rendering bin, error is posted when this fails. */
+    sink = gen_video_element (play_bin);
+    if (!sink)
+      return FALSE;
+    if (need_spu) {
+      sink = add_spu_element (play_bin, sink);
+    }
+
     if (need_text) {
       GstObject *parent = NULL, *grandparent = NULL;
       GstPad *ghost = NULL;
 
-      sink = gen_text_element (play_bin);
+      /* Add the subtitle overlay element into the video sink */
+      sink = add_text_element (play_bin, sink);
+
+      /* Link the incoming subtitle stream into the output bin */
       textsrcpad =
           gst_element_get_static_pad (group->type[GST_STREAM_TYPE_TEXT -
               1].preroll, "src");
@@ -1608,8 +1680,6 @@ setup_sinks (GstPlayBaseBin * play_base_bin, GstPlayBaseGroup * group)
 
       gst_object_unref (parent);
       gst_object_unref (grandparent);
-    } else {
-      sink = gen_video_element (play_bin);
     }
   beach:
     if (!sink)
@@ -1624,6 +1694,30 @@ setup_sinks (GstPlayBaseBin * play_base_bin, GstPlayBaseGroup * group)
     if (origtextsrcpad) {
       gst_pad_set_blocked_async (origtextsrcpad, FALSE, dummy_blocked_cb, NULL);
       gst_object_unref (origtextsrcpad);
+    }
+
+    /* If we have a DVD subpicture stream, link it to the SPU now */
+    if (need_spu) {
+      GstPad *subpic_pad;
+      GstPad *spu_sink_pad;
+
+      subpic_pad =
+          gst_element_get_static_pad (group->type[GST_STREAM_TYPE_SUBPICTURE
+              - 1].preroll, "src");
+      spu_sink_pad = gst_element_get_static_pad (sink, "subpicture_sink");
+      if (subpic_pad && spu_sink_pad) {
+        GST_LOG_OBJECT (play_bin, "Linking DVD subpicture stream onto SPU");
+        gst_pad_set_blocked_async (subpic_pad, TRUE, dummy_blocked_cb, NULL);
+        if (gst_pad_link (subpic_pad, spu_sink_pad) != GST_PAD_LINK_OK) {
+          GST_WARNING_OBJECT (play_bin,
+              "Failed to link DVD subpicture stream onto SPU");
+        }
+        gst_pad_set_blocked_async (subpic_pad, FALSE, dummy_blocked_cb, NULL);
+      }
+      if (subpic_pad)
+        gst_object_unref (subpic_pad);
+      if (spu_sink_pad)
+        gst_object_unref (spu_sink_pad);
     }
   }
 

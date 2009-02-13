@@ -14,6 +14,13 @@
 
 @SET_MAKE@
 
+# these are the variables your Makefile.am should set
+# the example is based on the colorbalance interface
+
+#glib_enum_headers=$(colorbalance_headers)
+#glib_enum_define=GST_COLOR_BALANCE
+#glib_enum_prefix=gst_color_balance
+
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -37,9 +44,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+DIST_COMMON = $(libgstvideo_@GST_MAJORMINOR@include_HEADERS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(top_srcdir)/common/glib-gen.mak
 subdir = gst-libs/gst/video
-DIST_COMMON = $(libgstvideoinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
@@ -66,16 +74,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -85,7 +95,8 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)" \
-	"$(DESTDIR)$(libgstvideoincludedir)"
+	"$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)" \
+	"$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
@@ -95,8 +106,13 @@ am_libgstvideo_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstvideo_@GST_MAJORMINOR@_la-video.lo \
 	libgstvideo_@GST_MAJORMINOR@_la-gstvideosink.lo \
 	libgstvideo_@GST_MAJORMINOR@_la-gstvideofilter.lo
+am__objects_1 = libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo
+am__objects_2 =
+am__objects_3 = $(am__objects_1) $(am__objects_2)
+nodist_libgstvideo_@GST_MAJORMINOR@_la_OBJECTS = $(am__objects_3)
 libgstvideo_@GST_MAJORMINOR@_la_OBJECTS =  \
-	$(am_libgstvideo_@GST_MAJORMINOR@_la_OBJECTS)
+	$(am_libgstvideo_@GST_MAJORMINOR@_la_OBJECTS) \
+	$(nodist_libgstvideo_@GST_MAJORMINOR@_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -108,10 +124,13 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgstvideo_@GST_MAJORMINOR@_la_SOURCES)
+SOURCES = $(libgstvideo_@GST_MAJORMINOR@_la_SOURCES) \
+	$(nodist_libgstvideo_@GST_MAJORMINOR@_la_SOURCES)
 DIST_SOURCES = $(libgstvideo_@GST_MAJORMINOR@_la_SOURCES)
-libgstvideoincludeHEADERS_INSTALL = $(INSTALL_HEADER)
-HEADERS = $(libgstvideoinclude_HEADERS)
+libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL = $(INSTALL_HEADER)
+nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(libgstvideo_@GST_MAJORMINOR@include_HEADERS) \
+	$(nodist_libgstvideo_@GST_MAJORMINOR@include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -175,6 +194,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -184,6 +204,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -197,6 +218,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -220,10 +249,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -259,6 +291,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -276,6 +310,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -297,8 +332,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -361,12 +396,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -375,6 +410,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -393,6 +430,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -409,6 +448,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -467,18 +508,31 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+
+# variables used for enum/marshal generation
+glib_enum_headers = video.h
+glib_enum_define = GST_VIDEO
+glib_enum_prefix = gst_video
+built_sources = video-enumtypes.c
+built_headers = video-enumtypes.h
+BUILT_SOURCES = $(built_sources) $(built_headers)
 lib_LTLIBRARIES = libgstvideo-@GST_MAJORMINOR@.la
+CLEANFILES = $(BUILT_SOURCES)
 libgstvideo_@GST_MAJORMINOR@_la_SOURCES = video.c gstvideosink.c gstvideofilter.c
-libgstvideoincludedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/video
-libgstvideoinclude_HEADERS = video.h gstvideosink.h gstvideofilter.h
-libgstvideo_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS)
+nodist_libgstvideo_@GST_MAJORMINOR@_la_SOURCES = $(BUILT_SOURCES)
+libgstvideo_@GST_MAJORMINOR@includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/video
+libgstvideo_@GST_MAJORMINOR@include_HEADERS = video.h gstvideosink.h gstvideofilter.h
+nodist_libgstvideo_@GST_MAJORMINOR@include_HEADERS = $(built_headers)
+libgstvideo_@GST_MAJORMINOR@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstvideo_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS)
 libgstvideo_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
-all: all-am
+enum_headers = $(foreach h,$(glib_enum_headers),\n\#include \"$(h)\")
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/common/glib-gen.mak $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -545,6 +599,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-gstvideofilter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-gstvideosink.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video.Plo@am__quote@
 
 .c.o:
@@ -589,6 +644,13 @@ libgstvideo_@GST_MAJORMINOR@_la-gstvideofilter.lo: gstvideofilter.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstvideo_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstvideo_@GST_MAJORMINOR@_la-gstvideofilter.lo `test -f 'gstvideofilter.c' || echo '$(srcdir)/'`gstvideofilter.c
 
+libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo: video-enumtypes.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstvideo_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo -MD -MP -MF "$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.Tpo" -c -o libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo `test -f 'video-enumtypes.c' || echo '$(srcdir)/'`video-enumtypes.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.Tpo" "$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.Plo"; else rm -f "$(DEPDIR)/libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='video-enumtypes.c' object='libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstvideo_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstvideo_@GST_MAJORMINOR@_la-video-enumtypes.lo `test -f 'video-enumtypes.c' || echo '$(srcdir)/'`video-enumtypes.c
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -598,22 +660,39 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-libgstvideoincludeHEADERS: $(libgstvideoinclude_HEADERS)
+install-libgstvideo_@GST_MAJORMINOR@includeHEADERS: $(libgstvideo_@GST_MAJORMINOR@include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libgstvideoincludedir)" || $(mkdir_p) "$(DESTDIR)$(libgstvideoincludedir)"
-	@list='$(libgstvideoinclude_HEADERS)'; for p in $$list; do \
+	test -z "$(libgstvideo_@GST_MAJORMINOR@includedir)" || $(mkdir_p) "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)"
+	@list='$(libgstvideo_@GST_MAJORMINOR@include_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(libgstvideoincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libgstvideoincludedir)/$$f'"; \
-	  $(libgstvideoincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libgstvideoincludedir)/$$f"; \
+	  echo " $(libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f'"; \
+	  $(libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f"; \
 	done
 
-uninstall-libgstvideoincludeHEADERS:
+uninstall-libgstvideo_@GST_MAJORMINOR@includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libgstvideoinclude_HEADERS)'; for p in $$list; do \
+	@list='$(libgstvideo_@GST_MAJORMINOR@include_HEADERS)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(libgstvideoincludedir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(libgstvideoincludedir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f"; \
+	done
+install-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS: $(nodist_libgstvideo_@GST_MAJORMINOR@include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libgstvideo_@GST_MAJORMINOR@includedir)" || $(mkdir_p) "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)"
+	@list='$(nodist_libgstvideo_@GST_MAJORMINOR@include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f'"; \
+	  $(nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f"; \
+	done
+
+uninstall-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nodist_libgstvideo_@GST_MAJORMINOR@include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)/$$f"; \
 	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -665,6 +744,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/../../../common
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -692,13 +772,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libgstvideoincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)" "$(DESTDIR)$(libgstvideo_@GST_MAJORMINOR@includedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -715,6 +797,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -722,6 +805,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -743,7 +827,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libgstvideoincludeHEADERS
+install-data-am: install-libgstvideo_@GST_MAJORMINOR@includeHEADERS \
+	install-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS
 
 install-exec-am: install-libLTLIBRARIES
 
@@ -772,7 +857,8 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
-	uninstall-libgstvideoincludeHEADERS
+	uninstall-libgstvideo_@GST_MAJORMINOR@includeHEADERS \
+	uninstall-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool ctags distclean \
@@ -780,14 +866,53 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-exec \
 	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-libgstvideoincludeHEADERS \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES \
-	uninstall-libgstvideoincludeHEADERS
+	install-libLTLIBRARIES \
+	install-libgstvideo_@GST_MAJORMINOR@includeHEADERS install-man \
+	install-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-info-am uninstall-libLTLIBRARIES \
+	uninstall-libgstvideo_@GST_MAJORMINOR@includeHEADERS \
+	uninstall-nodist_libgstvideo_@GST_MAJORMINOR@includeHEADERS
 
+
+# these are all the rules generating the relevant files
+%-marshal.h: %-marshal.list
+	glib-genmarshal --header --prefix=$(glib_enum_prefix)_marshal $^ > $*-marshal.h.tmp
+	mv $*-marshal.h.tmp $*-marshal.h
+
+%-marshal.c: %-marshal.list
+	echo "#include \"$*-marshal.h\"" >> $*-marshal.c.tmp
+	glib-genmarshal --body --prefix=$(glib_enum_prefix)_marshal $^ >> $*-marshal.c.tmp
+	mv $*-marshal.c.tmp $*-marshal.c
+
+%-enumtypes.h: $(glib_enum_headers)
+	glib-mkenums \
+	--fhead "#ifndef __$(glib_enum_define)_ENUM_TYPES_H__\n#define __$(glib_enum_define)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+	--fprod "\n/* enumerations from \"@filename@\" */\n" \
+	--vhead "GType @enum_name@_get_type (void);\n#define GST_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--ftail "G_END_DECLS\n\n#endif /* __$(glib_enum_define)_ENUM_TYPES_H__ */" \
+	$^ > $@
+
+%-enumtypes.c: $(glib_enum_headers)
+	@if test "x$(glib_enum_headers)" == "x"; then echo "ERROR: glib_enum_headers is empty, please fix Makefile"; exit 1; fi
+	glib-mkenums \
+	--fhead "#include \"$*-enumtypes.h\"\n$(enum_headers)" \
+	--fprod "\n/* enumerations from \"@filename@\" */" \
+	--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+	--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+	$^ > $@
+
+# a hack rule to make sure .Plo files exist because they get include'd
+# from Makefile's
+.deps/%-marshal.Plo:
+	touch $@
+
+.deps/%-enumtypes.Plo:
+	touch $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

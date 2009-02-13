@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -59,20 +60,42 @@
 enum                <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetType" title="enum GstNetType">GstNetType</a>;
                     <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a>;
 <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetBuffer" title="GstNetBuffer">GstNetBuffer</a>*       <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netbuffer-new" title="gst_netbuffer_new ()">gst_netbuffer_new</a>                   (void);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip4-address" title="gst_netaddress_get_ip4_address ()">gst_netaddress_get_ip4_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint32 *address,
-                                                         guint16 *port);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip6-address" title="gst_netaddress_get_ip6_address ()">gst_netaddress_get_ip6_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint8 address[16],
-                                                         guint16 *port);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip4-address" title="gst_netaddress_get_ip4_address ()">gst_netaddress_get_ip4_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *address,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *port);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-ip6-address" title="gst_netaddress_get_ip6_address ()">gst_netaddress_get_ip6_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> address[16],
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *port);
 <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetType" title="enum GstNetType">GstNetType</a>          <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-get-net-type" title="gst_netaddress_get_net_type ()">gst_netaddress_get_net_type</a>         (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr);
 void                <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-set-ip4-address" title="gst_netaddress_set_ip4_address ()">gst_netaddress_set_ip4_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint32 address,
-                                                         guint16 port);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> address,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> port);
 void                <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-set-ip6-address" title="gst_netaddress_set_ip6_address ()">gst_netaddress_set_ip6_address</a>      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint8 address[16],
-                                                         guint16 port);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-equal" title="gst_netaddress_equal ()">gst_netaddress_equal</a>                (const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr1,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> address[16],
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> port);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#gst-netaddress-equal" title="gst_netaddress_equal ()">gst_netaddress_equal</a>                (const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr1,
                                                          const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr2);
 </pre>
 </div>
@@ -197,11 +220,18 @@ Create a new network buffer.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-netaddress-get-ip4-address"></a><h3>gst_netaddress_get_ip4_address ()</h3>
-<pre class="programlisting">gboolean            gst_netaddress_get_ip4_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint32 *address,
-                                                         guint16 *port);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_netaddress_get_ip4_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> *address,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *port);</pre>
 <p>
-Get the IPv4 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>.</p>
+Get the IPv4 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>. This function requires
+that the address type of <em class="parameter"><code>naddr</code></em> is of type <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GST-NET-TYPE-IP4:CAPS"><span class="type">GST_NET_TYPE_IP4</span></a>.</p>
 <p>
 
 </p>
@@ -234,11 +264,21 @@ Get the IPv4 address stored in <em class="parameter"><code>naddr</code></em> int
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-netaddress-get-ip6-address"></a><h3>gst_netaddress_get_ip6_address ()</h3>
-<pre class="programlisting">gboolean            gst_netaddress_get_ip6_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint8 address[16],
-                                                         guint16 *port);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_netaddress_get_ip6_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> address[16],
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> *port);</pre>
 <p>
-Get the IPv6 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>.</p>
+Get the IPv6 address stored in <em class="parameter"><code>naddr</code></em> into <em class="parameter"><code>address</code></em>.
+</p>
+<p>
+If <em class="parameter"><code>naddr</code></em> is of type GST_NET_TYPE_IP4, the transitional IP6 address is
+returned.</p>
 <p>
 
 </p>
@@ -297,8 +337,12 @@ Get the type of address stored in <em class="parameter"><code>naddr</code></em>.
 <div class="refsect2" lang="en">
 <a name="gst-netaddress-set-ip4-address"></a><h3>gst_netaddress_set_ip4_address ()</h3>
 <pre class="programlisting">void                gst_netaddress_set_ip4_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint32 address,
-                                                         guint16 port);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> address,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> port);</pre>
 <p>
 Set <em class="parameter"><code>naddr</code></em> with the IPv4 <em class="parameter"><code>address</code></em> and <em class="parameter"><code>port</code></em> pair.</p>
 <p>
@@ -329,8 +373,12 @@ Set <em class="parameter"><code>naddr</code></em> with the IPv4 <em class="param
 <div class="refsect2" lang="en">
 <a name="gst-netaddress-set-ip6-address"></a><h3>gst_netaddress_set_ip6_address ()</h3>
 <pre class="programlisting">void                gst_netaddress_set_ip6_address      (<a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr,
-                                                         guint8 address[16],
-                                                         guint16 port);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> address[16],
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint16"
+>guint16</a> port);</pre>
 <p>
 Set <em class="parameter"><code>naddr</code></em> with the IPv6 <em class="parameter"><code>address</code></em> and <em class="parameter"><code>port</code></em> pair.</p>
 <p>
@@ -360,7 +408,9 @@ Set <em class="parameter"><code>naddr</code></em> with the IPv6 <em class="param
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-netaddress-equal"></a><h3>gst_netaddress_equal ()</h3>
-<pre class="programlisting">gboolean            gst_netaddress_equal                (const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr1,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_netaddress_equal                (const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr1,
                                                          const <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress">GstNetAddress</a> *naddr2);</pre>
 <p>
 Compare two <a class="link" href="gst-plugins-base-libs-gstnetbuffer.html#GstNetAddress" title="GstNetAddress"><span class="type">GstNetAddress</span></a> structures</p>

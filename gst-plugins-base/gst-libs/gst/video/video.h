@@ -25,6 +25,8 @@
 
 G_BEGIN_DECLS
 
+#include <gst/video/video-enumtypes.h>
+
 /**
  * GstVideoFormat:
  * @GST_VIDEO_FORMAT_UNKNOWN: Unknown or unset video format id

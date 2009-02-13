@@ -36,8 +36,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) \
-	stress-playbin$(EXEEXT)
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@am__append_1 = test-colorkey
+noinst_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_3) \
+	stress-playbin$(EXEEXT) test-scale$(EXEEXT) test-box$(EXEEXT)
 subdir = tests/icles
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -66,34 +67,57 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-@USE_X_TRUE@am__EXEEXT_1 = stress-xoverlay$(EXEEXT)
-@USE_PANGO_TRUE@am__EXEEXT_2 = test-textoverlay$(EXEEXT)
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@am__EXEEXT_1 = test-colorkey$(EXEEXT)
+@USE_X_TRUE@am__EXEEXT_2 = stress-xoverlay$(EXEEXT) $(am__EXEEXT_1)
+@USE_PANGO_TRUE@am__EXEEXT_3 = test-textoverlay$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_stress_playbin_OBJECTS = stress_playbin-stress-playbin.$(OBJEXT)
 stress_playbin_OBJECTS = $(am_stress_playbin_OBJECTS)
-stress_playbin_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+stress_playbin_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__stress_xoverlay_SOURCES_DIST = stress-xoverlay.c
 @USE_X_TRUE@am_stress_xoverlay_OBJECTS =  \
 @USE_X_TRUE@	stress_xoverlay-stress-xoverlay.$(OBJEXT)
 stress_xoverlay_OBJECTS = $(am_stress_xoverlay_OBJECTS)
-@USE_X_TRUE@stress_xoverlay_DEPENDENCIES = $(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-$(GST_MAJORMINOR).la
+@USE_X_TRUE@stress_xoverlay_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@USE_X_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-$(GST_MAJORMINOR).la
+am_test_box_OBJECTS = test_box-test-box.$(OBJEXT)
+test_box_OBJECTS = $(am_test_box_OBJECTS)
+test_box_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__test_colorkey_SOURCES_DIST = test-colorkey.c
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@am_test_colorkey_OBJECTS = test_colorkey-test-colorkey.$(OBJEXT)
+test_colorkey_OBJECTS = $(am_test_colorkey_OBJECTS)
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@test_colorkey_DEPENDENCIES =  \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-$(GST_MAJORMINOR).la
+am_test_scale_OBJECTS = test_scale-test-scale.$(OBJEXT)
+test_scale_OBJECTS = $(am_test_scale_OBJECTS)
+test_scale_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__test_textoverlay_SOURCES_DIST = test-textoverlay.c
 @USE_PANGO_TRUE@am_test_textoverlay_OBJECTS =  \
 @USE_PANGO_TRUE@	test_textoverlay-test-textoverlay.$(OBJEXT)
 test_textoverlay_OBJECTS = $(am_test_textoverlay_OBJECTS)
-test_textoverlay_LDADD = $(LDADD)
+@USE_PANGO_TRUE@test_textoverlay_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@USE_PANGO_TRUE@	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -106,9 +130,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(stress_playbin_SOURCES) $(stress_xoverlay_SOURCES) \
-	$(test_textoverlay_SOURCES)
+	$(test_box_SOURCES) $(test_colorkey_SOURCES) \
+	$(test_scale_SOURCES) $(test_textoverlay_SOURCES)
 DIST_SOURCES = $(stress_playbin_SOURCES) \
-	$(am__stress_xoverlay_SOURCES_DIST) \
+	$(am__stress_xoverlay_SOURCES_DIST) $(test_box_SOURCES) \
+	$(am__test_colorkey_SOURCES_DIST) $(test_scale_SOURCES) \
 	$(am__test_textoverlay_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
@@ -173,6 +199,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -182,6 +209,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -195,6 +223,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -218,10 +254,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -257,6 +296,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -274,6 +315,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -295,8 +337,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -359,12 +401,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -373,6 +415,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -391,6 +435,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -407,6 +453,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -466,21 +514,31 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 @USE_X_FALSE@X_TESTS = 
-@USE_X_TRUE@X_TESTS = stress-xoverlay
+@USE_X_TRUE@X_TESTS = stress-xoverlay $(am__append_1)
 @USE_X_TRUE@stress_xoverlay_SOURCES = stress-xoverlay.c
 @USE_X_TRUE@stress_xoverlay_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) $(X_CFLAGS)
-@USE_X_TRUE@stress_xoverlay_LDFLAGS = $(GST_LIBS) $(X_LIBS) $(LIBM)
-@USE_X_TRUE@stress_xoverlay_LDADD = \
+@USE_X_TRUE@stress_xoverlay_LDADD = $(GST_LIBS) $(X_LIBS) $(LIBM) \
 @USE_X_TRUE@	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-$(GST_MAJORMINOR).la
+
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@test_colorkey_SOURCES = test-colorkey.c
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@test_colorkey_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) $(X_CFLAGS) $(GTK_CFLAGS)
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@test_colorkey_LDADD = $(GST_LIBS) $(X_LIBS) $(LIBM) $(GTK_LIBS) \
+@HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-$(GST_MAJORMINOR).la
 
 @USE_PANGO_FALSE@PANGO_TESTS = 
 @USE_PANGO_TRUE@PANGO_TESTS = test-textoverlay
 @USE_PANGO_TRUE@test_textoverlay_SOURCES = test-textoverlay.c
 @USE_PANGO_TRUE@test_textoverlay_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
-@USE_PANGO_TRUE@test_textoverlay_LDFLAGS = $(GST_LIBS) $(LIBM)
+@USE_PANGO_TRUE@test_textoverlay_LDADD = $(GST_LIBS) $(LIBM)
 stress_playbin_SOURCES = stress-playbin.c
 stress_playbin_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
-stress_playbin_LDFLAGS = $(GST_LIBS) $(LIBM)
+stress_playbin_LDADD = $(GST_LIBS) $(LIBM)
+test_scale_SOURCES = test-scale.c
+test_scale_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+test_scale_LDADD = $(GST_LIBS) $(LIBM)
+test_box_SOURCES = test-box.c
+test_box_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+test_box_LDADD = $(GST_LIBS) $(LIBM)
 all: all-am
 
 .SUFFIXES:
@@ -527,6 +585,15 @@ stress-playbin$(EXEEXT): $(stress_playbin_OBJECTS) $(stress_playbin_DEPENDENCIES
 stress-xoverlay$(EXEEXT): $(stress_xoverlay_OBJECTS) $(stress_xoverlay_DEPENDENCIES) 
 	@rm -f stress-xoverlay$(EXEEXT)
 	$(LINK) $(stress_xoverlay_LDFLAGS) $(stress_xoverlay_OBJECTS) $(stress_xoverlay_LDADD) $(LIBS)
+test-box$(EXEEXT): $(test_box_OBJECTS) $(test_box_DEPENDENCIES) 
+	@rm -f test-box$(EXEEXT)
+	$(LINK) $(test_box_LDFLAGS) $(test_box_OBJECTS) $(test_box_LDADD) $(LIBS)
+test-colorkey$(EXEEXT): $(test_colorkey_OBJECTS) $(test_colorkey_DEPENDENCIES) 
+	@rm -f test-colorkey$(EXEEXT)
+	$(LINK) $(test_colorkey_LDFLAGS) $(test_colorkey_OBJECTS) $(test_colorkey_LDADD) $(LIBS)
+test-scale$(EXEEXT): $(test_scale_OBJECTS) $(test_scale_DEPENDENCIES) 
+	@rm -f test-scale$(EXEEXT)
+	$(LINK) $(test_scale_LDFLAGS) $(test_scale_OBJECTS) $(test_scale_LDADD) $(LIBS)
 test-textoverlay$(EXEEXT): $(test_textoverlay_OBJECTS) $(test_textoverlay_DEPENDENCIES) 
 	@rm -f test-textoverlay$(EXEEXT)
 	$(LINK) $(test_textoverlay_LDFLAGS) $(test_textoverlay_OBJECTS) $(test_textoverlay_LDADD) $(LIBS)
@@ -539,6 +606,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stress_playbin-stress-playbin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stress_xoverlay-stress-xoverlay.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_box-test-box.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_colorkey-test-colorkey.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_scale-test-scale.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_textoverlay-test-textoverlay.Po@am__quote@
 
 .c.o:
@@ -589,6 +659,48 @@ stress_xoverlay-stress-xoverlay.obj: stress-xoverlay.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stress-xoverlay.c' object='stress_xoverlay-stress-xoverlay.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(stress_xoverlay_CFLAGS) $(CFLAGS) -c -o stress_xoverlay-stress-xoverlay.obj `if test -f 'stress-xoverlay.c'; then $(CYGPATH_W) 'stress-xoverlay.c'; else $(CYGPATH_W) '$(srcdir)/stress-xoverlay.c'; fi`
+
+test_box-test-box.o: test-box.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_box_CFLAGS) $(CFLAGS) -MT test_box-test-box.o -MD -MP -MF "$(DEPDIR)/test_box-test-box.Tpo" -c -o test_box-test-box.o `test -f 'test-box.c' || echo '$(srcdir)/'`test-box.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_box-test-box.Tpo" "$(DEPDIR)/test_box-test-box.Po"; else rm -f "$(DEPDIR)/test_box-test-box.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-box.c' object='test_box-test-box.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_box_CFLAGS) $(CFLAGS) -c -o test_box-test-box.o `test -f 'test-box.c' || echo '$(srcdir)/'`test-box.c
+
+test_box-test-box.obj: test-box.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_box_CFLAGS) $(CFLAGS) -MT test_box-test-box.obj -MD -MP -MF "$(DEPDIR)/test_box-test-box.Tpo" -c -o test_box-test-box.obj `if test -f 'test-box.c'; then $(CYGPATH_W) 'test-box.c'; else $(CYGPATH_W) '$(srcdir)/test-box.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_box-test-box.Tpo" "$(DEPDIR)/test_box-test-box.Po"; else rm -f "$(DEPDIR)/test_box-test-box.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-box.c' object='test_box-test-box.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_box_CFLAGS) $(CFLAGS) -c -o test_box-test-box.obj `if test -f 'test-box.c'; then $(CYGPATH_W) 'test-box.c'; else $(CYGPATH_W) '$(srcdir)/test-box.c'; fi`
+
+test_colorkey-test-colorkey.o: test-colorkey.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_colorkey_CFLAGS) $(CFLAGS) -MT test_colorkey-test-colorkey.o -MD -MP -MF "$(DEPDIR)/test_colorkey-test-colorkey.Tpo" -c -o test_colorkey-test-colorkey.o `test -f 'test-colorkey.c' || echo '$(srcdir)/'`test-colorkey.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_colorkey-test-colorkey.Tpo" "$(DEPDIR)/test_colorkey-test-colorkey.Po"; else rm -f "$(DEPDIR)/test_colorkey-test-colorkey.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-colorkey.c' object='test_colorkey-test-colorkey.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_colorkey_CFLAGS) $(CFLAGS) -c -o test_colorkey-test-colorkey.o `test -f 'test-colorkey.c' || echo '$(srcdir)/'`test-colorkey.c
+
+test_colorkey-test-colorkey.obj: test-colorkey.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_colorkey_CFLAGS) $(CFLAGS) -MT test_colorkey-test-colorkey.obj -MD -MP -MF "$(DEPDIR)/test_colorkey-test-colorkey.Tpo" -c -o test_colorkey-test-colorkey.obj `if test -f 'test-colorkey.c'; then $(CYGPATH_W) 'test-colorkey.c'; else $(CYGPATH_W) '$(srcdir)/test-colorkey.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_colorkey-test-colorkey.Tpo" "$(DEPDIR)/test_colorkey-test-colorkey.Po"; else rm -f "$(DEPDIR)/test_colorkey-test-colorkey.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-colorkey.c' object='test_colorkey-test-colorkey.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_colorkey_CFLAGS) $(CFLAGS) -c -o test_colorkey-test-colorkey.obj `if test -f 'test-colorkey.c'; then $(CYGPATH_W) 'test-colorkey.c'; else $(CYGPATH_W) '$(srcdir)/test-colorkey.c'; fi`
+
+test_scale-test-scale.o: test-scale.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_scale_CFLAGS) $(CFLAGS) -MT test_scale-test-scale.o -MD -MP -MF "$(DEPDIR)/test_scale-test-scale.Tpo" -c -o test_scale-test-scale.o `test -f 'test-scale.c' || echo '$(srcdir)/'`test-scale.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_scale-test-scale.Tpo" "$(DEPDIR)/test_scale-test-scale.Po"; else rm -f "$(DEPDIR)/test_scale-test-scale.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-scale.c' object='test_scale-test-scale.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_scale_CFLAGS) $(CFLAGS) -c -o test_scale-test-scale.o `test -f 'test-scale.c' || echo '$(srcdir)/'`test-scale.c
+
+test_scale-test-scale.obj: test-scale.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_scale_CFLAGS) $(CFLAGS) -MT test_scale-test-scale.obj -MD -MP -MF "$(DEPDIR)/test_scale-test-scale.Tpo" -c -o test_scale-test-scale.obj `if test -f 'test-scale.c'; then $(CYGPATH_W) 'test-scale.c'; else $(CYGPATH_W) '$(srcdir)/test-scale.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/test_scale-test-scale.Tpo" "$(DEPDIR)/test_scale-test-scale.Po"; else rm -f "$(DEPDIR)/test_scale-test-scale.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-scale.c' object='test_scale-test-scale.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_scale_CFLAGS) $(CFLAGS) -c -o test_scale-test-scale.obj `if test -f 'test-scale.c'; then $(CYGPATH_W) 'test-scale.c'; else $(CYGPATH_W) '$(srcdir)/test-scale.c'; fi`
 
 test_textoverlay-test-textoverlay.o: test-textoverlay.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_textoverlay_CFLAGS) $(CFLAGS) -MT test_textoverlay-test-textoverlay.o -MD -MP -MF "$(DEPDIR)/test_textoverlay-test-textoverlay.Tpo" -c -o test_textoverlay-test-textoverlay.o `test -f 'test-textoverlay.c' || echo '$(srcdir)/'`test-textoverlay.c; \

@@ -17,6 +17,18 @@ GstAdderInputChannel
 </SECTION>
 
 <SECTION>
+<FILE>element-appsrc</FILE>
+<TITLE>appsrc</TITLE>
+GstAppSrc
+</SECTION>
+
+<SECTION>
+<FILE>element-appsink</FILE>
+<TITLE>appsink</TITLE>
+GstAppSink
+</SECTION>
+
+<SECTION>
 <FILE>element-alsamixer</FILE>
 GstAlsaMixerElement
 <TITLE>alsamixer</TITLE>
@@ -95,15 +107,15 @@ audio_convert_prepare_context
 <SECTION>
 <FILE>element-audioresample</FILE>
 <TITLE>audioresample</TITLE>
-GstAudioresample
+GstSpeexResample
 <SUBSECTION Standard>
-GST_AUDIORESAMPLE
-GST_IS_AUDIORESAMPLE
-GST_TYPE_AUDIORESAMPLE
-gst_audioresample_get_type
-GST_AUDIORESAMPLE_CLASS
-GST_IS_AUDIORESAMPLE_CLASS
-GstAudioresampleClass
+GST_SPEEX_RESAMPLE
+GST_IS_SPEEX_RESAMPLE
+GST_TYPE_SPEEX_RESAMPLE
+gst_speex_resample_get_type
+GST_SPEEX_RESAMPLE_CLASS
+GST_IS_SPEEX_RESAMPLE_CLASS
+GstSpeexResampleClass
 </SECTION>
 
 <SECTION>
@@ -370,6 +382,13 @@ GstOggMuxClass
 </SECTION>
 
 <SECTION>
+<FILE>gstplaybasebin</FILE>
+<TITLE>GstPlayBaseBin</TITLE>
+GstPlayBaseBin
+<SUBSECTION Standard>
+</SECTION>
+
+<SECTION>
 <FILE>element-playbin</FILE>
 <TITLE>playbin</TITLE>
 GstPlayBin
@@ -384,6 +403,49 @@ GstPlayFlags
 <SUBSECTION Standard>
 gst_play_flags_get_type
 GST_TYPE_PLAY_FLAGS
+</SECTION>
+
+<SECTION>
+<FILE>element-tcpclientsrc</FILE>
+<TITLE>tcpclientsrc</TITLE>
+GstTCPClientSrc
+<SUBSECTION Standard>
+GstTCPClientSrcClass
+GST_TCP_CLIENT_SRC
+GstTCPClientSrcFlags
+GST_TYPE_TCP_CLIENT_SRC
+gst_tcp_client_src_get_type
+GST_IS_TCP_CLIENT_SRC_CLASS
+GST_IS_TCP_CLIENT_SRC
+</SECTION>
+
+<SECTION>
+<FILE>element-tcpclientsink</FILE>
+<TITLE>tcpclientsink</TITLE>
+GstTCPClientSink
+<SUBSECTION Standard>
+GstTCPClientSinkClass
+GST_TCP_CLIENT_SINK
+GstTCPClientSinkFlags
+GST_TYPE_TCP_CLIENT_SINK
+gst_tcp_client_sink_get_type
+GST_IS_TCP_CLIENT_SINK_CLASS
+GST_IS_TCP_CLIENT_SINK
+</SECTION>
+
+
+<SECTION>
+<FILE>element-tcpserversrc</FILE>
+<TITLE>tcpserversrc</TITLE>
+GstTCPServerSrc
+<SUBSECTION Standard>
+GstTCPServerSrcClass
+GST_TCP_SERVER_SRC
+GstTCPServerSrcFlags
+GST_TYPE_TCP_SERVER_SRC
+gst_tcp_server_src_get_type
+GST_IS_TCP_SERVER_SRC_CLASS
+GST_IS_TCP_SERVER_SRC
 </SECTION>
 
 <SECTION>

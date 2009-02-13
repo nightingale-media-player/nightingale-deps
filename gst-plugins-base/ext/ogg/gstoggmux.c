@@ -20,21 +20,16 @@
 
 /**
  * SECTION:element-oggmux
- * @short_description: a muxer for ogg files
  * @see_also: <link linkend="gst-plugins-base-plugins-deoggmux">oggdemux</link>
  *
- * <refsect2>
- * <para>
  * This element merges streams (audio and video) into ogg files.
- * </para>
+ *
+ * <refsect2>
  * <title>Example pipelines</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch v4l2src num-buffers=500 ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! theoraenc ! oggmux ! filesink location=video.ogg
- * </programlisting>
- * Encodes a video stream captured from a v4l2-compatible camera to Ogg/Theora
+ * ]| Encodes a video stream captured from a v4l2-compatible camera to Ogg/Theora
  * (the encoding will stop automatically after 500 frames)
- * </para>
  * </refsect2>
  *
  * Last reviewed on 2008-02-06 (0.10.17)
@@ -109,7 +104,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink_%d",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("video/x-theora; "
-        "audio/x-vorbis; audio/x-flac; audio/x-speex; "
+        "audio/x-vorbis; audio/x-flac; audio/x-speex; audio/x-celt; "
         "application/x-ogm-video; application/x-ogm-audio; video/x-dirac; "
         "video/x-smoke; text/x-cmml, encoded = (boolean) TRUE")
     );
@@ -305,6 +300,35 @@ gst_ogg_mux_sinkconnect (GstPad * pad, GstPad * peer)
   return GST_PAD_LINK_OK;
 }
 
+static gboolean
+gst_ogg_mux_sink_event (GstPad * pad, GstEvent * event)
+{
+  GstOggMux *ogg_mux = GST_OGG_MUX (gst_pad_get_parent (pad));
+  GstOggPad *ogg_pad = (GstOggPad *) gst_pad_get_element_private (pad);
+  gboolean ret;
+
+  GST_DEBUG ("Got %s event on pad %s:%s", GST_EVENT_TYPE_NAME (event),
+      GST_DEBUG_PAD_NAME (pad));
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_NEWSEGMENT:
+      /* We don't support NEWSEGMENT events */
+      gst_event_unref (event);
+      ret = FALSE;
+      break;
+    default:
+      ret = TRUE;
+      break;
+  }
+
+  /* now GstCollectPads can take care of the rest, e.g. EOS */
+  if (ret)
+    ret = ogg_pad->collect_event (pad, event);
+
+  gst_object_unref (ogg_mux);
+  return ret;
+}
+
 static GstPad *
 gst_ogg_mux_request_new_pad (GstElement * element,
     GstPadTemplate * templ, const gchar * req_name)
@@ -364,11 +388,16 @@ gst_ogg_mux_request_new_pad (GstElement * element,
       oggpad->first_delta = FALSE;
       oggpad->prev_delta = FALSE;
       oggpad->pagebuffers = g_queue_new ();
+
+      oggpad->collect_event = (GstPadEventFunction) GST_PAD_EVENTFUNC (newpad);
+      gst_pad_set_event_function (newpad,
+          GST_DEBUG_FUNCPTR (gst_ogg_mux_sink_event));
     }
   }
 
   /* setup some pad functions */
   gst_pad_set_link_function (newpad, gst_ogg_mux_sinkconnect);
+
   /* dd the pad to the element */
   gst_element_add_pad (element, newpad);
 
@@ -847,6 +876,7 @@ gst_ogg_mux_get_headers (GstOggPad * pad)
       res = g_list_append (res, pad->buffer);
       pad->buffer = pad->next_buffer;
       pad->next_buffer = NULL;
+      pad->always_flush_page = TRUE;
     } else {
       GST_LOG_OBJECT (thepad, "caps don't have streamheader");
     }
@@ -1011,9 +1041,11 @@ gst_ogg_mux_send_headers (GstOggMux * mux)
     if (gst_structure_has_name (structure, "video/x-theora")) {
       GST_DEBUG_OBJECT (thepad, "putting %s page at the front", "Theora");
       hbufs = g_list_prepend (hbufs, hbuf);
+      pad->always_flush_page = TRUE;
     } else if (gst_structure_has_name (structure, "video/x-dirac")) {
       GST_DEBUG_OBJECT (thepad, "putting %s page at the front", "Dirac");
       hbufs = g_list_prepend (hbufs, hbuf);
+      pad->always_flush_page = TRUE;
     } else {
       hbufs = g_list_append (hbufs, hbuf);
     }
@@ -1250,7 +1282,7 @@ gst_ogg_mux_process_best_pad (GstOggMux * ogg_mux, GstOggPad * best)
     tmpbuf = NULL;
 
     /* we flush when we see a new keyframe */
-    force_flush = (pad->prev_delta && !delta_unit);
+    force_flush = (pad->prev_delta && !delta_unit) || pad->always_flush_page;
     if (duration != -1) {
       pad->duration += duration;
       /* if page duration exceeds max, flush page */
@@ -1584,6 +1616,15 @@ gst_ogg_mux_clear_collectpads (GstCollectPads * collect)
     }
     g_queue_free (oggpad->pagebuffers);
     oggpad->pagebuffers = NULL;
+
+    if (oggpad->buffer) {
+      gst_buffer_unref (oggpad->buffer);
+      oggpad->buffer = NULL;
+    }
+    if (oggpad->next_buffer) {
+      gst_buffer_unref (oggpad->next_buffer);
+      oggpad->next_buffer = NULL;
+    }
   }
 }
 

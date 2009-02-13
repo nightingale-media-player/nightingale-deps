@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -68,7 +69,9 @@ enum                <a class="link" href="gst-plugins-base-libs-gsttunerchannel.
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gsttunerchannel.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstTunerChannel
 </pre>
 </div>
@@ -84,7 +87,7 @@ enum                <a class="link" href="gst-plugins-base-libs-gsttunerchannel.
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2644012"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> object is provided by an element implementing
+<a name="id3059814"></a><p>The <a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel"><span class="type">GstTunerChannel</span></a> object is provided by an element implementing
 the <a class="link" href="gst-plugins-base-libs-gsttuner.html#GstTuner"><span class="type">GstTuner</span></a> interface.
 </p>
 <p>
@@ -121,7 +124,9 @@ frequency, and range of the reported signal strength.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">gchar *<em class="structfield"><code>label</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *<em class="structfield"><code>label</code></em>;</span></p></td>
 <td> A string containing a descriptive name for this channel
 </td>
 </tr>
@@ -131,27 +136,37 @@ frequency, and range of the reported signal strength.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gfloat <em class="structfield"><code>freq_multiplicator</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> <em class="structfield"><code>freq_multiplicator</code></em>;</span></p></td>
 <td> The step size (in Hz) for the frequency setting.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gulong <em class="structfield"><code>min_frequency</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> <em class="structfield"><code>min_frequency</code></em>;</span></p></td>
 <td> Minimum valid frequency setting (in Hz).
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gulong <em class="structfield"><code>max_frequency</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a> <em class="structfield"><code>max_frequency</code></em>;</span></p></td>
 <td> Maximum valid frequency setting (in Hz).
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>min_signal</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>min_signal</code></em>;</span></p></td>
 <td> Minimum reported signal strength value.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">gint <em class="structfield"><code>max_signal</code></em>;</span></p></td>
+<td><p><span class="term"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a> <em class="structfield"><code>max_signal</code></em>;</span></p></td>
 <td> Maximum reported signal strength value.
 </td>
 </tr>
@@ -232,8 +247,12 @@ Macro to check if the given flag is set on a channel</p>
 <div class="refsect2" lang="en">
 <a name="GstTunerChannel-frequency-changed"></a><h3>The <code class="literal">"frequency-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *tunerchannel,
-                                                        gulong           frequency,
-                                                        gpointer         user_data)         : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gulong"
+>gulong</a>           frequency,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)         : Run Last</pre>
 <p>
 Reports that the current frequency has changed.</p>
 <p>
@@ -263,8 +282,12 @@ Reports that the current frequency has changed.</p>
 <div class="refsect2" lang="en">
 <a name="GstTunerChannel-signal-changed"></a><h3>The <code class="literal">"signal-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-base-libs-gsttunerchannel.html#GstTunerChannel">GstTunerChannel</a> *tunerchannel,
-                                                        gint             signal,
-                                                        gpointer         user_data)         : Run Last</pre>
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>             signal,
+                                                        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)         : Run Last</pre>
 <p>
 Reports that the signal strength has changed.
 </p>

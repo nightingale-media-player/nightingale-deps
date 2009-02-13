@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -55,14 +56,6 @@
 
 #include &lt;gst/floatcast/floatcast.h&gt;
 
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-BE:CAPS" title="GDOUBLE_FROM_BE()">GDOUBLE_FROM_BE</a>                     (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-FROM-LE:CAPS" title="GDOUBLE_FROM_LE()">GDOUBLE_FROM_LE</a>                     (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-BE:CAPS" title="GDOUBLE_TO_BE()">GDOUBLE_TO_BE</a>                       (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GDOUBLE-TO-LE:CAPS" title="GDOUBLE_TO_LE()">GDOUBLE_TO_LE</a>                       (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-BE:CAPS" title="GFLOAT_FROM_BE()">GFLOAT_FROM_BE</a>                      (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-FROM-LE:CAPS" title="GFLOAT_FROM_LE()">GFLOAT_FROM_LE</a>                      (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-BE:CAPS" title="GFLOAT_TO_BE()">GFLOAT_TO_BE</a>                        (val)
-#define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#GFLOAT-TO-LE:CAPS" title="GFLOAT_TO_LE()">GFLOAT_TO_LE</a>                        (val)
 #define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#gst-cast-double" title="gst_cast_double()">gst_cast_double</a>                     (x)
 #define             <a class="link" href="gst-plugins-base-libs-gstfloatcast.html#gst-cast-float" title="gst_cast_float()">gst_cast_float</a>                      (x)
 </pre>
@@ -90,162 +83,6 @@ including your application's config.h header before you include floatcast.h.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstfloatcast.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GDOUBLE-FROM-BE:CAPS"></a><h3>GDOUBLE_FROM_BE()</h3>
-<pre class="programlisting">#define GDOUBLE_FROM_BE(val) (GDOUBLE_TO_BE (val))
-</pre>
-<p>
-Convert 64-bit floating point value (double) from big endian byte order
-into native byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GDOUBLE-FROM-LE:CAPS"></a><h3>GDOUBLE_FROM_LE()</h3>
-<pre class="programlisting">#define GDOUBLE_FROM_LE(val) (GDOUBLE_TO_LE (val))
-</pre>
-<p>
-Convert 64-bit floating point value (double) from little endian byte order
-into native byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GDOUBLE-TO-BE:CAPS"></a><h3>GDOUBLE_TO_BE()</h3>
-<pre class="programlisting">#define             GDOUBLE_TO_BE(val)</pre>
-<p>
-Convert 64-bit floating point value (double) from native byte order into
-big endian byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GDOUBLE-TO-LE:CAPS"></a><h3>GDOUBLE_TO_LE()</h3>
-<pre class="programlisting">#define             GDOUBLE_TO_LE(val)</pre>
-<p>
-Convert 64-bit floating point value (double) from native byte order into
-little endian byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GFLOAT-FROM-BE:CAPS"></a><h3>GFLOAT_FROM_BE()</h3>
-<pre class="programlisting">#define GFLOAT_FROM_BE(val)  (GFLOAT_TO_BE (val))
-</pre>
-<p>
-Convert 32-bit floating point value (float) from big endian byte order
-into native byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GFLOAT-FROM-LE:CAPS"></a><h3>GFLOAT_FROM_LE()</h3>
-<pre class="programlisting">#define GFLOAT_FROM_LE(val)  (GFLOAT_TO_LE (val))
-</pre>
-<p>
-Convert 32-bit floating point value (float) from little endian byte order
-into native byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GFLOAT-TO-BE:CAPS"></a><h3>GFLOAT_TO_BE()</h3>
-<pre class="programlisting">#define             GFLOAT_TO_BE(val)</pre>
-<p>
-Convert 32-bit floating point value (float) from native byte order into
-big endian byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GFLOAT-TO-LE:CAPS"></a><h3>GFLOAT_TO_LE()</h3>
-<pre class="programlisting">#define             GFLOAT_TO_LE(val)</pre>
-<p>
-Convert 32-bit floating point value (float) from native byte order into
-little endian byte order.</p>
-<p>
-
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> value
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
 <div class="refsect2" lang="en">
 <a name="gst-cast-double"></a><h3>gst_cast_double()</h3>
 <pre class="programlisting">#define             gst_cast_double(x)</pre>

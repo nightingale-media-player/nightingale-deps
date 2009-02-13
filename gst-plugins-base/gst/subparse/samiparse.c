@@ -19,8 +19,6 @@
 
 #include "samiparse.h"
 
-/* FIXME: use Makefile stuff */
-#ifndef GST_DISABLE_XML
 #include <libxml/HTMLparser.h>
 #include <string.h>
 
@@ -62,6 +60,7 @@ has_tag (GString * str, const gchar tag)
 static void
 sami_context_push_state (GstSamiContext * sctx, char state)
 {
+  GST_LOG ("state %c", state);
   g_string_append_c (sctx->state, state);
 }
 
@@ -72,6 +71,7 @@ sami_context_pop_state (GstSamiContext * sctx, char state)
   GString *context_state = sctx->state;
   int i;
 
+  GST_LOG ("state %c", state);
   for (i = context_state->len - 1; i >= 0; i--) {
     switch (context_state->str[i]) {
       case ITALIC_TAG:         /* <i> */
@@ -213,6 +213,8 @@ start_sami_element (void *ctx, const xmlChar * name, const xmlChar ** atts)
 {
   GstSamiContext *sctx = (GstSamiContext *) ctx;
 
+  GST_LOG ("name:%s", name);
+
   if (!xmlStrncmp ((const xmlChar *) "sync", name, 4)) {
     handle_start_sync (sctx, atts);
     sctx->in_sync = TRUE;
@@ -241,9 +243,12 @@ end_sami_element (void *ctx, const xmlChar * name)
 {
   GstSamiContext *sctx = (GstSamiContext *) ctx;
 
+  GST_LOG ("name:%s", name);
+
   if (!xmlStrncmp ((const xmlChar *) "sync", name, 4)) {
     sctx->in_sync = FALSE;
-  } else if (!xmlStrncmp ((const xmlChar *) "body", name, 4)) {
+  } else if ((!xmlStrncmp ((const xmlChar *) "body", name, 4)) ||
+      (!xmlStrncmp ((const xmlChar *) "sami", name, 4))) {
     /* We will usually have one buffer left when the body is closed
      * as we need the next sync to actually send it */
     if (sctx->buf->len != 0) {
@@ -466,32 +471,3 @@ parse_sami (ParserState * state, const gchar * line)
   }
   return NULL;
 }
-
-#else /* GST_DISABLE_XML */
-
-gchar *
-parse_sami (ParserState * state, const gchar * line)
-{
-  /* our template caps should not include sami in this case */
-  g_assert_not_reached ();
-}
-
-void
-sami_context_init (ParserState * state)
-{
-  return;
-}
-
-void
-sami_context_deinit (ParserState * state)
-{
-  return;
-}
-
-void
-sami_context_reset (ParserState * state)
-{
-  return;
-}
-
-#endif /* GST_DISABLE_XML */

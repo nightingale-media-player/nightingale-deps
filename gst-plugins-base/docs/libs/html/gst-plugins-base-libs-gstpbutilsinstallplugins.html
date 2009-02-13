@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -57,24 +58,40 @@
 
 enum                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a>;
 void                (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsResultFunc" title="GstInstallPluginsResultFunc ()">*GstInstallPluginsResultFunc</a>)      (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> result,
-                                                         gpointer user_data);
-<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()">gst_install_plugins_async</a>       (gchar **details,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-async" title="gst_install_plugins_async ()">gst_install_plugins_async</a>       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsResultFunc" title="GstInstallPluginsResultFunc ()">GstInstallPluginsResultFunc</a> func,
-                                                         gpointer user_data);
-<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()">gst_install_plugins_sync</a>        (gchar **details,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-sync" title="gst_install_plugins_sync ()">gst_install_plugins_sync</a>        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);
-const gchar*        <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-return-get-name" title="gst_install_plugins_return_get_name ()">gst_install_plugins_return_get_name</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-installation-in-progress" title="gst_install_plugins_installation_in_progress ()">gst_install_plugins_installation_in_progress</a>
+const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-return-get-name" title="gst_install_plugins_return_get_name ()">gst_install_plugins_return_get_name</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-installation-in-progress" title="gst_install_plugins_installation_in_progress ()">gst_install_plugins_installation_in_progress</a>
                                                         (void);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-supported" title="gst_install_plugins_supported ()">gst_install_plugins_supported</a>       (void);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-supported" title="gst_install_plugins_supported ()">gst_install_plugins_supported</a>       (void);
 
                     <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a>;
 <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a>* <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-new" title="gst_install_plugins_context_new ()">gst_install_plugins_context_new</a>
                                                         (void);
 void                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-free" title="gst_install_plugins_context_free ()">gst_install_plugins_context_free</a>    (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);
 void                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#gst-install-plugins-context-set-xid" title="gst_install_plugins_context_set_xid ()">gst_install_plugins_context_set_xid</a> (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
-                                                         guint xid);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> xid);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -82,7 +99,7 @@ void                <a class="link" href="gst-plugins-base-libs-gstpbutilsinstal
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2781141"></a><h3>Overview</h3>
+<a name="id3197610"></a><h3>Overview</h3>
 <p>
 Using this API, applications can request the installation of missing
 GStreamer plugins. These may be missing decoders/demuxers or encoders/muxers
@@ -560,7 +577,9 @@ program and to what extent the requested plugins could be installed.</p>
 <div class="refsect2" lang="en">
 <a name="GstInstallPluginsResultFunc"></a><h3>GstInstallPluginsResultFunc ()</h3>
 <pre class="programlisting">void                (*GstInstallPluginsResultFunc)      (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> result,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 The prototype of the callback function that will be called once the
 external plugin installer program has returned. You only need to provide
@@ -589,10 +608,14 @@ a callback function if you are using the asynchronous interface.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-async"></a><h3>gst_install_plugins_async ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_async       (gchar **details,
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_async       (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsResultFunc" title="GstInstallPluginsResultFunc ()">GstInstallPluginsResultFunc</a> func,
-                                                         gpointer user_data);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
 <p>
 Requests plugin installation without blocking. Once the plugins have been
 installed or installation has failed, <em class="parameter"><code>func</code></em> will be called with the result
@@ -653,7 +676,9 @@ installed but no suitable video decoder and no suitable audio decoder).</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-sync"></a><h3>gst_install_plugins_sync ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_sync        (gchar **details,
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> gst_install_plugins_sync        (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> **details,
                                                          <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx);</pre>
 <p>
 Requests plugin installation and block until the plugins have been
@@ -695,7 +720,9 @@ using the other non-GLib main loop. You should almost always use
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-return-get-name"></a><h3>gst_install_plugins_return_get_name ()</h3>
-<pre class="programlisting">const gchar*        gst_install_plugins_return_get_name (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);</pre>
+<pre class="programlisting">const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gst_install_plugins_return_get_name (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsReturn" title="enum GstInstallPluginsReturn">GstInstallPluginsReturn</a> ret);</pre>
 <p>
 Convenience function to return the descriptive string associated
 with a status code.  This function returns English strings and
@@ -726,7 +753,9 @@ in debugging.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-installation-in-progress"></a><h3>gst_install_plugins_installation_in_progress ()</h3>
-<pre class="programlisting">gboolean            gst_install_plugins_installation_in_progress
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_install_plugins_installation_in_progress
                                                         (void);</pre>
 <p>
 Checks whether plugin installation (initiated by this application only)
@@ -749,7 +778,9 @@ is currently in progress.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-supported"></a><h3>gst_install_plugins_supported ()</h3>
-<pre class="programlisting">gboolean            gst_install_plugins_supported       (void);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_install_plugins_supported       (void);</pre>
 <p>
 Checks whether plugin installation is likely to be supported by the
 current environment. This currently only checks whether the helper script
@@ -830,7 +861,9 @@ Frees a <a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.htm
 <div class="refsect2" lang="en">
 <a name="gst-install-plugins-context-set-xid"></a><h3>gst_install_plugins_context_set_xid ()</h3>
 <pre class="programlisting">void                gst_install_plugins_context_set_xid (<a class="link" href="gst-plugins-base-libs-gstpbutilsinstallplugins.html#GstInstallPluginsContext" title="GstInstallPluginsContext">GstInstallPluginsContext</a> *ctx,
-                                                         guint xid);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> xid);</pre>
 <p>
 This function is for X11-based applications (such as most Gtk/Qt
 applications on linux/unix) only. You can use it to tell the external

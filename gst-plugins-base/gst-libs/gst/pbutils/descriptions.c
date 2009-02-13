@@ -112,6 +112,7 @@ static const FormatInfo formats[] = {
   {"audio/x-nist", "Sphere NIST", 0},
   {"audio/x-nsf", "Nintendo NSF", 0},
   {"audio/x-paris", "Ensoniq PARIS", 0},
+  {"audio/x-qdm", "QDesign Music (QDM)", 0},
   {"audio/x-qdm2", "QDesign Music (QDM) 2", 0},
   {"audio/x-ralf-mpeg4-generic", "Real Audio Lossless (RALF)", 0},
   {"audio/x-sds", "SDS", 0},
@@ -206,6 +207,7 @@ static const FormatInfo formats[] = {
   /* subtitle formats with static descriptions */
   {"application/x-subtitle-sami", N_("Sami subtitle format"), 0},
   {"application/x-subtitle-tmplayer", N_("TMPlayer subtitle format"), 0},
+  {"application/x-kate", N_("Kate subtitle format"), 0},
   /* add variant field to typefinder? { "application/x-subtitle", N_("subtitle"), 0}, */
 
   /* formats with dynamic descriptions */
@@ -347,6 +349,8 @@ format_info_get_desc (const FormatInfo * info, const GstCaps * caps)
       ret = "ITU H.264";
     else if (strcmp (variant, "videosoft") == 0)
       ret = "Videosoft H.264";
+    else if (strcmp (variant, "lead") == 0)
+      ret = "Lead H.264";
     else {
       GST_WARNING ("Unknown H264 variant '%s'", variant);
       ret = "H.264";

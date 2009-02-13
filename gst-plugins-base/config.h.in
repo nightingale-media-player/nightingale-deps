@@ -25,6 +25,15 @@
 /* gettext package name */
 #undef GETTEXT_PACKAGE
 
+/* The GIO library directory. */
+#undef GIO_LIBDIR
+
+/* The GIO modules directory. */
+#undef GIO_MODULE_DIR
+
+/* The GnomeVFS modules directory. */
+#undef GNOME_VFS_MODULES_DIR
+
 /* macro to use to show function name */
 #undef GST_FUNCTION
 
@@ -51,6 +60,14 @@
 
 /* Define to enable CDParanoia (used by cdparanoia). */
 #undef HAVE_CDPARANOIA
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -137,7 +154,7 @@
 /* Define to enable Video 4 Linux (used by video4linux). */
 #undef HAVE_GST_V4L
 
-/* Define if you have the iconv() function. */
+/* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -241,6 +258,9 @@
 
 /* the host CPU */
 #undef HOST_CPU
+
+/* directory in which the detected libvisual's plugins are located */
+#undef LIBVISUAL_PLUGINSBASEDIR
 
 /* gettext locale dir */
 #undef LOCALEDIR

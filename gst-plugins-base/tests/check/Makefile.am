@@ -1,6 +1,6 @@
 include $(top_srcdir)/common/check.mak
 
-CHECK_REGISTRY = $(top_builddir)/tests/check/test-registry.xml
+CHECK_REGISTRY = $(top_builddir)/tests/check/test-registry.reg
 
 REGISTRY_ENVIRONMENT = \
 	GST_REGISTRY=$(CHECK_REGISTRY)
@@ -13,7 +13,7 @@ TESTS_ENVIRONMENT = \
 	GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GST_PLUGINS_DIR)
 
 # ths core dumps of some machines have PIDs appended
-CLEANFILES = core.* test-registry.xml
+CLEANFILES = core.* test-registry.*
 
 clean-local: clean-local-check
 
@@ -21,7 +21,7 @@ $(CHECK_REGISTRY):
 	$(TESTS_ENVIRONMENT)
 
 # elements to ignore for the state tests
-STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_
+STATE_IGNORE_ELEMENTS = cdio cdparanoiasrc libvisual_ alsasrc alsasink
 
 TESTS = $(check_PROGRAMS)
 
@@ -91,7 +91,6 @@ check_PROGRAMS = \
 	elements/adder	\
 	elements/audioconvert \
 	elements/audiorate \
-	elements/audioresample \
 	elements/audiotestsrc \
 	elements/decodebin \
 	elements/ffmpegcolorspace \
@@ -100,6 +99,7 @@ check_PROGRAMS = \
 	elements/multifdsink \
 	elements/playbin \
 	$(check_subparse) \
+	elements/speexresample \
 	elements/videorate \
 	elements/videotestsrc \
 	elements/volume \
@@ -123,7 +123,6 @@ check_PROGRAMS = \
 
 # ffmpegcolorspace takes too long, so disabled for now
 VALGRIND_TO_FIX = \
-	elements/audioresample \
 	elements/ffmpegcolorspace \
 	libs/video
 
@@ -241,6 +240,17 @@ elements_decodebin_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 
 elements_subparse_LDADD =  $(LDADD)
 elements_subparse_CFLAGS = $(CFLAGS) $(AM_CFLAGS)
+
+elements_speexresample_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_BASE_CFLAGS) \
+	$(AM_CFLAGS)
+
+elements_speexresample_LDADD = \
+	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
+	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
+	$(GST_BASE_LIBS) \
+	$(LDADD)
 
 elements_textoverlay_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_textoverlay_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)

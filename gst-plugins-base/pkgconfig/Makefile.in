@@ -38,6 +38,8 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = pkgconfig
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/gstreamer-app-uninstalled.pc.in \
+	$(srcdir)/gstreamer-app.pc.in \
 	$(srcdir)/gstreamer-audio-uninstalled.pc.in \
 	$(srcdir)/gstreamer-audio.pc.in \
 	$(srcdir)/gstreamer-cdda-uninstalled.pc.in \
@@ -92,18 +94,21 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = gstreamer-audio.pc gstreamer-audio-uninstalled.pc \
+	gstreamer-app.pc gstreamer-app-uninstalled.pc \
 	gstreamer-cdda.pc gstreamer-cdda-uninstalled.pc \
 	gstreamer-fft.pc gstreamer-fft-uninstalled.pc \
 	gstreamer-floatcast.pc gstreamer-floatcast-uninstalled.pc \
@@ -189,6 +194,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -198,6 +204,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -211,6 +218,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -234,10 +249,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -273,6 +291,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -290,6 +310,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -311,8 +332,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -375,12 +396,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -389,6 +410,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -407,6 +430,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -423,6 +448,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -485,6 +512,7 @@ target_alias = @target_alias@
 ### all of the standard pc files we need to generate
 pcverfiles = \
 	gstreamer-audio-@GST_MAJORMINOR@.pc \
+	gstreamer-app-@GST_MAJORMINOR@.pc \
 	gstreamer-cdda-@GST_MAJORMINOR@.pc \
 	gstreamer-fft-@GST_MAJORMINOR@.pc \
 	gstreamer-floatcast-@GST_MAJORMINOR@.pc \
@@ -501,6 +529,7 @@ pcverfiles = \
 
 pcverfiles_uninstalled = \
 	gstreamer-audio-@GST_MAJORMINOR@-uninstalled.pc \
+	gstreamer-app-@GST_MAJORMINOR@-uninstalled.pc \
 	gstreamer-cdda-@GST_MAJORMINOR@-uninstalled.pc \
 	gstreamer-fft-@GST_MAJORMINOR@-uninstalled.pc \
 	gstreamer-floatcast-@GST_MAJORMINOR@-uninstalled.pc \
@@ -520,6 +549,7 @@ pkgconfig_DATA = $(pcverfiles)
 CLEANFILES = $(pcverfiles) $(pcverfiles_uninstalled)
 pcinfiles = \
            gstreamer-audio.pc.in gstreamer-audio-uninstalled.pc.in \
+           gstreamer-app.pc.in gstreamer-app-uninstalled.pc.in \
            gstreamer-cdda.pc.in gstreamer-cdda-uninstalled.pc.in \
            gstreamer-fft.pc.in gstreamer-fft-uninstalled.pc.in \
            gstreamer-floatcast.pc.in gstreamer-floatcast-uninstalled.pc.in \
@@ -571,6 +601,10 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 gstreamer-audio.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-audio.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 gstreamer-audio-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-audio-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+gstreamer-app.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-app.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+gstreamer-app-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-app-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 gstreamer-cdda.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-cdda.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@

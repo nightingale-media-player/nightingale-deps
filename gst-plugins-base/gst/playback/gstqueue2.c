@@ -27,8 +27,8 @@
  * @short_description: Asynchronous data queue.
  *
  * Data is queued until one of the limits specified by the
- * #GstQueue:max-size-buffers, #GstQueue:max-size-bytes and/or
- * #GstQueue:max-size-time properties has been reached. Any attempt to push
+ * #GstQueue2:max-size-buffers, #GstQueue2:max-size-bytes and/or
+ * #GstQueue2:max-size-time properties has been reached. Any attempt to push
  * more buffers into the queue will block the pushing thread until more space
  * becomes available.
  *
@@ -36,7 +36,7 @@
  * processing on sink and source pad.
  *
  * You can query how many buffers are queued by reading the
- * #GstQueue:current-level-buffers property.
+ * #GstQueue2:current-level-buffers property.
  *
  * The default queue size limits are 100 buffers, 2MB of data, or
  * two seconds worth of data, whichever is reached first.
@@ -1927,7 +1927,7 @@ gst_queue_change_state (GstElement * element, GstStateChange transition)
 #define QUEUE_THRESHOLD_CHANGE(q)\
   g_cond_signal (queue->item_add);
 
-static gboolean
+static void
 gst_queue_set_temp_location (GstQueue * queue, const gchar * location)
 {
   GstState state;
@@ -1943,16 +1943,13 @@ gst_queue_set_temp_location (GstQueue * queue, const gchar * location)
   g_free (queue->temp_location);
   queue->temp_location = g_strdup (location);
 
-  g_object_notify (G_OBJECT (queue), "temp-location");
-
-  return TRUE;
+  return;
 
 /* ERROR */
 wrong_state:
   {
-    GST_DEBUG_OBJECT (queue, "setting temp-location in wrong state");
+    GST_WARNING_OBJECT (queue, "setting temp-location in wrong state");
     GST_OBJECT_UNLOCK (queue);
-    return FALSE;
   }
 }
 
@@ -2066,6 +2063,7 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
   return gst_element_register (plugin, "queue2", GST_RANK_NONE, GST_TYPE_QUEUE);

@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -59,32 +60,58 @@
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create" title="gst_rtsp_connection_create ()">gst_rtsp_connection_create</a>          (<a class="link" href="gst-plugins-base-libs-gstrtspurl.html#GstRTSPUrl" title="GstRTSPUrl">GstRTSPUrl</a> *url,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> **conn);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-connect" title="gst_rtsp_connection_connect ()">gst_rtsp_connection_connect</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         GTimeVal *timeout);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-close" title="gst_rtsp_connection_close ()">gst_rtsp_connection_close</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-free" title="gst_rtsp_connection_free ()">gst_rtsp_connection_free</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-read" title="gst_rtsp_connection_read ()">gst_rtsp_connection_read</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         guint8 *data,
-                                                         guint size,
-                                                         GTimeVal *timeout);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-write" title="gst_rtsp_connection_write ()">gst_rtsp_connection_write</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         const guint8 *data,
-                                                         guint size,
-                                                         GTimeVal *timeout);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-send" title="gst_rtsp_connection_send ()">gst_rtsp_connection_send</a>            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
-                                                         GTimeVal *timeout);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-receive" title="gst_rtsp_connection_receive ()">gst_rtsp_connection_receive</a>         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
-                                                         GTimeVal *timeout);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-next-timeout" title="gst_rtsp_connection_next_timeout ()">gst_rtsp_connection_next_timeout</a>    (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         GTimeVal *timeout);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-reset-timeout" title="gst_rtsp_connection_reset_timeout ()">gst_rtsp_connection_reset_timeout</a>   (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-flush" title="gst_rtsp_connection_flush ()">gst_rtsp_connection_flush</a>           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         gboolean flush);
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flush);
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       <a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-set-auth" title="gst_rtsp_connection_set_auth ()">gst_rtsp_connection_set_auth</a>        (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
-                                                         const gchar *user,
-                                                         const gchar *pass);
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *user,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pass);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -92,7 +119,7 @@
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2713976"></a><p>
+<a name="id3130147"></a><p>
 This object manages the RTSP connection to the server. It provides function
 to receive and send bytes and messages.
 </p>
@@ -154,10 +181,14 @@ The connection will not yet attempt to connect to <em class="parameter"><code>ur
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-connection-connect"></a><h3>gst_rtsp_connection_connect ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_connect         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         GTimeVal *timeout);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Attempt to connect to the url of <em class="parameter"><code>conn</code></em> made with
-<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create" title="gst_rtsp_connection_create ()"><code class="function">gst_rtsp_connection_create()</code></a>. If <em class="parameter"><code>timeout</code></em> is <span class="type">NULL</span> this function can block
+<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#gst-rtsp-connection-create" title="gst_rtsp_connection_create ()"><code class="function">gst_rtsp_connection_create()</code></a>. If <em class="parameter"><code>timeout</code></em> is <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a> this function can block
 forever. If <em class="parameter"><code>timeout</code></em> contains a valid timeout, this function will return
 <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-ETIMEOUT:CAPS"><span class="type">GST_RTSP_ETIMEOUT</span></a> after the timeout expired.
 </p>
@@ -176,7 +207,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
-<td> a <span class="type">GTimeVal</span> timeout
+<td> a <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+><span class="type">GTimeVal</span></a> timeout
 </td>
 </tr>
 <tr>
@@ -241,12 +274,20 @@ Close and free <em class="parameter"><code>conn</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-connection-read"></a><h3>gst_rtsp_connection_read ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_read            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         guint8 *data,
-                                                         guint size,
-                                                         GTimeVal *timeout);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Attempt to read <em class="parameter"><code>size</code></em> bytes into <em class="parameter"><code>data</code></em> from the connected <em class="parameter"><code>conn</code></em>, blocking up to
-the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <span class="type">NULL</span>, in which case this function
+the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>, in which case this function
 might block forever.
 </p>
 <p>
@@ -274,7 +315,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
-<td> a timeout value or <span class="type">NULL</span>
+<td> a timeout value or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
@@ -289,12 +332,20 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-connection-write"></a><h3>gst_rtsp_connection_write ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_write           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         const guint8 *data,
-                                                         guint size,
-                                                         GTimeVal *timeout);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"
+>guint8</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Attempt to write <em class="parameter"><code>size</code></em> bytes of <em class="parameter"><code>data</code></em> to the connected <em class="parameter"><code>conn</code></em>, blocking up to
-the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <span class="type">NULL</span>, in which case this function
+the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>, in which case this function
 might block forever.
 </p>
 <p>
@@ -322,7 +373,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
-<td> a timeout value or <span class="type">NULL</span>
+<td> a timeout value or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
@@ -338,10 +391,14 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 <a name="gst-rtsp-connection-send"></a><h3>gst_rtsp_connection_send ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_send            (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
-                                                         GTimeVal *timeout);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Attempt to send <em class="parameter"><code>message</code></em> to the connected <em class="parameter"><code>conn</code></em>, blocking up to
-the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <span class="type">NULL</span>, in which case this function
+the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>, in which case this function
 might block forever.
 </p>
 <p>
@@ -364,7 +421,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
-<td> a timeout value or <span class="type">NULL</span>
+<td> a timeout value or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
@@ -380,10 +439,14 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 <a name="gst-rtsp-connection-receive"></a><h3>gst_rtsp_connection_receive ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_receive         (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage" title="GstRTSPMessage">GstRTSPMessage</a> *message,
-                                                         GTimeVal *timeout);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Attempt to read into <em class="parameter"><code>message</code></em> from the connected <em class="parameter"><code>conn</code></em>, blocking up to
-the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <span class="type">NULL</span>, in which case this function
+the specified <em class="parameter"><code>timeout</code></em>. <em class="parameter"><code>timeout</code></em> can be <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>, in which case this function
 might block forever.
 </p>
 <p>
@@ -406,7 +469,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
-<td> a timeout value or <span class="type">NULL</span>
+<td> a timeout value or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>
 </td>
 </tr>
 <tr>
@@ -421,7 +486,9 @@ This function can be cancelled with <a class="link" href="gst-plugins-base-libs-
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-connection-next-timeout"></a><h3>gst_rtsp_connection_next_timeout ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_next_timeout    (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         GTimeVal *timeout);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout);</pre>
 <p>
 Calculate the next timeout for <em class="parameter"><code>conn</code></em>, storing the result in <em class="parameter"><code>timeout</code></em>.</p>
 <p>
@@ -477,7 +544,9 @@ Reset the timeout of <em class="parameter"><code>conn</code></em>.</p>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-connection-flush"></a><h3>gst_rtsp_connection_flush ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_flush           (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
-                                                         gboolean flush);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> flush);</pre>
 <p>
 Start or stop the flushing action on <em class="parameter"><code>conn</code></em>. When flushing, all current
 and future actions on <em class="parameter"><code>conn</code></em> will return <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GST-RTSP-EINTR:CAPS"><span class="type">GST_RTSP_EINTR</span></a> until the connection
@@ -511,8 +580,12 @@ is set to non-flushing mode again.</p>
 <a name="gst-rtsp-connection-set-auth"></a><h3>gst_rtsp_connection_set_auth ()</h3>
 <pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPResult" title="enum GstRTSPResult">GstRTSPResult</a>       gst_rtsp_connection_set_auth        (<a class="link" href="gst-plugins-base-libs-gstrtspconnection.html#GstRTSPConnection" title="GstRTSPConnection">GstRTSPConnection</a> *conn,
                                                          <a class="link" href="gst-plugins-base-libs-gstrtspdefs.html#GstRTSPAuthMethod" title="enum GstRTSPAuthMethod">GstRTSPAuthMethod</a> method,
-                                                         const gchar *user,
-                                                         const gchar *pass);</pre>
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *user,
+                                                         const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pass);</pre>
 <p>
 Configure <em class="parameter"><code>conn</code></em> for authentication mode <em class="parameter"><code>method</code></em> with <em class="parameter"><code>user</code></em> and <em class="parameter"><code>pass</code></em> as the
 user and password respectively.</p>

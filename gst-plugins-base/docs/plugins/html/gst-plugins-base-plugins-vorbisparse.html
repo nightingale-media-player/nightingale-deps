@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -33,7 +34,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-vorbisparse.top_of_page"></a>vorbisparse</span></h2>
-<p>vorbisparse — parses vorbis streams</p>
+<p>vorbisparse — parse raw vorbis streams</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -46,7 +47,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisparse.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstVorbisParse
@@ -55,10 +58,6 @@
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-vorbisparse.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2608626"></a><h3>Example pipelines</h3>
 <p>
 The vorbisparse element will parse the header packets of the Vorbis
 stream and put them as the streamheader in the caps. This is used in the
@@ -74,38 +73,34 @@ which allows you to (for example) remux an ogg/vorbis file.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2729610"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=sine.ogg ! oggdemux ! vorbisparse ! fakesink
-</pre>
-<p>
-This pipeline shows that the streamheader is set in the caps, and that each
+</pre></div> This pipeline shows that the streamheader is set in the caps, and that each
 buffer has the timestamp, duration, offset, and offset_end set.
-</p>
-<p>
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch filesrc location=sine.ogg ! oggdemux ! vorbisparse \
            ! oggmux ! filesink location=sine-remuxed.ogg
-</pre>
-<p>
-This pipeline shows remuxing. sine-remuxed.ogg might not be exactly the same
+</pre></div> This pipeline shows remuxing. sine-remuxed.ogg might not be exactly the same
 as sine.ogg, but they should produce exactly the same decoded data.
-</p>
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-04-01 (0.10.4.1)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2590537"></a><h3>Element Information</h3>
+<a name="id2749485"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-vorbis.html#plugin-vorbis">vorbis</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -117,6 +112,10 @@ Last reviewed on 2006-04-01 (0.10.4.1)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2804974"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -159,6 +158,7 @@ Last reviewed on 2006-04-01 (0.10.4.1)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

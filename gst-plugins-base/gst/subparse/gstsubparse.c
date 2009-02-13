@@ -142,11 +142,24 @@ gst_sub_parse_dispose (GObject * object)
     g_free (subparse->encoding);
     subparse->encoding = NULL;
   }
+
+  if (subparse->detected_encoding) {
+    g_free (subparse->detected_encoding);
+    subparse->detected_encoding = NULL;
+  }
+
+  if (subparse->adapter) {
+    gst_object_unref (subparse->adapter);
+    subparse->adapter = NULL;
+  }
+
   if (subparse->textbuf) {
     g_string_free (subparse->textbuf, TRUE);
     subparse->textbuf = NULL;
   }
+#ifndef GST_DISABLE_XML
   sami_context_deinit (&subparse->state);
+#endif
 
   GST_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
@@ -167,10 +180,10 @@ gst_sub_parse_class_init (GstSubParseClass * klass)
 
   g_object_class_install_property (object_class, PROP_ENCODING,
       g_param_spec_string ("subtitle-encoding", "subtitle charset encoding",
-          "Encoding to assume if input subtitles are not in UTF-8 encoding. "
-          "If not set, the GST_SUBTITLE_ENCODING environment variable will "
-          "be checked for an encoding to use. If that is not set either, "
-          "ISO-8859-15 will be assumed.", DEFAULT_ENCODING,
+          "Encoding to assume if input subtitles are not in UTF-8 or any other "
+          "Unicode encoding. If not set, the GST_SUBTITLE_ENCODING environment "
+          "variable will be checked for an encoding to use. If that is not set "
+          "either, ISO-8859-15 will be assumed.", DEFAULT_ENCODING,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -195,6 +208,8 @@ gst_sub_parse_init (GstSubParse * subparse)
   gst_segment_init (&subparse->segment, GST_FORMAT_TIME);
   subparse->need_segment = TRUE;
   subparse->encoding = g_strdup (DEFAULT_ENCODING);
+  subparse->detected_encoding = NULL;
+  subparse->adapter = gst_adapter_new ();
 }
 
 /*
@@ -302,21 +317,88 @@ gst_sub_parse_get_property (GObject * object, guint prop_id,
 }
 
 static gchar *
-convert_encoding (GstSubParse * self, const gchar * str, gsize len)
+gst_convert_to_utf8 (const gchar * str, gsize len, const gchar * encoding,
+    gsize * consumed, GError ** err)
+{
+  gchar *ret = NULL;
+
+  *consumed = 0;
+  ret =
+      g_convert_with_fallback (str, len, "UTF-8", encoding, "*", consumed, NULL,
+      err);
+  if (ret == NULL)
+    return ret;
+
+  /* + 3 to skip UTF-8 BOM if it was added */
+  len = strlen (ret);
+  if (len >= 3 && (guint8) ret[0] == 0xEF && (guint8) ret[1] == 0xBB
+      && (guint8) ret[2] == 0xBF)
+    g_memmove (ret, ret + 3, len + 1 - 3);
+
+  return ret;
+}
+
+static gchar *
+detect_encoding (const gchar * str, gsize len)
+{
+  if (len >= 3 && (guint8) str[0] == 0xEF && (guint8) str[1] == 0xBB
+      && (guint8) str[2] == 0xBF)
+    return g_strdup ("UTF-8");
+
+  if (len >= 2 && (guint8) str[0] == 0xFE && (guint8) str[1] == 0xFF)
+    return g_strdup ("UTF-16BE");
+
+  if (len >= 2 && (guint8) str[0] == 0xFF && (guint8) str[1] == 0xFE)
+    return g_strdup ("UTF-16LE");
+
+  if (len >= 4 && (guint8) str[0] == 0x00 && (guint8) str[1] == 0x00
+      && (guint8) str[2] == 0xFE && (guint8) str[3] == 0xFF)
+    return g_strdup ("UTF-32BE");
+
+  if (len >= 4 && (guint8) str[0] == 0xFF && (guint8) str[1] == 0xFE
+      && (guint8) str[2] == 0x00 && (guint8) str[3] == 0x00)
+    return g_strdup ("UTF-32LE");
+
+  return NULL;
+}
+
+static gchar *
+convert_encoding (GstSubParse * self, const gchar * str, gsize len,
+    gsize * consumed)
 {
   const gchar *encoding;
   GError *err = NULL;
-  gchar *ret;
+  gchar *ret = NULL;
 
+  *consumed = 0;
+
+  /* First try any detected encoding */
+  if (self->detected_encoding) {
+    ret =
+        gst_convert_to_utf8 (str, len, self->detected_encoding, consumed, &err);
+
+    if (!err)
+      return ret;
+
+    GST_WARNING_OBJECT (self, "could not convert string from '%s' to UTF-8: %s",
+        encoding, err->message);
+    g_free (self->detected_encoding);
+    self->detected_encoding = NULL;
+    g_error_free (err);
+  }
+
+  /* Otherwise check if it's UTF8 */
   if (self->valid_utf8) {
     if (g_utf8_validate (str, len, NULL)) {
       GST_LOG_OBJECT (self, "valid UTF-8, no conversion needed");
+      *consumed = len;
       return g_strndup (str, len);
     }
     GST_INFO_OBJECT (self, "invalid UTF-8!");
     self->valid_utf8 = FALSE;
   }
 
+  /* Else try fallback */
   encoding = self->encoding;
   if (encoding == NULL || *encoding == '\0') {
     encoding = g_getenv ("GST_SUBTITLE_ENCODING");
@@ -329,8 +411,7 @@ convert_encoding (GstSubParse * self, const gchar * str, gsize len)
     }
   }
 
-  ret = g_convert_with_fallback (str, len, "UTF-8", encoding, "*", NULL,
-      NULL, &err);
+  ret = gst_convert_to_utf8 (str, len, encoding, consumed, &err);
 
   if (err) {
     GST_WARNING_OBJECT (self, "could not convert string from '%s' to UTF-8: %s",
@@ -338,8 +419,7 @@ convert_encoding (GstSubParse * self, const gchar * str, gsize len)
     g_error_free (err);
 
     /* invalid input encoding, fall back to ISO-8859-15 (always succeeds) */
-    ret = g_convert_with_fallback (str, len, "UTF-8", "ISO-8859-15", "*",
-        NULL, NULL, NULL);
+    ret = gst_convert_to_utf8 (str, len, "ISO-8859-15", consumed, NULL);
   }
 
   GST_LOG_OBJECT (self,
@@ -371,7 +451,7 @@ get_next_line (GstSubParse * self)
   }
 
   line_len = line_end - self->textbuf->str;
-  line = convert_encoding (self, self->textbuf->str, line_len);
+  line = g_strndup (self->textbuf->str, line_len);
   self->textbuf = g_string_erase (self->textbuf, 0,
       line_len + (have_r ? 2 : 1));
   return line;
@@ -882,9 +962,11 @@ parser_state_dispose (ParserState * state)
     g_string_free (state->buf, TRUE);
     state->buf = NULL;
   }
+#ifndef GST_DISABLE_XML
   if (state->user_data) {
     sami_context_reset (state);
   }
+#endif
 }
 
 /*
@@ -909,9 +991,9 @@ gst_sub_parse_data_format_autodetect (gchar * match_str)
     need_init_regexps = FALSE;
     if ((err = regcomp (&mdvd_rx, "^\\{[0-9]+\\}\\{[0-9]+\\}",
                 REG_EXTENDED | REG_NEWLINE | REG_NOSUB) != 0) ||
-        (err = regcomp (&subrip_rx, "^[0-9]([0-9]){0,3}(\x0d)?\x0a"
-                "[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9]{3}"
-                " --> [0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9]{3}",
+        (err = regcomp (&subrip_rx, "^([ 0-9]){0,3}[0-9](\x0d)?\x0a"
+                "[ 0-9][0-9]:[ 0-9][0-9]:[ 0-9][0-9],[ 0-9]{2}[0-9]"
+                " --> ([ 0-9])?[0-9]:[ 0-9][0-9]:[ 0-9][0-9],[ 0-9]{2}[0-9]",
                 REG_EXTENDED | REG_NEWLINE | REG_NOSUB)) != 0) {
       regerror (err, &subrip_rx, errstr, 127);
       GST_WARNING ("Compilation of subrip regex failed: %s", errstr);
@@ -931,11 +1013,13 @@ gst_sub_parse_data_format_autodetect (gchar * match_str)
     GST_LOG ("MPSub (time based) format detected");
     return GST_SUB_PARSE_FORMAT_MPSUB;
   }
+#ifndef GST_DISABLE_XML
   if (strstr (match_str, "<SAMI>") != NULL ||
       strstr (match_str, "<sami>") != NULL) {
     GST_LOG ("SAMI (time based) format detected");
     return GST_SUB_PARSE_FORMAT_SAMI;
   }
+#endif
   /* we're boldly assuming the first subtitle appears within the first hour */
   if (sscanf (match_str, "0:%02u:%02u:", &n1, &n2) == 2 ||
       sscanf (match_str, "0:%02u:%02u=", &n1, &n2) == 2 ||
@@ -986,10 +1070,12 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
     case GST_SUB_PARSE_FORMAT_MPSUB:
       self->parse_line = parse_mpsub;
       return gst_caps_new_simple ("text/plain", NULL);
+#ifndef GST_DISABLE_XML
     case GST_SUB_PARSE_FORMAT_SAMI:
       self->parse_line = parse_sami;
       sami_context_init (&self->state);
       return gst_caps_new_simple ("text/x-pango-markup", NULL);
+#endif
     case GST_SUB_PARSE_FORMAT_TMPLAYER:
       self->parse_line = parse_tmplayer;
       self->state.max_duration = 5 * GST_SECOND;
@@ -1013,6 +1099,8 @@ static void
 feed_textbuf (GstSubParse * self, GstBuffer * buf)
 {
   gboolean discont;
+  gsize consumed;
+  gchar *input = NULL;
 
   discont = GST_BUFFER_IS_DISCONT (buf);
 
@@ -1027,18 +1115,31 @@ feed_textbuf (GstSubParse * self, GstBuffer * buf)
     /* flush the parser state */
     parser_state_init (&self->state);
     g_string_truncate (self->textbuf, 0);
+    gst_adapter_clear (self->adapter);
+#ifndef GST_DISABLE_XML
     sami_context_reset (&self->state);
+#endif
     /* we could set a flag to make sure that the next buffer we push out also
      * has the DISCONT flag set, but there's no point really given that it's
      * subtitles which are discontinuous by nature. */
   }
 
-  self->textbuf = g_string_append_len (self->textbuf,
-      (gchar *) GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
   self->offset = GST_BUFFER_OFFSET (buf) + GST_BUFFER_SIZE (buf);
   self->next_offset = self->offset;
 
-  gst_buffer_unref (buf);
+  gst_adapter_push (self->adapter, buf);
+
+  input =
+      convert_encoding (self, (const gchar *) gst_adapter_peek (self->adapter,
+          gst_adapter_available (self->adapter)),
+      (gsize) gst_adapter_available (self->adapter), &consumed);
+
+  if (input && consumed > 0) {
+    self->textbuf = g_string_append (self->textbuf, input);
+    gst_adapter_flush (self->adapter, consumed);
+  }
+
+  g_free (input);
 }
 
 static GstFlowReturn
@@ -1047,6 +1148,13 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
   GstFlowReturn ret = GST_FLOW_OK;
   GstCaps *caps = NULL;
   gchar *line, *subtitle;
+
+  if (self->first_buffer) {
+    self->detected_encoding =
+        detect_encoding ((gchar *) GST_BUFFER_DATA (buf),
+        GST_BUFFER_SIZE (buf));
+    self->first_buffer = FALSE;
+  }
 
   feed_textbuf (self, buf);
 
@@ -1063,11 +1171,13 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
   }
 
   while ((line = get_next_line (self)) && !self->flushing) {
+    guint offset = 0;
+
     /* Set segment on our parser state machine */
     self->state.segment = &self->segment;
     /* Now parse the line, out of segment lines will just return NULL */
-    GST_LOG_OBJECT (self, "Parsing line '%s'", line);
-    subtitle = self->parse_line (&self->state, line);
+    GST_LOG_OBJECT (self, "Parsing line '%s'", line + offset);
+    subtitle = self->parse_line (&self->state, line + offset);
     g_free (line);
 
     if (subtitle) {
@@ -1242,7 +1352,11 @@ gst_sub_parse_change_state (GstElement * element, GstStateChange transition)
       self->next_offset = 0;
       self->parser_type = GST_SUB_PARSE_FORMAT_UNKNOWN;
       self->valid_utf8 = TRUE;
+      self->first_buffer = TRUE;
+      g_free (self->detected_encoding);
+      self->detected_encoding = NULL;
       g_string_truncate (self->textbuf, 0);
+      gst_adapter_clear (self->adapter);
       break;
     default:
       break;
@@ -1272,15 +1386,19 @@ gst_sub_parse_change_state (GstElement * element, GstStateChange transition)
  * also, give different  subtitle formats really different types */
 static GstStaticCaps mpl2_caps =
 GST_STATIC_CAPS ("application/x-subtitle-mpl2");
+#define SUB_CAPS (gst_static_caps_get (&sub_caps))
+
 static GstStaticCaps tmp_caps =
 GST_STATIC_CAPS ("application/x-subtitle-tmplayer");
-static GstStaticCaps smi_caps = GST_STATIC_CAPS ("application/x-subtitle-sami");
-static GstStaticCaps sub_caps = GST_STATIC_CAPS ("application/x-subtitle");
-
-#define SUB_CAPS (gst_static_caps_get (&sub_caps))
-#define SAMI_CAPS (gst_static_caps_get (&smi_caps))
 #define TMP_CAPS (gst_static_caps_get (&tmp_caps))
+
+static GstStaticCaps sub_caps = GST_STATIC_CAPS ("application/x-subtitle");
 #define MPL2_CAPS (gst_static_caps_get (&mpl2_caps))
+
+#ifndef GST_DISABLE_XML
+static GstStaticCaps smi_caps = GST_STATIC_CAPS ("application/x-subtitle-sami");
+#define SAMI_CAPS (gst_static_caps_get (&smi_caps))
+#endif
 
 static void
 gst_subparse_type_find (GstTypeFind * tf, gpointer private)
@@ -1289,12 +1407,62 @@ gst_subparse_type_find (GstTypeFind * tf, gpointer private)
   const guint8 *data;
   GstCaps *caps;
   gchar *str;
+  gchar *encoding = NULL;
+  const gchar *end;
 
-  if (!(data = gst_type_find_peek (tf, 0, 36)))
+  if (!(data = gst_type_find_peek (tf, 0, 129)))
     return;
 
   /* make sure string passed to _autodetect() is NUL-terminated */
-  str = g_strndup ((gchar *) data, 35);
+  str = g_malloc0 (129);
+  memcpy (str, data, 128);
+
+  if ((encoding = detect_encoding (str, 128)) != NULL) {
+    gchar *converted_str;
+    GError *err = NULL;
+    gsize tmp;
+
+    converted_str = gst_convert_to_utf8 (str, 128, encoding, &tmp, &err);
+    if (converted_str == NULL) {
+      GST_DEBUG ("Encoding '%s' detected but conversion failed: %s", encoding,
+          err->message);
+      g_error_free (err);
+      g_free (encoding);
+    } else {
+      g_free (str);
+      str = converted_str;
+      g_free (encoding);
+    }
+  }
+
+  /* Check if at least the first 120 chars are valid UTF8,
+   * otherwise convert as always */
+  if (!g_utf8_validate (str, 128, &end) && (end - str) < 120) {
+    gchar *converted_str;
+    GError *err = NULL;
+    gsize tmp;
+    const gchar *enc;
+
+    enc = g_getenv ("GST_SUBTITLE_ENCODING");
+    if (enc == NULL || *enc == '\0') {
+      /* if local encoding is UTF-8 and no encoding specified
+       * via the environment variable, assume ISO-8859-15 */
+      if (g_get_charset (&enc)) {
+        enc = "ISO-8859-15";
+      }
+    }
+    converted_str = gst_convert_to_utf8 (str, 128, enc, &tmp, &err);
+    if (converted_str == NULL) {
+      GST_DEBUG ("Charset conversion failed: %s", err->message);
+      g_error_free (err);
+      g_free (str);
+      return;
+    } else {
+      g_free (str);
+      str = converted_str;
+    }
+  }
+
   format = gst_sub_parse_data_format_autodetect (str);
   g_free (str);
 
@@ -1311,10 +1479,12 @@ gst_subparse_type_find (GstTypeFind * tf, gpointer private)
       GST_DEBUG ("MPSub format detected");
       caps = SUB_CAPS;
       break;
+#ifndef GST_DISABLE_XML
     case GST_SUB_PARSE_FORMAT_SAMI:
       GST_DEBUG ("SAMI (time-based) format detected");
       caps = SAMI_CAPS;
       break;
+#endif
     case GST_SUB_PARSE_FORMAT_TMPLAYER:
       GST_DEBUG ("TMPlayer (time based) format detected");
       caps = TMP_CAPS;

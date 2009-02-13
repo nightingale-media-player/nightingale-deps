@@ -64,7 +64,7 @@ typedef struct _GstXvImageBufferClass GstXvImageBufferClass;
 typedef struct _GstXvImageSink GstXvImageSink;
 typedef struct _GstXvImageSinkClass GstXvImageSinkClass;
 
-/**
+/*
  * GstXContext:
  * @disp: the X11 Display of this context
  * @screen: the default Screen of Display @disp
@@ -128,9 +128,11 @@ struct _GstXContext {
   /* Optimisation storage for buffer_alloc return */
   GstCaps *last_caps;
   gint last_format;
+  gint last_width;
+  gint last_height;
 };
 
-/**
+/*
  * GstXWindow:
  * @win: the Window ID of this X11 window
  * @width: the width in pixels of Window @win
@@ -253,7 +255,7 @@ struct _GstXvImageSink {
   gboolean synchronous;
   gboolean double_buffer;
   gboolean keep_aspect;
-  gboolean draw_border;
+  gboolean redraw_border;
   gboolean handle_events;
   gboolean handle_expose;
 
@@ -263,8 +265,23 @@ struct _GstXvImageSink {
   gint saturation;
   gboolean cb_changed;
 
-  guint video_width, video_height;     /* size of incoming video;
-                                        * used as the size for XvImage */
+  /* size of incoming video, used as the size for XvImage */
+  guint video_width, video_height;
+
+  /* display sizes, used for clipping the image */
+  gint disp_x, disp_y;
+  gint disp_width, disp_height;
+
+  /* port attributes */
+  gboolean autopaint_colorkey;
+  gint colorkey;
+  
+  gboolean draw_borders;
+  
+  /* port features */
+  gboolean have_autopaint_colorkey;
+  gboolean have_colorkey;
+  gboolean have_double_buffer;
 };
 
 struct _GstXvImageSinkClass {

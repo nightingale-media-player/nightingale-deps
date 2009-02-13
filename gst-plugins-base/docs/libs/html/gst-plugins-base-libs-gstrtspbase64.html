@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -55,10 +56,20 @@
 
 #include &lt;gst/rtsp/gstrtspbase64.h&gt;
 
-gchar*              <a class="link" href="gst-plugins-base-libs-gstrtspbase64.html#gst-rtsp-base64-encode" title="gst_rtsp_base64_encode ()">gst_rtsp_base64_encode</a>              (const gchar *data,
-                                                         gsize len);
-void                <a class="link" href="gst-plugins-base-libs-gstrtspbase64.html#gst-rtsp-base64-decode-ip" title="gst_rtsp_base64_decode_ip ()">gst_rtsp_base64_decode_ip</a>           (gchar *data,
-                                                         gsize *len);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a class="link" href="gst-plugins-base-libs-gstrtspbase64.html#gst-rtsp-base64-encode" title="gst_rtsp_base64_encode ()">gst_rtsp_base64_encode</a>              (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"
+>gsize</a> len);
+void                <a class="link" href="gst-plugins-base-libs-gstrtspbase64.html#gst-rtsp-base64-decode-ip" title="gst_rtsp_base64_decode_ip ()">gst_rtsp_base64_decode_ip</a>           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"
+>gsize</a> *len);
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -73,8 +84,14 @@ Last reviewed on 2007-07-24 (0.10.14)</p>
 <a name="gst-plugins-base-libs-gstrtspbase64.details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-base64-encode"></a><h3>gst_rtsp_base64_encode ()</h3>
-<pre class="programlisting">gchar*              gst_rtsp_base64_encode              (const gchar *data,
-                                                         gsize len);</pre>
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gst_rtsp_base64_encode              (const <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"
+>gsize</a> len);</pre>
 <p>
 Encode a sequence of binary data into its Base-64 stringified representation.</p>
 <p>
@@ -105,10 +122,16 @@ representing <em class="parameter"><code>data</code></em>.
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-rtsp-base64-decode-ip"></a><h3>gst_rtsp_base64_decode_ip ()</h3>
-<pre class="programlisting">void                gst_rtsp_base64_decode_ip           (gchar *data,
-                                                         gsize *len);</pre>
+<pre class="programlisting">void                gst_rtsp_base64_decode_ip           (<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *data,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"
+>gsize</a> *len);</pre>
 <p>
-Decode the base64 string pointed to by <em class="parameter"><code>data</code></em> in-place. When <em class="parameter"><code>len</code></em> is not <span class="type">NULL</span>
+Decode the base64 string pointed to by <em class="parameter"><code>data</code></em> in-place. When <em class="parameter"><code>len</code></em> is not <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a>
 it will contain the length of the decoded data.</p>
 <p>
 

@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -66,14 +67,18 @@
 GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push" title="gst_base_rtp_depayload_push ()">gst_base_rtp_depayload_push</a>         (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
                                                          GstBuffer *out_buf);
 GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#gst-base-rtp-depayload-push-ts" title="gst_base_rtp_depayload_push_ts ()">gst_base_rtp_depayload_push_ts</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
-                                                         guint32 timestamp,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> timestamp,
                                                          GstBuffer *out_buf);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstbasertpdepayload.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseRTPDepayload
@@ -82,7 +87,9 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayl
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstbasertpdepayload.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload--queue-delay" title='The "queue-delay" property'>queue-delay</a>"              guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload--queue-delay" title='The "queue-delay" property'>queue-delay</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -90,7 +97,7 @@ GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertpdepayl
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2676828"></a><p>
+<a name="id3092973"></a><p>
 Provides a base class for RTP depayloaders
 </p>
 </div>
@@ -113,7 +120,7 @@ Provides a base class for RTP depayloaders
 <pre class="programlisting">typedef struct {
   GstElementClass parent_class;
 
-  /* virtuals */
+  /* virtuals, inform the subclass of the caps. */
   gboolean (*set_caps) (GstBaseRTPDepayload *filter, GstCaps *caps);
 
   /* non-pure function, default implementation in base class
@@ -121,9 +128,10 @@ Provides a base class for RTP depayloaders
   GstFlowReturn (*add_to_queue) (GstBaseRTPDepayload *filter, GstBuffer *in);
 
   /* pure virtual function, child must use this to process incoming
-   * rtp packets. If the child returns a buffer, the timestamp of @in will be
-   * applied to the result buffer and the buffer will be pushed. If this
-   * function returns %NULL, nothing is pushed.  */
+   * rtp packets. If the child returns a buffer without a valid timestamp,
+   * the timestamp of @in will be applied to the result buffer and the
+   * buffer will be pushed. If this function returns %NULL, nothing is
+   * pushed.  */
   GstBuffer * (*process) (GstBaseRTPDepayload *base, GstBuffer *in);
 
   /* non-pure function used to convert from RTP timestamp to GST timestamp
@@ -218,7 +226,9 @@ any timestamp on the outgoing buffer.</p>
 <div class="refsect2" lang="en">
 <a name="gst-base-rtp-depayload-push-ts"></a><h3>gst_base_rtp_depayload_push_ts ()</h3>
 <pre class="programlisting">GstFlowReturn       gst_base_rtp_depayload_push_ts      (<a class="link" href="gst-plugins-base-libs-gstbasertpdepayload.html#GstBaseRTPDepayload">GstBaseRTPDepayload</a> *filter,
-                                                         guint32 timestamp,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> timestamp,
                                                          GstBuffer *out_buf);</pre>
 <p>
 Push <em class="parameter"><code>out_buf</code></em> to the peer of <em class="parameter"><code>filter</code></em>. This function takes ownership of
@@ -262,7 +272,9 @@ timestamp to a valid GStreamer clock time.</p>
 <a name="gst-plugins-base-libs-gstbasertpdepayload.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPDepayload--queue-delay"></a><h3>The <code class="literal">"queue-delay"</code> property</h3>
-<pre class="programlisting">  "queue-delay"              guint                 : Read / Write</pre>
+<pre class="programlisting">  "queue-delay"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Amount of ms to queue/buffer, deprecated.</p>
 <p>Default value: 0</p>
 </div>

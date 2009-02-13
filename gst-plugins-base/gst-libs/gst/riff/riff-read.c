@@ -614,6 +614,10 @@ gst_riff_parse_info (GstElement * element,
     tsize = GST_READ_UINT32_LE (data + 4);
     size -= 8;
     data += 8;
+
+    GST_DEBUG ("tag %" GST_FOURCC_FORMAT ", size %u",
+        GST_FOURCC_ARGS (tag), tsize);
+
     if (tsize > size) {
       GST_WARNING_OBJECT (element,
           "Tagsize %d is larger than available data %d", tsize, size);
@@ -656,7 +660,7 @@ gst_riff_parse_info (GstElement * element,
         type = GST_TAG_GENRE;
         break;
       case GST_RIFF_INFO_IKEY:
-        type = NULL;            /*"Keywords"; */
+        type = GST_TAG_KEYWORDS;
         break;
       case GST_RIFF_INFO_ILGT:
         type = NULL;            /*"Lightness"; */
@@ -714,6 +718,9 @@ gst_riff_parse_info (GstElement * element,
         GST_WARNING_OBJECT (element, "could not extract %s tag", type);
       }
     }
+
+    if (tsize & 1)
+      tsize++;
 
     data += tsize;
     size -= tsize;

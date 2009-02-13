@@ -82,16 +82,18 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/lrint.m4 $(top_srcdir)/m4/lrintf.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vorbis.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 SOURCES =
@@ -157,6 +159,7 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -166,6 +169,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -179,6 +183,14 @@ GST_CHECK_LIBS = @GST_CHECK_LIBS@
 GST_CONTROLLER_CFLAGS = @GST_CONTROLLER_CFLAGS@
 GST_CONTROLLER_LIBS = @GST_CONTROLLER_LIBS@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_ALLOC_TRACE = @GST_DISABLE_ALLOC_TRACE@
+GST_DISABLE_GST_DEBUG = @GST_DISABLE_GST_DEBUG@
+GST_DISABLE_LOADSAVE = @GST_DISABLE_LOADSAVE@
+GST_DISABLE_PARSE = @GST_DISABLE_PARSE@
+GST_DISABLE_PLUGIN = @GST_DISABLE_PLUGIN@
+GST_DISABLE_REGISTRY = @GST_DISABLE_REGISTRY@
+GST_DISABLE_TRACE = @GST_DISABLE_TRACE@
+GST_DISABLE_XML = @GST_DISABLE_XML@
 GST_GCOV_ENABLED_FALSE = @GST_GCOV_ENABLED_FALSE@
 GST_GCOV_ENABLED_TRUE = @GST_GCOV_ENABLED_TRUE@
 GST_GDP_CFLAGS = @GST_GDP_CFLAGS@
@@ -202,10 +214,13 @@ GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PREFIX = @GST_PREFIX@
 GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
+GTKDOC_CHECK = @GTKDOC_CHECK@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_DOC_USE_LIBTOOL_FALSE = @GTK_DOC_USE_LIBTOOL_FALSE@
 GTK_DOC_USE_LIBTOOL_TRUE = @GTK_DOC_USE_LIBTOOL_TRUE@
 GTK_LIBS = @GTK_LIBS@
+GTK_X11_CFLAGS = @GTK_X11_CFLAGS@
+GTK_X11_LIBS = @GTK_X11_LIBS@
 HAVE_CDPARANOIA = @HAVE_CDPARANOIA@
 HAVE_CPU_ALPHA_FALSE = @HAVE_CPU_ALPHA_FALSE@
 HAVE_CPU_ALPHA_TRUE = @HAVE_CPU_ALPHA_TRUE@
@@ -241,6 +256,8 @@ HAVE_GST_CHECK_FALSE = @HAVE_GST_CHECK_FALSE@
 HAVE_GST_CHECK_TRUE = @HAVE_GST_CHECK_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_GTK_X11_FALSE = @HAVE_GTK_X11_FALSE@
+HAVE_GTK_X11_TRUE = @HAVE_GTK_X11_TRUE@
 HAVE_LIBXML_HTML_FALSE = @HAVE_LIBXML_HTML_FALSE@
 HAVE_LIBXML_HTML_TRUE = @HAVE_LIBXML_HTML_TRUE@
 HAVE_REGEX_H_FALSE = @HAVE_REGEX_H_FALSE@
@@ -258,6 +275,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -279,8 +297,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -343,12 +361,12 @@ USE_PANGO_FALSE = @USE_PANGO_FALSE@
 USE_PANGO_TRUE = @USE_PANGO_TRUE@
 USE_PLUGIN_ADDER_FALSE = @USE_PLUGIN_ADDER_FALSE@
 USE_PLUGIN_ADDER_TRUE = @USE_PLUGIN_ADDER_TRUE@
+USE_PLUGIN_APP_FALSE = @USE_PLUGIN_APP_FALSE@
+USE_PLUGIN_APP_TRUE = @USE_PLUGIN_APP_TRUE@
 USE_PLUGIN_AUDIOCONVERT_FALSE = @USE_PLUGIN_AUDIOCONVERT_FALSE@
 USE_PLUGIN_AUDIOCONVERT_TRUE = @USE_PLUGIN_AUDIOCONVERT_TRUE@
 USE_PLUGIN_AUDIORATE_FALSE = @USE_PLUGIN_AUDIORATE_FALSE@
 USE_PLUGIN_AUDIORATE_TRUE = @USE_PLUGIN_AUDIORATE_TRUE@
-USE_PLUGIN_AUDIORESAMPLE_FALSE = @USE_PLUGIN_AUDIORESAMPLE_FALSE@
-USE_PLUGIN_AUDIORESAMPLE_TRUE = @USE_PLUGIN_AUDIORESAMPLE_TRUE@
 USE_PLUGIN_AUDIOTESTSRC_FALSE = @USE_PLUGIN_AUDIOTESTSRC_FALSE@
 USE_PLUGIN_AUDIOTESTSRC_TRUE = @USE_PLUGIN_AUDIOTESTSRC_TRUE@
 USE_PLUGIN_FFMPEGCOLORSPACE_FALSE = @USE_PLUGIN_FFMPEGCOLORSPACE_FALSE@
@@ -357,6 +375,8 @@ USE_PLUGIN_GDP_FALSE = @USE_PLUGIN_GDP_FALSE@
 USE_PLUGIN_GDP_TRUE = @USE_PLUGIN_GDP_TRUE@
 USE_PLUGIN_PLAYBACK_FALSE = @USE_PLUGIN_PLAYBACK_FALSE@
 USE_PLUGIN_PLAYBACK_TRUE = @USE_PLUGIN_PLAYBACK_TRUE@
+USE_PLUGIN_SPEEXRESAMPLE_FALSE = @USE_PLUGIN_SPEEXRESAMPLE_FALSE@
+USE_PLUGIN_SPEEXRESAMPLE_TRUE = @USE_PLUGIN_SPEEXRESAMPLE_TRUE@
 USE_PLUGIN_SUBPARSE_FALSE = @USE_PLUGIN_SUBPARSE_FALSE@
 USE_PLUGIN_SUBPARSE_TRUE = @USE_PLUGIN_SUBPARSE_TRUE@
 USE_PLUGIN_TCP_FALSE = @USE_PLUGIN_TCP_FALSE@
@@ -375,6 +395,8 @@ USE_THEORA_FALSE = @USE_THEORA_FALSE@
 USE_THEORA_TRUE = @USE_THEORA_TRUE@
 USE_VORBIS_FALSE = @USE_VORBIS_FALSE@
 USE_VORBIS_TRUE = @USE_VORBIS_TRUE@
+USE_XML_FALSE = @USE_XML_FALSE@
+USE_XML_TRUE = @USE_XML_TRUE@
 USE_XSHM_FALSE = @USE_XSHM_FALSE@
 USE_XSHM_TRUE = @USE_XSHM_TRUE@
 USE_XVIDEO_FALSE = @USE_XVIDEO_FALSE@
@@ -391,6 +413,8 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
@@ -514,7 +538,7 @@ CFILE_GLOB = $(DOC_SOURCE_DIR)/*/*/*.c
 SCANOBJ_DEPS = 
 
 # Header files to ignore when scanning.
-IGNORE_HFILES = avcodec.h gstffmpegcodecmap.h dsputil.h
+IGNORE_HFILES = avcodec.h gstffmpegcodecmap.h dsputil.h arch.h speex_resampler.h speex_resampler_wrapper.h fixed_arm4.h fixed_arm5e.h fixed_bfin.h fixed_debug.h fixed_generic.h resample_sse.h
 IGNORE_CFILES = utils.c mem.c imgconvert.c
 
 # we add all .h files of elements that have signals/args we want
@@ -551,13 +575,16 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/adder/gstadder.h \
 	$(top_srcdir)/gst/audioconvert/audioconvert.h \
 	$(top_srcdir)/gst/audioconvert/gstaudioconvert.h \
-	$(top_srcdir)/gst/audioresample/gstaudioresample.h \
 	$(top_srcdir)/gst/audiotestsrc/gstaudiotestsrc.h \
 	$(top_srcdir)/gst/ffmpegcolorspace/gstffmpegcolorspace.h \
 	$(top_srcdir)/gst/gdp/gstgdpdepay.h \
 	$(top_srcdir)/gst/gdp/gstgdppay.h \
 	$(top_srcdir)/gst/playback/gstplay-enum.h \
+	$(top_srcdir)/gst/speexresample/gstspeexresample.h \
 	$(top_srcdir)/gst/tcp/gstmultifdsink.h \
+	$(top_srcdir)/gst/tcp/gsttcpclientsrc.h \
+	$(top_srcdir)/gst/tcp/gsttcpclientsink.h \
+	$(top_srcdir)/gst/tcp/gsttcpserversrc.h \
 	$(top_srcdir)/gst/tcp/gsttcpserversink.h \
 	$(top_srcdir)/gst/tcp/gsttcp-enumtypes.h \
 	$(top_srcdir)/gst/tcp/gsttcp.h \
@@ -566,7 +593,9 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/videotestsrc/gstvideotestsrc.h \
 	$(top_srcdir)/gst/volume/gstvolume.h \
 	$(top_srcdir)/sys/ximage/ximagesink.h \
-	$(top_srcdir)/sys/xvimage/xvimagesink.h
+	$(top_srcdir)/sys/xvimage/xvimagesink.h \
+	$(top_srcdir)/gst-libs/gst/app/gstappsrc.h \
+	$(top_srcdir)/gst-libs/gst/app/gstappsink.h
 
 
 # Images to copy into HTML directory.
@@ -671,12 +700,13 @@ CLEANFILES = \
 ### inspect GStreamer plug-ins; done by documentation maintainer ###
 
 # only look at the plugins in this module when building inspect .xml stuff
-@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(builddir)/inspect-registry.xml
+@ENABLE_GTK_DOC_TRUE@INSPECT_REGISTRY = $(top_builddir)/docs/plugins/inspect-registry.xml
 @ENABLE_GTK_DOC_TRUE@INSPECT_ENVIRONMENT = \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_SYSTEM_PATH= \
 @ENABLE_GTK_DOC_TRUE@        GST_PLUGIN_PATH=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(top_builddir)/plugins:$(top_builddir)/src:$(top_builddir)/gnl \
 @ENABLE_GTK_DOC_TRUE@        GST_REGISTRY=$(INSPECT_REGISTRY)
 
+MAINTAINERCLEANFILES = $(MAINTAINER_DOC_STAMPS)
 
 # wildcard is apparently not portable to other makes, hence the use of find
 inspect_files = $(shell find $(srcdir)/inspect -name '*.xml')
@@ -789,6 +819,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -901,8 +932,9 @@ update:
 @ENABLE_GTK_DOC_TRUE@	    done;							\
 @ENABLE_GTK_DOC_TRUE@	else								\
 @ENABLE_GTK_DOC_TRUE@	    $(INSPECT_ENVIRONMENT) 					\
-@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" 			\
-@ENABLE_GTK_DOC_TRUE@	    CFLAGS="-g $(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)"		\
+@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)"				\
+@ENABLE_GTK_DOC_TRUE@	    CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)"				\
+@ENABLE_GTK_DOC_TRUE@	    LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)"				\
 @ENABLE_GTK_DOC_TRUE@	    $(GST_DOC_SCANOBJ) --type-init-func="gst_init(NULL,NULL)"	\
 @ENABLE_GTK_DOC_TRUE@	        --module=$(DOC_MODULE) --source=$(PACKAGE) &&		\
 @ENABLE_GTK_DOC_TRUE@		$(PYTHON)						\
@@ -1041,16 +1073,15 @@ clean-local: clean-local-gtkdoc
 
 distclean-local: clean
 	rm -rf tmpl/*.sgml.bak
-	rm -f *.stamp || true
 	rm -rf *.o
 
 # thomas: make docs parallel installable; devhelp requires majorminor too
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
+	(installfiles=`echo $(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css`; \
+	if test "$$installfiles" = '$(srcdir)/html/*.sgml $(srcdir)/html/*.html $(srcdir)/html/*.png $(srcdir)/html/*.css'; \
 	then echo '-- Nothing to install' ; \
 	else \
+          $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR); \
 	  for i in $$installfiles; do \
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
@@ -1066,47 +1097,19 @@ install-data-local:
 	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp \
 	    $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
 	  if test -e $(srcdir)/html/$(DOC_MODULE).devhelp2; then \
-        	  $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
+        	    $(INSTALL_DATA) $(srcdir)/html/$(DOC_MODULE).devhelp2 \
 	           $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
 	  fi; \
-	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
-	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
-		if test -e $(srcdir)/html/style.css; then \
-			echo '-- Installing $(srcdir)/html/style.css' ; \
-			$(INSTALL_DATA) $(srcdir)/html/style.css $(DESTDIR)$(TARGET_DIR); \
-		fi; \
+	  (which gtkdoc-rebase >/dev/null && \
+	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || true ; \
 	fi) 
 uninstall-local:
-	(installfiles=`echo ./html/*.html`; \
-	if test "$$installfiles" = './html/*.html'; \
-	then echo '-- Nothing to uninstall' ; \
+	if test -d $(DESTDIR)$(TARGET_DIR); then \
+	  rm -rf $(DESTDIR)$(TARGET_DIR)/*; \
+	  rmdir -p $(DESTDIR)$(TARGET_DIR) 2>/dev/null || true; \
 	else \
-	  for i in $$installfiles; do \
-	    rmfile=`basename $$i` ; \
-	    echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	  done; \
-	  pngfiles=`echo ./html/*.png`; \
-	  if test "$$pngfiles" != './html/*.png'; then \
-	    for i in $$pngfiles; do \
-	      rmfile=`basename $$i` ; \
-	      echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/'$$rmfile ; \
-	      rm -f $(DESTDIR)$(TARGET_DIR)/$$rmfile; \
-	    done; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE).devhelp' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp; \
-	  if test -e $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; then \
-	    rm -f $(DESTDIR)$(TARGET_DIR)/$(DOC_MODULE)-@GST_MAJORMINOR@.devhelp2; \
-	  fi; \
-	  echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/index.sgml' ; \
-	  rm -f $(DESTDIR)$(TARGET_DIR)/index.sgml; \
-		if test -e $(DESTDIR)$(TARGET_DIR)/style.css; then \
-			echo '-- Uninstalling $(DESTDIR)$(TARGET_DIR)/style.css' ; \
-			rm -f $(DESTDIR)$(TARGET_DIR)/style.css; \
-		fi; \
-	fi) 
-	if test -d $(DESTDIR)$(TARGET_DIR); then rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(TARGET_DIR) 2>/dev/null; fi; true
+	  echo '-- Nothing to uninstall' ; \
+	fi;
 
 #
 # Checks
@@ -1142,21 +1145,14 @@ check-inspected-versions:
 
 # FIXME: decide whether we want to dist generated html or not
 dist-hook: dist-check-gtkdoc dist-hook-local
-	mkdir $(distdir)/tmpl
-	mkdir $(distdir)/xml
 	mkdir $(distdir)/html
-	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
-	-cp $(srcdir)/sgml/*.xml $(distdir)/xml
-	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(srcdir)/html/*.png $(distdir)/html
-	-cp $(srcdir)/html/$(DOC_MODULE).devhelp* $(distdir)/html
+	cp $(srcdir)/html/* $(distdir)/html
+	-cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
+	-cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
+	cd $(distdir) && rm -f $(DISTCLEANFILES)
+        -gtkdoc-rebase --online --relative --html-dir=$(distdir)/html
 
-	images=$(HTML_IMAGES) ;    	      \
-	for i in "" $$images ; do		      \
-	  if test "$$i" != ""; then cp $(srcdir)/$$i $(distdir)/html ; fi; \
-	done
-
-.PHONY : dist-hook-local
+.PHONY : dist-hook-local docs
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -21,18 +21,14 @@
  * SECTION:element-gdppay
  * @see_also: gdpdepay
  *
- * <refsect2>
- * <para>
  * This element payloads GStreamer buffers and events using the
  * GStreamer Data Protocol.
- * </para>
- * <para>
- * <programlisting>
+ *
+ * <refsect2>
+ * |[
  * gst-launch -v -m videotestsrc num-buffers=50 ! gdppay ! filesink location=test.gdp
- * </programlisting>
- * This pipeline creates a serialized video stream that can be played back
+ * ]| This pipeline creates a serialized video stream that can be played back
  * with the example shown in gdpdepay.
- * </para>
  * </refsect2>
  */
 
@@ -193,10 +189,11 @@ gst_gdp_pay_reset (GstGDPPay * this)
     GstBuffer *buffer;
 
     buffer = GST_BUFFER_CAST (this->queue->data);
-    GST_DEBUG_OBJECT (this, "Pushing queued GDP buffer %p", buffer);
 
     /* delete buffer from queue now */
     this->queue = g_list_delete_link (this->queue, this->queue);
+
+    gst_buffer_unref (buffer);
   }
   if (this->caps) {
     gst_caps_unref (this->caps);

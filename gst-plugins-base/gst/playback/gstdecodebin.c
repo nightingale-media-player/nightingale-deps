@@ -17,6 +17,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * SECTION:element-decodebin
+ *
+ * #GstBin that auto-magically constructs a decoding pipeline using available
+ * decoders and demuxers via auto-plugging.
+ *
+ * When using decodebin in your application, connect a signal handler to
+ * #GstDecodeBin::new-decoded-pad and connect your sinks from within the
+ * callback function.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -108,6 +119,13 @@ enum
   LAST_SIGNAL
 };
 
+/* Properties */
+enum
+{
+  PROP_0,
+  PROP_SINK_CAPS,
+};
+
 
 typedef struct
 {
@@ -133,6 +151,10 @@ GstDynamic;
 
 static void gst_decode_bin_class_init (GstDecodeBinClass * klass);
 static void gst_decode_bin_init (GstDecodeBin * decode_bin);
+static void gst_decode_bin_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_decode_bin_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 static void gst_decode_bin_dispose (GObject * object);
 static void gst_decode_bin_finalize (GObject * object);
 
@@ -159,6 +181,8 @@ static void new_caps (GstPad * pad, GParamSpec * unused, GstDynamic * dynamic);
 
 static void queue_filled_cb (GstElement * queue, GstDecodeBin * decode_bin);
 static void queue_underrun_cb (GstElement * queue, GstDecodeBin * decode_bin);
+
+static gboolean is_demuxer_element (GstElement * srcelement);
 
 static GstElementClass *parent_class;
 static guint gst_decode_bin_signals[LAST_SIGNAL] = { 0 };
@@ -210,6 +234,11 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
+  gobject_klass->set_property = GST_DEBUG_FUNCPTR (gst_decode_bin_set_property);
+  gobject_klass->get_property = GST_DEBUG_FUNCPTR (gst_decode_bin_get_property);
+  gobject_klass->dispose = GST_DEBUG_FUNCPTR (gst_decode_bin_dispose);
+  gobject_klass->finalize = GST_DEBUG_FUNCPTR (gst_decode_bin_finalize);
+
   /**
    * GstDecodeBin::new-decoded-pad:
    * @bin: The decodebin
@@ -253,8 +282,10 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
       NULL, NULL, gst_marshal_VOID__OBJECT_BOXED, G_TYPE_NONE, 2,
       GST_TYPE_PAD, GST_TYPE_CAPS);
 
-  gobject_klass->dispose = GST_DEBUG_FUNCPTR (gst_decode_bin_dispose);
-  gobject_klass->finalize = GST_DEBUG_FUNCPTR (gst_decode_bin_finalize);
+  g_object_class_install_property (gobject_klass, PROP_SINK_CAPS,
+      g_param_spec_boxed ("sink-caps", "Sink Caps",
+          "The caps of the input data. (NULL = use typefind element)",
+          GST_TYPE_CAPS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gst_element_class_add_pad_template (gstelement_klass,
       gst_static_pad_template_get (&decoder_bin_sink_template));
@@ -407,6 +438,61 @@ gst_decode_bin_dispose (GObject * object)
    * etc. clean up the mess here. */
   /* FIXME do proper cleanup when going to NULL */
   free_dynamics (decode_bin);
+}
+
+static void
+gst_decode_bin_set_sink_caps (GstDecodeBin * dbin, GstCaps * caps)
+{
+  GST_DEBUG_OBJECT (dbin, "Setting new caps: %" GST_PTR_FORMAT, caps);
+
+  g_object_set (dbin->typefind, "force-caps", caps, NULL);
+}
+
+static GstCaps *
+gst_decode_bin_get_sink_caps (GstDecodeBin * dbin)
+{
+  GstCaps *caps;
+
+  GST_DEBUG_OBJECT (dbin, "Getting currently set caps");
+
+  g_object_get (dbin->typefind, "force-caps", &caps, NULL);
+
+  return caps;
+}
+
+static void
+gst_decode_bin_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
+{
+  GstDecodeBin *dbin;
+
+  dbin = GST_DECODE_BIN (object);
+
+  switch (prop_id) {
+    case PROP_SINK_CAPS:
+      gst_decode_bin_set_sink_caps (dbin, g_value_get_boxed (value));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+gst_decode_bin_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstDecodeBin *dbin;
+
+  dbin = GST_DECODE_BIN (object);
+  switch (prop_id) {
+    case PROP_SINK_CAPS:
+      g_value_take_boxed (value, gst_decode_bin_get_sink_caps (dbin));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
 }
 
 static void
@@ -719,6 +805,47 @@ pad_probe (GstPad * pad, GstMiniObject * data, GstDecodeBin * decode_bin)
   return TRUE;
 }
 
+/* FIXME: this should be somehow merged with the queue code in
+ * try_to_link_1() to reduce code duplication */
+static GstPad *
+add_raw_queue (GstDecodeBin * decode_bin, GstPad * pad)
+{
+  GstElement *queue = NULL;
+  GstPad *queuesinkpad = NULL, *queuesrcpad = NULL;
+
+  queue = gst_element_factory_make ("queue", NULL);
+  decode_bin->queue_type = G_OBJECT_TYPE (queue);
+
+  g_object_set (G_OBJECT (queue), "max-size-buffers", 0, NULL);
+  g_object_set (G_OBJECT (queue), "max-size-time", G_GINT64_CONSTANT (0), NULL);
+  g_object_set (G_OBJECT (queue), "max-size-bytes", 8192, NULL);
+  gst_bin_add (GST_BIN (decode_bin), queue);
+  gst_element_set_state (queue, GST_STATE_READY);
+  queuesinkpad = gst_element_get_static_pad (queue, "sink");
+  queuesrcpad = gst_element_get_static_pad (queue, "src");
+
+  if (gst_pad_link (pad, queuesinkpad) != GST_PAD_LINK_OK) {
+    GST_WARNING_OBJECT (decode_bin,
+        "Linking queue failed, trying without queue");
+    gst_element_set_state (queue, GST_STATE_NULL);
+    gst_object_unref (queuesrcpad);
+    gst_object_unref (queuesinkpad);
+    gst_bin_remove (GST_BIN (decode_bin), queue);
+    return gst_object_ref (pad);
+  }
+
+  decode_bin->queues = g_list_append (decode_bin->queues, queue);
+  g_signal_connect (G_OBJECT (queue),
+      "overrun", G_CALLBACK (queue_filled_cb), decode_bin);
+  g_signal_connect (G_OBJECT (queue),
+      "underrun", G_CALLBACK (queue_underrun_cb), decode_bin);
+
+  gst_element_set_state (queue, GST_STATE_PAUSED);
+  gst_object_unref (queuesinkpad);
+
+  return queuesrcpad;
+}
+
 /* given a pad and a caps from an element, find the list of elements
  * that could connect to the pad
  *
@@ -771,6 +898,17 @@ close_pad_link (GstElement * element, GstPad * pad, GstCaps * caps,
     GstPad *ghost;
     PadProbeData *data;
 
+    /* If we're at a demuxer element but have raw data already
+     * we have to add a queue here. For non-raw data this is done
+     * in try_to_link_1() */
+    if (is_demuxer_element (element)) {
+      GST_DEBUG_OBJECT (decode_bin,
+          "Element %s is a demuxer, inserting a queue",
+          GST_OBJECT_NAME (element));
+
+      pad = add_raw_queue (decode_bin, pad);
+    }
+
     /* make a unique name for this new pad */
     padname = g_strdup_printf ("src%d", decode_bin->numpads);
     decode_bin->numpads++;
@@ -800,6 +938,11 @@ close_pad_link (GstElement * element, GstPad * pad, GstCaps * caps,
     GST_DEBUG_OBJECT (decode_bin, "emitted new-decoded-pad");
 
     g_free (padname);
+
+    /* If we're at a demuxer element pad was set to a queue's
+     * srcpad and must be unref'd here */
+    if (is_demuxer_element (element))
+      gst_object_unref (pad);
   } else {
     GList *to_try;
 
@@ -1876,6 +2019,7 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
   return gst_element_register (plugin, "decodebin", GST_RANK_NONE,

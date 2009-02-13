@@ -1,3 +1,64 @@
+# app
+<SECTION>
+<FILE>gstappsrc</FILE>
+<TITLE>appsrc</TITLE>
+<INCLUDE>gst/app/appsrc.h</INCLUDE>
+GstAppSrc
+GstAppStreamType
+gst_app_src_set_caps
+gst_app_src_get_caps
+gst_app_src_get_latency
+gst_app_src_set_latency
+gst_app_src_set_size
+gst_app_src_get_size
+gst_app_src_set_stream_type
+gst_app_src_get_stream_type
+gst_app_src_set_max_bytes
+gst_app_src_get_max_bytes
+gst_app_src_push_buffer
+gst_app_src_end_of_stream
+<SUBSECTION Standard>
+GstAppSrcClass
+GST_APP_SRC
+GST_IS_APP_SRC
+GST_TYPE_APP_SRC
+gst_app_src_get_type
+GST_APP_SRC_CLASS
+GST_IS_APP_SRC_CLASS
+<SUBSECTION Private>
+gst_app_buffer_get_type
+gst_app_buffer_new
+gst_app_marshal_BOOLEAN__UINT64
+gst_app_marshal_ENUM__OBJECT
+gst_app_marshal_ENUM__VOID
+gst_app_marshal_VOID__UINT
+</SECTION>
+
+<SECTION>
+<FILE>gstappsink</FILE>
+<TITLE>appsink</TITLE>
+<INCLUDE>gst/app/appsink.h</INCLUDE>
+GstAppSink
+gst_app_sink_set_caps
+gst_app_sink_get_caps
+gst_app_sink_is_eos
+gst_app_sink_set_emit_signals
+gst_app_sink_get_emit_signals
+gst_app_sink_set_max_buffers
+gst_app_sink_get_max_buffers
+gst_app_sink_set_drop
+gst_app_sink_get_drop
+gst_app_sink_pull_preroll
+gst_app_sink_pull_buffer
+<SUBSECTION Standard>
+GstAppSinkClass
+GST_APP_SINK
+GST_IS_APP_SINK
+GST_TYPE_APP_SINK
+gst_app_sink_get_type
+GST_APP_SINK_CLASS
+GST_IS_APP_SINK_CLASS
+</SECTION>
 
 # audio
 
@@ -172,6 +233,9 @@ gst_ring_buffer_acquire
 gst_ring_buffer_release
 gst_ring_buffer_is_acquired
 
+gst_ring_buffer_activate
+gst_ring_buffer_is_active
+
 gst_ring_buffer_start
 gst_ring_buffer_pause
 gst_ring_buffer_stop
@@ -181,6 +245,7 @@ gst_ring_buffer_samples_done
 gst_ring_buffer_set_sample
 gst_ring_buffer_commit
 gst_ring_buffer_commit_full
+gst_ring_buffer_convert
 
 gst_ring_buffer_prepare_read
 gst_ring_buffer_read
@@ -294,14 +359,6 @@ gst_fft_f64_free
 <SECTION>
 <FILE>gstfloatcast</FILE>
 <INCLUDE>gst/floatcast/floatcast.h</INCLUDE>
-GDOUBLE_FROM_BE
-GDOUBLE_FROM_LE
-GDOUBLE_TO_BE
-GDOUBLE_TO_LE
-GFLOAT_FROM_BE
-GFLOAT_FROM_LE
-GFLOAT_TO_BE
-GFLOAT_TO_LE
 gst_cast_double
 gst_cast_float
 </SECTION>
@@ -313,13 +370,13 @@ gst_cast_float
 <FILE>gstcolorbalance</FILE>
 <INCLUDE>gst/interfaces/color.h</INCLUDE>
 GstColorBalance
+GstColorBalanceClass
 GstColorBalanceType
 gst_color_balance_list_channels
 gst_color_balance_get_value
 gst_color_balance_set_value
 gst_color_balance_value_changed
 <SUBSECTION Standard>
-GstColorBalanceClass
 GST_COLOR_BALANCE
 GST_COLOR_BALANCE_CLASS
 GST_COLOR_BALANCE_GET_CLASS
@@ -336,8 +393,8 @@ gst_color_balance_type_get_type
 <FILE>gstcolorbalancechannel</FILE>
 <INCLUDE>gst/interfaces/colorbalancechannel.h</INCLUDE>
 GstColorBalanceChannel
-<SUBSECTION Standard>
 GstColorBalanceChannelClass
+<SUBSECTION Standard>
 GST_COLOR_BALANCE_CHANNEL
 GST_COLOR_BALANCE_CHANNEL_CLASS
 GST_IS_COLOR_BALANCE_CHANNEL
@@ -381,6 +438,7 @@ gst_mixer_message_parse_volume_changed
 gst_mixer_message_parse_options_list_changed
 
 <SUBSECTION Standard>
+GstMixer
 GstMixerClass
 GST_TYPE_MIXER
 GST_TYPE_MIXER_TYPE
@@ -476,6 +534,7 @@ gst_property_probe_get_type
 <FILE>gsttuner</FILE>
 <INCLUDE>gst/interfaces/tuner.h</INCLUDE>
 GstTuner
+GstTunerClass
 
 gst_tuner_list_channels
 gst_tuner_get_channel
@@ -497,7 +556,6 @@ gst_tuner_norm_changed
 gst_tuner_frequency_changed
 gst_tuner_signal_changed
 <SUBSECTION Standard>
-GstTunerClass
 GST_TYPE_TUNER
 GST_TUNER
 GST_TUNER_CLASS
@@ -564,13 +622,13 @@ gst_video_orientation_get_type
 <FILE>gstxoverlay</FILE>
 <INCLUDE>gst/interfaces/xoverlay.h</INCLUDE>
 GstXOverlay
+GstXOverlayClass
 gst_x_overlay_set_xwindow_id
 gst_x_overlay_got_xwindow_id
 gst_x_overlay_prepare_xwindow_id
 gst_x_overlay_expose
 gst_x_overlay_handle_events
 <SUBSECTION Standard>
-GstXOverlayClass
 GST_TYPE_X_OVERLAY
 GST_X_OVERLAY
 GST_X_OVERLAY_CLASS
@@ -791,6 +849,7 @@ GST_RIFF_xmpg
 GST_RIFF_y41p
 GST_RIFF_yuy2
 GST_RIFF_yv12
+
 gst_riff_create_audio_caps
 gst_riff_create_audio_template_caps
 gst_riff_create_iavs_caps
@@ -1183,10 +1242,13 @@ gst_rtsp_message_dump
 GST_RTSP_DEFAULT_PORT
 GstRTSPUrl
 gst_rtsp_url_parse
+gst_rtsp_url_copy
 gst_rtsp_url_free
 gst_rtsp_url_get_request_uri
 gst_rtsp_url_set_port
 gst_rtsp_url_get_port
+<SUBSECTION Standard>
+gst_rtsp_url_get_type
 </SECTION>
 
 <SECTION>

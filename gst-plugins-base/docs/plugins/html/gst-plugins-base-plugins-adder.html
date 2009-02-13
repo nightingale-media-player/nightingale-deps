@@ -7,11 +7,12 @@
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="next" href="gst-plugins-base-plugins-alsamixer.html" title="alsamixer">
+<link rel="next" href="gst-plugins-base-plugins-appsrc.html" title="appsrc">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -20,7 +21,7 @@
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-alsamixer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-appsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts"><nobr><a href="#gst-plugins-base-plugins-adder.synopsis" class="shortcut">Top</a>
                    | 
@@ -46,7 +47,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-adder.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstAdder
@@ -55,44 +58,41 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-adder.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2552774"></a><h3>Example launch line</h3>
-<p>
-The Adder allows to mix several streams into one by adding the data.
+The adder allows to mix several streams into one by adding the data.
 Mixed data is clamped to the min/max values of the data format.
 </p>
 <p>
+The adder currently mixes all data received on the sinkpads as soon as
+possible without trying to synchronize the streams.
 </p>
-<pre class="programlisting">
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2676583"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch audiotestsrc freq=100 ! adder name=mix ! audioconvert ! alsasink audiotestsrc freq=500 ! mix.
-</pre>
-<p>
-This pipeline produces two sine waves mixed together.
-</p>
-<p>
-The Adder currently mixes all data received on the sinkpads as soon as possible
-without trying to synchronize the streams.
-</p>
+</pre></div> This pipeline produces two sine waves mixed together.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-05-09 (0.10.7)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2584868"></a><h3>Element Information</h3>
+<a name="id2676558"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-adder.html#plugin-adder">adder</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-adder.html#plugin-adder">adder</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Thomas &lt;thomas@apestaart.org&gt;</td>
+<td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -100,6 +100,10 @@ Last reviewed on 2006-05-09 (0.10.7)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2676497"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -117,7 +121,15 @@ Last reviewed on 2006-05-09 (0.10.7)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int)[ 1, 32 ], signed=(boolean){ true, false }</td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32, depth=(int)32, signed=(boolean){ true, false }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean){ true, false }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean){ true, false }</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -142,7 +154,15 @@ Last reviewed on 2006-05-09 (0.10.7)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int){ 8, 16, 32 }, depth=(int)[ 1, 32 ], signed=(boolean){ true, false }</td>
+<td>audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)32, depth=(int)32, signed=(boolean){ true, false }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean){ true, false }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw-int, rate=(int)[ 1, 2147483647 ], channels=(int)[ 1, 2147483647 ], endianness=(int)1234, width=(int)8, depth=(int)8, signed=(boolean){ true, false }</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -150,6 +170,7 @@ Last reviewed on 2006-05-09 (0.10.7)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

@@ -11,6 +11,7 @@
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
+<link rel="chapter" href="gstreamer-app.html" title="App Library">
 <link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
 <link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
 <link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
@@ -65,25 +66,43 @@
 #define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-PT:CAPS" title="GST_BASE_RTP_PAYLOAD_PT()">GST_BASE_RTP_PAYLOAD_PT</a>             (payload)
 #define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SINKPAD:CAPS" title="GST_BASE_RTP_PAYLOAD_SINKPAD()">GST_BASE_RTP_PAYLOAD_SINKPAD</a>        (payload)
 #define             <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GST-BASE-RTP-PAYLOAD-SRCPAD:CAPS" title="GST_BASE_RTP_PAYLOAD_SRCPAD()">GST_BASE_RTP_PAYLOAD_SRCPAD</a>         (payload)
-gboolean            <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-is-filled" title="gst_basertppayload_is_filled ()">gst_basertppayload_is_filled</a>        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         guint size,
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-is-filled" title="gst_basertppayload_is_filled ()">gst_basertppayload_is_filled</a>        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          GstClockTime duration);
 GstFlowReturn       <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-push" title="gst_basertppayload_push ()">gst_basertppayload_push</a>             (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
                                                          GstBuffer *buffer);
 void                <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-set-options" title="gst_basertppayload_set_options ()">gst_basertppayload_set_options</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         gchar *media,
-                                                         gboolean dynamic,
-                                                         gchar *encoding_name,
-                                                         guint32 clock_rate);
-gboolean            <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-set-outcaps" title="gst_basertppayload_set_outcaps ()">gst_basertppayload_set_outcaps</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         gchar *fieldname,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *media,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> dynamic,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *encoding_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> clock_rate);
+<a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#gst-basertppayload-set-outcaps" title="gst_basertppayload_set_outcaps ()">gst_basertppayload_set_outcaps</a>      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fieldname,
                                                          ...);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstbasertppayload.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseRTPPayload
@@ -93,15 +112,33 @@ gboolean            <a class="link" href="gst-plugins-base-libs-gstbasertppayloa
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-libs-gstbasertppayload.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--max-ptime" title='The "max-ptime" property'>max-ptime</a>"                gint64                : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--min-ptime" title='The "min-ptime" property'>min-ptime</a>"                gint64                : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--mtu" title='The "mtu" property'>mtu</a>"                      guint                 : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--pt" title='The "pt" property'>pt</a>"                       guint                 : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--seqnum" title='The "seqnum" property'>seqnum</a>"                   guint                 : Read
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--seqnum-offset" title='The "seqnum-offset" property'>seqnum-offset</a>"            gint                  : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--ssrc" title='The "ssrc" property'>ssrc</a>"                     guint                 : Read / Write
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--timestamp" title='The "timestamp" property'>timestamp</a>"                guint                 : Read
-  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         guint                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--max-ptime" title='The "max-ptime" property'>max-ptime</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--min-ptime" title='The "min-ptime" property'>min-ptime</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--mtu" title='The "mtu" property'>mtu</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--pt" title='The "pt" property'>pt</a>"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--seqnum" title='The "seqnum" property'>seqnum</a>"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--seqnum-offset" title='The "seqnum-offset" property'>seqnum-offset</a>"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--ssrc" title='The "ssrc" property'>ssrc</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--timestamp" title='The "timestamp" property'>timestamp</a>"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read
+  "<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload--timestamp-offset" title='The "timestamp-offset" property'>timestamp-offset</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -109,7 +146,7 @@ gboolean            <a class="link" href="gst-plugins-base-libs-gstbasertppayloa
 <p>
 </p>
 <div class="refsect2" lang="en">
-<a name="id2678859"></a><p>
+<a name="id3095007"></a><p>
 Provides a base class for RTP payloaders
 </p>
 </div>
@@ -225,8 +262,12 @@ Get access to the srcpad of <em class="parameter"><code>payload</code></em>.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-basertppayload-is-filled"></a><h3>gst_basertppayload_is_filled ()</h3>
-<pre class="programlisting">gboolean            gst_basertppayload_is_filled        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         guint size,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_basertppayload_is_filled        (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a> size,
                                                          GstClockTime duration);</pre>
 <p>
 Check if the packet with <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the configure
@@ -254,7 +295,9 @@ maximum size.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the packet of <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the packet of <em class="parameter"><code>size</code></em> and <em class="parameter"><code>duration</code></em> would exceed the
 configured MTU or max_ptime.
 </td>
 </tr>
@@ -300,10 +343,18 @@ This function takes ownership of <em class="parameter"><code>buffer</code></em>.
 <div class="refsect2" lang="en">
 <a name="gst-basertppayload-set-options"></a><h3>gst_basertppayload_set_options ()</h3>
 <pre class="programlisting">void                gst_basertppayload_set_options      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         gchar *media,
-                                                         gboolean dynamic,
-                                                         gchar *encoding_name,
-                                                         guint32 clock_rate);</pre>
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *media,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> dynamic,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *encoding_name,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"
+>guint32</a> clock_rate);</pre>
 <p>
 Set the rtp options of the payloader. These options will be set in the caps
 of the payloader. Subclasses must call this method before calling
@@ -345,8 +396,12 @@ of the payloader. Subclasses must call this method before calling
 <hr>
 <div class="refsect2" lang="en">
 <a name="gst-basertppayload-set-outcaps"></a><h3>gst_basertppayload_set_outcaps ()</h3>
-<pre class="programlisting">gboolean            gst_basertppayload_set_outcaps      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
-                                                         gchar *fieldname,
+<pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gst_basertppayload_set_outcaps      (<a class="link" href="gst-plugins-base-libs-gstbasertppayload.html#GstBaseRTPPayload">GstBaseRTPPayload</a> *payload,
+                                                         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fieldname,
                                                          ...);</pre>
 <p>
 Configure the output caps with the optional parameters.
@@ -367,7 +422,9 @@ Variable arguments should be in the form field name, field type
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fieldname</code></em> :</span></p></td>
-<td> the first field name or <code class="literal">NULL</code>
+<td> the first field name or <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
@@ -377,7 +434,9 @@ Variable arguments should be in the form field name, field type
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the caps could be set.
+<td> <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the caps could be set.
 </td>
 </tr>
 </tbody>
@@ -388,7 +447,9 @@ Variable arguments should be in the form field name, field type
 <a name="gst-plugins-base-libs-gstbasertppayload.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--max-ptime"></a><h3>The <code class="literal">"max-ptime"</code> property</h3>
-<pre class="programlisting">  "max-ptime"                gint64                : Read / Write</pre>
+<pre class="programlisting">  "max-ptime"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write</pre>
 <p>Maximum duration of the packet data in ns (-1 = unlimited up to MTU).</p>
 <p>Allowed values: &gt;= -1</p>
 <p>Default value: -1</p>
@@ -396,7 +457,9 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--min-ptime"></a><h3>The <code class="literal">"min-ptime"</code> property</h3>
-<pre class="programlisting">  "min-ptime"                gint64                : Read / Write</pre>
+<pre class="programlisting">  "min-ptime"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"
+>gint64</a>                : Read / Write</pre>
 <p>Minimum duration of the packet data in ns (can't go above MTU).</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
@@ -404,7 +467,9 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--mtu"></a><h3>The <code class="literal">"mtu"</code> property</h3>
-<pre class="programlisting">  "mtu"                      guint                 : Read / Write</pre>
+<pre class="programlisting">  "mtu"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Maximum size of one packet.</p>
 <p>Allowed values: &gt;= 28</p>
 <p>Default value: 1400</p>
@@ -412,7 +477,9 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--pt"></a><h3>The <code class="literal">"pt"</code> property</h3>
-<pre class="programlisting">  "pt"                       guint                 : Read / Write</pre>
+<pre class="programlisting">  "pt"                       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>The payload type of the packets.</p>
 <p>Allowed values: &lt;= 128</p>
 <p>Default value: 96</p>
@@ -420,7 +487,9 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--seqnum"></a><h3>The <code class="literal">"seqnum"</code> property</h3>
-<pre class="programlisting">  "seqnum"                   guint                 : Read</pre>
+<pre class="programlisting">  "seqnum"                   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
 <p>The RTP sequence number of the last processed packet.</p>
 <p>Allowed values: &lt;= 65535</p>
 <p>Default value: 0</p>
@@ -428,7 +497,9 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--seqnum-offset"></a><h3>The <code class="literal">"seqnum-offset"</code> property</h3>
-<pre class="programlisting">  "seqnum-offset"            gint                  : Read / Write</pre>
+<pre class="programlisting">  "seqnum-offset"            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>Offset to add to all outgoing seqnum (-1 = random).</p>
 <p>Allowed values: [-1,65535]</p>
 <p>Default value: -1</p>
@@ -436,21 +507,27 @@ Variable arguments should be in the form field name, field type
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--ssrc"></a><h3>The <code class="literal">"ssrc"</code> property</h3>
-<pre class="programlisting">  "ssrc"                     guint                 : Read / Write</pre>
+<pre class="programlisting">  "ssrc"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>The SSRC of the packets (default == random).</p>
 <p>Default value: 4294967295</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--timestamp"></a><h3>The <code class="literal">"timestamp"</code> property</h3>
-<pre class="programlisting">  "timestamp"                guint                 : Read</pre>
+<pre class="programlisting">  "timestamp"                <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read</pre>
 <p>The RTP timestamp of the last processed packet.</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstBaseRTPPayload--timestamp-offset"></a><h3>The <code class="literal">"timestamp-offset"</code> property</h3>
-<pre class="programlisting">  "timestamp-offset"         guint                 : Read / Write</pre>
+<pre class="programlisting">  "timestamp-offset"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
 <p>Offset to add to all outgoing timestamps (default = random).</p>
 <p>Default value: 4294967295</p>
 </div>

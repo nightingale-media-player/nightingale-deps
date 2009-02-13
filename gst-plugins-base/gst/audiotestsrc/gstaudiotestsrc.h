@@ -48,6 +48,7 @@ G_BEGIN_DECLS
  * @GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE: white noise
  * @GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE: pink noise
  * @GST_AUDIO_TEST_SRC_WAVE_SINE_TAB: sine wave using a table
+ * @GST_AUDIO_TEST_SRC_WAVE_TICKS: periodic ticks
  *
  * Different types of supported sound waves.
  */
@@ -59,7 +60,8 @@ typedef enum {
   GST_AUDIO_TEST_SRC_WAVE_SILENCE,
   GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE,
   GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE,
-  GST_AUDIO_TEST_SRC_WAVE_SINE_TAB
+  GST_AUDIO_TEST_SRC_WAVE_SINE_TAB,
+  GST_AUDIO_TEST_SRC_WAVE_TICKS
 } GstAudioTestSrcWave; 
 
 #define PINK_MAX_RANDOM_ROWS   (30)
@@ -105,17 +107,20 @@ struct _GstAudioTestSrc {
   /* audio parameters */
   gint samplerate;
   gint samples_per_buffer;
+  gint sample_size;
   GstAudioTestSrcFormat format;
   
   /*< private >*/
   gboolean tags_pushed;			/* send tags just once ? */
   GstClockTimeDiff timestamp_offset;    /* base offset */
-  GstClockTime running_time;            /* total running time */
-  gint64 n_samples;                     /* total samples sent */
-  gint64 n_samples_stop;
+  GstClockTime next_time;               /* next timestamp */
+  gint64 next_sample;                   /* next sample to send */
+  gint64 next_byte;                     /* next byte to send */
+  gint64 sample_stop;
   gboolean check_seek_stop;
   gboolean eos_reached;
   gint generate_samples_per_buffer;	/* used to generate a partial buffer */
+  gboolean can_activate_pull;
   
   /* waveform specific context data */
   gdouble accumulator;			/* phase angle */

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -49,7 +50,9 @@ enum                <a class="link" href="gst-plugins-base-plugins-videoscale.ht
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videoscale.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseTransform
@@ -65,10 +68,6 @@ enum                <a class="link" href="gst-plugins-base-plugins-videoscale.ht
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-videoscale.description"></a><h2>Description</h2>
 <p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2647978"></a><h3>Example pipelines</h3>
-<p>
 This element resizes video frames. By default the element will try to
 negotiate to the same size on the source and sinkpad so that no scaling
 is needed. It is therefore safe to insert this element in a pipeline to
@@ -81,39 +80,35 @@ pipeline.
 </p>
 <p>
 </p>
-<pre class="programlisting">
+<div class="refsect2" lang="en">
+<a name="id2802028"></a><h3>Example pipelines</h3>
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! ffmpegcolorspace ! videoscale ! ximagesink
-</pre>
-<p>
-Decode an Ogg/Theora and display the video using ximagesink. Since
+</pre></div> Decode an Ogg/Theora and display the video using ximagesink. Since
 ximagesink cannot perform scaling, the video scaling will be performed by
 videoscale when you resize the video window.
 To create the test Ogg/Theora file refer to the documentation of theoraenc.
-</p>
-<p>
-</p>
-<pre class="programlisting">
+<div class="informalexample"><pre class="programlisting">
 gst-launch -v filesrc location=videotestsrc.ogg ! oggdemux ! theoradec ! videoscale ! video/x-raw-yuv, width=50 ! xvimagesink
-</pre>
-<p>
-Decode an Ogg/Theora and display the video using xvimagesink with a width of
-50.
-</p>
+</pre></div> Decode an Ogg/Theora and display the video using xvimagesink with a width
+of 50.
 </div>
 <p>
 </p>
 <p>
 Last reviewed on 2006-03-02 (0.10.4)</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2647931"></a><h3>Element Information</h3>
+<a name="id2801994"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-videoscale.html#plugin-videoscale">videoscale</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-videoscale.html#plugin-videoscale">videoscale</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -125,6 +120,10 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2801908"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -311,6 +310,7 @@ Last reviewed on 2006-03-02 (0.10.4)</p>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 <p>
 

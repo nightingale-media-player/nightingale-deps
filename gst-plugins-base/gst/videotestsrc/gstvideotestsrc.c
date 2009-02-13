@@ -21,19 +21,15 @@
 /**
  * SECTION:element-videotestsrc
  *
- * <refsect2>
- * <para>
  * The videotestsrc element is used to produce test video data in a wide variaty
  * of formats. The video test data produced can be controlled with the "pattern"
  * property.
- * </para>
+ *
+ * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
+ * |[
  * gst-launch -v videotestsrc pattern=snow ! ximagesink
- * </programlisting>
- * Shows random noise in an X window.
- * </para>
+ * ]| Shows random noise in an X window.
  * </refsect2>
  */
 
@@ -50,11 +46,8 @@
 #include <liboil/liboil.h>
 #endif
 
-#define USE_PEER_BUFFERALLOC
-
 GST_DEBUG_CATEGORY_STATIC (video_test_src_debug);
 #define GST_CAT_DEFAULT video_test_src_debug
-
 
 static const GstElementDetails video_test_src_details =
 GST_ELEMENT_DETAILS ("Video test source",
@@ -62,14 +55,33 @@ GST_ELEMENT_DETAILS ("Video test source",
     "Creates a test video stream",
     "David A. Schleef <ds@schleef.org>");
 
+#define DEFAULT_PATTERN            GST_VIDEO_TEST_SRC_SMPTE
+#define DEFAULT_TIMESTAMP_OFFSET   0
+#define DEFAULT_IS_LIVE            FALSE
+#define DEFAULT_PEER_ALLOC         TRUE
+#define DEFAULT_COLOR_SPEC         GST_VIDEO_TEST_SRC_BT601
 
 enum
 {
   PROP_0,
   PROP_PATTERN,
   PROP_TIMESTAMP_OFFSET,
-  PROP_IS_LIVE
-      /* FILL ME */
+  PROP_IS_LIVE,
+  PROP_PEER_ALLOC,
+  PROP_COLOR_SPEC,
+  PROP_K0,
+  PROP_KX,
+  PROP_KY,
+  PROP_KT,
+  PROP_KXT,
+  PROP_KYT,
+  PROP_KXY,
+  PROP_KX2,
+  PROP_KY2,
+  PROP_KT2,
+  PROP_XOFFSET,
+  PROP_YOFFSET,
+  PROP_LAST
 };
 
 
@@ -118,6 +130,8 @@ gst_video_test_src_pattern_get_type (void)
     {GST_VIDEO_TEST_SRC_CHECKERS8, "Checkers 8px", "checkers-8"},
     {GST_VIDEO_TEST_SRC_CIRCULAR, "Circular", "circular"},
     {GST_VIDEO_TEST_SRC_BLINK, "Blink", "blink"},
+    {GST_VIDEO_TEST_SRC_SMPTE75, "SMPTE 75% color bars", "smpte75"},
+    {GST_VIDEO_TEST_SRC_ZONE_PLATE, "Zone plate", "zone-plate"},
     {0, NULL, NULL}
   };
 
@@ -126,6 +140,24 @@ gst_video_test_src_pattern_get_type (void)
         g_enum_register_static ("GstVideoTestSrcPattern", pattern_types);
   }
   return video_test_src_pattern_type;
+}
+
+#define GST_TYPE_VIDEO_TEST_SRC_COLOR_SPEC (gst_video_test_src_color_spec_get_type ())
+static GType
+gst_video_test_src_color_spec_get_type (void)
+{
+  static GType video_test_src_color_spec_type = 0;
+  static const GEnumValue color_spec_types[] = {
+    {GST_VIDEO_TEST_SRC_BT601, "ITU-R Rec. BT.601", "bt601"},
+    {GST_VIDEO_TEST_SRC_BT709, "ITU-R Rec. BT.709", "bt709"},
+    {0, NULL, NULL}
+  };
+
+  if (!video_test_src_color_spec_type) {
+    video_test_src_color_spec_type =
+        g_enum_register_static ("GstVideoTestSrcColorSpec", color_spec_types);
+  }
+  return video_test_src_color_spec_type;
 }
 
 static void
@@ -157,15 +189,78 @@ gst_video_test_src_class_init (GstVideoTestSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_PATTERN,
       g_param_spec_enum ("pattern", "Pattern",
           "Type of test pattern to generate", GST_TYPE_VIDEO_TEST_SRC_PATTERN,
-          GST_VIDEO_TEST_SRC_SMPTE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DEFAULT_PATTERN, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_TIMESTAMP_OFFSET,
       g_param_spec_int64 ("timestamp-offset", "Timestamp offset",
           "An offset added to timestamps set on buffers (in ns)", G_MININT64,
           G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_IS_LIVE,
       g_param_spec_boolean ("is-live", "Is Live",
-          "Whether to act as a live source", FALSE,
+          "Whether to act as a live source", DEFAULT_IS_LIVE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_PEER_ALLOC,
+      g_param_spec_boolean ("peer-alloc", "Peer Alloc",
+          "Ask the peer to allocate an output buffer", DEFAULT_PEER_ALLOC,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_COLOR_SPEC,
+      g_param_spec_enum ("colorspec", "Color Specification",
+          "Generate video in the given color specification",
+          GST_TYPE_VIDEO_TEST_SRC_COLOR_SPEC,
+          DEFAULT_COLOR_SPEC, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_K0,
+      g_param_spec_int ("k0", "Zoneplate zero order phase",
+          "Zoneplate zero order phase, for generating plain fields or phase offsets",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KX,
+      g_param_spec_int ("kx", "Zoneplate 1st order x phase",
+          "Zoneplate 1st order x phase, for generating constant horizontal frequencies",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KY,
+      g_param_spec_int ("ky", "Zoneplate 1st order y phase",
+          "Zoneplate 1st order y phase, for generating contant vertical frequencies",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KT,
+      g_param_spec_int ("kt", "Zoneplate 1st order t phase",
+          "Zoneplate 1st order t phase, for generating phase rotation as a function of time",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KXT,
+      g_param_spec_int ("kxt", "Zoneplate x*t product phase",
+          "Zoneplate x*t product phase, normalised to kxy/256 cycles per vertical pixel at width/2 from origin",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KYT,
+      g_param_spec_int ("kyt", "Zoneplate y*t product phase",
+          "Zoneplate y*t product phase", G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KXY,
+      g_param_spec_int ("kxy", "Zoneplate x*y product phase",
+          "Zoneplate x*t product phase", G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KX2,
+      g_param_spec_int ("kx2", "Zoneplate 2nd order x phase",
+          "Zoneplate 2nd order x phase, normalised to kx2/256 cycles per horizontal pixel at width/2 from origin",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KY2,
+      g_param_spec_int ("ky2", "Zoneplate 2nd order y phase",
+          "Zoneplate 2nd order y phase, normailsed to ky2/256 cycles per vertical pixel at height/2 from origin",
+          G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_KT2,
+      g_param_spec_int ("kt2", "Zoneplate 2nd order t phase",
+          "Zoneplate 2nd order t phase, t*t/256 cycles per picture", G_MININT32,
+          G_MAXINT32, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_XOFFSET,
+      g_param_spec_int ("xoffset", "Zoneplate 2nd order products x offset",
+          "Zoneplate 2nd order products x offset", G_MININT32, G_MAXINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_YOFFSET,
+      g_param_spec_int ("yoffset", "Zoneplate 2nd order products y offset",
+          "Zoneplate 2nd order products y offset", G_MININT32, G_MAXINT32, 0,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstbasesrc_class->get_caps = gst_video_test_src_getcaps;
@@ -186,13 +281,14 @@ gst_video_test_src_init (GstVideoTestSrc * src, GstVideoTestSrcClass * g_class)
 
   gst_pad_set_fixatecaps_function (pad, gst_video_test_src_src_fixate);
 
-  gst_video_test_src_set_pattern (src, GST_VIDEO_TEST_SRC_SMPTE);
+  gst_video_test_src_set_pattern (src, DEFAULT_PATTERN);
 
-  src->timestamp_offset = 0;
+  src->timestamp_offset = DEFAULT_TIMESTAMP_OFFSET;
 
   /* we operate in time */
   gst_base_src_set_format (GST_BASE_SRC (src), GST_FORMAT_TIME);
-  gst_base_src_set_live (GST_BASE_SRC (src), FALSE);
+  gst_base_src_set_live (GST_BASE_SRC (src), DEFAULT_IS_LIVE);
+  src->peer_alloc = DEFAULT_PEER_ALLOC;
 }
 
 static void
@@ -255,6 +351,12 @@ gst_video_test_src_set_pattern (GstVideoTestSrc * videotestsrc,
     case GST_VIDEO_TEST_SRC_BLINK:
       videotestsrc->make_image = gst_video_test_src_black;
       break;
+    case GST_VIDEO_TEST_SRC_SMPTE75:
+      videotestsrc->make_image = gst_video_test_src_smpte75;
+      break;
+    case GST_VIDEO_TEST_SRC_ZONE_PLATE:
+      videotestsrc->make_image = gst_video_test_src_zoneplate;
+      break;
     default:
       g_assert_not_reached ();
   }
@@ -275,6 +377,48 @@ gst_video_test_src_set_property (GObject * object, guint prop_id,
       break;
     case PROP_IS_LIVE:
       gst_base_src_set_live (GST_BASE_SRC (src), g_value_get_boolean (value));
+      break;
+    case PROP_PEER_ALLOC:
+      src->peer_alloc = g_value_get_boolean (value);
+      break;
+    case PROP_COLOR_SPEC:
+      src->color_spec = g_value_get_enum (value);
+      break;
+    case PROP_K0:
+      src->k0 = g_value_get_int (value);
+      break;
+    case PROP_KX:
+      src->kx = g_value_get_int (value);
+      break;
+    case PROP_KY:
+      src->ky = g_value_get_int (value);
+      break;
+    case PROP_KT:
+      src->kt = g_value_get_int (value);
+      break;
+    case PROP_KXT:
+      src->kxt = g_value_get_int (value);
+      break;
+    case PROP_KYT:
+      src->kyt = g_value_get_int (value);
+      break;
+    case PROP_KXY:
+      src->kxy = g_value_get_int (value);
+      break;
+    case PROP_KX2:
+      src->kx2 = g_value_get_int (value);
+      break;
+    case PROP_KY2:
+      src->ky2 = g_value_get_int (value);
+      break;
+    case PROP_KT2:
+      src->kt2 = g_value_get_int (value);
+      break;
+    case PROP_XOFFSET:
+      src->xoffset = g_value_get_int (value);
+      break;
+    case PROP_YOFFSET:
+      src->yoffset = g_value_get_int (value);
       break;
     default:
       break;
@@ -297,6 +441,48 @@ gst_video_test_src_get_property (GObject * object, guint prop_id,
     case PROP_IS_LIVE:
       g_value_set_boolean (value, gst_base_src_is_live (GST_BASE_SRC (src)));
       break;
+    case PROP_PEER_ALLOC:
+      g_value_set_boolean (value, src->peer_alloc);
+      break;
+    case PROP_COLOR_SPEC:
+      g_value_set_enum (value, src->color_spec);
+      break;
+    case PROP_K0:
+      g_value_set_int (value, src->k0);
+      break;
+    case PROP_KX:
+      g_value_set_int (value, src->kx);
+      break;
+    case PROP_KY:
+      g_value_set_int (value, src->ky);
+      break;
+    case PROP_KT:
+      g_value_set_int (value, src->kt);
+      break;
+    case PROP_KXT:
+      g_value_set_int (value, src->kxt);
+      break;
+    case PROP_KYT:
+      g_value_set_int (value, src->kyt);
+      break;
+    case PROP_KXY:
+      g_value_set_int (value, src->kxy);
+      break;
+    case PROP_KX2:
+      g_value_set_int (value, src->kx2);
+      break;
+    case PROP_KY2:
+      g_value_set_int (value, src->ky2);
+      break;
+    case PROP_KT2:
+      g_value_set_int (value, src->kt2);
+      break;
+    case PROP_XOFFSET:
+      g_value_set_int (value, src->xoffset);
+      break;
+    case PROP_YOFFSET:
+      g_value_set_int (value, src->yoffset);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -305,9 +491,12 @@ gst_video_test_src_get_property (GObject * object, guint prop_id,
 
 /* threadsafe because this gets called as the plugin is loaded */
 static GstCaps *
-gst_video_test_src_getcaps (GstBaseSrc * unused)
+gst_video_test_src_getcaps (GstBaseSrc * bsrc)
 {
   static GstCaps *capslist = NULL;
+  GstVideoTestSrc *videotestsrc;
+
+  videotestsrc = GST_VIDEO_TEST_SRC (bsrc);
 
   if (!capslist) {
     GstCaps *caps;
@@ -539,8 +728,8 @@ static GstFlowReturn
 gst_video_test_src_create (GstPushSrc * psrc, GstBuffer ** buffer)
 {
   GstVideoTestSrc *src;
-  gulong newsize;
-  GstBuffer *outbuf;
+  gulong newsize, size;
+  GstBuffer *outbuf = NULL;
   GstFlowReturn res;
   GstClockTime next_time;
 
@@ -561,17 +750,29 @@ gst_video_test_src_create (GstPushSrc * psrc, GstBuffer ** buffer)
       "creating buffer of %lu bytes with %dx%d image for frame %d", newsize,
       src->width, src->height, (gint) src->n_frames);
 
-#ifdef USE_PEER_BUFFERALLOC
-  res =
-      gst_pad_alloc_buffer_and_set_caps (GST_BASE_SRC_PAD (psrc),
-      GST_BUFFER_OFFSET_NONE, newsize, GST_PAD_CAPS (GST_BASE_SRC_PAD (psrc)),
-      &outbuf);
-  if (res != GST_FLOW_OK)
-    goto no_buffer;
-#else
-  outbuf = gst_buffer_new_and_alloc (newsize);
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (GST_BASE_SRC_PAD (psrc)));
-#endif
+  if (src->peer_alloc) {
+    res =
+        gst_pad_alloc_buffer_and_set_caps (GST_BASE_SRC_PAD (psrc),
+        GST_BUFFER_OFFSET_NONE, newsize, GST_PAD_CAPS (GST_BASE_SRC_PAD (psrc)),
+        &outbuf);
+    if (res != GST_FLOW_OK)
+      goto no_buffer;
+
+    /* the buffer could have renegotiated, we need to discard any buffers of the
+     * wrong size. */
+    size = GST_BUFFER_SIZE (outbuf);
+    newsize = gst_video_test_src_get_size (src, src->width, src->height);
+
+    if (size != newsize) {
+      gst_buffer_unref (outbuf);
+      outbuf = NULL;
+    }
+  }
+
+  if (outbuf == NULL) {
+    outbuf = gst_buffer_new_and_alloc (newsize);
+    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (GST_BASE_SRC_PAD (psrc)));
+  }
 
   if (src->pattern_type == GST_VIDEO_TEST_SRC_BLINK) {
     if (src->n_frames & 0x1) {

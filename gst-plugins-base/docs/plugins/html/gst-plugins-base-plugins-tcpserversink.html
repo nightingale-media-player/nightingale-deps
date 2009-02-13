@@ -6,17 +6,18 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
 <link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-playbin2.html" title="playbin2">
+<link rel="prev" href="gst-plugins-base-plugins-tcpserversrc.html" title="tcpserversrc">
 <link rel="next" href="gst-plugins-base-plugins-textoverlay.html" title="textoverlay">
 <meta name="generator" content="GTK-Doc V1.10 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-playbin2.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-tcpserversrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
@@ -48,7 +49,9 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-tcpserversink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----GstObject
          +----GstElement
                +----GstBaseSink
@@ -59,22 +62,28 @@
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-tcpserversink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink--host" title='The "host" property'>host</a>"                     gchar*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink--port" title='The "port" property'>port</a>"                     gint                  : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink--host" title='The "host" property'>host</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-base-plugins-tcpserversink.html#GstTCPServerSink--port" title='The "port" property'>port</a>"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="gst-plugins-base-plugins-tcpserversink.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
 <div class="refsect2" lang="en">
-<a name="id2609606"></a><h3>Element Information</h3>
+<a name="id2787811"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-          <a class="link" href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
-        </td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
+          </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
@@ -86,6 +95,10 @@
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2787874"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -108,6 +121,7 @@
 </tbody>
 </table></div>
 </div>
+</div>
 <p>
 
 </p>
@@ -128,14 +142,18 @@ Opaque data structure.</p>
 <a name="gst-plugins-base-plugins-tcpserversink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="GstTCPServerSink--host"></a><h3>The <code class="literal">"host"</code> property</h3>
-<pre class="programlisting">  "host"                     gchar*                : Read / Write</pre>
+<pre class="programlisting">  "host"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
 <p>The host/IP to send the packets to.</p>
 <p>Default value: "localhost"</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
 <a name="GstTCPServerSink--port"></a><h3>The <code class="literal">"port"</code> property</h3>
-<pre class="programlisting">  "port"                     gint                  : Read / Write</pre>
+<pre class="programlisting">  "port"                     <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
 <p>The port to send the packets to.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 4953</p>

@@ -59,7 +59,11 @@ gst_riff_create_video_caps (guint32 codec_fcc,
   GST_DEBUG ("video fourcc %" GST_FOURCC_FORMAT, GST_FOURCC_ARGS (codec_fcc));
 
   switch (codec_fcc) {
-    case GST_MAKE_FOURCC ('D', 'I', 'B', ' '):{
+    case GST_MAKE_FOURCC ('D', 'I', 'B', ' '): /* uncompressed RGB */
+    case GST_MAKE_FOURCC (0x00, 0x00, 0x00, 0x00):
+    case GST_MAKE_FOURCC ('R', 'G', 'B', ' '):
+    case GST_MAKE_FOURCC ('R', 'A', 'W', ' '):
+    {
       gint bpp = (strf && strf->bit_cnt != 0) ? strf->bit_cnt : 8;
 
       if (strf) {
@@ -75,6 +79,7 @@ gst_riff_create_video_caps (guint32 codec_fcc,
               "blue_mask", G_TYPE_INT, 0xff0000, NULL);
         } else {
           GST_WARNING ("Unhandled DIB RGB depth: %d", bpp);
+          return NULL;
         }
       } else {
         /* for template */
@@ -246,6 +251,14 @@ gst_riff_create_video_caps (guint32 codec_fcc,
         *codec_name = g_strdup ("VideoSoft H.264");
       break;
 
+    case GST_MAKE_FOURCC ('L', '2', '6', '4'):
+      /* http://www.leadcodecs.com/Codecs/LEAD-H264.htm */
+      caps = gst_caps_new_simple ("video/x-h264",
+          "variant", G_TYPE_STRING, "lead", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Lead H.264");
+      break;
+
     case GST_MAKE_FOURCC ('S', 'E', 'D', 'G'):
       caps = gst_caps_new_simple ("video/mpeg",
           "mpegversion", G_TYPE_INT, 4, NULL);
@@ -344,9 +357,11 @@ gst_riff_create_video_caps (guint32 codec_fcc,
 
     case GST_MAKE_FOURCC ('3', 'i', 'v', 'd'):
     case GST_MAKE_FOURCC ('3', 'I', 'V', 'D'):
+      caps = gst_caps_new_simple ("video/x-msmpeg",
+          "msmpegversion", G_TYPE_INT, 43, NULL);
       if (codec_name)
         *codec_name = g_strdup ("Microsoft MPEG-4 4.3");        /* FIXME? */
-      return gst_caps_from_string ("video/x-msmpeg, msmpegversion = (int) 43");
+      break;
 
     case GST_MAKE_FOURCC ('3', 'I', 'V', '1'):
     case GST_MAKE_FOURCC ('3', 'I', 'V', '2'):
@@ -614,6 +629,26 @@ gst_riff_create_video_caps (guint32 codec_fcc,
         *codec_name = g_strdup ("Dirac");
       break;
 
+    case GST_MAKE_FOURCC ('F', 'F', 'V', '1'):
+      caps = gst_caps_new_simple ("video/x-ffv",
+          "ffvversion", G_TYPE_INT, 1, NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("FFmpeg lossless video codec");
+      break;
+
+    case GST_MAKE_FOURCC ('K', 'M', 'V', 'C'):
+      caps = gst_caps_new_simple ("video/x-kmvc", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("Karl Morton's video codec");
+      break;
+
+    case GST_MAKE_FOURCC ('v', 'p', '6', '0'):
+    case GST_MAKE_FOURCC ('V', 'P', '6', '0'):
+      caps = gst_caps_new_simple ("video/x-vp6", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("On2 VP6");
+      break;
+
     default:
       GST_WARNING ("Unknown video fourcc %" GST_FOURCC_FORMAT,
           GST_FOURCC_ARGS (codec_fcc));
@@ -864,6 +899,7 @@ gst_riff_create_audio_caps (guint16 codec_id,
 
   switch (codec_id) {
     case GST_RIFF_WAVE_FORMAT_PCM:     /* PCM */
+      rate_max = 192000;
       channels_max = 8;
 
       if (strf != NULL) {
@@ -929,6 +965,7 @@ gst_riff_create_audio_caps (guint16 codec_id,
       break;
 
     case GST_RIFF_WAVE_FORMAT_IEEE_FLOAT:
+      rate_max = 192000;
       channels_max = 8;
 
       if (strf != NULL) {
@@ -1037,6 +1074,14 @@ gst_riff_create_audio_caps (guint16 codec_id,
       block_align = TRUE;
       break;
 
+    case GST_RIFF_WAVE_FORMAT_DSP_TRUESPEECH:
+      rate_min = 8000;
+      rate_max = 8000;
+      caps = gst_caps_new_simple ("audio/x-truespeech", NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("DSP Group TrueSpeech");
+      break;
+
     case GST_RIFF_WAVE_FORMAT_GSM610:
     case GST_RIFF_WAVE_FORMAT_MSN:
       rate_min = 1;
@@ -1069,6 +1114,7 @@ gst_riff_create_audio_caps (guint16 codec_id,
     case GST_RIFF_WAVE_FORMAT_VORBIS1PLUS:     /* ogg/vorbis mode 1+ */
     case GST_RIFF_WAVE_FORMAT_VORBIS2PLUS:     /* ogg/vorbis mode 2+ */
     case GST_RIFF_WAVE_FORMAT_VORBIS3PLUS:     /* ogg/vorbis mode 3+ */
+      rate_max = 192000;
       caps = gst_caps_new_simple ("audio/x-vorbis", NULL);
       if (codec_name)
         *codec_name = g_strdup ("Vorbis");
@@ -1131,6 +1177,27 @@ gst_riff_create_audio_caps (guint16 codec_id,
       caps = gst_caps_new_simple ("audio/x-vnd.sony.atrac3", NULL);
       if (codec_name)
         *codec_name = g_strdup ("Sony ATRAC3");
+      break;
+
+    case GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4:
+      rate_min = 8000;
+      rate_max = 96000;
+      channels_max = 2;
+      caps =
+          gst_caps_new_simple ("audio/x-adpcm", "layout", G_TYPE_STRING, "dk4",
+          NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("IMA/DK4 ADPCM");
+      break;
+    case GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK3:
+      rate_min = 8000;
+      rate_max = 96000;
+      channels_max = 2;
+      caps =
+          gst_caps_new_simple ("audio/x-adpcm", "layout", G_TYPE_STRING, "dk3",
+          NULL);
+      if (codec_name)
+        *codec_name = g_strdup ("IMA/DK3 ADPCM");
       break;
 
     case GST_RIFF_WAVE_FORMAT_EXTENSIBLE:{
@@ -1310,7 +1377,6 @@ gst_riff_create_audio_caps (guint16 codec_id,
       break;
     }
       /* can anything decode these? pitfdll? */
-    case GST_RIFF_WAVE_FORMAT_VOXWARE:
     case GST_RIFF_WAVE_FORMAT_VOXWARE_BYTE_ALIGNED:
     case GST_RIFF_WAVE_FORMAT_VOXWARE_AC8:
     case GST_RIFF_WAVE_FORMAT_VOXWARE_AC10:
@@ -1352,9 +1418,16 @@ gst_riff_create_audio_caps (guint16 codec_id,
     }
   } else {
     if (rate_chan) {
-      gst_caps_set_simple (caps,
-          "rate", GST_TYPE_INT_RANGE, rate_min, rate_max,
-          "channels", GST_TYPE_INT_RANGE, 1, channels_max, NULL);
+      if (rate_min == rate_max)
+        gst_caps_set_simple (caps, "rate", G_TYPE_INT, rate_min, NULL);
+      else
+        gst_caps_set_simple (caps,
+            "rate", GST_TYPE_INT_RANGE, rate_min, rate_max, NULL);
+      if (channels_max == 1)
+        gst_caps_set_simple (caps, "channels", G_TYPE_INT, 1, NULL);
+      else
+        gst_caps_set_simple (caps,
+            "channels", GST_TYPE_INT_RANGE, 1, channels_max, NULL);
     }
     if (block_align) {
       gst_caps_set_simple (caps,
@@ -1441,6 +1514,7 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('I', 'V', '4', '1'),
     GST_MAKE_FOURCC ('I', 'V', '5', '0'),
     GST_MAKE_FOURCC ('L', '2', '6', '3'),
+    GST_MAKE_FOURCC ('L', '2', '6', '4'),
     GST_MAKE_FOURCC ('M', '2', '6', '3'),
     GST_MAKE_FOURCC ('M', '4', 'S', '2'),
     GST_MAKE_FOURCC ('M', 'J', 'P', 'G'),
@@ -1476,8 +1550,11 @@ gst_riff_create_video_template_caps (void)
     GST_MAKE_FOURCC ('h', '2', '6', '4'),
     GST_MAKE_FOURCC ('m', 's', 'v', 'c'),
     GST_MAKE_FOURCC ('x', '2', '6', '3'),
-    GST_MAKE_FOURCC ('d', 'r', 'a', 'c')
-        /* FILL ME */
+    GST_MAKE_FOURCC ('d', 'r', 'a', 'c'),
+    GST_MAKE_FOURCC ('F', 'F', 'V', '1'),
+    GST_MAKE_FOURCC ('K', 'M', 'V', 'C'),
+    GST_MAKE_FOURCC ('V', 'P', '6', '0'),
+    /* FILL ME */
   };
   guint i;
   GstCaps *caps, *one;
@@ -1509,13 +1586,16 @@ gst_riff_create_audio_template_caps (void)
     GST_RIFF_WAVE_FORMAT_WMS,
     GST_RIFF_WAVE_FORMAT_ADPCM,
     GST_RIFF_WAVE_FORMAT_DVI_ADPCM,
+    GST_RIFF_WAVE_FORMAT_DSP_TRUESPEECH,
     GST_RIFF_WAVE_FORMAT_WMAV1,
     GST_RIFF_WAVE_FORMAT_WMAV2,
     GST_RIFF_WAVE_FORMAT_WMAV3,
     GST_RIFF_WAVE_FORMAT_SONY_ATRAC3,
     GST_RIFF_WAVE_FORMAT_IEEE_FLOAT,
-    GST_RIFF_WAVE_FORMAT_VOXWARE
-        /* FILL ME */
+    GST_RIFF_WAVE_FORMAT_VOXWARE_METASOUND,
+    GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4,
+    GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK3,
+    /* FILL ME */
   };
   guint i;
   GstCaps *caps, *one;

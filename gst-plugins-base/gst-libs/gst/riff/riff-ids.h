@@ -52,6 +52,7 @@ G_BEGIN_DECLS
 #define GST_RIFF_TAG_bext GST_MAKE_FOURCC ('b','e','x','t')
 #define GST_RIFF_TAG_BEXT GST_MAKE_FOURCC ('B','E','X','T')
 #define GST_RIFF_TAG_fact GST_MAKE_FOURCC ('f','a','c','t')
+#define GST_RIFF_TAG_acid GST_MAKE_FOURCC ('a','c','i','d')
 
 /* LIST types */
 #define GST_RIFF_LIST_movi GST_MAKE_FOURCC ('m','o','v','i')
@@ -134,6 +135,8 @@ G_BEGIN_DECLS
 #define GST_RIFF_WHAM GST_MAKE_FOURCC ('W', 'H', 'A', 'M')
 #define GST_RIFF_rgb  GST_MAKE_FOURCC (0x00,0x00,0x00,0x00)
 #define GST_RIFF_RGB  GST_MAKE_FOURCC ('R', 'G', 'B', ' ')
+#define GST_RIFF_RAW  GST_MAKE_FOURCC ('R', 'A', 'W', ' ')
+#define GST_RIFF_DIB  GST_MAKE_FOURCC ('D', 'I', 'B', ' ')
 #define GST_RIFF_rle8 GST_MAKE_FOURCC (0x01,0x00,0x00,0x00)
 #define GST_RIFF_RLE8 GST_MAKE_FOURCC ('R', 'L', 'E', '8')
 #define GST_RIFF_rle4 GST_MAKE_FOURCC (0x02,0x00,0x00,0x00)
@@ -325,8 +328,13 @@ typedef struct _gst_riff_strf_auds {       /* == WaveHeader (?) */
 #define GST_RIFF_WAVE_FORMAT_MPEGL3         (0x0055)
 #define GST_RIFF_WAVE_FORMAT_LUCENT_G723    (0x0059)
 #define GST_RIFF_WAVE_FORMAT_CIRRUS         (0x0060)
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK4  (0x0061)  /* not official */
+#define GST_RIFF_WAVE_FORMAT_ADPCM_IMA_DK3  (0x0062)  /* not official */
+/* FIXME: where are these from? are they used at all? */
+#if 0
 #define GST_RIFF_WAVE_FORMAT_ESPCM          (0x0061)
 #define GST_RIFF_WAVE_FORMAT_VOXWARE        (0x0062)
+#endif
 #define GST_RIFF_WAVE_FORMAT_CANOPUS_ATRAC  (0x0063)
 #define GST_RIFF_WAVE_FORMAT_G726_ADPCM     (0x0064)
 #define GST_RIFF_WAVE_FORMAT_G722_ADPCM     (0x0065)
@@ -449,6 +457,41 @@ typedef struct _gst_riff_index_entry {
 typedef struct _gst_riff_dmlh {
   guint32 totalframes;
 } gst_riff_dmlh;
+
+/* taken from libsndfile/wav.c (LGPL) */
+typedef struct _gst_riff_acid {
+  /* 4 bytes (int)     type of file:
+   *  this appears to be a bit mask,however some combinations
+   *  are probably impossible and/or qualified as "errors"
+   *
+   *  0x01 On: One Shot         Off: Loop
+   *  0x02 On: Root note is Set Off: No root
+   *  0x04 On: Stretch is On,   Off: Strech is OFF
+   *  0x08 On: Disk Based       Off: Ram based
+   *  0x10 On: ??????????       Off: ????????? (Acidizer puts that ON)
+   */
+  guint32 loop_type;
+  /* 2 bytes (short)      root note
+   *  if type 0x10 is OFF : [C,C#,(...),B] -> [0x30 to 0x3B]
+   *  if type 0x10 is ON  : [C,C#,(...),B] -> [0x3C to 0x47]
+   *  (both types fit on same MIDI pitch albeit different octaves, so who cares)
+   */
+  guint16 root_note;
+  /* 2 bytes (short)      ??? always set to 0x8000
+   * 4 bytes (float)      ??? seems to be always 0
+   */
+  guint16 unknown1;
+  gfloat unknown2;
+  /* 4 bytes (int)        number of beats
+   * 2 bytes (short)      meter denominator   //always 4 in SF/ACID
+   * 2 bytes (short)      meter numerator     //always 4 in SF/ACID
+   *                      //are we sure about the order?? usually its num/denom
+   * 4 bytes (float)      tempo
+   */
+  guint32 number_of_beats;
+  guint16 meter_d, meter_n;
+  gfloat tempo;
+} gst_riff_acid;
 
 G_END_DECLS
 
