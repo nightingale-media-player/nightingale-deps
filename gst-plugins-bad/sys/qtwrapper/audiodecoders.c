@@ -570,6 +570,46 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
       gst_util_dump_mem (magiccookie, len);
 #endif
 
+      status =
+          QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+          kQTSCAudioPropertyID_InputMagicCookie, len, magiccookie);
+      if (status) {
+        GST_WARNING_OBJECT (qtwrapper, "Error setting extra codec data: %ld",
+            status);
+        goto beach;
+      }
+    }
+  }
+
+  /* Set output to be interleaved raw PCM */
+  {
+    OSType outputFormat = kAudioFormatLinearPCM;
+    SCAudioFormatFlagsRestrictions restrictions = { 0 };
+
+    /* Set the mask in order to set this flag to zero */
+    restrictions.formatFlagsMask =
+        kAudioFormatFlagIsFloat | kAudioFormatFlagIsBigEndian;
+    restrictions.formatFlagsValues = kAudioFormatFlagIsFloat;
+
+    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+        kQTSCAudioPropertyID_ClientRestrictedLPCMFlags,
+        sizeof (restrictions), &restrictions);
+    if (status) {
+      GST_WARNING_OBJECT (qtwrapper, "Error setting PCM to interleaved: %ld",
+          status);
+      goto beach;
+    }
+
+    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
+        kQTSCAudioPropertyID_ClientRestrictedCompressionFormatList,
+        sizeof (outputFormat), &outputFormat);
+    if (status) {
+      GST_WARNING_OBJECT (qtwrapper, "Error setting output to PCM: %ld",
+          status);
+      goto beach;
+    }
+  }
+
   qtwrapper->outdesc.mSampleRate = 0;   /* Use recommended; we read this out later */
   qtwrapper->outdesc.mFormatID = kAudioFormatLinearPCM;
   qtwrapper->outdesc.mFormatFlags = kAudioFormatFlagIsFloat;
