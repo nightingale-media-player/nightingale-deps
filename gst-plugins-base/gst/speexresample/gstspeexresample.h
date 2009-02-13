@@ -30,26 +30,26 @@
 
 G_BEGIN_DECLS
 
-#define GST_TYPE_SPEEX_RESAMPLE \
+#define GST_TYPE_AUDIO_RESAMPLE \
   (gst_speex_resample_get_type())
-#define GST_SPEEX_RESAMPLE(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_SPEEX_RESAMPLE,GstSpeexResample))
-#define GST_SPEEX_RESAMPLE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_SPEEX_RESAMPLE,GstSpeexResampleClass))
-#define GST_IS_SPEEX_RESAMPLE(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_SPEEX_RESAMPLE))
-#define GST_IS_SPEEX_RESAMPLE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SPEEX_RESAMPLE))
+#define GST_AUDIO_RESAMPLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_AUDIO_RESAMPLE,GstAudioResample))
+#define GST_AUDIO_RESAMPLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_AUDIO_RESAMPLE,GstAudioResampleClass))
+#define GST_IS_AUDIO_RESAMPLE(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_AUDIO_RESAMPLE))
+#define GST_IS_AUDIO_RESAMPLE_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_AUDIO_RESAMPLE))
 
-typedef struct _GstSpeexResample GstSpeexResample;
-typedef struct _GstSpeexResampleClass GstSpeexResampleClass;
+typedef struct _GstAudioResample GstAudioResample;
+typedef struct _GstAudioResampleClass GstAudioResampleClass;
 
 /**
- * GstSpeexResample:
+ * GstAudioResample:
  *
  * Opaque data structure.
  */
-struct _GstSpeexResample {
+struct _GstAudioResample {
   GstBaseTransform element;
 
   /* <private> */
@@ -79,7 +79,7 @@ struct _GstSpeexResample {
   const SpeexResampleFuncs *funcs;
 };
 
-struct _GstSpeexResampleClass {
+struct _GstAudioResampleClass {
   GstBaseTransformClass parent_class;
 };
 
