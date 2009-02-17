@@ -562,12 +562,12 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
         windowList->prev = gAppModalWindowList;
         gAppModalWindowList = windowList;
       }
-      
-      // Since the |[NSApp delegate]| builds and populates the dock window menu,
-      // it needs to be informed that a gecko modal session is about to begin.
-      [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoStartModal" 
-                                                          object:nil];
     }
+      
+    // Since the |[NSApp delegate]| builds and populates the dock window menu,
+    // it needs to be informed that a gecko modal session is about to begin.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoStartModal" 
+                                                        object:nil];
   }
   else {
     --gXULModalLevel;
@@ -593,11 +593,11 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
         [mWindow setLevel:NSPopUpMenuWindowLevel];
       else
         [mWindow setLevel:NSNormalWindowLevel];
-      
-      // Inform the |[NSApp delegate]| that the modal session has ended.
-      [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoEndModal" 
-                                                          object:nil];
     }
+      
+    // Inform the |[NSApp delegate]| that the modal session has ended.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoEndModal" 
+                                                        object:nil];
   }
   return NS_OK;
 }
