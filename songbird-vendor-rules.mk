@@ -59,16 +59,18 @@ BUILD_TARGET_SET = $(if \
 
 SB_RUN_CONFIGURE ?= 1
 
-ifeq (,$(shell test -d $(WINDOWS_SDK_ROOT) && echo exists))
-  $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
-endif
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   ifeq (,$(wildcard $(WINDOWS_SDK_ROOT)))
+      $(error Could not find Windows SDK: $(WINDOWS_SDK_ROOT)) 
+   endif
 
-ifeq (,$(shell test -d $(DIRECTX_SDK_ROOT) && echo exists))
-  $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
-endif
+   ifeq (,$(wildcard $(DIRECTX_SDK_ROOT)))
+      $(error Could not find DirectX SDK: $(DIRECTX_SDK_ROOT)) 
+   endif
 
-ifeq (,$(shell test -d $(QUICKTIME_SDK_ROOT) && echo exists))
-  $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+   ifeq (,$(wildcard $(QUICKTIME_SDK_ROOT)))
+      $(error Could not find QuickTime SDK: $(QUICKTIME_SDK_ROOT)) 
+   endif
 endif
 
 # TODO: define these as a list of exportable targets and expand that, so

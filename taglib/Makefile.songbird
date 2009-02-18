@@ -100,4 +100,4 @@ module_setup_build:
 
 module_post_build:
 	@echo Removing \(unused\) taglib C-bindings...
-	$(FIND) $(SB_CONFIGURE_PREFIX) -regex '.*_c.*' -exec rm -v {} \;
+	$(FIND) $(SB_CONFIGURE_PREFIX) -name '*_c.*' -exec rm -v {} \;

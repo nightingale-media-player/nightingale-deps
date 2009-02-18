@@ -38,7 +38,6 @@ COMMA := ,
 EMPTY :=
 SPACE := $(EMPTY) $(EMPTY)
 
-
 ## vendor-autodefs.mk
 
 # Initialize variables...
@@ -67,11 +66,25 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    ifeq (i386,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := macosx-i686
       SB_ARCH_DETECTED := 1
-   else
+   endif
    ifeq (ppc,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := macosx-ppc
       SB_ARCH_DETECTED := 1
    endif
+endif
+
+ifeq (SunOS,$(SB_VENDOR_ARCH))
+   ifeq (i86pc,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := solaris-i386
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (x86_64,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := solaris-x86_64
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (1, $(filter sun4u sun4v,$(SB_VENDOR_SUBARCH)))
+      SB_TARGET_ARCH := solaris-sparc
+      SB_ARCH_DETECTED := 1
    endif
 endif
 
@@ -79,11 +92,10 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
    ifeq (i686,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := linux-i686
       SB_ARCH_DETECTED := 1
-   else
+   endif
    ifeq (x86_64,$(SB_VENDOR_SUBARCH))
       SB_TARGET_ARCH := linux-x86_64
       SB_ARCH_DETECTED := 1
-   endif
    endif
 endif
 
@@ -249,21 +261,20 @@ endif
 # Is typically Makefile.songbird
 SB_VENDOR_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 
-# Hardcode all this for now; this is for official building of these tools,
-# so developers are likely to find this pretty painful.
+ifeq (,$(SB_VENDOR_BUILD_ROOT))
+   $(error Must define SB_VENDOR_BUILD_ROOT)
+endif
 
-SB_VENDOR_BUILD_ROOT ?= /builds/sb-deps
 SB_VENDOR_BINARIES_CO_ROOT ?= $(SB_VENDOR_BUILD_ROOT)/checkout
 SB_VENDOR_CHECKOUT ?= $(realpath $(CURDIR)/..)
 
-ifeq (,$(shell test -e $(SB_VENDOR_BUILD_ROOT) && echo exists))
+ifeq (,$(wildcard $(SB_VENDOR_BUILD_ROOT)))
    $(error SB_VENDOR_BUILD_ROOT ($(SB_VENDOR_BUILD_ROOT)) does not exist...)
 endif
 
-ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_CO_ROOT) && echo exists))
+ifeq (,$(wildcard $(SB_VENDOR_BINARIES_CO_ROOT)))
    $(error SB_VENDOR_BINARIES_CO_ROOT $(SB_VENDOR_BINARIES_CO_ROOT) does not exist...)
 endif
-
 
 SB_VENDOR_DIR ?= $(realpath $(CURDIR)/..)
 SB_TARGET_SRC_DIR := $(CURDIR)
@@ -271,9 +282,15 @@ SB_TARGET_SRC_DIR := $(CURDIR)
 SB_VENDOR_BINARIES_DIR := $(SB_VENDOR_BUILD_ROOT)/$(SB_TARGET_ARCH)
 SB_VENDOR_BINARIES_CHECKOUT := $(SB_VENDOR_BINARIES_CO_ROOT)/$(SB_TARGET_ARCH)
 
-SB_VENDOR_BINARIES_TARGETS_FIND := $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn
- 
-ifeq (Darwin,$(SB_VENDOR_ARCH))
+# SunOS doesn't have GNU's find, so it gets different (all shell-quoted)
+# arguments
+ifneq (,$(filter SunOS, $(SB_VENDOR_ARCH)))
+   SB_VENDOR_BINARIES_TARGETS_FIND = $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) \( -type d -a \! -name . -prune \) -o -type d
+else
+   SB_VENDOR_BINARIES_TARGETS_FIND = $(FIND) $(SB_VENDOR_BINARIES_CHECKOUT) -maxdepth 1 -mindepth 1 -type d -not -name .svn
+endif
+
+ifneq (,$(filter Darwin SunOS, $(SB_VENDOR_ARCH)))
   SB_VENDOR_BINARIES_TARGETS_FIND += -exec basename {} \;
 else
   SB_VENDOR_BINARIES_TARGETS_FIND += -printf '%f '
@@ -281,7 +298,7 @@ endif
 
 SB_VENDOR_BINARIES_TARGETS := $(shell $(SB_VENDOR_BINARIES_TARGETS_FIND))
 
-ifeq (,$(shell test -e $(SB_VENDOR_BINARIES_DIR) && echo exists))
+ifeq (,$(wildcard $(SB_VENDOR_BINARIES_DIR)))
    $(error SB_VENDOR_BINARIES_DIR $(SB_VENDOR_BINARIES_DIR) does not exist...)
 endif
 
@@ -310,8 +327,11 @@ endif
 
 SB_VENDOR_GENERATE_SYMBOLS ?= default
 
-# Symbols don't work on x86_64; don't even bother
-ifeq (default_release_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(SB_BUILD_TYPE)_$(filter linux-x86_64, $(SB_TARGET_ARCH)))
+# Symbols don't work on certain platforms; don't even bother
+SB_VENDOR_IGNORE_SYMBOLS_PLATFORMS = linux-x86_64 \
+                                     solaris-i386 solaris-x86_64 solaris-sparc
+
+ifeq (default_release_,$(SB_VENDOR_GENERATE_SYMBOLS)_$(SB_BUILD_TYPE)_$(filter $(SB_VENDOR_IGNORE_SYMBOLS_PLATFORMS), $(SB_TARGET_ARCH)))
    SB_VENDOR_GENERATE_SYMBOLS = 1
 endif 
 
