@@ -97,6 +97,14 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
       SB_TARGET_ARCH := linux-x86_64
       SB_ARCH_DETECTED := 1
    endif
+   ifeq (ppc,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := linux-ppc
+      SB_ARCH_DETECTED := 1
+   endif
+   ifeq (ppc64,$(SB_VENDOR_SUBARCH))
+      SB_TARGET_ARCH := linux-ppc64
+      SB_ARCH_DETECTED := 1
+   endif
 endif
 
 ifeq (Msys,$(SB_VENDOR_OS))
