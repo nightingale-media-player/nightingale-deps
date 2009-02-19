@@ -196,9 +196,11 @@
                 this.currentNotification.style.marginTop = "0px";
                 this.currentNotification.style.opacity = 1;
               }
-              if (this._closedNotification)
+              if (this._closedNotification &&
+                  this._closedNotification.parentNode) {
                 this._closedNotification.parentNode.
                   removeChild(this._closedNotification);
+              }
               this._setBlockingState(this.currentNotification);
             }
 
@@ -256,9 +258,11 @@
               if (done) {
                 clearInterval(self._timer);
                 self._timer = null;
-                if (self._closedNotification)
+                if (self._closedNotification &&
+                    self._closedNotification.parentNode) {
                   self._closedNotification.parentNode.
                     removeChild(self._closedNotification);
+                }
                 self._setBlockingState(self.currentNotification);
               }
             }
