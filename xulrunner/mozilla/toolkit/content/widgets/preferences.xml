@@ -1085,7 +1085,7 @@
 
       <handler event="keypress" key="&windowClose.key;" modifiers="accel" phase="capturing">
         if (this.instantApply)
-          window.close();
+          this.cancelDialog();
       </handler>
     </handlers>
   </binding>
