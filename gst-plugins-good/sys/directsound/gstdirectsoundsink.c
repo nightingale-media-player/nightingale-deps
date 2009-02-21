@@ -64,6 +64,7 @@
 #define THREAD_ERROR_BUFFER_RESTORE 1
 #define THREAD_ERROR_NO_POSITION    2
 #define DIRECTSOUND_ERROR_DEVICE_RECONFIGURED 0x88780096
+#define DIRECTSOUND_ERROR_DEVICE_NO_DRIVER    0x88780078
 
 /* elementfactory information */
 static const GstElementDetails gst_directsound_sink_details =
@@ -539,9 +540,6 @@ static gboolean
 gst_directsound_ring_buffer_acquire (GstRingBuffer * buf, GstRingBufferSpec * spec)
 {
   GstDirectSoundRingBuffer *dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
-  HRESULT hr;
-  DSBUFFERDESC descSecondary;
-  LPDIRECTSOUNDBUFFER pDSB;
   WAVEFORMATEX wfx;
 
   /* sanity check, if no DirectSound device, bail out */
@@ -661,14 +659,16 @@ gst_directsound_ring_buffer_start (GstRingBuffer * buf)
 static gboolean
 gst_directsound_ring_buffer_pause (GstRingBuffer * buf)
 {
-  HRESULT hr;
+  HRESULT hr = S_OK;
   GstDirectSoundRingBuffer *dsoundbuffer;
 
   dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
 
   GST_DSOUND_LOCK (dsoundbuffer);
 
-  hr = IDirectSoundBuffer8_Stop (dsoundbuffer->pDSB8);
+  if (dsoundbuffer->pDSB8) {
+    hr = IDirectSoundBuffer8_Stop (dsoundbuffer->pDSB8);
+  }
 
   if (G_LIKELY (!dsoundbuffer->suspended)) {
     if (G_UNLIKELY(SuspendThread (dsoundbuffer->hThread) == -1))
@@ -682,7 +682,8 @@ gst_directsound_ring_buffer_pause (GstRingBuffer * buf)
   /* in the unlikely event that a device was reconfigured, we can consider
    * ourselves stopped even though the stop call failed */
   if (G_UNLIKELY (FAILED(hr)) && 
-      G_UNLIKELY(hr != DIRECTSOUND_ERROR_DEVICE_RECONFIGURED)) {
+      G_UNLIKELY(hr != DIRECTSOUND_ERROR_DEVICE_RECONFIGURED) &&
+      G_UNLIKELY(hr != DIRECTSOUND_ERROR_DEVICE_NO_DRIVER)) {
     GST_WARNING ("gst_directsound_ring_buffer_pause: IDirectSoundBuffer8_Stop, hr = %X", hr);
     return FALSE;
   }
@@ -709,14 +710,17 @@ gst_directsound_ring_buffer_resume (GstRingBuffer * buf)
     return FALSE;
   }
 
-  hr = IDirectSoundBuffer8_Play (dsoundbuffer->pDSB8, 0, 0, DSBPLAY_LOOPING);
-  
-  GST_DSOUND_UNLOCK (dsoundbuffer);
-
-  if (G_UNLIKELY (FAILED(hr))) {
-    GST_WARNING ("gst_directsound_ring_buffer_resume: IDirectSoundBuffer8_Start, hr = %X", hr);
-    return FALSE;
+  if (dsoundbuffer->pDSB8) {
+    hr = IDirectSoundBuffer8_Play (dsoundbuffer->pDSB8, 0, 0, DSBPLAY_LOOPING);
+    
+    if (G_UNLIKELY (FAILED(hr))) {
+      GST_DSOUND_UNLOCK (dsoundbuffer);
+      GST_WARNING ("gst_directsound_ring_buffer_resume: IDirectSoundBuffer8_Start, hr = %X", hr);
+      return FALSE;
+    }
   }
+
+  GST_DSOUND_UNLOCK (dsoundbuffer);
 
   return TRUE;
 }
@@ -733,12 +737,15 @@ gst_directsound_ring_buffer_stop (GstRingBuffer * buf)
 
   GST_DSOUND_LOCK (dsoundbuffer);
   dsoundbuffer->should_run = FALSE;
-  hr = IDirectSoundBuffer8_Stop (dsoundbuffer->pDSB8);
 
-  if (G_UNLIKELY (FAILED(hr))) {
-    GST_DSOUND_UNLOCK (dsoundbuffer);
-    GST_WARNING ("gst_directsound_ring_buffer_stop: IDirectSoundBuffer8_Stop, hr = %X", hr);
-    return FALSE;
+  if (dsoundbuffer->pDSB8) {
+    hr = IDirectSoundBuffer8_Stop (dsoundbuffer->pDSB8);
+
+    if (G_UNLIKELY (FAILED(hr))) {
+      GST_DSOUND_UNLOCK (dsoundbuffer);
+      GST_WARNING ("gst_directsound_ring_buffer_stop: IDirectSoundBuffer8_Stop, hr = %X", hr);
+      return FALSE;
+    }
   }
 
   hThread = dsoundbuffer->hThread;
@@ -824,6 +831,7 @@ gst_directsound_write_proc (LPVOID lpParameter)
 
   gboolean flushing = FALSE;
   gboolean should_run = TRUE;
+  gboolean error = FALSE;
 
   buf = (GstRingBuffer *)lpParameter;
   dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
@@ -832,7 +840,8 @@ gst_directsound_write_proc (LPVOID lpParameter)
 
     GST_DSOUND_LOCK (dsoundbuffer);
 
-    if (dsoundbuffer->flushing) 
+    if (dsoundbuffer->flushing ||
+        !dsoundbuffer->pDSB8)
       goto complete;
 
   restore_buffer:
@@ -868,8 +877,11 @@ gst_directsound_write_proc (LPVOID lpParameter)
         /* we have to wait a while for the sound device removal to actually
          * be processed before attempting to reopen the device. Yes, this sucks */
         GST_DSOUND_UNLOCK (dsoundbuffer);
-        Sleep (500);
+        Sleep (2000);
         GST_DSOUND_LOCK (dsoundbuffer);
+
+        IDirectSoundBuffer8_Release (dsoundbuffer->pDSB8);
+        dsoundbuffer->pDSB8 = NULL;
 
         if (gst_directsound_ring_buffer_close_device (buf) &&
             gst_directsound_ring_buffer_open_device (buf) &&
@@ -879,10 +891,12 @@ gst_directsound_write_proc (LPVOID lpParameter)
         }
       }
 
-      if (FAILED(hr)) {
+      /* only trigger an error if we're not already in an error state */
+      if (FAILED(hr) && !error) {
         GST_ELEMENT_ERROR (dsoundbuffer->dsoundsink, RESOURCE, FAILED, 
            ("%S.", DXGetErrorDescription9(hr)), 
            ("gst_directsound_write_proc: IDirectSoundBuffer8_GetCurrentPosition, hr = %X", hr));
+        error = TRUE;
         goto complete;
       }
     }
@@ -960,8 +974,11 @@ gst_directsound_write_proc (LPVOID lpParameter)
     GST_DSOUND_UNLOCK (dsoundbuffer);
     
     /* it's extremely important to sleep in without the lock! */
-    if (freeBufferSize <= dsoundbuffer->min_buffer_size || flushing)
+    if (freeBufferSize <= dsoundbuffer->min_buffer_size || 
+        flushing || 
+        error) {
       Sleep (dsoundbuffer->min_sleep_time);
+    }
   }
   while(should_run);
 
