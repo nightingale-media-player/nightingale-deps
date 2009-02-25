@@ -77,11 +77,11 @@ use vars qw($MAR_BIN $MBSDIFF_BIN $MAKE_BIN
             $DEFAULT_SNIPPET_BASE_DIR $DEFAULT_SNIPPET_TEST_DIR
             $SNIPPET_CHECKSUM_HASH_CACHE);
 
-$MAR_BIN = 'dist/host/bin/mar';
-$MBSDIFF_BIN = 'dist/host/bin/mbsdiff';
+$MAR_BIN = 'moztools/mar';
+$MBSDIFF_BIN = 'moztools/mbsdiff';
 
-$INCREMENTAL_UPDATE_BIN = 'tools/update-packaging/make_incremental_update.sh';
-$UNWRAP_FULL_UPDATE_BIN = 'tools/update-packaging/unwrap_full_update.pl';
+$INCREMENTAL_UPDATE_BIN = 'update-packaging/make_incremental_update.sh';
+$UNWRAP_FULL_UPDATE_BIN = 'update-packaging/unwrap_full_update.pl';
 
 $MAKE_BIN = '/usr/bin/make';
 $TMPDIR_PREFIX = '/dev/shm/tmp/MozAUSLib';
@@ -162,7 +162,7 @@ sub ValidateToolsDirectory
        die "ASSERT: ValidateToolsDirectory() requires a full path: $toolsDir\n";
     }
 
-    my $binPrefix = "$toolsDir/mozilla";
+    my $binPrefix = $toolsDir;
     return (-d $binPrefix and
             -x "$binPrefix/$MAR_BIN" and
             -x "$binPrefix/$MBSDIFF_BIN" and
@@ -202,9 +202,6 @@ sub CreatePartialMarFile
     if (not ValidateToolsDirectory(toolsDir => $mozdir)) {
         print STDERR "Invalid Mozilla working dir: $mozdir\n";
         return -1;
-    } else {
-        # We actually want the CVS directory itself...
-        $mozdir .= '/mozilla';
     }
 
     my $mar = "$mozdir/$MAR_BIN";

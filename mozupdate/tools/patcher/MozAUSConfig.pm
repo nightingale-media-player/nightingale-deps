@@ -123,16 +123,16 @@ sub ProcessCommandLineArgs
 
     $this->{'mVerbose'} = defined($args{'verbose'}) ? $args{'verbose'} : 0;
     
-    $this->{'mDownloadDir'} = defined($args{'mDownloadDir'}) ? 
-     $args{'mDownloadDir'} : $DEFAULT_DOWNLOAD_DIR;
-    $this->{'mDeliverableDir'} = defined($args{'mDeliverableDir'}) ? 
-     $args{'mDeliverableDir'} : $DEFAULT_DELIVERABLE_DIR;
+    $this->{'mDownloadDir'} = defined($args{'download-dir'}) ? 
+     $args{'download-dir'} : $DEFAULT_DOWNLOAD_DIR;
+    $this->{'mDeliverableDir'} = defined($args{'deliverable-dir'}) ? 
+     $args{'deliverable-dir'} : $DEFAULT_DELIVERABLE_DIR;
 
     # Is this a dry run, and we'll just print what we *would* do?
-    $this->{'dryRun'} = defined($args{'dryRun'}) ? 1 : 0;
+    $this->{'dryRun'} = defined($args{'dry-run'}) ? 1 : 0;
 
     ## Expects to be the dir that $mToolsDir/mozilla/[all the tools] will be in.
-    $this->{'mToolsDir'} = defined($args{'mToolsDir'}) ? $args{'mToolsDir'} : getcwd();
+    $this->{'mToolsDir'} = defined($args{'tools-dir'}) ? $args{'tools-dir'} : getcwd();
 
     # A bunch of paths need to be full pathed; they're all part of $this, so all
     # we really need is the key values; check them all here.
