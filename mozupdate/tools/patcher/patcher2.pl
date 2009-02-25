@@ -669,7 +669,7 @@ sub CreateCompletePatchinfo {
 
                 # Build patch info
                 my $from_aus_app = ucfirst($config->GetApp());
-                my $from_aus_version = $u_config->{$u}->{'from'};
+                my $from_aus_version = $from->{'appv'};
                 my $from_aus_platform = get_aus_platform_string($p);
                 my $from_aus_buildid = $from->{'build_id'};
 
@@ -692,7 +692,7 @@ sub CreateCompletePatchinfo {
                 my $detailsUrl = SubstitutePath(
                  path => $u_config->{$u}->{'details'},
                  locale => $l,
-                 version => $to_name);
+                 version => $to->{'appv'});
 
                 my $licenseUrl = undef;
                 if (defined($u_config->{$u}->{'license'})) {
@@ -975,7 +975,7 @@ sub CreatePastReleasePatchinfo {
                 my $detailsUrl = SubstitutePath(
                  path => $config->GetCurrentUpdate()->{'details'},
                  locale => $locale,
-                 version => $to_name);
+                 version => $patchLocaleNode->{'version'});
 
                 my $licenseUrl = undef;
                 if (defined($config->GetCurrentUpdate()->{'license'})) {
@@ -1155,7 +1155,7 @@ sub CreatePartialPatchinfo {
 
                 # Build patch info
                 my $from_aus_app = ucfirst($config->GetApp());
-                my $from_aus_version = $u_config->{$u}->{'from'};
+                my $from_aus_version = $from->{'appv'};
                 my $from_aus_platform = get_aus_platform_string($p);
                 my $from_aus_buildid = $from->{'build_id'};
 
@@ -1204,7 +1204,7 @@ sub CreatePartialPatchinfo {
                 my $detailsUrl = SubstitutePath(
                  path => $u_config->{$u}->{'details'},
                  locale => $l,
-                 version => $to_name);
+                 version => $to->{'appv'});
             
                 my $licenseUrl = undef;
                 if (defined($u_config->{$u}->{'license'})) {
