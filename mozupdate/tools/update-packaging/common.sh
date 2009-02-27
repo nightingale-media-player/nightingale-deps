@@ -101,6 +101,7 @@ list_files() {
 
   find . -type f \
     ! -name "channel-prefs.js" \
+    ! -name "songbird-channel-prefs.js" \
     ! -name "update.manifest" \
     | sed 's/\.\/\(.*\)/\1/' \
     | sort > "$workdir/temp-filelist"
