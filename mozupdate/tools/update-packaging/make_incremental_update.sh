@@ -138,6 +138,17 @@ for ((i=0; $i<$num_oldfiles; i=$i+1)); do
         rm -f "$patchfile"
         archivefiles="$archivefiles \"$f\""
       fi
+    elif check_for_forced_update "$requested_forced_updates" "$f"; then
+      # If the files _aren't_ different, but the file is on the force-update
+      # list, update it anyway; see songbird bug 15477 (comment 10)
+      echo 1>&2 "  FORCING UPDATE for similar file '$f'..."
+      dir=$(dirname "$workdir/$f")
+      mkdir -p "$dir"
+      $BZIP2 -cz9 "$newdir/$f" > "$workdir/$f"
+      copy_perm "$newdir/$f" "$workdir/$f"
+      make_add_instruction "$f" "1" >> $manifest
+      archivefiles="$archivefiles \"$f\""
+      continue 1
     fi
   else
     echo "remove \"$f\"" >> $manifest
