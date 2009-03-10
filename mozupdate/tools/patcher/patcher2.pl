@@ -821,9 +821,13 @@ sub CreateCompletePatchinfo {
                              config => $u_config->{$u}, channel => $testChan);
 
                             $testPatch->{'info_path'} = catfile($u,
-                             $snippetDir, $from_aus_app, 
-                             $from_aus_version, $from_aus_platform, 
-                             $from_aus_buildid, $l, $testChan, 'complete.txt');
+                             $snippetDir,
+                             $from_aus_app, 
+                             $from_aus_version,
+                             $from_aus_buildid,
+                             $from_aus_platform, 
+                             $l,
+                             $testChan, 'complete.txt');
 
                             my $testUrlKey = $testChan . '-url';
 
@@ -1360,9 +1364,14 @@ sub CreatePartialPatchinfo {
                              $u_config->{$u}, channel => $testChan);
 
                             $testPatch->{'info_path'} = catfile($u,
-                             $snippetDir, $from_aus_app,
-                             $from_aus_version, $from_aus_platform,
-                             $from_aus_buildid, $l, $testChan, 'partial.txt');
+                             $snippetDir,
+                             $from_aus_app,
+                             $from_aus_version,
+                             $from_aus_buildid,
+                             $from_aus_platform,
+                             $l,
+                             $testChan,
+                             'partial.txt');
 
                             my $testChanKey = $testChan . '-url';
 
