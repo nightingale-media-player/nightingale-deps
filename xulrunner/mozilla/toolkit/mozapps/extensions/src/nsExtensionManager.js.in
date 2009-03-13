@@ -6210,7 +6210,8 @@ ExtensionItemUpdater.prototype = {
           yield UTF8Enumerator.getNext();
       }
 
-      let iniFile = getFile("resource:app", ["distribution", "distribution.ini"]);
+      let iniFile = getDirNoCreate("resource:app", ["distribution"]);
+      iniFile.append("distribution.ini");
       if (iniFile.exists()) {
         let ini = Cc["@mozilla.org/xpcom/ini-parser-factory;1"]
                     .getService(Ci.nsIINIParserFactory)
