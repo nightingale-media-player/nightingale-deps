@@ -214,22 +214,6 @@ void nsMacCommandLine::SetupCommandLine(int& argc, char**& argv)
   // Process Apple Events and put them into the arguments.
   Initialize(argc, argv);
 
-  Boolean isForeground = PR_FALSE;
-  ProcessSerialNumber psnSelf, psnFront;
-
-  // If the process will be relaunched, the child should be in the foreground
-  // if the parent is in the foreground.  This will be communicated in a
-  // command-line argument to the child.  Adding this argument is harmless
-  // if not relaunching.
-  if (::GetCurrentProcess(&psnSelf) == noErr &&
-      ::GetFrontProcess(&psnFront) == noErr &&
-      ::SameProcess(&psnSelf, &psnFront, &isForeground) == noErr &&
-      isForeground) {
-    // The process is currently in the foreground.  The relaunched
-    // process should come to the front, too.
-    AddToCommandLine("-foreground");
-  }
-
   argc = mArgsUsed;
   argv = mArgs;
 }

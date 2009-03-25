@@ -85,6 +85,20 @@ void LaunchChildMac(int aArgc, char** aArgv)
   for (i = 1; i < aArgc; ++i) 
     [args addObject: [NSString stringWithCString: aArgv[i]]];
   
+  // The child process should be in the foreground if the parent is in the
+  // foreground.  This will be communicated in a command-line argument to the
+  // child.
+  Boolean isForeground = PR_FALSE;
+  ProcessSerialNumber psnSelf, psnFront;
+  if (::GetCurrentProcess(&psnSelf) == noErr &&
+      ::GetFrontProcess(&psnFront) == noErr &&
+      ::SameProcess(&psnSelf, &psnFront, &isForeground) == noErr &&
+      isForeground) {
+    // The process is currently in the foreground.  The relaunched
+    // process should come to the front, too.
+    [args addObject: [NSString stringWithUTF8String: "-foreground"]];
+  }
+
   [child setCurrentDirectoryPath:[[[NSBundle mainBundle] executablePath] stringByDeletingLastPathComponent]];
   [child setLaunchPath:[[NSBundle mainBundle] executablePath]];
   [child setArguments:args];
