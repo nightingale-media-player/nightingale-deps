@@ -382,26 +382,21 @@ void FrameFactory::convertFrame(const char *from, const char *to,
 
 void FrameFactory::updateGenre(TextIdentificationFrame *frame) const
 {
-  StringList fields;
-  String s = frame->toString();
+  StringList fields = frame->fieldList();
+  StringList newfields;
 
-  while(s.startsWith("(")) {
+  for(StringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
+    String s = *it;
+    int end = s.find(")");
 
-    int closing = s.find(")");
-
-    if(closing < 0)
-      break;
-
-    fields.append(s.substr(1, closing - 1));
-
-    s = s.substr(closing + 1);
+    if(s.startsWith("(") && end > 0)
+      newfields.append(s.substr(1, end - 1));
+    else
+      newfields.append(s);
   }
 
-  if(!s.isEmpty())
-    fields.append(s);
+  if(newfields.isEmpty())
+    newfields.append(String::null);
 
-  if(fields.isEmpty())
-    fields.append(String::null);
-
-  frame->setText(fields);
+  frame->setText(newfields);
 }
