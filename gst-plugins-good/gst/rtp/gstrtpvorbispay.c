@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2006> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2006> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,10 +37,10 @@ GST_DEBUG_CATEGORY_STATIC (rtpvorbispay_debug);
 
 /* elementfactory information */
 static const GstElementDetails gst_rtp_vorbispay_details =
-GST_ELEMENT_DETAILS ("RTP packet depayloader",
+GST_ELEMENT_DETAILS ("RTP Vorbis depayloader",
     "Codec/Payloader/Network",
     "Payload-encode Vorbis audio into RTP packets (RFC 5215)",
-    "Wim Taymans <wim@fluendo.com>");
+    "Wim Taymans <wimi.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_vorbis_pay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
@@ -222,32 +222,6 @@ gst_rtp_vorbis_pay_flush_packet (GstRtpVorbisPay * rtpvorbispay)
   return ret;
 }
 
-static gchar *
-encode_base64 (const guint8 * in, guint size, guint * len)
-{
-  gchar *ret, *d;
-  static const gchar v[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  *len = ((size + 2) / 3) * 4;
-  d = ret = (gchar *) g_malloc (*len + 1);
-  for (; size; in += 3) {       /* process tuplets */
-    *d++ = v[in[0] >> 2];       /* byte 1: high 6 bits (1) */
-    /* byte 2: low 2 bits (1), high 4 bits (2) */
-    *d++ = v[((in[0] << 4) + (--size ? (in[1] >> 4) : 0)) & 0x3f];
-    /* byte 3: low 4 bits (2), high 2 bits (3) */
-    *d++ = size ? v[((in[1] << 2) + (--size ? (in[2] >> 6) : 0)) & 0x3f] : '=';
-    /* byte 4: low 6 bits (3) */
-    *d++ = size ? v[in[2] & 0x3f] : '=';
-    if (size)
-      size--;                   /* count third character if processed */
-  }
-  *d = '\0';                    /* tie off string */
-
-  return ret;                   /* return the resulting string */
-}
-
-
 static gboolean
 gst_rtp_vorbis_pay_finish_headers (GstBaseRTPPayload * basepayload)
 {
@@ -257,6 +231,7 @@ gst_rtp_vorbis_pay_finish_headers (GstBaseRTPPayload * basepayload)
   gchar *cstr, *configuration;
   guint8 *data, *config;
   guint32 ident;
+  gboolean res;
 
   GST_DEBUG_OBJECT (rtpvorbispay, "finish headers");
 
@@ -363,6 +338,7 @@ gst_rtp_vorbis_pay_finish_headers (GstBaseRTPPayload * basepayload)
   for (walk = rtpvorbispay->headers; walk; walk = g_list_next (walk)) {
     GstBuffer *buf = GST_BUFFER_CAST (walk->data);
     guint bsize, size, temp;
+    guint flag;
 
     /* only need to store the length when it's not the last header */
     if (!g_list_next (walk))
@@ -380,10 +356,12 @@ gst_rtp_vorbis_pay_finish_headers (GstBaseRTPPayload * basepayload)
 
     bsize = GST_BUFFER_SIZE (buf);
     /* write the size backwards */
+    flag = 0;
     while (size) {
       size--;
-      data[size] = bsize & 0x7f;
+      data[size] = (bsize & 0x7f) | flag;
       bsize >>= 7;
+      flag = 0x80;              /* Flag bit on all bytes of the length except the last */
     }
     data += temp;
   }
@@ -397,19 +375,20 @@ gst_rtp_vorbis_pay_finish_headers (GstBaseRTPPayload * basepayload)
   }
 
   /* serialize to base64 */
-  configuration = encode_base64 (config, configlen, &size);
+  configuration = g_base64_encode (config, configlen);
   g_free (config);
 
   /* configure payloader settings */
   cstr = g_strdup_printf ("%d", rtpvorbispay->channels);
   gst_basertppayload_set_options (basepayload, "audio", TRUE, "VORBIS",
       rtpvorbispay->rate);
-  gst_basertppayload_set_outcaps (basepayload, "encoding-params", G_TYPE_STRING,
-      cstr, "configuration", G_TYPE_STRING, configuration, NULL);
+  res =
+      gst_basertppayload_set_outcaps (basepayload, "encoding-params",
+      G_TYPE_STRING, cstr, "configuration", G_TYPE_STRING, configuration, NULL);
   g_free (cstr);
   g_free (configuration);
 
-  return TRUE;
+  return res;
 
   /* ERRORS */
 no_headers:
