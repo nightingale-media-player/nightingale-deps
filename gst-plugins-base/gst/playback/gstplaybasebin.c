@@ -201,12 +201,15 @@ gst_play_base_bin_class_init (GstPlayBaseBinClass * klass)
           "ISO-8859-15 will be assumed.", NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstPlayBin:connection-speed
+   * GstPlayBaseBin:connection-speed
    *
    * Network connection speed in kbps (0 = unknown)
+   * <note><simpara>
+   * Since version 0.10.10 in #GstPlayBin, at 0.10.15 moved to #GstPlayBaseBin
+   * </simpara></note>
    *
-   * Since: 0.10.10 at gstplaybin.c, 0.10.15 moved to gstplaybasebin
-   **/
+   * Since: 0.10.10
+   */
   g_object_class_install_property (gobject_klass, ARG_CONNECTION_SPEED,
       g_param_spec_uint ("connection-speed", "Connection Speed",
           "Network connection speed in kbps (0 = unknown)",
@@ -483,8 +486,9 @@ group_commit (GstPlayBaseBin * play_base_bin, gboolean fatal, gboolean subtitle)
 
     setup_substreams (play_base_bin);
     GST_DEBUG_OBJECT (play_base_bin, "Emitting signal");
-    res = GST_PLAY_BASE_BIN_GET_CLASS (play_base_bin)->
-        setup_output_pads (play_base_bin, group);
+    res =
+        GST_PLAY_BASE_BIN_GET_CLASS (play_base_bin)->setup_output_pads
+        (play_base_bin, group);
     GST_DEBUG_OBJECT (play_base_bin, "done");
 
     GROUP_UNLOCK (play_base_bin);
@@ -869,13 +873,14 @@ gen_preroll_element (GstPlayBaseBin * play_base_bin,
     id = gst_pad_add_buffer_probe (sinkpad, G_CALLBACK (check_queue), preroll);
     GST_DEBUG_OBJECT (play_base_bin, "Attaching probe to pad %s:%s (%p)",
         GST_DEBUG_PAD_NAME (sinkpad), sinkpad);
-    gst_object_unref (sinkpad);
     g_object_set_data (G_OBJECT (preroll), "probe", GINT_TO_POINTER (id));
 
     /* catch eos and flush events so that we can ignore underruns */
     id = gst_pad_add_event_probe (sinkpad, G_CALLBACK (check_queue_event),
         preroll);
     g_object_set_data (G_OBJECT (preroll), "eos_probe", GINT_TO_POINTER (id));
+
+    gst_object_unref (sinkpad);
 
     /* When we connect this queue, it will start running and immediatly
      * fire an underrun. */
@@ -1216,8 +1221,9 @@ probe_triggered (GstPad * pad, GstEvent * event, gpointer user_data)
       setup_substreams (play_base_bin);
       GST_DEBUG ("switching to next group %p - emitting signal", group);
       /* and signal the new group */
-      res = GST_PLAY_BASE_BIN_GET_CLASS (play_base_bin)->
-          setup_output_pads (play_base_bin, group);
+      res =
+          GST_PLAY_BASE_BIN_GET_CLASS (play_base_bin)->setup_output_pads
+          (play_base_bin, group);
 
       GROUP_UNLOCK (play_base_bin);
 
@@ -1944,15 +1950,15 @@ remove_decoders (GstPlayBaseBin * bin)
     /* Disconnect all the signal handlers we attached to the decodebin before
      * we dispose of it */
     g_signal_handlers_disconnect_by_func (decoder,
-        G_CALLBACK (decodebin_element_added_cb), bin);
+        (gpointer) (decodebin_element_added_cb), bin);
     g_signal_handlers_disconnect_by_func (decoder,
-        G_CALLBACK (decodebin_element_removed_cb), bin);
+        (gpointer) (decodebin_element_removed_cb), bin);
     g_signal_handlers_disconnect_by_func (decoder,
-        G_CALLBACK (new_decoded_pad), bin);
+        (gpointer) (new_decoded_pad), bin);
     g_signal_handlers_disconnect_by_func (decoder,
-        G_CALLBACK (no_more_pads), bin);
+        (gpointer) (no_more_pads), bin);
     g_signal_handlers_disconnect_by_func (decoder,
-        G_CALLBACK (unknown_type), bin);
+        (gpointer) (unknown_type), bin);
 
     gst_element_set_state (decoder, GST_STATE_NULL);
     gst_bin_remove (GST_BIN_CAST (bin), decoder);

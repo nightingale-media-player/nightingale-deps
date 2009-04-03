@@ -45,6 +45,7 @@ G_BEGIN_DECLS
  * @GST_PLAY_SINK_TYPE_VIDEO_RAW: a raw video pad
  * @GST_PLAY_SINK_TYPE_TEXT: a raw text pad
  * @GST_PLAY_SINK_TYPE_LAST: the last type
+ * @GST_PLAY_SINK_TYPE_FLUSHING: a flushing pad, used when shutting down
  *
  * Types of pads that can be requested from the sinks.
  */
@@ -54,7 +55,11 @@ typedef enum {
   GST_PLAY_SINK_TYPE_VIDEO     = 2,
   GST_PLAY_SINK_TYPE_VIDEO_RAW = 3,
   GST_PLAY_SINK_TYPE_TEXT      = 4,
-  GST_PLAY_SINK_TYPE_LAST      = 5
+  GST_PLAY_SINK_TYPE_SUBPIC    = 5,
+  GST_PLAY_SINK_TYPE_LAST      = 6,
+
+  /* this is a dummy pad */
+  GST_PLAY_SINK_TYPE_FLUSHING  = 7
 } GstPlaySinkType;
 
 typedef struct _GstPlaySink GstPlaySink;
@@ -73,6 +78,12 @@ GstElement *     gst_play_sink_get_audio_sink (GstPlaySink * playsink);
 
 void             gst_play_sink_set_vis_plugin (GstPlaySink * playsink, GstElement * vis);
 GstElement *     gst_play_sink_get_vis_plugin (GstPlaySink * playsink);
+
+void             gst_play_sink_set_text_sink  (GstPlaySink * playsink, GstElement * sink);
+GstElement *     gst_play_sink_get_text_sink  (GstPlaySink * playsink);
+
+void             gst_play_sink_set_subp_sink  (GstPlaySink * playsink, GstElement * sink);
+GstElement *     gst_play_sink_get_subp_sink  (GstPlaySink * playsink);
 
 void             gst_play_sink_set_volume     (GstPlaySink *playsink, gdouble volume);
 gdouble          gst_play_sink_get_volume     (GstPlaySink *playsink);

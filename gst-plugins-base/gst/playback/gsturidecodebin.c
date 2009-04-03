@@ -309,6 +309,7 @@ gst_uri_decode_bin_class_init (GstURIDecodeBinClass * klass)
 
   /**
    * GstURIDecodeBin::unknown-type:
+   * @bin: The uridecodebin
    * @pad: the new pad containing caps that cannot be resolved to a 'final'
    * stream type.
    * @caps: the #GstCaps of the pad that cannot be resolved.
@@ -324,6 +325,7 @@ gst_uri_decode_bin_class_init (GstURIDecodeBinClass * klass)
 
   /**
    * GstURIDecodeBin::autoplug-continue:
+   * @bin: The uridecodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps found.
    *
@@ -344,11 +346,18 @@ gst_uri_decode_bin_class_init (GstURIDecodeBinClass * klass)
 
   /**
    * GstURIDecodeBin::autoplug-factories:
+   * @bin: The decodebin
    * @pad: The #GstPad.
    * @caps: The #GstCaps found.
    *
    * This function is emited when an array of possible factories for @caps on
-   * @pad is needed. Decodebin2 will by default return 
+   * @pad is needed. Uridecodebin will by default return an array with all
+   * compatible factories, sorted by rank.
+   *
+   * If this function returns NULL, @pad will be exposed as a final caps.
+   *
+   * If this function returns an empty array, the pad will be considered as
+   * having an unhandled type media type.
    *
    * Returns: a #GValueArray* with a list of factories to try. The factories are
    * by default tried in the returned order or based on the index returned by
@@ -365,16 +374,27 @@ gst_uri_decode_bin_class_init (GstURIDecodeBinClass * klass)
    * GstURIDecodeBin::autoplug-select:
    * @pad: The #GstPad.
    * @caps: The #GstCaps.
-   * @factories: A #GValueArray of possible #GstElementFactory to use, sorted by
-   * rank (higher ranks come first).
+   * @factory: A #GstElementFactory to use
    *
    * This signal is emitted once uridecodebin has found all the possible
-   * #GstElementFactory that can be used to handle the given @caps.
+   * #GstElementFactory that can be used to handle the given @caps. For each of
+   * those factories, this signal is emited.
    *
-   * Returns: A #gint indicating what factory index from the @factories array
-   * that you wish uridecodebin to use for trying to decode the given @caps.
-   * -1 to stop selection of a factory. The default handler always
-   * returns the first possible factory.
+   * The signal handler should return a #GST_TYPE_AUTOPLUG_SELECT_RESULT enum
+   * value indicating what decodebin2 should do next.
+   *
+   * A value of #GST_AUTOPLUG_SELECT_TRY will try to autoplug an element from
+   * @factory.
+   *
+   * A value of #GST_AUTOPLUG_SELECT_EXPOSE will expose @pad without plugging
+   * any element to it.
+   *
+   * A value of #GST_AUTOPLUG_SELECT_SKIP will skip @factory and move to the
+   * next factory.
+   *
+   * Returns: a #GST_TYPE_AUTOPLUG_SELECT_RESULT that indicates the required
+   * operation. The default handler will always return
+   * #GST_AUTOPLUG_SELECT_TRY.
    */
   gst_uri_decode_bin_signals[SIGNAL_AUTOPLUG_SELECT] =
       g_signal_new ("autoplug-select", G_TYPE_FROM_CLASS (klass),
@@ -747,15 +767,16 @@ static const gchar *no_media_mimes[] = {
 };
 #endif
 
-/* mime types we consider raw media */
-static const gchar *raw_mimes[] = {
-  "audio/x-raw", "video/x-raw", NULL
+/* media types we consider raw media */
+static const gchar *raw_media[] = {
+  "audio/x-raw", "video/x-raw", "text/plain", "text/x-pango-markup",
+  "video/x-dvd-subpicture", NULL
 };
 
 #define IS_STREAM_URI(uri)          (array_has_value (stream_uris, uri))
 #define IS_BLACKLISTED_URI(uri)     (array_has_value (blacklisted_uris, uri))
 #define IS_NO_MEDIA_MIME(mime)      (array_has_value (no_media_mimes, mime))
-#define IS_RAW_MIME(mime)           (array_has_value (raw_mimes, mime))
+#define IS_RAW_MEDIA(media)         (array_has_value (raw_media, media))
 
 /*
  * Generate and configure a source element.
@@ -768,6 +789,8 @@ gen_source_element (GstURIDecodeBin * decoder)
   if (!decoder->uri)
     goto no_uri;
 
+  GST_LOG_OBJECT (decoder, "finding source for %s", decoder->uri);
+
   if (!gst_uri_is_valid (decoder->uri))
     goto invalid_uri;
 
@@ -778,13 +801,18 @@ gen_source_element (GstURIDecodeBin * decoder)
   if (!source)
     goto no_source;
 
+  GST_LOG_OBJECT (decoder, "found source type %s", G_OBJECT_TYPE_NAME (source));
+
   decoder->is_stream = IS_STREAM_URI (decoder->uri);
+
+  GST_LOG_OBJECT (decoder, "source is stream: %d", decoder->is_stream);
 
   /* make HTTP sources send extra headers so we get icecast
    * metadata in case the stream is an icecast stream */
   if (!strncmp (decoder->uri, "http://", 7) &&
       g_object_class_find_property (G_OBJECT_GET_CLASS (source),
           "iradio-mode")) {
+    GST_LOG_OBJECT (decoder, "configuring iradio-mode");
     g_object_set (source, "iradio-mode", TRUE, NULL);
   }
 
@@ -863,6 +891,8 @@ has_all_raw_caps (GstPad * pad, gboolean * all_raw)
   if (caps == NULL)
     return FALSE;
 
+  GST_DEBUG_OBJECT (pad, "have caps %" GST_PTR_FORMAT, caps);
+
   capssize = gst_caps_get_size (caps);
   /* no caps, skip and move to the next pad */
   if (capssize == 0 || gst_caps_is_empty (caps) || gst_caps_is_any (caps))
@@ -871,12 +901,14 @@ has_all_raw_caps (GstPad * pad, gboolean * all_raw)
   /* count the number of raw formats in the caps */
   for (i = 0; i < capssize; ++i) {
     GstStructure *s;
-    const gchar *mime_type;
+    const gchar *media_type;
 
     s = gst_caps_get_structure (caps, i);
-    mime_type = gst_structure_get_name (s);
+    media_type = gst_structure_get_name (s);
 
-    if (IS_RAW_MIME (mime_type))
+    GST_DEBUG_OBJECT (pad, "check media-type %s", media_type);
+
+    if (IS_RAW_MEDIA (media_type))
       ++num_raw;
   }
 
@@ -1084,6 +1116,8 @@ make_decoder (GstURIDecodeBin * decoder)
 {
   GstElement *decodebin;
 
+  GST_LOG_OBJECT (decoder, "making new decodebin2");
+
   /* now create the decoder element */
   decodebin = gst_element_factory_make ("decodebin2", NULL);
   if (!decodebin)
@@ -1115,6 +1149,7 @@ make_decoder (GstURIDecodeBin * decoder)
   g_object_set (G_OBJECT (decodebin), "subtitle-encoding", decoder->encoding,
       NULL);
   decoder->pending++;
+  GST_LOG_OBJECT (decoder, "have %d pending dynamic objects", decoder->pending);
 
   gst_bin_add (GST_BIN_CAST (decoder), decodebin);
 
@@ -1163,12 +1198,12 @@ type_found (GstElement * typefind, guint probability,
 
   gst_bin_add (GST_BIN_CAST (decoder), queue);
 
-  if (!gst_element_link (typefind, queue))
+  if (!gst_element_link_pads (typefind, "src", queue, "sink"))
     goto could_not_link;
 
   g_object_set (G_OBJECT (dec_elem), "sink-caps", caps, NULL);
 
-  if (!gst_element_link (queue, dec_elem))
+  if (!gst_element_link_pads (queue, "src", dec_elem, "sink"))
     goto could_not_link;
 
   gst_element_set_state (dec_elem, GST_STATE_PLAYING);
@@ -1329,6 +1364,8 @@ setup_source (GstURIDecodeBin * decoder)
   /* delete old src */
   remove_source (decoder);
 
+  decoder->pending = 0;
+
   /* create and configure an element that can handle the uri */
   if (!(decoder->source = gen_source_element (decoder)))
     goto no_source;
@@ -1354,7 +1391,7 @@ setup_source (GstURIDecodeBin * decoder)
     GST_DEBUG_OBJECT (decoder, "Source provides all raw data");
     /* source provides raw data, we added the pads and we can now signal a
      * no_more pads because we are done. */
-    /* FIXME, actually do this... */
+    gst_element_no_more_pads (GST_ELEMENT_CAST (decoder));
     return TRUE;
   }
   if (!have_out && !is_dynamic) {

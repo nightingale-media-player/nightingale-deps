@@ -139,24 +139,7 @@
  *
  * Other more specific meta information like width/height/framerate of video
  * streams or samplerate/number of channels of audio streams can be obtained
- * using the #GstPlayBin2:stream-info property, which will return a GList of stream info
- * objects, one for each stream. These are opaque objects that can only be
- * accessed via the standard GObject property interface, ie. g_object_get().
- * Each stream info object has the following properties:
- * <itemizedlist>
- * <listitem>"object" (GstObject) (the decoder source pad usually)</listitem>
- * <listitem>"type" (enum) (if this is an audio/video/subtitle stream)</listitem>
- * <listitem>"decoder" (string) (name of decoder used to decode this stream)</listitem>
- * <listitem>"mute" (boolean) (to mute or unmute this stream)</listitem>
- * <listitem>"caps" (GstCaps) (caps of the decoded stream)</listitem>
- * <listitem>"language-code" (string) (ISO-639 language code for this stream, mostly used for audio/subtitle streams)</listitem>
- * <listitem>"codec" (string) (format this stream was encoded in)</listitem>
- * </itemizedlist>
- * Stream information from the #GstPlayBin2:stream-info property is best queried once
- * playbin has changed into PAUSED or PLAYING state (which can be detected
- * via a state-changed message on the bus where old_state=READY and
- * new_state=PAUSED), since before that the list might not be complete yet or
- * not contain all available information (like language-codes).
+ * from the negotiated caps on the sink pads of the sinks.
  * </para>
  * </refsect2>
  * <refsect2>
@@ -268,13 +251,8 @@ struct _GstSourceSelect
 };
 
 #define GST_SOURCE_GROUP_GET_LOCK(group) (((GstSourceGroup*)(group))->lock)
-#define GST_SOURCE_GROUP_GET_COND(group) (((GstSourceGroup*)(group))->cond)
 #define GST_SOURCE_GROUP_LOCK(group) (g_mutex_lock (GST_SOURCE_GROUP_GET_LOCK(group)))
 #define GST_SOURCE_GROUP_UNLOCK(group) (g_mutex_unlock (GST_SOURCE_GROUP_GET_LOCK(group)))
-#define GST_SOURCE_GROUP_WAIT(group) (g_cond_wait \
-		(GST_SOURCE_GROUP_GET_COND (group),GST_SOURCE_GROUP_GET_LOCK(group)))
-#define GST_SOURCE_GROUP_BROADCAST(group) (g_cond_broadcast \
-		(GST_SOURCE_GROUP_GET_COND (group)))
 
 /* a structure to hold the objects for decoding a uri and the subtitle uri
  */
@@ -283,7 +261,6 @@ struct _GstSourceGroup
   GstPlayBin *playbin;
 
   GMutex *lock;
-  GCond *cond;
 
   gboolean valid;               /* the group has valid info to start playback */
   gboolean active;              /* the group is active */
@@ -297,6 +274,7 @@ struct _GstSourceGroup
   GPtrArray *video_channels;    /* links to selector pads */
   GPtrArray *audio_channels;    /* links to selector pads */
   GPtrArray *text_channels;     /* links to selector pads */
+  GPtrArray *subp_channels;     /* links to selector pads */
 
   /* uridecodebins for uri and subtitle uri */
   GstElement *uridecodebin;
@@ -323,6 +301,26 @@ struct _GstSourceGroup
 #define GST_PLAY_BIN_LOCK(bin) (g_mutex_lock (GST_PLAY_BIN_GET_LOCK(bin)))
 #define GST_PLAY_BIN_UNLOCK(bin) (g_mutex_unlock (GST_PLAY_BIN_GET_LOCK(bin)))
 
+/* lock to protect dynamic callbacks, like no-more-pads */
+#define GST_PLAY_BIN_DYN_LOCK(bin)    g_mutex_lock ((bin)->dyn_lock)
+#define GST_PLAY_BIN_DYN_UNLOCK(bin)  g_mutex_unlock ((bin)->dyn_lock)
+
+/* lock for shutdown */
+#define GST_PLAY_BIN_SHUTDOWN_LOCK(bin,label)           \
+G_STMT_START {                                          \
+  if (G_UNLIKELY (g_atomic_int_get (&bin->shutdown)))   \
+    goto label;                                         \
+  GST_PLAY_BIN_DYN_LOCK (bin);                          \
+  if (G_UNLIKELY (g_atomic_int_get (&bin->shutdown))) { \
+    GST_PLAY_BIN_DYN_UNLOCK (bin);                      \
+    goto label;                                         \
+  }                                                     \
+} G_STMT_END
+
+/* unlock for shutdown */
+#define GST_PLAY_BIN_SHUTDOWN_UNLOCK(bin)         \
+  GST_PLAY_BIN_DYN_UNLOCK (bin);                  \
+
 /**
  * GstPlayBin2:
  *
@@ -339,8 +337,6 @@ struct _GstPlayBin
   GstSourceGroup *curr_group;   /* pointer to the currently playing group */
   GstSourceGroup *next_group;   /* pointer to the next group */
 
-  gboolean about_to_finish;     /* the about-to-finish signal is emitted */
-
   /* properties */
   guint connection_speed;       /* connection speed in bits/sec (0 = unknown) */
   gint current_video;           /* the currently selected stream */
@@ -356,6 +352,11 @@ struct _GstPlayBin
 
   /* the last activated source */
   GstElement *source;
+
+  /* lock protecting dynamic adding/removing */
+  GMutex *dyn_lock;
+  /* if we are shutting down or not */
+  gint shutdown;
 
   GValueArray *elements;        /* factories we can use for selecting elements */
 };
@@ -403,6 +404,7 @@ struct _GstPlayBinClass
 #define DEFAULT_AUDIO_SINK        NULL
 #define DEFAULT_VIDEO_SINK        NULL
 #define DEFAULT_VIS_PLUGIN        NULL
+#define DEFAULT_TEXT_SINK         NULL
 #define DEFAULT_VOLUME            1.0
 #define DEFAULT_MUTE              FALSE
 #define DEFAULT_FRAME             NULL
@@ -428,13 +430,15 @@ enum
   PROP_AUDIO_SINK,
   PROP_VIDEO_SINK,
   PROP_VIS_PLUGIN,
+  PROP_TEXT_SINK,
   PROP_VOLUME,
   PROP_MUTE,
   PROP_FRAME,
   PROP_FONT_DESC,
   PROP_CONNECTION_SPEED,
   PROP_BUFFER_SIZE,
-  PROP_BUFFER_DURATION
+  PROP_BUFFER_DURATION,
+  PROP_LAST
 };
 
 /* signals */
@@ -682,6 +686,10 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
       g_param_spec_object ("vis-plugin", "Vis plugin",
           "the visualization element to use (NULL = default)",
           GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_TEXT_SINK,
+      g_param_spec_object ("text-sink", "Text plugin",
+          "the text output element to use (NULL = default textoverlay)",
+          GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_klass, PROP_VOLUME,
       g_param_spec_double ("volume", "Volume", "The audio volume",
@@ -927,9 +935,10 @@ init_group (GstPlayBin * playbin, GstSourceGroup * group)
   group->video_channels = g_ptr_array_new ();
   group->audio_channels = g_ptr_array_new ();
   group->text_channels = g_ptr_array_new ();
+  group->subp_channels = g_ptr_array_new ();
   group->lock = g_mutex_new ();
-  group->cond = g_cond_new ();
-  /* init selectors */
+  /* init selectors. The selector is found by finding the first prefix that
+   * matches the media. */
   group->playbin = playbin;
   group->selector[0].media = "audio/x-raw-";
   group->selector[0].type = GST_PLAY_SINK_TYPE_AUDIO_RAW;
@@ -940,12 +949,15 @@ init_group (GstPlayBin * playbin, GstSourceGroup * group)
   group->selector[2].media = "video/x-raw-";
   group->selector[2].type = GST_PLAY_SINK_TYPE_VIDEO_RAW;
   group->selector[2].channels = group->video_channels;
-  group->selector[3].media = "video/";
-  group->selector[3].type = GST_PLAY_SINK_TYPE_VIDEO;
-  group->selector[3].channels = group->video_channels;
-  group->selector[4].media = "text/";
-  group->selector[4].type = GST_PLAY_SINK_TYPE_TEXT;
-  group->selector[4].channels = group->text_channels;
+  group->selector[3].media = "video/x-dvd-subpicture";
+  group->selector[3].type = GST_PLAY_SINK_TYPE_SUBPIC;
+  group->selector[3].channels = group->subp_channels;
+  group->selector[4].media = "video/";
+  group->selector[4].type = GST_PLAY_SINK_TYPE_VIDEO;
+  group->selector[4].channels = group->video_channels;
+  group->selector[5].media = "text/";
+  group->selector[5].type = GST_PLAY_SINK_TYPE_TEXT;
+  group->selector[5].channels = group->text_channels;
 }
 
 static void
@@ -955,8 +967,8 @@ free_group (GstPlayBin * playbin, GstSourceGroup * group)
   g_ptr_array_free (group->video_channels, TRUE);
   g_ptr_array_free (group->audio_channels, TRUE);
   g_ptr_array_free (group->text_channels, TRUE);
+  g_ptr_array_free (group->subp_channels, TRUE);
   g_mutex_free (group->lock);
-  g_cond_free (group->cond);
 }
 
 static void
@@ -965,6 +977,7 @@ gst_play_bin_init (GstPlayBin * playbin)
   GstFactoryListType type;
 
   playbin->lock = g_mutex_new ();
+  playbin->dyn_lock = g_mutex_new ();
 
   /* init groups */
   playbin->curr_group = &playbin->groups[0];
@@ -1008,6 +1021,7 @@ gst_play_bin_finalize (GObject * object)
   g_value_array_free (playbin->elements);
   g_free (playbin->encoding);
   g_mutex_free (playbin->lock);
+  g_mutex_free (playbin->dyn_lock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1200,26 +1214,26 @@ get_current_stream_number (GstPlayBin * playbin, GPtrArray * channels)
   int i;
   GstPad *pad, *current;
   GstObject *selector = NULL;
+  int ret = -1;
 
   for (i = 0; i < channels->len; i++) {
     pad = g_ptr_array_index (channels, i);
     if ((selector = gst_pad_get_parent (pad))) {
       g_object_get (selector, "active-pad", &current, NULL);
+      gst_object_unref (selector);
 
       if (pad == current) {
-        gst_object_unref (selector);
         gst_object_unref (current);
-        return i;
+        ret = i;
+        break;
       }
 
-      if(current)
+      if (current)
         gst_object_unref (current);
-
-      gst_object_unref (selector);
     }
   }
 
-  return -1;
+  return ret;
 }
 
 static gboolean
@@ -1234,7 +1248,7 @@ gst_play_bin_set_current_video_stream (GstPlayBin * playbin, gint stream)
   if (!(channels = group->video_channels))
     goto no_channels;
 
-  if (stream == -1 || channels->len < stream) {
+  if (stream == -1 || channels->len <= stream) {
     sinkpad = NULL;
   } else {
     /* take channel from selected stream */
@@ -1276,7 +1290,7 @@ gst_play_bin_set_current_audio_stream (GstPlayBin * playbin, gint stream)
   if (!(channels = group->audio_channels))
     goto no_channels;
 
-  if (stream == -1 || channels->len < stream) {
+  if (stream == -1 || channels->len <= stream) {
     sinkpad = NULL;
   } else {
     /* take channel from selected stream */
@@ -1318,7 +1332,7 @@ gst_play_bin_set_current_text_stream (GstPlayBin * playbin, gint stream)
   if (!(channels = group->text_channels))
     goto no_channels;
 
-  if (stream == -1 || channels->len < stream) {
+  if (stream == -1 || channels->len <= stream) {
     sinkpad = NULL;
   } else {
     /* take channel from selected stream */
@@ -1410,6 +1424,10 @@ gst_play_bin_set_property (GObject * object, guint prop_id,
       break;
     case PROP_VIS_PLUGIN:
       gst_play_sink_set_vis_plugin (playbin->playsink,
+          g_value_get_object (value));
+      break;
+    case PROP_TEXT_SINK:
+      gst_play_sink_set_text_sink (playbin->playsink,
           g_value_get_object (value));
       break;
     case PROP_VOLUME:
@@ -1546,6 +1564,10 @@ gst_play_bin_get_property (GObject * object, guint prop_id, GValue * value,
       g_value_set_object (value,
           gst_play_sink_get_vis_plugin (playbin->playsink));
       break;
+    case PROP_TEXT_SINK:
+      g_value_set_object (value,
+          gst_play_sink_get_text_sink (playbin->playsink));
+      break;
     case PROP_VOLUME:
       g_value_set_double (value, gst_play_sink_get_volume (playbin->playsink));
       break;
@@ -1608,8 +1630,8 @@ gst_play_bin_handle_message (GstBin * bin, GstMessage * msg)
 }
 
 static void
-selector_active_pad_changed (GObject *selector, GParamSpec *pspec, 
-        GstPlayBin *playbin)
+selector_active_pad_changed (GObject * selector, GParamSpec * pspec,
+    GstPlayBin * playbin)
 {
   gchar *property;
   GstSourceGroup *group;
@@ -1630,24 +1652,24 @@ selector_active_pad_changed (GObject *selector, GParamSpec *pspec,
     GST_PLAY_BIN_UNLOCK (playbin);
     return;
   }
-      
+
   switch (select->type) {
     case GST_PLAY_SINK_TYPE_VIDEO:
     case GST_PLAY_SINK_TYPE_VIDEO_RAW:
       property = "current-video";
       playbin->current_video = get_current_stream_number (playbin,
-              group->video_channels);
+          group->video_channels);
       break;
     case GST_PLAY_SINK_TYPE_AUDIO:
     case GST_PLAY_SINK_TYPE_AUDIO_RAW:
       property = "current-audio";
       playbin->current_audio = get_current_stream_number (playbin,
-              group->audio_channels);
+          group->audio_channels);
       break;
     case GST_PLAY_SINK_TYPE_TEXT:
       property = "current-text";
       playbin->current_text = get_current_stream_number (playbin,
-              group->text_channels);
+          group->text_channels);
       break;
     default:
       property = NULL;
@@ -1711,7 +1733,6 @@ pad_added_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
     if (select->selector == NULL)
       goto no_selector;
 
-
     g_signal_connect (select->selector, "notify::active-pad",
         G_CALLBACK (selector_active_pad_changed), playbin);
 
@@ -1758,22 +1779,26 @@ pad_added_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
     switch (select->type) {
       case GST_PLAY_SINK_TYPE_VIDEO:
       case GST_PLAY_SINK_TYPE_VIDEO_RAW:
+        /* we want to return NOT_LINKED for unselected pads but only for audio
+         * and video pads because text pads might come from an external file. */
+        g_object_set (sinkpad, "always-ok", FALSE, NULL);
         signal = SIGNAL_VIDEO_CHANGED;
         break;
       case GST_PLAY_SINK_TYPE_AUDIO:
       case GST_PLAY_SINK_TYPE_AUDIO_RAW:
+        g_object_set (sinkpad, "always-ok", FALSE, NULL);
         signal = SIGNAL_AUDIO_CHANGED;
         break;
       case GST_PLAY_SINK_TYPE_TEXT:
         signal = SIGNAL_TEXT_CHANGED;
         break;
+      case GST_PLAY_SINK_TYPE_SUBPIC:
       default:
         signal = -1;
     }
 
     if (signal >= 0)
-      g_signal_emit (G_OBJECT (playbin),
-          gst_play_bin_signals[signal], 0, NULL);
+      g_signal_emit (G_OBJECT (playbin), gst_play_bin_signals[signal], 0, NULL);
   }
 
 done:
@@ -1790,13 +1815,14 @@ unknown_type:
 no_selector:
   {
     GST_SOURCE_GROUP_UNLOCK (group);
+
     gst_element_post_message (GST_ELEMENT_CAST (playbin),
         gst_missing_element_message_new (GST_ELEMENT_CAST (playbin),
             "input-selector"));
     GST_ELEMENT_ERROR (playbin, CORE, MISSING_PLUGIN,
         (_("Missing element '%s' - check your GStreamer installation."),
             "input-selector"), (NULL));
-    return;
+    goto done;
   }
 link_failed:
   {
@@ -1891,6 +1917,8 @@ no_more_pads_cb (GstElement * decodebin, GstSourceGroup * group)
 
   GST_DEBUG_OBJECT (playbin, "no more pads in group %p", group);
 
+  GST_PLAY_BIN_SHUTDOWN_LOCK (playbin, shutdown);
+
   GST_SOURCE_GROUP_LOCK (group);
   for (i = 0; i < GST_PLAY_SINK_TYPE_LAST; i++) {
     GstSourceSelect *select = &group->selector[i];
@@ -1927,13 +1955,6 @@ no_more_pads_cb (GstElement * decodebin, GstSourceGroup * group)
   } else {
     GST_LOG_OBJECT (playbin, "have more pending groups");
     configure = FALSE;
-    /* check if there are more decodebins to wait for */
-    while (group->pending) {
-      GST_DEBUG_OBJECT (playbin, "%d pending in group %p, waiting",
-          group->pending, group);
-      /* FIXME, unlock when shutting down */
-      GST_SOURCE_GROUP_WAIT (group);
-    }
   }
   GST_SOURCE_GROUP_UNLOCK (group);
 
@@ -1955,9 +1976,41 @@ no_more_pads_cb (GstElement * decodebin, GstSourceGroup * group)
             NULL);
       }
     }
-    GST_DEBUG_OBJECT (playbin, "signal other decodebins");
-    GST_SOURCE_GROUP_BROADCAST (group);
     GST_SOURCE_GROUP_UNLOCK (group);
+  }
+
+  GST_PLAY_BIN_SHUTDOWN_UNLOCK (playbin);
+
+  return;
+
+shutdown:
+  {
+    GST_DEBUG ("ignoring, we are shutting down");
+    /* Request a flushing pad from playsink that we then link to the selector.
+     * Then we unblock the selectors so that they stop with a WRONG_STATE
+     * instead of a NOT_LINKED error.
+     */
+    GST_SOURCE_GROUP_LOCK (group);
+    for (i = 0; i < GST_PLAY_SINK_TYPE_LAST; i++) {
+      GstSourceSelect *select = &group->selector[i];
+
+      if (select->selector && select->sinkpad == NULL) {
+        GST_DEBUG_OBJECT (playbin, "requesting new flushing sink pad");
+        select->sinkpad =
+            gst_play_sink_request_pad (playbin->playsink,
+            GST_PLAY_SINK_TYPE_FLUSHING);
+        res = gst_pad_link (select->srcpad, select->sinkpad);
+        GST_DEBUG_OBJECT (playbin, "linked flushing, result: %d", res);
+      }
+      if (select->srcpad) {
+        GST_DEBUG_OBJECT (playbin, "unblocking %" GST_PTR_FORMAT,
+            select->srcpad);
+        gst_pad_set_blocked_async (select->srcpad, FALSE, selector_blocked,
+            NULL);
+      }
+    }
+    GST_SOURCE_GROUP_UNLOCK (group);
+    return;
   }
 }
 
@@ -1970,17 +2023,11 @@ drained_cb (GstElement * decodebin, GstSourceGroup * group)
 
   GST_DEBUG_OBJECT (playbin, "about to finish in group %p", group);
 
-  /* mark us as sending out the about-to-finish signal. When the app sets a URI
-   * when this signal is emitted, we're marking it as next-uri */
-  playbin->about_to_finish = TRUE;
-
   /* after this call, we should have a next group to activate or we EOS */
   g_signal_emit (G_OBJECT (playbin),
       gst_play_bin_signals[SIGNAL_ABOUT_TO_FINISH], 0, NULL);
 
-  playbin->about_to_finish = FALSE;
-
-  /* now activate the next group. If the app did not set a next-uri, this will
+  /* now activate the next group. If the app did not set a uri, this will
    * fail and we can do EOS */
   setup_next_source (playbin);
 }
@@ -2094,8 +2141,9 @@ notify_source_cb (GstElement * uridecodebin, GParamSpec * pspec,
 
   playbin = group->playbin;
 
-  GST_OBJECT_LOCK (playbin);
   g_object_get (group->uridecodebin, "source", &source, NULL);
+
+  GST_OBJECT_LOCK (playbin);
   if (playbin->source)
     gst_object_unref (playbin->source);
   playbin->source = source;
@@ -2104,6 +2152,7 @@ notify_source_cb (GstElement * uridecodebin, GParamSpec * pspec,
   g_object_notify (G_OBJECT (playbin), "source");
 }
 
+/* must be called with the group lock */
 static gboolean
 group_set_locked_state_unlocked (GstPlayBin * playbin, GstSourceGroup * group,
     gboolean locked)
@@ -2133,6 +2182,8 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
 
   g_return_val_if_fail (group->valid, FALSE);
   g_return_val_if_fail (!group->active, FALSE);
+
+  GST_DEBUG_OBJECT (playbin, "activating group %p", group);
 
   GST_SOURCE_GROUP_LOCK (group);
   if (group->uridecodebin) {
@@ -2230,7 +2281,14 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
 
     /* we have 2 pending no-more-pads */
     group->pending = 2;
+  }
 
+  /* release the group lock before setting the state of the decodebins, they
+   * might fire signals in this thread that we need to handle with the
+   * group_lock taken. */
+  GST_SOURCE_GROUP_UNLOCK (group);
+
+  if (suburidecodebin) {
     if (gst_element_set_state (suburidecodebin,
             GST_STATE_PAUSED) == GST_STATE_CHANGE_FAILURE)
       goto suburidecodebin_failure;
@@ -2239,6 +2297,7 @@ activate_group (GstPlayBin * playbin, GstSourceGroup * group)
           GST_STATE_PAUSED) == GST_STATE_CHANGE_FAILURE)
     goto uridecodebin_failure;
 
+  GST_SOURCE_GROUP_LOCK (group);
   /* alow state changes of the playbin2 affect the group elements now */
   group_set_locked_state_unlocked (playbin, group, FALSE);
   group->active = TRUE;
@@ -2255,13 +2314,11 @@ no_decodebin:
 suburidecodebin_failure:
   {
     GST_DEBUG_OBJECT (playbin, "failed state change of subtitle uridecodebin");
-    GST_SOURCE_GROUP_UNLOCK (group);
     return FALSE;
   }
 uridecodebin_failure:
   {
     GST_DEBUG_OBJECT (playbin, "failed state change of uridecodebin");
-    GST_SOURCE_GROUP_UNLOCK (group);
     return FALSE;
   }
 }
@@ -2287,9 +2344,11 @@ deactivate_group (GstPlayBin * playbin, GstSourceGroup * group)
       continue;
 
     GST_DEBUG_OBJECT (playbin, "unlinking selector %s", select->media);
+
     if (select->sinkpad) {
       GST_LOG_OBJECT (playbin, "unlinking from sink");
       gst_pad_unlink (select->srcpad, select->sinkpad);
+
       /* release back */
       GST_LOG_OBJECT (playbin, "release sink pad");
       gst_play_sink_release_pad (playbin->playsink, select->sinkpad);
@@ -2418,11 +2477,22 @@ gst_play_bin_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_PAUSED:
+      GST_LOG_OBJECT (playbin, "clearing shutdown flag");
+      g_atomic_int_set (&playbin->shutdown, 0);
       if (!setup_next_source (playbin))
         goto source_failed;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       /* FIXME unlock our waiting groups */
+      GST_LOG_OBJECT (playbin, "setting shutdown flag");
+      g_atomic_int_set (&playbin->shutdown, 1);
+
+      /* wait for all callbacks to end by taking the lock.
+       * No dynamic (critical) new callbacks will
+       * be able to happen as we set the shutdown flag. */
+      GST_PLAY_BIN_DYN_LOCK (playbin);
+      GST_LOG_OBJECT (playbin, "dynamic lock taken, we can continue shutdown");
+      GST_PLAY_BIN_DYN_UNLOCK (playbin);
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
       /* unlock so that all groups go to NULL */
@@ -2446,6 +2516,8 @@ gst_play_bin_change_state (GstElement * element, GstStateChange transition)
       save_current_group (playbin);
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
+      /* make sure the groups don't perform a state change anymore until we
+       * enable them again */
       groups_set_locked_state (playbin, TRUE);
       break;
     default:
