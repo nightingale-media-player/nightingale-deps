@@ -3090,7 +3090,7 @@ gst_bin_handle_message_func (GstBin * bin, GstMessage * message)
         bin_remove_messages (bin, NULL, GST_MESSAGE_ASYNC_DONE);
 
         GST_DEBUG_OBJECT (bin, "async elements commited");
-        bin_handle_async_done (bin, GST_STATE_CHANGE_SUCCESS, is_bin);
+        bin_handle_async_done (bin, GST_STATE_CHANGE_SUCCESS, TRUE);
       }
       GST_OBJECT_UNLOCK (bin);
       break;
