@@ -128,6 +128,16 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
+regen-makefiles:
+ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
+	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
+	@echo This command may fail. This is apparently OK.
+	-./autogen.sh
+	@echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
+else
+	@echo Currently, only gstreamer-related packages need makefiles regenerated. Doing nothing.
+endif
+
 # We strip .so's on Linux *and* Mac because libtool gets confused and on the
 # mac, generates some libraries with the .so extension.
 strip_build:
