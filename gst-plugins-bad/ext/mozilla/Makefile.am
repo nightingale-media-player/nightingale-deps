@@ -6,6 +6,8 @@ libgstmozillasrc_la_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 
 #-I/usr/include/xulrunner-1.9.0.1/unstable -I/usr/include/nspr 
 libgstmozillasrc_la_LIBADD = \
+	$(GST_LIBS) \
+	$(GST_BASE_LIBS) \
 	$(GST_PLUGINS_BASE_LIBS) \
 	-lgsttag-$(GST_MAJORMINOR) \
 	$(GST_LIBS) \
