@@ -450,6 +450,7 @@ TESTSUITE_AT	= tests/testsuite.at \
 		  tests/execute-mode.at \
 		  tests/localization.at \
 		  tests/destdir.at \
+		  tests/nocase.at \
 		  tests/old-m4-iface.at \
 		  tests/am-subdir.at \
 		  tests/lt_dlexit.at \
