@@ -122,7 +122,7 @@ AC_SUBST([package_revision])
 
 dnl These are bootstrap requirements! Once built, libtool may work with
 dnl much older releases of autoconf and automake.  See release notes.
-AM_INIT_AUTOMAKE([1.10.1 gnu subdir-objects dist-lzma])
+AM_INIT_AUTOMAKE([1.9 gnu subdir-objects dist-bzip2])
 
 dnl We use m4sh to generate libtool's portable shell scripts
 AC_SUBST([M4SH], ['$(AUTOM4TE) --language=m4sh'])
@@ -142,6 +142,9 @@ AC_MSG_RESULT([${sublibobjs_supported-no}])
 ## Libtool specific configuration. ##
 ## ------------------------------- ##
 
+dnl automake-1.9 does not substitute these two by default
+AC_SUBST([abs_top_srcdir])
+AC_SUBST([abs_top_builddir])
 AC_SUBST([aclocaldir], ["\${datadir}/aclocal"])
 AC_SUBST([pkgdatadir], ["\${datadir}/$PACKAGE"])
 
