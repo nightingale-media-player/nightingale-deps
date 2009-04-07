@@ -2258,7 +2258,7 @@ cygwin* | mingw* | pw32* | cegcc*)
   need_version=no
   need_lib_prefix=no
 
-  case $GCC,$host_os in
+  case $GCC,$cc_basename in
   yes,* | yes,* | yes,* | yes,*)
     # gcc
     library_names_spec='$libname.dll.a'
