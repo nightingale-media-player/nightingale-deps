@@ -111,8 +111,12 @@ endif
 endif
 
 all:
+ifneq (1,$(SB_VENDOR_SKIP_DEBUG_BUILD))
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) debug
+endif
+ifneq (1,$(SB_VENDOR_SKIP_RELEASE_BUILD))
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
+endif
 
 debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
 ifneq (,$(SB_VENDOR_BUILD_LOG))
