@@ -90,6 +90,10 @@ New in 2.2.2: 2008-04-01: CVS version 2.2.1a, Libtool team:
   - Fix 2.2 regression that kept cross-compiling to w32 from working.
   - Several testsuite issues have been fixed, thanks to user feedback.
 
+* Changes in supported systems or compilers:
+
+  - Initial support for Microsoft Visual C w/o wrapper scripts.
+
 New in 2.2: 2008-03-01; CVS version 2.1c, Libtool team:
 
 * Bug fixes:
