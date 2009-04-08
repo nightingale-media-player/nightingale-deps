@@ -138,6 +138,7 @@ FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p
 PYTHON ?= python
+RM ?= rm
 SED ?= sed
 SYMBOL_UPLOADER ?= $(MOZSDK_SCRIPTS_DIR)/upload_symbols.sh
 TAR ?= tar

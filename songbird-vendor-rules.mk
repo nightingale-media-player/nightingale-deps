@@ -141,19 +141,23 @@ endif
 # We strip .so's on Linux *and* Mac because libtool gets confused and on the
 # mac, generates some libraries with the .so extension.
 strip_build:
-ifneq (Msys,$(SB_VENDOR_ARCH))
-ifeq (Darwin,$(SB_VENDOR_ARCH))
-	for d in $(SB_CONFIGURE_PREFIX); do \
-          $(FIND) $$d \
-            -type f -name "*.dylib" \
-            -exec $(STRIP) {} \; ; \
-        done
-endif
-	for d in $(SB_CONFIGURE_PREFIX); do \
-          $(FIND) $$d \
-           -type f -name "*.so*" \
-           -exec $(STRIP) {} \; ; \
-        done
+ifdef NO_STRIP
+   $(info Skipping strip_build step...)
+else
+   ifneq (Msys,$(SB_VENDOR_ARCH))
+      ifeq (Darwin,$(SB_VENDOR_ARCH))
+	      for d in $(SB_CONFIGURE_PREFIX); do \
+           $(FIND) $$d \
+          -type f -name "*.dylib" \
+          -exec $(STRIP) {} \; ; \
+          done
+      endif
+	      for d in $(SB_CONFIGURE_PREFIX); do \
+           $(FIND) $$d \
+          -type f -name "*.so*" \
+          -exec $(STRIP) {} \; ; \
+          done
+   endif
 endif
 
 # post_build's heroic (but byzantine) shell loop needs some explanation;
@@ -180,6 +184,8 @@ endif
 #
 
 post_build: module_post_build
+	@echo Slaying libtool .la files...
+	$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.la" -exec $(RM) -fv {} \;
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 	@echo On the prowl for the following .dylib and .so external references:
@@ -316,7 +322,7 @@ ifeq (1,$(SB_RUN_CONFIGURE))
           $(SB_CONFIGURE_OPTS) \
           -C
 endif
-	# We do this submade-cmd insanity to support cmake
+	# We do this submake-cmd insanity to support cmake
 	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR)
 	$(SUBMAKE_CMD) -C $(SB_VENDOR_BUILD_DIR) install
 
