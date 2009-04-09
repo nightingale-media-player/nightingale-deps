@@ -222,6 +222,12 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    SB_VENDOR_TARGET_DEP_MODULES += glib gettext
 endif
 
+# Turn on libtool, but only for linux, and only when we're regenerating the
+# (gstreamer, right now) makefiles.
+ifeq (linux-i686_regen-makefiles,$(SB_TARGET_ARCH)_$(MAKECMDGOALS))
+   SB_VENDOR_TARGET_DEP_MODULES += libtool
+endif
+
 # Default to release mode...
 ifeq (debug,$(MAKECMDGOALS))
    SB_BUILD_TYPE := debug
@@ -382,6 +388,16 @@ $(filter $1, $(filter-out $(SB_VENDOR_TARGET), $(SB_VENDOR_TARGET_DEP_MODULES)))
 endef
 
 #
+# GNU libtool
+#
+ifneq (,$(call enable-sb-lib, libtool))
+  $(info Enabling Songbird vendor lib: libtool)
+  SB_LIBTOOL_DIR = $(call find-dep-dir, libtool)
+  SB_PATH += $(SB_LIBTOOL_DIR)/bin
+  ACLOCAL_FLAGS += -I $(SB_LIBTOOL_DIR)/share/aclocal
+endif
+
+#
 # GNU Gettext 
 #
 ifneq (,$(call enable-sb-lib, gettext))
@@ -427,15 +443,6 @@ ifneq (,$(call enable-sb-lib, glib))
     LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
     SB_DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
   endif
-endif
-
-#
-# GNU libtool
-#
-ifneq (,$(call enable-sb-lib, libtool))
-  $(info Enabling Songbird vendor lib: libtool)
-  SB_PATH += $(SB_VENDOR_BINARIES_DIR)/libtool/release/bin
-  ACLOCAL_FLAGS += -I $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal
 endif
 
 #

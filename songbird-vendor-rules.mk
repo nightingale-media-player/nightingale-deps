@@ -54,7 +54,8 @@ endif
 # Only export these if we're actually building a target
 BUILD_TARGET_SET = $(if \
                       $(or $(filter debug, $(MAKECMDGOALS)), \
-                           $(filter release, $(MAKECMDGOALS))),\
+                           $(filter release, $(MAKECMDGOALS)), \
+                           $(filter regen-makefiles, $(MAKECMDGOALS))),\
                        build_requested,)
 
 SB_RUN_CONFIGURE ?= 1
@@ -131,7 +132,6 @@ endif
 
 regen-makefiles: setup_environment
 ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
-	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
 	@echo This command may fail. This is apparently OK.
 	-./autogen.sh
 	@echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
