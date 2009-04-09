@@ -105,10 +105,11 @@ endif
     export MACOSX_DEPLOYMENT_TARGET=10.4
     export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
   endif
-
-  # Generate, configure, build, and install; probably not needed.
-  export NOCONFIGURE = yes
 endif
+
+# This is for libtool and automake; we manage running configure outselves, so
+# turn this off.
+export NOCONFIGURE = 1
 
 all:
 ifneq (1,$(SB_VENDOR_SKIP_DEBUG_BUILD))
@@ -128,7 +129,7 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
-regen-makefiles:
+regen-makefiles: setup_environment
 ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
 	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
 	@echo This command may fail. This is apparently OK.
@@ -401,4 +402,4 @@ clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BREAKPAD_DIR)
 	$(RM) -rf $(SB_CONFIGURE_PREFIX)
 
-.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols upload_symbols
+.PHONY: all release debug build setup_build setup_environment clean_build_dir post_build strip_build module_setup_build module_post_build copy_symbols upload_symbols regen-makefiles
