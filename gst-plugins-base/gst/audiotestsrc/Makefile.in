@@ -63,21 +63,23 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-x11.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
+	$(top_srcdir)/common/m4/libtool.m4 \
+	$(top_srcdir)/common/m4/ltoptions.m4 \
+	$(top_srcdir)/common/m4/ltsugar.m4 \
+	$(top_srcdir)/common/m4/ltversion.m4 \
+	$(top_srcdir)/common/m4/lt~obsolete.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/freetype2.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-alsa.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/lrint.m4 \
-	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/lrint.m4 \
+	$(top_srcdir)/m4/lrintf.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/ogg.m4 $(top_srcdir)/m4/po.m4 \
 	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vorbis.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(install_sh) -d
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -173,7 +175,6 @@ FT2_LIBS = @FT2_LIBS@
 GCOV = @GCOV@
 GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
-GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LDFLAGS = @GIO_LDFLAGS@
@@ -183,7 +184,6 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMSGFMT = @GMSGFMT@
-GMSGFMT_015 = @GMSGFMT_015@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GREP = @GREP@
@@ -289,7 +289,6 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
-INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
@@ -302,6 +301,7 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBVISUAL_CFLAGS = @LIBVISUAL_CFLAGS@
 LIBVISUAL_LIBS = @LIBVISUAL_LIBS@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LOCALEDIR = @LOCALEDIR@
 LTLIBICONV = @LTLIBICONV@
@@ -311,8 +311,8 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
-MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -320,6 +320,8 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -427,9 +429,6 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
-XGETTEXT_015 = @XGETTEXT_015@
-XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
-XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
 XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
@@ -437,8 +436,19 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_AR = @ac_ct_AR@
+ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
+ac_ct_DSYMUTIL = @ac_ct_DSYMUTIL@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_LIPO = @ac_ct_LIPO@
+ac_ct_NMEDIT = @ac_ct_NMEDIT@
+ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
+ac_ct_OTOOL = @ac_ct_OTOOL@
+ac_ct_OTOOL64 = @ac_ct_OTOOL64@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__include = @am__include@
@@ -453,34 +463,27 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 plugindir = @plugindir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@

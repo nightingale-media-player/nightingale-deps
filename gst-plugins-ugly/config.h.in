@@ -183,6 +183,9 @@
 /* Define if valgrind should be used */
 #undef HAVE_VALGRIND
 
+/* Define to 1 if you have the <winsock2.h> header file. */
+#undef HAVE_WINSOCK2_H
+
 /* the host CPU */
 #undef HOST_CPU
 
@@ -217,19 +220,19 @@
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of `char', as computed by sizeof. */
+/* The size of a `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of `int', as computed by sizeof. */
+/* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of `long', as computed by sizeof. */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of `short', as computed by sizeof. */
+/* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of `void*', as computed by sizeof. */
+/* The size of a `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* Define to 1 if you have the ANSI C header files. */

@@ -62,14 +62,16 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/gst-plugindir.m4 \
 	$(top_srcdir)/common/m4/gst.m4 \
 	$(top_srcdir)/common/m4/gtk-doc.m4 \
+	$(top_srcdir)/common/m4/libtool.m4 \
+	$(top_srcdir)/common/m4/ltoptions.m4 \
+	$(top_srcdir)/common/m4/ltsugar.m4 \
+	$(top_srcdir)/common/m4/ltversion.m4 \
+	$(top_srcdir)/common/m4/lt~obsolete.m4 \
 	$(top_srcdir)/common/m4/pkg.m4 $(top_srcdir)/m4/a52.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/gst-sid.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -86,7 +88,8 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstasf_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libgstasf_la_OBJECTS = libgstasf_la-gstasfdemux.lo \
 	libgstasf_la-gstasf.lo libgstasf_la-asfheaders.lo \
 	libgstasf_la-asfpacket.lo libgstasf_la-gstrtspwms.lo
@@ -267,6 +270,7 @@ LIBOIL_CFLAGS = @LIBOIL_CFLAGS@
 LIBOIL_LIBS = @LIBOIL_LIBS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LOCALEDIR = @LOCALEDIR@
 LTLIBICONV = @LTLIBICONV@
@@ -287,6 +291,8 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -362,11 +368,23 @@ VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
+WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
 ac_ct_AR = @ac_ct_AR@
+ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
+ac_ct_DSYMUTIL = @ac_ct_DSYMUTIL@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_LIPO = @ac_ct_LIPO@
+ac_ct_NMEDIT = @ac_ct_NMEDIT@
+ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
+ac_ct_OTOOL = @ac_ct_OTOOL@
+ac_ct_OTOOL64 = @ac_ct_OTOOL64@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -383,34 +401,27 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 plugindir = @plugindir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 pyexecdir = @pyexecdir@
 pythondir = @pythondir@
 sbindir = @sbindir@
@@ -421,7 +432,9 @@ plugin_LTLIBRARIES = libgstasf.la
 libgstasf_la_SOURCES = gstasfdemux.c gstasf.c asfheaders.c asfpacket.c gstrtspwms.c
 libgstasf_la_CFLAGS = $(GST_BASE_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstasf_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS)\
-		-lgstriff-@GST_MAJORMINOR@ -lgstrtsp-@GST_MAJORMINOR@ -lgstsdp-@GST_MAJORMINOR@
+		-lgstriff-@GST_MAJORMINOR@ -lgstaudio-@GST_MAJORMINOR@ \
+		-lgsttag-@GST_MAJORMINOR@ -lgstrtsp-@GST_MAJORMINOR@ \
+		-lgstsdp-@GST_MAJORMINOR@ $(WIN32_LIBS)
 
 libgstasf_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstasf_la_LIBTOOLFLAGS = --tag=disable-static

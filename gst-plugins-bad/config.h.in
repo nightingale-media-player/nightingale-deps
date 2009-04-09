@@ -55,14 +55,6 @@
 /* Define to enable celt (used by celt). */
 #undef HAVE_CELT
 
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
 /* Define if the host CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
 
@@ -172,7 +164,7 @@
 /* Define to enable GSM library (used by gsmenc gsmdec). */
 #undef HAVE_GSM
 
-/* Define if you have the iconv() function and it works. */
+/* Define if you have the iconv() function. */
 #undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -365,19 +357,19 @@
 /* directory where plugins are located */
 #undef PLUGINDIR
 
-/* The size of `char', as computed by sizeof. */
+/* The size of a `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of `int', as computed by sizeof. */
+/* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of `long', as computed by sizeof. */
+/* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of `short', as computed by sizeof. */
+/* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of `void*', as computed by sizeof. */
+/* The size of a `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
 
 /* Define to 1 if you have the ANSI C header files. */
