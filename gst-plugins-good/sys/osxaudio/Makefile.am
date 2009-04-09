@@ -8,11 +8,13 @@ libgstosxaudio_la_SOURCES = gstosxringbuffer.c		\
 
 libgstosxaudio_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 	-Wno-deprecated-declarations
-libgstosxaudio_la_LIBADD = 			\
-	-lgstinterfaces-@GST_MAJORMINOR@	\
-	-lgstaudio-@GST_MAJORMINOR@		\
-	$(GST_PLUGINS_BASE_LIBS) \
-        $(GST_LIBS)
+libgstosxaudio_la_LIBADD = 			 \
+    $(GST_LIBS)                      \
+    $(GST_BASE_LIBS)                 \
+    $(GST_PLUGINS_BASE_LIBS)         \
+    -lgstinterfaces-@GST_MAJORMINOR@ \
+    -lgstaudio-@GST_MAJORMINOR@
+
 libgstosxaudio_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,-framework,CoreAudio,-framework -Wl,AudioUnit,-framework,Carbon
 
 noinst_HEADERS = gstosxaudiosink.h	\
