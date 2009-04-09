@@ -132,6 +132,7 @@ endif
 
 regen-makefiles: setup_environment
 ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
+	$(CP) $(SB_VENDOR_BINARIES_DIR)/libtool/release/share/aclocal/* $(CURDIR)/common/m4
 	@echo This command may fail. This is apparently OK.
 	-./autogen.sh
 	@echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
