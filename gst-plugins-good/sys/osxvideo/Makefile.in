@@ -91,7 +91,7 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstosxvideosink_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libgstosxvideosink_la_OBJECTS = osxvideosink.lo cocoawindow.lo
 libgstosxvideosink_la_OBJECTS = $(am_libgstosxvideosink_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -611,8 +611,11 @@ libgstosxvideosink_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_PLUGINS_BASE_CFLAGS)
 
 libgstosxvideosink_la_LIBADD = \
-	$(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_MAJORMINOR) \
-	-lgstinterfaces-$(GST_MAJORMINOR)
+    $(GST_LIBS)                       \
+    $(GST_BASE_LIBS)                  \
+    $(GST_PLUGINS_BASE_LIBS)          \
+    -lgstvideo-$(GST_MAJORMINOR)      \
+    -lgstinterfaces-$(GST_MAJORMINOR)
 
 libgstosxvideosink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,-framework -Wl,Cocoa -Wl,-framework -Wl,QuickTime -Wl,-framework -Wl,OpenGL
 AM_OBJCFLAGS = $(CFLAGS) $(GST_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS)

@@ -91,7 +91,7 @@ pluginLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libgstosxaudio_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libgstosxaudio_la_OBJECTS = libgstosxaudio_la-gstosxringbuffer.lo \
 	libgstosxaudio_la-gstosxaudioelement.lo \
 	libgstosxaudio_la-gstosxaudiosink.lo \
@@ -618,10 +618,11 @@ libgstosxaudio_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 	-Wno-deprecated-declarations
 
 libgstosxaudio_la_LIBADD = \
-	-lgstinterfaces-@GST_MAJORMINOR@	\
-	-lgstaudio-@GST_MAJORMINOR@		\
-	$(GST_PLUGINS_BASE_LIBS) \
-        $(GST_LIBS)
+    $(GST_LIBS)                      \
+    $(GST_BASE_LIBS)                 \
+    $(GST_PLUGINS_BASE_LIBS)         \
+    -lgstinterfaces-@GST_MAJORMINOR@ \
+    -lgstaudio-@GST_MAJORMINOR@
 
 libgstosxaudio_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -Wl,-framework,CoreAudio,-framework -Wl,AudioUnit,-framework,Carbon
 noinst_HEADERS = gstosxaudiosink.h	\
