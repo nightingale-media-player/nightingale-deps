@@ -281,6 +281,7 @@ nsParser::Initialize(PRBool aConstructor)
   mFlags = NS_PARSER_FLAG_OBSERVERS_ENABLED |
            NS_PARSER_FLAG_PARSER_ENABLED |
            NS_PARSER_FLAG_CAN_TOKENIZE;
+  mScriptsExecuting = 0;
 
   MOZ_TIMER_DEBUGLOG(("Reset: Parse Time: nsParser::nsParser(), this=%p\n", this));
   MOZ_TIMER_RESET(mParseTime);
@@ -346,6 +347,7 @@ NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsParser, nsIParser)
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsParser)
   NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
   NS_INTERFACE_MAP_ENTRY(nsIParser)
+  NS_INTERFACE_MAP_ENTRY(nsIParser_1_9_0_BRANCH)
   NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIParser)
 NS_INTERFACE_MAP_END
@@ -1229,7 +1231,8 @@ nsParser::IsComplete()
 }
 
 
-void nsParser::HandleParserContinueEvent(nsParserContinueEvent *ev) {
+void nsParser::HandleParserContinueEvent(nsParserContinueEvent *ev)
+{
   // Ignore any revoked continue events...
   if (mContinueEvent != ev)
     return;
@@ -1237,7 +1240,21 @@ void nsParser::HandleParserContinueEvent(nsParserContinueEvent *ev) {
   mFlags &= ~NS_PARSER_FLAG_PENDING_CONTINUE_EVENT;
   mContinueEvent = nsnull;
 
+  NS_ASSERTION(mScriptsExecuting == 0, "Interrupted in the middle of a script?");
   ContinueInterruptedParsing();
+}
+
+void
+nsParser::ScriptExecuting()
+{
+  ++mScriptsExecuting;
+}
+
+void
+nsParser::ScriptDidExecute()
+{
+  NS_ASSERTION(mScriptsExecuting > 0, "Too many calls to ScriptDidExecute");
+  --mScriptsExecuting;
 }
 
 nsresult
@@ -2283,7 +2300,8 @@ nsParser::OnDataAvailable(nsIRequest *request, nsISupports* aContext,
 
     // Don't bother to start parsing until we've seen some
     // non-whitespace data
-    if (theContext->mScanner->FirstNonWhitespacePosition() >= 0) {
+    if (mScriptsExecuting == 0 &&
+        theContext->mScanner->FirstNonWhitespacePosition() >= 0) {
       rv = ResumeParse();
     }
   } else {
@@ -2303,14 +2321,6 @@ nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
 {
   nsresult rv = NS_OK;
 
-  if (eOnStart == mParserContext->mStreamListenerState) {
-    // If you're here, then OnDataAvailable() never got called.  Prior
-    // to necko, we never dealt with this case, but the problem may
-    // have existed.  Everybody can live with an empty input stream, so
-    // just resume parsing.
-    rv = ResumeParse(PR_TRUE, PR_TRUE);
-  }
-
   CParserContext *pc = mParserContext;
   while (pc) {
     if (pc->mRequest == request) {
@@ -2327,7 +2337,7 @@ nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
   if (mParserFilter)
     mParserFilter->Finish();
 
-  if (NS_SUCCEEDED(rv)) {
+  if (mScriptsExecuting == 0 && NS_SUCCEEDED(rv)) {
     rv = ResumeParse(PR_TRUE, PR_TRUE);
   }
 

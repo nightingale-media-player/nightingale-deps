@@ -681,7 +681,11 @@ function onWindowBlue(e)
 function onInputCompleteLine(e)
 {
     if (!client.inputHistory.length || client.inputHistory[0] != e.line)
-        client.inputHistory.unshift (e.line);
+    {
+        client.inputHistory.unshift(e.line);
+        if (client.inputHistoryLogger)
+            client.inputHistoryLogger.append(e.line);
+    }
 
     if (client.inputHistory.length > client.MAX_HISTORY)
         client.inputHistory.pop();
@@ -1725,6 +1729,7 @@ CIRCNetwork.prototype.on319 = /* whois channels */
 CIRCNetwork.prototype.on312 = /* whois server */
 CIRCNetwork.prototype.on317 = /* whois idle time */
 CIRCNetwork.prototype.on318 = /* whois end of whois*/
+CIRCNetwork.prototype.on330 = /* ircu's 330 numeric ("X is logged in as Y") */
 CIRCNetwork.prototype.onUnknownWhois = /* misc whois line */
 function my_whoisreply (e)
 {
@@ -1787,6 +1792,10 @@ function my_whoisreply (e)
                 user.updateHeader();
             break;
 
+        case 330:
+            text = getMsg(MSG_FMT_LOGGED_ON, [e.decodeParam(2), e.params[3]]);
+            break;
+
         default:
             text = toUnicode(e.params.splice(2, e.params.length).join(" "),
                              this);
@@ -1796,16 +1805,6 @@ function my_whoisreply (e)
         e.user.display(text, e.code);
     else
         this.display(text, e.code);
-}
-
-CIRCNetwork.prototype.on330 = /* ircu's 330 numeric ("X is logged in as Y") */
-function my_330 (e)
-{
-    var msg = getMsg(MSG_FMT_LOGGED_ON, [e.decodeParam(2), e.params[3]]);
-    if (e.user)
-        e.user.display(msg, "330");
-    else
-        this.display(msg, "330");
 }
 
 CIRCNetwork.prototype.on341 = /* invite reply */

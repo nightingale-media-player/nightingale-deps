@@ -1141,8 +1141,21 @@ nsSameOriginChecker::OnChannelRedirect(nsIChannel *aOldChannel,
     rv = aNewChannel->GetURI(getter_AddRefs(newURI)); // The new URI
     NS_ENSURE_SUCCESS(rv, rv);
 
-    return nsContentUtils::GetSecurityManager()->
+    rv = nsContentUtils::GetSecurityManager()->
       CheckSameOriginURI(oldURI, newURI, PR_TRUE);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCOMPtr<nsIURI> newOrigURI;
+    rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (newOrigURI != newURI) {
+        rv = nsContentUtils::GetSecurityManager()->
+            CheckSameOriginURI(oldURI, newOrigURI, PR_TRUE);
+        NS_ENSURE_SUCCESS(rv, rv);
+    }
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP

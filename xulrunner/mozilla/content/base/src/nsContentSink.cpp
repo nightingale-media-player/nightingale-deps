@@ -334,6 +334,10 @@ nsContentSink::ScriptAvailable(nsresult aResult,
                                PRInt32 aLineNo)
 {
   PRUint32 count = mScriptElements.Count();
+  if (mParser && NS_SUCCEEDED(aResult)) {
+    // Only notify the parser about scripts that are actually going to run.
+    mParser->ScriptExecuting();
+  }
 
   if (count == 0) {
     return NS_OK;
@@ -385,13 +389,13 @@ nsContentSink::ScriptEvaluated(nsresult aResult,
                                nsIScriptElement *aElement,
                                PRBool aIsInline)
 {
+  if (mParser) {
+    mParser->ScriptDidExecute();
+  }
+
   // Check if this is the element we were waiting for
   PRInt32 count = mScriptElements.Count();
-  if (count == 0) {
-    return NS_OK;
-  }
-  
-  if (aElement != mScriptElements[count - 1]) {
+  if (count == 0 || aElement != mScriptElements[count - 1]) {
     return NS_OK;
   }
 
@@ -1484,14 +1488,6 @@ nsContentSink::WillBuildModelImpl()
   }
 
   mScrolledToRefAlready = PR_FALSE;
-}
-
-void
-nsContentSink::ContinueInterruptedParsing()
-{
-  if (mParser) {
-    mParser->ContinueInterruptedParsing();
-  }
 }
 
 void

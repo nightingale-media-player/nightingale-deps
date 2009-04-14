@@ -1658,7 +1658,7 @@ gfxPangoFontGroup::CreateGlyphRunsItemizing(gfxTextRun *aTextRun,
         nsRefPtr<gfxPangoFont> font =
             gfxPangoFont::GetOrMakeFont(item->analysis.font);
 
-        nsresult rv = aTextRun->AddGlyphRun(font, utf16Offset, PR_TRUE);
+        nsresult rv = aTextRun->AddGlyphRun(font, utf16Offset);
         if (NS_FAILED(rv)) {
             NS_ERROR("AddGlyphRun Failed");
             goto out;
@@ -1689,8 +1689,6 @@ gfxPangoFontGroup::CreateGlyphRunsItemizing(gfxTextRun *aTextRun,
             SetGlyphs(aTextRun, font, text, len, &utf16Offset, glyphString, spaceWidth, PR_FALSE);
         }
     }
-
-    aTextRun->SortGlyphRuns();
 
 out:
     if (glyphString)

@@ -3479,7 +3479,7 @@ js_GC(JSContext *cx, JSGCInvocationKind gckind)
         goto restart;
     }
 
-    if (!(rt->shapeGen & SHAPE_OVERFLOW_BIT)) {
+    if (rt->shapeGen < SHAPE_OVERFLOW_BIT - 1) {
         js_EnablePropertyCache(cx);
 #ifdef JS_THREADSAFE
         iter = NULL;

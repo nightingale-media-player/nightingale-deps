@@ -101,7 +101,7 @@ class nsIProgressEventSink;
 #endif
 
 
-class nsParser : public nsIParser,
+class nsParser : public nsIParser_1_9_0_BRANCH,
                  public nsIStreamListener{
 
   
@@ -386,6 +386,19 @@ class nsParser : public nsIParser,
       Initialize();
     }
 
+    /**
+     * Tells the parser that a script is now executing. The only data we
+     * should resume parsing for is document.written data. We'll deal with any
+     * data that comes in over the network later.
+     */
+    virtual void ScriptExecuting();
+
+    /**
+     * Tells the parser that the script is done executing. We should now
+     * continue the regular parsing process.
+     */
+    virtual void ScriptDidExecute();
+
  protected:
 
     void Initialize(PRBool aConstructor = PR_FALSE);
@@ -467,6 +480,7 @@ protected:
     PRInt32             mCharsetSource;
     
     PRUint16            mFlags;
+    PRUint32            mScriptsExecuting;
 
     nsString            mUnusedInput;
     nsCString           mCharset;

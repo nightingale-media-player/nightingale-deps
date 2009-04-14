@@ -69,7 +69,7 @@ class nsIURI;
 class nsIChannel;
 class nsIDocShell;
 class nsICSSLoader;
-class nsIParser;
+class nsIParser_1_9_0_BRANCH;
 class nsIAtom;
 class nsIChannel;
 class nsIContent;
@@ -225,10 +225,9 @@ protected:
 
   void ContinueInterruptedParsingAsync();
   void ContinueInterruptedParsingIfEnabled();
-  void ContinueInterruptedParsing();
 
   nsCOMPtr<nsIDocument>         mDocument;
-  nsCOMPtr<nsIParser>           mParser;
+  nsCOMPtr<nsIParser_1_9_0_BRANCH>mParser;
   nsCOMPtr<nsIURI>              mDocumentURI;
   nsCOMPtr<nsIURI>              mDocumentBaseURI;
   nsCOMPtr<nsIDocShell>         mDocShell;

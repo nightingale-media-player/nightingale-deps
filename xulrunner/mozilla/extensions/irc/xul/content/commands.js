@@ -107,6 +107,7 @@ function initCommands()
          ["echo",              cmdEcho,                            CMD_CONSOLE],
          ["enable-plugin",     cmdAblePlugin,                      CMD_CONSOLE],
          ["eval",              cmdEval,                            CMD_CONSOLE],
+         ["evalsilent",        cmdEval,                            CMD_CONSOLE],
          ["except",            cmdBanOrExcept,     CMD_NEED_CHAN | CMD_CONSOLE],
          ["find",              cmdFind,                                      0],
          ["find-again",        cmdFindAgain,                                 0],
@@ -192,6 +193,7 @@ function initCommands()
          ["toggle-ui",         cmdToggleUI,                        CMD_CONSOLE],
          ["toggle-pref",       cmdTogglePref,                                0],
          ["topic",             cmdTopic,           CMD_NEED_CHAN | CMD_CONSOLE],
+         ["unalias",           cmdAlias,                           CMD_CONSOLE],
          ["unignore",          cmdIgnore,           CMD_NEED_NET | CMD_CONSOLE],
          ["unban",             cmdBanOrExcept,     CMD_NEED_CHAN | CMD_CONSOLE],
          ["unexcept",          cmdBanOrExcept,     CMD_NEED_CHAN | CMD_CONSOLE],
@@ -244,7 +246,7 @@ function initCommands()
          ["motif-dark",       "motif dark",                                  0],
          ["motif-light",      "motif light",                                 0],
          ["motif-default",    "motif default",                               0],
-         ["sync-output",      "eval syncOutputFrame(this)",                  0],
+         ["sync-output",      "evalsilent syncOutputFrame(this)",            0],
          ["userlist",         "toggle-ui userlist",                CMD_CONSOLE],
          ["tabstrip",         "toggle-ui tabstrip",                CMD_CONSOLE],
          ["statusbar",        "toggle-ui status",                  CMD_CONSOLE],
@@ -2274,14 +2276,16 @@ function cmdEval(e)
     try
     {
         sourceObject.doEval = function (__s) { return eval(__s); }
-        sourceObject.display(e.expression, MT_EVALIN);
+        if (e.command.name == "eval")
+            sourceObject.display(e.expression, MT_EVALIN);
         var rv = String(sourceObject.doEval (e.expression));
-        sourceObject.display (rv, MT_EVALOUT);
+        if (e.command.name == "eval")
+            sourceObject.display(rv, MT_EVALOUT);
 
     }
     catch (ex)
     {
-        sourceObject.display (String(ex), MT_ERROR);
+        sourceObject.display(String(ex), MT_ERROR);
     }
 }
 
@@ -2816,7 +2820,7 @@ function cmdAlias(e)
 
     var ary;
 
-    if (e.commandList == "-")
+    if ((e.commandList == "-") || (e.command.name == "unalias"))
     {
         /* remove alias */
         ary = getAlias(e.aliasName);
@@ -2826,25 +2830,34 @@ function cmdAlias(e)
             return;
         }
 
-        delete client.commandManager.commands[e.aliasName];
+        // Command Manager is updated when the preference changes.
         arrayRemoveAt(aliasDefs, ary[0]);
         aliasDefs.update();
 
         feedback(e, getMsg(MSG_ALIAS_REMOVED, e.aliasName));
     }
-    else if (e.aliasName)
+    else if (e.aliasName && e.commandList)
     {
         /* add/change alias */
-        client.commandManager.defineCommand(e.aliasName, e.commandList);
         ary = getAlias(e.aliasName);
         if (ary)
             aliasDefs[ary[0]] = e.aliasName + " = " + e.commandList;
         else
             aliasDefs.push(e.aliasName + " = " + e.commandList);
 
+        // Command Manager is updated when the preference changes.
         aliasDefs.update();
 
         feedback(e, getMsg(MSG_ALIAS_CREATED, [e.aliasName, e.commandList]));
+    }
+    else if (e.aliasName)
+    {
+        /* display alias */
+        ary = getAlias(e.aliasName);
+        if (!ary)
+            display(getMsg(MSG_NOT_AN_ALIAS, e.aliasName), MT_ERROR);
+        else
+            display(getMsg(MSG_FMT_ALIAS, [e.aliasName, ary[1]]));
     }
     else
     {

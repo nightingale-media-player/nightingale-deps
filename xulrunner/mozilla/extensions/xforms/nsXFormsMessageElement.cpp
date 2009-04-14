@@ -1066,11 +1066,15 @@ nsXFormsMessageElement::OnChannelRedirect(nsIChannel *OldChannel,
 {
   NS_PRECONDITION(aNewChannel, "Redirect without a channel?");
 
-  nsCOMPtr<nsIURI> newURI;
+  nsCOMPtr<nsIURI> newURI, newOrigURI;
   nsresult rv = aNewChannel->GetURI(getter_AddRefs(newURI));
   NS_ENSURE_SUCCESS(rv, rv);
-  
-  if (!nsXFormsUtils::CheckConnectionAllowed(mElement, newURI)) {
+  rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (!nsXFormsUtils::CheckConnectionAllowed(mElement, newURI) ||
+      (newOrigURI != newURI &&
+       !nsXFormsUtils::CheckConnectionAllowed(mElement, newOrigURI))) {
     nsAutoString tagName;
     mElement->GetLocalName(tagName);
     const PRUnichar *strings[] = { tagName.get() };

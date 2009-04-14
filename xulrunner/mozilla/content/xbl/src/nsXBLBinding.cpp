@@ -725,6 +725,21 @@ nsXBLBinding::GenerateAnonymousContent()
                 if (ni->NamespaceID() != kNameSpaceID_XUL ||
                     (localName != nsGkAtoms::observes &&
                      localName != nsGkAtoms::_template)) {
+                  // Undo InstallAnonymousContent
+                  PRUint32 childCount = mContent->GetChildCount();
+#ifdef MOZ_XUL
+                  nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(doc));
+#endif
+                  for (PRUint32 k = 0; k < childCount; ++k) {
+                    nsIContent* child = mContent->GetChildAt(k);
+                    child->UnbindFromTree();
+#ifdef MOZ_XUL
+                    if (xuldoc) {
+                      xuldoc->RemoveSubtreeFromDocument(child);
+                    }
+#endif
+                  }
+
                   // Kill all anonymous content.
                   mContent = nsnull;
                   bindingManager->SetContentListFor(mBoundElement, nsnull);
@@ -1143,6 +1158,14 @@ nsXBLBinding::ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocumen
 #endif
 
       nsAutoScriptBlocker scriptBlocker;
+      // Unbind the _kids_ of the anonymous content, not just the anonymous
+      // content itself, since they are bound to some other parent.  Basically
+      // we want to undo the mess that InstallAnonymousContent created.
+      PRUint32 childCount = anonymous->GetChildCount();
+      for (PRUint32 i = 0; i < childCount; i++) {
+        anonymous->GetChildAt(i)->UnbindFromTree();
+      }
+      
       anonymous->UnbindFromTree(); // Kill it.
 
 #ifdef MOZ_XUL

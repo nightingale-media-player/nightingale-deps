@@ -678,6 +678,9 @@ function destroyPrefs()
 
 function onPrefChanged(prefName, newValue, oldValue)
 {
+    if (newValue == oldValue)
+        return;
+
     switch (prefName)
     {
         case "awayIdleTime":
@@ -811,7 +814,7 @@ function onPrefChanged(prefName, newValue, oldValue)
             break;
 
         case "aliases":
-            initAliases();
+            updateAliases();
             break;
 
         case "inputSpellcheck":
@@ -839,6 +842,9 @@ function onNetworkPrefChanged(network, prefName, newValue, oldValue)
         network.prefManager.destroy();
         return;
     }
+
+    if (newValue == oldValue)
+        return;
 
     network.updateHeader();
 
@@ -920,6 +926,9 @@ function onChannelPrefChanged(channel, prefName, newValue, oldValue)
         return;
     }
 
+    if (newValue == oldValue)
+        return;
+
     channel.updateHeader();
 
     switch (prefName)
@@ -982,6 +991,9 @@ function onUserPrefChanged(user, prefName, newValue, oldValue)
         return;
     }
 
+    if (newValue == oldValue)
+        return;
+
     user.updateHeader();
 
     switch (prefName)
@@ -1024,6 +1036,9 @@ function onDCCUserPrefChanged(user, prefName, newValue, oldValue)
         user.prefManager.destroy();
         return;
     }
+
+    if (newValue == oldValue)
+        return;
 
     // DCC Users are a pain, they can have multiple views!
     function updateDCCView(view)
@@ -1070,7 +1085,17 @@ function onDCCUserPrefChanged(user, prefName, newValue, oldValue)
 
 function initAliases()
 {
+    client.commandManager.aliasList = new Object();
+    updateAliases();
+}
+
+function updateAliases()
+{
     var aliasDefs = client.prefs["aliases"];
+
+    // Flag all aliases as 'removed' first.
+    for (var name in client.commandManager.aliasList)
+        client.commandManager.aliasList[name] = false;
 
     for (var i = 0; i < aliasDefs.length; ++i)
     {
@@ -1080,11 +1105,26 @@ function initAliases()
             var name = ary[1];
             var list = ary[2];
 
+            // Remove the alias, if it exists, or we'll keep stacking them.
+            if (name in client.commandManager.aliasList)
+                client.commandManager.removeCommand({name: name});
             client.commandManager.defineCommand(name, list);
+            // Flag this alias as 'used'.
+            client.commandManager.aliasList[name] = true;
         }
         else
         {
             dd("Malformed alias: " + aliasDefs[i]);
+        }
+    }
+
+    // Purge any aliases that were defined but are no longer in the pref.
+    for (var name in client.commandManager.aliasList)
+    {
+        if (!client.commandManager.aliasList[name])
+        {
+            client.commandManager.removeCommand({name: name});
+            delete client.commandManager.aliasList[name];
         }
     }
 }

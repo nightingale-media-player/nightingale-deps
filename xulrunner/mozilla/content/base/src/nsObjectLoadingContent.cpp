@@ -762,14 +762,26 @@ nsObjectLoadingContent::HasNewFrame(nsIObjectFrame* aFrame)
 {
   LOG(("OBJLC [%p]: Got frame %p (mInstantiating=%i)\n", this, aFrame,
        mInstantiating));
-  if (!mInstantiating && aFrame && mType == eType_Plugin) {
+
+  // "revoke" any existing instantiate event as it likely has out of
+  // date data (frame pointer etc).
+  mPendingInstantiateEvent = nsnull;
+
+  nsCOMPtr<nsIPluginInstance> instance;
+  aFrame->GetPluginInstance(*getter_AddRefs(instance));
+
+  if (instance) {
+    // The frame already has a plugin instance, that means the plugin
+    // has already been instantiated.
+
+    return NS_OK;
+  }
+
+  if (!mInstantiating && mType == eType_Plugin) {
     // Asynchronously call Instantiate
     // This can go away once plugin loading moves to content
     // This must be done asynchronously to ensure that the frame is correctly
     // initialized (has a view etc)
-
-    // "revoke" any existing instantiate event.
-    mPendingInstantiateEvent = nsnull;
 
     // When in a plugin document, the document will take care of calling
     // instantiate
@@ -1650,12 +1662,26 @@ nsObjectLoadingContent::TryInstantiate(const nsACString& aMIMEType,
     LOG(("OBJLC [%p]: No frame yet\n", this));
     return NS_OK; // Not a failure to have no frame
   }
-  nsIFrame* iframe;
-  CallQueryInterface(frame, &iframe);
-  if (iframe->GetStateBits() & NS_FRAME_FIRST_REFLOW) {
-    LOG(("OBJLC [%p]: Frame hasn't been reflown yet\n", this));
-    return NS_OK; // Not a failure to have no frame
+
+  nsCOMPtr<nsIPluginInstance> instance;
+  nsresult rv = frame->GetPluginInstance(*getter_AddRefs(instance));
+
+  if (!instance) {
+    // The frame has no plugin instance yet. If the frame hasn't been
+    // reflown yet, do nothing as once the reflow happens we'll end up
+    // instantiating the plugin with the correct size n' all (which
+    // isn't known until we've done the first reflow). But if the
+    // frame does have a plugin instance already, be sure to
+    // re-instantiate the plugin as its source or whatnot might have
+    // chanced since it was instantiated.
+    nsIFrame* iframe;
+    CallQueryInterface(frame, &iframe);
+    if (iframe->GetStateBits() & NS_FRAME_FIRST_REFLOW) {
+      LOG(("OBJLC [%p]: Frame hasn't been reflown yet\n", this));
+      return NS_OK; // Not a failure to have no frame
+    }
   }
+
   return Instantiate(frame, aMIMEType, aURI);
 }
 

@@ -289,6 +289,7 @@ public:
    *  @param aPoint is relative to the view.
    *  @param aDelay is the timer's interval.
    */
+  /*unsafe*/
   nsresult StartAutoScrollTimer(nsIView *aView,
                                 nsPoint aPoint,
                                 PRUint32 aDelay);
@@ -344,6 +345,7 @@ public:
    * @param aIsSynchronous when PR_TRUE, scrolls the selection into view
    * at some point after the method returns.request which is processed
    */
+  /*unsafe*/
   nsresult ScrollSelectionIntoView(SelectionType aType,
                                    SelectionRegion aRegion,
                                    PRBool aIsSynchronous) const;
@@ -544,7 +546,7 @@ public:
 
   nsIPresShell *GetShell()const  { return mShell; }
 
-  void DisconnectFromPresShell() { mShell = nsnull; }
+  void DisconnectFromPresShell() { StopAutoScrollTimer(); mShell = nsnull; }
 private:
   nsresult TakeFocus(nsIContent *aNewFocus,
                      PRUint32 aContentOffset,

@@ -289,6 +289,7 @@ private:
     nsCString               mControlReadCarryOverBuf;
 
     nsCOMPtr<nsICacheEntryDescriptor> mCacheEntry;
+    PRPackedBool            mDoomCache;
     
     nsCString mSuppliedEntityID;
 };

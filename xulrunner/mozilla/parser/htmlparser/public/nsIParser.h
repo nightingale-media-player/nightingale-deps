@@ -58,6 +58,10 @@
 { 0x506527cc, 0xd832, 0x420b, \
   { 0xba, 0x3a, 0x80, 0xc0, 0x5a, 0xa1, 0x05, 0xf4 } }
 
+// 5FA66227-44CF-4572-9B5F-E9A357B67ED9
+#define NS_IPARSER_1_9_0_BRANCH \
+{ 0x5FA66227, 0x44CF, 0x4572, \
+  { 0x9B, 0x5F, 0xE9, 0xA3, 0x57, 0xB6, 0x7E, 0xD9 } }
 
 // {41421C60-310A-11d4-816F-000064657374}
 #define NS_IDEBUG_DUMP_CONTENT_IID \
@@ -289,6 +293,22 @@ class nsIParser : public nsISupports {
     NS_IMETHOD CancelParsingEvents() = 0;
 
     virtual void Reset() = 0;
+};
+
+class nsIParser_1_9_0_BRANCH : public nsIParser {
+  public:
+    /**
+     * Tells the parser that a script is now executing. The only data we
+     * should resume parsing for is document.written data. We'll deal with any
+     * data that comes in over the network later.
+     */
+    virtual void ScriptExecuting() = 0;
+
+    /**
+     * Tells the parser that the script is done executing. We should now
+     * continue the regular parsing process.
+     */
+    virtual void ScriptDidExecute() = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIParser, NS_IPARSER_IID)

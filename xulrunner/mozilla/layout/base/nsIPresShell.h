@@ -165,6 +165,8 @@ public:
    */
   NS_IMETHOD Destroy() = 0;
 
+  PRBool IsDestroying() { return mIsDestroying; }
+
   // All frames owned by the shell are allocated from an arena.  They are also recycled
   // using free lists (separate free lists being maintained for each size_t).
   // Methods for recycling frames.

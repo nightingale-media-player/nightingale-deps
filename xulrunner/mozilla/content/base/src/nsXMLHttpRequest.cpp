@@ -913,6 +913,17 @@ nsXMLHttpRequest::GetResponseHeader(const nsACString& header,
   nsresult rv = NS_OK;
   _retval.Truncate();
 
+  // See bug #380418. Hide "Set-Cookie" headers from non-chrome scripts.
+  PRBool chrome = PR_FALSE; // default to false in case IsCapabilityEnabled fails
+  IsCapabilityEnabled("UniversalXPConnect", &chrome);
+  if (!chrome &&
+       (header.LowerCaseEqualsASCII("set-cookie") ||
+        header.LowerCaseEqualsASCII("set-cookie2"))) {
+    NS_WARNING("blocked access to response header");
+    _retval.SetIsVoid(PR_TRUE);
+    return NS_OK;
+  }
+
   nsCOMPtr<nsIHttpChannel> httpChannel = GetCurrentHttpChannel();
 
   if (!mDenyResponseDataAccess && httpChannel) {
@@ -2279,6 +2290,17 @@ nsXMLHttpRequest::OnChannelRedirect(nsIChannel *aOldChannel,
     rv = nsContentUtils::GetSecurityManager()->
       CheckSameOriginURI(oldURI, newURI, PR_TRUE);
 
+    if (NS_SUCCEEDED(rv)) {
+      nsCOMPtr<nsIURI> newOrigURI;
+      rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      if (newOrigURI != newURI) {
+        rv = nsContentUtils::GetSecurityManager()->
+          CheckSameOriginURI(oldURI, newOrigURI, PR_TRUE);
+      }
+    }
+
     if (NS_FAILED(rv)) {
       mDenyResponseDataAccess = PR_TRUE;
       return rv;
@@ -2422,10 +2444,19 @@ NS_IMPL_ISUPPORTS1(nsXMLHttpRequest::nsHeaderVisitor, nsIHttpHeaderVisitor)
 NS_IMETHODIMP nsXMLHttpRequest::
 nsHeaderVisitor::VisitHeader(const nsACString &header, const nsACString &value)
 {
-    mHeaders.Append(header);
-    mHeaders.Append(": ");
-    mHeaders.Append(value);
-    mHeaders.Append('\n');
+    // See bug #380418. Hide "Set-Cookie" headers from non-chrome scripts.
+    PRBool chrome = PR_FALSE; // default to false in case IsCapabilityEnabled fails
+    IsCapabilityEnabled("UniversalXPConnect", &chrome);
+    if (!chrome &&
+         (header.LowerCaseEqualsASCII("set-cookie") ||
+          header.LowerCaseEqualsASCII("set-cookie2"))) {
+        NS_WARNING("blocked access to response header");
+    } else {
+        mHeaders.Append(header);
+        mHeaders.Append(": ");
+        mHeaders.Append(value);
+        mHeaders.Append('\n');
+    }
     return NS_OK;
 }
 

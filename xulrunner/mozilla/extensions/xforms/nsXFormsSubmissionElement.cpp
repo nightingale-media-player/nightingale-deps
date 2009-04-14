@@ -403,8 +403,10 @@ nsXFormsSubmissionElement::OnChannelRedirect(nsIChannel *aOldChannel,
   }
 
   NS_PRECONDITION(aNewChannel, "Redirect without a channel?");
-  nsCOMPtr<nsIURI> newURI;
+  nsCOMPtr<nsIURI> newURI, newOrigURI;
   nsresult rv = aNewChannel->GetURI(getter_AddRefs(newURI));
+  NS_ENSURE_SUCCESS(rv, rv);
+  rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
   NS_ENSURE_SUCCESS(rv, rv);
 
   NS_ENSURE_STATE(mElement);
@@ -413,7 +415,8 @@ nsXFormsSubmissionElement::OnChannelRedirect(nsIChannel *aOldChannel,
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
   NS_ENSURE_STATE(doc);
 
-  if (!CheckSameOrigin(doc, newURI)) {
+  if (!CheckSameOrigin(doc, newURI) ||
+      (newOrigURI != newURI && !CheckSameOrigin(doc, newOrigURI))) {
     nsXFormsUtils::ReportError(NS_LITERAL_STRING("submitSendOrigin"),
                                mElement);
     return NS_ERROR_ABORT;

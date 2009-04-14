@@ -259,7 +259,7 @@ PR_IMPLEMENT(PRInt32) PR_GetNumberOfProcessors( void )
     }
 #elif defined(IRIX)
     numCpus = sysconf( _SC_NPROC_ONLN );
-#elif defined(RISCOS)
+#elif defined(RISCOS) || defined(SYMBIAN)
     numCpus = 1;
 #elif defined(XP_UNIX)
     numCpus = sysconf( _SC_NPROCESSORS_ONLN );
@@ -300,14 +300,14 @@ PR_IMPLEMENT(PRUint64) PR_GetPhysicalMemorySize(void)
 #elif defined(DARWIN)
 
     struct host_basic_info hInfo;
-    mach_msg_type_number_t count;
+    mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
 
     int result = host_info(mach_host_self(),
                            HOST_BASIC_INFO,
                            (host_info_t) &hInfo,
                            &count);
     if (result == KERN_SUCCESS)
-        bytes = hInfo.memory_size;
+        bytes = hInfo.max_mem;
 
 #elif defined(WIN32)
 

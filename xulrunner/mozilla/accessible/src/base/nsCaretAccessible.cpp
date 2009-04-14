@@ -167,67 +167,40 @@ nsCaretAccessible::RemoveDocSelectionListener(nsIPresShell *aShell)
 
 NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, nsISelection *aSel, PRInt16 aReason)
 {
+  NS_ENSURE_ARG(aDoc);
+  
+  nsCOMPtr<nsIDOMNode> docNode(do_QueryInterface(aDoc));
+  nsCOMPtr<nsIAccessibleDocument> accDoc =
+    nsAccessNode::GetDocAccessibleFor(docNode);
+  
+  // Don't fire events until document is loaded.
+  if (!accDoc)
+    return NS_OK;
+  
+  nsCOMPtr<nsIAccessible> accForDoc(do_QueryInterface(accDoc));
+  if (nsAccessible::State(accForDoc) & nsIAccessibleStates::STATE_BUSY)
+    return NS_OK;
+
   NS_ENSURE_TRUE(mRootAccessible, NS_ERROR_FAILURE);
 
   mLastUsedSelection = do_GetWeakReference(aSel);
 
-  nsCOMPtr<nsIDocument> doc = do_QueryInterface(aDoc);
-  NS_ENSURE_TRUE(doc, NS_OK);
-  nsIPresShell *presShell = doc->GetPrimaryShell();
-  NS_ENSURE_TRUE(presShell, NS_OK);
+  PRInt32 rangeCount = 0;
+  nsresult rv = aSel->GetRangeCount(&rangeCount);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  // Get first nsIAccessibleText in parent chain and fire caret-move, selection-change event for it
-  nsCOMPtr<nsIAccessible> accessible;
-  nsIAccessibilityService *accService = mRootAccessible->GetAccService();
-  NS_ENSURE_TRUE(accService, NS_ERROR_FAILURE);
-  // Get accessible from selection's focus node or its parent
-  nsCOMPtr<nsIDOMNode> focusNode;
-  aSel->GetFocusNode(getter_AddRefs(focusNode));
-  if (!focusNode) {
+  if (rangeCount == 0) {
     mLastTextAccessible = nsnull;
     return NS_OK; // No selection
   }
 
-  nsCOMPtr<nsIAccessibleDocument> docAccessible =
-    nsAccessNode::GetDocAccessibleFor(focusNode);
-  nsCOMPtr<nsIAccessible> accessibleForDoc =
-    do_QueryInterface(docAccessible);
-  if (!accessibleForDoc) {
-    return NS_OK;
-  }
-  PRUint32 docState;
-  accessibleForDoc->GetFinalState(&docState, nsnull);
-  if (docState & nsIAccessibleStates::STATE_BUSY) {
-    return NS_OK;  // Don't fire caret moves until doc loaded
-  }
-
-  nsCOMPtr<nsIDOMNode> nodeWithCaret = focusNode;
-
-  nsCOMPtr<nsIAccessibleText> textAcc;
-  while (focusNode) {
-    // Make sure to get the correct starting node for selection events inside XBL content trees
-    nsCOMPtr<nsIDOMNode> relevantNode;
-    if (NS_SUCCEEDED(accService->GetRelevantContentNodeFor(focusNode, getter_AddRefs(relevantNode))) && relevantNode) {
-      focusNode  = relevantNode;
-    }
-
-    nsCOMPtr<nsIContent> content = do_QueryInterface(focusNode);
-    if (!content || !content->IsNodeOfType(nsINode::eTEXT)) {
-      accService->GetAccessibleInShell(focusNode, presShell,  getter_AddRefs(accessible));
-      textAcc = do_QueryInterface(accessible);
-      if (textAcc) {
-        break;
-      }
-    }
-    nsCOMPtr<nsIDOMNode> parentNode;
-    focusNode->GetParentNode(getter_AddRefs(parentNode));
-    focusNode.swap(parentNode);
-  }
-  NS_ASSERTION(textAcc, "No nsIAccessibleText for caret move event!"); // No nsIAccessibleText for caret move event!
-  NS_ENSURE_TRUE(textAcc, NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> textNode;
+  nsCOMPtr<nsIAccessibleText> textAcc =
+    nsAccUtils::GetTextAccessibleFromSelection(aSel, getter_AddRefs(textNode));
+  NS_ENSURE_STATE(textAcc);
 
   PRInt32 caretOffset;
-  nsresult rv = textAcc->GetCaretOffset(&caretOffset);
+  rv = textAcc->GetCaretOffset(&caretOffset);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (textAcc == mLastTextAccessible && caretOffset == mLastCaretOffset) {
@@ -241,7 +214,7 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
   mLastTextAccessible = textAcc;
 
   nsCOMPtr<nsIAccessibleCaretMoveEvent> event =
-    new nsAccCaretMoveEvent(focusNode);
+    new nsAccCaretMoveEvent(textNode);
   NS_ENSURE_TRUE(event, NS_ERROR_OUT_OF_MEMORY);
 
   return mRootAccessible->FireDelayedAccessibleEvent(event);

@@ -230,9 +230,6 @@ nsNativeThemeCocoa::DrawCellWithScaling(NSCell *cell,
 
   NSRect drawRect = NSMakeRect(destRect.origin.x, destRect.origin.y, destRect.size.width, destRect.size.height);
 
-  CGAffineTransform savedCTM;
-  NSGraphicsContext* savedContext = NULL;
-
   float xscale = 1.0f, yscale = 1.0f;
 
   if (naturalWidth != 0.0f) {
@@ -257,8 +254,7 @@ nsNativeThemeCocoa::DrawCellWithScaling(NSCell *cell,
     drawRect.size.height = minHeight;
   }
 
-  if (doSaveCTM)
-    savedCTM = CGContextGetCTM(cgContext);
+  [NSGraphicsContext saveGraphicsState];
 
   // Fall back to no scaling if the area of our cell (in pixels^2) is too large.
   if (drawRect.size.width * drawRect.size.height > CELL_SCALING_MAX_AREA)
@@ -269,12 +265,14 @@ nsNativeThemeCocoa::DrawCellWithScaling(NSCell *cell,
     InflateControlRect(&drawRect, controlSize, marginSet);
 
     // Set up the graphics context we've been asked to draw to.
-    savedContext = [NSGraphicsContext currentContext];
+    NSGraphicsContext* savedContext = [NSGraphicsContext currentContext];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:YES]];
 
     // [NSView focusView] may return nil here, but
     // [NSCell drawWithFrame:inView:] can deal with that.
     [cell drawWithFrame:drawRect inView:[NSView focusView]];
+
+    [NSGraphicsContext setCurrentContext:savedContext];
   }
   else {
     float w = ceil(drawRect.size.width);
@@ -298,7 +296,8 @@ nsNativeThemeCocoa::DrawCellWithScaling(NSCell *cell,
 
     CGContextTranslateCTM(ctx, MAX_FOCUS_RING_WIDTH, MAX_FOCUS_RING_WIDTH);
 
-    savedContext = [NSGraphicsContext currentContext];
+    NSGraphicsContext* savedContext = [NSGraphicsContext currentContext];
+
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES]];
 
     // [NSView focusView] may return nil here, but
@@ -322,10 +321,7 @@ nsNativeThemeCocoa::DrawCellWithScaling(NSCell *cell,
     CGContextRelease(ctx);
   }
 
-  if (doSaveCTM)
-    CGContextSetCTM(cgContext, savedCTM);
-
-  [NSGraphicsContext setCurrentContext:savedContext];
+  [NSGraphicsContext restoreGraphicsState];
 
 #if DRAW_IN_FRAME_DEBUG
   CGContextSetRGBFillColor(cgContext, 0.0, 0.0, 0.5, 0.25);

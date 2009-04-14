@@ -280,6 +280,19 @@ nsXMLDocument::OnChannelRedirect(nsIChannel *aOldChannel,
     return rv;
   }
 
+  nsCOMPtr<nsIURI> newOrigURI;
+  rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (newOrigURI != newURI) {
+    rv = nsContentUtils::GetSecurityManager()->
+      CheckSameOriginURI(oldURI, newOrigURI, PR_TRUE);
+  }
+
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+
   return NS_OK;
 }
 

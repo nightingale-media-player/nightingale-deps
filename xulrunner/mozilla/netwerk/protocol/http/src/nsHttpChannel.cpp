@@ -1075,6 +1075,9 @@ nsHttpChannel::DoReplaceWithProxy(nsIProxyInfo* pi)
     if (NS_FAILED(rv))
         return rv;
 
+    // Make sure to do this _after_ calling OnChannelRedirect
+    newChannel->SetOriginalURI(mOriginalURI);
+
     // open new channel
     rv = newChannel->AsyncOpen(mListener, mListenerContext);
     if (NS_FAILED(rv))
@@ -1378,7 +1381,7 @@ nsHttpChannel::OpenCacheEntry(PRBool offline, PRBool *delayed)
 
     // Set the desired cache access mode accordingly...
     nsCacheAccessMode accessRequested;
-    if (mLoadFlags & (LOAD_ONLY_FROM_CACHE | INHIBIT_CACHING)) {
+    if (offline || (mLoadFlags & INHIBIT_CACHING)) {
         // If we have been asked to bypass the cache and not write to the
         // cache, then don't use the cache at all.  Unless we're actually
         // offline, which takes precedence over BYPASS_LOCAL_CACHE.
@@ -1644,12 +1647,10 @@ nsHttpChannel::CheckCache()
     NS_ENSURE_SUCCESS(rv, rv);
     buf.Adopt(0);
 
-    // Don't bother to validate LOAD_ONLY_FROM_CACHE items.
     // Don't bother to validate items that are read-only,
     // unless they are read-only because of INHIBIT_CACHING or because
     // we're updating the offline cache.
-    if (mLoadFlags & LOAD_ONLY_FROM_CACHE ||
-        (mCacheAccess == nsICache::ACCESS_READ &&
+    if ((mCacheAccess == nsICache::ACCESS_READ &&
          !((mLoadFlags & INHIBIT_CACHING) || mCacheForOfflineUse))) {
         mCachedContentIsValid = PR_TRUE;
         return NS_OK;
@@ -2266,7 +2267,6 @@ nsHttpChannel::SetupReplacementChannel(nsIURI       *newURI,
     if (mConnectionInfo->UsingSSL())
         newLoadFlags &= ~INHIBIT_PERSISTENT_CACHING;
 
-    newChannel->SetOriginalURI(mOriginalURI);
     newChannel->SetLoadGroup(mLoadGroup); 
     newChannel->SetNotificationCallbacks(mCallbacks);
     newChannel->SetLoadFlags(newLoadFlags);
@@ -2437,6 +2437,9 @@ nsHttpChannel::ProcessRedirection(PRUint32 redirectType)
     rv = gHttpHandler->OnChannelRedirect(this, newChannel, redirectFlags);
     if (NS_FAILED(rv))
         return rv;
+
+    // Make sure to do this _after_ calling OnChannelRedirect
+    newChannel->SetOriginalURI(mOriginalURI);    
 
     // And now, the deprecated way
     nsCOMPtr<nsIHttpEventSink> httpEventSink;

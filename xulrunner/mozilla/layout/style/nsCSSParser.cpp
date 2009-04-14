@@ -1664,20 +1664,29 @@ PRBool CSSParserImpl::ParsePageRule(nsresult& aErrorCode, RuleAppendFunc aAppend
 void CSSParserImpl::SkipUntil(nsresult& aErrorCode, PRUnichar aStopSymbol)
 {
   nsCSSToken* tk = &mToken;
+  nsAutoTArray<PRUnichar, 16> stack;
+  stack.AppendElement(aStopSymbol);
   for (;;) {
     if (!GetToken(aErrorCode, PR_TRUE)) {
       break;
     }
     if (eCSSToken_Symbol == tk->mType) {
       PRUnichar symbol = tk->mSymbol;
-      if (symbol == aStopSymbol) {
-        break;
+      PRUint32 stackTopIndex = stack.Length() - 1;
+      if (symbol == stack.ElementAt(stackTopIndex)) {
+        stack.RemoveElementAt(stackTopIndex);
+        if (stackTopIndex == 0) {
+          break;
+        }
       } else if ('{' == symbol) {
-        SkipUntil(aErrorCode, '}');
+        // In this case and the two below, just handle out-of-memory by
+        // parsing incorrectly.  It's highly unlikely we're dealing with
+        // a legitimate style sheet anyway.
+        stack.AppendElement('}');
       } else if ('[' == symbol) {
-        SkipUntil(aErrorCode, ']');
+        stack.AppendElement(']');
       } else if ('(' == symbol) {
-        SkipUntil(aErrorCode, ')');
+        stack.AppendElement(')');
       }
     }
   }

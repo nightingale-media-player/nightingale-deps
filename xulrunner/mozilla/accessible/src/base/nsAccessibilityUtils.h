@@ -51,6 +51,7 @@
 #include "nsIDocShellTreeItem.h"
 #include "nsPoint.h"
 #include "nsIAccessibleDocument.h"
+#include "nsIAccessibleText.h"
 
 class nsAccUtils
 {
@@ -198,6 +199,18 @@ public:
      GetARIATreeItemParent(nsIAccessible *aStartTreeItem,
                            nsIContent *aStartTreeItemContent,
                            nsIAccessible **aTreeItemParent);
+
+  /**
+   * Return text accessible containing focus point of the given selection.
+   * Used for normal and misspelling selection changes processing.
+   *
+   * @param aSelection  [in] the given selection
+   * @param aNode       [out, optional] the DOM node of text accessible
+   * @return            text accessible
+   */
+  static already_AddRefed<nsIAccessibleText>
+  GetTextAccessibleFromSelection(nsISelection *aSelection,
+                                 nsIDOMNode **aNode = nsnull);
 
   /**
    * Helper method to scroll range into view, used for implementation of

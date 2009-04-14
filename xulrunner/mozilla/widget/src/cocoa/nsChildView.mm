@@ -2573,6 +2573,9 @@ NSEvent* gLastDragEvent = nil;
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
 
+  if (!newWindow)
+    HideChildPluginViews(self);
+
   if (mMouseEnterExitTag)
     [self removeTrackingRect:mMouseEnterExitTag];
 

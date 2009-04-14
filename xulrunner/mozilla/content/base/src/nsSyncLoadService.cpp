@@ -382,6 +382,16 @@ nsSyncLoader::OnChannelRedirect(nsIChannel *aOldChannel,
         CheckSameOriginURI(oldURI, newURI, PR_TRUE);
     NS_ENSURE_SUCCESS(rv, rv);
 
+    nsCOMPtr<nsIURI> newOrigURI;
+    rv = aNewChannel->GetOriginalURI(getter_AddRefs(newOrigURI));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (newOrigURI != newURI) {
+        rv = nsContentUtils::GetSecurityManager()->
+            CheckSameOriginURI(oldURI, newOrigURI, PR_TRUE);
+        NS_ENSURE_SUCCESS(rv, rv);
+    }
+
     return NS_OK;
 }
 
