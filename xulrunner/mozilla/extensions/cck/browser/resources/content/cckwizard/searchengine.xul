@@ -51,6 +51,7 @@
         height="200"
         >
   <script src="chrome://cckwizard/content/cckwizard.js"/>
+  <script src="chrome://cckwizard/content/search.js"/>
   <vbox>
     <label>&engines.description;</label>
     <label control="searchengine">&engine.label;</label>

@@ -88,3 +88,16 @@ interface nsIPrintSettingsX : nsISupports
   [noscript] void readPageFormatFromPrefs();
   [noscript] void writePageFormatToPrefs();
 };
+
+[scriptable, uuid(30B29956-7E22-412A-82C2-31086B248102)]
+
+interface nsIPrintSettingsX_MOZILLA_1_9_BRANCH : nsISupports
+{
+  /**
+   * cleanUpAfterCarbonDialog
+   *
+   * After bringing up Carbon print dialogs, clean up menus.
+   * See bug 425844 for details.
+   */
+  [noscript] void cleanUpAfterCarbonDialog();
+};

@@ -526,7 +526,6 @@ protected:
     PRBool IsOKToLoadURI(nsIURI* aURI);
     
     void ReattachEditorToWindow(nsISHEntry *aSHEntry);
-    void DetachEditorFromWindow(nsISHEntry *aSHEntry);
 
 protected:
     // Override the parent setter from nsDocLoader

@@ -47,11 +47,13 @@
 //*****************************************************************************
 
 class nsPrintSettingsX : public nsPrintSettings,
-                         public nsIPrintSettingsX
+                         public nsIPrintSettingsX,
+                         public nsIPrintSettingsX_MOZILLA_1_9_BRANCH
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIPRINTSETTINGSX
+  NS_DECL_NSIPRINTSETTINGSX_MOZILLA_1_9_BRANCH
 
   nsPrintSettingsX();
   virtual ~nsPrintSettingsX();

@@ -83,7 +83,7 @@
 <!-- Thunderbird -->
 <menupopup id="taskPopup">
   <menuitem id="tb-venkman-menu-tb" oncommand="start_venkman()" 
-      insertafter="javaScriptConsole,devToolsSeparator"
+      insertafter="javascriptConsole,javaScriptConsole,devToolsSeparator"
       label="&vnkMenu.label;" accesskey="&vnkMenu.accesskey;"/>
 </menupopup>
 

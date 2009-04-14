@@ -10,6 +10,7 @@ cckwizard.jar:
 % locale cckwizard it-IT %locale/it-IT/cckwizard/
 % locale cckwizard ja-JP %locale/ja-JP/cckwizard/
 % locale cckwizard nl-NL %locale/nl-NL/cckwizard/
+% locale cckwizard pl-PL %locale/pl-PL/cckwizard/
 % locale cckwizard pt-BR %locale/pt-BR/cckwizard/
 % locale cckwizard ru-RU %locale/ru-RU/cckwizard/
 % locale cckwizard zh-CN %locale/zh-CN/cckwizard/
@@ -31,6 +32,8 @@ cckwizard.jar:
   locale/ja-JP/cckwizard/cckwizard.properties               (ja-JP/cckwizard/cckwizard.properties)
   locale/nl-NL/cckwizard/cckWizard.dtd                      (nl-NL/cckwizard/cckWizard.dtd)
   locale/nl-NL/cckwizard/cckwizard.properties               (nl-NL/cckwizard/cckwizard.properties)
+  locale/pl-PL/cckwizard/cckWizard.dtd                      (pl-PL/cckwizard/cckWizard.dtd)
+  locale/pl-PL/cckwizard/cckwizard.properties               (pl-PL/cckwizard/cckwizard.properties)
   locale/pt-BR/cckwizard/cckWizard.dtd                      (pt-BR/cckwizard/cckWizard.dtd)
   locale/pt-BR/cckwizard/cckwizard.properties               (pt-BR/cckwizard/cckwizard.properties)
   locale/ru-RU/cckwizard/cckWizard.dtd                      (ru-RU/cckwizard/cckWizard.dtd)

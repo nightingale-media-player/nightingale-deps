@@ -36,6 +36,8 @@
 <!ENTITY  creator.label                 "Creator:">
 <!ENTITY  homepageURL.label             "Homepage URL:">
 <!ENTITY  updateURL.label               "Update URL:">
+<!ENTITY  updateKey.label               "Update Public Key:">
+<!ENTITY  updateKey.description         "Firefox 3 requires a public key if your extension does not provide a secure update.">
 <!ENTITY  icon.label                    "Icon:">
 <!ENTITY  chooseFile.label              "Choose File...">
 <!ENTITY  chooseDir.label               "Choose Dir...">
@@ -91,9 +93,16 @@
 <!ENTITY  helpMenuAccesskey.label       "Help Menu Item Accesskey:">
 
 <!ENTITY  customizePartFour.label      "Customize the Browser - Part Four">
+
 <!ENTITY  allowedSites.caption          "Allowed Sites">
 <!ENTITY  popupAllowedSites.label       "You can specify domains for which popups are allowed. List the domains, separated by a comma.">
 <!ENTITY  installAllowedSites.label     "You can specify domains for which software installations (XPIs) are allowed. List the domains, separated by a comma.">
+<!ENTITY  cookieAllowedSites.label      "You can specify domains for which cookies are always allowed. List the domains, separated by a comma.">
+
+<!ENTITY  deniedSites.caption          "Denied Sites">
+<!ENTITY  popupDeniedSites.label       "You can specify domains for which popups are denied. List the domains, separated by a comma.">
+<!ENTITY  installDeniedSites.label     "You can specify domains for which software installations (XPIs) are denied. List the domains, separated by a comma.">
+<!ENTITY  cookieDeniedSites.label      "You can specify domains for which cookies are always denied. List the domains, separated by a comma.">
 
 <!ENTITY  customizeBrowserPlugins.label "Customize Browser Plug-ins">
 <!ENTITY  browserPlugins.description    "Use the buttons below to add browser plug-ins.">

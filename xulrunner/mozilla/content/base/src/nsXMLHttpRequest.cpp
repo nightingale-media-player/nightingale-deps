@@ -1419,6 +1419,7 @@ IsSameOrBaseChannel(nsIRequest* aPossibleBase, nsIChannel* aChannel)
 NS_IMETHODIMP
 nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
 {
+  nsresult rv;
   if (!IsSameOrBaseChannel(request, mChannel)) {
     return NS_OK;
   }
@@ -1454,44 +1455,13 @@ nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
   mState |= XML_HTTP_REQUEST_PARSEBODY;
   ChangeState(XML_HTTP_REQUEST_LOADED);
 
-  nsIURI* uri = GetBaseURI();
-
-  // Create an empty document from it.  Here we have to cheat a little bit...
-  // Setting the base URI to |uri| won't work if the document has a null
-  // principal, so use mPrincipal when creating the document, then reset the
-  // principal.
-  const nsAString& emptyStr = EmptyString();
-  nsCOMPtr<nsIScriptGlobalObject> global = do_QueryInterface(mOwner);
-  nsresult rv = nsContentUtils::CreateDocument(emptyStr, emptyStr, nsnull, uri,
-                                               uri, mPrincipal, global,
-                                               getter_AddRefs(mDocument));
-  NS_ENSURE_SUCCESS(rv, rv);
-  nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocument);
-  if (doc) {
-    doc->SetPrincipal(documentPrincipal);
-  }
+  nsresult status;
+  request->GetStatus(&status);
 
   // Reset responseBody
   mResponseBody.Truncate();
 
-  // Register as a load listener on the document
-  nsCOMPtr<nsPIDOMEventTarget> target(do_QueryInterface(mDocument));
-  if (target) {
-    nsWeakPtr requestWeak =
-      do_GetWeakReference(static_cast<nsIXMLHttpRequest*>(this));
-    nsCOMPtr<nsIDOMEventListener> proxy = new nsLoadListenerProxy(requestWeak);
-    if (!proxy) return NS_ERROR_OUT_OF_MEMORY;
-
-    // This will addref the proxy
-    rv = target->AddEventListenerByIID(static_cast<nsIDOMEventListener*>
-                                                  (proxy),
-                                       NS_GET_IID(nsIDOMLoadListener));
-    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-  }
-
-  nsresult status;
-  request->GetStatus(&status);
-
+  // Set up responseXML
   PRBool parseBody = PR_TRUE;
   nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(mChannel));
   if (httpChannel) {
@@ -1521,21 +1491,54 @@ nsXMLHttpRequest::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
   }
 
   if (mState & XML_HTTP_REQUEST_PARSEBODY) {
+    nsCOMPtr<nsIURI> baseURI, docURI;
+    nsCOMPtr<nsIDocument> doc = GetDocumentFromScriptContext(mScriptContext);
+
+    if (doc) {
+      docURI = doc->GetDocumentURI();
+      baseURI = doc->GetBaseURI();
+    }
+
+    // Create an empty document from it.  Here we have to cheat a little bit...
+    // Setting the base URI to |baseURI| won't work if the document has a null
+    // principal, so use mPrincipal when creating the document, then reset the
+    // principal.
+    const nsAString& emptyStr = EmptyString();
+    nsCOMPtr<nsIScriptGlobalObject> global = do_QueryInterface(mOwner);
+    rv = nsContentUtils::CreateDocument(emptyStr, emptyStr, nsnull, docURI,
+                                        baseURI, mPrincipal, global,
+                                        getter_AddRefs(mDocument));
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsCOMPtr<nsIDocument> responseDoc = do_QueryInterface(mDocument);
+    responseDoc->SetPrincipal(documentPrincipal);
+
+    // Register as a load listener on the document
+    nsCOMPtr<nsPIDOMEventTarget> target(do_QueryInterface(mDocument));
+    if (target) {
+      nsWeakPtr requestWeak =
+        do_GetWeakReference(static_cast<nsIXMLHttpRequest*>(this));
+      nsCOMPtr<nsIDOMEventListener> proxy = new nsLoadListenerProxy(requestWeak);
+      if (!proxy) return NS_ERROR_OUT_OF_MEMORY;
+
+      // This will addref the proxy
+      rv = target->AddEventListenerByIID(static_cast<nsIDOMEventListener*>
+                                                    (proxy),
+                                         NS_GET_IID(nsIDOMLoadListener));
+      NS_ENSURE_SUCCESS(rv, rv);
+    }
+
     nsCOMPtr<nsIStreamListener> listener;
     nsCOMPtr<nsILoadGroup> loadGroup;
     channel->GetLoadGroup(getter_AddRefs(loadGroup));
 
-    nsCOMPtr<nsIDocument> document(do_QueryInterface(mDocument));
-    if (!document) {
-      return NS_ERROR_FAILURE;
-    }
-
-    rv = document->StartDocumentLoad(kLoadAsData, channel, loadGroup, nsnull,
-                                     getter_AddRefs(listener), PR_TRUE);
+    rv = responseDoc->StartDocumentLoad(kLoadAsData, channel, loadGroup,
+                                        nsnull, getter_AddRefs(listener),
+                                        PR_TRUE);
     NS_ENSURE_SUCCESS(rv, rv);
 
     mXMLParserStreamListener = listener;
-    return mXMLParserStreamListener->OnStartRequest(request, ctxt);
+    rv = mXMLParserStreamListener->OnStartRequest(request, ctxt);
+    NS_ENSURE_SUCCESS(rv, rv);
   }
 
   return NS_OK;

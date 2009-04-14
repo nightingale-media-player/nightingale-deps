@@ -1416,16 +1416,23 @@ function vmgr_dragover (event, flavor, session)
         return false;
 
     /* COVER YOUR EYES!! */
-    var data = nsTransferable.get (this.getSupportedFlavours(),
-                                   nsDragAndDrop.getDragData, true);
-    data = data.first.first;
-    
-    var parsedLocation = this.parseLocation(data.data);
+    var data;
+    if ("getDragData" in nsDragAndDrop)
+    {
+        // legacy code for backwards compatibility
+        data = nsTransferable.get(this.getSupportedFlavours(),
+                                  nsDragAndDrop.getDragData, true)
+                             .first.first.data;
+    }
+    else
+    {
+        data = event.dataTransfer.mozGetDataAt("text/x-vloc", 0);
+    }
+    var parsedLocation = this.parseLocation(data);        
     if (target.getAttribute("id") == parsedLocation.id)
         return false;
     
     var direction = this.getDropDirection(event, target);
-
     if (target.parentNode.getAttribute("type") == "tab" &&
         direction.indexOf("tab") == -1)
     {

@@ -1355,7 +1355,7 @@ nsresult nsContentSubtreeIterator::Init(nsIDOMRange* aRange)
   }
 
   // cool, we have the first node in the range.  Now we walk
-  // up it's ancestors to find the most senior that is still
+  // up its ancestors to find the most senior that is still
   // in the range.  That's the real first node.
   if (NS_FAILED(GetTopAncestorInRange(firstCandidate, address_of(mFirst))))
     return NS_ERROR_FAILURE;

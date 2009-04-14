@@ -929,8 +929,7 @@ void
 nsBindingManager::PostProcessAttachedQueueEvent()
 {
   mProcessAttachedQueueEvent =
-    new nsRunnableMethod<nsBindingManager>(
-      this, &nsBindingManager::DoProcessAttachedQueue);
+    NS_NEW_RUNNABLE_METHOD(nsBindingManager, this, DoProcessAttachedQueue);
   nsresult rv = NS_DispatchToCurrentThread(mProcessAttachedQueueEvent);
   if (NS_SUCCEEDED(rv) && mDocument) {
     mDocument->BlockOnload();
@@ -940,6 +939,11 @@ nsBindingManager::PostProcessAttachedQueueEvent()
 void
 nsBindingManager::DoProcessAttachedQueue()
 {
+  if (!mDocument) {
+    // Our document is gone; get out of here.
+    return;
+  }
+  
   if (!mProcessingAttachedStack) {
     ProcessAttachedQueue();
 

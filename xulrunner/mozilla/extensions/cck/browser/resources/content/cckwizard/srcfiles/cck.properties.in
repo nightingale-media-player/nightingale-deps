@@ -9,3 +9,7 @@ browser.search.defaultenginename=%browser.search.defaultenginename%
 browser.search.order.1=%browser.search.order.1%
 PopupAllowedSites=%PopupAllowedSites%
 InstallAllowedSites=%InstallAllowedSites%
+CookieAllowedSites=%CookieAllowedSites%
+PopupDeniedSites=%PopupDeniedSites%
+InstallDeniedSites=%InstallDeniedSites%
+CookieDeniedSites=%CookieDeniedSites%

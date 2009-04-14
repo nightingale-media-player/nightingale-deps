@@ -72,6 +72,8 @@
 // numbers. See StartCache
 #define DATABASE_CACHE_PAGES 4000
 
+#define DB_SCHEMA_VERSION   0
+
 // nsFormHistoryResult is a specialized autocomplete result class that knows
 // how to remove entries from the form history table.
 class nsFormHistoryResult : public nsIAutoCompleteSimpleResult
@@ -455,6 +457,18 @@ nsFormHistory::OpenDatabase()
   rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("INSERT INTO moz_formhistory (fieldname, value) VALUES (?1, ?2)"),
                                 getter_AddRefs(mDBInsertNameValue));
   NS_ENSURE_SUCCESS(rv, rv);
+
+  PRInt32 schemaVersion;
+  rv = mDBConn->GetSchemaVersion(&schemaVersion);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Check the schema version of the DB. If it's newer than expected, 
+  // downgrade the schema version so the future version will know to
+  // re-upgrade the DB.
+  if (schemaVersion != DB_SCHEMA_VERSION) {
+    rv = mDBConn->SetSchemaVersion(DB_SCHEMA_VERSION);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
 
   // should commit before starting cache
   transaction.Commit();

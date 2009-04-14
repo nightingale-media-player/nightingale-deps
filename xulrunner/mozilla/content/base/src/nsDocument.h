@@ -668,6 +668,10 @@ public:
   static nsresult GetElementsByClassNameHelper(nsINode* aRootNode,
                                                const nsAString& aClasses,
                                                nsIDOMNodeList** aReturn);
+
+  void MaybeInitializeFinalizeFrameLoaders();
+
+  void MaybeEndOutermostXBLUpdate();
 protected:
 
   /**
@@ -678,8 +682,6 @@ protected:
   static PRBool CheckGetElementByIdArg(const nsAString& aId);
 
   void DispatchContentLoadedEvents();
-
-  void InitializeFinalizeFrameLoaders();
 
   void RetrieveRelevantHeaders(nsIChannel *aChannel);
 
@@ -801,6 +803,8 @@ protected:
   // document was created entirely in memory
   PRPackedBool mHaveInputEncoding:1;
 
+  PRPackedBool mInXBLUpdate:1;
+
   PRUint8 mXMLDeclarationBits;
 
   PRUint8 mDefaultElementType;
@@ -865,6 +869,7 @@ private:
 
   nsTArray<nsRefPtr<nsFrameLoader> > mInitializableFrameLoaders;
   nsTArray<nsRefPtr<nsFrameLoader> > mFinalizableFrameLoaders;
+  nsRefPtr<nsRunnableMethod<nsDocument> > mFrameLoaderRunner;
 };
 
 

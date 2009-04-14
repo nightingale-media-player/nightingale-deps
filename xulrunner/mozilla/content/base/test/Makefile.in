@@ -83,6 +83,8 @@ _TEST_FILES = 	test_bug5141.html \
 		test_bug238409.html \
 		test_bug276037-1.html \
 		test_bug276037-2.xhtml \
+		test_bug298064.html \
+		bug298064-subframe.html \
 		test_bug308484.html \
 		test_bug311681.xml \
 		test_bug322317.html \
@@ -192,6 +194,11 @@ _TEST_FILES = 	test_bug5141.html \
 		test_bug444322.html \
 		bug444322.txt \
 		bug444322.js \
+		test_XHRDocURI.html \
+		file_XHRDocURI.xml \
+		file_XHRDocURI.xml^headers^ \
+		file_XHRDocURI.text \
+		file_XHRDocURI.text^headers^ \
 	$(NULL)
 
 libs:: $(_TEST_FILES)

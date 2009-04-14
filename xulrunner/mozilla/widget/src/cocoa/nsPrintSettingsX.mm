@@ -59,6 +59,8 @@ struct FrozenHandle {
 #define PRINTING_PREF_BRANCH            "print."
 #define MAC_OS_X_PAGE_SETUP_PREFNAME    "macosx.pagesetup-2"
 
+#include "nsCocoaWindow.h"
+#include "nsMenuBarX.h"
 
 
 /** ------------------------------------------------------------
@@ -141,9 +143,10 @@ protected:
 };
 
 
-NS_IMPL_ISUPPORTS_INHERITED1(nsPrintSettingsX, 
+NS_IMPL_ISUPPORTS_INHERITED2(nsPrintSettingsX, 
                              nsPrintSettings, 
-                             nsIPrintSettingsX)
+                             nsIPrintSettingsX,
+                             nsIPrintSettingsX_MOZILLA_1_9_BRANCH)
 
 /** ---------------------------------------------------
  */
@@ -557,3 +560,20 @@ OSStatus nsPrintSettingsX::CreateDefaultPrintSettings(PMPrintSession aSession, P
 
   NS_OBJC_END_TRY_ABORT_BLOCK_RETURN(noErr);
 }
+
+NS_IMETHODIMP nsPrintSettingsX::CleanUpAfterCarbonDialog()
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
+
+  NSWindow* mainWindow = [NSApp mainWindow];
+  if (mainWindow) {
+    [WindowDelegate paintMenubarForWindow:mainWindow];
+  } else {
+    nsIMenuBar* hiddenWindowMenuBar = MenuHelpersX::GetHiddenWindowMenuBar();
+    if (hiddenWindowMenuBar)
+      hiddenWindowMenuBar->Paint();
+  }
+  
+  NS_OBJC_END_TRY_ABORT_BLOCK_NSRESULT;
+}
+

@@ -37,6 +37,11 @@
  
 const Ci = Components.interfaces;
 const Cc = Components.classes;
+
+const CURRENT_SCHEMA = 0;
+const PR_HOURS = 60 * 60 * 1000000;
+
+
 var dirSvc = Cc["@mozilla.org/file/directory_service;1"].
              getService(Ci.nsIProperties);
 
@@ -69,10 +74,20 @@ if (!profileDir) {
   dirSvc.QueryInterface(Ci.nsIDirectoryService).registerProvider(provider);
 }
 
+function getDBVersion(dbfile) {
+    var ss = Cc["@mozilla.org/storage/service;1"].
+             getService(Ci.mozIStorageService);
+    var dbConnection = ss.openDatabase(dbfile);
+    var version = dbConnection.schemaVersion;
+    dbConnection.close();
+
+    return version;
+}
+
 function cleanUpFormHist() {
   var formhistFile = dirSvc.get("ProfD", Ci.nsIFile);
   formhistFile.append("formhistory.dat");
   if (formhistFile.exists())
-    formhistFile.remove();
+    formhistFile.remove(false);
 }
 cleanUpFormHist();

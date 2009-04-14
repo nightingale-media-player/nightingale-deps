@@ -167,9 +167,15 @@ function OpenCCKWizard()
      document.getElementById("saveOnExit").checked = gPrefBranch.getBoolPref("cck.save_on_exit");
    } catch (ex) {
    }
-   try {
-     document.getElementById("zipLocation").value = gPrefBranch.getCharPref("cck.path_to_zip");
-   } catch (ex) {
+   if (Components.interfaces.nsIZipWriter) {
+     document.getElementById("zipLocation").hidden = true;
+     document.getElementById("zipLocationLabel").hidden = true;
+     document.getElementById("zipLocationButton").hidden = true;
+   } else {
+     try {
+       document.getElementById("zipLocation").value = gPrefBranch.getCharPref("cck.path_to_zip");
+     } catch (ex) {
+     }
    }
    
 
@@ -993,6 +999,8 @@ function CreateCCK()
   } catch(ex) {}
   
   CCKWriteXULOverlay(destdir);
+  CCKWriteXULOverlayMac(destdir);
+  CCKWriteXULOverlayNonMac(destdir);
   CCKWriteDTD(destdir);
   CCKWriteCSS(destdir);
   CCKWriteProperties(destdir);
@@ -1019,7 +1027,7 @@ function CreateCCK()
                          .createInstance(Components.interfaces.nsILocalFile);
   zipdir.initWithPath(currentconfigpath);
   zipdir.append("jar");
-  CCKZip("cck.jar", zipdir, "content");
+  CCKZip("cck.jar", zipdir, ["content"]);
   
 /* ---------- */
 
@@ -1120,14 +1128,13 @@ function CreateCCK()
   CCKCopyChromeToFile("chrome.manifest", destdir)
   CCKWriteInstallRDF(destdir);
          
-  CCKWriteInstallJS(destdir);
   var filename = document.getElementById("filename").value;
   if (filename.length == 0)
     filename = "cck";
   filename += ".xpi";
 
   CCKZip("cck.xpi", destdir,
-         "chrome", "components", "defaults", "platform", "searchplugins", "chrome.manifest", "install.rdf", "install.js", "cck.config");
+         ["chrome", "components", "defaults", "platform", "searchplugins", "chrome.manifest", "install.rdf", "cck.config"]);
 
   var outputdir = Components.classes["@mozilla.org/file/local;1"]
                             .createInstance(Components.interfaces.nsILocalFile);
@@ -1157,10 +1164,16 @@ function CreateCCK()
     CCKCopyFile(destdir.path, packagedir);
 
     listbox = document.getElementById('bundleList');
+    
+    var files_to_zip = ["cck.xpi", "install.rdf"];
+    var tempfile = Components.classes["@mozilla.org/file/local;1"]
+                               .createInstance(Components.interfaces.nsILocalFile);
 
     for (var i=0; i < listbox.getRowCount(); i++) {    
       listitem = listbox.getItemAtIndex(i);
       CCKCopyFile(listitem.getAttribute("label"), packagedir);
+      tempfile.initWithPath(listitem.getAttribute("label"));
+      files_to_zip.push(tempfile.leafName);
     }
 
     CCKCopyChromeToFile("install.rdf.mip", packagedir)
@@ -1169,8 +1182,8 @@ function CreateCCK()
     packagedir.moveTo(packagedir.parent, "install.rdf");
 
     packagedir = packagedir.parent;
-
-    CCKZip("cck.zip", packagedir, "*.xpi", "*.jar", "install.rdf");
+    
+    CCKZip("cck.zip", packagedir, files_to_zip);
     packagedir.append("cck.zip");
     outputdir.append(filename);
     try {
@@ -1221,13 +1234,32 @@ function CCKCopyChromeToFile(chromefile, location)
   fos.close();
 }
 
+function zwRecurse(zipobj, dirobj, location) {
+  var entries = dirobj.directoryEntries;
+
+  while (entries.hasMoreElements()) {
+    var file = entries.getNext().QueryInterface(Components.interfaces.nsILocalFile);;
+    if (file.exists() && file.isDirectory()) {
+      zwRecurse(zipobj, file, location);
+    } else if (file.exists()) {
+      /* Remove beginning of path */
+      var path = file.path.replace(location.path, "");
+      /* Remove beginning slash */
+      path = path.substr(1);
+      /* Change backslashes to forward slashes */
+      path = path.replace(/\\/g, '/');
+      zipobj.addEntryFile(path, Components.interfaces.nsIZipWriter.COMPRESSION_NONE, file, false);
+    }
+  }
+}
 
 /* This function creates a given zipfile in a given location */
 /* It takes as parameters the names of all the files/directories to be contained in the ZIP file */
 /* It works by creating a CMD file to generate the ZIP */
-/* unless we have the spiffy ZipWriterCompoent from maf.mozdev.org */
+/* or using the nsIZipWriter interface */
+/* files_to_zip is an array */
 
-function CCKZip(zipfile, location)
+function CCKZip(zipfile, location, files_to_zip)
 {
   var file = location.clone();
   file.append(zipfile);
@@ -1235,93 +1267,38 @@ function CCKZip(zipfile, location)
     file.remove(false);
   } catch (ex) {}
 
-  if ((document.getElementById("zipLocation").value == "") && Components.interfaces.IZipWriterComponent) {
+  if (Components.interfaces.nsIZipWriter) {
     var archivefileobj = location.clone();
     archivefileobj.append(zipfile);
-    var zipWriter = new Components.Constructor("@mozilla.org/zipwriter;1", "nsIZipWriter");
-    zipWriter.open(archivefileobj, 0x01 | 0x08 | 0x20);
-    for (var i=2; i < arguments.length; i++) {
+
+    var zipwriter = Components.Constructor("@mozilla.org/zipwriter;1", "nsIZipWriter");
+    var zipwriterobj = new zipwriter();
+    zipwriterobj.open(archivefileobj, 0x04 | 0x08 | 0x20);
+
+    for (var i=0; i < files_to_zip.length; i++) {
       var sourcepathobj = location.clone();
-      sourcepathobj.append(arguments[i]);
+      sourcepathobj.append(files_to_zip[i]);
       if (sourcepathobj.exists() && sourcepathobj.isDirectory()) {
-        var entries = sourcepathobj.directoryEntries;
-        while (entries.hasMoreElements()) {
-          zipentriestoadd.push(entries.getNext());
-          var foo = entries.getNext();
-          zipWriter.addEntryFile(foo.path, 9, foo, true);
-        }
+        zwRecurse(zipwriterobj, sourcepathobj, location);
       } else if (sourcepathobj.exists()) {
-          zipWriter.addEntryFile(sourcepathobj.path, 9, sourcepathobj, true);
+        /* Remove beginning of path */
+        var path = sourcepathobj.path.replace(location.path, "");
+        /* Remove beginning slash */
+        path = path.substr(1);
+      /* Convert backslashes to forward slashes */
+        path = path.replace(/\\/g, '/');
+        zipwriterobj.addEntryFile(path, Components.interfaces.nsIZipWriter.COMPRESSION_NONE, sourcepathobj, false);
       }
     }
-
-    
-
-    if (Components.interfaces.nsIZipWriter) {
-    } else if (Components.interfaces.IZipWriterComponent) {
-      try {
-        var zipwriterobj = Components.classes["@ottley.org/libzip/zip-writer;1"]
-                                     .createInstance(Components.interfaces.IZipWriterComponent);
-                                  
-        zipwriterobj.CURR_COMPRESS_LEVEL = Components.interfaces.IZipWriterComponent.COMPRESS_LEVEL9;
-          
-        var sourcepathobj = Components.classes["@mozilla.org/file/local;1"]
-                                      .createInstance(Components.interfaces.nsILocalFile);
-        sourcepathobj.initWithPath(location.path);
-    
-        zipwriterobj.init(archivefileobj);
-        
-        zipwriterobj.basepath = sourcepathobj;
-        
-        var zipentriestoadd = new Array();
-        
-        for (var i=2; i < arguments.length; i++) {
-          var sourcepathobj = location.clone();
-          sourcepathobj.append(arguments[i]);
-          if (sourcepathobj.exists() && sourcepathobj.isDirectory()) {
-            var entries = sourcepathobj.directoryEntries;
-    
-            while (entries.hasMoreElements()) {
-              zipentriestoadd.push(entries.getNext());
-            }
-          } else if (sourcepathobj.exists()) {
-              zipentriestoadd.push(sourcepathobj);
-          }
-        }
-        
-        // Add files depth first
-        while (zipentriestoadd.length > 0) {
-          var zipentry = zipentriestoadd.pop();
-          
-          zipentry.QueryInterface(Components.interfaces.nsILocalFile);
-         
-          if (!zipentry.isDirectory()) {
-            zipwriterobj.add(zipentry);
-          }
-          
-          if (zipentry.exists() && zipentry.isDirectory()) {
-            var entries = zipentry.directoryEntries;
-    
-            while (entries.hasMoreElements()) {
-              zipentriestoadd.push(entries.getNext());
-            }
-          }        
-        }
-    
-        zipwriterobj.commitUpdates();
-        return;
-      } catch (e) {
-        gPromptService.alert(window, "", "ZIPWriterComponent error - attempting ZIP");
-      }
-    }
+    zipwriterobj.close();
+    return;
   }
-  
+
   var zipLocation = document.getElementById("zipLocation").value;
   if (zipLocation.length == 0) {
     zipLocation = "zip";
   }
 
-  var platform = navigator.platform;
   var scriptfile = location.clone();
              
   if ((navigator.platform == "Win32") || (navigator.platform == "OS/2"))
@@ -1347,8 +1324,8 @@ function CCKZip(zipfile, location)
     line =  "\"" + zipLocation + "\" " + zipParams + " \"" + location.path + "\\" + zipfile + "\"";
   else
     line = zipLocation + " " + zipParams + " \"" + location.path + "/" + zipfile + "\"";  
-  for (var i=2; i < arguments.length; i++) {
-    line += " " + arguments[i];
+  for (var i=0; i < files_to_zip.length; i++) {
+    line += " " + files_to_zip[i];
   }
   line += "\n";
   fos.write(line, line.length);  
@@ -1398,14 +1375,6 @@ function CCKWriteXULOverlay(destdir)
   var tooltipXUL  = '  <button id="navigator-throbber" oncommand="goClickThrobber(\'browser.throbber.url\', event)" onclick="checkForMiddleClick(this, event);" tooltiptext="&throbber.tooltip;" disabled="false"/>\n';
   var titlebarXUL = '  <window id="main-window" titlemodifier="&mainWindow.titlemodifier;"/>\n';
 
-  var helpmenu1   = '  <menupopup id="menu_HelpPopup">\n';
-  var helpmenu2   = '    <menuseparator insertafter="aboutSeparator"/>\n';
-  var helpmenu3   = '    <menuitem label="&cckHelp.label;" insertafter="aboutSeparator"\n';
-  var helpmenu4   = '              accesskey="&cckHelp.accesskey;"\n';
-  var helpmenu5   = '              oncommand="openUILink(getCCKLink(\'cckhelp.url\'), event, false, true);"\n';
-  var helpmenu6   = '              onclick="checkForMiddleClick(this, event);"/>\n';
-  var helpmenu7   = '  </menupopup>\n';
-
   var file = destdir.clone();
   file.append("cck-browser-overlay.xul");
   try {
@@ -1439,6 +1408,90 @@ function CCKWriteXULOverlay(destdir)
       str = str.replace(/%window%/g, titlebarXUL);
   else
     str = str.replace(/%window%/g, "");
+
+  fos.write(str, str.length); 
+  fos.close();
+}
+function CCKWriteXULOverlayNonMac(destdir)
+{
+  var helpmenu1   = '  <menupopup id="menu_HelpPopup">\n';
+  var helpmenu2   = '    <menuseparator insertafter="aboutSeparator"/>\n';
+  var helpmenu3   = '    <menuitem label="&cckHelp.label;" insertafter="aboutSeparator"\n';
+  var helpmenu4   = '              accesskey="&cckHelp.accesskey;"\n';
+  var helpmenu5   = '              oncommand="openUILink(getCCKLink(\'cckhelp.url\'), event, false, true);"\n';
+  var helpmenu6   = '              onclick="checkForMiddleClick(this, event);"/>\n';
+  var helpmenu7   = '  </menupopup>\n';
+
+  var file = destdir.clone();
+  file.append("cck-browser-overlay-nonmac.xul");
+  try {
+    file.remove(false);                         
+  } catch (ex) {}
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                      .createInstance(Components.interfaces.nsIFileOutputStream);
+
+  fos.init(file, -1, -1, false);
+  
+  var ioService=Components.classes["@mozilla.org/network/io-service;1"]
+                          .getService(Components.interfaces.nsIIOService);
+  var scriptableStream=Components.classes["@mozilla.org/scriptableinputstream;1"]
+                                 .getService(Components.interfaces.nsIScriptableInputStream);
+    
+  var channel=ioService.newChannel("chrome://cckwizard/content/srcfiles/cck-browser-overlay-menu.xul.in",null,null);
+  var input=channel.open();
+  scriptableStream.init(input);
+  var str=scriptableStream.read(input.available());
+  scriptableStream.close();
+  input.close();
+
+  var helpmenu = document.getElementById("HelpMenuCommandName").value;
+  if (helpmenu && (helpmenu.length > 0)) {
+    var helpmenuXUL = helpmenu1 + helpmenu2 + helpmenu3;
+    var helpmenuakey = document.getElementById("HelpMenuCommandAccesskey").value;
+    if (helpmenuakey && (helpmenuakey.length > 0)) {
+      helpmenuXUL += helpmenu4;
+    }
+    helpmenuXUL += helpmenu5 + helpmenu6 + helpmenu7;
+    str = str.replace(/%menupopup%/g, helpmenuXUL);
+  } else {
+    str = str.replace(/%menupopup%/g, "");
+  }    
+
+  fos.write(str, str.length); 
+  fos.close();
+}
+
+function CCKWriteXULOverlayMac(destdir)
+{
+  var helpmenu1   = '  <menupopup id="menu_HelpPopup">\n';
+  var helpmenu2   = '    <menuseparator/>\n';
+  var helpmenu3   = '    <menuitem label="&cckHelp.label;"\n';
+  var helpmenu4   = '              accesskey="&cckHelp.accesskey;"\n';
+  var helpmenu5   = '              oncommand="openUILink(getCCKLink(\'cckhelp.url\'), event, false, true);"\n';
+  var helpmenu6   = '              onclick="checkForMiddleClick(this, event);"/>\n';
+  var helpmenu7   = '  </menupopup>\n';
+
+  var file = destdir.clone();
+  file.append("cck-browser-overlay-mac.xul");
+  try {
+    file.remove(false);                         
+  } catch (ex) {}
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                      .createInstance(Components.interfaces.nsIFileOutputStream);
+
+  fos.init(file, -1, -1, false);
+  
+  var ioService=Components.classes["@mozilla.org/network/io-service;1"]
+                          .getService(Components.interfaces.nsIIOService);
+  var scriptableStream=Components.classes["@mozilla.org/scriptableinputstream;1"]
+                                 .getService(Components.interfaces.nsIScriptableInputStream);
+    
+  var channel=ioService.newChannel("chrome://cckwizard/content/srcfiles/cck-browser-overlay-menu.xul.in",null,null);
+  var input=channel.open();
+  scriptableStream.init(input);
+  var str=scriptableStream.read(input.available());
+  scriptableStream.close();
+  input.close();
 
   var helpmenu = document.getElementById("HelpMenuCommandName").value;
   if (helpmenu && (helpmenu.length > 0)) {
@@ -1602,6 +1655,10 @@ function CCKWriteProperties(destdir)
 
   str = str.replace(/%PopupAllowedSites%/g, document.getElementById("PopupAllowedSites").value);
   str = str.replace(/%InstallAllowedSites%/g, document.getElementById("InstallAllowedSites").value);
+  str = str.replace(/%CookieAllowedSites%/g, document.getElementById("CookieAllowedSites").value);
+  str = str.replace(/%PopupDeniedSites%/g, document.getElementById("PopupDeniedSites").value);
+  str = str.replace(/%InstallDeniedSites%/g, document.getElementById("InstallDeniedSites").value);
+  str = str.replace(/%CookieDeniedSites%/g, document.getElementById("CookieDeniedSites").value);
   cos.writeString(str);
   
   if (document.getElementById("hidden").checked)
@@ -1989,6 +2046,7 @@ function CCKWriteInstallRDF(destdir)
   var creatorline =     "<em:creator>%creator%</em:creator>";
   var homepageURLline = "<em:homepageURL>%homepageURL%</em:homepageURL>";
   var updateURLline =   "<em:updateURL>%updateURL%</em:updateURL>";  
+  var updateKeyline =   "<em:updateKey>%updateKey%</em:updateKey>";  
   var iconURLline =     "<em:iconURL>chrome://cck/content/%iconURL%</em:iconURL>";
   var hiddenline =      "<em:hidden>true</em:hidden>";
   var lockedline =      "<em:locked>true</em:locked>";
@@ -2075,6 +2133,14 @@ function CCKWriteInstallRDF(destdir)
     str = str.replace(/%updateURLline%/g, "");
   }
 
+  var updateKey = document.getElementById("updateKey").value;
+  if (updateKey && (updateKey.length > 0)) {
+    str = str.replace(/%updateKeyline%/g, updateKeyline);
+    str = str.replace(/%updateKey%/g, document.getElementById("updateKey").value);
+  } else {
+    str = str.replace(/%updateKeyline%/g, "");
+  }
+
   var iconURL = document.getElementById("iconURL").value;
   if (iconURL && (iconURL.length > 0)) {
     var sourcefile = Components.classes["@mozilla.org/file/local;1"]
@@ -2102,53 +2168,6 @@ function CCKWriteInstallRDF(destdir)
   cos.close();
   fos.close();
 }
-
-function CCKWriteInstallJS(destdir)
-{
-  var file = destdir.clone();
-  file.append("install.js");
-  try {
-    file.remove(false);                         
-  } catch (ex) {
-  }
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"]
-                       .createInstance(Components.interfaces.nsIFileOutputStream);
-
-  fos.init(file, -1, -1, false);
-  var ioService=Components.classes["@mozilla.org/network/io-service;1"]
-    .getService(Components.interfaces.nsIIOService);
-  var scriptableStream=Components
-    .classes["@mozilla.org/scriptableinputstream;1"]
-    .getService(Components.interfaces.nsIScriptableInputStream);
-
-  var channel=ioService.newChannel("chrome://cckwizard/content/srcfiles/install.js.in",null,null);
-  var input=channel.open();
-  scriptableStream.init(input);
-  var str=scriptableStream.read(input.available());
-  scriptableStream.close();
-  input.close();
-
-  str = str.replace(/%id%/g, document.getElementById("id").value);
-  str = str.replace(/%name%/g, document.getElementById("name").value);
-
-  if (document.getElementById('browserPluginList').getRowCount() > 0)
-    str = str.replace(/%plugins%/g, 'addDirectory("", "%version%", "platform", cckextensiondir, "platform", true);');
-  else
-    str = str.replace(/%plugins%/g, '');
-
-  if (document.getElementById('searchEngineList').getRowCount() > 0)
-    str = str.replace(/%searchplugins%/g, 'addDirectory("", "%version%", "searchplugins", cckextensiondir, "searchplugins", true);');
-  else
-    str = str.replace(/%searchplugins%/g, '');
-    
-  str = str.replace(/%installrdf%/g, 'addFile("", "%version%", "install.rdf", cckextensiondir, "", true);');  
-
-  str = str.replace(/%version%/g, document.getElementById("version").value);
-  
-  fos.write(str, str.length); 
-  fos.close();
-}
-
 
 /* This function copies a source file to a destination directory, including */
 /* deleting the file at the destination if it exists */

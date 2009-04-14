@@ -44,8 +44,8 @@
 <?xml-stylesheet href="chrome://cckwizard/content/ccklist.css" type="text/css"?>
 
 <wizard id="example-window" title="&cckWizard.title;"
-  height="550"
-  width="640"
+  height="600"
+  width="700"
   onwizardcancel="return CloseCCKWizard();"
   onwizardfinish="CreateCCK();"
   onload="OpenCCKWizard();"
@@ -55,6 +55,7 @@
   <script src="chrome://cckwizard/content/search.js"/>
   <script type="application/x-javascript"   
   src="chrome://global/content/dialogOverlay.js" />
+<script type="application/javascript" src="chrome://global/content/contentAreaUtils.js"/>
 
   <wizardpage onpageshow="document.getElementById('example-window').canAdvance = true;">
     <description>&cckWizard.description;</description>
@@ -84,11 +85,11 @@
    </groupbox>
    <vbox>
   
-    <description>&zipLocation.label;</description>
+    <description id="zipLocationLabel">&zipLocation.label;</description>
 
          <hbox align="center">
            <textbox flex="1" id="zipLocation"/>
-           <button label="&chooseFile.label;" oncommand="choosefile('zipLocation');"/>
+           <button id="zipLocationButton" label="&chooseFile.label;" oncommand="choosefile('zipLocation');"/>
          </hbox>
   </vbox>
  </wizardpage>
@@ -102,7 +103,7 @@
        <column flex="1"/>
      </columns>
      <rows>
-       <row align="center" flex="1">
+       <row align="center">
          <vbox align="right">
            <label control="id" pack="end">&id.label;</label>
          </vbox>
@@ -149,6 +150,26 @@
            <label control="updateURL">&updateURL.label;</label>
          </vbox>
          <textbox id="updateURL"/>
+       </row>
+       <row align="center">
+         <vbox align="right">
+           <label control="updateKey">&updateKey.label;</label>
+         </vbox>
+         <textbox id="updateKey"/>
+       </row>
+       <row align="center">
+         <vbox align="right">
+           <label/>
+         </vbox>
+         <label>&updateKey.description;</label>
+       </row>
+       <row align="center">
+         <vbox align="right">
+           <label/>
+         </vbox>
+         <label hef="http://www.yahoo.com"
+                onclick="openURL('http://developer.mozilla.org/en/docs/Extension_Versioning,_Update_and_Compatibility');"
+                class="text-link">(http://developer.mozilla.org/en/docs/Extension_Versioning,_Update_and_Compatibility)</label>
        </row>
        <row align="center">
          <vbox align="right">
@@ -299,14 +320,33 @@
   <wizardpage label="&customizePartFour.label;">  
     <groupbox>
       <caption label="&allowedSites.caption;"/>
-        <description control="PopupAllowedSites">&popupAllowedSites.label;</description>
-        <vbox>
+      <description control="PopupAllowedSites">&popupAllowedSites.label;</description>
+      <vbox>
         <textbox id="PopupAllowedSites" flex="1"/>
-        </vbox>
-        <description control="InstallAllowedSites">&installAllowedSites.label;</description>
-        <vbox>
+      </vbox>
+      <description control="InstallAllowedSites">&installAllowedSites.label;</description>
+      <vbox>
         <textbox id="InstallAllowedSites" flex="1"/>
-        </vbox>
+      </vbox>
+      <description control="CookieAllowedSites">&cookieAllowedSites.label;</description>
+      <vbox>
+        <textbox id="CookieAllowedSites" flex="1"/>
+      </vbox>
+    </groupbox>
+    <groupbox>
+      <caption label="&deniedSites.caption;"/>
+      <description control="PopupDeniedSites">&popupDeniedSites.label;</description>
+      <vbox>
+        <textbox id="PopupDeniedSites" flex="1"/>
+      </vbox>
+      <description control="InstallDeniedSites">&installDeniedSites.label;</description>
+      <vbox>
+        <textbox id="InstallDeniedSites" flex="1"/>
+      </vbox>
+      <description control="CookieDeniedSites">&cookieDeniedSites.label;</description>
+      <vbox>
+        <textbox id="CookieDeniedSites" flex="1"/>
+      </vbox>
     </groupbox>
   </wizardpage>
 

@@ -3132,7 +3132,7 @@ nsXULDocument::DoneWalking()
         NS_WARN_IF_FALSE(mUpdateNestLevel == 0,
                          "Constructing XUL document in middle of an update?");
         if (mUpdateNestLevel == 0) {
-            InitializeFinalizeFrameLoaders();
+            MaybeInitializeFinalizeFrameLoaders();
         }
 
         NS_DOCUMENT_NOTIFY_OBSERVERS(EndLoad, (this));
