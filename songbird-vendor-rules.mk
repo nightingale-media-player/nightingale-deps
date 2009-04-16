@@ -296,8 +296,8 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
 	  $(if $(wildcard $(SB_VENDOR_BINARIES_DIR)/$(tgt)),, \
-	       $(CP) -dpr $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
-	             $(SB_VENDOR_BINARIES_DIR); ))
+	       $(MSYS_CP) $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
+	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn ; ))
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
@@ -394,8 +394,9 @@ endif
 	@echo 
 	@echo 
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
-	# TODO: this kinda sucks; fix this
-	$(CP) $(CP_RECURSE_FLAGS) $(SB_TARGET_SRC_DIR)/* $(SB_VENDOR_BUILD_DIR)
+	# TODO: this kinda sucks; fix this; also, now it sucks with the msys
+	# stuff in a cross-platform way.
+	$(MSYS_CP) $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR)
 
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)

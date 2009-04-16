@@ -129,11 +129,7 @@ CHMOD ?= chmod
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
-ifeq (Msys,$(SB_VENDOR_ARCH))
-  CP_RECURSE_FLAGS ?= -dpr
-else
-  CP_RECURSE_FLAGS ?= -R
-endif
+MSYS_CP ?= $(SB_VENDOR_CHECKOUT)/msys-recursive-cp
 FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p

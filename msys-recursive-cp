@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# This seems like a really stupid script, but it is a replacement for MSYS's
+# wonky and anemic "cp" command; on large recursive copies, it is common
+# to get errors about "will not create hard link `foo' to directory `bar'",
+# when foo and bar aren't even related. Mook gave the idea that using tar
+# for large copies like this is a workaround that proves to be reliable.
+#
+# It still makes me cry, though.
+#
+
+SRCDIR="$1"
+DESTDIR="$2"
+SRCTARARGS="$3"
+DESTTARARGS="$4"
+
+MKDIR=${MKDIR:=mkdir -p}
+TAR=${TAR:=tar}
+
+if test -z "$SRCDIR"; then
+   echo Source directory missing
+   echo $0 [source dir] [dest dir] [src tar cmd args] [dest tar cmd args]
+   exit 1
+fi
+
+if test -z "$DESTDIR"; then
+   echo Destination directory missing
+   echo $0 [source dir] [dest dir] [src tar cmd args] [dest tar cmd args]
+   exit 1
+fi
+
+if ! test -d "$DESTDIR"; then
+   echo Creating $DESTDIR...
+   $MKDIR "$DESTDIR"
+fi
+
+echo Running $TAR c $SRCTARARGS -C "$SRCDIR" . \| $TAR x $DESTTARARGS -C "$DESTDIR"
+$TAR c $SRCTARARGS -C "$SRCDIR" . | $TAR x $DESTTARARGS -C "$DESTDIR"

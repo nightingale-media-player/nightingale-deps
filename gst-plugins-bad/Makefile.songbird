@@ -112,7 +112,7 @@ endif
 directshow-libs:
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DIRECTSHOW_LIBS_ROOT)
-	$(CP) $(CP_RECURSE_FLAGS) $(WINDOWS_SDK_ROOT)/Samples/MultiMedia/DirectShow/BaseClasses/* $(DIRECTSHOW_LIBS_ROOT)
+	$(MSYS_CP) $(WINDOWS_SDK_ROOT)/Samples/MultiMedia/DirectShow/BaseClasses $(DIRECTSHOW_LIBS_ROOT)
 	patch -d $(DIRECTSHOW_LIBS_ROOT) -p0 < $(CURDIR)/sb-directshow-baseclasses.patch
 ifeq (debug,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
