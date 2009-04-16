@@ -42,6 +42,9 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/build/autodefs.mk
 
+# We never want tests built.
+DISABLE_IMPLICIT_SUBDIRS = 1
+
 SUBDIRS = public src
 
 include $(topsrcdir)/build/rules.mk

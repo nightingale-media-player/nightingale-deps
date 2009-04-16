@@ -53,10 +53,9 @@ SONGBIRD_COMPONENTS = \
 	$(XPIDL_MODULE) \
 	$(NULL)
 
-SONGBIRD_PP_COMPONENTS = $(srcdir)/nsBrowserGlue.js \
-                         $(NULL)
-
-SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
+SONGBIRD_PP_COMPONENTS = \
+	$(srcdir)/nsBrowserGlue.js \
+        $(NULL)
 
 GARBAGE = $(XPIDL_MODULE_TYPELIBS)
 

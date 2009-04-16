@@ -45,6 +45,11 @@ include $(DEPTH)/build/autodefs.mk
 XPIDL_MODULE = exthelper.xpt
 XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
+# extApplication.js is not a component, it gets included in FUEL instead
+SONGBIRD_COMPONENTS = \
+	$(XPIDL_MODULE) \
+	$(NULL)
+
 GARBAGE = $(XPIDL_MODULE_TYPELIBS)
 
 XPIDL_SRCS = extIApplication.idl
