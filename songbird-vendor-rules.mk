@@ -186,8 +186,6 @@ endif
 #
 
 post_build: module_post_build
-	@echo Slaying libtool .la files...
-	$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name "*.la" -exec $(RM) -fv {} \;
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 	@echo On the prowl for the following .dylib and .so external references:
@@ -292,6 +290,8 @@ $(SB_VENDOR_BINARIES_DIR):
 
 setup_environment: $(SB_VENDOR_BINARIES_DIR)
 	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
+	@echo Fixing up libtools .la files for use...
+	$(FIND) $(SB_VENDOR_BINARIES_CHECKOUT)/ -type f -name '*.la' -exec $(SB_VENDOR_BUILD_ROOT)/fix-libtool-la-paths.pl {} \;
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
