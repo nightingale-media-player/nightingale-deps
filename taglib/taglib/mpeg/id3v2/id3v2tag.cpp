@@ -461,8 +461,19 @@ TagLib::uint ID3v2::Tag::bpm() const
 // TODO: weak
 bool ID3v2::Tag::isCompilation() const
 {
-  if(!d->frameListMap["TCMP"].isEmpty())
-    return (d->frameListMap["TCMP"].front()->toString() == "true");
+  /* iTunes uses a TCMP frame containing the string "1" if it's part of a 
+   * compilation.
+   * It does not use a TCMP frame at all if it's not a compilation
+   *
+   * We previously wrote out 'true' for the contents of this frame, so support
+   * that also.
+   */
+  if(!d->frameListMap["TCMP"].isEmpty()) {
+    String tcmp = d->frameListMap["TCMP"].front()->toString();
+    if (tcmp == String("1") || tcmp == String("true")) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -711,7 +722,7 @@ void ID3v2::Tag::setIsCompilation(bool i)
     removeFrames("TCMP");
     return;
   }
-  setTextFrame("TCMP", "true");
+  setTextFrame("TCMP", String::number(1));
 }
 
 bool ID3v2::Tag::isEmpty() const
