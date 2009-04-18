@@ -290,14 +290,15 @@ $(SB_VENDOR_BINARIES_DIR):
 
 setup_environment: $(SB_VENDOR_BINARIES_DIR)
 	$(MKDIR) $(SB_VENDOR_BUILD_ROOT)/build
-	@echo Fixing up libtools .la files for use...
-	$(FIND) $(SB_VENDOR_BINARIES_CHECKOUT)/ -type f -name '*.la' -exec $(SB_VENDOR_BUILD_ROOT)/fix-libtool-la-paths.pl {} \;
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
 	  $(if $(wildcard $(SB_VENDOR_BINARIES_DIR)/$(tgt)),, \
 	       $(MSYS_CP) $(SB_VENDOR_BINARIES_CHECKOUT)/$(tgt) \
-	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn ; ))
+	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn && \
+	             $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(tgt)/.msyscp ; ))
+	@echo Fixing up libtools .la files for first-time use...
+	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-libtool-la-paths.pl {} \;
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
@@ -306,7 +307,7 @@ else
 	            $(SB_VENDOR_BINARIES_DIR); ))
 endif
 ifeq (Msys,$(SB_VENDOR_ARCH))
-	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.svn && \
+	(test -e $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)/.msyscp && \
           $(RM) -rf $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET) && \
           $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)) || true
 else
