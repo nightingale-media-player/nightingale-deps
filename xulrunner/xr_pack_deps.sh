@@ -13,47 +13,27 @@ tree=$2
 rm -rf ../songbird/
 
 # create destination directories
-mkdir -p ../songbird/$tree/dependencies/$plat/mozilla/debug/
-mkdir -p ../songbird/$tree/dependencies/$plat/xulrunner/debug/
-mkdir -p ../songbird/$tree/dependencies/$plat/mozilla/release/
-mkdir -p ../songbird/$tree/dependencies/$plat/xulrunner/release/
+mkdir -p songbird/$tree/dependencies/$plat/mozilla/debug/
+mkdir -p songbird/$tree/dependencies/$plat/xulrunner/debug/
+mkdir -p songbird/$tree/dependencies/$plat/mozilla/release/
+mkdir -p songbird/$tree/dependencies/$plat/xulrunner/release/
 
 # make debug mozilla sdk
-./make-mozilla-sdk.sh ../mozilla/ \
-                      ../mozilla/compiled/xulrunner-debug/ \
-                      ../songbird/$tree/dependencies/$plat/mozilla/debug/
+./make-mozilla-sdk.sh mozilla/ \
+                      mozilla/compiled/xulrunner-debug/ \
+                      songbird/$tree/dependencies/$plat/mozilla/debug/
 
 # make debug xulrunner tarball
-./make-xulrunner-tarball.sh ../mozilla/compiled/xulrunner-debug/dist/bin/ \
-                            ../songbird/$tree/dependencies/$plat/xulrunner/debug/ \
+./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-debug/dist/bin/ \
+                            songbird/$tree/dependencies/$plat/xulrunner/debug/ \
                             xulrunner.tar.gz
 
 # make release mozilla sdk
-./make-mozilla-sdk.sh ../mozilla/ \
-                      ../mozilla/compiled/xulrunner-release/ \
-                      ../songbird/$tree/dependencies/$plat/mozilla/release/
+./make-mozilla-sdk.sh mozilla/ \
+                      mozilla/compiled/xulrunner-release/ \
+                      songbird/$tree/dependencies/$plat/mozilla/release/
 
 # make release xulrunner tarball
-./make-xulrunner-tarball.sh ../mozilla/compiled/xulrunner-release/dist/bin/ \
-                            ../songbird/$tree/dependencies/$plat/xulrunner/release/ \
+./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-release/dist/bin/ \
+                            songbird/$tree/dependencies/$plat/xulrunner/release/ \
                             xulrunner.tar.gz
-
-# down into the songbird dependencies dir
-echo "cd ../songbird/${tree}/dependencies/"
-cd ../songbird/${tree}/dependencies/
-
-# tar up the mozilla sdk for ease of transfer
-echo "tar cvzf ${plat}-mozilla-sdk.tar.gz ${plat}/mozilla"
-tar cvzf ${plat}-mozilla-sdk.tar.gz ${plat}/mozilla
-
-# tar up the 2 xulrunners for ease of transfer
-echo "tar cvzf ${plat}-xulrunner.tar.gz ${plat}/xulrunner"
-tar cvzf ${plat}-xulrunner.tar.gz ${plat}/xulrunner
-
-# send the tarballs to thrush
-echo 'scp -P 9095 -v ${plat}-mozilla-sdk.tar.gz birdbuilder@thrush:/builds/deps/new_deps/${tree}/'
-scp -P 9095 -v ${plat}-mozilla-sdk.tar.gz birdbuilder@thrush:/builds/deps/new_deps/${tree}/
-
-echo 'scp -P 9095 -v ${plat}-xulrunner.tar.gz birdbuilder@thrush:/builds/deps/new_deps/${tree}/'
-scp -P 9095 -v ${plat}-xulrunner.tar.gz birdbuilder@thrush:/builds/deps/new_deps/${tree}/
-
