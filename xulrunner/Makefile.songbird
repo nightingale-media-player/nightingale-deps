@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = xulrunner
-SB_VENDOR_TARGET_VERSION = 1.9.0.5
+SB_VENDOR_TARGET_VERSION = 1.9.0.8
 
 SB_XR_BRANCH = trunk
 
@@ -42,9 +42,9 @@ SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(AWK) -F- '{print $$2}')
 
 MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).mozconfig
 
-XR_STRIP_SYMBOLS = xr_strip_symbols.sh
-XR_PACKAGE_DEPS = xr_pack_deps.sh
-XR_CLENAUP = xr_cleanup.sh
+XR_STRIP_SYMBOLS = $(CURDIR)/xr_strip_symbols.sh
+XR_PACKAGE_DEPS = $(CURDIR)/xr_pack_deps.sh
+XR_CLENAUP = $(CURDIR)/xr_cleanup.sh
 
 xr-all:
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-debug
