@@ -1,0 +1,69 @@
+################################################################################
+################################################################################
+#
+# BEGIN SONGBIRD GPL
+# 
+# This file is part of the Songbird web player.
+#
+# Copyright(c) 2007 POTI, Inc.
+# http://www.songbirdnest.com
+# 
+# This file may be licensed under the terms of of the
+# GNU General Public License Version 2 (the "GPL").
+# 
+# Software distributed under the License is distributed 
+# on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either 
+# express or implied. See the GPL for the specific language 
+# governing rights and limitations.
+#
+# You should have received a copy of the GPL along with this 
+# program. If not, go to http://www.gnu.org/licenses/gpl.html
+# or write to the Free Software Foundation, Inc., 
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# 
+# END SONGBIRD GPL
+#
+################################################################################
+#
+# Makefile for building Songbird vendor: xulrunner
+#
+################################################################################
+################################################################################
+
+SB_VENDOR_TARGET = xulrunner
+SB_VENDOR_TARGET_VERSION = 1.9.0.5
+
+SB_XR_BRANCH = trunk
+
+include $(CURDIR)/../songbird-vendor-defs.mk
+
+SB_XR_PLATFORM := $(shell echo $(SB_TARGET_ARCH) | $(AWK) -F- '{print $$1}')
+SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(AWK) -F- '{print $$2}')
+
+MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).mozconfig
+
+XR_STRIP_SYMBOLS = xr_strip_symbols.sh
+XR_PACKAGE_DEPS = xr_pack_deps.sh
+XR_CLENAUP = xr_cleanup.sh
+
+xr-all:
+	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-debug
+	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-release
+	$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH)
+	# These files aren't needed after the package-deps and take up TONS of space
+	$(RM) -rf $(CURDIR)/mozilla/compiled
+
+xr-%:
+	$(CP) $(CURDIR)/mozconfigs/$(MOZCONFIG) $(CURDIR)/mozilla/.mozconfig
+	$(RM) -rf $(CURDIR)/mozilla/compiled/xulrunner-$*
+	$(MKDIR) $(CURDIR)/mozilla/compiled/xulrunner-$*
+	$(MAKE) -C $(CURDIR)/mozilla -f client.mk build
+	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-$* buildsymbols
+ifeq (debug,$*)
+	$(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
+endif	
+	
+.PHONY: xr-all xr-%
+
+include $(CURDIR)/../songbird-vendor-rules.mk
+
