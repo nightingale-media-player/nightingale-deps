@@ -2,6 +2,7 @@
 
 use strict;
 
+use Getopt::Long;
 use File::Basename;
 use File::Copy qw(move);
 use File::Spec::Functions;
@@ -9,7 +10,6 @@ use Cwd qw(getcwd realpath);
 
 my $PIVOT_TOKEN = 'windows-i686-msvc8';
 my $MUNGED_MARKER = '# LA FILE MUNGED';
-my $forceMunge = 0;
 
 sub IsDosStylePath {
    my %args = @_;
@@ -32,8 +32,7 @@ sub MungeDependencyLibsLine {
    my $newRoot = $args{'newRoot'};
    my $newRootDosStyle = ConvertToDosStylePath(path => $args{'newRoot'});
 
-   # This is the only line we know how to munge; if it doesn't match, return
-   # the old line
+   # This is the only line this function knows how to munge
    return $line if ($line !~ /^dependency_libs='/);
 
    # Get just the value of the variable
@@ -49,11 +48,6 @@ sub MungeDependencyLibsLine {
          my ($root, $extension) = split(/$PIVOT_TOKEN/, $mungedPart);
          $extension =~ s|^/||;
 
-         # Non-MSYS-style path check
-         #my $partNewRoot = (IsDosStylePath(path => $root) ? 
-         # $newRootDosStyle : $newRoot);
-
-         #$mungedPart = catfile($partNewRoot, $PIVOT_TOKEN, $extension);
          $mungedPart = catfile($newRootDosStyle, $PIVOT_TOKEN, $extension);
 
          # Was the part link library path, or a direct path to a .lib?
@@ -65,12 +59,32 @@ sub MungeDependencyLibsLine {
    return 'dependency_libs=\'' . join(' ', @newLineParts) . "'\n";
 }
 
-sub main {
-   my $laFile = $ARGV[0];
+sub Usage {
+   print STDERR <<__END_USAGE__;
+Usage: $0 [-f] [full path to libtool .la file]
 
-   if (! -f $laFile || $laFile !~ /\.la$/) {
-      print STDERR "Usage: $0 [foo.la]\n";
-      print STDERR "Example: $0 flac/release/lib/libFLAC.la\n";
+If the supplied .la file has a previouly munged marker in it, it will not be
+modified unless -f is supplied.
+
+Example: $0 /e/builds/sb-deps/flac/release/lib/libFLAC.la
+__END_USAGE__
+}
+
+sub main {
+   my $laFile;
+   my $forceMunge = 0;
+
+   my $optsRv = GetOptions('force|f' => \$forceMunge);
+
+   if (!$optsRv) {
+      Usage();
+      return 1;
+   }
+
+   my $laFile = $ARGV[0];
+   
+   if ($laFile !~ /\.la$/ || !(-f $laFile)) {
+      Usage();
       return 1;
    }
 
@@ -82,13 +96,15 @@ sub main {
       $laFileInstallDir = dirname($laFileFullPath);
    }
    else {
-      $laFileFullPath = catfile(getcwd(), $laFile);
-      $laFileInstallDir = dirname(realpath($laFileFullPath));
+      print STDERR "Need full path to .la file\n";
+      Usage();
+      return 1;
    }
 
    my $rv = open(LA_FILE, "<$laFile");
    if (!$rv) {
       print STDERR "Couldn't open .la file '$laFile': $!\n";
+      Usage();
       return 1;
    }
 
@@ -110,7 +126,7 @@ sub main {
 
    return 0 if (!$mungeThisFile);
 
-   print "Fixing $laFile...\n";
+   print ($forceMunge ? 'Force-fixing ' : 'Fixing' ) . " $laFile...\n";
 
    my $newLaFile = $laFile . '.new';
    my $newLaFileFullPath = catfile($laFileInstallDir, basename($newLaFile));
