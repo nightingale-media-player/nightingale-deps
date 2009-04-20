@@ -303,10 +303,15 @@ write_len (guint8 * buf, int val)
 }
 
 static void
-aac_parse_codec_data (GstBuffer * codec_data, guint * channels)
+aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
 {
   guint8 *data = GST_BUFFER_DATA (codec_data);
   int codec_channels;
+  int codec_rate;
+  unsigned int rateindex;
+  int rates[] = 
+    { 96000, 88200, 64000, 48000, 44100, 32000, 
+      24000, 22050, 16000, 12000, 11025, 8000 };
 
   if (GST_BUFFER_SIZE (codec_data) < 2) {
     GST_WARNING ("Cannot parse codec_data for channel count");
@@ -320,6 +325,19 @@ aac_parse_codec_data (GstBuffer * codec_data, guint * channels)
     *channels = codec_channels;
   } else {
     GST_INFO ("Retaining channel count %d", codec_channels);
+  }
+
+  rateindex = ((data[0] & 0x7) << 1) | ((data[1] & 0x80) >> 7);
+  if (rateindex < sizeof (rates) / sizeof(*rates))
+    codec_rate = rates[rateindex];
+  else
+    codec_rate = *rate;
+
+  if (*rate != codec_rate) {
+    GST_INFO ("Overwriting rate %d with %d", *rate, codec_rate);
+    *rate = codec_rate;
+  } else {
+    GST_INFO ("Retaining rate %d", codec_rate);
   }
 }
 
@@ -444,10 +462,11 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
 
   if (codec_data
       && oclass->componentSubType == QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a')) {
-    /* QuickTime/iTunes creates AAC files with the wrong channel count in the header,
-       so parse that out of the codec data if we can.
+    /* QuickTime/iTunes creates AAC files with the wrong channel count in the 
+     * header, so parse that out of the codec data if we can. The wrong sample 
+     * rate is also occasionally found.
      */
-    aac_parse_codec_data (codec_data, (guint *) & channels);
+    aac_parse_codec_data (codec_data, (guint *) &channels, (guint *) &rate);
   }
 
   /* If the quicktime demuxer gives us a full esds atom, use that instead of 
