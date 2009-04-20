@@ -186,6 +186,10 @@ endif
 #
 
 post_build: module_post_build
+ifneq (,$(filter Darwin Linux, $(SB_VENDOR_ARCH))
+	@echo Slaying libtool .la files on real platforms...
+	$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name '*.la' -exec $(RM) -fv {} \;
+endif
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 ifneq (,$(SB_VENDOR_TARGET_DYLIB_FIXUPS))
 	@echo On the prowl for the following .dylib and .so external references:
@@ -298,7 +302,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	             $(SB_VENDOR_BINARIES_DIR)/$(tgt) --exclude=.svn && \
 	             $(MKDIR) $(SB_VENDOR_BINARIES_DIR)/$(tgt)/.msyscp ; ))
 	@echo Fixing up libtools .la files for first-time use...
-	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-libtool-la-paths.pl {} \;
+	$(FIND) $(SB_VENDOR_BINARIES_DIR)/ -type f -name '*.la' -exec $(SB_VENDOR_CHECKOUT)/fix-win32-libtool-la-paths.pl {} \;
 else
 	$(foreach tgt, \
 	  $(SB_VENDOR_BINARIES_TARGETS), \
