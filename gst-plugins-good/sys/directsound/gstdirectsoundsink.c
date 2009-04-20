@@ -191,11 +191,14 @@ directsound_set_volume (LPDIRECTSOUNDBUFFER8 pDSB8, gdouble volume)
 static void
 gst_directsound_sink_set_volume (GstDirectSoundSink *dsoundsink)
 {
-  if (dsoundsink->dsoundbuffer && dsoundsink->dsoundbuffer->pDSB8) {
+  if (dsoundsink->dsoundbuffer) {
     GST_DSOUND_LOCK (dsoundsink->dsoundbuffer);
     dsoundsink->dsoundbuffer->volume = dsoundsink->volume;
-    directsound_set_volume(dsoundsink->dsoundbuffer->pDSB8, 
-      dsoundsink->volume);
+
+    if (dsoundsink->dsoundbuffer->pDSB8) {
+      directsound_set_volume(dsoundsink->dsoundbuffer->pDSB8, 
+          dsoundsink->volume);
+    }
     GST_DSOUND_UNLOCK (dsoundsink->dsoundbuffer);
   }
 }
@@ -245,6 +248,7 @@ gst_directsound_sink_init (GstDirectSoundSink * dsoundsink,
     GstDirectSoundSinkClass * g_class)
 {
   dsoundsink->dsoundbuffer = NULL;
+  dsoundsink->volume = 1.0;
 }
 
 static gboolean
