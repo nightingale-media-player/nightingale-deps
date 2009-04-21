@@ -3070,7 +3070,8 @@ nsSchemaValidator::IsValidSchemaFloat(const nsAString & aNodeValue,
     }
   }
 
-  *aResult = floatValue;
+  if (aResult)
+    *aResult = floatValue;
   return isValid;
 }
 

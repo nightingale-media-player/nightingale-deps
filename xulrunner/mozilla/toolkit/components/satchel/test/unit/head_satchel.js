@@ -38,7 +38,7 @@
 const Ci = Components.interfaces;
 const Cc = Components.classes;
 
-const CURRENT_SCHEMA = 0;
+const CURRENT_SCHEMA = 1;
 const PR_HOURS = 60 * 60 * 1000000;
 
 
@@ -72,6 +72,14 @@ if (!profileDir) {
     }
   };
   dirSvc.QueryInterface(Ci.nsIDirectoryService).registerProvider(provider);
+}
+
+function getDBConnection(dbfile) {
+    var ss = Cc["@mozilla.org/storage/service;1"].
+             getService(Ci.mozIStorageService);
+    var dbConnection = ss.openDatabase(dbfile);
+
+    return dbConnection;
 }
 
 function getDBVersion(dbfile) {

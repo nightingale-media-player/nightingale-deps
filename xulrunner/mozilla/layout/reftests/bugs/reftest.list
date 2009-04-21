@@ -827,6 +827,8 @@ fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
 == 430813-1.html 430813-1-ref.html
 == 430813-2.html 430813-2-ref.html
 == 430813-3.html 430813-3-ref.html
+== 431341-1.html 431341-1-ref.html
+== 431341-2.html 431341-2-ref.html
 == 433640-1.html 433640-1-ref.html
 == 433700.html 433700-ref.html
 == 436356-1.html 436356-1-ref.html
@@ -834,5 +836,10 @@ fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
 == 440112.html 440112-ref.html
 == 440149-1.html 440149-1-ref.html
 == 445004-1.html 445004-1-ref.html
+== 455826-1.html 455826-1-ref.html
 == 459443-1.html 459443-1-ref.html
 == 471594-1.xhtml 471594-1-ref.html
+== 482659-1a.html 482659-1-ref.html
+== 482659-1b.html 482659-1-ref.html
+== 482659-1c.html 482659-1-ref.html
+== 482659-1d.html 482659-1-ref.html

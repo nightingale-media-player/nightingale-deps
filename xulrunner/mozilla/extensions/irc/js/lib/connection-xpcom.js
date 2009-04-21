@@ -108,6 +108,15 @@ function toSOutputStream(stream, binary)
     return sstream;
 }
 
+/**
+ * Wraps up various mechanics of sockets for easy consumption by other code.
+ *
+ * @param binary Provide |true| or |false| here to override the automatic
+ *               selection of binary or text streams. This should only ever be
+ *               specified as |true| or omitted, otherwise you will be shooting
+ *               yourself in the foot on some versions - let the code handle
+ *               the choice unless you know you need binary.
+ */
 function CBSConnection (binary)
 {
     /* Since 2003-01-17 18:14, Mozilla has had this contract ID for the STS.
@@ -221,6 +230,9 @@ function bc_connect(host, port, config, observer)
         proxyInfo = getProxyFor("irc://" + host + ":" + port);
     }
 
+    if (proxyInfo && ("type" in proxyInfo) && (proxyInfo.type == "unknown"))
+        throw JSIRC_ERR_PAC_LOADING;
+
     if (jsenv.HAS_STREAM_PROVIDER)
     {
         if (("isSecure" in config) && config.isSecure)
@@ -309,7 +321,7 @@ function bc_connect(host, port, config, observer)
         this.sendData("CONNECT " + host + ":" + port + " HTTP/1.1\r\n\r\n");
     }
 
-    return this.isConnected;
+    return true;
 
 }
 
@@ -534,14 +546,16 @@ function bc_senddatanow(str)
     return rv;
 }
 
-/* getSecurityState returns an array containing information about the security
- * of the connection. The array always has at least one item, which contains a
- * value from the STATE_IS_* enumeration at the top of this file. Iff this is
- * STATE_IS_SECURE, the array has a second item indicating the level of
- * security - a value from the STATE_SECURE_* enumeration.
+/**
+ * Gets an array containing information about the security of the connection.
  *
- * STATE_IS_BROKEN is returned if any errors occur, and STATE_IS_INSECURE is
+ * |STATE_IS_BROKEN| is returned if any errors occur and |STATE_IS_INSECURE| is
  * returned for disconnected sockets.
+ *
+ * @returns An array with at least one item, containing a value from the
+ *          |STATE_IS_*| enumeration at the top of this file. Iff this is
+ *          |STATE_IS_SECURE|, the array has a second item indicating the level
+ *          of security - a value from the |STATE_SECURE_*| enumeration.
  */
 CBSConnection.prototype.getSecurityState =
 function bc_getsecuritystate()

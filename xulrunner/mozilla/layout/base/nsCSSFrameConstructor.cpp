@@ -9425,6 +9425,9 @@ DeletingFrameSubtree(nsFrameManager* aFrameManager,
 nsresult
 nsCSSFrameConstructor::RemoveMappingsForFrameSubtree(nsIFrame* aRemovedFrame)
 {
+  NS_ASSERTION(!(aRemovedFrame->GetStateBits() & NS_FRAME_OUT_OF_FLOW),
+               "RemoveMappingsForFrameSubtree doesn't handle out-of-flows");
+
   if (NS_UNLIKELY(mIsDestroyingFrameTree)) {
     // The frame tree might not be in a consistent state after
     // WillDestroyFrameTree() has been called. Most likely we're destroying
@@ -9433,10 +9436,29 @@ nsCSSFrameConstructor::RemoveMappingsForFrameSubtree(nsIFrame* aRemovedFrame)
     return NS_OK;
   }
 
+  nsFrameManager *frameManager = mPresShell->FrameManager();
+  if (nsGkAtoms::placeholderFrame == aRemovedFrame->GetType()) {
+    nsIFrame *placeholderFrame = aRemovedFrame;
+    do {
+      NS_ASSERTION(placeholderFrame->GetType() == nsGkAtoms::placeholderFrame,
+                   "continuation must be of same type");
+      nsIFrame* outOfFlowFrame =
+        nsPlaceholderFrame::GetRealFrameForPlaceholder(placeholderFrame);
+      // Remove the mapping from the out-of-flow frame to its placeholder.
+      frameManager->UnregisterPlaceholderFrame(
+        static_cast<nsPlaceholderFrame*>(placeholderFrame));
+      ::DeletingFrameSubtree(frameManager, outOfFlowFrame);
+      frameManager->RemoveFrame(outOfFlowFrame->GetParent(),
+                                GetChildListNameFor(outOfFlowFrame),
+                                outOfFlowFrame);
+      placeholderFrame = placeholderFrame->GetNextContinuation();
+    } while (placeholderFrame);
+  }
+
   // Save the frame tree's state before deleting it
   CaptureStateFor(aRemovedFrame, mTempFrameTreeState);
 
-  return ::DeletingFrameSubtree(mPresShell->FrameManager(), aRemovedFrame);
+  return ::DeletingFrameSubtree(frameManager, aRemovedFrame);
 }
 
 static void UnregisterPlaceholderChain(nsFrameManager* frameManager,
@@ -9964,6 +9986,8 @@ nsCSSFrameConstructor::CharacterDataChanged(nsIContent* aContent,
 nsresult
 nsCSSFrameConstructor::ProcessRestyledFrames(nsStyleChangeList& aChangeList)
 {
+  NS_ASSERTION(!nsContentUtils::IsSafeToRunScript(),
+               "Someone forgot a script blocker");
   PRInt32 count = aChangeList.Count();
   if (!count)
     return NS_OK;
@@ -13448,11 +13472,22 @@ nsCSSFrameConstructor::RebuildAllStyleData(nsChangeHint aExtraHint)
   if (!mPresShell || !mPresShell->GetRootFrame())
     return;
 
+  nsAutoScriptBlocker scriptBlocker;
+
+  // Make sure that the viewmanager will outlive the presshell
+  nsIViewManager::UpdateViewBatch batch(mPresShell->GetViewManager());
+
+  // Processing the style changes could cause a flush that propagates to
+  // the parent frame and thus destroys the pres shell.
+  nsCOMPtr<nsIPresShell> kungFuDeathGrip(mPresShell);
+
   // Tell the style set to get the old rule tree out of the way
   // so we can recalculate while maintaining rule tree immutability
   nsresult rv = mPresShell->StyleSet()->BeginReconstruct();
-  if (NS_FAILED(rv))
+  if (NS_FAILED(rv)) {
+    batch.EndUpdateViewBatch(NS_VMREFRESH_NO_SYNC);
     return;
+  }
 
   // Recalculate all of the style contexts for the document
   // Note that we can ignore the return value of ComputeStyleChangeFor
@@ -13473,6 +13508,7 @@ nsCSSFrameConstructor::RebuildAllStyleData(nsChangeHint aExtraHint)
   // reconstructed will still have their old style context pointers
   // until they are destroyed).
   mPresShell->StyleSet()->EndReconstruct();
+  batch.EndUpdateViewBatch(NS_VMREFRESH_NO_SYNC);
 }
 
 void
@@ -13624,8 +13660,10 @@ nsCSSFrameConstructor::LazyGenerateChildrenEvent::Run()
       nsFrameConstructorState state(mPresShell, nsnull, nsnull, nsnull);
       nsresult rv = fc->ProcessChildren(state, mContent, frame, PR_FALSE,
                                         childItems, PR_FALSE);
-      if (NS_FAILED(rv))
+      if (NS_FAILED(rv)) {
+        fc->EndUpdate();
         return rv;
+      }
 
       fc->CreateAnonymousFrames(mContent->Tag(), state, mContent, frame,
                                 PR_FALSE, childItems);

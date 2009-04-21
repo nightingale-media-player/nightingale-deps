@@ -3007,7 +3007,8 @@ nsresult nsChromeRegistry::LoadStyleSheetWithURL(nsIURI* aURL, PRBool aEnableUns
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  return mCSSLoader->LoadSheetSync(aURL, aEnableUnsafeRules, aSheet);
+  return mCSSLoader->LoadSheetSync(aURL, aEnableUnsafeRules,
+                                   aEnableUnsafeRules, aSheet);
 }
 
 nsresult nsChromeRegistry::LoadInstallDataSource()

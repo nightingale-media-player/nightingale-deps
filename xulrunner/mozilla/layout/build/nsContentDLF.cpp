@@ -623,11 +623,11 @@ nsContentDLF::EnsureUAStyleSheet()
 #endif
     return rv;
   }
-  nsCOMPtr<nsICSSLoader> cssLoader;
+  nsCOMPtr<nsICSSLoader_1_9_0_BRANCH> cssLoader;
   NS_NewCSSLoader(getter_AddRefs(cssLoader));
   if (!cssLoader)
     return NS_ERROR_OUT_OF_MEMORY;
-  rv = cssLoader->LoadSheetSync(uri, PR_TRUE, &gUAStyleSheet);
+  rv = cssLoader->LoadSheetSync(uri, PR_TRUE, PR_TRUE, &gUAStyleSheet);
 #ifdef DEBUG
   if (NS_FAILED(rv))
     printf("*** open of %s failed: error=%x\n", UA_CSS_URL, rv);

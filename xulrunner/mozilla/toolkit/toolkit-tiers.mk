@@ -205,10 +205,6 @@ tier_toolkit_dirs	+= \
 	toolkit/components \
 	$(NULL)
 
-ifndef MOZ_XUL_APP
-tier_toolkit_dirs += themes
-endif
-
 ifdef MOZ_ENABLE_XREMOTE
 tier_toolkit_dirs += widget/src/xremoteclient
 endif

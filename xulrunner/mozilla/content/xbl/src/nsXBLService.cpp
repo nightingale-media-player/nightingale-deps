@@ -1004,6 +1004,15 @@ nsXBLService::GetBinding(nsIContent* aBoundElement, nsIURI* aURI,
   return NS_OK;
 }
 
+static PRBool SchemeIs(nsIURI* aURI, const char* aScheme)
+{
+  nsCOMPtr<nsIURI> baseURI = NS_GetInnermostURI(aURI);
+  NS_ENSURE_TRUE(baseURI, PR_FALSE);
+
+  PRBool isScheme = PR_FALSE;
+  return NS_SUCCEEDED(baseURI->SchemeIs(aScheme, &isScheme)) && isScheme;
+}
+
 NS_IMETHODIMP
 nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement,
                                       nsIDocument* aBoundDocument,
@@ -1033,6 +1042,21 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement,
                               nsIContentPolicy::TYPE_XBL,
                               aBoundDocument);
     NS_ENSURE_SUCCESS(rv, rv);
+
+    // Also make sure that we're same-origin with the bound document
+    // except if the stylesheet has the system principal.
+    PRBool isSystem;
+    rv = nsContentUtils::GetSecurityManager()->
+      IsSystemPrincipal(aOriginPrincipal, &isSystem);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (!isSystem &&
+        !(gAllowDataURIs && SchemeIs(aBindingURI, "data")) &&
+        !SchemeIs(aBindingURI, "chrome")) {
+      rv = aBoundDocument->NodePrincipal()->CheckMayLoad(aBindingURI,
+                                                         PR_TRUE);
+      NS_ENSURE_SUCCESS(rv, rv);
+    }
   }
 
   *aResult = nsnull;

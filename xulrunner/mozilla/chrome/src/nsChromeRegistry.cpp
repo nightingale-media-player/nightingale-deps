@@ -882,7 +882,8 @@ static void FlushSkinBindingsForWindow(nsIDOMWindowInternal* aWindow)
 // XXXbsmedberg: move this to nsIWindowMediator
 NS_IMETHODIMP nsChromeRegistry::RefreshSkins()
 {
-  nsCOMPtr<nsICSSLoader> cssLoader(do_CreateInstance(kCSSLoaderCID));
+  nsCOMPtr<nsICSSLoader_1_9_0_BRANCH> cssLoader =
+    do_CreateInstance(kCSSLoaderCID);
   if (!cssLoader)
     return NS_OK;
 
@@ -945,7 +946,7 @@ static PRBool IsChromeURI(nsIURI* aURI)
 
 // XXXbsmedberg: move this to windowmediator
 nsresult nsChromeRegistry::RefreshWindow(nsIDOMWindowInternal* aWindow,
-                                         nsICSSLoader* aCSSLoader)
+                                         nsICSSLoader_1_9_0_BRANCH* aCSSLoader)
 {
   // Deal with our subframes first.
   nsCOMPtr<nsIDOMWindowCollection> frames;
@@ -991,7 +992,8 @@ nsresult nsChromeRegistry::RefreshWindow(nsIDOMWindowInternal* aWindow,
       if (IsChromeURI(uri)) {
         // Reload the sheet.
         nsCOMPtr<nsICSSStyleSheet> newSheet;
-        rv = aCSSLoader->LoadSheetSync(uri, PR_TRUE, getter_AddRefs(newSheet));
+        rv = aCSSLoader->LoadSheetSync(uri, PR_TRUE, PR_TRUE,
+                                       getter_AddRefs(newSheet));
         if (NS_FAILED(rv)) return rv;
         if (newSheet) {
           rv = newAgentSheets.AppendObject(newSheet) ? NS_OK : NS_ERROR_FAILURE;

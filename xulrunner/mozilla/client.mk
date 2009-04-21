@@ -383,7 +383,6 @@ MODULES_NS_camino :=                            \
 MODULES_camino :=                               \
   $(MODULES_core)                               \
   mozilla/camino                                \
-  mozilla/themes                                \
   $(NULL)
 
 BOOTSTRAP_camino :=                             \
@@ -410,11 +409,11 @@ MODULES_all :=                                  \
 #
 # For branches, uncomment the MOZ_CO_TAG line with the proper tag,
 # and commit this file on that tag.
-MOZ_CO_TAG           = FIREFOX_3_0_8_RELEASE
-NSPR_CO_TAG          = FIREFOX_3_0_8_RELEASE
-NSS_CO_TAG           = FIREFOX_3_0_8_RELEASE
-LDAPCSDK_CO_TAG      = FIREFOX_3_0_8_RELEASE
-LOCALES_CO_TAG       = FIREFOX_3_0_8_RELEASE
+MOZ_CO_TAG           = FIREFOX_3_0_9_RELEASE
+NSPR_CO_TAG          = FIREFOX_3_0_9_RELEASE
+NSS_CO_TAG           = FIREFOX_3_0_9_RELEASE
+LDAPCSDK_CO_TAG      = FIREFOX_3_0_9_RELEASE
+LOCALES_CO_TAG       = FIREFOX_3_0_9_RELEASE
 
 #######################################################################
 # Defines

@@ -2372,7 +2372,8 @@ nsHTMLEditor::GetCSSBackgroundColorState(PRBool *aMixed, nsAString &aOutColor, P
   PRInt32 offset;
   res = GetStartNodeAndOffset(selection, address_of(parent), &offset);
   if (NS_FAILED(res)) return res;
-  
+  if (!parent) return NS_ERROR_NULL_POINTER;
+
   // is the selection collapsed?
   PRBool bCollapsed;
   res = selection->GetIsCollapsed(&bCollapsed);
@@ -2406,6 +2407,8 @@ nsHTMLEditor::GetCSSBackgroundColorState(PRBool *aMixed, nsAString &aOutColor, P
     nsCOMPtr<nsIDOMNode> blockParent = nodeToExamine;
     if (!isBlock) {
       blockParent = GetBlockNodeParent(nodeToExamine);
+      if (!blockParent)
+        return NS_OK;
     }
 
     // Make sure to not walk off onto the Document node
@@ -3596,6 +3599,8 @@ nsHTMLEditor::AddOverrideStyleSheet(const nsAString& aURL)
   nsCOMPtr<nsICSSLoader> cssLoader;
   nsresult rv = GetCSSLoader(aURL, getter_AddRefs(cssLoader));
   NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsICSSLoader_1_9_0_BRANCH> cssLoaderBranch =
+    do_QueryInterface(cssLoader);
 
   nsCOMPtr<nsIURI> uaURI;
   rv = NS_NewURI(getter_AddRefs(uaURI), aURL);
@@ -3606,7 +3611,8 @@ nsHTMLEditor::AddOverrideStyleSheet(const nsAString& aURL)
   // synchronously, of course..
   nsCOMPtr<nsICSSStyleSheet> sheet;
   // Editor override style sheets may want to style Gecko anonymous boxes
-  rv = cssLoader->LoadSheetSync(uaURI, PR_TRUE, getter_AddRefs(sheet));
+  rv = cssLoaderBranch->LoadSheetSync(uaURI, PR_TRUE, PR_TRUE,
+                                      getter_AddRefs(sheet));
 
   // Synchronous loads should ALWAYS return completed
   if (!sheet)
@@ -3619,12 +3625,6 @@ nsHTMLEditor::AddOverrideStyleSheet(const nsAString& aURL)
   // Add the override style sheet
   // (This checks if already exists)
   ps->AddOverrideStyleSheet(sheet);
-
-  // Save doc pointer to be able to use nsIStyleSheet::SetEnabled()
-  nsIDocument *document = ps->GetDocument();
-  if (!document)
-    return NS_ERROR_NULL_POINTER;
-  sheet->SetOwningDocument(document);
 
   ps->ReconstructStyleData();
 
@@ -3690,21 +3690,32 @@ nsHTMLEditor::EnableStyleSheet(const nsAString &aURL, PRBool aEnable)
 
   nsCOMPtr<nsIDOMStyleSheet> domSheet(do_QueryInterface(sheet));
   NS_ASSERTION(domSheet, "Sheet not implementing nsIDOMStyleSheet!");
+
+  // Ensure the style sheet is owned by our document.
+  nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocWeak);
+  rv = sheet->SetOwningDocument(doc);
+  NS_ENSURE_SUCCESS(rv, rv);
   
   return domSheet->SetDisabled(!aEnable);
 }
-
 
 PRBool
 nsHTMLEditor::EnableExistingStyleSheet(const nsAString &aURL)
 {
   nsCOMPtr<nsICSSStyleSheet> sheet;
   nsresult rv = GetStyleSheetForURL(aURL, getter_AddRefs(sheet));
-  NS_ENSURE_SUCCESS(rv, rv);
+  if (NS_FAILED(rv))
+    return PR_FALSE;
 
   // Enable sheet if already loaded.
   if (sheet)
   {
+    // Ensure the style sheet is owned by our document.
+    nsCOMPtr<nsIDocument> doc = do_QueryInterface(mDocWeak);
+    rv = sheet->SetOwningDocument(doc);
+    if (NS_FAILED(rv))
+      return PR_FALSE;
+
     nsCOMPtr<nsIDOMStyleSheet> domSheet(do_QueryInterface(sheet));
     NS_ASSERTION(domSheet, "Sheet not implementing nsIDOMStyleSheet!");
     

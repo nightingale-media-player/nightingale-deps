@@ -22,6 +22,7 @@
  * Contributor(s):
  *   Joe Hewitt <hewitt@netscape.com> (Original Author)
  *   Brett Wilson <brettw@gmail.com>
+ *   Justin Dolske <dolske@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -55,7 +56,6 @@
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranch2.h"
-#include "nsVoidArray.h"
 #include "nsCOMArray.h"
 #include "mozStorageHelper.h"
 #include "mozStorageCID.h"
@@ -72,7 +72,11 @@
 // numbers. See StartCache
 #define DATABASE_CACHE_PAGES 4000
 
-#define DB_SCHEMA_VERSION   0
+#define DB_SCHEMA_VERSION   1
+#define DB_FILENAME         NS_LITERAL_STRING("formhistory.sqlite")
+#define DB_CORRUPT_FILENAME NS_LITERAL_STRING("formhistory.sqlite.corrupt")
+
+#define PR_HOURS ((PRInt64)60 * 60 * 1000000)
 
 // nsFormHistoryResult is a specialized autocomplete result class that knows
 // how to remove entries from the form history table.
@@ -178,8 +182,33 @@ nsFormHistory::~nsFormHistory()
 nsresult
 nsFormHistory::Init()
 {
-  nsresult rv = OpenDatabase();
+  PRBool doImport;
+
+  nsresult rv = OpenDatabase(&doImport);
+  if (rv == NS_ERROR_FILE_CORRUPTED) {
+    /* If the DB is corrupt, nuke it and try again with a new DB. */
+    rv = dbCleanup();
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = OpenDatabase(&doImport);
+    doImport = PR_FALSE;
+  }
   NS_ENSURE_SUCCESS(rv, rv);
+
+#ifdef MOZ_MORKREADER
+  if (doImport) {
+    // Locate the old formhistory.dat file and import it.
+    nsCOMPtr<nsIFile> historyFile;
+    rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR,
+                                getter_AddRefs(historyFile));
+    if (NS_SUCCEEDED(rv)) {
+      historyFile->Append(NS_LITERAL_STRING("formhistory.dat"));
+
+      nsCOMPtr<nsIFormHistoryImporter> importer = new nsFormHistoryImporter();
+      NS_ENSURE_TRUE(importer, NS_ERROR_OUT_OF_MEMORY);
+      importer->ImportFormHistory(historyFile, this);
+    }
+  }
+#endif
 
   nsCOMPtr<nsIObserverService> service = do_GetService("@mozilla.org/observer-service;1");
   if (service)
@@ -226,41 +255,81 @@ nsFormHistory::GetHasEntries(PRBool *aHasEntries)
 NS_IMETHODIMP
 nsFormHistory::AddEntry(const nsAString &aName, const nsAString &aValue)
 {
+  nsresult rv;
   if (!FormHistoryEnabled())
     return NS_OK;
 
-  mozStorageTransaction transaction(mDBConn, PR_FALSE);
+  PRInt64 existingID = GetExistingEntryID(aName, aValue);
 
-  PRBool exists = PR_TRUE;
-  EntryExists(aName, aValue, &exists);
-  if (!exists) {
-    mozStorageStatementScoper scope(mDBInsertNameValue);
-    nsresult rv = mDBInsertNameValue->BindStringParameter(0, aName);
+  if (existingID != -1) {
+    mozStorageStatementScoper scope(mDBUpdateEntry);
+    // lastUsed
+    rv = mDBUpdateEntry->BindInt64Parameter(0, PR_Now());
+    NS_ENSURE_SUCCESS(rv, rv);
+    // WHERE id
+    rv = mDBUpdateEntry->BindInt64Parameter(1, existingID);
     NS_ENSURE_SUCCESS(rv, rv);
 
+    rv = mDBUpdateEntry->Execute();
+    NS_ENSURE_SUCCESS(rv, rv);
+  } else {
+    PRInt64 now = PR_Now();
+
+    mozStorageStatementScoper scope(mDBInsertNameValue);
+    // fieldname
+    rv = mDBInsertNameValue->BindStringParameter(0, aName);
+    NS_ENSURE_SUCCESS(rv, rv);
+    // value
     rv = mDBInsertNameValue->BindStringParameter(1, aValue);
+    NS_ENSURE_SUCCESS(rv, rv);
+    // timesUsed
+    rv = mDBInsertNameValue->BindInt32Parameter(2, 1);
+    NS_ENSURE_SUCCESS(rv, rv);
+    // firstUsed
+    rv = mDBInsertNameValue->BindInt64Parameter(3, now);
+    NS_ENSURE_SUCCESS(rv, rv);
+    // lastUsed
+    rv = mDBInsertNameValue->BindInt64Parameter(4, now);
     NS_ENSURE_SUCCESS(rv, rv);
 
     rv = mDBInsertNameValue->Execute();
     NS_ENSURE_SUCCESS(rv, rv);
   }
-  return transaction.Commit();
+  return NS_OK;
+}
+
+/* Returns -1 if entry not found, or the ID if it was. */
+PRInt64
+nsFormHistory::GetExistingEntryID (const nsAString &aName, 
+                                   const nsAString &aValue)
+{
+  mozStorageStatementScoper scope(mDBFindEntry);
+
+  nsresult rv = mDBFindEntry->BindStringParameter(0, aName);
+  NS_ENSURE_SUCCESS(rv, -1);
+
+  rv = mDBFindEntry->BindStringParameter(1, aValue);
+  NS_ENSURE_SUCCESS(rv, -1);
+
+  PRBool hasMore;
+  rv = mDBFindEntry->ExecuteStep(&hasMore);
+  NS_ENSURE_SUCCESS(rv, -1);
+
+  PRInt64 ID = -1;
+  if (hasMore) {
+    mDBFindEntry->GetInt64(0, &ID);
+    NS_ENSURE_SUCCESS(rv, -1);
+  }
+
+  return ID;
 }
 
 NS_IMETHODIMP
 nsFormHistory::EntryExists(const nsAString &aName, 
                            const nsAString &aValue, PRBool *_retval)
 {
-  mozStorageStatementScoper scope(mDBFindEntry);
-
-  nsresult rv = mDBFindEntry->BindStringParameter(0, aName);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = mDBFindEntry->BindStringParameter(1, aValue);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  PRBool hasMore;
-  *_retval = NS_SUCCEEDED(mDBFindEntry->ExecuteStep(&hasMore)) && hasMore;
+  PRInt64 ID = GetExistingEntryID(aName, aValue);
+  *_retval = ID != -1;
   return NS_OK;
 }
 
@@ -335,6 +404,7 @@ nsFormHistory::RemoveAllEntries()
   return dbDeleteAll->Execute();
 }
 
+
 ////////////////////////////////////////////////////////////////////////
 //// nsIObserver
 
@@ -368,6 +438,10 @@ nsFormHistory::Notify(nsIDOMHTMLFormElement* formElt, nsIDOMWindowInternal* aWin
 
   PRUint32 length;
   elts->GetLength(&length);
+  if (length == 0)
+    return NS_OK;
+
+  mozStorageTransaction transaction(mDBConn, PR_FALSE);
   for (PRUint32 i = 0; i < length; ++i) {
     nsCOMPtr<nsIDOMNode> node;
     elts->Item(i, getter_AddRefs(node));
@@ -400,10 +474,71 @@ nsFormHistory::Notify(nsIDOMHTMLFormElement* formElt, nsIDOMWindowInternal* aWin
     }
   }
 
+  return transaction.Commit();
+}
+
+nsresult
+nsFormHistory::CreateTable()
+{
+  nsresult rv;
+  // When adding new columns, also update dbAreExpectedColumnsPresent()!
+  rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING(
+         "CREATE TABLE moz_formhistory ("
+           "id INTEGER PRIMARY KEY, fieldname TEXT NOT NULL, "
+           "value TEXT NOT NULL, timesUsed INTEGER, "
+           "firstUsed INTEGER, lastUsed INTEGER)"));
+  NS_ENSURE_SUCCESS(rv, rv);
+  rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING("CREATE INDEX moz_formhistory_index ON moz_formhistory (fieldname)"));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = mDBConn->SetSchemaVersion(DB_SCHEMA_VERSION);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   return NS_OK;
 }
+
 nsresult
-nsFormHistory::OpenDatabase()
+nsFormHistory::CreateStatements()
+{
+  nsresult rv;
+  rv  = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+         "SELECT * FROM moz_formhistory"),
+         getter_AddRefs(mDBSelectEntries));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+         "SELECT id FROM moz_formhistory WHERE fieldname=?1 AND value=?2"),
+         getter_AddRefs(mDBFindEntry));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+         "SELECT * FROM moz_formhistory WHERE fieldname=?1"),
+         getter_AddRefs(mDBFindEntryByName));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+        "SELECT value FROM moz_formhistory WHERE fieldname=?1 ORDER BY UPPER(value) ASC"),
+        getter_AddRefs(mDBGetMatchingField));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+        "INSERT INTO moz_formhistory (fieldname, value, timesUsed, "
+        "firstUsed, lastUsed) VALUES (?1, ?2, ?3, ?4, ?5)"),
+        getter_AddRefs(mDBInsertNameValue));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+        "UPDATE moz_formhistory "
+        "SET timesUsed=timesUsed + 1, lastUsed=?1 "
+        "WHERE id = ?2"),
+        getter_AddRefs(mDBUpdateEntry));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return NS_OK;
+}
+
+nsresult
+nsFormHistory::OpenDatabase(PRBool *aDoImport)
 {
   // init DB service and obtain a connection
   nsresult rv;
@@ -413,13 +548,8 @@ nsFormHistory::OpenDatabase()
   nsCOMPtr<nsIFile> formHistoryFile;
   rv = GetDatabaseFile(getter_AddRefs(formHistoryFile));
   NS_ENSURE_SUCCESS(rv, rv);
+
   rv = mStorageService->OpenDatabase(formHistoryFile, getter_AddRefs(mDBConn));
-  if (rv == NS_ERROR_FILE_CORRUPTED) {
-    // delete the db and try opening again
-    rv = formHistoryFile->Remove(PR_FALSE);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mStorageService->OpenDatabase(formHistoryFile, getter_AddRefs(mDBConn));
-  }
   NS_ENSURE_SUCCESS(rv, rv);
 
   // We execute many statements before the database cache is started to create
@@ -427,70 +557,127 @@ nsFormHistory::OpenDatabase()
   // the dummy statement--see StartCache). This transaction will keep the cache
   // between these statements, which should improve startup performance because
   // we won't have to keep requesting pages from the OS.
+  // We also want the transaction to rollback any failed schema upgrade.
   mozStorageTransaction transaction(mDBConn, PR_FALSE);
 
   PRBool exists;
   mDBConn->TableExists(NS_LITERAL_CSTRING("moz_formhistory"), &exists);
   if (!exists) {
-    rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING("CREATE TABLE moz_formhistory (id INTEGER PRIMARY KEY, fieldname LONGVARCHAR, value LONGVARCHAR)"));
+    *aDoImport = PR_TRUE;
+    rv = CreateTable();
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING("CREATE INDEX moz_formhistory_index ON moz_formhistory (fieldname)"));
-    NS_ENSURE_SUCCESS(rv, rv);
+  } else {
+    *aDoImport = PR_FALSE;
   }
 
-  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("SELECT * FROM moz_formhistory"),
-                                getter_AddRefs(mDBSelectEntries));
+  // Ensure DB is at the current schema.
+  rv = dbMigrate();
   NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("SELECT * FROM moz_formhistory WHERE fieldname=?1 AND value=?2"),
-                                getter_AddRefs(mDBFindEntry));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("SELECT * FROM moz_formhistory WHERE fieldname=?1"),
-                                getter_AddRefs(mDBFindEntryByName));
-  NS_ENSURE_SUCCESS(rv,rv);
-
-  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("SELECT value FROM moz_formhistory WHERE fieldname=?1 ORDER BY value ASC"),
-                                getter_AddRefs(mDBGetMatchingField));
-  NS_ENSURE_SUCCESS(rv,rv);
-
-  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING("INSERT INTO moz_formhistory (fieldname, value) VALUES (?1, ?2)"),
-                                getter_AddRefs(mDBInsertNameValue));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  PRInt32 schemaVersion;
-  rv = mDBConn->GetSchemaVersion(&schemaVersion);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  // Check the schema version of the DB. If it's newer than expected, 
-  // downgrade the schema version so the future version will know to
-  // re-upgrade the DB.
-  if (schemaVersion != DB_SCHEMA_VERSION) {
-    rv = mDBConn->SetSchemaVersion(DB_SCHEMA_VERSION);
-    NS_ENSURE_SUCCESS(rv, rv);
-  }
-
+  
   // should commit before starting cache
   transaction.Commit();
 
   // ignore errors since the cache is not critical for operation
   StartCache();
 
-#ifdef MOZ_MORKREADER
-  if (!exists) {
-    // Locate the old formhistory.dat file and import it.
-    nsCOMPtr<nsIFile> historyFile;
-    rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR,
-                                getter_AddRefs(historyFile));
-    if (NS_SUCCEEDED(rv)) {
-      historyFile->Append(NS_LITERAL_STRING("formhistory.dat"));
+  rv = CreateStatements();
+  NS_ENSURE_SUCCESS(rv, rv);
 
-      nsCOMPtr<nsIFormHistoryImporter> importer = new nsFormHistoryImporter();
-      NS_ENSURE_TRUE(importer, NS_ERROR_OUT_OF_MEMORY);
-      importer->ImportFormHistory(historyFile, this);
-    }
+  return NS_OK;
+}
+  
+/*
+ * dbMigrate
+ */
+nsresult
+nsFormHistory::dbMigrate()
+{
+  PRInt32 schemaVersion;
+  nsresult rv = mDBConn->GetSchemaVersion(&schemaVersion);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Upgrade from the version in the DB to the version we expect, step by
+  // step. Note that the formhistory.sqlite in Firefox 3 didn't have a
+  // schema version set, so we start at 0.
+  switch (schemaVersion) {
+    case 0:
+      rv = MigrateToVersion1();
+      NS_ENSURE_SUCCESS(rv, rv);
+      // (fallthrough to the next upgrade)
+
+    case DB_SCHEMA_VERSION:
+      // (current version, nothing more to do)
+      break;
+
+    // Unknown schema version, it's probably a DB modified by some future
+    // version of this code. Try to use the DB anyway.
+    default:
+      // Sanity check: make sure the columns we expect are present. If not,
+      // treat it as corrupt (back it up, nuke it, start from scratch).
+      if(!dbAreExpectedColumnsPresent())
+        return NS_ERROR_FILE_CORRUPTED;
+
+      // If it's ok, downgrade the schema version so the future version will
+      // know to re-upgrade the DB.
+      rv = mDBConn->SetSchemaVersion(DB_SCHEMA_VERSION);
+      NS_ENSURE_SUCCESS(rv, rv);
+      break;
   }
-#endif
+
+  return NS_OK;
+}
+
+
+/*
+ * MigrateToVersion1
+ *
+ * Updates the DB schema to v1 (bug 463154).
+ * Adds firstUsed, lastUsed, timesUsed columns.
+ */
+nsresult
+nsFormHistory::MigrateToVersion1()
+{
+  // Check to see if the new columns already exist (could be a v1 DB that
+  // was downgraded to v0). If they exist, we don't need to add them.
+  nsCOMPtr<mozIStorageStatement> stmt;
+  nsresult rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+                  "SELECT timesUsed, firstUsed, lastUsed FROM moz_formhistory"),
+                  getter_AddRefs(stmt));
+
+  PRBool columnsExist = !!NS_SUCCEEDED(rv);
+
+  if (!columnsExist) {
+    rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING(
+      "ALTER TABLE moz_formhistory ADD COLUMN timesUsed INTEGER"));
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING(
+      "ALTER TABLE moz_formhistory ADD COLUMN firstUsed INTEGER"));
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING(
+      "ALTER TABLE moz_formhistory ADD COLUMN lastUsed INTEGER"));
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  // Set the default values for the new columns.
+  //
+  // Note that we set the timestamps to 24 hours in the past. We want a
+  // timestamp that's recent (so that "keep form history for 90 days"
+  // doesn't expire things surprisingly soon), but not so recent that
+  // "forget the last hour of stuff" deletes all freshly migrated data.
+  nsCOMPtr<mozIStorageStatement> addDefaultValues;
+  rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+         "UPDATE moz_formhistory "
+         "SET timesUsed=1, firstUsed=?1, lastUsed=?1 "
+         "WHERE timesUsed isnull OR firstUsed isnull OR lastUsed isnull"),
+         getter_AddRefs(addDefaultValues));
+  rv = addDefaultValues->BindInt64Parameter(0, PR_Now() - 24 * PR_HOURS);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = addDefaultValues->Execute();
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = mDBConn->SetSchemaVersion(1);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   return NS_OK;
 }
@@ -501,7 +688,50 @@ nsFormHistory::GetDatabaseFile(nsIFile** aFile)
 {
   nsresult rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR, aFile);
   NS_ENSURE_SUCCESS(rv, rv);
-  return (*aFile)->Append(NS_LITERAL_STRING("formhistory.sqlite"));
+  return (*aFile)->Append(DB_FILENAME);
+}
+
+
+/*
+ * dbCleanup 
+ *
+ * Called when a DB is corrupt. We back it up to a .corrupt file, and then
+ * nuke it to start from scratch.
+ */
+nsresult
+nsFormHistory::dbCleanup()
+{
+  nsCOMPtr<nsIFile> dbFile;
+  nsresult rv = GetDatabaseFile(getter_AddRefs(dbFile));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIFile> backupFile;
+  NS_ENSURE_TRUE(mStorageService, NS_ERROR_NOT_AVAILABLE);
+  rv = mStorageService->BackupDatabaseFile(dbFile, DB_CORRUPT_FILENAME,
+                                           nsnull, getter_AddRefs(backupFile));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (mDBConn)
+    mDBConn->Close();
+
+  rv = dbFile->Remove(PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return NS_OK;
+}
+
+/*
+ * dbAreExpectedColumnsPresent
+ */
+PRBool
+nsFormHistory::dbAreExpectedColumnsPresent()
+{
+  // If the statement succeeds, all the columns are there.
+  nsCOMPtr<mozIStorageStatement> stmt;
+  nsresult rv = mDBConn->CreateStatement(NS_LITERAL_CSTRING(
+                  "SELECT fieldname, value, timesUsed, firstUsed, lastUsed "
+                  "FROM moz_formhistory"), getter_AddRefs(stmt));
+  return NS_SUCCEEDED(rv) ? PR_TRUE : PR_FALSE;
 }
 
 

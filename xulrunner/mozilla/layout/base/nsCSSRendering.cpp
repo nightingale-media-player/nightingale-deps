@@ -264,7 +264,12 @@ protected:
         frame = frame->GetParent();
         rv = frame->QueryInterface(kBlockFrameCID, (void**)&mBlockFrame);
       }
-      NS_ASSERTION(NS_SUCCEEDED(rv) && mBlockFrame, "Cannot find containing block.");
+      if (NS_FAILED(rv) || !mBlockFrame) {
+        NS_NOTREACHED("Cannot find containing block.");
+        // If we can't find a block, pretend bidi isn't enabled.
+        mBidiEnabled = PR_FALSE;
+        mBlockFrame = nsnull;
+      }
 
       mLineContinuationPoint = mContinuationPoint;
     }

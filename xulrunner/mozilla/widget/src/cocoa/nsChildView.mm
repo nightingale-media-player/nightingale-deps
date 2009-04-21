@@ -5473,27 +5473,42 @@ static BOOL keyUpAlreadySentKeyDown = NO;
   // native menus handle an event but don't change focus.
   BOOL handledByEmbedding = NO;
 
-  // Perform native menu UI feedback even if we stop the event from propagating to it normally.
-  // Recall that the menu system won't actually execute any commands for keyboard command invocations.
-  //
-  // If this is a plugin, we do actually perform the action on keyboard commands. See bug 428047.
-  // If the action on plugins here changes the first responder, don't continue.
   NSMenu* mainMenu = [NSApp mainMenu];
-  if (mIsPluginView) {
-    if ([mainMenu isKindOfClass:[GeckoNSMenu class]]) {
+  if (![mainMenu isKindOfClass:[GeckoNSMenu class]]) {  // Embedding
+    // For embedding, *always* let the menus win over content that conflicts
+    // with menu shortcuts, to prevent a page from completely breaking keyboard
+    // accessibility. This is a short-term work-around to prevent regressing
+    // Camino's keyboard accessibility from 1.8; while it does break sites that
+    // want to legitimately override a few keyboard commands to enhance web-app
+    // usability, it prevents badly-coded or malicious sites from creating
+    // black holes that keyboard users are unable to escape from.
+
+    // If the native menu handles the event then we eventually return YES no
+    // matter what Gecko (to prevent double-processing of menus).
+    handledByEmbedding = [mainMenu performKeyEquivalent:theEvent];
+
+    // If a menu handled the event, then normally we wouldn't let Gecko handle
+    // it too. However, if the target is a plugin, and the menu didn't change
+    // window focus, we give the plugin a chance to handle it.
+    if (handledByEmbedding && !(mIsPluginView &&
+                               [[self window] firstResponder] == self)) {
+      return YES;
+    }
+  }
+  else {  // Non-embedding
+    // Perform native menu UI feedback even if we stop the event from propagating to it normally.
+    // Recall that the menu system won't actually execute any commands for keyboard command invocations.
+    //
+    // If this is a plugin, we do actually perform the action on keyboard commands. See bug 428047.
+    // If the action on plugins here changes the first responder, don't continue.
+    if (mIsPluginView) {
       [(GeckoNSMenu*)mainMenu actOnKeyEquivalent:theEvent];
+      if ([[self window] firstResponder] != self)
+        return YES;
     }
     else {
-      // This is probably an embedding situation. If the native menu handle the event
-      // then return YES from pKE no matter what Gecko or the plugin does.
-      handledByEmbedding = [mainMenu performKeyEquivalent:theEvent];
-    }
-    if ([[self window] firstResponder] != self)
-      return YES;
-  }
-  else {
-    if ([mainMenu isKindOfClass:[GeckoNSMenu class]])
       [(GeckoNSMenu*)mainMenu performMenuUserInterfaceEffectsForEvent:theEvent];
+    }
   }
 
   // With Cmd key or Ctrl+Tab or Ctrl+Esc, keyDown will be never called.

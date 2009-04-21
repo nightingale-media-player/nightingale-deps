@@ -40,6 +40,7 @@ DEPTH   = ../../../..
 topsrcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH   = @srcdir@
+relativesrcdir  = toolkit/components/satchel/test
 
 include $(DEPTH)/config/autoconf.mk
 
@@ -49,5 +50,16 @@ XPCSHELL_TESTS = \
   unit \
   $(NULL)
 
+MOCHI_TESTS = \
+		test_form_submission.html \
+		$(NULL)
+
+MOCHI_CONTENT = \
+		satchel_common.js \
+		$(NULL)
+
 include $(topsrcdir)/config/rules.mk
+
+libs:: $(MOCHI_TESTS) $(MOCHI_CONTENT)
+	$(INSTALL) $(foreach f,$^,"$f") $(DEPTH)/_tests/testing/mochitest/tests/$(relativesrcdir)
 

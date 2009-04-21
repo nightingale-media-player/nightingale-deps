@@ -1,3 +1,11 @@
+/**
+ * Manages collecting user actions and events, logging them to file, and
+ * uploading the files to the central server.
+ *
+ * You should never need to create an instance of this prototype; access the
+ * CEIP (Custom Experience Improvement Program) information through |client
+ * .ceip|. Most code should only need to use the |logEvent| method.
+ */
 function CEIP()
 {
     // 'types' is a comma-separated sorted list.
@@ -133,6 +141,17 @@ function ceip_stoplog()
     dd("CEIP: LOGGING STOP");
 }
 
+/**
+ * Logs a single event to the log file, if CEIP is enabled.
+ *
+ * All code performing actions directly caused by the user should log CEIP
+ * events using |logEvent|.
+ *
+ * @param data An |Object| containing properties, including "type", to be
+ *             logged by CEIP. All property names matching /^[-_a-z0-9]+$/i
+ *             will be included. The time of the event is logged automatically,
+ *             overriding any property called "time".
+ */
 CEIP.prototype.logEvent =
 function ceip_logevent(data)
 {
@@ -181,7 +200,12 @@ function ceip_logevent(data)
         newFile.createUnique(NORMAL_FILE_TYPE, 0600);
         oldFile.moveTo(null, newFile.leafName);
 
+        /* startLog() will reset the nest, but we might be in the middle of a
+         * command execution right now and would rather not let that happen.
+         */
+        var commandNest = this.commandNest;
         this.startLog();
+        this.commandNest = commandNest;
     }
     catch (ex)
     {

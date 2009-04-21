@@ -182,6 +182,7 @@ _TEST_FILES = 	test_bug5141.html \
 		file_bug428847-2.xhtml \
 		test_bug425201.html \
 		test_bug431833.html \
+		test_bug453736.html \
 		bug461735-redirect1.sjs \
 		bug461735-redirect2.sjs \
 		bug461735-post-redirect.js \

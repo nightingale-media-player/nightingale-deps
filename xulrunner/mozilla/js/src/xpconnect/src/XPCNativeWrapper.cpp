@@ -574,8 +574,20 @@ XPC_NW_NewResolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
 
   if (id == GetRTStringByIndex(cx, XPCJSRuntime::IDX_TO_STRING)) {
     *objp = obj;
-    return JS_DefineFunction(cx, obj, "toString",
-                             XPC_NW_toString, 0, 0) != nsnull;
+
+    // See the comment in XPC_NW_WrapFunction for why we create this function
+    // like this.
+    JSFunction *fun = JS_NewFunction(cx, XPC_NW_toString, 0, 0, nsnull,
+                                     "toString");
+    if (!fun) {
+      return JS_FALSE;
+    }
+
+    JSObject *funobj = JS_GetFunctionObject(fun);
+    STOBJ_SET_PARENT(funobj, obj);
+
+    return JS_DefineProperty(cx, obj, "toString", OBJECT_TO_JSVAL(funobj),
+                             nsnull, nsnull, 0);
   }
 
   if (!EnsureLegalActivity(cx, obj)) {
@@ -795,7 +807,13 @@ XPCNativeWrapperCtor(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
   jsval native = argv[0];
 
   if (JSVAL_IS_PRIMITIVE(native)) {
-    return ThrowException(NS_ERROR_XPC_BAD_CONVERT_JS, cx);
+    JSStackFrame *fp = nsnull;
+    if (JS_FrameIterator(cx, &fp) && JS_IsConstructorFrame(cx, fp)) {
+      return ThrowException(NS_ERROR_ILLEGAL_VALUE, cx);
+    }
+
+    *rval = native;
+    return JS_TRUE;
   }
 
   JSObject *nativeObj = JSVAL_TO_OBJECT(native);

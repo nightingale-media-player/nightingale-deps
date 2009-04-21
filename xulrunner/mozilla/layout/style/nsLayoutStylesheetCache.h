@@ -44,6 +44,7 @@
 
 class nsIFile;
 class nsICSSLoader;
+class nsICSSLoader_1_9_0_BRANCH;
 
 class nsLayoutStylesheetCache
  : public nsIObserver
@@ -69,7 +70,7 @@ private:
                         PRBool aEnableUnsafeRules);
 
   static nsLayoutStylesheetCache* gStyleCache;
-  static nsICSSLoader* gCSSLoader;
+  static nsICSSLoader_1_9_0_BRANCH* gCSSLoader;
   nsCOMPtr<nsICSSStyleSheet> mScrollbarsSheet;
   nsCOMPtr<nsICSSStyleSheet> mFormsSheet;
   nsCOMPtr<nsICSSStyleSheet> mUserContentSheet;

@@ -162,29 +162,8 @@ public:
                             nsICSSImportRule* aRule) = 0;
 
   /**
-   * Synchronously load and return the stylesheet at aURL.  Any child sheets
-   * will also be loaded synchronously.  Note that synchronous loads over some
-   * protocols may involve spinning up a new event loop, so use of this method
-   * does NOT guarantee not receiving any events before the sheet loads.  This
-   * method can be used to load sheets not associated with a document.
-   *
-   * @param aURL the URL of the sheet to load
-   * @param [out] aSheet the loaded, complete sheet.
-   * @param aEnableUnsafeRules whether unsafe rules are enabled for this
-   * sheet load
-   * Unsafe rules are rules that can violate key Gecko invariants if misused.
-   * In particular, most anonymous box pseudoelements must be very carefully
-   * styled or we will have severe problems. Therefore unsafe rules should
-   * never be enabled for stylesheets controlled by untrusted sites; preferably
-   * unsafe rules should only be enabled for agent sheets.
-   *
-   * NOTE: At the moment, this method assumes the sheet will be UTF-8, but
-   * ideally it would allow arbitrary encodings.  Callers should NOT depend on
-   * non-UTF8 sheets being treated as UTF-8 by this method.
-   *
-   * NOTE: A successful return from this method doesn't indicate anything about
-   * whether the data could be parsed as CSS and doesn't indicate anything
-   * about the status of child sheets of the returned sheet.
+   * As the nsICSSLoader_1_9_0_BRANCH method, but assumes
+   * aUseSystemPrincipal false.
    */
   NS_IMETHOD LoadSheetSync(nsIURI* aURL, PRBool aEnableUnsafeRules,
                            nsICSSStyleSheet** aSheet) = 0;
@@ -277,10 +256,64 @@ public:
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsICSSLoader, NS_ICSS_LOADER_IID)
 
+#define NS_ICSS_LOADER_1_9_0_BRANCH_IID             \
+{ 0xdda6894b, 0x8129, 0x4bb1,                       \
+  { 0xa5, 0x66, 0xdb, 0x90, 0x81, 0x8e, 0x6a, 0x27 } }
+
+class nsICSSLoader_1_9_0_BRANCH : public nsICSSLoader {
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICSS_LOADER_1_9_0_BRANCH_IID)
+
+  /**
+   * Synchronously load and return the stylesheet at aURL.  Any child sheets
+   * will also be loaded synchronously.  Note that synchronous loads over some
+   * protocols may involve spinning up a new event loop, so use of this method
+   * does NOT guarantee not receiving any events before the sheet loads.  This
+   * method can be used to load sheets not associated with a document.
+   *
+   * @param aURL the URL of the sheet to load
+   * @param aEnableUnsafeRules whether unsafe rules are enabled for this
+   * sheet load
+   * Unsafe rules are rules that can violate key Gecko invariants if misused.
+   * In particular, most anonymous box pseudoelements must be very carefully
+   * styled or we will have severe problems. Therefore unsafe rules should
+   * never be enabled for stylesheets controlled by untrusted sites; preferably
+   * unsafe rules should only be enabled for agent sheets.
+   * @param aUseSystemPrincipal if true, give the resulting sheet the system
+   * principal no matter where it's being loaded from.
+   * @param [out] aSheet the loaded, complete sheet.
+   *
+   * NOTE: At the moment, this method assumes the sheet will be UTF-8, but
+   * ideally it would allow arbitrary encodings.  Callers should NOT depend on
+   * non-UTF8 sheets being treated as UTF-8 by this method.
+   *
+   * NOTE: A successful return from this method doesn't indicate anything about
+   * whether the data could be parsed as CSS and doesn't indicate anything
+   * about the status of child sheets of the returned sheet.
+   */
+  NS_IMETHOD LoadSheetSync(nsIURI* aURL, PRBool aEnableUnsafeRules,
+                           PRBool aUseSystemPrincipal,
+                           nsICSSStyleSheet** aSheet) = 0;
+
+  // Stupid C++ method hiding stuff
+  NS_IMETHOD LoadSheetSync(nsIURI* aURL, PRBool aEnableUnsafeRules,
+                           nsICSSStyleSheet** aSheet) = 0;
+
+  nsresult LoadSheetSync(nsIURI* aURL, nsICSSStyleSheet** aSheet) {
+    return nsICSSLoader::LoadSheetSync(aURL, aSheet);
+  }
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsICSSLoader_1_9_0_BRANCH,
+                              NS_ICSS_LOADER_1_9_0_BRANCH_IID)
+
 nsresult 
 NS_NewCSSLoader(nsIDocument* aDocument, nsICSSLoader** aLoader);
 
 nsresult 
 NS_NewCSSLoader(nsICSSLoader** aLoader);
+
+nsresult 
+NS_NewCSSLoader(nsICSSLoader_1_9_0_BRANCH** aLoader);
 
 #endif /* nsICSSLoader_h___ */

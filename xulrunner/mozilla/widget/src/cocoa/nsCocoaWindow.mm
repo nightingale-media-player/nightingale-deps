@@ -1911,7 +1911,11 @@ NS_IMETHODIMP nsCocoaWindow::EndSecureKeyboardInput()
       break;
   }
 
+  // Avoid crashing on any Objective-C exceptions that occur here.  This
+  // fixes bug 442245.
+  NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
   [super sendEvent:anEvent];
+  NS_OBJC_END_TRY_LOGONLY_BLOCK;
 }
 
 - (BOOL)usesNativeResizer
@@ -2213,11 +2217,6 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
 // NSWindow's own sendEvent: method.
 - (void)nsCocoaWindow_NSWindow_sendEvent:(NSEvent *)anEvent
 {
-  // Since we've hooked a "system call" ([NSWindow sendEvent:]), we're always
-  // called from system code (not browser code).  So avoid crashing on any
-  // Objective-C exceptions that occur here.
-  NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
-
   nsCOMPtr<nsIDOMElement> oldFocusedElement;
   NSResponder *oldFirstResponder;
   NSEventType type = [anEvent type];
@@ -2254,8 +2253,6 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
     [newFirstResponder release];
     [oldFirstResponder release];
   }
-
-  NS_OBJC_END_TRY_LOGONLY_BLOCK;
 }
 
 @end
@@ -2369,11 +2366,19 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
         [target otherMouseDragged:anEvent];
         break;
       default:
+        // Avoid crashing on any Objective-C exceptions that occur here.  This
+        // fixes bug 442245.
+        NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
         [super sendEvent:anEvent];
+        NS_OBJC_END_TRY_LOGONLY_BLOCK;
         break;
     }
   } else {
+    // Avoid crashing on any Objective-C exceptions that occur here.  This
+    // fixes bug 442245.
+    NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
     [super sendEvent:anEvent];
+    NS_OBJC_END_TRY_LOGONLY_BLOCK;
   }
 
   NS_OBJC_END_TRY_ABORT_BLOCK;
@@ -2458,7 +2463,11 @@ already_AddRefed<nsIDOMElement> GetFocusedElement()
       break;
   }
 
+  // Avoid crashing on any Objective-C exceptions that occur here.  This
+  // fixes bug 442245.
+  NS_OBJC_BEGIN_TRY_LOGONLY_BLOCK;
   [super sendEvent:anEvent];
+  NS_OBJC_END_TRY_LOGONLY_BLOCK;
 }
 
 

@@ -99,12 +99,12 @@ public:
   // This stores both the content and the frame so that Instantiate calls can be
   // avoided if the frame changed in the meantime.
   nsObjectLoadingContent *mContent;
-  nsIObjectFrame*         mFrame;
+  nsWeakFrame             mFrame;
   nsCString               mContentType;
   nsCOMPtr<nsIURI>        mURI;
 
   nsAsyncInstantiateEvent(nsObjectLoadingContent* aContent,
-                          nsIObjectFrame* aFrame,
+                          nsIFrame* aFrame,
                           const nsCString& aType,
                           nsIURI* aURI)
     : mContent(aContent), mFrame(aFrame), mContentType(aType), mURI(aURI)
@@ -134,7 +134,15 @@ nsAsyncInstantiateEvent::Run()
   // Also make sure that we still refer to the same data.
   nsIObjectFrame* frame = mContent->
     GetExistingFrame(nsObjectLoadingContent::eFlushContent);
-  if (frame == mFrame &&
+#ifdef DEBUG
+  if (frame && mFrame.IsAlive()) {
+    nsIFrame* objectFrame = nsnull;
+    CallQueryInterface(frame, &objectFrame);
+    NS_ASSERTION(objectFrame == mFrame.GetFrame(), "Wrong frame!");
+  }
+#endif
+  if (frame &&
+      mFrame.IsAlive() &&
       mContent->mURI == mURI &&
       mContent->mContentType.Equals(mContentType)) {
     if (LOG_ENABLED()) {
@@ -450,7 +458,7 @@ nsObjectLoadingContent::OnStartRequest(nsIRequest *aRequest,
   nsIDocument* doc = thisContent->GetOwnerDoc();
   if (!doc) {
     Fallback(PR_FALSE);
-    return NS_BINDING_ABORTED;    
+    return NS_BINDING_ABORTED;
   }
 
   PRInt16 shouldProcess = nsIContentPolicy::ACCEPT;
@@ -790,8 +798,10 @@ nsObjectLoadingContent::HasNewFrame(nsIObjectFrame* aFrame)
       return NS_OK;
     }
 
+    nsIFrame* frame = nsnull;
+    CallQueryInterface(aFrame, &frame);
     nsCOMPtr<nsIRunnable> event =
-        new nsAsyncInstantiateEvent(this, aFrame, mContentType, mURI);
+      new nsAsyncInstantiateEvent(this, frame, mContentType, mURI);
     if (!event) {
       return NS_ERROR_OUT_OF_MEMORY;
     }

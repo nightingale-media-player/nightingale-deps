@@ -135,6 +135,7 @@ public:
                 nsICSSStyleSheet* aSheet,
                 PRBool aSyncLoad,
                 PRBool aAllowUnsafeRules,
+                PRBool aUseSystemPrincipal,
                 nsICSSLoaderObserver* aObserver,
                 nsIPrincipal* aLoaderPrincipal);
 
@@ -207,6 +208,11 @@ public:
   // mAllowUnsafeRules is true if we should allow unsafe rules to be parsed
   // in the loaded sheet.
   PRPackedBool               mAllowUnsafeRules : 1;
+
+  // mUseSystemPrincipal is true if the system principal should be used for
+  // this sheet, no matter what the channel principal is.  Only true for sync
+  // loads.
+  PRPackedBool               mUseSystemPrincipal : 1;
   
   // This is the element that imported the sheet.  Needed to get the
   // charset set on it.
@@ -293,7 +299,7 @@ enum StyleSheetState {
  * Loader Declaration *
  **********************/
 
-class CSSLoaderImpl : public nsICSSLoader
+class CSSLoaderImpl : public nsICSSLoader_1_9_0_BRANCH
 {
 public:
   CSSLoaderImpl(void);
@@ -339,6 +345,10 @@ public:
                             nsICSSImportRule* aRule);
 
   NS_IMETHOD LoadSheetSync(nsIURI* aURL, PRBool aAllowUnsafeRules,
+                           nsICSSStyleSheet** aSheet);
+
+  NS_IMETHOD LoadSheetSync(nsIURI* aURL, PRBool aAllowUnsafeRules,
+                           PRBool aUseSystemPrincipal,
                            nsICSSStyleSheet** aSheet);
 
   NS_IMETHOD LoadSheet(nsIURI* aURL,
@@ -415,6 +425,7 @@ private:
 
   nsresult InternalLoadNonDocumentSheet(nsIURI* aURL,
                                         PRBool aAllowUnsafeRules,
+                                        PRBool aUseSystemPrincipal,
                                         nsIPrincipal* aOriginPrincipal,
                                         nsICSSStyleSheet** aSheet,
                                         nsICSSLoaderObserver* aObserver);

@@ -1288,7 +1288,9 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
     nsCOMPtr<nsIURI> uri(do_QueryInterface(aCatalogData));
     if (uri) {
       nsCOMPtr<nsICSSStyleSheet> sheet;
-      mCSSLoader->LoadSheetSync(uri, PR_TRUE, getter_AddRefs(sheet));
+      nsCOMPtr<nsICSSLoader_1_9_0_BRANCH> cssLoader =
+        do_QueryInterface(mCSSLoader);
+      cssLoader->LoadSheetSync(uri, PR_TRUE, PR_TRUE, getter_AddRefs(sheet));
       
 #ifdef NS_DEBUG
       nsCAutoString uriStr;

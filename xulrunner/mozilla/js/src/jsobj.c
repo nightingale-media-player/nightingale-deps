@@ -3460,6 +3460,8 @@ js_FindPropertyHelper(JSContext *cx, jsid id, JSObject **objp,
         if (obj->map->ops->lookupProperty == js_LookupProperty) {
             protoIndex =
                 js_LookupPropertyWithFlags(cx, obj, id, 0, &pobj, &prop);
+            if (protoIndex < 0)
+                return -1;
         } else {
             if (!OBJ_LOOKUP_PROPERTY(cx, obj, id, &pobj, &prop))
                 return -1;
@@ -4726,7 +4728,7 @@ js_ValueToObject(JSContext *cx, jsval v, JSObject **objp)
         obj = JSVAL_TO_OBJECT(v);
         if (!OBJ_DEFAULT_VALUE(cx, obj, JSTYPE_OBJECT, &v))
             return JS_FALSE;
-        if (JSVAL_IS_OBJECT(v))
+        if (!JSVAL_IS_PRIMITIVE(v))
             obj = JSVAL_TO_OBJECT(v);
     } else {
         if (!js_PrimitiveToObject(cx, &v))

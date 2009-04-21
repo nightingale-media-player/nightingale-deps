@@ -260,7 +260,7 @@ protected:
   nsCOMPtr<nsIRDFResource> mDisabled;
   nsCOMPtr<nsIRDFResource> mXPCNativeWrappers;
 
-  nsCOMPtr<nsICSSLoader> mCSSLoader;
+  nsCOMPtr<nsICSSLoader_1_9_0_BRANCH> mCSSLoader;
   nsCOMPtr<nsIZipReader> mOverrideJAR;
   nsCString              mOverrideJARURL;
   

@@ -295,19 +295,19 @@ CCKService.prototype = {
 			BookmarkTitle = this.getString(prefix + "BookmarkTitle" + i);
 			if (BookmarkTitle) {
 				BookmarkURL = this.getString(prefix + "BookmarkURL" + i);
-				if (BookmarkURL) {
-					var bmtype = this.getString(prefix + "BookmarkType" + i);
-					var curitem;
+				var bmtype = this.getString(prefix + "BookmarkType" + i);
+				var curitem;
+				if (bmtype == "separator") {
+					curitem = this.bookmarks.insertSeparator(container, location);
+				} else if (BookmarkURL) {
 					if (bmtype == "live") {
-						curitem = this.livemarks.createLivemark(container, BookmarkTitle, null, this.makeURI(BookmarkURL), -1);
-					} else if (bmtype == "separator") {
-						curitem = this.bookmarks.insertSeparator(container, -1);
-					} else {
+						curitem = this.livemarks.createLivemark(container, BookmarkTitle, null, this.makeURI(BookmarkURL), location);
+					}else {
 						curitem = this.bookmarks.insertBookmark(container, this.makeURI(BookmarkURL), location, BookmarkTitle);
 					}
-					if (curitem) {
-						this.annoService.setItemAnnotation(curitem, inId, "true", 0, this.annoService.EXPIRE_NEVER);
-					}
+				}
+				if (curitem) {
+					this.annoService.setItemAnnotation(curitem, inId, "true", 0, this.annoService.EXPIRE_NEVER);
 				}
 			}
 		}
