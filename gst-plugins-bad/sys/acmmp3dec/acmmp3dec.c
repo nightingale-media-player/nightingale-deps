@@ -157,6 +157,8 @@ acmmp3dec_setup (ACMMP3Dec * dec)
       0, 0, 0, 0);
   if (res) {
     GST_WARNING_OBJECT (dec, "Failed to open ACM stream: %d", res);
+    GST_ELEMENT_ERROR (dec, LIBRARY, INIT, 
+            ("Failed to initialise ACM MP3 decoder (l3codeca.acm)"), (NULL));
     return FALSE;
   }
 
