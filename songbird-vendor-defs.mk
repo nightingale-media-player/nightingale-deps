@@ -129,6 +129,7 @@ CHMOD ?= chmod
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
 CP ?= cp
+CUT ?= cut
 MSYS_CP ?= $(SB_VENDOR_CHECKOUT)/msys-recursive-cp
 FIND ?= find
 LN ?= ln

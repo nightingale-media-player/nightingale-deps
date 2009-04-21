@@ -186,7 +186,7 @@ endif
 #
 
 post_build: module_post_build
-ifneq (,$(filter Darwin Linux, $(SB_VENDOR_ARCH))
+ifneq (,$(filter Darwin Linux, $(SB_VENDOR_ARCH)))
 	@echo Slaying libtool .la files on real platforms...
 	$(FIND) $(SB_CONFIGURE_PREFIX) -type f -name '*.la' -exec $(RM) -fv {} \;
 endif

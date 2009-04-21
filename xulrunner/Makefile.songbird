@@ -37,8 +37,8 @@ SB_XR_BRANCH = trunk
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_XR_PLATFORM := $(shell echo $(SB_TARGET_ARCH) | $(AWK) -F- '{print $$1}')
-SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(AWK) -F- '{print $$2}')
+SB_XR_PLATFORM := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 1)
+SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 2-)
 
 MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).mozconfig
 
