@@ -700,6 +700,7 @@ gst_directsound_ring_buffer_resume (GstRingBuffer * buf)
 {
   HRESULT hr;
   GstDirectSoundRingBuffer *dsoundbuffer;
+  gint64 freeBufferSize = 0;
 
   dsoundbuffer = GST_DIRECTSOUND_RING_BUFFER (buf);
 
@@ -712,16 +713,6 @@ gst_directsound_ring_buffer_resume (GstRingBuffer * buf)
     GST_DSOUND_UNLOCK (dsoundbuffer);
     GST_WARNING ("gst_directsound_ring_buffer_resume: ResumeThread failed.");
     return FALSE;
-  }
-
-  if (dsoundbuffer->pDSB8) {
-    hr = IDirectSoundBuffer8_Play (dsoundbuffer->pDSB8, 0, 0, DSBPLAY_LOOPING);
-    
-    if (G_UNLIKELY (FAILED(hr))) {
-      GST_DSOUND_UNLOCK (dsoundbuffer);
-      GST_WARNING ("gst_directsound_ring_buffer_resume: IDirectSoundBuffer8_Start, hr = %X", hr);
-      return FALSE;
-    }
   }
 
   GST_DSOUND_UNLOCK (dsoundbuffer);
@@ -917,8 +908,11 @@ gst_directsound_write_proc (LPVOID lpParameter)
 
     len -= dsoundbuffer->segoffset;
 
+    /* If we can't write this into directsound because we don't have enough 
+     * space, then start playback if we're currently paused. Then, sleep
+     * for a little while to wait until space is available */
     if (len > freeBufferSize)
-      goto complete;
+      goto start_playback;
     
     /* lock it */
     hr = IDirectSoundBuffer8_Lock (dsoundbuffer->pDSB8,
@@ -961,6 +955,7 @@ gst_directsound_write_proc (LPVOID lpParameter)
       dsoundbuffer->segoffset = 0;
     }
 
+  start_playback:
     /* if our buffer is big enough, start playing it */
     if (!(dwStatus & DSBSTATUS_PLAYING) && 
         freeBufferSize < dsoundbuffer->min_buffer_size) {
@@ -978,7 +973,7 @@ gst_directsound_write_proc (LPVOID lpParameter)
     GST_DSOUND_UNLOCK (dsoundbuffer);
     
     /* it's extremely important to sleep in without the lock! */
-    if (freeBufferSize <= dsoundbuffer->min_buffer_size || 
+    if (freeBufferSize <= len || 
         flushing || 
         error) {
       Sleep (dsoundbuffer->min_sleep_time);
