@@ -48,6 +48,7 @@ XR_CLENAUP = $(CURDIR)/xr_cleanup.sh
 
 xr-all:
 	$(RM) -rf $(CURDIR)/songbird
+	$(RM) -rf $(CURDIR)/mozilla/compiled
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-debug
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-release
 	$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH)
@@ -55,13 +56,14 @@ xr-all:
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
 xr-%:
+	@echo Setting up xulrunner $*-mode build...
 	$(CP) $(CURDIR)/mozconfigs/$(MOZCONFIG) $(CURDIR)/mozilla/.mozconfig
 	$(RM) -rf $(CURDIR)/mozilla/compiled/xulrunner-$*
 	$(MKDIR) $(CURDIR)/mozilla/compiled/xulrunner-$*
 	$(MAKE) -C $(CURDIR)/mozilla -f client.mk build
+ifeq (release,$*)
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-$* buildsymbols
-ifeq (debug,$*)
-	$(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
+	cd $(CURDIR)/mozilla && $(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
 endif	
 	
 .PHONY: xr-all xr-%
