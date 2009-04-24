@@ -987,7 +987,17 @@ Engine.prototype = {
   // The name of the charset used to submit the search terms.
   _queryCharset: null,
   // A URL string pointing to the engine's search form.
-  _searchForm: null,
+  __searchForm: null,
+  get _searchForm() {
+    return this.__searchForm;
+  },
+  set _searchForm(aValue) {
+    if (/^https?:/i.test(aValue))
+      this.__searchForm = aValue;
+    else
+      LOG("_searchForm: Invalid URL dropped for " + this._name ||
+          "the current engine");
+  },
   // The URI object from which the engine was retrieved.
   // This is null for local plugins, and is used for error messages and logging.
   _uri: null,
