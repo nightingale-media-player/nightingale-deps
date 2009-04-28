@@ -161,6 +161,9 @@
 // This bit is set while the frame is registered as a blinking frame.
 #define TEXT_BLINK_ON              0x80000000
 
+// Set when this text frame is mentioned in the userdata for a textrun
+#define TEXT_IN_TEXTRUN_USER_DATA  0x40000000
+
 /*
  * Some general notes
  * 
@@ -310,7 +313,10 @@ DestroyUserData(void* aUserData)
 static void
 ClearAllTextRunReferences(nsTextFrame* aFrame, gfxTextRun* aTextRun)
 {
+  aFrame->RemoveStateBits(TEXT_IN_TEXTRUN_USER_DATA);
   while (aFrame) {
+    NS_ASSERTION(aFrame->GetType() == nsGkAtoms::textFrame,
+                 "Bad frame");
     if (aFrame->GetTextRun() != aTextRun)
       break;
     aFrame->SetTextRun(nsnull);
@@ -1489,6 +1495,11 @@ BuildTextRunsScanner::BuildTextRunForFrames(void* aTextBuffer)
 
     TextRunMappedFlow* newFlow = &userData->mMappedFlows[i];
     newFlow->mStartFrame = mappedFlow->mStartFrame;
+    if (!mSkipIncompleteTextRuns) {
+      // If mSkipIncompleteTextRuns is set, then we're just going to
+      // throw away the userData.
+      newFlow->mStartFrame->AddStateBits(TEXT_IN_TEXTRUN_USER_DATA);
+    }
     newFlow->mDOMOffsetToBeforeTransformOffset = builder.GetCharCount() -
       mappedFlow->mStartFrame->GetContentOffset();
     newFlow->mContentLength = contentLength;
@@ -3314,7 +3325,12 @@ nsContinuingTextFrame::Destroy()
   // we need to wipe out the text run for the text.
   // Note that mPrevContinuation can be null if we're destroying the whole
   // frame chain from the start to the end.
-  if (!mPrevContinuation ||
+  // If this frame is mentioned in the userData for a textrun (say
+  // because there's a direction change at the start of this frame), then
+  // we have to clear the textrun because we're going away and the
+  // textrun had better not keep a dangling reference to us.
+  if ((GetStateBits() & TEXT_IN_TEXTRUN_USER_DATA) ||
+      !mPrevContinuation ||
       mPrevContinuation->GetStyleContext() != GetStyleContext()) {
     ClearTextRun();
   }
