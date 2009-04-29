@@ -37,6 +37,12 @@ SB_XR_BRANCH = trunk
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
+export SYMBOL_SERVER_HOST = "crashreports.songbirdnest.com"
+export SYMBOL_SERVER_PATH = "/var/local/symbols/xulrunner"
+export SYMBOL_SERVER_PORT = "9095"
+export SYMBOL_SERVER_SSH_KEY = "/home/birdbld/.ssh/id_rsa"
+export SYMBOL_SERVER_USER = "birdbuilder"
+
 SB_XR_PLATFORM := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 1)
 SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 2-)
 

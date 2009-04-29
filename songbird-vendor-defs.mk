@@ -134,6 +134,7 @@ MSYS_CP ?= $(SB_VENDOR_CHECKOUT)/msys-recursive-cp
 FIND ?= find
 LN ?= ln
 MKDIR ?= mkdir -p
+MV ?= mv
 PYTHON ?= python
 RM ?= rm
 SED ?= sed
