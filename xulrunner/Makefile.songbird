@@ -56,6 +56,9 @@ xr-all:
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release uploadsymbols
 	cd $(CURDIR)/mozilla && $(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
 	$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH)
+	# Move these files where we expect them to be in the vendor build system
+	$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla  $(SB_VENDOR_BINARIES_DIR)/mozilla
+	$(MV) $(CURDIR)/songbird/$(SB_XR_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner $(SB_VENDOR_BINARIES_DIR)/xulrunner
 	# These files aren't needed after the package-deps and take up TONS of space
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
