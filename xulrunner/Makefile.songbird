@@ -53,6 +53,7 @@ xr-all:
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) xr-release
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
+	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release uploadsymbols
 	cd $(CURDIR)/mozilla && $(XR_STRIP_SYMBOLS) $(SB_XR_PLATFORM)
 	$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_XR_BRANCH)
 	# These files aren't needed after the package-deps and take up TONS of space
