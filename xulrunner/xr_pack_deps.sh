@@ -9,9 +9,6 @@ fi
 plat=$1
 tree=$2
 
-# clean up any old dependencies
-rm -rf ../songbird/
-
 # create destination directories
 mkdir -p songbird/$tree/dependencies/$plat/mozilla/debug/
 mkdir -p songbird/$tree/dependencies/$plat/xulrunner/debug/
