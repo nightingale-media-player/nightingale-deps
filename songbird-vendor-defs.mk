@@ -82,7 +82,7 @@ ifeq (SunOS,$(SB_VENDOR_ARCH))
       SB_TARGET_ARCH := solaris-x86_64
       SB_ARCH_DETECTED := 1
    endif
-   ifeq (1, $(filter sun4u sun4v,$(SB_VENDOR_SUBARCH)))
+   ifneq (,$(filter sun4u sun4v,$(SB_VENDOR_SUBARCH)))
       SB_TARGET_ARCH := solaris-sparc
       SB_ARCH_DETECTED := 1
    endif

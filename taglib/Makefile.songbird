@@ -57,10 +57,15 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   CMAKE_ZLIB_FLAGS := -DZLIB_INCLUDE_DIR:PATH="$(SB_ZLIB_DIR)/include" \
    -DZLIB_LIBRARY:FILEPATH="$(SB_ZLIB_DIR)/lib/zlib.lib"
 else
-  CMAKE_C_FLAGS_DEBUG += -g -gstabs+
-  CMAKE_CXX_FLAGS_DEBUG += -g -gstabs+
-  CMAKE_C_FLAGS_RELEASE += -gstabs+
-  CMAKE_CXX_FLAGS_RELEASE += -gstabs+
+   ifeq (SunOS,$(SB_VENDOR_ARCH))
+      CMAKE_C_FLAGS_DEBUG += -g
+      CMAKE_CXX_FLAGS_DEBUG += -g
+   else
+      CMAKE_C_FLAGS_DEBUG += -g -gstabs+
+      CMAKE_CXX_FLAGS_DEBUG += -g -gstabs+
+      CMAKE_C_FLAGS_RELEASE += -gstabs+
+      CMAKE_CXX_FLAGS_RELEASE += -gstabs+
+   endif
 endif
 
 ifeq (debug,$(SB_BUILD_TYPE))
