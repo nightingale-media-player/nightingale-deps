@@ -1425,6 +1425,9 @@ gst_mp3parse_handle_first_frame (GstMPEGAudioParse * mp3parse, int size)
           rate, applied_rate, format, start, stop, pos);
       gst_segment_set_newsegment_full (&mp3parse->segment, update, rate,
           applied_rate, format, start, stop, pos);
+      if (start != -1 && stop != -1)
+        gst_segment_set_duration (&mp3parse->segment, GST_FORMAT_TIME, 
+                stop - start);
 
       event = gst_event_new_new_segment_full (update, rate, applied_rate, 
               format, start, stop, pos);
