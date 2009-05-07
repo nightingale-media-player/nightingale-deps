@@ -52,6 +52,8 @@ const Cr = Components.results;
 const Cu = Components.utils;
 const CC = Components.Constructor;
 
+const EXPORTED_SYMBOLS = ["server", "nsHttpServer", "HttpError"];
+
 /** True if debugging output is enabled, false otherwise. */
 var DEBUG = false; // non-const *only* so tweakable in server tests
 
@@ -480,6 +482,14 @@ nsHttpServer.prototype =
   registerPathHandler: function(path, handler)
   {
     this._handler.registerPathHandler(path, handler);
+  },
+
+  //
+  // see nsIHttpServer.registerPrefixHandler
+  //
+  registerPrefixHandler: function(prefix, handler)
+  {
+    this._handler.registerPrefixHandler(prefix, handler);
   },
 
   //
@@ -1511,6 +1521,15 @@ function ServerHandler(server)
   this._overridePaths = {};
 
   /**
+   * Custom request handlers for the path prefixes on the server in which this
+   * resides.  Path-handler pairs are stored as property-value pairs in this
+   * property.
+   *
+   * @see ServerHandler.prototype._defaultPaths
+   */
+  this._overridePrefixes = {};
+
+  /**
    * Custom request handlers for the error handlers in the server in which this
    * resides.  Path-handler pairs are stored as property-value pairs in this
    * property.
@@ -1560,9 +1579,29 @@ ServerHandler.prototype =
         // explicit paths first, then files based on existing directory mappings,
         // then (if the file doesn't exist) built-in server default paths
         if (path in this._overridePaths)
+        {
           this._overridePaths[path](metadata, response);
+        }
         else
-          this._handleDefault(metadata, response);
+        {
+          let longestPrefix = "";
+          for (let prefix in this._overridePrefixes)
+          {
+            if (prefix.length > longestPrefix.length &&
+                path.substr(0, prefix.length) == prefix)
+            {
+              longestPrefix = prefix;
+            }
+          }
+          if (longestPrefix.length > 0)
+          {
+            this._overridePrefixes[longestPrefix](metadata, response);
+          }
+          else
+          {
+            this._handleDefault(metadata, response);
+          }
+        }
       }
       catch (e)
       {
@@ -1652,6 +1691,18 @@ ServerHandler.prototype =
       throw Cr.NS_ERROR_INVALID_ARG;
 
     this._handlerToField(handler, this._overridePaths, path);
+  },
+
+  //
+  // see nsIHttpServer.registerPrefixHandler
+  //
+  registerPrefixHandler: function(path, handler)
+  {
+    // XXX true path validation!
+    if (path.charAt(0) != "/" || path.charAt(path.length - 1) != "/")
+      throw Cr.NS_ERROR_INVALID_ARG;
+
+    this._handlerToField(handler, this._overridePrefixes, path);
   },
 
   //
