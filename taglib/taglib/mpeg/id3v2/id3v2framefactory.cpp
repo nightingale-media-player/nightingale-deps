@@ -32,6 +32,8 @@
 #include "id3v2framefactory.h"
 #include "id3v2synchdata.h"
 
+#include "id3v1genres.h"
+
 #include "frames/attachedpictureframe.h"
 #include "frames/commentsframe.h"
 #include "frames/relativevolumeframe.h"
@@ -418,9 +420,21 @@ void FrameFactory::updateGenre(TextIdentificationFrame *frame) const
     int end = s.find(")");
 
     if(s.startsWith("(") && end > 0)
-      newfields.append(s.substr(1, end - 1));
-    else
+    {
+      String genreInt = s.substr(1, end -1);
+#ifndef NO_ITUNES_HACKS
+      newfields.append(genreAsString(genreInt));
+#else
+      newfields.append(genreInt);
+#endif
+    }
+    else {
+#ifndef NO_ITUNES_HACKS
+      newfields.append(genreAsString(s));
+#else
       newfields.append(s);
+#endif
+    }
   }
 
   if(newfields.isEmpty())
@@ -428,3 +442,21 @@ void FrameFactory::updateGenre(TextIdentificationFrame *frame) const
 
   frame->setText(newfields);
 }
+
+String FrameFactory::genreAsString(String genre) const
+{
+  /* iTunes handles id3v2.4 numeric genres incorrectly (it expects them
+     as "(xx"), id3v2.3 style, instead of as "xx", v2.4 style). So, just
+     convert these to the full string form instead. */
+  for (int i = 0; i < genre.length(); i++) {
+    if (genre[i] < '0' || genre[i] > '9')
+      return genre; /* Not numeric genre */
+  }
+
+  int number = genre.toInt();
+  if(number >= 0 && number <= 255)
+    return ID3v1::genre(number);
+  else
+    return genre; /* Out of range, wasn't a valid numeric genre */
+}
+
