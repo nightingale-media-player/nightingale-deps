@@ -56,8 +56,10 @@ XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
 COMPONENTS_PPFLAGS = -DMOZ_DISTRIBUTION_ID=\"Songbird\"
 
-SONGBIRD_PP_COMPONENTS = $(srcdir)/nsSearchService.js \
-                         $(NULL)
+SONGBIRD_PP_RESOURCES = $(srcdir)/nsSearchService.js \
+                        $(NULL)
+
+SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
 
 SONGBIRD_COMPONENTS = $(srcdir)/nsSearchSuggestions.js \
                       $(XPIDL_MODULE) \

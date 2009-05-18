@@ -42,7 +42,7 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/build/autodefs.mk
 
-SONGBIRD_PP_COMPONENTS = $(srcdir)/fuelApplication.js
+SONGBIRD_PP_RESOURCES = $(srcdir)/fuelApplication.js
 SONGBIRD_PP_DIR = $(SONGBIRD_COMPONENTSDIR)
 
 include $(topsrcdir)/build/rules.mk
