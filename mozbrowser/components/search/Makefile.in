@@ -54,7 +54,7 @@ XPIDL_SRCS = nsIBrowserSearchService.idl \
 XPIDL_MODULE = browsersearch.xpt
 XPIDL_MODULE_TYPELIBS = $(XPIDL_SRCS:.idl=.xpt)
 
-COMPONENTS_PPFLAGS = -DMOZ_DISTRIBUTION_ID=\"Songbird\"
+PPDEFINES += -DMOZ_DISTRIBUTION_ID=\"Songbird\"
 
 SONGBIRD_PP_RESOURCES = $(srcdir)/nsSearchService.js \
                         $(NULL)
