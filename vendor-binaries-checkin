@@ -1,0 +1,87 @@
+#!/bin/bash
+
+set -e
+#set -x
+
+os=$(uname -o)
+os_arch=$(uname)
+os_subarch=$(uname -m)
+
+if [[ $os == "Msys" ]]; then
+   platform=windows-i686-msvc8
+elif [[ $os_arch = "Linux" ]]; then
+   if [[ $os_subarch == "x86_64" ]]; then
+      platform=linux-x86_64
+   elif [[ $os_subarch == "i686" ]]; then
+      platform=linux-i686
+   else
+      echo Unknown Linux platform: $os $os_arch $os_subarch > /dev/stderr
+      exit 2
+   fi
+elif [[ $os_arch == "Darwin" ]]; then
+   platform=macosx-i686
+else
+   echo Unknown platform: $os $os_arch $os_subarch > /dev/stderr
+   exit 2
+fi
+
+branch=$1
+vrev=$2
+vbrev=$3
+
+usage() {
+   echo Usage: $0 [branch] [vendor revision] [vendor-binaries revision] [1 or more packages]
+}
+
+if test -z "$vrev" || test -z "$vbrev" || test -z "$branch"; then
+   usage
+   exit 1
+fi
+
+# Shift off the 3 arguments here
+shift 3
+
+PACKAGES=$@
+
+if test -z "$PACKAGES"; then
+   usage
+   exit 1
+fi
+
+if [[ $branch = "trunk" ]]; then
+   branchString="trunk"
+else
+   branchString="branches/$branch"
+fi
+
+echo Branch: $branch $branchString
+echo Branch SVN String: $branchString
+echo Vendor repo revision: $vrev
+echo Vendor-binaries repo revision: $vbrev
+echo Platform: $platform
+echo Packages: $PACKAGES
+echo 
+echo Correct? Hit Ctrl-c to cancel...
+read
+
+for d in $PACKAGES; do 
+   echo "Checking $d in with vrev $vrev, vbrev $vbrev..."
+echo    /builds/subversion/svn_load_dirs.pl \
+    -no_user_input \
+    -commit_mesg "Rebuild of $d $platform binaries; generated at vendor repo revision $vrev, vendor-binaries repo revision $vbrev" \
+     https://svn.songbirdnest.com/vendor-binaries/$branchString/$platform $d $platform/$d;
+done
+
+if [[ $platform != "linux-x86_64" ]]; then
+   symbolRootDir=/var/local/symbols/vendor
+   dirDate=$(date +%Y%m%d)
+
+   for f in $(find build -name "*.zip"); do
+      $platform/mozilla/release/scripts/upload_symbols.sh $f $symbolRootDir/$dirDate-$branch-respins/$platform;
+   done
+
+   ssh -2 -p $SYMBOL_SERVER_PORT \
+    -i $SYMBOL_SERVER_SSH_KEY \
+    -l $SYMBOL_SERVER_USER $SYMBOL_SERVER_HOST \
+    "set -e; echo Running \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform; \$HOME/buildbot/breakpad-symlinkify.pl $symbolRootDir $symbolRootDir/$dirDate-$branch-respins/$platform";
+fi
