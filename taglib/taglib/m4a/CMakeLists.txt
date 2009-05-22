@@ -24,6 +24,7 @@ INSTALL( FILES
          mp4audioproperties.h
          itunesnambox.h
          itunesartbox.h
+         itunesaartbox.h
          itunesalbbox.h
          itunesgenbox.h
          itunestrknbox.h

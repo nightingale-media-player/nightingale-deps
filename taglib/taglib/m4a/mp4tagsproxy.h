@@ -49,6 +49,7 @@ namespace TagLib
       {
 	title = 0,
 	artist,
+	albumartist,
 	album,
 	cover,
 	genre,
@@ -70,6 +71,8 @@ namespace TagLib
       ITunesDataBox* titleData() const;
       //! function to get the data box for the artist
       ITunesDataBox* artistData() const;
+      //! function to get the data box for the album artist
+      ITunesDataBox* albumArtistData() const;
       //! function to get the data box for the album
       ITunesDataBox* albumData() const;
       //! function to get the data box for the genre

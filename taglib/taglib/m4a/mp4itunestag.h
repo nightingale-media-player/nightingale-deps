@@ -53,7 +53,7 @@ namespace TagLib
 
       virtual String title() const;
       virtual String artist() const;
-      virtual String albumArtist() const { return String::null; };
+      virtual String albumArtist() const;
       virtual String album() const;
       virtual String comment() const;
       virtual String lyrics() const { return String::null; };
@@ -78,7 +78,7 @@ namespace TagLib
     
       virtual void setTitle(const String &s);
       virtual void setArtist(const String &s);
-      virtual void setAlbumArtist(const String &s) {};
+      virtual void setAlbumArtist(const String &s);
       virtual void setAlbum(const String &s);
       virtual void setComment(const String &s);
       virtual void setLyrics(const String &s) {};

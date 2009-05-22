@@ -33,6 +33,7 @@ public:
   MP4::File*         mp4file;
   TagLib::String     title;
   TagLib::String     artist;
+  TagLib::String     albumArtist;
   TagLib::String     album;
   TagLib::String     genre;
   TagLib::uint       year;
@@ -74,6 +75,11 @@ String MP4::Tag::title() const
 String MP4::Tag::artist() const
 {
   return d->artist;
+}
+
+String MP4::Tag::albumArtist() const
+{
+  return d->albumArtist;
 }
 
 String MP4::Tag::album() const
@@ -145,6 +151,12 @@ void MP4::Tag::setTitle(const String &s)
 void MP4::Tag::setArtist(const String &s)
 {
   d->artist = s;
+  d->isEmpty = false;
+}
+
+void MP4::Tag::setAlbumArtist(const String &s)
+{
+  d->albumArtist = s;
   d->isEmpty = false;
 }
 

@@ -276,6 +276,16 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
       mp4tag.setArtist( datastring );
   }
 
+  databox = proxy.albumArtistData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setAlbumArtist( datastring );
+  }
+
   databox = proxy.albumData();
   if( databox != 0 )
   {

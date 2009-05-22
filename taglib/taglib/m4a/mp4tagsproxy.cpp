@@ -33,6 +33,7 @@ class MP4::Mp4TagsProxy::Mp4TagsProxyPrivate
 public:
   ITunesDataBox* titleData;
   ITunesDataBox* artistData;
+  ITunesDataBox* albumArtistData;
   ITunesDataBox* albumData;
   ITunesDataBox* coverData;
   ITunesDataBox* genreData;
@@ -48,18 +49,19 @@ public:
 MP4::Mp4TagsProxy::Mp4TagsProxy()
 {
   d = new MP4::Mp4TagsProxy::Mp4TagsProxyPrivate();
-  d->titleData    = 0;
-  d->artistData   = 0;
-  d->albumData    = 0;
-  d->coverData    = 0;
-  d->genreData    = 0;
-  d->yearData     = 0;
-  d->trknData     = 0;
-  d->commentData  = 0;
-  d->groupingData = 0;
-  d->composerData = 0;
-  d->diskData     = 0;
-  d->bpmData      = 0;
+  d->titleData       = 0;
+  d->artistData      = 0;
+  d->albumArtistData = 0;
+  d->albumData       = 0;
+  d->coverData       = 0;
+  d->genreData       = 0;
+  d->yearData        = 0;
+  d->trknData        = 0;
+  d->commentData     = 0;
+  d->groupingData    = 0;
+  d->composerData    = 0;
+  d->diskData        = 0;
+  d->bpmData         = 0;
 }
 
 MP4::Mp4TagsProxy::~Mp4TagsProxy()
@@ -75,6 +77,11 @@ MP4::ITunesDataBox* MP4::Mp4TagsProxy::titleData() const
 MP4::ITunesDataBox* MP4::Mp4TagsProxy::artistData() const
 {
   return d->artistData;
+}
+
+MP4::ITunesDataBox* MP4::Mp4TagsProxy::albumArtistData() const
+{
+  return d->albumArtistData;
 }
 
 MP4::ITunesDataBox* MP4::Mp4TagsProxy::albumData() const
@@ -136,6 +143,9 @@ void MP4::Mp4TagsProxy::registerBox( EBoxType boxtype, ITunesDataBox* databox )
       break;
     case artist:
       d->artistData = databox;
+      break;
+    case albumartist:
+      d->albumArtistData = databox;
       break;
     case album:
       d->albumData = databox;

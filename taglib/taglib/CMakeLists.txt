@@ -146,6 +146,7 @@ m4a/mp4propsproxy.cpp
 m4a/mp4audioproperties.cpp
 m4a/itunesnambox.cpp
 m4a/itunesartbox.cpp
+m4a/itunesaartbox.cpp
 m4a/itunesalbbox.cpp
 m4a/itunesgenbox.cpp
 m4a/itunestrknbox.cpp

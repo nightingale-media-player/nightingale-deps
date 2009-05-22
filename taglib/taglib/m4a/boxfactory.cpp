@@ -40,6 +40,7 @@
 #include "mp4ilstbox.h"
 #include "itunesnambox.h"
 #include "itunesartbox.h"
+#include "itunesaartbox.h"
 #include "itunesalbbox.h"
 #include "itunesgenbox.h"
 #include "itunesdaybox.h"
@@ -111,6 +112,9 @@ MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fou
     break;
   case 0xa9415254: // '_ART'
     return new MP4::ITunesArtBox( file, fourcc, size, offset );
+    break;
+  case 0x61415254: // 'aART'
+    return new MP4::ITunesAArtBox( file, fourcc, size, offset );
     break;
   case 0xa9616c62: // '_alb'
     return new MP4::ITunesAlbBox( file, fourcc, size, offset );
