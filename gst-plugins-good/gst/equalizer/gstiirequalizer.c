@@ -398,9 +398,9 @@ setup_filter (GstIirEqualizer * equ, GstIirEqualizerBand * band)
 
     gain = arg_to_scale (band->gain);
 
-    if (band->freq / GST_AUDIO_FILTER (equ)->format.rate > 0.5)
+    if (band->freq / GST_AUDIO_FILTER (equ)->format.rate >= 0.5)
       omega = M_PI;
-    else if (band->freq < 0.0)
+    else if (band->freq <= 0.0)
       omega = 0.0;
     else
       omega = 2.0 * M_PI * (band->freq / GST_AUDIO_FILTER (equ)->format.rate);
@@ -470,6 +470,8 @@ update_coefficients (GstIirEqualizer * equ)
   for (i = 0; i < equ->freq_band_count; i++) {
     setup_filter (equ, equ->bands[i]);
   }
+
+  equ->need_new_coefficients = FALSE;
 }
 
 void
@@ -554,9 +556,9 @@ one_step_ ## TYPE (GstIirEqualizerBand *filter,                         \
     SecondOrderHistory ## TYPE *history, BIG_TYPE input)                \
 {                                                                       \
   /* calculate output */                                                \
-  BIG_TYPE output = floor (filter->a0 * input +                         \
+  BIG_TYPE output = filter->a0 * input +                                \
       filter->a1 * history->x1 + filter->a2 * history->x2 +             \
-      filter->b1 * history->y1 + filter->b2 * history->y2 + 0.5);       \
+      filter->b1 * history->y1 + filter->b2 * history->y2;              \
   /* update history */                                                  \
   history->y2 = history->y1;                                            \
   history->y1 = output;                                                 \
@@ -588,7 +590,7 @@ guint size, guint channels)                                             \
         history++;                                                      \
       }                                                                 \
       cur = CLAMP (cur, MIN_VAL, MAX_VAL);                              \
-      *((TYPE *) data) = (TYPE) cur;                                    \
+      *((TYPE *) data) = (TYPE) floor (cur);                            \
       data += sizeof (TYPE);                                            \
     }                                                                   \
   }                                                                     \
@@ -644,7 +646,7 @@ guint size, guint channels)                                             \
   }                                                                     \
 }
 
-CREATE_OPTIMIZED_FUNCTIONS_INT (gint16, gint32, -32768, 32767);
+CREATE_OPTIMIZED_FUNCTIONS_INT (gint16, gdouble, -32768.0, 32767.0);
 CREATE_OPTIMIZED_FUNCTIONS (gfloat);
 CREATE_OPTIMIZED_FUNCTIONS (gdouble);
 
