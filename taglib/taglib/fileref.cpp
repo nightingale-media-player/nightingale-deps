@@ -188,8 +188,16 @@ File *FileRef::create(FileName fileName, bool readAudioProperties,
       return new Ogg::Vorbis::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(s.substr(s.size() - 4, 4).upper() == ".MP3")
       return new MPEG::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(s.substr(s.size() - 4, 4).upper() == ".OGA")
-      return new Ogg::FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
+    if(s.substr(s.size() - 4, 4).upper() == ".OGA") {
+      // because OGA can contain many things, we special-case it here to attempt first
+      // reading as a FLAC file, then as a Vorbis file.
+      // this is kinda lousy, and it would really be better to have proper sniffing.
+      Ogg::FLAC::File* guess = new Ogg::FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
+      if (guess->isValid()) {
+        return guess;
+      }
+      return new Ogg::Vorbis::File(fileName, readAudioProperties, audioPropertiesStyle);
+    }
     if(s.substr(s.size() - 5, 5).upper() == ".FLAC")
       return new FLAC::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(s.substr(s.size() - 4, 4).upper() == ".MPC")
