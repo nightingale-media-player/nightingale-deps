@@ -251,6 +251,7 @@ AG_GST_CHECK_PLUGIN(filter)
 AG_GST_CHECK_PLUGIN(flv)
 AG_GST_CHECK_PLUGIN(freeze)
 AG_GST_CHECK_PLUGIN(h264parse)
+AG_GST_CHECK_PLUGIN(id3tag)
 AG_GST_CHECK_PLUGIN(librfb)
 AG_GST_CHECK_PLUGIN(modplug)
 AG_GST_CHECK_PLUGIN(mpegdemux)
@@ -1503,6 +1504,7 @@ gst/filter/Makefile
 gst/flv/Makefile
 gst/freeze/Makefile
 gst/h264parse/Makefile
+gst/id3tag/Makefile
 gst/librfb/Makefile
 gst/modplug/Makefile
 gst/modplug/libmodplug/Makefile
