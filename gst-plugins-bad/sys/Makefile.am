@@ -64,8 +64,15 @@ else
 ACM_DIRS=
 endif
 
-SUBDIRS = $(ACM_DIRS) $(DSHOW_DIRS) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+if USE_DMO
+DMO_DIR=dmoenc
+else
+DMO_DIR=
+endif
 
-DIST_SUBDIRS = acmenc acmmp3dec dvb fbdev dshowdecwrapper dshowsrcwrapper dshowvideosink \
-			   oss4 qtwrapper vcd wasapi wininet winks winscreencap
+SUBDIRS = $(ACM_DIRS) $(DMO_DIR) $(DSHOW_DIRS) $(DVB_DIR) $(FBDEV_DIR) $(OSS4_DIR) $(QT_DIR) $(VCD_DIR) $(WININET_DIR)
+
+DIST_SUBDIRS = acmenc acmmp3dec dvb fbdev dmoenc dshowdecwrapper \
+               dshowsrcwrapper dshowvideosink \
+               oss4 qtwrapper vcd wasapi wininet winks winscreencap
 

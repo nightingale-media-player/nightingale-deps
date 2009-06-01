@@ -1346,6 +1346,16 @@ AG_GST_CHECK_FEATURE(ACM, [Windows ACM library], acm, [
       ]])
 ])
 
+dnl *** DMO ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_DMO, true)
+AG_GST_CHECK_FEATURE(DMO, [Windows DMO library], dmo, [
+  AC_MSG_CHECKING([Checking for DMO support])
+  AC_CHECK_HEADERS([windows.h dmo.h],
+      [HAVE_DMO="yes"
+       AC_SUBST(DMO_CFLAGS)
+      ], [HAVE_DMO="no"])
+])
+
 else
 
 dnl not building plugins with external dependencies,
@@ -1364,6 +1374,7 @@ AM_CONDITIONAL(USE_DIRECTFB, false)
 AM_CONDITIONAL(USE_DTS, false)
 AM_CONDITIONAL(USE_DIRAC, false)
 AM_CONDITIONAL(USE_DIVX, false)
+AM_CONDITIONAL(USE_DMO, false)
 AM_CONDITIONAL(USE_DVB, false)
 AM_CONDITIONAL(USE_FAAC, false)
 AM_CONDITIONAL(USE_FAAD, false)
@@ -1540,6 +1551,7 @@ gst-libs/gst/dshow/Makefile
 sys/Makefile
 sys/acmenc/Makefile
 sys/acmmp3dec/Makefile
+sys/dmoenc/Makefile
 sys/dshowdecwrapper/Makefile
 sys/dshowsrcwrapper/Makefile
 sys/dshowvideosink/Makefile
