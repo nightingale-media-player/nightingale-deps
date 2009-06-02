@@ -57,6 +57,11 @@ public:
   PageHeader header;
   int firstPacketIndex;
   ByteVectorList packets;
+  
+  /* SPLITSIZE must be a multiple of 255 in order to get the lacing values
+   * right.  This creates pages of about 8KB each
+   */
+  static const uint splitSize = (32*255);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +113,8 @@ Ogg::Page::ContainsPacketFlags Ogg::Page::containsPacket(int index) const
     flags = ContainsPacketFlags(flags | EndsWithPacket);
 
 
-  // If we have the beginning of the packet and the end, this is a complete packet.
+  // If we have the beginning of the packet and the end, this is a complete
+  // packet.
   if(
       (
         // The packet is either a) not the first
@@ -205,19 +211,92 @@ List<Ogg::Page *> Ogg::Page::paginate(const ByteVectorList &packets,
 
   int totalSize = 0;
 
-  for(ByteVectorList::ConstIterator it = packets.begin(); it != packets.end(); ++it)
+  for(ByteVectorList::ConstIterator it = packets.begin();
+      it != packets.end();
+      ++it)
+  {
     totalSize += (*it).size();
-
-  if(strategy == Repaginate || totalSize + packets.size() > 255 * 256) {
-    debug("Ogg::Page::paginate() -- Sorry!  Repagination is not yet implemented.");
-    return l;
   }
 
-  // TODO: Handle creation of multiple pages here with appropriate pagination.
+  // Handle creation of multiple pages with appropriate pagination.
+  if(strategy == Repaginate || totalSize + packets.size() > 255 * 255) {
+    int iPageIdx=0;
+    
+    for(ByteVectorList::ConstIterator it = packets.begin();
+        it != packets.end();
+        ++it)
+    {
+      bool bContinued=false;
+ 
+      // mark very first packet?
+      if (firstPacketContinued && it==packets.begin()) {
+        bContinued=true;
+      }
 
-  Page *p = new Page(packets, streamSerialNumber, firstPage, firstPacketContinued,
-                     lastPacketCompleted, containsLastPacket);
-  l.append(p);
+      // append to buf
+      ByteVector packetBuf;
+      packetBuf.append(*it);
+
+      while (packetBuf.size() > PagePrivate::splitSize) {
+        // output a Page
+        ByteVector packetForOnePage;
+        packetForOnePage.resize(PagePrivate::splitSize);
+        std::copy(packetBuf.begin(),packetBuf.begin()+PagePrivate::splitSize,
+            packetForOnePage.begin());
+
+        ByteVectorList packetList;
+        packetList.append(packetForOnePage);
+        Page *p = new Page(packetList, streamSerialNumber, firstPage+iPageIdx, bContinued, false, false);
+        l.append(p);
+
+        iPageIdx++;
+        bContinued=true;
+        packetBuf = packetBuf.mid(PagePrivate::splitSize);
+      }
+
+      ByteVectorList::ConstIterator jt = it;
+      ++jt;
+      bool bLastPacketInList = jt == packets.end();
+
+      // output a page for the rest (we output one packet per page, so this one should be completed)
+      ByteVectorList packetList;
+      packetList.append(packetBuf);
+
+      bool bIsVeryLastPacket=false;
+      if (containsLastPacket)
+      {
+        // mark the very last output page as last of stream
+        ByteVectorList::ConstIterator jt = it;
+        ++jt;
+        if (jt == packets.end()) {
+          bIsVeryLastPacket=true;
+        }
+      }
+     
+      int totalPacketSize = 0;
+      for(ByteVectorList::ConstIterator it = packets.begin();
+          it != packets.end();
+          ++it)
+      {
+        totalPacketSize += (*it).size();
+      }
+
+      Page *p = new Page(packetList, streamSerialNumber,
+                         firstPage+iPageIdx, bContinued,
+                         bLastPacketInList ? lastPacketCompleted : true, 
+                         bIsVeryLastPacket);
+      iPageIdx++;
+      
+      l.append(p);
+    }
+  }
+  else
+  {
+    Page *p = new Page(packets, streamSerialNumber, firstPage,
+                       firstPacketContinued, lastPacketCompleted,
+                       containsLastPacket);
+    l.append(p);
+  }
 
   return l;
 }

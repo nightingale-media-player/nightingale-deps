@@ -37,6 +37,7 @@ namespace TagLib {
   namespace Ogg {
 
     class PageHeader;
+    class Page;
 
     //! An implementation of TagLib::File with some helpers for Ogg based formats
 
@@ -106,6 +107,7 @@ namespace TagLib {
        * Reads the next page and updates the internal "current page" pointer.
        */
       bool nextPage();
+      Page* getNextPage(long offset);
       void writePageGroup(const List<int> &group);
 
       class FilePrivate;

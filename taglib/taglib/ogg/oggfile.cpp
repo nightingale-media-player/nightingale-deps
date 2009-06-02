@@ -275,6 +275,32 @@ bool Ogg::File::nextPage()
   return true;
 }
 
+Ogg::Page* Ogg::File::getNextPage(long searchOffset)
+{
+  long pageOffset = searchOffset;
+
+  // Read the next page from this offset
+  Page *nextPage = new Page(this, pageOffset);
+
+  if(!nextPage->header()->isValid()) {
+    delete nextPage;
+
+    // If it wasn't a valid page, then look for the next page with the
+    // OggS marker
+    pageOffset = find("OggS", pageOffset + 1);
+    if(pageOffset < 0)
+      return NULL;
+
+    nextPage = new Page (this, pageOffset);
+    if(!nextPage->header()->isValid()) {
+      delete nextPage;
+      return NULL;
+    }
+  }
+
+  return nextPage;
+}
+
 void Ogg::File::writePageGroup(const List<int> &pageGroup)
 {
   if(pageGroup.isEmpty())
@@ -282,15 +308,18 @@ void Ogg::File::writePageGroup(const List<int> &pageGroup)
 
   ByteVectorList packets;
 
-  // If the first page of the group isn't dirty, append its partial content here.
-
+  // If the first page of the group isn't dirty, append its partial content
+  // here.
   if(!d->dirtyPages.contains(d->pages[pageGroup.front()]->firstPacketIndex()))
     packets.append(d->pages[pageGroup.front()]->packets().front());
 
   int previousPacket = -1;
   int originalSize = 0;
 
-  for(List<int>::ConstIterator it = pageGroup.begin(); it != pageGroup.end(); ++it) {
+  for(List<int>::ConstIterator it = pageGroup.begin();
+      it != pageGroup.end();
+      ++it)
+  {
     uint firstPacket = d->pages[*it]->firstPacketIndex();
     uint lastPacket = firstPacket + d->pages[*it]->packetCount() - 1;
 
@@ -308,34 +337,78 @@ void Ogg::File::writePageGroup(const List<int> &pageGroup)
     originalSize += d->pages[*it]->size();
   }
 
-  const bool continued = d->pages[pageGroup.front()]->header()->firstPacketContinued();
-  const bool completed = d->pages[pageGroup.back()]->header()->lastPacketCompleted();
+  const bool continued =
+             d->pages[pageGroup.front()]->header()->firstPacketContinued();
+  const bool completed =
+             d->pages[pageGroup.back()]->header()->lastPacketCompleted();
 
   // TODO: This pagination method isn't accurate for what's being done here.
-  // This should account for real possibilities like non-aligned packets and such.
+  // This should account for real possibilities like non-aligned packets and
+  // such.
 
   List<Page *> pages = Page::paginate(packets, Page::SinglePagePerGroup,
                                       d->streamSerialNumber, pageGroup.front(),
                                       continued, completed);
 
+  // Step 1:
+  //   Replace the old pages from the page group with the new repaginated pages
   ByteVector data;
-  for(List<Page *>::ConstIterator it = pages.begin(); it != pages.end(); ++it)
-    data.append((*it)->render());
 
-  // The insertion algorithms could also be improve to queue and prioritize data
-  // on the way out.  Currently it requires rewriting the file for every page
-  // group rather than just once; however, for tagging applications there will
-  // generally only be one page group, so it's not worth the time for the
-  // optimization at the moment.
+  // This is where the original page group started in the file
+  long offset = d->pages[pageGroup.front()]->fileOffset();
 
-  insert(data, d->pages[pageGroup.front()]->fileOffset(), originalSize);
-
-  // Update the page index to include the pages we just created and to delete the
-  // old pages.
-
-  for(List<Page *>::ConstIterator it = pages.begin(); it != pages.end(); ++it) {
-    const int index = (*it)->header()->pageSequenceNumber();
-    delete d->pages[index];
-    d->pages[index] = *it;
+  // Loop over each page in the repaginated list, and append it to our buffer
+  for (List<Page *>::Iterator pageIter = pages.begin();
+       pageIter != pages.end();
+       ++pageIter)
+  {
+    Page *p = *pageIter;
+    data.append(p->render());
   }
+
+  // Write the buffer back out to the same file offset, replacing the
+  // originalSize bits there
+  insert(data, offset, originalSize);
+
+  // Move the offset past this first rewritten set of pages
+  offset += data.size();
+
+  // Step 2:
+  //   Now that we're done replacing the page group with the new
+  //   repaginated pages, we need to see if the page sequence number
+  //   is no longer sequential.  If it isn't, we need to renumber the
+  //   remaining pages.  If it is, then we can go ahead and leave
+  //   the remaining pages where they are.
+
+  if (pages.back()->header()->pageSequenceNumber() != pageGroup.back()) {
+    // The delta is the difference between the last page sequence number in
+    // the newly paginated pages and the last page sequence number in the
+    // passed in pageGroup
+    int seqNumChange =
+            pages.back()->header()->pageSequenceNumber() - pageGroup.back();
+
+    // Get the following pages after the pageGroup
+    Page *page = getNextPage(offset);
+    while (page) {
+      // Renumber this page by the seqNumChange delta
+      ((Ogg::PageHeader *)page->header())->setPageSequenceNumber(
+            page->header()->pageSequenceNumber() + seqNumChange);
+
+      // Write this page back out to the file
+      ByteVector data;
+      data.append(page->render());
+      insert(data, page->fileOffset(), data.size());
+
+      offset += data.size();
+
+      // Get the next page
+      page = getNextPage(offset);
+    }
+  }
+
+  // We just rewrote the entire file without maintaining any of the internal
+  // state.  Destroy the internal data structure and let it be recreated
+  // on-demand
+  delete d;
+  d = new FilePrivate;
 }
