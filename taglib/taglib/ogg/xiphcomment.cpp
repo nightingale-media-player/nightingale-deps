@@ -211,6 +211,49 @@ bool Ogg::XiphComment::isCompilation() const
   return true;
 }
 
+List<TagLib::FlacPicture*> Ogg::XiphComment::artwork() const
+{
+  List<TagLib::FlacPicture*> artwork;
+  
+  StringList artworkList = d->fieldListMap["METADATA_BLOCK_PICTURE"];
+  if(artworkList.isEmpty())
+    return artwork;
+
+  for (StringList::Iterator it = artworkList.begin();
+       it != artworkList.end();
+       ++it)
+  {
+    TagLib::FlacPicture *picture = new TagLib::FlacPicture();
+    if (!picture->parse(*it))
+    {
+      delete picture;
+      return artwork;
+    }
+    artwork.append(picture);
+  }
+  return artwork;
+}
+
+void Ogg::XiphComment::addArtwork(TagLib::FlacPicture &pic)
+{
+  ByteVector bv = pic.render(true);
+  addField("METADATA_BLOCK_PICTURE", bv.data());
+}
+
+void Ogg::XiphComment::setArtwork(List<TagLib::FlacPicture*> artworkList)
+{
+  // first remove all artwork fields
+  removeField("METADATA_BLOCK_PICTURE");
+
+  // next add all artwork in the given list
+  for (List<TagLib::FlacPicture*>::Iterator it = artworkList.begin();
+       it != artworkList.end();
+       ++it)
+  {
+    addArtwork(**it);
+  }
+}
+
 void Ogg::XiphComment::setTitle(const String &s)
 {
   addField("TITLE", s);

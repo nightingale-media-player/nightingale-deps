@@ -34,6 +34,8 @@
 #include "tbytevector.h"
 #include "taglib_export.h"
 
+#include "flacpicture.h"
+
 namespace TagLib {
 
   namespace Ogg {
@@ -130,6 +132,12 @@ namespace TagLib {
       virtual void setBpm(uint i);
       virtual void setIsCompilation(bool i);
       
+      /*!
+       * Xiph specific fields
+       */
+      List<TagLib::FlacPicture*> artwork() const;
+      void addArtwork(TagLib::FlacPicture& artwork);
+      void setArtwork(List<TagLib::FlacPicture*> artwork);
 
       virtual bool isEmpty() const;
 
@@ -217,6 +225,7 @@ namespace TagLib {
        * in place.
        */
       ByteVector render(bool addFramingBit) const;
+
 
     protected:
       /*!

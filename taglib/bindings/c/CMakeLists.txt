@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/ogg/vorbis
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/ogg/flac
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/flac
+		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/common
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/mpc
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/mpeg/id3v2
 		     ${CMAKE_CURRENT_SOURCE_DIR}/../../taglib/wavpack
