@@ -46,6 +46,9 @@
 /* Define to enable AirPort Express Wireless sink (used by apexsink). */
 #undef HAVE_APEXSINK
 
+/* Define to enable asf muxer (used by asfmux). */
+#undef HAVE_ASFMUX
+
 /* Define to enable bz2 library (used by bz2). */
 #undef HAVE_BZ2
 
@@ -118,6 +121,12 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Define to enable Windows DMO library (used by dmo). */
+#undef HAVE_DMO
+
+/* Define to 1 if you have the <dmo.h> header file. */
+#undef HAVE_DMO_H
 
 /* define for working do while(0) macros */
 #undef HAVE_DOWHILE_MACROS
