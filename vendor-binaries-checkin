@@ -54,7 +54,7 @@ else
    branchString="branches/$branch"
 fi
 
-echo Branch: $branch $branchString
+echo Branch: $branch
 echo Branch SVN String: $branchString
 echo Vendor repo revision: $vrev
 echo Vendor-binaries repo revision: $vbrev
@@ -66,7 +66,7 @@ read
 
 for d in $PACKAGES; do 
    echo "Checking $d in with vrev $vrev, vbrev $vbrev..."
-echo    /builds/subversion/svn_load_dirs.pl \
+   /builds/subversion/svn_load_dirs.pl \
     -no_user_input \
     -commit_mesg "Rebuild of $d $platform binaries; generated at vendor repo revision $vrev, vendor-binaries repo revision $vbrev" \
      https://svn.songbirdnest.com/vendor-binaries/$branchString/$platform $d $platform/$d;
