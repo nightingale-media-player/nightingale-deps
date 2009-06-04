@@ -126,7 +126,7 @@ sub main {
 
    return 0 if (!$mungeThisFile);
 
-   print ($forceMunge ? 'Force-fixing ' : 'Fixing' ) . " $laFile...\n";
+   print (($forceMunge ? 'Force-fixing ' : 'Fixing' ) . " $laFile...\n");
 
    my $newLaFile = $laFile . '.new';
    my $newLaFileFullPath = catfile($laFileInstallDir, basename($newLaFile));
