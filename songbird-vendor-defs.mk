@@ -138,6 +138,7 @@ MV ?= mv
 PYTHON ?= python
 RM ?= rm
 SED ?= sed
+SVN ?= svn
 SYMBOL_UPLOADER ?= $(MOZSDK_SCRIPTS_DIR)/upload_symbols.sh
 TAR ?= tar
 ZIP ?= zip

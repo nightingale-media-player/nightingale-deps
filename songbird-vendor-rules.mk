@@ -401,7 +401,7 @@ endif
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
 	# TODO: this kinda sucks; fix this; also, now it sucks with the msys
 	# stuff in a cross-platform way.
-	$(MSYS_CP) $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR)
+	$(MSYS_CP) $(SB_TARGET_SRC_DIR) $(SB_VENDOR_BUILD_DIR) --exclude=.svn
 
 clean_build_dir:
 	$(RM) -rf $(SB_VENDOR_BUILD_DIR)

@@ -103,7 +103,7 @@ SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
-module_setup_build: directshow-libs
+module_setup_build: directshow-libs sb-asfmux-plugin-src
 ifeq (Darwin,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DARWIN_XUL_DIR)
 	$(TAR) -C $(DARWIN_XUL_DIR) -xvz -f $(MOZ_XR_DIR)/xulrunner.tar.gz
@@ -122,6 +122,21 @@ ifeq (release,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
          devenv baseclasses.sln -Build "Release" -Project baseclasses
 endif
+endif
+
+# preedTODO: stop hardcoding this; also, fix it so it builds on branches
+# other than trunk.
+HAVE_EXTRAS ?= 1
+
+SB_ASFMUX_SRC_DIR = $(SB_VENDOR_BUILD_DIR)/ext/asfmux
+SB_ASFMUX_CHECKOUT_DIR = $(CURDIR)/sb-asfmux-checkout
+SB_ASFMUX_SRC_SVNURL = https://svn.songbirdnest.com/client/$(if $(SB_BRANCH),branches/$(SB_BRANCH),trunk)/extras/gst-plugins/asfmux
+
+sb-asfmux-plugin-src:
+ifeq (1,$(HAVE_EXTRAS))
+	$(RM) -r $(SB_ASFMUX_CHECKOUT_DIR)
+	$(SVN) export $(SB_ASFMUX_SRC_SVNURL) $(SB_ASFMUX_CHECKOUT_DIR)
+	$(MSYS_CP) $(SB_ASFMUX_CHECKOUT_DIR) $(SB_ASFMUX_SRC_DIR) 
 endif
 
 .PHONY: directshow-libs
