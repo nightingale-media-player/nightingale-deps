@@ -12,6 +12,7 @@ libgstdmoenc_la_LIBADD =     \
     -lmsdmo                      \
     -ldmoguids                   \
     -lwmcodecdspuuid             \
+    -lstrmiids                   \
     -lole32
 
 libgstdmoenc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) \
