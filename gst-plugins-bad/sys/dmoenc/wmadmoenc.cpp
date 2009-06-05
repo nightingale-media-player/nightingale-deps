@@ -36,7 +36,7 @@
 GST_DEBUG_CATEGORY_STATIC (wmadmoenc_debug);
 
 #define GST_TYPE_WMADMOENC \
-      (wmodmoenc_get_type ())
+      (wmadmoenc_get_type ())
 #define GST_WMADMOENC(obj) \
       (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_WMADMOENC, WMADMOEnc))
 #define GST_WMADMOENC_CLASS(klass) \
