@@ -132,6 +132,7 @@ CP ?= cp
 CUT ?= cut
 MSYS_CP ?= $(SB_VENDOR_CHECKOUT)/msys-recursive-cp
 FIND ?= find
+GREP ?= grep
 LN ?= ln
 MKDIR ?= mkdir -p
 MV ?= mv

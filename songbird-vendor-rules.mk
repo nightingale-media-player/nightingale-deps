@@ -136,6 +136,9 @@ ifneq (,$(filter-out gst, $(SB_VENDOR_TARGET)))
 	@echo This command may fail. This is apparently OK.
 	-./autogen.sh
 	@echo Regenerated $(SB_VENDOR_TARGET) makefiles are ready to check in
+	@echo NOTICE: beware newly generated files which may have to be svn added: 
+	@echo 
+	@$(SVN) stat | $(GREP) ^? | $(AWK) '{print $$2}' | $(GREP) -v ^common | $(GREP) -v ^m4 | $(GREP) -v autom4te.cache | $(GREP) -v autoregen.sh | $(GREP) -v stamp-h.in
 else
 	@echo Currently, only gstreamer-related packages need makefiles regenerated. Doing nothing.
 endif
