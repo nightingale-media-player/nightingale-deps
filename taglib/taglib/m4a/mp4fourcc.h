@@ -40,6 +40,8 @@ namespace TagLib
       Fourcc();
       //! string constructor
       Fourcc(TagLib::String fourcc);
+      //! unsigned int constructor
+      Fourcc(unsigned int fourcc);
 
       //! destructor
       ~Fourcc();
@@ -63,5 +65,11 @@ namespace TagLib
 
   } // namespace MP4
 } // namespace TagLib
+
+#define TAGLIB_FOURCC(a,b,c,d) \
+  (((unsigned int)a << 24) | \
+   ((unsigned int)b << 16) | \
+   ((unsigned int)c <<  8) | \
+   ((unsigned int)d <<  0) )
 
 #endif // MP4FOURCC_H

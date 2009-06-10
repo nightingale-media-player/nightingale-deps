@@ -26,14 +26,14 @@
 #ifndef ITUNESTMPOBOX_H
 #define ITUNESTMPOBOX_H
 
-#include "mp4isobox.h"
+#include "mp4metadatabox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT ITunesTmpoBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesTmpoBox: public Mp4MetadataBox
     {
     public:
       ITunesTmpoBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
@@ -42,10 +42,6 @@ namespace TagLib
     private:
       //! parse the content of the box
       virtual void parse();
-
-    protected:
-      class ITunesTmpoBoxPrivate;
-      ITunesTmpoBoxPrivate* d;
     }; // class ITunesTmpoBox
 
   } // namespace MP4

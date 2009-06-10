@@ -26,14 +26,14 @@
 #ifndef MP4MINFBOX_H
 #define MP4MINFBOX_H
 
-#include "mp4isobox.h"
+#include "mp4containerbox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT Mp4MinfBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4MinfBox: public Mp4ContainerBox
     {
     public:
       Mp4MinfBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );

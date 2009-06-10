@@ -33,7 +33,11 @@
 
 namespace TagLib {
 
-  typedef unsigned long long ulonglong;
+  #if _MSC_VER
+    typedef unsigned __int64 ulonglong;
+  #else
+    typedef unsigned long long ulonglong;
+  #endif
 
   class Tag;
 
@@ -41,6 +45,7 @@ namespace TagLib {
   {
     class Mp4TagsProxy;
     class Mp4PropsProxy;
+    class Mp4IsoBox;
 
     //! An implementation of TagLib::File with mp4 itunes specific methods
 
@@ -65,8 +70,9 @@ namespace TagLib {
        * file's audio properties will also be read using \a propertiesStyle.  If
        * false, \a propertiesStyle is ignored.
        */
-      File(const char *file, bool readProperties = true,
-           AudioProperties::ReadStyle propertiesStyle = AudioProperties::Average);
+      File(FileName file, bool readProperties = true,
+           AudioProperties::ReadStyle propertiesStyle = AudioProperties::Average,
+           FileName scratchFile = "");
 
       /*!
        * Destroys this instance of the File.

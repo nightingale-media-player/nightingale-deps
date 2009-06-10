@@ -26,14 +26,14 @@
 #ifndef ITUNESCMTBOX_H
 #define ITUNESCMTBOX_H
 
-#include "mp4isobox.h"
+#include "mp4metadatabox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT ITunesCmtBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesCmtBox: public Mp4MetadataBox
     {
     public:
       ITunesCmtBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
@@ -43,9 +43,6 @@ namespace TagLib
       //! parse the content of the box
       virtual void parse();
 
-    protected:
-      class ITunesCmtBoxPrivate;
-      ITunesCmtBoxPrivate* d;
     }; // class ITunesCmtBox
 
   } // namespace MP4

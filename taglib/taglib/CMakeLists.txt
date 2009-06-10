@@ -150,6 +150,8 @@ m4a/mp4metabox.cpp
 m4a/mp4tagsproxy.cpp
 m4a/mp4propsproxy.cpp
 m4a/mp4audioproperties.cpp
+m4a/mp4metadatabox.cpp
+m4a/mp4containerbox.cpp
 m4a/itunesnambox.cpp
 m4a/itunesartbox.cpp
 m4a/itunesaartbox.cpp

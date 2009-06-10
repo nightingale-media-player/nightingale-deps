@@ -1,7 +1,7 @@
 /***************************************************************************
-    copyright            : (C) 2002-2008 by Jochen Issing
-    email                : jochen.issing@isign-softart.de
- ***************************************************************************/
+copyright            : (C) 2009 by Pioneers of the Inevitable
+email                : songbird@songbirdnest.com
+***************************************************************************/
 
 /***************************************************************************
 *   This library is free software; you can redistribute it and/or modify  *
@@ -23,40 +23,23 @@
 *   http://www.mozilla.org/MPL/                                           *
 ***************************************************************************/
 
-#ifndef MP4SKIPBOX_H
-#define MP4SKIPBOX_H
+#ifndef MP4CONTAINERBOXPRIVATE_H
+#define MP4CONTAINERBOXPRIVATE_H
 
-#include "mp4isobox.h"
-#include "mp4fourcc.h"
+#include "mp4containerbox.h"
+#include "tlist.h"
 
-namespace TagLib
-{
-  namespace MP4
-  {
-    class TAGLIB_EXPORT Mp4SkipBox: public Mp4IsoBox
+namespace TagLib {
+  namespace MP4 {
+    class Mp4ContainerBox::Mp4ContainerBoxPrivate
+      //! This is the private data of a metadata box (which has containers)
+      //  This is _not_ for the use of consumers of TagLib
     {
     public:
-      Mp4SkipBox( File* file, MP4::Fourcc fourcc, uint size, long offset );
-      ~Mp4SkipBox();
+      //! container for all boxes in this box
+      TagLib::List<Mp4IsoBox*> boxes;
+    }; // class Mp4ContainerBox
+  }
+}
 
-    private:
-      //! parse the content of the box
-      virtual void parse();
-
-    protected:
-      class Mp4SkipBoxPrivate;
-      Mp4SkipBoxPrivate* d;
-    }; // class Mp4SkipBox
-    
-    class TAGLIB_EXPORT Mp4UnknownBox: public Mp4SkipBox
-    {
-    public:
-      Mp4UnknownBox( File* file, MP4::Fourcc fourcc, uint size, long offset )
-        :Mp4SkipBox(file, fourcc, size, offset) {}
-      ~Mp4UnknownBox() {}
-    }; // class Mp4UnknownBox
-
-  } // namespace MP4
-} // namespace TagLib
-
-#endif // MP4SKIPBOX_H
+#endif // MP4CONTAINERBOXPRIVATE_H

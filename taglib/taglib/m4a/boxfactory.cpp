@@ -55,16 +55,8 @@
 
 using namespace TagLib;
 
-MP4::BoxFactory::BoxFactory()
-{
-}
-
-MP4::BoxFactory::~BoxFactory()
-{
-}
-
 //! factory function
-MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset ) const
+MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset )
 {
   MP4::File * file = dynamic_cast<MP4::File *>(anyfile);
   if(!file)
@@ -74,85 +66,89 @@ MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fou
 
   switch( fourcc )
   {
-  case 0x6d6f6f76: // 'moov'
+  case TAGLIB_FOURCC('m','o','o','v'):
     return new MP4::Mp4MoovBox( file, fourcc, size, offset );
     break;
-  case 0x6d766864: // 'mvhd'
+  case TAGLIB_FOURCC('m','v','h','d'):
     return new MP4::Mp4MvhdBox( file, fourcc, size, offset );
     break;
-  case 0x7472616b: // 'trak'
+  case TAGLIB_FOURCC('t','r','a','k'):
     return new MP4::Mp4TrakBox( file, fourcc, size, offset );
     break;
-  case 0x6d646961: // 'mdia'
+  case TAGLIB_FOURCC('m','d','i','a'):
     return new MP4::Mp4MdiaBox( file, fourcc, size, offset );
     break;
-  case 0x6d696e66: // 'minf'
+  case TAGLIB_FOURCC('m','i','n','f'):
     return new MP4::Mp4MinfBox( file, fourcc, size, offset );
     break;
-  case 0x7374626c: // 'stbl'
+  case TAGLIB_FOURCC('s','t','b','l'):
     return new MP4::Mp4StblBox( file, fourcc, size, offset );
     break;
-  case 0x73747364: // 'stsd'
+  case TAGLIB_FOURCC('s','t','s','d'):
     return new MP4::Mp4StsdBox( file, fourcc, size, offset );
     break;
-  case 0x68646c72: // 'hdlr'
+  case TAGLIB_FOURCC('h','d','l','r'):
     return new MP4::Mp4HdlrBox( file, fourcc, size, offset );
     break;
-  case 0x75647461: // 'udta'
+  case TAGLIB_FOURCC('u','d','t','a'):
     return new MP4::Mp4UdtaBox( file, fourcc, size, offset );
     break;
-  case 0x6d657461: // 'meta'
-    return new MP4::Mp4MetaBox( file, fourcc, size, offset );
+  case TAGLIB_FOURCC('m','e','t','a'):
+    return (MP4::Mp4IsoFullBox*)new MP4::Mp4MetaBox( file, fourcc, size, offset );
     break;
-  case 0x696c7374: // 'ilst'
+  case TAGLIB_FOURCC('i','l','s','t'):
     return new MP4::Mp4IlstBox( file, fourcc, size, offset );
     break;
-  case 0xa96e616d: // '_nam'
+  case TAGLIB_FOURCC(0xA9,'n','a','m'):
     return new MP4::ITunesNamBox( file, fourcc, size, offset );
     break;
-  case 0xa9415254: // '_ART'
+  case TAGLIB_FOURCC(0xA9,'A','R','T'):
     return new MP4::ITunesArtBox( file, fourcc, size, offset );
     break;
-  case 0x61415254: // 'aART'
+  case TAGLIB_FOURCC('a','A','R','T'):
     return new MP4::ITunesAArtBox( file, fourcc, size, offset );
     break;
-  case 0xa9616c62: // '_alb'
+  case TAGLIB_FOURCC(0xA9,'a','l','b'):
     return new MP4::ITunesAlbBox( file, fourcc, size, offset );
     break;
-  case 0xa967656e: // '_gen'
+  case TAGLIB_FOURCC(0xA9,'g','e','n'):
     return new MP4::ITunesGenBox( file, fourcc, size, offset );
     break;
-  case 0x676e7265: // 'gnre'
+  case TAGLIB_FOURCC('g','n','r','e'):
     return new MP4::ITunesGenBox( file, fourcc, size, offset );
     break;
-  case 0xa9646179: // '_day'
+  case TAGLIB_FOURCC(0xA9,'d','a','y'):
     return new MP4::ITunesDayBox( file, fourcc, size, offset );
     break;
-  case 0x74726b6e: // 'trkn'
+  case TAGLIB_FOURCC('t','r','k','n'):
     return new MP4::ITunesTrknBox( file, fourcc, size, offset );
     break;
-  case 0xa9636d74: // '_cmt'
+  case TAGLIB_FOURCC(0xA9,'c','m','t'):
     return new MP4::ITunesCmtBox( file, fourcc, size, offset );
     break;
-  case 0xa9677270: // '_grp'
+  case TAGLIB_FOURCC(0xA9,'g','r','p'):
     return new MP4::ITunesGrpBox( file, fourcc, size, offset );
     break;
-  case 0xa9777274: // '_wrt'
+  case TAGLIB_FOURCC(0xA9,'w','r','t'):
     return new MP4::ITunesWrtBox( file, fourcc, size, offset );
     break;
-  case 0x6469736b: // 'disk'
+  case TAGLIB_FOURCC('d','i','s','k'):
     return new MP4::ITunesDiskBox( file, fourcc, size, offset );
     break;
-  case 0x746d706f: // 'tmpo'
+  case TAGLIB_FOURCC('t','m','p','o'):
     return new MP4::ITunesTmpoBox( file, fourcc, size, offset );
     break;
-  case 0x636f7672: // 'covr'
+  case TAGLIB_FOURCC('c','o','v','r'):
     return new MP4::ITunesCvrBox( file, fourcc, size, offset );
     break;
-  case 0x64616461: // 'data'
+  case TAGLIB_FOURCC('d','a','t','a'):
     return new MP4::ITunesDataBox( file, fourcc, size, offset );
     break;
-  default:
+  case TAGLIB_FOURCC('f','r','e','e'): // 'free'
+  case TAGLIB_FOURCC('s','k','i','p'): // 'skip'
     return new MP4::Mp4SkipBox( file, fourcc, size, offset );
+    break;
+  default:
+    return new MP4::Mp4UnknownBox( file, fourcc, size, offset );
   }
 }

@@ -36,14 +36,11 @@ namespace TagLib
     class TAGLIB_EXPORT BoxFactory
     {
     public:
-      BoxFactory();
-      ~BoxFactory();
-
       //! factory function
-      Mp4IsoBox* createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset ) const;
+      static Mp4IsoBox* createInstance( TagLib::File* anyfile, MP4::Fourcc fourcc, uint size, long offset );
     }; // class BoxFactory
 
-  } // namepace MP4
-} // namepace TagLib
+  } // namespace MP4
+} // namespace TagLib
 
 #endif // BOXFACTORY_H

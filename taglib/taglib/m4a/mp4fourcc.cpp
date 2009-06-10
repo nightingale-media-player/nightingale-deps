@@ -43,6 +43,11 @@ MP4::Fourcc::Fourcc( TagLib::String fourcc )
                static_cast<unsigned char>(fourcc[3]);
 }
 
+MP4::Fourcc::Fourcc( unsigned int fourcc )
+{
+  m_fourcc = fourcc;
+}
+
 MP4::Fourcc::~Fourcc()
 {}
 

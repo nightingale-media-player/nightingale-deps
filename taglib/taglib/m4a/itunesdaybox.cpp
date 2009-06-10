@@ -30,27 +30,17 @@
 #include "mp4file.h"
 #include "tfile.h"
 #include "mp4tagsproxy.h"
+#include "mp4metadataboxprivate.h"
 
 using namespace TagLib;
 
-class MP4::ITunesDayBox::ITunesDayBoxPrivate
-{
-public:
-  ITunesDataBox* dataBox;
-};
-
 MP4::ITunesDayBox::ITunesDayBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset )
-	:Mp4IsoBox(file, fourcc, size, offset)
+	:Mp4MetadataBox(file, fourcc, size, offset)
 {
-  d = new MP4::ITunesDayBox::ITunesDayBoxPrivate();
-  d->dataBox = 0;
 }
 
 MP4::ITunesDayBox::~ITunesDayBox()
 {
-  if( d->dataBox != 0 )
-    delete d->dataBox;
-  delete d;
 }
 
 //! parse the content of the box

@@ -41,6 +41,7 @@ namespace TagLib
 
       //! get the internal data, which can be txt or binary data as well
       ByteVector data() const;
+      void setData( const ByteVector& data );
 
     private:
       //! parse the content of the box

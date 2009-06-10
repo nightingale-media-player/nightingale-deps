@@ -26,14 +26,14 @@
 #ifndef MP4ILSTBOX_H
 #define MP4ILSTBOX_H
 
-#include "mp4isobox.h"
+#include "mp4containerbox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT Mp4IlstBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4IlstBox: public Mp4ContainerBox
     {
     public:
       Mp4IlstBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
@@ -41,6 +41,16 @@ namespace TagLib
 
       //! parse ilst contents
       void parse();
+
+      //! add a child to this box
+      //  NOTE: this causes the box data to be out of sync with disk data
+      //  @param child The child to add.  This class takes ownership.
+      virtual void addChildBox( Mp4IsoBox* child );
+
+      //! set the size of this box
+      //  NOTE: this causes the box data to be out of sync with disk data
+      //  @param size The new size
+      void setSize( ulonglong size );
 
     private:
       class Mp4IlstBoxPrivate;

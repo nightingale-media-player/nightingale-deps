@@ -65,7 +65,7 @@ void MP4::Mp4StsdBox::parse()
   TagLib::uint totalsize = 12; // initial size of box
 
   // check for handler type - only parse if 'soun':
-  if( static_cast<TagLib::uint>(d->handler_type) == 0x736f756e )
+  if( d->handler_type == TAGLIB_FOURCC('s','o','u','n') )
   {
     // read entry count
     TagLib::uint entry_count;

@@ -27,21 +27,29 @@
 
 namespace TagLib {
 
-#ifdef _WIN32
   class TAGLIB_EXPORT FileName
   {
+#ifdef _WIN32
+    // on Win32 only, have wchar_t forms too
   public:
     FileName(const wchar_t *name) : m_wname(name) {}
-    FileName(const char *name) : m_name(name) {}
     operator const wchar_t *() const { return m_wname.c_str(); }
-    operator const char *() const { return m_name.c_str(); }
-  private:
-    std::string m_name;
-    std::wstring m_wname;
-  };
-#else
-  typedef const char *FileName;
 #endif
+
+  public:
+    FileName(const char *name) : m_name(name) {}
+    operator const char *() const { return m_name.c_str(); }
+
+  private:
+    std::wstring m_wname;
+    std::string m_name;
+
+  public:
+    bool isEmpty()
+    {
+      return m_name.empty() && m_wname.empty();
+    }
+  };
 
   /*!
    * This class is a basic file I/O interface class providing support for

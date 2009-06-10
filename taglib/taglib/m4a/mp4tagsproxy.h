@@ -27,6 +27,7 @@
 #define MP4TAGSPROXY_H
 
 #include "taglib_export.h"
+#include "mp4fourcc.h"
 
 namespace TagLib
 {
@@ -47,19 +48,20 @@ namespace TagLib
       /*! enum for all supported box types */
       typedef enum
       {
-	title = 0,
-	artist,
-	albumartist,
-	album,
-	cover,
-	genre,
-	year,
-	trackno,
-	comment,
-	grouping,
-	composer,
-	disk,
-	bpm
+        title = 0,
+        artist,
+        albumartist,
+        album,
+        cover,
+        genre,
+        year,
+        trackno,
+        comment,
+        grouping,
+        composer,
+        disk,
+        bpm,
+        END
       } EBoxType;
 
       //! constructor
@@ -96,6 +98,12 @@ namespace TagLib
 
       //! function to register a data box for a certain box type
       void registerBox( EBoxType boxtype, ITunesDataBox* databox );
+
+      //! function to get the data box based on the id
+      ITunesDataBox* getDataByType( EBoxType boxtype );
+
+      //! get the fourcc for the given type
+      MP4::Fourcc getFourccForType( EBoxType boxtype );
 
     private:
       class Mp4TagsProxyPrivate;

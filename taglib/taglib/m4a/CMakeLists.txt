@@ -3,6 +3,7 @@ INSTALL( FILES
          mp4itunestag.h
          mp4isobox.h
          mp4isofullbox.h
+         mp4containerbox.h
          mp4skipbox.h
          mp4moovbox.h
          mp4mvhdbox.h
@@ -22,6 +23,7 @@ INSTALL( FILES
          mp4tagsproxy.h
          mp4propsproxy.h
          mp4audioproperties.h
+         mp4metadatabox.h
          itunesnambox.h
          itunesartbox.h
          itunesaartbox.h

@@ -27,13 +27,14 @@
 #define MP4METABOX_H
 
 #include "mp4isofullbox.h"
+#include "mp4containerbox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT Mp4MetaBox: public Mp4IsoFullBox
+    class TAGLIB_EXPORT Mp4MetaBox: public Mp4IsoFullBox, public Mp4ContainerBox
     {
     public:
       Mp4MetaBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
@@ -41,6 +42,11 @@ namespace TagLib
 
       //! parse meta contents
       void parse();
+
+      //! find the next child box of the given fourcc
+      //  returns null if not found
+      //  @param offset Where to start searching (NULL to search from the start)
+      virtual Mp4IsoBox* getChildBox( MP4::Fourcc fourcc, Mp4IsoBox* offset = NULL ) const;
 
     private:
       class Mp4MetaBoxPrivate;

@@ -26,14 +26,14 @@
 #ifndef ITUNESGRPBOX_H
 #define ITUNESGRPBOX_H
 
-#include "mp4isobox.h"
+#include "mp4metadatabox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT ITunesGrpBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesGrpBox: public Mp4MetadataBox
     {
     public:
       ITunesGrpBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
@@ -42,10 +42,6 @@ namespace TagLib
     private:
       //! parse the content of the box
       virtual void parse();
-
-    protected:
-      class ITunesGrpBoxPrivate;
-      ITunesGrpBoxPrivate* d;
     }; // class ITunesGrpBox
 
   } // namespace MP4

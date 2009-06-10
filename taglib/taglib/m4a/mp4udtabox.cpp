@@ -28,34 +28,23 @@
 #include "mp4udtabox.h"
 #include "boxfactory.h"
 #include "mp4file.h"
+#include "mp4containerboxprivate.h"
 
 using namespace TagLib;
 
 class MP4::Mp4UdtaBox::Mp4UdtaBoxPrivate
 {
 public:
-  //! container for all boxes in udta box
-  TagLib::List<Mp4IsoBox*> udtaBoxes;
-  //! a box factory for creating the appropriate boxes
-  MP4::BoxFactory        boxfactory;
 }; // class Mp4UdtaBoxPrivate
 
 MP4::Mp4UdtaBox::Mp4UdtaBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
-	: Mp4IsoBox( file, fourcc, size, offset )
+	: Mp4ContainerBox( file, fourcc, size, offset )
 {
-  d = new MP4::Mp4UdtaBox::Mp4UdtaBoxPrivate();
+  d = NULL;
 }
 
 MP4::Mp4UdtaBox::~Mp4UdtaBox()
 {
-  TagLib::List<Mp4IsoBox*>::Iterator delIter;
-  for( delIter  = d->udtaBoxes.begin();
-       delIter != d->udtaBoxes.end();
-       delIter++ )
-  {
-    delete *delIter;
-  }
-  delete d;
 }
 
 void MP4::Mp4UdtaBox::parse()
@@ -85,9 +74,9 @@ void MP4::Mp4UdtaBox::parse()
     }
 
     // create the appropriate subclass and parse it
-    MP4::Mp4IsoBox* curbox = d->boxfactory.createInstance( mp4file, fourcc, size, mp4file->tell() );
+    MP4::Mp4IsoBox* curbox = MP4::BoxFactory::createInstance( mp4file, fourcc, size, mp4file->tell() );
     curbox->parsebox();
-    d->udtaBoxes.append( curbox );
+    Mp4ContainerBox::d->boxes.append( curbox );
 
     // check for end of udta box
     if( totalsize == MP4::Mp4IsoBox::size() )

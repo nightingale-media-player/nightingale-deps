@@ -1,7 +1,7 @@
 /***************************************************************************
-    copyright            : (C) 2002-2008 by Jochen Issing
-    email                : jochen.issing@isign-softart.de
- ***************************************************************************/
+copyright            : (C) 2009 Pioneers of the Inevitable
+email                : songbird@songbirdnest.com
+***************************************************************************/
 
 /***************************************************************************
 *   This library is free software; you can redistribute it and/or modify  *
@@ -23,40 +23,42 @@
 *   http://www.mozilla.org/MPL/                                           *
 ***************************************************************************/
 
-#ifndef MP4SKIPBOX_H
-#define MP4SKIPBOX_H
+#ifndef METADATABOX_H
+#define METADATABOX_H
 
 #include "mp4isobox.h"
 #include "mp4fourcc.h"
+#include "itunesdatabox.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT Mp4SkipBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4MetadataBox : public Mp4IsoBox
+      //! a box that is for metadata (artist, album, etc.)
+      //  this is an internal class, don't use outside of MP4.
     {
     public:
-      Mp4SkipBox( File* file, MP4::Fourcc fourcc, uint size, long offset );
-      ~Mp4SkipBox();
+      //! constructor for metadata box
+      Mp4MetadataBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
+      //! destructor for mp4 metadata box
+      virtual ~Mp4MetadataBox();
 
-    private:
-      //! parse the content of the box
-      virtual void parse();
+      //! serialize the box into a binary blob
+      virtual ByteVector render();
+
+      //! access to the data in the box
+      virtual ITunesDataBox* data() const;
+      //! set the data in the box
+      virtual void setData( ITunesDataBox* data );
 
     protected:
-      class Mp4SkipBoxPrivate;
-      Mp4SkipBoxPrivate* d;
-    }; // class Mp4SkipBox
-    
-    class TAGLIB_EXPORT Mp4UnknownBox: public Mp4SkipBox
-    {
-    public:
-      Mp4UnknownBox( File* file, MP4::Fourcc fourcc, uint size, long offset )
-        :Mp4SkipBox(file, fourcc, size, offset) {}
-      ~Mp4UnknownBox() {}
-    }; // class Mp4UnknownBox
+      class Mp4MetadataBoxPrivate;
+      Mp4MetadataBoxPrivate* d;
+    };
 
   } // namespace MP4
 } // namespace TagLib
 
-#endif // MP4SKIPBOX_H
+#endif // METADATABOX_H
+

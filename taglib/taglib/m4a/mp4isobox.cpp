@@ -59,6 +59,19 @@ void MP4::Mp4IsoBox::parsebox()
   parse();
 }
 
+ByteVector MP4::Mp4IsoBox::render()
+{
+  if ( size() == 0 )
+  {
+    // optimization (avoid seek) for boxes that are not on disk
+    return ByteVector();
+  }
+  // seek to offset, minus header size
+  // offset() excludes size and fourcc
+  file()->seek( offset() - 8, File::Beginning );
+  return file()->readBlock( size() );
+}
+
 MP4::Fourcc MP4::Mp4IsoBox::fourcc() const
 {
   return d->fourcc;
@@ -74,7 +87,20 @@ long MP4::Mp4IsoBox::offset() const
   return d->offset;
 }
 
+MP4::Mp4IsoBox* MP4::Mp4IsoBox::getChildBox( MP4::Fourcc fourcc, Mp4IsoBox* offset ) const
+{
+  return NULL;
+}
+
 TagLib::File* MP4::Mp4IsoBox::file() const
 {
   return d->file;
+}
+
+//! set the size of this box
+//  NOTE: this causes the in-memory data to be out of sync with the disk data
+//  @param size The new size
+void MP4::Mp4IsoBox::setSize( ulonglong size )
+{
+  d->size = size;
 }

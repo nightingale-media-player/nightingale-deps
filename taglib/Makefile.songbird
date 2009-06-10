@@ -46,8 +46,8 @@ endif
 SB_ZLIB_DIR := $(SB_VENDOR_BINARIES_DIR)/zlib/$(SB_BUILD_TYPE)
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
-  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi
-  CMAKE_CXX_FLAGS := -Zc:wchar_t- -Zi
+  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi -EHsc
+  CMAKE_CXX_FLAGS := -Zc:wchar_t- -Zi -EHsc
 
   CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MTd
   CMAKE_C_FLAGS_RELEASE := $(CMAKE_C_FLAGS) -MT

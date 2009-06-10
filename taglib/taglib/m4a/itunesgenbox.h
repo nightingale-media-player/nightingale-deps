@@ -26,14 +26,14 @@
 #ifndef ITUNESGENBOX_H
 #define ITUNESGENBOX_H
 
-#include "mp4isobox.h"
+#include "mp4metadatabox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT ITunesGenBox: public Mp4IsoBox
+    class TAGLIB_EXPORT ITunesGenBox: public Mp4MetadataBox
     {
     public:
       ITunesGenBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
@@ -42,10 +42,6 @@ namespace TagLib
     private:
       //! parse the content of the box
       virtual void parse();
-
-    protected:
-      class ITunesGenBoxPrivate;
-      ITunesGenBoxPrivate* d;
     }; // class ITunesGenBox
 
   } // namespace MP4

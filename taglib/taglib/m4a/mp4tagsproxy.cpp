@@ -180,3 +180,66 @@ void MP4::Mp4TagsProxy::registerBox( EBoxType boxtype, ITunesDataBox* databox )
   }
 }
 
+MP4::ITunesDataBox* MP4::Mp4TagsProxy::getDataByType( EBoxType boxtype )
+{
+  switch( boxtype )
+  {
+  case title:
+    return d->titleData;
+  case artist:
+    return d->artistData;
+  case album:
+    return d->albumData;
+  case cover:
+    return d->coverData;
+  case genre:
+    return d->genreData;
+  case year:
+    return d->yearData;
+  case trackno:
+    return d->trknData;
+  case comment:
+    return d->commentData;
+  case grouping:
+    return d->groupingData;
+  case composer:
+    return d->composerData;
+  case disk:
+    return d->diskData;
+  case bpm:
+    return d->bpmData;
+  }
+  return NULL;
+}
+
+MP4::Fourcc MP4::Mp4TagsProxy::getFourccForType( EBoxType boxtype )
+{
+  switch( boxtype )
+  {
+  case title:
+    return TAGLIB_FOURCC(0xA9,'n','a','m');
+  case artist:
+    return TAGLIB_FOURCC(0xA9,'A','R','T');
+  case album:
+    return TAGLIB_FOURCC(0xA9,'a','l','b');
+  case cover:
+    return TAGLIB_FOURCC('c','o','v','r');
+  case genre:
+    return TAGLIB_FOURCC('g','n','r','e');
+  case year:
+    return TAGLIB_FOURCC(0xA9,'d','a','y');
+  case trackno:
+    return TAGLIB_FOURCC('t','r','k','n');
+  case comment:
+    return TAGLIB_FOURCC(0xA9,'c','m','t');
+  case grouping:
+    return TAGLIB_FOURCC(0xA9,'g','r','p');
+  case composer:
+    return TAGLIB_FOURCC(0xA9,'w','r','t');
+  case disk:
+    return TAGLIB_FOURCC('d','i','s','k');
+  case bpm:
+    return TAGLIB_FOURCC('t','m','p','o');
+  }
+  return Fourcc();
+}

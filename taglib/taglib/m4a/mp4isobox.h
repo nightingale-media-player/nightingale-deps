@@ -32,6 +32,7 @@
 namespace TagLib
 {
   class File;
+  typedef unsigned long long ulonglong;
 
   namespace MP4
   {
@@ -45,7 +46,7 @@ namespace TagLib
 
       //! function to get the fourcc code
       MP4::Fourcc fourcc() const;
-      //! function to get the size of tha atom/box
+      //! function to get the size of the atom/box
       uint size() const;
       //! function to get the offset of the atom in the mp4 file
       long offset() const;
@@ -54,10 +55,22 @@ namespace TagLib
       virtual void  parsebox();
       //! pure virtual function for all subclasses to implement
       virtual void parse() = 0;
+      //! serialize the box into a binary blob
+      virtual ByteVector render();
+
+      //! find the next child box of the given fourcc
+      //  returns null if not found
+      //  @param offset Where to start searching (NULL to search from the start)
+      virtual Mp4IsoBox* getChildBox( MP4::Fourcc fourcc, Mp4IsoBox* offset = NULL ) const;
 
     protected:
       //! function to get the file pointer
       TagLib::File* file() const;
+
+      //! set the size of this box
+      //  NOTE: this causes the in-memory data to be out of sync with the disk data
+      //  @param size The new size
+      virtual void setSize( TagLib::ulonglong size );
 
     protected:
       class Mp4IsoBoxPrivate;

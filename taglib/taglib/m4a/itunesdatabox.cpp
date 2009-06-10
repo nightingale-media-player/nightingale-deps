@@ -53,6 +53,11 @@ ByteVector MP4::ITunesDataBox::data() const
   return d->data;
 }
 
+void MP4::ITunesDataBox::setData( const ByteVector& data )
+{
+  d->data = data;
+}
+
 //! parse the content of the box
 void MP4::ITunesDataBox::parse()
 {

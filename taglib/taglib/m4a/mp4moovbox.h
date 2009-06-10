@@ -26,14 +26,14 @@
 #ifndef MP4MOOVBOX_H
 #define MP4MOOVBOX_H
 
-#include "mp4isobox.h"
+#include "mp4containerbox.h"
 #include "mp4fourcc.h"
 
 namespace TagLib
 {
   namespace MP4
   {
-    class TAGLIB_EXPORT Mp4MoovBox: public Mp4IsoBox
+    class TAGLIB_EXPORT Mp4MoovBox: public Mp4ContainerBox
     {
     public:
       Mp4MoovBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );

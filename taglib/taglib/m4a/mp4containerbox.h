@@ -1,7 +1,7 @@
 /***************************************************************************
-    copyright            : (C) 2002-2008 by Jochen Issing
-    email                : jochen.issing@isign-softart.de
- ***************************************************************************/
+copyright            : (C) 2009 by Pioneers of the Inevitable
+email                : songbird@songbirdnest.com
+***************************************************************************/
 
 /***************************************************************************
 *   This library is free software; you can redistribute it and/or modify  *
@@ -23,40 +23,31 @@
 *   http://www.mozilla.org/MPL/                                           *
 ***************************************************************************/
 
-#ifndef MP4SKIPBOX_H
-#define MP4SKIPBOX_H
+
+#ifndef MP4CONTAINERBOX_H
+#define MP4CONTAINERBOX_H
 
 #include "mp4isobox.h"
-#include "mp4fourcc.h"
 
-namespace TagLib
-{
-  namespace MP4
-  {
-    class TAGLIB_EXPORT Mp4SkipBox: public Mp4IsoBox
+namespace TagLib {
+  namespace MP4 {
+    class TAGLIB_EXPORT Mp4ContainerBox : public Mp4IsoBox
+      //! This is an interface for a container box (which has child boxes)
     {
     public:
-      Mp4SkipBox( File* file, MP4::Fourcc fourcc, uint size, long offset );
-      ~Mp4SkipBox();
+      Mp4ContainerBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset );
+      virtual ~Mp4ContainerBox();
 
-    private:
-      //! parse the content of the box
-      virtual void parse();
+      //! find the next child box of the given fourcc
+      //  returns null if not found
+      //  @param offset Where to start searching (NULL to search from the start)
+      virtual Mp4IsoBox* getChildBox( MP4::Fourcc fourcc, Mp4IsoBox* offset = NULL ) const;
 
     protected:
-      class Mp4SkipBoxPrivate;
-      Mp4SkipBoxPrivate* d;
-    }; // class Mp4SkipBox
-    
-    class TAGLIB_EXPORT Mp4UnknownBox: public Mp4SkipBox
-    {
-    public:
-      Mp4UnknownBox( File* file, MP4::Fourcc fourcc, uint size, long offset )
-        :Mp4SkipBox(file, fourcc, size, offset) {}
-      ~Mp4UnknownBox() {}
-    }; // class Mp4UnknownBox
+      class Mp4ContainerBoxPrivate;
+      Mp4ContainerBoxPrivate *d;
+    }; // class Mp4ContainerBox
+  }
+}
 
-  } // namespace MP4
-} // namespace TagLib
-
-#endif // MP4SKIPBOX_H
+#endif // MP4CONTAINERBOX_H

@@ -30,34 +30,23 @@
 #include "mp4minfbox.h"
 #include "boxfactory.h"
 #include "mp4file.h"
+#include "mp4containerboxprivate.h"
 
 using namespace TagLib;
 
 class MP4::Mp4MdiaBox::Mp4MdiaBoxPrivate
 {
 public:
-  //! container for all boxes in mdia box
-  TagLib::List<Mp4IsoBox*> mdiaBoxes;
-  //! a box factory for creating the appropriate boxes
-  MP4::BoxFactory        boxfactory;
 }; // class Mp4MdiaBoxPrivate
 
 MP4::Mp4MdiaBox::Mp4MdiaBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uint size, long offset )
-	: Mp4IsoBox( file, fourcc, size, offset )
+	: Mp4ContainerBox( file, fourcc, size, offset )
 {
-  d = new MP4::Mp4MdiaBox::Mp4MdiaBoxPrivate();
+  d = NULL;
 }
 
 MP4::Mp4MdiaBox::~Mp4MdiaBox()
 {
-  TagLib::List<Mp4IsoBox*>::Iterator delIter;
-  for( delIter  = d->mdiaBoxes.begin();
-       delIter != d->mdiaBoxes.end();
-       delIter++ )
-  {
-    delete *delIter;
-  }
-  delete d;
 }
 
 void MP4::Mp4MdiaBox::parse()
@@ -84,8 +73,8 @@ void MP4::Mp4MdiaBox::parse()
     }
 
     // create the appropriate subclass and parse it
-    MP4::Mp4IsoBox* curbox = d->boxfactory.createInstance( mp4file, fourcc, size, mp4file->tell() );
-    if( static_cast<TagLib::uint>( fourcc ) == 0x6d696e66 /*"minf"*/ )
+    MP4::Mp4IsoBox* curbox = MP4::BoxFactory::createInstance( mp4file, fourcc, size, mp4file->tell() );
+    if( fourcc == TAGLIB_FOURCC('m','i','n','f') )
     {
       // cast to minf
       Mp4MinfBox* minfbox = dynamic_cast<Mp4MinfBox*>( curbox );
@@ -96,9 +85,9 @@ void MP4::Mp4MdiaBox::parse()
     }
 
     curbox->parsebox();
-    d->mdiaBoxes.append( curbox );
+    Mp4ContainerBox::d->boxes.append( curbox );
 
-    if(static_cast<TagLib::uint>( fourcc ) == 0x68646c72 /*"hdlr"*/ )
+    if( fourcc == TAGLIB_FOURCC('h','d','l','r') )
     {
       // cast to hdlr box
       Mp4HdlrBox* hdlrbox = dynamic_cast<Mp4HdlrBox*>( curbox );
