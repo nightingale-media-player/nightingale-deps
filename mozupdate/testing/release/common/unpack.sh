@@ -21,8 +21,8 @@ unpack_build () {
             doscwd=`pwd -W | sed -e 's/\//\\\\/g'`
             dos_pkg_file=`echo $pkg_file | sed -e 's/\//\\\\/g'`
         
-            echo cmd /c "${doscwd}\\..\\$dos_pkg_file /S /D=$doscwd"
-            cmd /c "${doscwd}\\..\\$dos_pkg_file /S /D=${doscwd}\\Songbird"
+            echo cmd /c "${doscwd}\\..\\$dos_pkg_file /UNPACK /S /D=$doscwd"
+            cmd /c "${doscwd}\\..\\$dos_pkg_file /UNPACK /S /D=${doscwd}\\Songbird"
             if [ -d localized ]
             then
               mkdir bin/
