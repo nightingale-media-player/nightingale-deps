@@ -237,7 +237,7 @@ List<TagLib::FlacPicture*> Ogg::XiphComment::artwork() const
 void Ogg::XiphComment::addArtwork(TagLib::FlacPicture &pic)
 {
   ByteVector bv = pic.render(true);
-  addField("METADATA_BLOCK_PICTURE", bv.data());
+  addField("METADATA_BLOCK_PICTURE", bv);
 }
 
 void Ogg::XiphComment::setArtwork(List<TagLib::FlacPicture*> artworkList)

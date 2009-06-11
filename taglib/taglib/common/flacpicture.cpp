@@ -302,14 +302,12 @@ bool FlacPicture::parse(const ByteVector &bv)
   if (bv.size() < (32+mimeTypeLength))
     return false;
   mMimeType = String(bv.mid(8, mimeTypeLength));
-  mMimeType.append('\0');
   i = 8 + mimeTypeLength;
 
   descrLength = bv.mid(i, 4).toUInt();
   if (bv.size() < (32+mimeTypeLength+descrLength))
     return false;
   mDescription = String(bv.mid(i+4, descrLength));
-  mDescription.append('\0');
   i += 4 + descrLength;
 
   // We do not use or require these fields, so we don't bother parsing them.

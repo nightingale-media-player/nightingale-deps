@@ -49,7 +49,7 @@ MP4::Mp4MetaBox::~Mp4MetaBox()
 
 void MP4::Mp4MetaBox::parse()
 {
-  TagLib::MP4::File* mp4file = static_cast<MP4::File*>( Mp4IsoBox::file() );
+  TagLib::MP4::File* mp4file = static_cast<MP4::File*>( MP4::Mp4IsoFullBox::file() );
 
   TagLib::uint totalsize = 12; // initial size of box
   // parse all contained boxes
@@ -61,7 +61,7 @@ void MP4::Mp4MetaBox::parse()
     totalsize += size;
 
     // check for errors
-    if( totalsize > MP4::Mp4IsoBox::size() )
+    if( totalsize > MP4::Mp4IsoFullBox::size() )
     {
       std::cerr << "Error in mp4 file " << mp4file->name() << " meta box contains bad box with name: " << fourcc.toString() << std::endl;
       return;
@@ -73,7 +73,7 @@ void MP4::Mp4MetaBox::parse()
     Mp4ContainerBox::d->boxes.append( curbox );
 
     // check for end of meta box
-    if( totalsize == MP4::Mp4IsoBox::size() )
+    if( totalsize == MP4::Mp4IsoFullBox::size() )
       break;
   }
 }

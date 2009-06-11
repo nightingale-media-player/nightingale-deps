@@ -63,7 +63,7 @@ void MP4::Mp4IlstBox::parse()
 #if 0
   std::cout << "      ";
 #endif
-  while( (mp4file->readSizeAndType( size, fourcc ) == true)  )
+  while( (totalsize < MP4::Mp4IsoBox::size()) && (mp4file->readSizeAndType( size, fourcc ) == true)  )
   {
     totalsize += size;
 
@@ -78,10 +78,6 @@ void MP4::Mp4IlstBox::parse()
     MP4::Mp4IsoBox* curbox = MP4::BoxFactory::createInstance( mp4file, fourcc, size, mp4file->tell() );
     curbox->parsebox();
     Mp4ContainerBox::d->boxes.append( curbox );
-
-    // check for end of ilst box
-    if( totalsize == MP4::Mp4IsoBox::size() )
-      break;
 
 #if 0
     std::cout << "      ";

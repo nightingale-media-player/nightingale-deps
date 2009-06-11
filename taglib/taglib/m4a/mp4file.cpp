@@ -937,8 +937,8 @@ public:
         if ( m_stack.size() > 1 )
         {
           MP4::Mp4IsoBox* back = m_stack.back();
+          MP4::Fourcc fourcc = back->fourcc();
           m_stack.pop_back();
-          MP4::Fourcc fourcc = m_fourccs[ m_stack.size() - 1 ];
           m_stack.push_back( m_stack.back()->getChildBox(fourcc, back) );
           continue;
         }
@@ -993,7 +993,8 @@ bool MP4::File::FilePrivate::adjustOffsets( TagLib::FileIO* file,
                                             TagLib::ulonglong difference )
 {
   // find the first byte at which point we may need to adjust things
-  ulonglong start = affectedBox->offset() + affectedBox->size() - 8;
+  // we assume that nothing in the stco boxes point _into_ the udta
+  ulonglong start = affectedBox->offset() - 8;
 
   // find any /moov/trak/mdia/minf/stbl/stco boxes and adjust them
 

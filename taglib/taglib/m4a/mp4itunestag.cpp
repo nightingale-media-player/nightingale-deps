@@ -53,13 +53,14 @@ public:
 MP4::Tag::Tag( )
 {
   d = new TagPrivate();
-  d->year       = 0;
-  d->track      = 0;
+  d->year         = 0;
+  d->track        = 0;
   d->totalTracks  = 0;
-  d->disc       = 0;
-  d->totalTracks  = 0;
-  d->bpm        = 0;
-  d->isEmpty    = true;
+  d->disc         = 0;
+  d->totalDiscs   = 0;
+  d->bpm          = 0;
+  d->isEmpty      = true;
+  d->cover        = ByteVector::null;
 }
 
 MP4::Tag::~Tag()
