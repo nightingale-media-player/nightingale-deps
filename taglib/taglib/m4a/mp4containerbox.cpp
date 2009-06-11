@@ -53,9 +53,11 @@ MP4::Mp4IsoBox* MP4::Mp4ContainerBox::getChildBox( MP4::Fourcc fourcc, Mp4IsoBox
   TagLib::List<Mp4IsoBox*>::Iterator iter = d->boxes.begin();
   if ( offset )
   {
-    for ( ; *iter != offset; ++iter )
-      if ( iter == d->boxes.end() )
-        return NULL;
+    for ( ; iter != d->boxes.end(); ++iter )
+      if ( *iter == offset )
+        break;
+    if ( iter == d->boxes.end() )
+      return NULL;
     ++iter; // go past the offset
   }
   for ( ; iter != d->boxes.end(); ++iter )

@@ -204,28 +204,51 @@ void MP4::File::read( bool, TagLib::AudioProperties::ReadStyle  )
 
 bool MP4::File::save()
 {
+  int createdContainers  = 0;
   Mp4IsoBox* moovBox = NULL;
   for( TagLib::List<MP4::Mp4IsoBox*>::Iterator iter  = d->boxes.begin();
                                                iter != d->boxes.end();
                                                ++iter )
   {
-    if( (*iter)->fourcc() == MP4::Fourcc("moov") )
+    if( (*iter)->fourcc() == TAGLIB_FOURCC('m','o','o','v') )
     {
       moovBox = *iter;
       break;
     }
   }
   if (!moovBox)
+  {
+    // the file is so broken that it doesn't even have a moov box
+    // maybe it's not even a mpeg-4 file?  let's just abort.
     return false;
+  }
   Mp4IsoBox* udtaBox = moovBox->getChildBox(MP4::Fourcc("udta"));
   if (!udtaBox)
-    return false;
-  Mp4IsoBox* metaBox = udtaBox->getChildBox(MP4::Fourcc("meta"));
+  {
+    udtaBox = BoxFactory::createInstance(this,
+                                         TAGLIB_FOURCC('u','d','t','a'),
+                                         8, // empty udta box
+                                         moovBox->offset() + 8 /* udta box header */ );
+    ++createdContainers;
+  }
+  Mp4IsoFullBox* metaBox = dynamic_cast<Mp4IsoFullBox*>( udtaBox->getChildBox(MP4::Fourcc("meta")) );
   if (!metaBox)
-    return false;
+  {
+    metaBox = dynamic_cast<Mp4IsoFullBox*>( BoxFactory::createInstance(this,
+                                                                       TAGLIB_FOURCC('m','e','t','a'),
+                                                                       12, // empty meta box
+                                                                       udtaBox->offset() + 8 /* meta box header */ ) );
+    ++createdContainers;
+  }
   Mp4IsoBox* ilstIsoBox = metaBox->getChildBox(MP4::Fourcc("ilst"));
   if (!ilstIsoBox)
-    return false;
+  {
+    ilstIsoBox = BoxFactory::createInstance(this,
+                                            TAGLIB_FOURCC('i','l','s','t'),
+                                            8, // ilst box header
+                                            metaBox->offset() + 12 /* meta iso fullbox + ilst box header */ );
+    ++createdContainers;
+  }
   Mp4IlstBox* ilstBox = dynamic_cast<Mp4IlstBox*>(ilstIsoBox);
   if (!ilstBox)
   {
@@ -394,14 +417,47 @@ bool MP4::File::save()
       debug("Failed to adjust the file; it is now corrupt!");
       return false;
     }
+
+    // make space for things we're creating
+    TagLib::uint insertedIlstSize = 0; // number of bytes inserted for ilst header
+    TagLib::uint insertedMetaSize = 0; // number of bytes inserted for meta header
+    TagLib::uint insertedUdtaSize = 0; // number of bytes inserted for udta header
+    TagLib::uint bytesToInsert = difference;
+    TagLib::ulong insertPosition = ilstBox->offset();
+    if ( createdContainers > 0 )
+    {
+      insertedIlstSize = 8; // created the ilst box
+      insertPosition = ilstBox->offset() - 8;
+    }
+    if ( createdContainers > 1 )
+    {
+      insertedMetaSize = 12; // created the meta box
+      insertPosition = metaBox->offset() - 8;
+    }
+    if ( createdContainers > 2 )
+    {
+      insertedUdtaSize = 8; // created the udta box
+      insertPosition = udtaBox->offset() - 8;
+    }
+    file->insert( ByteVector(difference +  insertedIlstSize + 
+                             insertedMetaSize + insertedUdtaSize, 0), 
+                  insertPosition );
+
     // update the parent box sizes
+    // update the moov box
     file->seek( moovBox->offset() - 8 ); // -8 = size + fourcc
-    file->writeBlock( ByteVector::fromUInt( moovBox->size() + difference) );
+    file->writeBlock( ByteVector::fromUInt( moovBox->size() + difference + 
+                                            insertedIlstSize + insertedMetaSize + insertedUdtaSize ) );
+    // update the udta box
     file->seek( udtaBox->offset() - 8 ); // -8 = size + fourcc
-    file->writeBlock( ByteVector::fromUInt( udtaBox->size() + difference) );
+    file->writeBlock( ByteVector::fromUInt( udtaBox->size() + difference + 
+                                            insertedIlstSize + insertedMetaSize ) +
+                      ByteVector::fromUInt( udtaBox->fourcc() ) );
+    // update the meta box
     file->seek( metaBox->offset() - 8 ); // offset() only excludes size + fourcc, not iso box header
-    file->writeBlock( ByteVector::fromUInt( metaBox->size() + difference) );
-    file->insert( ByteVector( (uint)difference ), ilstBox->offset() );
+    file->writeBlock( ByteVector::fromUInt( metaBox->size() + difference + insertedIlstSize ) +
+                      ByteVector::fromUInt( metaBox->fourcc() ) +
+                      ByteVector::fromUInt( metaBox->version() << 24 | metaBox->flags() ) );
   }
 
   // good, the ilst is big enough
