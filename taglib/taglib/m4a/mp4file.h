@@ -33,11 +33,11 @@
 
 namespace TagLib {
 
-  #if _MSC_VER
+#ifdef _MSC_VER
     typedef unsigned __int64 ulonglong;
-  #else
+#else
     typedef unsigned long long ulonglong;
-  #endif
+#endif
 
   class Tag;
 

@@ -822,7 +822,7 @@ static bool rebuildDataForBox( MP4::Fourcc fourcc,
     case TAGLIB_FOURCC('t','m','p','o'):
     {
       boxType = MP4::Mp4TagsProxy::bpm;
-      uint bpm = mp4tag->bpm();
+      TagLib::uint bpm = mp4tag->bpm();
       if (bpm == 0)
       {
         // delete the tempo, if it exists
@@ -832,7 +832,7 @@ static bool rebuildDataForBox( MP4::Fourcc fourcc,
       {
         // this is a 16-bit uint
         oldData = proxy->bpmData();
-        uint oldBpm = oldData->data().toShort( true );
+        TagLib::uint oldBpm = oldData->data().toShort( true );
         if ( bpm == oldBpm )
         {
           // didn't change, try to preserve the data
