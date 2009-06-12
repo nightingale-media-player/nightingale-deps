@@ -823,12 +823,15 @@ XINE_DIR =
 @USE_XVID_FALSE@XVID_DIR = 
 # endif
 @USE_XVID_TRUE@XVID_DIR = xvid
+@USE_ASFMUX_FALSE@ASF_DIR = 
+@USE_ASFMUX_TRUE@ASF_DIR = asfmux
 SUBDIRS = \
 	$(ALSASPDIF_DIR) \
 	$(AMRWB_DIR) \
 	$(APEXSINK_DIR) \
 	$(ARTS_DIR) \
 	$(ARTSC_DIR) \
+	$(ASF_DIR) \
 	$(AUDIOFILE_DIR) \
 	$(AUDIORESAMPLE_DIR) \
 	$(BZ2_DIR) \
@@ -882,6 +885,7 @@ DIST_SUBDIRS = \
 	alsaspdif \
 	amrwb \
 	apexsink \
+	asfmux \
 	bz2 \
 	cdaudio \
 	celt \
