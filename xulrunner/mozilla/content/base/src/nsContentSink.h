@@ -113,7 +113,8 @@ class nsContentSink : public nsICSSLoaderObserver,
                       public nsIScriptLoaderObserver,
                       public nsSupportsWeakReference,
                       public nsStubDocumentObserver,
-                      public nsITimerCallback
+                      public nsITimerCallback,
+                      public nsIContentSink_1_9_0_BRANCH
 {
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
   NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsContentSink,
@@ -137,6 +138,7 @@ class nsContentSink : public nsICSSLoaderObserver,
   NS_HIDDEN_(void) DidBuildModelImpl(void);
   NS_HIDDEN_(void) DropParserAndPerfHint(void);
   NS_HIDDEN_(nsresult) WillProcessTokensImpl(void);
+  PRBool IsScriptExecuting();
 
   void NotifyAppend(nsIContent* aContent, PRUint32 aStartIndex);
 

@@ -31,3 +31,8 @@ random == dynamic-3b.html dynamic-3-ref.html
 random-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 329069-1.html 329069-1-ref.html # failure is font-dependent, may be related to bug 404848
 == 342120-1.xhtml 342120-1-ref.xhtml
 == 379799-1.html 379799-1-ref.html
+fails == 429968-1a.html 429968-1-ref.html # bug 429968
+fails == 429968-1b.html 429968-1-ref.html # bug 429968
+== 429968-2a.html 429968-2-ref.html
+== 429968-2b.html 429968-2-ref.html
+== 429968-2c.html 429968-2-ref.html

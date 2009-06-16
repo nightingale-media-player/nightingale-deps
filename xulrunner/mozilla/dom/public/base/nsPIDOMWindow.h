@@ -169,6 +169,7 @@ public:
     return mFrameElement;
   }
 
+  // Caller must release the old frame element and addref the new one.
   void SetFrameElementInternal(nsIDOMElement *aFrameElement)
   {
     if (IsOuterWindow()) {

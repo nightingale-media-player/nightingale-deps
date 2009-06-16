@@ -163,14 +163,10 @@ function checkSubmit(formNum) {
 
   // End the test at the last form.
   if (formNum == 103) {
-    is(numSubmittedForms, 10, "Ensuring all forms were submitted.");;
+    is(numSubmittedForms, 12, "Ensuring all forms were submitted.");;
     SimpleTest.finish();
     return false; // return false to cancel current form submission
   }
-
-  // XXX Skip tests 6 and 7, until bug 463486 lands
-  if (formNum == 5)
-    formNum = 7;
 
   // submit the next form.
   var button = getFormSubmitButton(formNum == 9 ? 101 : (formNum + 1));

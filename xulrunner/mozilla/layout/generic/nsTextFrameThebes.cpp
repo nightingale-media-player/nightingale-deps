@@ -1495,11 +1495,6 @@ BuildTextRunsScanner::BuildTextRunForFrames(void* aTextBuffer)
 
     TextRunMappedFlow* newFlow = &userData->mMappedFlows[i];
     newFlow->mStartFrame = mappedFlow->mStartFrame;
-    if (!mSkipIncompleteTextRuns) {
-      // If mSkipIncompleteTextRuns is set, then we're just going to
-      // throw away the userData.
-      newFlow->mStartFrame->AddStateBits(TEXT_IN_TEXTRUN_USER_DATA);
-    }
     newFlow->mDOMOffsetToBeforeTransformOffset = builder.GetCharCount() -
       mappedFlow->mStartFrame->GetContentOffset();
     newFlow->mContentLength = contentLength;
@@ -1846,6 +1841,9 @@ BuildTextRunsScanner::AssignTextRun(gfxTextRun* aTextRun)
       f->ClearTextRun();
       f->SetTextRun(aTextRun);
     }
+    // Set this bit now; we can't set it any earlier because
+    // f->ClearTextRun() might clear it out.
+    startFrame->AddStateBits(TEXT_IN_TEXTRUN_USER_DATA);
     // BuildTextRunForFrames mashes together mapped flows for the same element,
     // so we do that here too.
     lastContent = startFrame->GetContent();
@@ -5520,10 +5518,10 @@ nsTextFrame::Reflow(nsPresContext*           aPresContext,
   PRBool completedFirstLetter = PR_FALSE;
   // Layout dependent styles are a problem because we need to reconstruct
   // the gfxTextRun based on our layout.
-  if (lineLayout.GetFirstLetterStyleOK() || lineLayout.GetInFirstLine()) {
+  if (lineLayout.GetInFirstLetter() || lineLayout.GetInFirstLine()) {
     SetLength(maxContentLength);
 
-    if (lineLayout.GetFirstLetterStyleOK()) {
+    if (lineLayout.GetInFirstLetter()) {
       // floating first-letter boundaries are significant in textrun
       // construction, so clear the textrun out every time we hit a first-letter
       // and have changed our length (which controls the first-letter boundary)
@@ -5533,7 +5531,18 @@ nsTextFrame::Reflow(nsPresContext*           aPresContext,
         EnsureTextRun(ctx, lineContainer, lineLayout.GetLine(), &flowEndInTextRun);
 
       if (mTextRun) {
-        completedFirstLetter = FindFirstLetterRange(frag, mTextRun, offset, iter, &length);
+        if (lineLayout.GetFirstLetterStyleOK()) {
+          completedFirstLetter =
+            FindFirstLetterRange(frag, mTextRun, offset, iter, &length);
+        } else {
+          // We're in a first-letter frame's first in flow, so if there
+          // was a first-letter, we'd be it. However, for one reason
+          // or another (e.g., preformatted line break before this text),
+          // we're not actually supposed to have first-letter style. So
+          // just make a zero-length first-letter.
+          length = 0;
+          completedFirstLetter = PR_TRUE;
+        }
         if (length) {
           AddStateBits(TEXT_FIRST_LETTER);
         }
@@ -5798,9 +5807,6 @@ nsTextFrame::Reflow(nsPresContext*           aPresContext,
     } else {
       lineLayout.NotifyOptionalBreakPosition(mContent, offset + length, PR_TRUE);
     }
-  }
-  if (completedFirstLetter) {
-    lineLayout.SetFirstLetterStyleOK(PR_FALSE);
   }
 
   // Compute reflow status

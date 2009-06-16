@@ -39,25 +39,40 @@ Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 let didFail = false;
 var file;
 
+let manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar)
+                                .QueryInterface(Ci.nsIComponentManagerObsolete);
+
+let oldFactory = manager.findFactory(Components.ID("{a2112d6a-0e28-421f-b46a-25c0b308cbd0}"));
+let factory = {
+  createInstance: function(aOuter, aIid) {
+    if (aOuter != null)
+      throw Components.results.NS_ERROR_NO_AGGREGATION;
+    return promptService.QueryInterface(aIid);
+  }
+}
+
 let promptService = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIPromptService]),
   alert: function() {
     ok(didFail, "javascript: uri failed and showed a message");
     file.remove(false);
+
+    // Unregister the factory so we do not leak
+    manager.unregisterFactory(Components.ID("{6cc9c9fe-bc0b-432b-a410-253ef8bcc699}"),
+      factory
+    );
+    manager.registerFactory(Components.ID("{a2112d6a-0e28-421f-b46a-25c0b308cbd0}"),
+      "PromptService", "@mozilla.org/embedcomp/prompt-service;1",
+      oldFactory
+    );
+
     finish();
   }
 };
 
-Components.manager.QueryInterface(Ci.nsIComponentRegistrar).
-registerFactory(Components.ID("{6cc9c9fe-bc0b-432b-a410-253ef8bcc699}"),
-  "PromptService", "@mozilla.org/embedcomp/prompt-service;1",
-  {
-    createInstance: function(aOuter, aIid) {
-      if (aOuter != null)
-        throw Components.results.NS_ERROR_NO_AGGREGATION;
-      return promptService.QueryInterface(aIid);
-    }
-  });
+manager.registerFactory(Components.ID("{6cc9c9fe-bc0b-432b-a410-253ef8bcc699}"),
+                        "PromptService", "@mozilla.org/embedcomp/prompt-service;1",
+                        factory);
 
 function test()
 {

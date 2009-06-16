@@ -44,5 +44,14 @@ include $(DEPTH)/config/autoconf.mk
 
 EXTRA_COMPONENTS = pluginGlue.js
 
-include $(topsrcdir)/config/rules.mk
+ifdef ENABLE_TESTS
+# OSX will display a security warning when running the downloaded installer
+ifneq (Darwin,$(OS_TARGET))
+# On Linux nsILocalFile.launch will only open documents, not run executables
+ifneq (Linux,$(OS_TARGET))
+DIRS += tests
+endif
+endif
+endif
 
+include $(topsrcdir)/config/rules.mk

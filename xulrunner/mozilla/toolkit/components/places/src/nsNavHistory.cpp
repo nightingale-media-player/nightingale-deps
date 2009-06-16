@@ -642,6 +642,11 @@ nsNavHistory::InitDB(PRInt16 *aMadeChanges)
   NS_ENSURE_SUCCESS(rv, rv);
 #endif
 
+  // Set pragma synchronous to FULL to ensure maximum data integrity.
+  rv = mDBConn->ExecuteSimpleSQL(NS_LITERAL_CSTRING(
+      "PRAGMA synchronous = FULL"));
+  NS_ENSURE_SUCCESS(rv, rv);
+
   mozStorageTransaction transaction(mDBConn, PR_FALSE);
 
   // Initialize the other places services' database tables. We do this before
@@ -2376,7 +2381,7 @@ nsNavHistory::FixInvalidFrecenciesForExcludedPlaces()
             "JOIN moz_items_annos annos ON attrs.id = annos.anno_attribute_id "
             "WHERE attrs.name = ?1) "
           "AND visit_count = 0) "
-        "OR SUBSTR(h.url,0,6) = 'place:')"),
+        "OR SUBSTR(h.url, 1, 6) = 'place:')"),
     getter_AddRefs(dbUpdateStatement));
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -3782,7 +3787,7 @@ nsNavHistory::RemovePagesInternal(const nsCString& aPlaceIdsQueryString)
         aPlaceIdsQueryString +
         NS_LITERAL_CSTRING(") AND "
         "NOT EXISTS (SELECT b.id FROM moz_bookmarks b WHERE b.fk = h.id LIMIT 1) "
-        "AND SUBSTR(h.url,0,6) <> 'place:')"));
+        "AND SUBSTR(h.url, 1, 6) <> 'place:')"));
   NS_ENSURE_SUCCESS(rv, rv);
 
   // placeId could have a livemark item, so setting the frecency to -1
@@ -5015,7 +5020,7 @@ nsNavHistory::QueryToSelectClause(nsNavHistoryQuery* aQuery, // const
   // make it use the index.
   if (NS_SUCCEEDED(aQuery->GetHasUri(&hasIt)) && hasIt) {
     if (aQuery->UriIsPrefix())
-      clause.Condition("SUBSTR(h.url, 0, LENGTH(").Param(":uri").Str(")) =")
+      clause.Condition("SUBSTR(h.url, 1, LENGTH(").Param(":uri").Str(")) =")
             .Param(":uri");
     else
       clause.Condition("h.url =").Param(":uri");

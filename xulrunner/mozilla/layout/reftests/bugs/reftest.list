@@ -30,7 +30,7 @@
 == 18217-zorder-3.html 18217-zorder-ref-inline.html
 == 18217-zorder-4.html 18217-zorder-ref-inline-table.html
 == 18217-zorder-5.html 18217-zorder-ref-inline-table.html
-== 23604-1.html 23604-1-ref.html
+fails == 23604-1.html 23604-1-ref.html # bug 429968
 == 23604-2.html 23604-2-ref.html
 != 24998-1.html 24998-1-ref.html
 fails == 25888-1l.html 25888-1l-ref.html # bug 25888
@@ -843,3 +843,6 @@ fails-if(MOZ_WIDGET_TOOLKIT=="gtk2") == 424074-1-ref2.xul 424074-1-ref3.xul
 == 482659-1b.html 482659-1-ref.html
 == 482659-1c.html 482659-1-ref.html
 == 482659-1d.html 482659-1-ref.html
+== 486848-1.xul 486848-1-ref.xul
+== 487539-1.html about:blank
+== 488390-1.html 488390-1-ref.html

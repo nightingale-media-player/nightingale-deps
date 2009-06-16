@@ -745,6 +745,7 @@ nsGlobalWindow::~nsGlobalWindow()
     }
   }
 
+  NS_IF_RELEASE(mFrameElement);
   mDocument = nsnull;           // Forces Release
   mDoc = nsnull;
 
@@ -1000,6 +1001,7 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsGlobalWindow)
   // Traverse stuff from nsPIDOMWindow
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mChromeEventHandler)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mDocument)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_RAWPTR(mFrameElement)
 
 #ifdef OJI
   // Traverse mDummyJavaPluginOwner
@@ -1040,6 +1042,7 @@ NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsGlobalWindow)
   // Unlink stuff from nsPIDOMWindow
   NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mChromeEventHandler)
   NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mDocument)
+  NS_IF_RELEASE(tmp->mFrameElement);
 
 #ifdef OJI
   // Unlink mDummyJavaPluginOwner

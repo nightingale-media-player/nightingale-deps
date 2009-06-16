@@ -1427,7 +1427,7 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
         if(param.IsOut())
         {
             // create an 'out' object
-            JSObject* out_obj = NewOutObject(cx);
+            JSObject* out_obj = NewOutObject(cx, obj);
             if(!out_obj)
             {
                 retval = NS_ERROR_OUT_OF_MEMORY;
@@ -1784,9 +1784,9 @@ nsXPCWrappedJSClass::GetInterfaceName()
 }
 
 JSObject*
-nsXPCWrappedJSClass::NewOutObject(JSContext* cx)
+nsXPCWrappedJSClass::NewOutObject(JSContext* cx, JSObject* scope)
 {
-    return JS_NewObject(cx, nsnull, nsnull, nsnull);
+    return JS_NewObject(cx, nsnull, nsnull, JS_GetGlobalForObject(cx, scope));
 }
 
 

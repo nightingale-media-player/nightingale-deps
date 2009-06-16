@@ -165,7 +165,8 @@ nsEventStatus PR_CALLBACK HandleEvent(nsGUIEvent *aEvent)
 
   if (view)
   {
-    view->GetViewManager()->DispatchEvent(aEvent, &result);
+    nsCOMPtr<nsIViewManager> vm = view->GetViewManager();
+    vm->DispatchEvent(aEvent, &result);
   }
 
   return result;

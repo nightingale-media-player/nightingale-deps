@@ -53,7 +53,7 @@ static char int_to_hex_digit(PRInt32 i) {
 static void CheckEquals(nsCString & expected, nsCString & actual)
 {
   if (!(expected).Equals((actual))) {
-    fprintf(stderr, "FAILED: expected |%s| but was |%s|\n", (expected).get(),
+    fprintf(stderr, "FAILED: expected |%s| but got |%s|", (expected).get(),
             (actual).get());
   } else {
     gPassedTests++;
@@ -185,6 +185,8 @@ void TestCanonicalize()
                          "168.188.99.26/.secure/www.ebay.com/");
   TestCanonicalizeHelper("195.127.0.11/uploads/%20%20%20%20/.verify/.eBaysecure=updateuserdataxplimnbqmn-xplmvalidateinfoswqpcmlx=hgplmcx/",
                          "195.127.0.11/uploads/%20%20%20%20/.verify/.eBaysecure=updateuserdataxplimnbqmn-xplmvalidateinfoswqpcmlx=hgplmcx/");
+  // Added in bug 489455.  %00 should no longer be changed to %01.
+  TestCanonicalizeHelper("%00", "%00");
 }
 
 void TestParseIPAddressHelper(const char *in, const char *expected)
@@ -278,7 +280,8 @@ void TestHostname()
   TestHostnameHelper("AB CD 12354", "ab%20cd%2012354");
   TestHostnameHelper("\1\2\3\4\112\177", "%01%02%03%04j%7F");
   TestHostnameHelper("<>.AS/-+", "<>.as/-+");
-
+  // Added in bug 489455.  %00 should no longer be changed to %01.
+  TestHostnameHelper("%00", "%00");
 }
 
 void TestLongHostname()

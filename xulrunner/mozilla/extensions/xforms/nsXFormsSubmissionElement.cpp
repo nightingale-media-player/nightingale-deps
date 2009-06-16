@@ -2611,13 +2611,18 @@ nsXFormsSubmissionElement::SendData(const nsCString &uriSpec,
         // Read returns 0 if eos
         nsCOMPtr<nsINetUtil> netUtil = do_GetService(NS_NETUTIL_CONTRACTID);
         NS_ENSURE_STATE(netUtil);
+
+        // escape the body and append it to mailtoUrl
+        nsCAutoString escapeResult;
         while (numReadIn != 0) {
           numReadIn = stream->Read(buf, len, &read);
           netUtil->EscapeURL(nsCString(buf, read), nsINetUtil::ESCAPE_URL_QUERY,
-                             mailtoUrl);
+                             escapeResult);
         }
 
         delete [] buf;
+
+        mailtoUrl.Append(escapeResult);
 
         // create an nsIUri out of the string
         nsCOMPtr<nsIURI> mailUri;

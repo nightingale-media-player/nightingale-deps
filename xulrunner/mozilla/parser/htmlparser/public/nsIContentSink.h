@@ -59,6 +59,11 @@ class nsIParser;
 { 0x94ec4df1, 0x6885, 0x4b1f, \
  { 0x85, 0x10, 0xe3, 0x5f, 0x4f, 0x36, 0xea, 0xaa } }
 
+#define NS_ICONTENT_SINK_1_9_0_BRANCH_IID \
+{ 0x7d52df65, 0xfad3, 0x4885, \
+  { 0xa7, 0xa8, 0x5e, 0xe1, 0xae, 0x42, 0x81, 0x1c } }
+
+
 class nsIContentSink : public nsISupports {
 public:
 
@@ -139,5 +144,22 @@ public:
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIContentSink, NS_ICONTENT_SINK_IID)
+
+class nsIContentSink_1_9_0_BRANCH : public nsISupports
+{
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICONTENT_SINK_1_9_0_BRANCH_IID)
+
+  /**
+   * Returns true if there's currently script executing that we need to hold
+   * parsing for.
+   */
+  virtual PRBool IsScriptExecuting()
+  {
+    return PR_FALSE;
+  }
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsIContentSink_1_9_0_BRANCH, NS_ICONTENT_SINK_1_9_0_BRANCH_IID)
 
 #endif /* nsIContentSink_h___ */

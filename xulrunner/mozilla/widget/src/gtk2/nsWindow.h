@@ -283,7 +283,6 @@ public:
                                           const PangoAttrList *aFeedback);
     void               IMEComposeEnd     (void);
     GtkIMContext*      IMEGetContext     (void);
-    nsWindow*          IMEGetOwningWindow(void);
     // "Enabled" means the users can use all IMEs.
     // I.e., the focus is in the normal editors.
     PRBool             IMEIsEnabledState (void);
@@ -370,7 +369,8 @@ public:
 
 private:
     void               GetToplevelWidget(GtkWidget **aWidget);
-    void               GetContainerWindow(nsWindow  **aWindow);
+    GtkWidget         *GetMozContainerWidget();
+    nsWindow          *GetContainerWindow();
     void               SetUrgencyHint(GtkWidget *top_window, PRBool state);
     void              *SetupPluginPort(void);
     nsresult           SetWindowIconList(const nsCStringArray &aIconList);

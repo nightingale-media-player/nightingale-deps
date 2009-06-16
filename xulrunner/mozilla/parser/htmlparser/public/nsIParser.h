@@ -296,19 +296,6 @@ class nsIParser : public nsISupports {
 };
 
 class nsIParser_1_9_0_BRANCH : public nsIParser {
-  public:
-    /**
-     * Tells the parser that a script is now executing. The only data we
-     * should resume parsing for is document.written data. We'll deal with any
-     * data that comes in over the network later.
-     */
-    virtual void ScriptExecuting() = 0;
-
-    /**
-     * Tells the parser that the script is done executing. We should now
-     * continue the regular parsing process.
-     */
-    virtual void ScriptDidExecute() = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIParser, NS_IPARSER_IID)

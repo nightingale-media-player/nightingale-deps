@@ -249,6 +249,8 @@ Report.prototype.getReport = function(format) {
       report += "_x_x_mozilla_cycle_collect," + this.totalCCTime + "\n";
       report += "__end_cc_report\n";
     }
+    var now = (new Date()).getTime();
+    report += "__startTimestamp" + now + "__endTimestamp\n"; //timestamp for determning shutdown time, used by talos
   } else {
     report = "Unknown report format";
   }

@@ -128,6 +128,7 @@
 #include "nsIDocShellTreeOwner.h"
 #include "nsIXULWindow.h"
 #include "nsXULPopupManager.h"
+#include "nsContentPolicyUtils.h"
 
 //----------------------------------------------------------------------
 //
@@ -3302,6 +3303,26 @@ nsXULDocument::LoadScript(nsXULPrototypeScript* aScriptProto, PRBool* aBlock)
             *aBlock = PR_FALSE;
             return NS_OK;
         }
+    }
+
+    // Security manager already checked the script in XULContentSinkImpl::OpenScript,
+    // trigger content policies as well now. Note that at this point we already lost
+    // context information of the script.
+    PRInt16 shouldLoad = nsIContentPolicy::ACCEPT;
+    rv = NS_CheckContentLoadPolicy(nsIContentPolicy::TYPE_SCRIPT,
+                                   aScriptProto->mSrcURI,
+                                   this->NodePrincipal(),
+                                   static_cast<nsIDocument*>(this),
+                                   NS_LITERAL_CSTRING("application/x-javascript"),
+                                   nsnull,    //extra
+                                   &shouldLoad,
+                                   nsContentUtils::GetContentPolicy(),
+                                   nsContentUtils::GetSecurityManager());
+    if (NS_FAILED(rv) || NS_CP_REJECTED(shouldLoad)) {
+      if (NS_FAILED(rv) || shouldLoad != nsIContentPolicy::REJECT_TYPE) {
+        return NS_ERROR_CONTENT_BLOCKED;
+      }
+      return NS_ERROR_CONTENT_BLOCKED_SHOW_ALT;
     }
 
     // Set the current script prototype so that OnStreamComplete can report

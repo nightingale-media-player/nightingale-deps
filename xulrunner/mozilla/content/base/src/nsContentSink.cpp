@@ -158,6 +158,7 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsContentSink)
   NS_INTERFACE_MAP_ENTRY(nsIDocumentObserver)
   NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
   NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
+  NS_INTERFACE_MAP_ENTRY(nsIContentSink_1_9_0_BRANCH)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIScriptLoaderObserver)
 NS_INTERFACE_MAP_END
 
@@ -334,10 +335,6 @@ nsContentSink::ScriptAvailable(nsresult aResult,
                                PRInt32 aLineNo)
 {
   PRUint32 count = mScriptElements.Count();
-  if (mParser && NS_SUCCEEDED(aResult)) {
-    // Only notify the parser about scripts that are actually going to run.
-    mParser->ScriptExecuting();
-  }
 
   if (count == 0) {
     return NS_OK;
@@ -389,10 +386,6 @@ nsContentSink::ScriptEvaluated(nsresult aResult,
                                nsIScriptElement *aElement,
                                PRBool aIsInline)
 {
-  if (mParser) {
-    mParser->ScriptDidExecute();
-  }
-
   // Check if this is the element we were waiting for
   PRInt32 count = mScriptElements.Count();
   if (count == 0 || aElement != mScriptElements[count - 1]) {
@@ -1466,6 +1459,12 @@ nsContentSink::DropParserAndPerfHint(void)
   if (mCanInterruptParser) {
     mDocument->UnblockOnload(PR_TRUE);
   }
+}
+
+PRBool
+nsContentSink::IsScriptExecuting()
+{
+  return !!mScriptLoader->GetCurrentScript();
 }
 
 nsresult

@@ -2607,13 +2607,12 @@ nsCxPusher::Push(nsISupports *aCurrentTarget)
 
   if (node) {
     document = node->GetOwnerDoc();
-    if (document) {
-      PRBool hasHadScriptObject = PR_TRUE;
-      sgo = document->GetScriptHandlingObject(hasHadScriptObject);
-      // It is bad if the document doesn't have event handling context,
-      // but it used to have one.
-      NS_ENSURE_TRUE(sgo || !hasHadScriptObject, PR_FALSE);
-    }
+    NS_ENSURE_TRUE(document, PR_FALSE);
+    PRBool hasHadScriptObject = PR_TRUE;
+    sgo = document->GetScriptHandlingObject(hasHadScriptObject);
+    // It is bad if the document doesn't have event handling context,
+    // but it used to have one.
+    NS_ENSURE_TRUE(sgo || !hasHadScriptObject, PR_FALSE);
   } else {
     sgo = do_QueryInterface(aCurrentTarget);
   }

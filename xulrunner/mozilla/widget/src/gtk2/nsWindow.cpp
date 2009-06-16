@@ -276,8 +276,6 @@ static void IM_set_text_range         (const PRInt32 aLen,
                                        PRUint32 *aTextRangeListLengthResult,
                                        nsTextRangeArray *aTextRangeListResult);
 
-static nsWindow *IM_get_owning_window(MozDrawingarea *aArea);
-
 static GtkIMContext *IM_get_input_context(nsWindow *window);
 
 // If after selecting profile window, the startup fail, please refer to
@@ -483,6 +481,21 @@ nsWindow::Destroy(void)
         mDragMotionTimerID = 0;
     }
 
+    if (mDrawingarea) {
+        g_object_set_data(G_OBJECT(mDrawingarea->clip_window),
+                          "nsWindow", NULL);
+        g_object_set_data(G_OBJECT(mDrawingarea->inner_window),
+                          "nsWindow", NULL);
+
+        g_object_set_data(G_OBJECT(mDrawingarea->clip_window),
+                          "mozdrawingarea", NULL);
+        g_object_set_data(G_OBJECT(mDrawingarea->inner_window),
+                          "mozdrawingarea", NULL);
+
+        g_object_unref(mDrawingarea);
+        mDrawingarea = nsnull;
+    }
+
     if (mShell) {
         gtk_widget_destroy(mShell);
         mShell = nsnull;
@@ -491,11 +504,6 @@ nsWindow::Destroy(void)
     else if (mContainer) {
         gtk_widget_destroy(GTK_WIDGET(mContainer));
         mContainer = nsnull;
-    }
-
-    if (mDrawingarea) {
-        g_object_unref(mDrawingarea);
-        mDrawingarea = nsnull;
     }
 
     OnDestroy();
@@ -519,6 +527,18 @@ nsWindow::SetParent(nsIWidget *aNewParent)
     NS_ASSERTION(newParentWindow, "Parent widget has a null native window handle");
 
     if (!mShell && mDrawingarea) {
+#ifdef DEBUG
+        if (!mContainer) {
+            // Check that the new Parent window has the same MozContainer
+            gpointer old_container;
+            gdk_window_get_user_data(mDrawingarea->inner_window,
+                                     &old_container);
+            gpointer new_container;
+            gdk_window_get_user_data(newParentWindow, &new_container);
+            NS_ASSERTION(old_container == new_container,
+                         "FIXME: Wrong MozContainer on MozDrawingarea");
+        }
+#endif
         moz_drawingarea_reparent(mDrawingarea, newParentWindow);
     } else {
         NS_NOTREACHED("nsWindow::SetParent - reparenting a non-child window");
@@ -788,11 +808,7 @@ nsWindow::SetFocus(PRBool aRaise)
 
     LOGFOCUS(("  SetFocus [%p]\n", (void *)this));
 
-    if (!mDrawingarea)
-        return NS_ERROR_FAILURE;
-
-    GtkWidget *owningWidget =
-        get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+    GtkWidget *owningWidget = GetMozContainerWidget();
     if (!owningWidget)
         return NS_ERROR_FAILURE;
 
@@ -917,9 +933,10 @@ nsWindow::SetCursor(nsCursor aCursor)
     // if we're not the toplevel window pass up the cursor request to
     // the toplevel window to handle it.
     if (!mContainer && mDrawingarea) {
-        GtkWidget *widget =
-            get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
-        nsWindow *window = get_window_for_gtk_widget(widget);
+        nsWindow *window = GetContainerWindow();
+        if (!window)
+            return NS_ERROR_FAILURE;
+
         return window->SetCursor(aCursor);
     }
 
@@ -999,9 +1016,10 @@ nsWindow::SetCursor(imgIContainer* aCursor,
     // if we're not the toplevel window pass up the cursor request to
     // the toplevel window to handle it.
     if (!mContainer && mDrawingarea) {
-        GtkWidget *widget =
-            get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
-        nsWindow *window = get_window_for_gtk_widget(widget);
+        nsWindow *window = GetContainerWindow();
+        if (!window)
+            return NS_ERROR_FAILURE;
+
         return window->SetCursor(aCursor, aHotspotX, aHotspotY);
     }
 
@@ -1471,8 +1489,9 @@ nsWindow::CaptureMouse(PRBool aCapture)
     if (!mDrawingarea)
         return NS_OK;
 
-    GtkWidget *widget =
-        get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+    GtkWidget *widget = GetMozContainerWidget();
+    if (!widget)
+        return NS_ERROR_FAILURE;
 
     if (aCapture) {
         gtk_grab_add(widget);
@@ -1494,8 +1513,9 @@ nsWindow::CaptureRollupEvents(nsIRollupListener *aListener,
     if (!mDrawingarea)
         return NS_OK;
 
-    GtkWidget *widget =
-        get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+    GtkWidget *widget = GetMozContainerWidget();
+    if (!widget)
+        return NS_ERROR_FAILURE;
 
     LOG(("CaptureRollupEvents %p\n", (void *)this));
 
@@ -1556,8 +1576,9 @@ nsWindow::LoseFocus(void)
     LOGFOCUS(("  widget lost focus [%p]\n", (void *)this));
 }
 
+#if 0
 #ifdef DEBUG
-// Paint flashing code
+// Paint flashing code (disabled for cairo - see below)
 
 #define CAPS_LOCK_IS_ON \
 (gdk_keyboard_get_modifiers() & GDK_LOCK_MASK)
@@ -1625,6 +1646,7 @@ gdk_window_flash(GdkWindow *    aGdkWindow,
   gdk_region_offset(aRegion, -x, -y);
 }
 #endif // DEBUG
+#endif
 
 gboolean
 nsWindow::OnExposeEvent(GtkWidget *aWidget, GdkEventExpose *aEvent)
@@ -2086,10 +2108,8 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
     mLastButtonReleaseTime = 0;
 
     // check to see if we should rollup
-    nsWindow *containerWindow;
-    GetContainerWindow(&containerWindow);
-
-    if (!gFocusWindow) {
+    nsWindow *containerWindow = GetContainerWindow();
+    if (!gFocusWindow && containerWindow) {
         containerWindow->mActivatePending = PR_FALSE;
         DispatchActivateEvent();
     }
@@ -3899,27 +3919,34 @@ nsWindow::GetToplevelWidget(GtkWidget **aWidget)
         return;
     }
 
-    if (!mDrawingarea)
-        return;
-
-    GtkWidget *widget =
-        get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+    GtkWidget *widget = GetMozContainerWidget();
     if (!widget)
         return;
 
     *aWidget = gtk_widget_get_toplevel(widget);
 }
 
-void
-nsWindow::GetContainerWindow(nsWindow **aWindow)
+GtkWidget *
+nsWindow::GetMozContainerWidget()
 {
     if (!mDrawingarea)
-        return;
+        return NULL;
 
     GtkWidget *owningWidget =
         get_gtk_widget_for_gdk_window(mDrawingarea->inner_window);
+    return owningWidget;
+}
 
-    *aWindow = get_window_for_gtk_widget(owningWidget);
+nsWindow *
+nsWindow::GetContainerWindow()
+{
+    GtkWidget *owningWidget = GetMozContainerWidget();
+    if (!owningWidget)
+        return nsnull;
+
+    nsWindow *window = get_window_for_gtk_widget(owningWidget);
+    NS_ASSERTION(window, "No nsWindow for container widget");
+    return window;
 }
 
 void
@@ -4160,7 +4187,13 @@ nsWindow::HideWindowChrome(PRBool aShouldHide)
         // Pass the request to the toplevel window
         GtkWidget *topWidget = nsnull;
         GetToplevelWidget(&topWidget);
+        if (!topWidget)
+            return NS_ERROR_FAILURE;
+
         nsWindow *topWindow = get_window_for_gtk_widget(topWidget);
+        if (!topWindow)
+            return NS_ERROR_FAILURE;
+
         return topWindow->HideWindowChrome(aShouldHide);
     }
 
@@ -4264,17 +4297,14 @@ is_mouse_in_window (GdkWindow* aWindow, gdouble aMouseX, gdouble aMouseY)
     gint offsetX = 0;
     gint offsetY = 0;
 
-    GtkWidget *widget;
-    GdkWindow *window;
-
-    window = aWindow;
+    GdkWindow *window = aWindow;
 
     while (window) {
         gint tmpX = 0;
         gint tmpY = 0;
 
         gdk_window_get_position(window, &tmpX, &tmpY);
-        widget = get_gtk_widget_for_gdk_window(window);
+        GtkWidget *widget = get_gtk_widget_for_gdk_window(window);
 
         // if this is a window, compute x and y given its origin and our
         // offset
@@ -4302,11 +4332,7 @@ is_mouse_in_window (GdkWindow* aWindow, gdouble aMouseX, gdouble aMouseY)
 nsWindow *
 get_window_for_gtk_widget(GtkWidget *widget)
 {
-    gpointer user_data;
-    user_data = g_object_get_data(G_OBJECT(widget), "nsWindow");
-
-    if (!user_data)
-        return nsnull;
+    gpointer user_data = g_object_get_data(G_OBJECT(widget), "nsWindow");
 
     return static_cast<nsWindow *>(user_data);
 }
@@ -4315,11 +4341,7 @@ get_window_for_gtk_widget(GtkWidget *widget)
 nsWindow *
 get_window_for_gdk_window(GdkWindow *window)
 {
-    gpointer user_data;
-    user_data = g_object_get_data(G_OBJECT(window), "nsWindow");
-
-    if (!user_data)
-        return nsnull;
+    gpointer user_data = g_object_get_data(G_OBJECT(window), "nsWindow");
 
     return static_cast<nsWindow *>(user_data);
 }
@@ -4332,13 +4354,9 @@ get_owning_window_for_gdk_window(GdkWindow *window)
     if (!owningWidget)
         return nsnull;
 
-    gpointer user_data;
-    user_data = g_object_get_data(G_OBJECT(owningWidget), "nsWindow");
+    gpointer user_data = g_object_get_data(G_OBJECT(owningWidget), "nsWindow");
 
-    if (!user_data)
-        return nsnull;
-
-    return (nsWindow *)user_data;
+    return static_cast<nsWindow *>(user_data);
 }
 
 /* static */
@@ -4347,8 +4365,6 @@ get_gtk_widget_for_gdk_window(GdkWindow *window)
 {
     gpointer user_data = NULL;
     gdk_window_get_user_data(window, &user_data);
-    if (!user_data)
-        return NULL;
 
     return GTK_WIDGET(user_data);
 }
@@ -4701,9 +4717,7 @@ focus_out_event_cb(GtkWidget *widget, GdkEventFocus *event)
 GdkFilterReturn
 plugin_window_filter_func(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
-    GtkWidget *widget;
     GdkWindow *plugin_window;
-    gpointer  user_data;
     XEvent    *xevent;
 
     nsRefPtr<nsWindow> nswindow = (nsWindow*)data;
@@ -4725,9 +4739,8 @@ plugin_window_filter_func(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
                 plugin_window = gdk_window_lookup (xevent->xreparent.window);
             }
             if (plugin_window) {
-                user_data = nsnull;
-                gdk_window_get_user_data(plugin_window, &user_data);
-                widget = GTK_WIDGET(user_data);
+                GtkWidget *widget =
+                    get_gtk_widget_for_gdk_window(plugin_window);
 
                 if (GTK_IS_XTBIN(widget)) {
                     nswindow->SetPluginType(nsWindow::PluginType_NONXEMBED);
@@ -5362,7 +5375,7 @@ nsWindow::IMEInitData(void)
 {
     if (mIMEData)
         return;
-    nsWindow *win = IMEGetOwningWindow();
+    nsWindow *win = GetContainerWindow();
     if (!win)
         return;
     mIMEData = win->mIMEData;
@@ -5560,8 +5573,9 @@ nsWindow::IMEComposeStart(void)
         return;
 
     gint x1, y1, x2, y2;
-    GtkWidget *widget =
-        get_gtk_widget_for_gdk_window(this->mDrawingarea->inner_window);
+    GtkWidget *widget = GetMozContainerWidget();
+    if (NS_UNLIKELY(!widget))
+        return;
 
     gdk_window_get_origin(widget->window, &x1, &y1);
     gdk_window_get_origin(this->mDrawingarea->inner_window, &x2, &y2);
@@ -5619,8 +5633,9 @@ nsWindow::IMEComposeText(const PRUnichar *aText,
         return;
 
     gint x1, y1, x2, y2;
-    GtkWidget *widget =
-        get_gtk_widget_for_gdk_window(this->mDrawingarea->inner_window);
+    GtkWidget *widget = GetMozContainerWidget();
+    if (NS_UNLIKELY(!widget))
+        return;
 
     gdk_window_get_origin(widget->window, &x1, &y1);
     gdk_window_get_origin(this->mDrawingarea->inner_window, &x2, &y2);
@@ -5688,13 +5703,6 @@ nsWindow*
 nsWindow::IMEComposingWindow(void)
 {
     return mIMEData ? mIMEData->mComposingWindow : nsnull;
-}
-
-nsWindow*
-nsWindow::IMEGetOwningWindow(void)
-{
-    nsWindow *window = IM_get_owning_window(this->mDrawingarea);
-    return window;
 }
 
 void
@@ -6150,19 +6158,6 @@ IM_set_text_range(const PRInt32 aLen,
    *aTextRangeListLengthResult = count + 1;
 
    pango_attr_iterator_destroy(aFeedbackIterator);
-}
-
-/* static */
-nsWindow *
-IM_get_owning_window(MozDrawingarea *aArea)
-{
-    if (!aArea)
-        return nsnull;
-    GtkWidget *owningWidget =
-        get_gtk_widget_for_gdk_window(aArea->inner_window);
-    if (!owningWidget)
-        return nsnull;
-    return get_window_for_gtk_widget(owningWidget);
 }
 
 /* static */

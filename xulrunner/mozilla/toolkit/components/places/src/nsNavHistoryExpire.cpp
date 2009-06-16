@@ -646,7 +646,7 @@ nsNavHistoryExpire::EraseHistory(mozIStorageConnection* aConnection,
           "(SELECT id FROM moz_historyvisits WHERE place_id = h.id LIMIT 1) "
           "AND NOT EXISTS "
           "(SELECT id FROM moz_bookmarks WHERE fk = h.id LIMIT 1) "
-          "AND SUBSTR(h.url,0,6) <> 'place:')"));
+          "AND SUBSTR(h.url, 1, 6) <> 'place:')"));
 }
 
 
@@ -851,7 +851,7 @@ nsNavHistoryExpire::ExpireHistoryParanoid(mozIStorageConnection* aConnection,
       "SELECT h.id FROM moz_places h "
         "LEFT OUTER JOIN moz_historyvisits v ON h.id = v.place_id "
         "LEFT OUTER JOIN moz_bookmarks b ON h.id = b.fk "
-      "WHERE v.id IS NULL AND b.id IS NULL AND SUBSTR(h.url,0,6) <> 'place:'");
+      "WHERE v.id IS NULL AND b.id IS NULL AND SUBSTR(h.url, 1, 6) <> 'place:'");
   if (aMaxRecords != -1) {
     query.AppendLiteral(" LIMIT ");
     query.AppendInt(aMaxRecords);
