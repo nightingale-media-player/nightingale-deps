@@ -49,3 +49,4 @@ MOZ_APP_VERSION=$FIREFOX_VERSION
 MOZ_NO_XPCOM_OBSOLETE=1
 MOZ_EXTENSIONS_DEFAULT=" gnomevfs reporter"
 # MOZ_APP_DISPLAYNAME will be set by branding/configure.sh
+MOZ_BRANDING_DIRECTORY=browser/branding/unofficial
