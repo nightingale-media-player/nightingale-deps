@@ -421,6 +421,22 @@ bool File::isWritable()
   return d->fileIO->isWritable();
 }
 
+FileIO* File::tempFile()
+{
+  if (!d->fileIO)
+    return NULL;
+
+  return d->fileIO->tempFile();
+}
+
+bool File::closeTempFile( bool overwrite )
+{
+  if (!d->fileIO)
+    return false;
+  
+  return d->fileIO->closeTempFile( overwrite );
+}
+
 const File::FileIOTypeResolver *File::addFileIOTypeResolver(const File::FileIOTypeResolver *resolver) // static
 {
   FilePrivate::fileIOTypeResolvers.prepend(resolver);

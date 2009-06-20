@@ -30,6 +30,7 @@
 #include <vector>
 #include <set>
 #include <tlocalfileio.h>
+#include <fileref.h>
 
 #include "id3v1genres.h"
 
@@ -406,17 +407,19 @@ bool MP4::File::save()
 
   if ( oldSize != newSize )
   {
+    // we need to grow the file
+    // let's use a scratch file!
+    file = this->tempFile();
+    if ( !file )
+    {
+      // failed to create the temp file; bail
+      return false;
+    }
+
     if ( !d->fileBox )
       d->fileBox = new MP4::File::FilePrivate::Mp4FileBox(this, this->d);
 
     ulonglong difference = newSize - oldSize;
-    // XXX Mook: TODO: make this fail safer (use a scratch file)
-    bool success = d->adjustOffsets( file, ilstBox, difference );
-    if ( ! success )
-    {
-      debug("Failed to adjust the file; it is now corrupt!");
-      return false;
-    }
 
     // make space for things we're creating
     TagLib::uint insertedIlstSize = 0; // number of bytes inserted for ilst header
@@ -439,9 +442,35 @@ bool MP4::File::save()
       insertedUdtaSize = 8; // created the udta box
       insertPosition = udtaBox->offset() - 8;
     }
-    file->insert( ByteVector(difference +  insertedIlstSize + 
-                             insertedMetaSize + insertedUdtaSize, 0), 
-                  insertPosition );
+
+    // do the copy
+    this->seek( 0 );
+    file->seek( 0 );
+    for ( ulonglong readIndex = 0; readIndex < insertPosition; )
+    {
+      ulonglong size = std::min( (ulonglong)4096, insertPosition - readIndex );
+      ByteVector buffer = this->readBlock(size);
+      file->writeBlock(buffer);
+      readIndex += buffer.size();
+    }
+
+    file->seek( difference + insertedIlstSize + insertedMetaSize + insertedUdtaSize, 
+                FileIO::Current );
+    for ( ulonglong readIndex = insertPosition; readIndex < this->length(); )
+    {
+      ulonglong size = std::min( (ulonglong)4096, this->length() - readIndex );
+      ByteVector buffer = this->readBlock(size);
+      file->writeBlock(buffer);
+      readIndex += buffer.size();
+    }
+
+    bool success = d->adjustOffsets( file, ilstBox, difference );
+    if ( ! success )
+    {
+      debug("Failed to adjust the file; aborting change");
+      file->closeTempFile(false);
+      return false;
+    }
 
     // update the parent box sizes
     // update the moov box
@@ -465,6 +494,12 @@ bool MP4::File::save()
   // subtract 8 from it so we can write out size + fourcc
   file->seek( ilstBox->offset() - 8, File::Beginning );
   file->writeBlock( outData );
+
+  if ( file != this )
+  {
+    // we used a scratch file
+    this->closeTempFile( true );
+  }
   return true;
 }
 
@@ -1064,7 +1099,12 @@ bool MP4::File::FilePrivate::adjustOffsets( TagLib::FileIO* file,
   iter.addFourcc(TAGLIB_FOURCC('s','t','c','o'));
   for (; (box = iter) != NULL; ++iter)
   {
-    int seekResult = file->seek( box->offset() + 4 ); // +4 for IsoFullBox version/flags
+    ulonglong readPosition = box->offset() + 4; // +4 for IsoFullBox version/flags
+    if ( readPosition > start )
+    {
+      readPosition += difference;
+    }
+    int seekResult = file->seek( readPosition );
     if ( seekResult < 0 )
     {
       // failed to seek
@@ -1106,7 +1146,7 @@ bool MP4::File::FilePrivate::adjustOffsets( TagLib::FileIO* file,
     if ( !hasChanged )
       continue;
 
-    seekResult = file->seek( box->offset() + 8 ); // as above, plus the size
+    seekResult = file->seek( readPosition + 4 ); // as above, plus the size
     if ( seekResult < 0 )
     {
       // failed to seek

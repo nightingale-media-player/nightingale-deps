@@ -266,6 +266,17 @@ namespace TagLib {
     bool isWritable();
 
     /*!
+     * Return a temporary file to use, creating it if necessary
+     */
+    virtual FileIO* tempFile();
+
+    /*!
+     * Close any previously allocated temporary files
+     * \param overwrite If true, will attempt to replace this file
+     */
+    virtual bool closeTempFile( bool overwrite );
+
+    /*!
      * Adds \a resolver to the list of FileIOTypeResolvers used by TagLib.  Each
      * additional FileIOTypeResolver is added to the front of a list of
      * resolvers that are tried.  If the FileIOTypeResolver returns zero the

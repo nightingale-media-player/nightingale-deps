@@ -164,6 +164,18 @@ namespace TagLib {
      */
     virtual bool isWritable() = 0;
 
+    /*!
+     * Return a temporary file to use, creating it if necessary
+     * Note that this file will be empty!
+     */
+    virtual FileIO* tempFile() = 0;
+
+    /*!
+     * Close any previously allocated temporary files
+     * \param overwrite If true, will attempt to replace this file
+     */
+    virtual bool closeTempFile( bool overwrite ) = 0;
+
 protected:
     /*!
      * Truncates the file to a \a length.

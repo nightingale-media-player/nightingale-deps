@@ -65,13 +65,18 @@ public:
   LocalFileIOPrivate(FileName fileName) :
     file(NULL),
     name(fileName),
+    tempFile(NULL),
     readOnly(true),
     valid(true),
     size(0)
     {}
 
+  void open();
+  void close();
+
   FILE *file;
   FileNameHandle name;
+  LocalFileIO *tempFile;
   bool readOnly;
   bool valid;
   ulong size;
@@ -85,43 +90,12 @@ public:
 LocalFileIO::LocalFileIO(FileName name)
 {
   d = new LocalFileIOPrivate(name);
-
-  // First try with read / write mode, if that fails, fall back to read only.
-  d->readOnly = true;
-
-#ifdef _WIN32
-
-  if(wcslen((const wchar_t *) name) > 0) {
-
-    d->file = _wfopen(name, L"rb+");
-
-    if(d->file)
-      d->readOnly = false;
-    else
-      d->file = _wfopen(name, L"rb");
-
-    if(d->file)
-      return;
-
-  }
-
-#endif
-
-  d->file = fopen(name, "rb+");
-
-  if(d->file)
-    d->readOnly = false;
-  else
-    d->file = fopen(name, "rb");
-
-  if(!d->file)
-    debug("Could not open file " + String((const char *) name));
+  d->open();
 }
 
 LocalFileIO::~LocalFileIO()
 {
-  if(d->file)
-    fclose(d->file);
+  d->close();
   delete d;
 }
 
@@ -374,6 +348,103 @@ bool LocalFileIO::isWritable()
   return !d->readOnly;
 }
 
+FileIO* LocalFileIO::tempFile()
+{
+  if ( d->tempFile )
+    return d->tempFile;
+#ifdef _WIN32
+  std::wstring originalName = d->name;
+  std::wstring::size_type offset = originalName.rfind(L'\\');
+  if ( offset == std::wstring::npos )
+  {
+    offset = originalName.rfind(L'/');
+  }
+  std::wstring tempDir, tempBaseName;
+  if ( offset == std::wstring::npos )
+  {
+    tempBaseName = originalName;
+  }
+  else
+  {
+    std::wstring::iterator sep = originalName.begin() + offset;
+    tempDir = std::wstring(originalName.begin(), sep);
+    tempBaseName = std::wstring(++sep, originalName.end());
+  }
+  wchar_t* tempNameRaw = _wtempnam(tempDir.empty() ?  NULL : tempDir.c_str(), tempBaseName.c_str());
+  if ( !tempNameRaw )
+  {
+    return NULL;
+  }
+  HANDLE hFile = ::CreateFileW(tempNameRaw, GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_TEMPORARY, NULL);
+  if ( !hFile )
+  {
+    debug( String("Failed to create file! ") + tempNameRaw );
+    free( tempNameRaw );
+    return NULL;
+  }
+  ::CloseHandle( hFile );
+  d->tempFile = new LocalFileIO( tempNameRaw );
+  free( tempNameRaw );
+  return d->tempFile;
+#else
+  std::string originalName = d->name;
+  std::string::size_type offset = originalName.rfind(L'/');
+  std::string tempDir, tempBaseName;
+  if ( offset == std::string::npos )
+  {
+    tempBaseName = originalName;
+  }
+  else
+  {
+    std::string::iterator sep = originalName.begin() + offset;
+    tempDir = std::string(originalName.begin(), sep);
+    tempBaseName = std::string(++sep, originalName.end());
+  }
+  char* tempNameRaw = tempnam(tempDir.empty() ? NULL : tempDir.c_str(), tempBaseName.c_str());
+  if ( !tempNameRaw )
+  {
+    return NULL;
+  }
+  d->tempFile = new LocalFileIO( tempNameRaw );
+  free( tempNameRaw );
+  return d->tempFile;
+#endif
+}
+
+bool LocalFileIO::closeTempFile( bool overwrite )
+{
+  bool succeeded = true;
+  if ( !d->tempFile )
+  {
+    return true;
+  }
+  if ( d->tempFile == this )
+  {
+    return false;
+  }
+  FileName tempName = d->tempFile->name();
+  d->close();
+  delete d->tempFile;
+  d->tempFile = NULL;
+#ifdef _WIN32
+  if ( !::MoveFileExW(tempName, d->name, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) )
+  {
+    debug( "Failed to rename file! " + String::number(GetLastError()) );
+    ::DeleteFileW(tempName);
+    succeeded = false;
+  }
+#else
+  if ( rename(tempName, (FileName)d->name) == -1 )
+  {
+    debug( "Failed to rename file! " + String::number(errno) );
+    unlink(tempName);
+    succeeded = false;
+  }
+#endif
+  d->open();
+  return succeeded;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // protected members
 ////////////////////////////////////////////////////////////////////////////////
@@ -392,6 +463,48 @@ TagLib::uint LocalFileIO::bufferSize()
   return LocalFileIOPrivate::bufferSize;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// Helper methods
+//////////////////////////////////////////////////////////////////////////////
+void LocalFileIO::LocalFileIOPrivate::open()
+{
+  // First try with read / write mode, if that fails, fall back to read only.
+
+#ifdef _WIN32
+
+  if(wcslen((const wchar_t *) name) > 0) {
+
+    file = _wfopen(name, L"rb+");
+
+    if(file)
+      readOnly = false;
+    else
+      file = _wfopen(name, L"rb");
+
+    if(file)
+      return;
+
+  }
+
+#endif
+
+  file = fopen((FileName)name, "rb+");
+
+  if(file)
+    readOnly = false;
+  else
+    file = fopen((FileName)name, "rb");
+
+  if(!file)
+    debug("Could not open file " + String((const char*)(FileName) name));
+}
+
+void LocalFileIO::LocalFileIOPrivate::close()
+{
+  if(file)
+    fclose(file);
+}
 
 /*******************************************************************************
  *******************************************************************************
