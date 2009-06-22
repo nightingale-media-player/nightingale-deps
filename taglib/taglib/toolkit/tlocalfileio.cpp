@@ -34,6 +34,7 @@
 # define ftruncate _chsize
 #else
 # include <unistd.h>
+# include <stdlib.h>
 #endif
 
 #ifndef R_OK
