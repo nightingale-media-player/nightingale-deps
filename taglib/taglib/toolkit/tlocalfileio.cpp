@@ -35,6 +35,8 @@
 #else
 # include <unistd.h>
 # include <stdlib.h>
+# include <string.h>
+# include <fcntl.h>
 #endif
 
 #ifndef R_OK
@@ -404,6 +406,38 @@ FileIO* LocalFileIO::tempFile()
   char* tempNameRaw = tempnam(tempDir.empty() ? NULL : tempDir.c_str(), tempBaseName.c_str());
   if ( !tempNameRaw )
   {
+    return NULL;
+  }
+  // create the file
+  struct stat originalStat;
+  if ( stat(originalName.c_str(), &originalStat) == -1 )
+  {
+    debug( String("Failed to stat original file ") +
+           originalName +
+           " errno " +
+           String::number(errno) );
+    free( tempNameRaw );
+    return NULL;
+  }
+  int fd = open( tempNameRaw,
+                 O_CREAT | O_EXCL | O_WRONLY,
+                 originalStat.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO) );
+  if ( fd == -1 )
+  {
+    debug( String("Failed to create temporary file ") +
+           tempNameRaw +
+           " errno " +
+           String::number(errno) );
+    free( tempNameRaw );
+    return NULL;
+  }
+  if ( close(fd) == -1 )
+  {
+    debug( String("Failed to close temporary file ") +
+           tempNameRaw +
+           " errno " +
+           String::number(errno) );
+    free( tempNameRaw );
     return NULL;
   }
   d->tempFile = new LocalFileIO( tempNameRaw );
