@@ -474,7 +474,7 @@ class AutoIncrement
 nsresult
 nsIOService::NewURI(const nsACString &aSpec, const char *aCharset, nsIURI *aBaseURI, nsIURI **result)
 {
-    //NS_ASSERTION(NS_IsMainThread(), "wrong thread");
+    NS_ASSERTION(NS_IsMainThread(), "wrong thread");
 
     static PRUint32 recursionCount = 0;
     if (recursionCount >= MAX_RECURSION_COUNT)
